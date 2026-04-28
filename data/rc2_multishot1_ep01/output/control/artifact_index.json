@@ -175,5 +175,15 @@
     "retry_gate_open": false,
     "production_accepted": false,
     "downstream_blocked": true
+  },
+  "change_request_completion_contracts": {
+    "status": "created",
+    "completion_templates_created": 2,
+    "submitted_completions_found": 0,
+    "execution_performed": false,
+    "ready_for_resubmission": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "downstream_blocked": true
   }
 }

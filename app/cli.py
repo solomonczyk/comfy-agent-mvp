@@ -1003,6 +1003,24 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2U — Validate submitted change request completions subcommand
+    validate_submitted_change_request_completions_parser = subparsers.add_parser("validate-submitted-change-request-completions", help="Validate submitted change request completions")
+    validate_submitted_change_request_completions_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing submitted completions",
+    )
+    validate_submitted_change_request_completions_parser.add_argument(
+        "--completion-root",
+        required=False,
+        help="Optional custom path to completion files (for fixture validation)",
+    )
+    validate_submitted_change_request_completions_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -1095,6 +1113,8 @@ def main() -> int:
         return create_change_request_completion_contracts(args)
     elif args.command == "validate-change-request-completion-contracts":
         return validate_change_request_completion_contracts(args)
+    elif args.command == "validate-submitted-change-request-completions":
+        return validate_submitted_change_request_completions(args)
     else:
         parser.print_help()
         return 1
@@ -6676,6 +6696,44 @@ def validate_change_request_completion_contracts(args: argparse.Namespace) -> in
         print(f"Downstream Blocked: {result['downstream_blocked']}")
         if result['validation_errors']:
             print(f"Validation Errors: {result['validation_errors']}")
+    
+    return 0
+
+
+def validate_submitted_change_request_completions(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2U — Validate submitted change request completions.
+    
+    This command validates submitted change request completion files before they are
+    allowed to trigger resubmission of role decisions, without executing workflow
+    changes, rebuilding references, applying decisions, or opening retry generation.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.change_request_completion_validator import validate_submitted_change_request_completions as validate_completions
+    
+    project_root = args.project_root
+    completion_root = getattr(args, "completion_root", None)
+    json_output = args.json
+    
+    result = validate_completions(project_root, completion_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Submitted Completions Ready: {result['submitted_completions_ready']}")
+        print(f"Valid Completions: {result['valid_completions']}")
+        print(f"Ready for Resubmission: {result['ready_for_resubmission']}")
+        print(f"Execution Performed: {result['execution_performed']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        if result.get('would_allow_new_role_decision_drafts'):
+            print(f"Would Allow New Role Decision Drafts: {result['would_allow_new_role_decision_drafts']}")
+        if result.get('rejection_reasons'):
+            print(f"Rejection Reasons: {result['rejection_reasons']}")
     
     return 0
 
