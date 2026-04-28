@@ -1,0 +1,118 @@
+{
+  "episode_id": "ep01",
+  "episode_title": "Alya's Awakening",
+  "overall_episode_state": "preflight_complete",
+  "shots": [
+    {
+      "shot_id": "shot01",
+      "brief_path": "data/briefs/ep01_shot01_brief.md",
+      "prompt_pack_path": "output/control/ep01_shot01_prompt_pack.json",
+      "intended_next_action": "retry_generate_frames",
+      "status": "identity_qa_failed",
+      "media_generated": true,
+      "frame_qc_passed": true,
+      "identity_qa_passed": false,
+      "identity_consistency_passed": false,
+      "production_accepted": false,
+      "generation_mode": "reference_locked",
+      "technical_fallback_only": true,
+      "legacy_workflow_reason": "Generated with legacy reference_locked img2img workflow; faces are inconsistent",
+      "recommended_action": "route_to_character_director_and_workflow_td",
+      "frames_generated": 3,
+      "frames_dir": "output/frames/ep01_shot01",
+      "identity_qa_report_path": "output/control/ep01_shot01_identity_qa_report.json"
+    },
+    {
+      "shot_id": "shot02",
+      "brief_path": "data/briefs/ep01_shot02_brief.md",
+      "prompt_pack_path": "output/control/ep01_shot02_prompt_pack.json",
+      "intended_next_action": "generate_frames",
+      "status": "preflight_complete",
+      "media_generated": false
+    },
+    {
+      "shot_id": "shot03",
+      "brief_path": "data/briefs/ep01_shot03_brief.md",
+      "prompt_pack_path": "output/control/ep01_shot03_prompt_pack.json",
+      "intended_next_action": "generate_frames",
+      "status": "preflight_complete",
+      "media_generated": false
+    }
+  ],
+  "artifacts": {
+    "episode_plan": "output/control/episode_plan.json",
+    "shot_briefs": [
+      "data/briefs/ep01_shot01_brief.md",
+      "data/briefs/ep01_shot02_brief.md",
+      "data/briefs/ep01_shot03_brief.md"
+    ],
+    "prompt_packs": [
+      "output/control/ep01_shot01_prompt_pack.json",
+      "output/control/ep01_shot02_prompt_pack.json",
+      "output/control/ep01_shot03_prompt_pack.json"
+    ],
+    "artifact_index": "output/control/artifact_index.json",
+    "episode_ledger": "output/control/episode_ledger.json",
+    "preflights": [
+      "output/control/ep01_shot01_preflight.json",
+      "output/control/ep01_shot02_preflight.json",
+      "output/control/ep01_shot03_preflight.json"
+    ],
+    "submitted_workflows": [
+      "output/control/ep01_shot01_submitted_workflow.json",
+      "output/control/ep01_shot02_submitted_workflow.json",
+      "output/control/ep01_shot03_submitted_workflow.json"
+    ],
+    "observed_settings": [
+      "output/control/ep01_shot01_observed_settings.json",
+      "output/control/ep01_shot02_observed_settings.json",
+      "output/control/ep01_shot03_observed_settings.json"
+    ],
+    "frames_manifest": "output/control/frames_manifest.json",
+    "identity_qa_reports": [
+      "output/control/ep01_shot01_identity_qa_report.json"
+    ]
+  },
+  "media_artifacts": [
+    {
+      "shot_id": "shot01",
+      "frames_dir": "output/frames/ep01_shot01",
+      "frame_count": 3,
+      "frame_paths": [
+        "output/frames/ep01_shot01/000001.png",
+        "output/frames/ep01_shot01/000002.png",
+        "output/frames/ep01_shot01/000003.png"
+      ],
+      "artifact_status": "retry_candidate",
+      "frame_qc_passed": true,
+      "identity_qa_passed": false
+    }
+  ],
+  "dry_proof_only": false,
+  "comfyui_generation": true,
+  "created_at": "2026-04-28T08:18:00Z",
+  "plan_version": "RC2-MULTISHOT1A",
+  "work_orders": {
+    "character_director_work_order": "output/control/work_orders/character_director_identity_review.json",
+    "workflow_td_work_order": "output/control/work_orders/workflow_td_identity_workflow_review.json"
+  },
+  "current_blocking_roles": [
+    "Character Director",
+    "Workflow TD / ComfyUI Technical Director"
+  ],
+  "downstream_blocked": true,
+  "role_decisions": {
+    "character_director_decision": "output\\control\\role_decisions\\character_director_identity_decision.json",
+    "workflow_td_decision": "output\\control\\role_decisions\\workflow_td_identity_workflow_decision.json",
+    "decision_status": "pending",
+    "downstream_blocked": true
+  },
+  "production_accepted": false,
+  "retry_gate_open": false,
+  "next_allowed_action": "blocked_by_role_approval",
+  "state_repair": {
+    "repair_type": "pre_fix_fixture_apply_invalidated",
+    "repair_timestamp": "2026-04-28T12:34:15.028696Z",
+    "reason": "fixture approvals were applied before safety hardening (commit cf49148)"
+  }
+}

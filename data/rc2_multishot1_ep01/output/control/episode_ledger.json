@@ -1,0 +1,347 @@
+{
+  "episode_id": "ep01",
+  "ledger_type": "episode",
+  "records": [
+    {
+      "event_id": "multishot_plan_created",
+      "timestamp": "2026-04-28T08:18:00Z",
+      "event_type": "planning",
+      "description": "Created multi-shot episode plan with 3 shots for ep01",
+      "details": {
+        "episode_title": "Alya's Awakening",
+        "total_shots": 3,
+        "shot_ids": [
+          "shot01",
+          "shot02",
+          "shot03"
+        ],
+        "total_expected_duration_seconds": 27.5,
+        "plan_version": "RC2-MULTISHOT1A"
+      }
+    },
+    {
+      "event_id": "shot_briefs_created",
+      "timestamp": "2026-04-28T08:18:00Z",
+      "event_type": "planning",
+      "description": "Created per-shot briefs for all 3 shots",
+      "details": {
+        "briefs_created": [
+          "data/briefs/ep01_shot01_brief.md",
+          "data/briefs/ep01_shot02_brief.md",
+          "data/briefs/ep01_shot03_brief.md"
+        ]
+      }
+    },
+    {
+      "event_id": "prompt_packs_created",
+      "timestamp": "2026-04-28T08:18:00Z",
+      "event_type": "planning",
+      "description": "Created per-shot prompt packs for all 3 shots",
+      "details": {
+        "prompt_packs_created": [
+          "output/control/ep01_shot01_prompt_pack.json",
+          "output/control/ep01_shot02_prompt_pack.json",
+          "output/control/ep01_shot03_prompt_pack.json"
+        ],
+        "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+        "generation_mode": "reference_locked",
+        "reference_locked": true
+      }
+    },
+    {
+      "event_id": "artifact_index_created",
+      "timestamp": "2026-04-28T08:18:00Z",
+      "event_type": "planning",
+      "description": "Created multi-shot artifact index documenting all planning artifacts",
+      "details": {
+        "overall_episode_state": "multishot_planned",
+        "intended_next_action_per_shot": "generate_frames",
+        "media_generated": false
+      }
+    },
+    {
+      "event_id": "dry_proof_only",
+      "timestamp": "2026-04-28T08:18:00Z",
+      "event_type": "boundary",
+      "description": "This is a dry proof only - no media generation occurred",
+      "details": {
+        "dry_proof_only": true,
+        "comfyui_generation": false,
+        "pipeline_action_rerun": false,
+        "tts_regenerated": false,
+        "ffmpeg_rerun": false
+      }
+    },
+    {
+      "event_id": "multishot_preflight_started",
+      "timestamp": "2026-04-28T06:27:47.173641Z",
+      "episode_id": "ep01",
+      "shot_id": null,
+      "event_type": "multishot_preflight_started",
+      "requested_action": "dry_preflight_all_shots",
+      "allowed": true,
+      "executed": true,
+      "success": true,
+      "current_state": "multishot_planned",
+      "expected_next_action": "generate_frames",
+      "reason": "RC2-MULTISHOT1B: Dry preflight validation for all shots",
+      "handler_result": {
+        "shots_validated": [
+          "shot01",
+          "shot02",
+          "shot03"
+        ],
+        "dry_run": true,
+        "comfyui_generation": false,
+        "pipeline_action_rerun": false
+      },
+      "control_executed": false,
+      "production_executed": false,
+      "handler_status": "dry_preflight",
+      "from_state": "multishot_planned",
+      "to_state": "preflight_complete",
+      "artifact_path": null,
+      "recipe_validation": null
+    },
+    {
+      "event_id": "preflight_completed_shot01",
+      "timestamp": "2026-04-28T06:27:47.173641Z",
+      "episode_id": "ep01",
+      "shot_id": "shot01",
+      "event_type": "preflight_completed",
+      "requested_action": "dry_preflight_shot01",
+      "allowed": true,
+      "executed": true,
+      "success": true,
+      "current_state": "preflight_complete",
+      "expected_next_action": "generate_frames",
+      "reason": "RC2-MULTISHOT1B: Dry preflight completed for shot01",
+      "handler_result": {
+        "status": "READY",
+        "blocks": [],
+        "dry_run": true,
+        "comfyui_generation": false,
+        "pipeline_action_rerun": false
+      },
+      "control_executed": false,
+      "production_executed": false,
+      "handler_status": "dry_preflight",
+      "from_state": "planned",
+      "to_state": "preflight_complete",
+      "artifact_path": "output/control/ep01_shot01_preflight.json",
+      "recipe_validation": null
+    },
+    {
+      "event_id": "preflight_completed_shot02",
+      "timestamp": "2026-04-28T06:27:47.173641Z",
+      "episode_id": "ep01",
+      "shot_id": "shot02",
+      "event_type": "preflight_completed",
+      "requested_action": "dry_preflight_shot02",
+      "allowed": true,
+      "executed": true,
+      "success": true,
+      "current_state": "preflight_complete",
+      "expected_next_action": "generate_frames",
+      "reason": "RC2-MULTISHOT1B: Dry preflight completed for shot02",
+      "handler_result": {
+        "status": "READY",
+        "blocks": [],
+        "dry_run": true,
+        "comfyui_generation": false,
+        "pipeline_action_rerun": false
+      },
+      "control_executed": false,
+      "production_executed": false,
+      "handler_status": "dry_preflight",
+      "from_state": "planned",
+      "to_state": "preflight_complete",
+      "artifact_path": "output/control/ep01_shot02_preflight.json",
+      "recipe_validation": null
+    },
+    {
+      "event_id": "preflight_completed_shot03",
+      "timestamp": "2026-04-28T06:27:47.173641Z",
+      "episode_id": "ep01",
+      "shot_id": "shot03",
+      "event_type": "preflight_completed",
+      "requested_action": "dry_preflight_shot03",
+      "allowed": true,
+      "executed": true,
+      "success": true,
+      "current_state": "preflight_complete",
+      "expected_next_action": "generate_frames",
+      "reason": "RC2-MULTISHOT1B: Dry preflight completed for shot03",
+      "handler_result": {
+        "status": "READY",
+        "blocks": [],
+        "dry_run": true,
+        "comfyui_generation": false,
+        "pipeline_action_rerun": false
+      },
+      "control_executed": false,
+      "production_executed": false,
+      "handler_status": "dry_preflight",
+      "from_state": "planned",
+      "to_state": "preflight_complete",
+      "artifact_path": "output/control/ep01_shot03_preflight.json",
+      "recipe_validation": null
+    },
+    {
+      "event_id": "identity_qa_failed_shot01",
+      "timestamp": "2026-04-28T07:05:22.972565Z",
+      "episode_id": "ep01",
+      "shot_id": "shot01",
+      "event_type": "identity_qa_failed",
+      "requested_action": "identity_qa",
+      "allowed": true,
+      "executed": true,
+      "success": false,
+      "current_state": "identity_qa_failed",
+      "expected_next_action": "retry_generate_frames",
+      "reason": "Generated frames show inconsistent character identity across frame batch",
+      "handler_result": {
+        "frame_count": 3,
+        "frame_qc_passed": true,
+        "identity_qa_passed": false,
+        "verdict": "identity_drift",
+        "similarity_scores": {
+          "face_counts": [
+            2,
+            3,
+            1
+          ]
+        },
+        "recommended_action": "retry_generate_frames"
+      },
+      "control_executed": false,
+      "production_executed": false,
+      "handler_status": "identity_qa",
+      "from_state": "frames_generated",
+      "to_state": "identity_qa_failed",
+      "artifact_path": "output/control/ep01_shot01_identity_qa_report.json",
+      "recipe_validation": null
+    }
+  ],
+  "dry_proof_only": false,
+  "comfyui_generation": true,
+  "pipeline_action_rerun": false,
+  "created_at": "2026-04-28T08:18:00Z",
+  "plan_version": "RC2-MULTISHOT1A",
+  "events": [
+    {
+      "event_type": "role_work_orders_created",
+      "timestamp": "2026-04-28T10:24:46.883402Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "reason": "identity_qa_failed",
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "work_order_count": 2
+    },
+    {
+      "event_type": "role_work_orders_created",
+      "timestamp": "2026-04-28T10:32:40.327275Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "reason": "identity_qa_failed",
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "work_order_count": 2
+    },
+    {
+      "event_type": "role_decision_templates_created",
+      "timestamp": "2026-04-28T10:38:04.704877Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "decision_status": "pending",
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false
+    },
+    {
+      "event_type": "role_decisions_applied",
+      "timestamp": "2026-04-28T12:09:55.575871Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "apply_mode": "transactional"
+    },
+    {
+      "event_type": "role_decisions_applied",
+      "timestamp": "2026-04-28T12:09:55.680869Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "apply_mode": "transactional"
+    },
+    {
+      "event_type": "role_decisions_applied",
+      "timestamp": "2026-04-28T12:09:55.790305Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "apply_mode": "transactional"
+    },
+    {
+      "event_type": "role_decisions_applied",
+      "timestamp": "2026-04-28T12:09:55.902458Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "apply_mode": "transactional"
+    },
+    {
+      "event_type": "role_decisions_applied",
+      "timestamp": "2026-04-28T12:09:56.012350Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "apply_mode": "transactional"
+    },
+    {
+      "event_type": "pre_fix_fixture_apply_invalidated",
+      "timestamp": "2026-04-28T12:34:15.029736Z",
+      "reason": "fixture approvals were applied before safety hardening",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "repair_commit": "cf49148"
+    }
+  ]
+}

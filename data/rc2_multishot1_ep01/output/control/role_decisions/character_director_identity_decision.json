@@ -1,0 +1,22 @@
+{
+  "role": "Character Director",
+  "work_order": "character_director_identity_review",
+  "blocked_shot": "shot01",
+  "character_name": "Alya",
+  "display_name": "Alya",
+  "reference_character": "Alya",
+  "decision_status": "pending",
+  "selected_decision": null,
+  "allowed_decisions": [
+    "approve",
+    "reject",
+    "request_new_reference",
+    "request_workflow_change"
+  ],
+  "required_artifacts": {},
+  "downstream_blocked": true,
+  "production_accepted": false,
+  "next_allowed_action": null,
+  "created_at": "2026-04-28T10:20:56.942724Z",
+  "decision_source": "role_decision_template"
+}

@@ -760,6 +760,42 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2K — Inspect production decision state subcommand
+    inspect_production_decision_state_parser = subparsers.add_parser("inspect-production-decision-state", help="Inspect real project decision state to detect corruption from pre-fix fixture applications")
+    inspect_production_decision_state_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root to inspect",
+    )
+    inspect_production_decision_state_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2K — Repair production decision state subcommand
+    repair_production_decision_state_parser = subparsers.add_parser("repair-production-decision-state", help="Repair pre-fix fixture approval mutations in real project state")
+    repair_production_decision_state_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root to repair",
+    )
+    repair_production_decision_state_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Dry-run mode (default behavior)",
+    )
+    repair_production_decision_state_parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Apply mode (must be explicit)",
+    )
+    repair_production_decision_state_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -818,6 +854,10 @@ def main() -> int:
         return validate_role_decision_intake(args)
     elif args.command == "apply-role-decisions":
         return apply_role_decisions(args)
+    elif args.command == "inspect-production-decision-state":
+        return inspect_production_decision_state(args)
+    elif args.command == "repair-production-decision-state":
+        return repair_production_decision_state(args)
     else:
         parser.print_help()
         return 1
@@ -5671,6 +5711,7 @@ def apply_role_decisions(args: argparse.Namespace) -> int:
             print(f"Would Allow Retry Generation: {result.get('would_allow_retry_generation', 'N/A')}")
             print(f"Next Allowed Action If Applied: {result.get('next_allowed_action_if_applied', 'N/A')}")
             print(f"Production Accepted After Apply: {result.get('production_accepted_after_apply', 'N/A')}")
+            print(f"Backup Path: {result['backup_path']}")
         elif result['status'] == 'applied':
             print(f"Applied Decisions: {result.get('applied_decisions', 0)}")
             print(f"Can Retry Generation: {result.get('can_retry_generation', False)}")
@@ -5683,8 +5724,9 @@ def apply_role_decisions(args: argparse.Namespace) -> int:
         else:
             print(f"Applied Decisions: {result.get('applied_decisions', 0)}")
             print(f"Can Retry Generation: {result.get('can_retry_generation', False)}")
-        
-        print(f"Real Project Mutated: {result.get('real_project_mutated', False)}")
+            print(f"Reason: {result.get('reason', 'N/A')}")
+            print(f"Production Accepted: {result.get('production_accepted', False)}")
+            print(f"Real Project Mutated: {result.get('real_project_mutated', False)}")
         
         if result.get('status') == 'rejected':
             print(f"\nNo apply performed. Reason: {result.get('reason', 'unknown')}")
@@ -5702,6 +5744,103 @@ def apply_role_decisions(args: argparse.Namespace) -> int:
             print("\nMissing Decisions:")
             for decision in result['missing_decisions']:
                 print(f"  - {decision}")
+    
+    return 0
+
+
+def inspect_production_decision_state(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2K — Inspect real project decision state to detect corruption.
+    
+    This command inspects the real project decision state to detect corruption
+    from pre-fix fixture applications. It reports role decisions, artifact_index
+    state, episode_ledger events, and safety assessment.
+    
+    Exit codes:
+    - 0: inspection completed successfully
+    - 1: inspection failed
+    """
+    from app.production_cards.state_repair import inspect_real_project_decision_state
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = inspect_real_project_decision_state(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Project Root: {result['project_root']}")
+        print(f"Has Corruption: {result['has_corruption']}")
+        print(f"Safe for Next Step: {result['safe_for_next_step']}")
+        print(f"\nRole Decisions:")
+        print(f"  Character Director Status: {result['role_decisions']['character_director']['decision_status']}")
+        print(f"  Character Director Production Accepted: {result['role_decisions']['character_director']['production_accepted']}")
+        print(f"  Workflow TD Status: {result['role_decisions']['workflow_td']['decision_status']}")
+        print(f"  Workflow TD Production Accepted: {result['role_decisions']['workflow_td']['production_accepted']}")
+        print(f"\nArtifact Index:")
+        print(f"  Role Decision Apply Status: {result['artifact_index']['role_decision_apply_status']}")
+        print(f"  Retry Gate Open: {result['artifact_index']['retry_gate_open']}")
+        print(f"  Next Allowed Action: {result['artifact_index']['next_allowed_action']}")
+        print(f"  Production Accepted: {result['artifact_index']['production_accepted']}")
+        print(f"  Downstream Blocked: {result['artifact_index']['downstream_blocked']}")
+        print(f"\nEpisode Ledger:")
+        print(f"  Role Decision Apply Events: {result['episode_ledger']['role_decision_apply_event_count']}")
+        print(f"\nCorruption Indicators:")
+        for indicator, value in result['corruption_indicators'].items():
+            print(f"  {indicator}: {value}")
+    
+    return 0
+
+
+def repair_production_decision_state(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2K — Repair pre-fix fixture approval mutations in real project state.
+    
+    This command repairs pre-fix fixture approval mutations in real project state.
+    Default is dry-run mode. Explicit --apply flag is required for actual repair.
+    
+    Safety rule:
+    - If neither --dry-run nor --apply is provided, behaves as dry-run
+    - Default is dry-run for safety
+    
+    Exit codes:
+    - 0: repair operation completed successfully
+    - 1: repair operation failed or invalid args
+    """
+    from app.production_cards.state_repair import repair_pre_fix_fixture_apply_mutations
+    
+    project_root = args.project_root
+    dry_run_flag = getattr(args, "dry_run", False)
+    apply_flag = getattr(args, "apply", False)
+    json_output = args.json
+    
+    # Safety rule: default is dry-run if neither flag provided
+    dry_run = dry_run_flag or not apply_flag
+    
+    result = repair_pre_fix_fixture_apply_mutations(project_root, dry_run=dry_run)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Project Root: {result['project_root']}")
+        print(f"Dry Run: {result['dry_run']}")
+        print(f"Status: {result['status'].upper()}")
+        print(f"Repairs Performed: {result['repairs_performed']}")
+        
+        if dry_run:
+            print(f"Would Mutate Files: {result.get('would_mutate_files', [])}")
+            print(f"\nRepair Actions:")
+            for action in result.get('repair_actions', []):
+                print(f"  Target: {action['target']}")
+                print(f"  Action: {action['action']}")
+        else:
+            print(f"Files Mutated: {result.get('files_mutated', [])}")
+            print(f"\nValidation:")
+            validation = result.get('validation', {})
+            print(f"  Safe for Next Step: {validation.get('safe_for_next_step', False)}")
+            print(f"  Role Decisions Pending: {validation.get('role_decisions_pending', False)}")
+            print(f"  Retry Gate Closed: {validation.get('retry_gate_closed', False)}")
+            print(f"  Production Accepted False: {validation.get('production_accepted_false', False)}")
+            print(f"  Downstream Blocked: {validation.get('downstream_blocked', False)}")
     
     return 0
 
