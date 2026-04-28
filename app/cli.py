@@ -938,6 +938,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2R — Route decision change requests subcommand
+    route_decision_change_requests_parser = subparsers.add_parser("route-decision-change-requests", help="Route decision change requests to show next required owner/action")
+    route_decision_change_requests_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing change request pack",
+    )
+    route_decision_change_requests_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -1020,6 +1033,8 @@ def main() -> int:
         return create_decision_change_request_pack(args)
     elif args.command == "validate-decision-change-request-pack":
         return validate_decision_change_request_pack(args)
+    elif args.command == "route-decision-change-requests":
+        return route_decision_change_requests(args)
     else:
         parser.print_help()
         return 1
@@ -6394,6 +6409,53 @@ def validate_decision_change_request_pack(args: argparse.Namespace) -> int:
         print(f"Downstream Blocked: {result['downstream_blocked']}")
         if result['validation_errors']:
             print(f"Validation Errors: {result['validation_errors']}")
+    
+    return 0
+
+
+def route_decision_change_requests(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2R — Route decision change requests to show next required owner/action.
+    
+    This command provides routing preview for decision change request artifacts so the
+    orchestrator can show the next required owner/action after submitted role decisions
+    requested changes.
+    
+    This is a read-only routing preview that does NOT:
+    - Apply decisions
+    - Open retry gate
+    - Mark production_accepted=true
+    - Run ComfyUI or generation
+    - Mutate role_decisions/
+    - Mutate final artifacts
+    
+    Exit codes:
+    - 0: routing completed successfully
+    - 1: routing failed or invalid args
+    """
+    from app.production_cards.change_request_router import route_decision_change_requests as route_requests
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = route_requests(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Routing Status: {result['status'].upper()}")
+        print(f"Change Requests Found: {result['change_requests_found']}")
+        print(f"Ready for Apply: {result['ready_for_apply']}")
+        print(f"Can Retry Generation: {result['can_retry_generation']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Routes:")
+        for route in result['routes']:
+            print(f"  - {route['request_type']}: {route['source_role']} → {route['target_role']}")
+            print(f"    Action: {route['recommended_action']}")
+        print(f"Next Actions:")
+        for action in result['next_actions']:
+            print(f"  - Priority {action['priority']}: {action['role']} - {action['task']}")
     
     return 0
 
