@@ -370,6 +370,17 @@
       "retry_gate_open": false,
       "comfyui_generation": false,
       "pipeline_action_rerun": false
+    },
+    {
+      "event_type": "decision_change_requests_created",
+      "reason": "submitted_role_decisions_requested_changes",
+      "ready_for_apply": false,
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "timestamp": "2026-04-28T13:42:12.877666Z"
     }
   ]
 }

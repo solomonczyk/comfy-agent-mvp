@@ -908,6 +908,36 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2Q — Create decision change request pack subcommand
+    create_decision_change_request_pack_parser = subparsers.add_parser("create-decision-change-request-pack", help="Create decision change request pack from submitted decision outcomes")
+    create_decision_change_request_pack_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing submitted role decisions",
+    )
+    create_decision_change_request_pack_parser.add_argument(
+        "--submission-root",
+        help="Optional custom path to load submissions from (for fixture validation)",
+    )
+    create_decision_change_request_pack_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2Q — Validate decision change request pack subcommand
+    validate_decision_change_request_pack_parser = subparsers.add_parser("validate-decision-change-request-pack", help="Validate decision change request pack")
+    validate_decision_change_request_pack_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing change request pack",
+    )
+    validate_decision_change_request_pack_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -986,6 +1016,10 @@ def main() -> int:
         return validate_real_role_decision_drafts(args)
     elif args.command == "evaluate-submitted-decision-outcome":
         return evaluate_submitted_decision_outcome(args)
+    elif args.command == "create-decision-change-request-pack":
+        return create_decision_change_request_pack(args)
+    elif args.command == "validate-decision-change-request-pack":
+        return validate_decision_change_request_pack(args)
     else:
         parser.print_help()
         return 1
@@ -6278,6 +6312,88 @@ def evaluate_submitted_decision_outcome(args: argparse.Namespace) -> int:
             print(f"Next Required Actions:")
             for action in result['next_required_actions']:
                 print(f"  - {action['role']}: {action['action']}")
+    
+    return 0
+
+
+def create_decision_change_request_pack(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2Q — Create decision change request pack from submitted decision outcomes.
+    
+    This command converts submitted decision outcomes into concrete change request artifacts
+    so the system can act on request_workflow_change and request_reference_rebuild
+    without opening retry generation or applying decisions.
+    
+    This is a read-only artifact creation that does NOT:
+    - Apply decisions
+    - Open retry gate
+    - Mark production_accepted=true
+    - Run ComfyUI or generation
+    - Mutate role_decisions/
+    - Mutate final artifacts
+    
+    Exit codes:
+    - 0: creation completed successfully
+    - 1: creation failed or invalid args
+    """
+    from app.production_cards.decision_change_requests import create_decision_change_request_pack as create_pack
+    
+    project_root = args.project_root
+    submission_root = getattr(args, 'submission_root', None)
+    json_output = args.json
+    
+    result = create_pack(project_root, submission_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Creation Status: {result['status'].upper()}")
+        print(f"Change Requests Created: {result['change_requests_created']}")
+        print(f"Outcome Status: {result['outcome_status']}")
+        print(f"Ready for Apply: {result['ready_for_apply']}")
+        print(f"Can Retry Generation: {result['can_retry_generation']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Apply Performed: {result['apply_performed']}")
+        print(f"Generation Authorized: {result['generation_authorized']}")
+    
+    return 0
+
+
+def validate_decision_change_request_pack(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2Q — Validate decision change request pack.
+    
+    This command validates the decision change request pack to ensure:
+    - Change request files exist
+    - Change requests are valid
+    - Ready for apply is false
+    - Retry gate remains closed
+    - Production accepted remains false
+    - Downstream remains blocked
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.decision_change_requests import validate_decision_change_request_pack as validate_pack
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_pack(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Change Requests Found: {result['change_requests_found']}")
+        print(f"Next Required Roles: {result['next_required_roles']}")
+        print(f"Ready for Apply: {result['ready_for_apply']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        if result['validation_errors']:
+            print(f"Validation Errors: {result['validation_errors']}")
     
     return 0
 

@@ -148,6 +148,15 @@
     "downstream_blocked": true,
     "character_director_outcome": "request_workflow_change",
     "workflow_td_outcome": "request_reference_rebuild",
-    "evaluated_at": "2026-04-28T13:32:41.795865Z"
+    "evaluated_at": "2026-04-28T13:42:12.846051Z"
+  },
+  "decision_change_requests": {
+    "status": "created",
+    "change_requests_created": 2,
+    "outcome_status": "changes_requested",
+    "ready_for_apply": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "downstream_blocked": true
   }
 }
