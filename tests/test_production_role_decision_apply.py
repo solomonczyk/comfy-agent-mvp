@@ -321,14 +321,23 @@ class TestProductionRoleDecisionApply:
             temp_decisions = Path(temp_dir) / "decisions"
             temp_decisions.mkdir()
             
-            # Copy only Character Director decision
-            shutil.copy(
-                fixture_root / "character_director_identity_decision.approved.json",
-                temp_decisions / "character_director_identity_decision.json"
-            )
+            # Copy and modify Character Director decision to remove fixture_only and add source metadata
+            char_fixture = fixture_root / "character_director_identity_decision.approved.json"
+            with open(char_fixture, 'r') as f:
+                char_decision = json.load(f)
+            del char_decision["fixture_only"]
+            char_decision["decision_source"] = "real_role_decision"
+            char_decision["approved_for_project_id"] = "rc2_multishot1_ep01"
+            char_decision["approved_for_shot"] = "shot01"
+            char_decision["approved_by_role"] = "Character Director"
             
-            # Run apply
-            result = apply_role_decisions(str(real_project_root), str(temp_decisions), dry_run=False)
+            with open(temp_decisions / "character_director_identity_decision.json", 'w') as f:
+                json.dump(char_decision, f)
+            
+            # Run apply on temp project copy (to avoid fixture rejection on real project)
+            temp_project = Path(temp_dir) / "temp_project"
+            shutil.copytree(real_project_root, temp_project)
+            result = apply_role_decisions(str(temp_project), str(temp_decisions), dry_run=False)
             
             assert result["status"] == "blocked", "Missing decision should block apply"
             assert result["can_apply"] is False, "Should not be able to apply"
@@ -343,7 +352,7 @@ class TestProductionRoleDecisionApply:
             temp_decisions = Path(temp_dir) / "decisions"
             temp_decisions.mkdir()
             
-            # Copy and modify Character Director decision to remove artifacts
+            # Copy and modify Character Director decision to remove artifacts and fixture_only
             char_decision_path = temp_decisions / "character_director_identity_decision.json"
             shutil.copy(fixture_root / "character_director_identity_decision.approved.json", char_decision_path)
             
@@ -351,18 +360,32 @@ class TestProductionRoleDecisionApply:
                 decision = json.load(f)
             
             decision["required_artifacts"] = {}
+            del decision["fixture_only"]
+            decision["decision_source"] = "real_role_decision"
+            decision["approved_for_project_id"] = "rc2_multishot1_ep01"
+            decision["approved_for_shot"] = "shot01"
+            decision["approved_by_role"] = "Character Director"
             
             with open(char_decision_path, 'w') as f:
                 json.dump(decision, f)
             
-            # Copy Workflow TD decision
-            shutil.copy(
-                fixture_root / "workflow_td_identity_workflow_decision.approved.json",
-                temp_decisions / "workflow_td_identity_workflow_decision.json"
-            )
+            # Copy and modify Workflow TD decision
+            workflow_fixture = fixture_root / "workflow_td_identity_workflow_decision.approved.json"
+            with open(workflow_fixture, 'r') as f:
+                workflow_decision = json.load(f)
+            del workflow_decision["fixture_only"]
+            workflow_decision["decision_source"] = "real_role_decision"
+            workflow_decision["approved_for_project_id"] = "rc2_multishot1_ep01"
+            workflow_decision["approved_for_shot"] = "shot01"
+            workflow_decision["approved_by_role"] = "Workflow TD / ComfyUI Technical Director"
             
-            # Run apply
-            result = apply_role_decisions(str(real_project_root), str(temp_decisions), dry_run=False)
+            with open(temp_decisions / "workflow_td_identity_workflow_decision.json", 'w') as f:
+                json.dump(workflow_decision, f)
+            
+            # Run apply on temp project copy (to avoid fixture rejection on real project)
+            temp_project = Path(temp_dir) / "temp_project"
+            shutil.copytree(real_project_root, temp_project)
+            result = apply_role_decisions(str(temp_project), str(temp_decisions), dry_run=False)
             
             assert result["status"] == "blocked", "Incomplete artifacts should block apply"
             assert result["can_apply"] is False, "Should not be able to apply"

@@ -25,7 +25,7 @@ def load_intake_decisions(decisions_root: str) -> Dict[str, Any]:
     Returns:
         Dictionary with character_director_decision and workflow_td_decision
     """
-    decisions_dir = Path(decisions_root)
+    decisions_dir = Path(decisions_root).resolve()
     
     character_director_decision = {}
     workflow_td_decision = {}

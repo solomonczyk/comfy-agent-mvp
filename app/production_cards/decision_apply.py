@@ -20,13 +20,77 @@ from app.production_cards.approval_gate import (
 )
 
 
-def validate_before_apply(project_root: str, decisions_root: str) -> Dict[str, Any]:
+def validate_decision_source(decision: Dict[str, Any], role_name: str, project_root: str, blocked_shot: str) -> List[str]:
+    """
+    Validate decision source metadata for real project apply.
+    
+    Returns list of error strings. Empty list means valid.
+    """
+    errors = []
+    
+    # Reject fixture-only decisions for real project apply
+    if decision.get("fixture_only") is True:
+        errors.append(f"{role_name}: fixture_only=true cannot be applied to real project")
+        return errors
+    
+    # Check decision_source
+    decision_source = decision.get("decision_source")
+    if decision_source is None:
+        errors.append(f"{role_name}: missing decision_source")
+    elif decision_source != "real_role_decision":
+        errors.append(f"{role_name}: decision_source must be 'real_role_decision', got '{decision_source}'")
+    
+    # Check approved_for_project_id matches project
+    approved_for_project_id = decision.get("approved_for_project_id")
+    if approved_for_project_id is None:
+        errors.append(f"{role_name}: missing approved_for_project_id")
+    else:
+        project_path = Path(project_root)
+        # Extract project_id from project path (last directory name or explicit project_id file)
+        project_id = project_path.name
+        # Also check for project_id in project metadata if available
+        project_profile = project_path / "project_profile.json"
+        if project_profile.exists():
+            try:
+                with open(project_profile, 'r') as f:
+                    profile = json.load(f)
+                project_id = profile.get("project_id", project_id)
+            except (json.JSONDecodeError, IOError):
+                pass
+        if approved_for_project_id != project_id:
+            errors.append(f"{role_name}: approved_for_project_id '{approved_for_project_id}' does not match project '{project_id}'")
+    
+    # Check approved_for_shot matches blocked shot
+    approved_for_shot = decision.get("approved_for_shot")
+    if approved_for_shot is None:
+        errors.append(f"{role_name}: missing approved_for_shot")
+    elif approved_for_shot != blocked_shot:
+        errors.append(f"{role_name}: approved_for_shot '{approved_for_shot}' does not match blocked shot '{blocked_shot}'")
+    
+    # Check approved_by_role matches expected role
+    approved_by_role = decision.get("approved_by_role")
+    expected_role = decision.get("role")
+    if approved_by_role is None:
+        errors.append(f"{role_name}: missing approved_by_role")
+    elif approved_by_role != expected_role:
+        errors.append(f"{role_name}: approved_by_role '{approved_by_role}' does not match expected role '{expected_role}'")
+    
+    # Reject if production_accepted=true inside decision file
+    if decision.get("production_accepted") is True:
+        errors.append(f"{role_name}: production_accepted=true is not allowed inside decision file")
+    
+    return errors
+
+
+def validate_before_apply(project_root: str, decisions_root: str, dry_run: bool = True, is_temp_copy: bool = False) -> Dict[str, Any]:
     """
     Validate decisions before applying them.
     
     Args:
         project_root: Path to the project root
         decisions_root: Path to directory containing intake decision files
+        dry_run: Whether this is dry-run mode
+        is_temp_copy: Whether project_root is a temp copy (allows fixture apply for testing)
     
     Returns:
         Dictionary with validation results
@@ -48,6 +112,7 @@ def validate_before_apply(project_root: str, decisions_root: str) -> Dict[str, A
     # Determine overall validity
     errors = []
     missing_decisions = []
+    blocked_decision_files = []
     
     # Check for missing decisions
     if not intake_decisions.get("character_director_decision"):
@@ -76,6 +141,26 @@ def validate_before_apply(project_root: str, decisions_root: str) -> Dict[str, A
     if workflow_evaluation.get("reason") != "approved":
         errors.append(f"Workflow TD decision not approved: {workflow_evaluation.get('reason')}")
     
+    # Decision source validation: only for real apply (not dry-run, not temp copy)
+    if not dry_run and not is_temp_copy:
+        char_decision = intake_decisions.get("character_director_decision", {})
+        workflow_decision = intake_decisions.get("workflow_td_decision", {})
+        
+        # Determine blocked shot from decisions
+        blocked_shot = char_decision.get("blocked_shot") or workflow_decision.get("blocked_shot") or "shot01"
+        
+        char_source_errors = validate_decision_source(char_decision, "Character Director", project_root, blocked_shot)
+        workflow_source_errors = validate_decision_source(workflow_decision, "Workflow TD", project_root, blocked_shot)
+        
+        errors.extend(char_source_errors)
+        errors.extend(workflow_source_errors)
+        
+        # Track blocked decision files for CLI output
+        if char_source_errors:
+            blocked_decision_files.append("character_director_identity_decision.json")
+        if workflow_source_errors:
+            blocked_decision_files.append("workflow_td_identity_workflow_decision.json")
+    
     # Determine status
     if errors or missing_decisions:
         status = "invalid"
@@ -89,6 +174,7 @@ def validate_before_apply(project_root: str, decisions_root: str) -> Dict[str, A
         "can_apply": can_apply,
         "missing_decisions": missing_decisions,
         "errors": errors,
+        "blocked_decision_files": blocked_decision_files,
         "artifact_verification": artifact_verification,
         "character_director_evaluation": char_evaluation,
         "workflow_td_evaluation": workflow_evaluation
@@ -242,11 +328,44 @@ def apply_role_decisions(project_root: str, decisions_root: str, dry_run: bool =
     Returns:
         Dictionary with apply results
     """
-    # Validate before apply
-    validation = validate_before_apply(project_root, decisions_root)
+    # Detect temp copy: if project_root is inside a temp directory or contains temp indicator
+    import os
+    import tempfile
+    project_path = Path(project_root).resolve()
+    temp_dirs = [tempfile.gettempdir()]
+    if os.environ.get("TMPDIR"):
+        temp_dirs.append(os.environ.get("TMPDIR"))
+    if os.environ.get("TEMP"):
+        temp_dirs.append(os.environ.get("TEMP"))
+    is_temp_copy = any(str(project_path).startswith(str(Path(td).resolve())) for td in temp_dirs if td)
     
-    # If validation fails, return error result
+    # Also detect explicit test markers
+    if os.environ.get("COMFY_AGENT_TEMP_APPLY") == "1":
+        is_temp_copy = True
+    
+    # Validate before apply
+    validation = validate_before_apply(project_root, decisions_root, dry_run=dry_run, is_temp_copy=is_temp_copy)
+    
+    # If validation fails, return error result with proper status
     if not validation["can_apply"]:
+        # Determine if this is a fixture rejection on real project apply
+        has_fixture_rejection = any("fixture_only=true" in err for err in validation["errors"])
+        if has_fixture_rejection and not dry_run and not is_temp_copy:
+            return {
+                "status": "rejected",
+                "reason": "fixture_decisions_cannot_be_applied_to_real_project",
+                "dry_run": False,
+                "applied_decisions": 0,
+                "can_retry_generation": False,
+                "production_accepted": False,
+                "downstream_unblocked_for": [],
+                "backup_created": False,
+                "real_project_mutated": False,
+                "blocked_decision_files": validation["blocked_decision_files"],
+                "validation_errors": validation["errors"],
+                "missing_decisions": validation["missing_decisions"]
+            }
+        
         return {
             "status": "blocked",
             "dry_run": dry_run,
@@ -258,6 +377,7 @@ def apply_role_decisions(project_root: str, decisions_root: str, dry_run: bool =
             "downstream_unblocked_for": [],
             "backup_created": False,
             "real_project_mutated": False,
+            "blocked_decision_files": validation["blocked_decision_files"],
             "validation_errors": validation["errors"],
             "missing_decisions": validation["missing_decisions"]
         }

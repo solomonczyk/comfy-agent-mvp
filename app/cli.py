@@ -5663,26 +5663,35 @@ def apply_role_decisions(args: argparse.Namespace) -> int:
     if json_output:
         print(json.dumps(result, indent=2))
     else:
-        if dry_run:
-            print(f"Apply Status: {result['status'].upper()}")
-            print(f"Dry Run: {result['dry_run']}")
-            print(f"Would Apply Decisions: {result['would_apply_decisions']}")
-            print(f"Would Allow Retry Generation: {result['would_allow_retry_generation']}")
-            print(f"Next Allowed Action If Applied: {result['next_allowed_action_if_applied']}")
-            print(f"Production Accepted After Apply: {result['production_accepted_after_apply']}")
-            print(f"Real Project Mutated: {result['real_project_mutated']}")
-        else:
-            print(f"Apply Status: {result['status'].upper()}")
-            print(f"Dry Run: {result['dry_run']}")
-            print(f"Applied Decisions: {result['applied_decisions']}")
-            print(f"Can Retry Generation: {result['can_retry_generation']}")
-            print(f"Next Allowed Action: {result['next_allowed_action']}")
-            print(f"Production Accepted: {result['production_accepted']}")
-            print(f"Downstream Unblocked For: {result['downstream_unblocked_for']}")
-            print(f"Backup Created: {result['backup_created']}")
-            print(f"Real Project Mutated: {result['real_project_mutated']}")
+        print(f"Apply Status: {result['status'].upper()}")
+        print(f"Dry Run: {result['dry_run']}")
+        
+        if result['status'] == 'valid' and dry_run:
+            print(f"Would Apply Decisions: {result.get('would_apply_decisions', 'N/A')}")
+            print(f"Would Allow Retry Generation: {result.get('would_allow_retry_generation', 'N/A')}")
+            print(f"Next Allowed Action If Applied: {result.get('next_allowed_action_if_applied', 'N/A')}")
+            print(f"Production Accepted After Apply: {result.get('production_accepted_after_apply', 'N/A')}")
+        elif result['status'] == 'applied':
+            print(f"Applied Decisions: {result.get('applied_decisions', 0)}")
+            print(f"Can Retry Generation: {result.get('can_retry_generation', False)}")
+            print(f"Next Allowed Action: {result.get('next_allowed_action', 'N/A')}")
+            print(f"Production Accepted: {result.get('production_accepted', False)}")
+            print(f"Downstream Unblocked For: {result.get('downstream_unblocked_for', [])}")
+            print(f"Backup Created: {result.get('backup_created', False)}")
             if 'backup_path' in result:
                 print(f"Backup Path: {result['backup_path']}")
+        else:
+            print(f"Applied Decisions: {result.get('applied_decisions', 0)}")
+            print(f"Can Retry Generation: {result.get('can_retry_generation', False)}")
+        
+        print(f"Real Project Mutated: {result.get('real_project_mutated', False)}")
+        
+        if result.get('status') == 'rejected':
+            print(f"\nNo apply performed. Reason: {result.get('reason', 'unknown')}")
+            if result.get('blocked_decision_files'):
+                print("Blocked decision files:")
+                for f in result['blocked_decision_files']:
+                    print(f"  - {f}")
         
         if 'validation_errors' in result and result['validation_errors']:
             print("\nValidation Errors:")
