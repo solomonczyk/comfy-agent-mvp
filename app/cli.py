@@ -671,6 +671,32 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2E — Create role decision templates subcommand
+    create_role_decision_templates_parser = subparsers.add_parser("create-role-decision-templates", help="Create pending role decision templates for Character Director and Workflow TD")
+    create_role_decision_templates_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing cards",
+    )
+    create_role_decision_templates_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2E — Validate role decisions subcommand
+    validate_role_decisions_parser = subparsers.add_parser("validate-role-decisions", help="Validate role decision status and determine if downstream can proceed")
+    validate_role_decisions_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing role decisions",
+    )
+    validate_role_decisions_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -719,6 +745,10 @@ def main() -> int:
         return materialize_production_cards(args)
     elif args.command == "create-production-work-orders":
         return create_production_work_orders(args)
+    elif args.command == "create-role-decision-templates":
+        return create_role_decision_templates(args)
+    elif args.command == "validate-role-decisions":
+        return validate_role_decisions(args)
     else:
         parser.print_help()
         return 1
@@ -5412,6 +5442,79 @@ def create_production_work_orders(args: argparse.Namespace) -> int:
                 print(f"    Required Output: {wo['required_output']}")
     
     return 0 if result["status"] == "completed" else 1
+
+
+def create_role_decision_templates(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2E — Create pending role decision templates for Character Director and Workflow TD.
+    
+    This command creates formal role decision artifacts for Character Director and Workflow TD
+    work orders when identity QA fails and production is blocked.
+    
+    Exit codes:
+    - 0: decision templates created successfully
+    - 1: decision template creation failed or invalid args
+    """
+    from app.production_cards.role_decisions import create_pending_role_decisions
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_pending_role_decisions(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Decision Templates Status: {result['status'].upper()}")
+        print(f"Project Root: {result['project_root']}")
+        print(f"Decision Templates Created: {result['decision_templates_created']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        
+        if result["decision_templates"]:
+            print("\nDecision Templates Created:")
+            for dt in result["decision_templates"]:
+                print(f"  - Role: {dt['role']}")
+                print(f"    Path: {dt['decision_path']}")
+                print(f"    Decision Status: {dt['decision_status']}")
+    
+    return 0 if result["status"] == "completed" else 1
+
+
+def validate_role_decisions(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2E — Validate role decision status and determine if downstream can proceed.
+    
+    This command validates role decision templates and determines if downstream
+    production can proceed based on decision status.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.role_decisions import validate_role_decisions as validate_decisions
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_decisions(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Decision Ready: {result['decision_ready']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        
+        if result["pending_roles"]:
+            print("\nPending Roles:")
+            for role in result["pending_roles"]:
+                print(f"  - {role}")
+        
+        if result["missing_approvals"]:
+            print("\nMissing Approvals:")
+            for approval in result["missing_approvals"]:
+                print(f"  - {approval}")
+    
+    return 0 if result["status"] in ["ready", "blocked"] else 1
 
 
 if __name__ == "__main__":
