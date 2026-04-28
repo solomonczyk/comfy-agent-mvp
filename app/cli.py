@@ -709,6 +709,10 @@ def main() -> int:
         action="store_true",
         help="Output as JSON",
     )
+    validate_role_approval_gate_parser.add_argument(
+        "--decisions-root",
+        help="Optional custom path to load decisions from (for fixture validation)",
+    )
 
     args = parser.parse_args()
 
@@ -5546,8 +5550,9 @@ def validate_role_approval_gate(args: argparse.Namespace) -> int:
     
     project_root = args.project_root
     json_output = args.json
+    decisions_root = getattr(args, "decisions_root", None)
     
-    result = validate_gate(project_root, json_output=True)
+    result = validate_gate(project_root, json_output=True, decisions_root=decisions_root)
     
     if json_output:
         print(json.dumps(result, indent=2))

@@ -1,0 +1,28 @@
+{
+  "role": "Workflow TD / ComfyUI Technical Director",
+  "work_order": "workflow_td_identity_workflow_review",
+  "blocked_shot": "shot01",
+  "decision_status": "decided",
+  "selected_decision": "approve_workflow",
+  "current_required_generation_mode": "gorynych_identity",
+  "legacy_reference_locked_allowed_for_production": false,
+  "allowed_decisions": [
+    "approve_workflow",
+    "reject_workflow",
+    "request_missing_nodes",
+    "request_missing_models",
+    "request_reference_rebuild"
+  ],
+  "required_artifacts": {
+    "workflow_audit": "Audit of the current identity workflow configuration",
+    "required_nodes": "List of required nodes for identity consistency",
+    "required_models": "List of required models for character identity",
+    "preflight_result": "Preflight validation result for the workflow",
+    "output_collection_contract": "Contract for collecting workflow outputs"
+  },
+  "downstream_blocked": false,
+  "production_accepted": false,
+  "next_allowed_action": "retry_generate_frames",
+  "fixture_only": true,
+  "created_at": "2026-04-28T12:00:00.000000Z"
+}

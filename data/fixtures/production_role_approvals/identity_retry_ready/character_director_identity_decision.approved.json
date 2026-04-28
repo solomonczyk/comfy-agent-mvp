@@ -1,0 +1,26 @@
+{
+  "role": "Character Director",
+  "work_order": "character_director_identity_review",
+  "blocked_shot": "shot01",
+  "character_name": "Alya",
+  "display_name": "Alya",
+  "reference_character": "Alya",
+  "decision_status": "decided",
+  "selected_decision": "approve",
+  "allowed_decisions": [
+    "approve",
+    "reject",
+    "request_new_reference",
+    "request_workflow_change"
+  ],
+  "required_artifacts": {
+    "approved_character_identity_rules": "Character identity consistency rules for the project",
+    "approved_reference_strategy": "Strategy for character reference across shots",
+    "identity_acceptance_criteria": "Criteria for accepting character identity as valid"
+  },
+  "downstream_blocked": false,
+  "production_accepted": false,
+  "next_allowed_action": "retry_generate_frames",
+  "fixture_only": true,
+  "created_at": "2026-04-28T12:00:00.000000Z"
+}

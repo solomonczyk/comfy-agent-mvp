@@ -10,19 +10,41 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 
 
-def load_role_decisions(project_root: str) -> Dict[str, Any]:
-    """Load role decision templates from project."""
-    role_decisions_dir = Path(project_root) / "output" / "control" / "role_decisions"
+def load_role_decisions(project_root: str, decisions_root: Optional[str] = None) -> Dict[str, Any]:
+    """
+    Load role decision templates from project or custom decisions root.
+    
+    Args:
+        project_root: Path to the project root
+        decisions_root: Optional custom path to load decisions from (for fixture validation)
+    
+    Returns:
+        Dictionary with character_director_decision and workflow_td_decision
+    """
+    if decisions_root:
+        role_decisions_dir = Path(decisions_root)
+    else:
+        role_decisions_dir = Path(project_root) / "output" / "control" / "role_decisions"
     
     character_director_decision = {}
     workflow_td_decision = {}
     
+    # Look for character director decision
     char_decision_path = role_decisions_dir / "character_director_identity_decision.json"
+    if not char_decision_path.exists():
+        # Try with .approved.json suffix for fixtures
+        char_decision_path = role_decisions_dir / "character_director_identity_decision.approved.json"
+    
     if char_decision_path.exists():
         with open(char_decision_path, 'r') as f:
             character_director_decision = json.load(f)
     
+    # Look for workflow TD decision
     workflow_decision_path = role_decisions_dir / "workflow_td_identity_workflow_decision.json"
+    if not workflow_decision_path.exists():
+        # Try with .approved.json suffix for fixtures
+        workflow_decision_path = role_decisions_dir / "workflow_td_identity_workflow_decision.approved.json"
+    
     if workflow_decision_path.exists():
         with open(workflow_decision_path, 'r') as f:
             workflow_td_decision = json.load(f)
@@ -210,19 +232,20 @@ def evaluate_workflow_td_decision(decision: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def validate_role_approval_gate(project_root: str, json_output: bool = False) -> Dict[str, Any]:
+def validate_role_approval_gate(project_root: str, json_output: bool = False, decisions_root: Optional[str] = None) -> Dict[str, Any]:
     """
     Validate role approval gate to determine if blocked shot may retry generation.
     
     Args:
         project_root: Path to the project root
         json_output: Whether to return JSON-compatible output
+        decisions_root: Optional custom path to load decisions from (for fixture validation)
     
     Returns:
         Dictionary with gate validation results
     """
     # Load role decisions
-    decisions = load_role_decisions(project_root)
+    decisions = load_role_decisions(project_root, decisions_root)
     
     char_decision = decisions.get("character_director_decision", {})
     workflow_decision = decisions.get("workflow_td_decision", {})
@@ -272,5 +295,9 @@ def validate_role_approval_gate(project_root: str, json_output: bool = False) ->
         "character_director_evaluation": char_evaluation,
         "workflow_td_evaluation": workflow_evaluation
     }
+    
+    # Add fixture_mode flag if using custom decisions_root
+    if decisions_root:
+        result["fixture_mode"] = True
     
     return result
