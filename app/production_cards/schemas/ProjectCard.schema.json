@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ProjectCard",
+  "description": "Top-level container for an entire creative work. Defines project scope, goals, and delivery targets.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "card_type",
+    "project_id",
+    "owner_role",
+    "status",
+    "version",
+    "required_inputs",
+    "references",
+    "constraints",
+    "allowed_variations",
+    "forbidden_drift",
+    "dependencies",
+    "approval_required_by",
+    "next_action_if_missing",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "description": "Unique identifier for this card"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "ProjectCard",
+      "description": "Card type identifier"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project identifier (same as card_id for ProjectCard)"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": ["Executive Producer / Product Owner"],
+      "description": "Role that owns this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "needs_references", "needs_role_work", "ready_for_review", "approved", "blocked", "deprecated"],
+      "description": "Current status of the card"
+    },
+    "version": {
+      "type": "string",
+      "description": "Card version"
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "description": {"type": "string"},
+        "executive_producer": {"type": "string"},
+        "target_deliverables": {"type": "array", "items": {"type": "string"}},
+        "timeline": {"type": "object"}
+      },
+      "required": ["title", "description", "executive_producer", "target_deliverables"]
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "References to other cards (empty for ProjectCard as it's the root)"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "budget": {"type": "object"},
+        "timeline": {"type": "object"},
+        "resource_limits": {"type": "object"}
+      }
+    },
+    "allowed_variations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Allowed variations within this card type"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Changes that are not allowed once approved"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Dependencies on other cards (empty for ProjectCard)"
+    },
+    "approval_required_by": {
+      "type": "string",
+      "enum": ["Executive Producer / Product Owner"],
+      "description": "Role required to approve this card"
+    },
+    "next_action_if_missing": {
+      "type": "string",
+      "description": "Action to take if this card is missing"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was last updated"
+    },
+    "title": {
+      "type": "string",
+      "description": "Project name"
+    },
+    "description": {
+      "type": "string",
+      "description": "Project overview"
+    },
+    "executive_producer": {
+      "type": "string",
+      "description": "Executive producer name or ID"
+    },
+    "target_deliverables": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of expected outputs"
+    },
+    "timeline": {
+      "type": "object",
+      "description": "Production schedule"
+    },
+    "episode_references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of EpisodeCard IDs"
+    }
+  }
+}

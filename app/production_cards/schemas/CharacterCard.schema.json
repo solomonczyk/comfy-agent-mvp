@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "CharacterCard",
+  "description": "Defines character appearance, personality, and identity consistency requirements.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "card_type",
+    "project_id",
+    "owner_role",
+    "status",
+    "version",
+    "required_inputs",
+    "references",
+    "constraints",
+    "allowed_variations",
+    "forbidden_drift",
+    "dependencies",
+    "approval_required_by",
+    "next_action_if_missing",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "description": "Unique identifier for this card"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "CharacterCard",
+      "description": "Card type identifier"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project identifier"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": ["Character Director"],
+      "description": "Role that owns this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "needs_references", "needs_role_work", "ready_for_review", "approved", "blocked", "deprecated"],
+      "description": "Current status of the card"
+    },
+    "version": {
+      "type": "string",
+      "description": "Card version"
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "visual_reference_paths": {"type": "array", "items": {"type": "string"}},
+        "physical_description": {"type": "string"},
+        "identity_mode": {"type": "string"}
+      },
+      "required": ["name", "visual_reference_paths", "physical_description", "identity_mode"]
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "References to VoiceCard (optional), WardrobeCard"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "min_references": {"type": "integer"},
+        "identity_consistency_required": {"type": "boolean"}
+      }
+    },
+    "allowed_variations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Allowed variations within this card type"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Changes that are not allowed once approved"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "No dependencies (asset-level card)"
+    },
+    "approval_required_by": {
+      "type": "string",
+      "enum": ["Character Director"],
+      "description": "Role required to approve this card"
+    },
+    "next_action_if_missing": {
+      "type": "string",
+      "description": "Action to take if this card is missing"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was last updated"
+    },
+    "name": {
+      "type": "string",
+      "description": "Character name"
+    },
+    "character_director": {
+      "type": "string",
+      "description": "Character director name or ID"
+    },
+    "visual_reference_paths": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of reference image paths"
+    },
+    "physical_description": {
+      "type": "string",
+      "description": "Appearance details"
+    },
+    "personality_traits": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Character behavior notes"
+    },
+    "voice_profile": {
+      "type": "string",
+      "description": "VoiceCard ID (optional)"
+    },
+    "wardrobe_references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of WardrobeCard IDs"
+    },
+    "identity_mode": {
+      "type": "string",
+      "enum": ["gorynych_identity", "reference_locked"],
+      "description": "Identity consistency mode"
+    },
+    "identity_consistency_requirements": {
+      "type": "object",
+      "description": "Multi-shot consistency rules"
+    }
+  }
+}

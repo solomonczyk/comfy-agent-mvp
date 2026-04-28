@@ -1,0 +1,134 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QARequirementCard",
+  "description": "Defines quality assurance criteria, thresholds, and validation rules for generated artifacts.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "card_type",
+    "project_id",
+    "owner_role",
+    "status",
+    "version",
+    "required_inputs",
+    "references",
+    "constraints",
+    "allowed_variations",
+    "forbidden_drift",
+    "dependencies",
+    "approval_required_by",
+    "next_action_if_missing",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "description": "Unique identifier for this card"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "QARequirementCard",
+      "description": "Card type identifier"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project identifier"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": ["Editor / Final QA Supervisor"],
+      "description": "Role that owns this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "needs_references", "needs_role_work", "ready_for_review", "approved", "blocked", "deprecated"],
+      "description": "Current status of the card"
+    },
+    "version": {
+      "type": "string",
+      "description": "Card version"
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "target_artifact_type": {"type": "string"},
+        "quality_thresholds": {"type": "object"},
+        "validation_rules": {"type": "array", "items": {"type": "object"}}
+      },
+      "required": ["target_artifact_type", "quality_thresholds", "validation_rules"]
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "No references (quality specification)"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "min_thresholds": {"type": "object"}
+      }
+    },
+    "allowed_variations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Allowed variations within this card type"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Changes that are not allowed once approved"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "No dependencies (quality specification)"
+    },
+    "approval_required_by": {
+      "type": "string",
+      "enum": ["Editor / Final QA Supervisor"],
+      "description": "Role required to approve this card"
+    },
+    "next_action_if_missing": {
+      "type": "string",
+      "description": "Action to take if this card is missing"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was last updated"
+    },
+    "qa_supervisor": {
+      "type": "string",
+      "description": "QA supervisor name or ID"
+    },
+    "target_artifact_type": {
+      "type": "string",
+      "enum": ["Frame", "Audio", "Video"],
+      "description": "Frame, audio, or video"
+    },
+    "quality_thresholds": {
+      "type": "object",
+      "description": "Minimum acceptable metrics"
+    },
+    "validation_rules": {
+      "type": "array",
+      "items": {"type": "object"},
+      "description": "Specific checks to perform"
+    },
+    "failure_criteria": {
+      "type": "object",
+      "description": "What constitutes failure"
+    },
+    "remediation_actions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "How to handle failures"
+    }
+  }
+}

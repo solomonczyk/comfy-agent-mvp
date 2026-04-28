@@ -1,0 +1,148 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ReleasePackageCard",
+  "description": "Assembles final deliverables for distribution. Defines release contents, formats, and metadata.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "card_type",
+    "project_id",
+    "owner_role",
+    "status",
+    "version",
+    "required_inputs",
+    "references",
+    "constraints",
+    "allowed_variations",
+    "forbidden_drift",
+    "dependencies",
+    "approval_required_by",
+    "next_action_if_missing",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "description": "Unique identifier for this card"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "ReleasePackageCard",
+      "description": "Card type identifier"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project identifier"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": ["Executive Producer / Release Manager"],
+      "description": "Role that owns this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "needs_references", "needs_role_work", "ready_for_review", "approved", "blocked", "deprecated"],
+      "description": "Current status of the card"
+    },
+    "version": {
+      "type": "string",
+      "description": "Card version"
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "release_version": {"type": "string"},
+        "contents": {"type": "array", "items": {"type": "string"}},
+        "formats": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["name", "release_version", "contents", "formats"]
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "References to ProjectCard, generated artifacts"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "max_size": {"type": "number"},
+        "required_formats": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "allowed_variations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Allowed variations within this card type"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Changes that are not allowed once approved"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Dependencies on ProjectCard, all generation complete, all QA passed"
+    },
+    "approval_required_by": {
+      "type": "string",
+      "enum": ["Executive Producer / Release Manager"],
+      "description": "Role required to approve this card"
+    },
+    "next_action_if_missing": {
+      "type": "string",
+      "description": "Action to take if this card is missing"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was last updated"
+    },
+    "project_reference": {
+      "type": "string",
+      "description": "ProjectCard ID"
+    },
+    "episode_reference": {
+      "type": "string",
+      "description": "EpisodeCard ID (optional)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Release name"
+    },
+    "release_manager": {
+      "type": "string",
+      "description": "Release manager name or ID"
+    },
+    "release_version": {
+      "type": "string",
+      "description": "Semantic version"
+    },
+    "contents": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of artifact references"
+    },
+    "formats": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Output formats (MP4, PNG, etc.)"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Release metadata"
+    },
+    "distribution_targets": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Where to publish"
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "card_id": "workflow_identity_template_001",
+  "card_type": "WorkflowRecipeCard",
+  "project_id": "project_template_001",
+  "owner_role": "Workflow TD / ComfyUI Technical Director",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "name": "Identity Consistency Workflow",
+    "workflow_graph": {},
+    "input_mappings": {
+      "character_reference": "character_protagonist_001",
+      "prompt": "action_description"
+    },
+    "output_mappings": {
+      "frames": "output/frames",
+      "control_data": "output/control"
+    }
+  },
+  "references": [],
+  "constraints": {
+    "max_generation_time": 30,
+    "min_gpu_memory": 8
+  },
+  "allowed_variations": ["identity_consistency", "style_transfer", "img2img"],
+  "forbidden_drift": ["cannot_change_workflow_graph_without_review"],
+  "dependencies": [],
+  "approval_required_by": "Workflow TD / ComfyUI Technical Director",
+  "next_action_if_missing": "Create WorkflowRecipeCard to define generation pipeline",
+  "created_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:00:00Z",
+  "name": "Identity Consistency Workflow",
+  "workflow_td": "Workflow TD Name",
+  "workflow_graph": {},
+  "node_parameters": {},
+  "resource_requirements": {
+    "gpu_memory_gb": 8,
+    "vram_gb": 12
+  },
+  "estimated_generation_time": 5
+}

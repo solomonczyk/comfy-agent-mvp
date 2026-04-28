@@ -1,0 +1,135 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "ScenarioCard",
+  "description": "Narrative segment within an episode. Defines specific story beat, location, and involved characters.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "card_type",
+    "project_id",
+    "owner_role",
+    "status",
+    "version",
+    "required_inputs",
+    "references",
+    "constraints",
+    "allowed_variations",
+    "forbidden_drift",
+    "dependencies",
+    "approval_required_by",
+    "next_action_if_missing",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "description": "Unique identifier for this card"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "ScenarioCard",
+      "description": "Card type identifier"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project identifier"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": ["Screenwriter / Script Agent"],
+      "description": "Role that owns this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "needs_references", "needs_role_work", "ready_for_review", "approved", "blocked", "deprecated"],
+      "description": "Current status of the card"
+    },
+    "version": {
+      "type": "string",
+      "description": "Card version"
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "narrative_beat": {"type": "string"},
+        "location_description": {"type": "string"},
+        "involved_characters": {"type": "array", "items": {"type": "string"}}
+      },
+      "required": ["title", "narrative_beat", "location_description", "involved_characters"]
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "References to EpisodeCard, EnvironmentCard"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "min_shots": {"type": "integer"},
+        "max_shots": {"type": "integer"}
+      }
+    },
+    "allowed_variations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Allowed variations within this card type"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Changes that are not allowed once approved"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Dependencies on EpisodeCard, EnvironmentCard"
+    },
+    "approval_required_by": {
+      "type": "string",
+      "enum": ["Screenwriter / Script Agent"],
+      "description": "Role required to approve this card"
+    },
+    "next_action_if_missing": {
+      "type": "string",
+      "description": "Action to take if this card is missing"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was last updated"
+    },
+    "title": {
+      "type": "string",
+      "description": "Scenario name"
+    },
+    "narrative_beat": {
+      "type": "string",
+      "description": "Story function"
+    },
+    "location_description": {
+      "type": "string",
+      "description": "Setting description"
+    },
+    "involved_characters": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of CharacterCard IDs"
+    },
+    "shot_references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of ShotCard IDs"
+    },
+    "environment_reference": {
+      "type": "string",
+      "description": "EnvironmentCard ID"
+    }
+  }
+}

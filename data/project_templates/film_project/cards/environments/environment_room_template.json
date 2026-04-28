@@ -1,0 +1,31 @@
+{
+  "card_id": "environment_room_template_001",
+  "card_type": "EnvironmentCard",
+  "project_id": "project_template_001",
+  "owner_role": "Environment / Art Director",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "name": "Village Square",
+    "visual_reference_paths": ["data/references/village_square_day.jpg"],
+    "description": "A cobblestone village square with a central fountain and surrounding buildings"
+  },
+  "references": [],
+  "constraints": {
+    "min_references": 1
+  },
+  "allowed_variations": ["interior", "exterior", "mixed"],
+  "forbidden_drift": ["cannot_change_location_after_approval"],
+  "dependencies": [],
+  "approval_required_by": "Environment / Art Director",
+  "next_action_if_missing": "Create EnvironmentCard to define location",
+  "created_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:00:00Z",
+  "name": "Village Square",
+  "art_director": "Art Director Name",
+  "visual_reference_paths": ["data/references/village_square_day.jpg"],
+  "description": "A cobblestone village square with a central fountain and surrounding buildings",
+  "time_of_day": "dawn",
+  "weather_conditions": "clear",
+  "prop_references": []
+}

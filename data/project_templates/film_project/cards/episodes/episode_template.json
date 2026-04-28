@@ -1,0 +1,35 @@
+{
+  "card_id": "episode_template_001",
+  "card_type": "EpisodeCard",
+  "project_id": "project_template_001",
+  "owner_role": "Director / Orchestrator",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "title": "Episode 1: The Beginning",
+    "episode_number": 1,
+    "director": "Director Name",
+    "synopsis": "The hero begins their journey",
+    "character_roster": ["character_protagonist_001"],
+    "target_duration": 1800
+  },
+  "references": ["project_template_001"],
+  "constraints": {
+    "min_shots": 10,
+    "max_duration": 3600
+  },
+  "allowed_variations": ["pilot", "regular", "finale"],
+  "forbidden_drift": ["cannot_change_episode_number_after_approval"],
+  "dependencies": ["project_template_001"],
+  "approval_required_by": "Director / Orchestrator",
+  "next_action_if_missing": "Create EpisodeCard to define episode structure",
+  "created_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:00:00Z",
+  "title": "Episode 1: The Beginning",
+  "episode_number": 1,
+  "director": "Director Name",
+  "synopsis": "The hero begins their journey",
+  "character_roster": ["character_protagonist_001"],
+  "scenario_references": [],
+  "target_duration": 1800
+}

@@ -1,0 +1,39 @@
+{
+  "card_id": "lighting_soft_day_template_001",
+  "card_type": "LightingCard",
+  "project_id": "project_template_001",
+  "owner_role": "Cinematographer / Camera + Lighting Director",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "name": "Soft Daylight",
+    "mood": "hopeful",
+    "light_sources": [
+      {"type": "sun", "position": "45_degrees", "intensity": "high"},
+      {"type": "ambient", "position": "fill", "intensity": "medium"}
+    ],
+    "color_temperature": 5500
+  },
+  "references": [],
+  "constraints": {
+    "min_light_sources": 1,
+    "max_intensity": 100
+  },
+  "allowed_variations": ["day", "night", "interior", "exterior"],
+  "forbidden_drift": ["cannot_change_mood_after_approval"],
+  "dependencies": [],
+  "approval_required_by": "Cinematographer / Camera + Lighting Director",
+  "next_action_if_missing": "Create LightingCard to define lighting scheme",
+  "created_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:00:00Z",
+  "name": "Soft Daylight",
+  "cinematographer": "Cinematographer Name",
+  "mood": "hopeful",
+  "light_sources": [
+    {"type": "sun", "position": "45_degrees", "intensity": "high"},
+    {"type": "ambient", "position": "fill", "intensity": "medium"}
+  ],
+  "color_temperature": 5500,
+  "intensity": 80,
+  "shadow_characteristics": "soft"
+}

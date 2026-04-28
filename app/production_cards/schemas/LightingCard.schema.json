@@ -1,0 +1,138 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "LightingCard",
+  "description": "Defines lighting scheme, mood, and technical lighting parameters.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "card_type",
+    "project_id",
+    "owner_role",
+    "status",
+    "version",
+    "required_inputs",
+    "references",
+    "constraints",
+    "allowed_variations",
+    "forbidden_drift",
+    "dependencies",
+    "approval_required_by",
+    "next_action_if_missing",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "description": "Unique identifier for this card"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "LightingCard",
+      "description": "Card type identifier"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project identifier"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": ["Cinematographer / Camera + Lighting Director"],
+      "description": "Role that owns this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "needs_references", "needs_role_work", "ready_for_review", "approved", "blocked", "deprecated"],
+      "description": "Current status of the card"
+    },
+    "version": {
+      "type": "string",
+      "description": "Card version"
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "mood": {"type": "string"},
+        "light_sources": {"type": "array", "items": {"type": "object"}},
+        "color_temperature": {"type": "number"}
+      },
+      "required": ["name", "mood", "light_sources", "color_temperature"]
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "No references (technical specification)"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "min_light_sources": {"type": "integer"},
+        "max_intensity": {"type": "number"}
+      }
+    },
+    "allowed_variations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Allowed variations within this card type"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Changes that are not allowed once approved"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "No dependencies (technical specification)"
+    },
+    "approval_required_by": {
+      "type": "string",
+      "enum": ["Cinematographer / Camera + Lighting Director"],
+      "description": "Role required to approve this card"
+    },
+    "next_action_if_missing": {
+      "type": "string",
+      "description": "Action to take if this card is missing"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was last updated"
+    },
+    "name": {
+      "type": "string",
+      "description": "Lighting scheme name"
+    },
+    "cinematographer": {
+      "type": "string",
+      "description": "Cinematographer name or ID"
+    },
+    "mood": {
+      "type": "string",
+      "description": "Emotional tone"
+    },
+    "light_sources": {
+      "type": "array",
+      "items": {"type": "object"},
+      "description": "List of light types and positions"
+    },
+    "color_temperature": {
+      "type": "number",
+      "description": "Kelvin value"
+    },
+    "intensity": {
+      "type": "number",
+      "description": "Brightness level"
+    },
+    "shadow_characteristics": {
+      "type": "string",
+      "description": "Hard/soft shadows"
+    }
+  }
+}

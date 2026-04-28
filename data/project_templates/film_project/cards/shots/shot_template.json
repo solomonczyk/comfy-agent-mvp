@@ -1,0 +1,51 @@
+{
+  "card_id": "shot_template_001",
+  "card_type": "ShotCard",
+  "project_id": "project_template_001",
+  "owner_role": "Shot Designer / Storyboard Agent",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "shot_number": 1,
+    "shot_type": "medium_shot",
+    "action_description": "The protagonist discovers a mysterious artifact",
+    "duration_seconds": 5
+  },
+  "references": [
+    "scenario_template_001",
+    "character_protagonist_001",
+    "environment_room_template_001",
+    "camera_medium_shot_template_001",
+    "lighting_soft_day_template_001",
+    "style_template_001"
+  ],
+  "constraints": {
+    "min_duration": 2,
+    "max_duration": 10
+  },
+  "allowed_variations": ["close_up", "medium", "wide", "extreme_wide"],
+  "forbidden_drift": ["cannot_change_shot_number_after_approval"],
+  "dependencies": [
+    "scenario_template_001",
+    "character_protagonist_001",
+    "environment_room_template_001",
+    "camera_medium_shot_template_001",
+    "lighting_soft_day_template_001",
+    "style_template_001"
+  ],
+  "approval_required_by": "Shot Designer / Storyboard Agent",
+  "next_action_if_missing": "Create ShotCard to define shot composition",
+  "created_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:00:00Z",
+  "shot_number": 1,
+  "shot_type": "medium_shot",
+  "action_description": "The protagonist discovers a mysterious artifact",
+  "duration_seconds": 5,
+  "character_reference": "character_protagonist_001",
+  "environment_reference": "environment_room_template_001",
+  "camera_reference": "camera_medium_shot_template_001",
+  "lighting_reference": "lighting_soft_day_template_001",
+  "style_reference": "style_template_001",
+  "wardrobe_reference": null,
+  "prop_references": []
+}

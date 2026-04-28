@@ -1,0 +1,47 @@
+{
+  "card_id": "project_template_001",
+  "card_type": "ProjectCard",
+  "project_id": "project_template_001",
+  "owner_role": "Executive Producer / Product Owner",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "title": "Template Film Project",
+    "description": "A template project for film production using production cards",
+    "executive_producer": "Executive Producer Name",
+    "target_deliverables": ["Episode 1", "Release Package"],
+    "timeline": {
+      "start_date": "2026-01-01",
+      "end_date": "2026-12-31"
+    }
+  },
+  "references": [],
+  "constraints": {
+    "budget": {
+      "currency": "USD",
+      "amount": 100000
+    },
+    "timeline": {
+      "max_duration_months": 12
+    },
+    "resource_limits": {
+      "max_gpu_hours": 1000
+    }
+  },
+  "allowed_variations": ["feature_film", "short_film", "series"],
+  "forbidden_drift": ["cannot_reduce_budget_without_approval", "cannot_change_target_deliverables_after_approval"],
+  "dependencies": [],
+  "approval_required_by": "Executive Producer / Product Owner",
+  "next_action_if_missing": "Create ProjectCard to define project scope",
+  "created_at": "2026-01-01T00:00:00Z",
+  "updated_at": "2026-01-01T00:00:00Z",
+  "title": "Template Film Project",
+  "description": "A template project for film production using production cards",
+  "executive_producer": "Executive Producer Name",
+  "target_deliverables": ["Episode 1", "Release Package"],
+  "timeline": {
+    "start_date": "2026-01-01",
+    "end_date": "2026-12-31"
+  },
+  "episode_references": []
+}

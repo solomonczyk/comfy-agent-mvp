@@ -1,0 +1,143 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VoiceCard",
+  "description": "Defines voice characteristics, TTS settings, and audio parameters for character dialogue.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "card_type",
+    "project_id",
+    "owner_role",
+    "status",
+    "version",
+    "required_inputs",
+    "references",
+    "constraints",
+    "allowed_variations",
+    "forbidden_drift",
+    "dependencies",
+    "approval_required_by",
+    "next_action_if_missing",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "description": "Unique identifier for this card"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "VoiceCard",
+      "description": "Card type identifier"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project identifier"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": ["Audio / Voice Agent"],
+      "description": "Role that owns this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "needs_references", "needs_role_work", "ready_for_review", "approved", "blocked", "deprecated"],
+      "description": "Current status of the card"
+    },
+    "version": {
+      "type": "string",
+      "description": "Card version"
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "name": {"type": "string"},
+        "tts_engine": {"type": "string"},
+        "voice_model": {"type": "string"}
+      },
+      "required": ["name", "tts_engine", "voice_model"]
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "References to CharacterCard (optional)"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "supported_engines": {"type": "array", "items": {"type": "string"}}
+      }
+    },
+    "allowed_variations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Allowed variations within this card type"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Changes that are not allowed once approved"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "No dependencies (technical specification)"
+    },
+    "approval_required_by": {
+      "type": "string",
+      "enum": ["Audio / Voice Agent"],
+      "description": "Role required to approve this card"
+    },
+    "next_action_if_missing": {
+      "type": "string",
+      "description": "Action to take if this card is missing"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was last updated"
+    },
+    "character_reference": {
+      "type": "string",
+      "description": "CharacterCard ID (optional)"
+    },
+    "name": {
+      "type": "string",
+      "description": "Voice profile name"
+    },
+    "audio_director": {
+      "type": "string",
+      "description": "Audio director name or ID"
+    },
+    "tts_engine": {
+      "type": "string",
+      "description": "Text-to-speech engine identifier"
+    },
+    "voice_model": {
+      "type": "string",
+      "description": "Specific voice model"
+    },
+    "pitch": {
+      "type": "string",
+      "description": "Voice pitch setting"
+    },
+    "speed": {
+      "type": "string",
+      "description": "Speech rate"
+    },
+    "emotion": {
+      "type": "string",
+      "description": "Emotional tone"
+    },
+    "reference_audio_path": {
+      "type": "string",
+      "description": "Sample audio (optional)"
+    }
+  }
+}

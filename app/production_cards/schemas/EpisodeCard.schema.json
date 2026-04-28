@@ -1,0 +1,141 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "EpisodeCard",
+  "description": "Narrative unit within a project. Defines episode story arc, character roster, and shot scope.",
+  "type": "object",
+  "required": [
+    "card_id",
+    "card_type",
+    "project_id",
+    "owner_role",
+    "status",
+    "version",
+    "required_inputs",
+    "references",
+    "constraints",
+    "allowed_variations",
+    "forbidden_drift",
+    "dependencies",
+    "approval_required_by",
+    "next_action_if_missing",
+    "created_at",
+    "updated_at"
+  ],
+  "properties": {
+    "card_id": {
+      "type": "string",
+      "description": "Unique identifier for this card"
+    },
+    "card_type": {
+      "type": "string",
+      "const": "EpisodeCard",
+      "description": "Card type identifier"
+    },
+    "project_id": {
+      "type": "string",
+      "description": "Project identifier"
+    },
+    "owner_role": {
+      "type": "string",
+      "enum": ["Director / Orchestrator"],
+      "description": "Role that owns this card"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "needs_references", "needs_role_work", "ready_for_review", "approved", "blocked", "deprecated"],
+      "description": "Current status of the card"
+    },
+    "version": {
+      "type": "string",
+      "description": "Card version"
+    },
+    "required_inputs": {
+      "type": "object",
+      "properties": {
+        "title": {"type": "string"},
+        "episode_number": {"type": "integer"},
+        "director": {"type": "string"},
+        "synopsis": {"type": "string"},
+        "character_roster": {"type": "array", "items": {"type": "string"}},
+        "target_duration": {"type": "number"}
+      },
+      "required": ["title", "episode_number", "director", "synopsis", "character_roster", "target_duration"]
+    },
+    "references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "References to ProjectCard"
+    },
+    "constraints": {
+      "type": "object",
+      "properties": {
+        "min_shots": {"type": "integer"},
+        "max_duration": {"type": "number"}
+      }
+    },
+    "allowed_variations": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Allowed variations within this card type"
+    },
+    "forbidden_drift": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Changes that are not allowed once approved"
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "Dependencies on ProjectCard"
+    },
+    "approval_required_by": {
+      "type": "string",
+      "enum": ["Director / Orchestrator"],
+      "description": "Role required to approve this card"
+    },
+    "next_action_if_missing": {
+      "type": "string",
+      "description": "Action to take if this card is missing"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when card was last updated"
+    },
+    "title": {
+      "type": "string",
+      "description": "Episode name"
+    },
+    "episode_number": {
+      "type": "integer",
+      "description": "Sequence number"
+    },
+    "director": {
+      "type": "string",
+      "description": "Director name or ID"
+    },
+    "synopsis": {
+      "type": "string",
+      "description": "Episode story summary"
+    },
+    "character_roster": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of CharacterCard IDs"
+    },
+    "scenario_references": {
+      "type": "array",
+      "items": {"type": "string"},
+      "description": "List of ScenarioCard IDs"
+    },
+    "target_duration": {
+      "type": "number",
+      "description": "Expected runtime in seconds"
+    }
+  }
+}
