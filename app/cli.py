@@ -848,6 +848,23 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2N — Validate submitted role decisions subcommand
+    validate_submitted_role_decisions_parser = subparsers.add_parser("validate-submitted-role-decisions", help="Validate completed real role decision submission files before intake/apply flow")
+    validate_submitted_role_decisions_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing submitted role decisions",
+    )
+    validate_submitted_role_decisions_parser.add_argument(
+        "--submission-root",
+        help="Optional custom path to load submissions from (for fixture validation)",
+    )
+    validate_submitted_role_decisions_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -918,6 +935,8 @@ def main() -> int:
         return create_role_decision_submission_contract(args)
     elif args.command == "validate-role-decision-submission-contract":
         return validate_role_decision_submission_contract(args)
+    elif args.command == "validate-submitted-role-decisions":
+        return validate_submitted_role_decisions(args)
     else:
         parser.print_help()
         return 1
@@ -6042,6 +6061,42 @@ def validate_role_decision_submission_contract(args: argparse.Namespace) -> int:
         print(f"Production Accepted: {result['production_accepted']}")
         if result['validation_errors']:
             print(f"Validation Errors: {result['validation_errors']}")
+    
+    return 0
+
+
+def validate_submitted_role_decisions(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2N — Validate submitted real role decisions before intake/apply flow.
+    
+    This command validates completed role decision submission files.
+    For blank templates (selected_decision=null): returns awaiting_role_input
+    For completed approved submissions: returns valid if all checks pass
+    Rejects unsafe submissions based on security rules.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.decision_submission_validator import validate_submitted_role_decisions as validate_submissions
+    
+    project_root = args.project_root
+    submission_root = getattr(args, "submission_root", None)
+    json_output = args.json
+    
+    result = validate_submissions(project_root, submission_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Submitted Decisions Ready: {result['submitted_decisions_ready']}")
+        print(f"Valid Submissions: {result['valid_submissions']}")
+        print(f"Missing or Incomplete: {result['missing_or_incomplete_submissions']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        if result['rejection_reasons']:
+            print(f"Rejection Reasons: {result['rejection_reasons']}")
     
     return 0
 
