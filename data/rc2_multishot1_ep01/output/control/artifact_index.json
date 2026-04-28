@@ -114,5 +114,21 @@
     "repair_type": "pre_fix_fixture_apply_invalidated",
     "repair_timestamp": "2026-04-28T12:34:15.028696Z",
     "reason": "fixture approvals were applied before safety hardening (commit cf49148)"
+  },
+  "role_review_packets": {
+    "status": "created",
+    "character_director_packet": "output\\control\\role_review_packets\\character_director_identity_evidence_packet.json",
+    "workflow_td_packet": "output\\control\\role_review_packets\\workflow_td_identity_workflow_evidence_packet.json",
+    "downstream_blocked": true,
+    "production_accepted": false,
+    "evidence_only": true
+  },
+  "role_decision_submission_contract": {
+    "status": "created",
+    "character_director_submission_template": "output\\control\\role_decision_submissions\\character_director_real_decision.SUBMIT.json",
+    "workflow_td_submission_template": "output\\control\\role_decision_submissions\\workflow_td_real_decision.SUBMIT.json",
+    "downstream_blocked": true,
+    "production_accepted": false,
+    "retry_gate_open": false
   }
 }

@@ -822,6 +822,32 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2M — Create role decision submission contract subcommand
+    create_role_decision_submission_contract_parser = subparsers.add_parser("create-role-decision-submission-contract", help="Create strict submission contract for real Character Director and Workflow TD decisions based on evidence packets")
+    create_role_decision_submission_contract_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing evidence packets",
+    )
+    create_role_decision_submission_contract_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2M — Validate role decision submission contract subcommand
+    validate_role_decision_submission_contract_parser = subparsers.add_parser("validate-role-decision-submission-contract", help="Validate decision submission contract and determine if ready for real role input")
+    validate_role_decision_submission_contract_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing decision submission templates",
+    )
+    validate_role_decision_submission_contract_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -888,6 +914,10 @@ def main() -> int:
         return create_role_review_packets(args)
     elif args.command == "validate-role-review-packets":
         return validate_role_review_packets(args)
+    elif args.command == "create-role-decision-submission-contract":
+        return create_role_decision_submission_contract(args)
+    elif args.command == "validate-role-decision-submission-contract":
+        return validate_role_decision_submission_contract(args)
     else:
         parser.print_help()
         return 1
@@ -5941,6 +5971,77 @@ def validate_role_review_packets(args: argparse.Namespace) -> int:
         print(f"Not Decisions: {result['not_decisions']}")
         if result['missing_required_evidence']:
             print(f"Missing Required Evidence: {result['missing_required_evidence']}")
+    
+    return 0
+
+
+def create_role_decision_submission_contract(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2M — Create decision submission contract for Character Director and Workflow TD.
+    
+    This command creates strict submission contracts for real role decisions based on evidence packets.
+    Submission templates are draft submissions for real role input, NOT decisions.
+    They do NOT approve decisions, do NOT open retry gate, do NOT mark production_accepted=true.
+    
+    Exit codes:
+    - 0: submission contract created successfully
+    - 1: submission contract creation failed or invalid args
+    """
+    from app.production_cards.decision_submission import create_decision_submission_contract as create_contract
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_contract(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Submission Contract Status: {result['status'].upper()}")
+        print(f"Project Root: {result['project_root']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Ready for Real Role Input: {result['ready_for_real_role_input']}")
+        print(f"Decision Ready: {result['decision_ready']}")
+        print(f"Submission Templates Created: {result['submission_templates_created']}")
+        for template in result['templates']:
+            print(f"  - {template['role']}: {template['template_path']}")
+        for instruction in result['instructions']:
+            print(f"  - {instruction['role']} Instructions: {instruction['instructions_path']}")
+    
+    return 0
+
+
+def validate_role_decision_submission_contract(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2M — Validate decision submission contract and determine if ready for real role input.
+    
+    This command validates decision submission contracts.
+    Templates are draft submissions, not submitted decisions, so decision_ready is always false.
+    ready_for_real_role_input is true if templates exist and are properly configured.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.decision_submission import validate_decision_submission_contract as validate_contract
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_contract(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Submission Templates Found: {result['submission_templates_found']}")
+        print(f"Ready for Real Role Input: {result['ready_for_real_role_input']}")
+        print(f"Decision Ready: {result['decision_ready']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        if result['validation_errors']:
+            print(f"Validation Errors: {result['validation_errors']}")
     
     return 0
 

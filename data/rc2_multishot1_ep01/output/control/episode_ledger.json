@@ -342,6 +342,34 @@
       "comfyui_generation": false,
       "pipeline_action_rerun": false,
       "repair_commit": "cf49148"
+    },
+    {
+      "event_type": "role_review_packets_created",
+      "timestamp": "2026-04-28T12:43:48.805985Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "reason": "identity_qa_failed",
+      "downstream_blocked": true,
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "evidence_only": true
+    },
+    {
+      "event_type": "role_decision_submission_contract_created",
+      "timestamp": "2026-04-28T12:49:07.709563Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "reason": "identity_qa_failed",
+      "downstream_blocked": true,
+      "production_accepted": false,
+      "retry_gate_open": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false
     }
   ]
 }
