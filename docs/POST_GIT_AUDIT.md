@@ -7,7 +7,8 @@
 
 ### Current Commit Hash
 ```
-94c9a7a
+94c9a7a (initial)
+2e3c2a0 (post-git audit docs)
 ```
 
 ### Remote URL
@@ -30,10 +31,11 @@ main
 ## Excluded Files Summary
 
 ### Files Explicitly Excluded by Git Ignore
-- None currently in `.gitignore` (needs update)
-- Model/checkpoint files (should be added)
-- `.env` (should be added)
-- Generated outputs (should be added)
+- `.gitignore` exists and is committed
+- Model/checkpoint files are excluded
+- `.env` is excluded
+- Generated outputs are excluded
+- IDE configs are excluded
 
 ### Files Manually Excluded (Not Committed)
 All files listed in untracked classification below were not committed during RC2-GIT2.
@@ -143,7 +145,7 @@ All files listed in untracked classification below were not committed during RC2
 - **.env file exposed locally** - Contains sensitive credentials, must ensure `.gitignore` prevents accidental commit
 
 ### Medium Risk
-- **No `.gitignore` configured** - Risk of accidentally committing generated outputs, secrets, or large files
+- **Untracked local artifacts still exist** - Many generated outputs, demo zips, and acceptance reports remain untracked and must not be added blindly to Git
 - **Demo zips not versioned** - Risk of losing demo artifacts if local copy is deleted
 
 ### Low Risk
@@ -154,9 +156,8 @@ All files listed in untracked classification below were not committed during RC2
 ## Next Recommended Actions
 
 ### Immediate (High Priority)
-1. **Update `.gitignore`** with recommended patterns from ARTIFACT_STORAGE_STRATEGY.md
-2. **Upload demo zips to GitHub Releases** as versioned assets for RC2
-3. **Commit acceptance reports** to preserve validation evidence
+1. **Upload demo zips to GitHub Releases** as versioned assets for RC2
+2. **Commit acceptance reports** to docs/acceptance/ to preserve validation evidence
 
 ### Short Term (Medium Priority)
 4. **Commit useful documentation** from `data/` (README, briefs, specs)
