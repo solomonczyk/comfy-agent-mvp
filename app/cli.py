@@ -1060,6 +1060,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2X — Create role decision resubmission pack subcommand
+    create_role_decision_resubmission_pack_parser = subparsers.add_parser("create-role-decision-resubmission-pack", help="Create role decision resubmission pack from validated completions")
+    create_role_decision_resubmission_pack_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing submitted completions and role review packets",
+    )
+    create_role_decision_resubmission_pack_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -1160,6 +1173,8 @@ def main() -> int:
         return validate_change_request_execution_plan(args)
     elif args.command == "create-change-request-completion-drafts":
         return create_change_request_completion_drafts(args)
+    elif args.command == "create-role-decision-resubmission-pack":
+        return create_role_decision_resubmission_pack(args)
     else:
         parser.print_help()
         return 0
@@ -1194,6 +1209,40 @@ def create_change_request_completion_drafts(args: argparse.Namespace) -> int:
         print(f"Production Accepted: {result['production_accepted']}")
         print(f"Downstream Blocked: {result['downstream_blocked']}")
         print(f"Submitted Path: {result['submitted_path']}")
+
+    return 0
+
+
+def create_role_decision_resubmission_pack(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2X — Create role decision resubmission pack from validated completions.
+
+    This command creates role decision resubmission packets for Character Director and Workflow TD
+    based on validated submitted change request completions, incorporating evidence outputs
+    to provide updated context for role decisions, without applying decisions or opening retry generation.
+
+    Exit codes:
+    - 0: resubmission pack creation completed successfully
+    - 1: resubmission pack creation failed or invalid args
+    """
+    from app.production_cards.role_decision_resubmission import create_role_decision_resubmission_pack as create_resubmission
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = create_resubmission(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Resubmission Pack Creation Status: {result['status'].upper()}")
+        print(f"Resubmission Packets Created: {result['resubmission_packets_created']}")
+        print(f"Based on Valid Completions: {result['based_on_valid_completions']}")
+        print(f"Ready for Role Resubmission: {result['ready_for_role_resubmission']}")
+        print(f"Apply Performed: {result['apply_performed']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Resubmission Path: {result['resubmission_path']}")
 
     return 0
 
