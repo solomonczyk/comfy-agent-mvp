@@ -977,6 +977,32 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2T — Create change request completion contracts subcommand
+    create_change_request_completion_contracts_parser = subparsers.add_parser("create-change-request-completion-contracts", help="Create completion templates for change request work orders")
+    create_change_request_completion_contracts_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing work orders",
+    )
+    create_change_request_completion_contracts_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2T — Validate change request completion contracts subcommand
+    validate_change_request_completion_contracts_parser = subparsers.add_parser("validate-change-request-completion-contracts", help="Validate change request completion contracts")
+    validate_change_request_completion_contracts_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing completion contracts",
+    )
+    validate_change_request_completion_contracts_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -1065,6 +1091,10 @@ def main() -> int:
         return create_change_request_work_orders(args)
     elif args.command == "validate-change-request-work-orders":
         return validate_change_request_work_orders(args)
+    elif args.command == "create-change-request-completion-contracts":
+        return create_change_request_completion_contracts(args)
+    elif args.command == "validate-change-request-completion-contracts":
+        return validate_change_request_completion_contracts(args)
     else:
         parser.print_help()
         return 1
@@ -6561,6 +6591,86 @@ def validate_change_request_work_orders(args: argparse.Namespace) -> int:
         print(f"Next Required Roles: {result['next_required_roles']}")
         print(f"Execution Performed: {result['execution_performed']}")
         print(f"Ready for Apply: {result['ready_for_apply']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        if result['validation_errors']:
+            print(f"Validation Errors: {result['validation_errors']}")
+    
+    return 0
+
+
+def create_change_request_completion_contracts(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2T — Create completion templates for change request work orders.
+    
+    This command creates formal completion contracts for Workflow TD and Character
+    Director work orders without executing workflow changes, rebuilding references,
+    applying decisions, or opening retry generation.
+    
+    This is a read-only completion contract creation that does NOT:
+    - Execute workflow changes
+    - Rebuild references
+    - Apply decisions
+    - Open retry gate
+    - Mark production_accepted=true
+    - Run ComfyUI or generation
+    - Mutate role_decisions/
+    - Mutate final artifacts
+    - Create new generated references
+    
+    Exit codes:
+    - 0: completion contract creation completed successfully
+    - 1: completion contract creation failed or invalid args
+    """
+    from app.production_cards.change_request_completion import create_change_request_completion_contracts as create_contracts
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_contracts(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Completion Contract Creation Status: {result['status'].upper()}")
+        print(f"Completion Templates Created: {result['completion_templates_created']}")
+        print(f"Execution Performed: {result['execution_performed']}")
+        print(f"Ready for Resubmission: {result['ready_for_resubmission']}")
+        print(f"Ready for Apply: {result['ready_for_apply']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+    
+    return 0
+
+
+def validate_change_request_completion_contracts(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2T — Validate change request completion contracts.
+    
+    This command validates that change request completion contracts exist and are
+    correctly structured, ensuring selected_resolution=null, completion_status=template,
+    execution_performed=false, retry_gate_open=false, production_accepted=false,
+    and downstream_blocked=true.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.change_request_completion import validate_change_request_completion_contracts as validate_contracts
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_contracts(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Completion Templates Found: {result['completion_templates_found']}")
+        print(f"Submitted Completions Found: {result['submitted_completions_found']}")
+        print(f"Execution Performed: {result['execution_performed']}")
+        print(f"Ready for Resubmission: {result['ready_for_resubmission']}")
         print(f"Retry Gate Open: {result['retry_gate_open']}")
         print(f"Production Accepted: {result['production_accepted']}")
         print(f"Downstream Blocked: {result['downstream_blocked']}")
