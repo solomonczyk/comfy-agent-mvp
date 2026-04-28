@@ -115,9 +115,24 @@ class CardValidator:
                 result["errors"].append(f"Invalid status: {status}")
 
         # Check for project-specific hardcode
+        # Distinguish between core/template cards and real project cards
         content_lower = content.lower()
-        if "alya" in content_lower or "mir erdan" in content_lower:
-            result["errors"].append("project-specific hardcode detected")
+        has_project_specific_names = "alya" in content_lower or "mir erdan" in content_lower
+        
+        if has_project_specific_names:
+            # Check if this is a template card (should reject project-specific hardcode)
+            path_str = str(path)
+            is_template_card = "project_templates" in path_str
+            
+            # Check if this is a real project card with project_specific_data_allowed flag
+            project_specific_data_allowed = card.get("project_specific_data_allowed", False)
+            
+            if is_template_card:
+                # Template cards must be project-agnostic
+                result["errors"].append("project-specific hardcode detected in template card")
+            elif not project_specific_data_allowed:
+                # Real project cards must have project_specific_data_allowed flag to contain project names
+                result["errors"].append("project-specific hardcode detected without project_specific_data_allowed flag")
 
         # Set status based on errors
         if not result["errors"]:

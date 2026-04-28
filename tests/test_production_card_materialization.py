@@ -359,7 +359,7 @@ class TestProductionCardMaterialization:
         assert "Workflow TD / ComfyUI Technical Director" in identity_route["responsible_role"]
 
     def test_no_project_specific_hardcode_added_to_core_materializer(self, tmp_path):
-        """Test that no project-specific hardcode is added to core materializer logic."""
+        """Test that core materializer logic is project-agnostic but preserves real project data."""
         # Create output/control directory structure
         control_dir = tmp_path / "output" / "control"
         control_dir.mkdir(parents=True)
@@ -398,14 +398,18 @@ class TestProductionCardMaterialization:
         materializer = ProductionCardMaterializer()
         materializer.materialize_project_cards(str(tmp_path))
         
-        # Verify that project-specific names are sanitized in cards
+        # Verify that project-specific names are preserved from source data
         project_card_path = tmp_path / "cards" / "project" / "project_card.json"
         with open(project_card_path, 'r') as f:
             project_card = json.load(f)
         
-        # Project-specific names should be replaced with generic placeholders
-        assert "Alya" not in project_card.get("title", "")
-        assert "Protagonist" in project_card.get("title", "") or "Alya's" not in project_card.get("title", "")
+        # Project-specific names should be preserved when they come from source data
+        assert "Alya" in project_card.get("title", "")
+        # Cards should have project_specific_data_allowed flag
+        assert project_card.get("project_specific_data_allowed") == True
+        # Cards should have source provenance
+        assert "source_data_origin" in project_card
+        assert "source_file" in project_card
 
     def test_materialized_cards_validate_cleanly(self, tmp_path):
         """Test that materialized cards validate cleanly without project-specific hardcode."""
@@ -746,4 +750,172 @@ class TestProductionCardMaterialization:
         # Verify downstream remains blocked
         assert result["downstream_blocked"] == True
         assert result["generation_ready"] == False
+
+    def test_character_card_preserves_display_name_aliases_reference(self, tmp_path):
+        """Test that CharacterCard preserves display_name, aliases, and reference_character."""
+        # Create output/control directory structure
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+        
+        artifact_index = {
+            "episode_id": "ep01",
+            "episode_title": "Test Episode",
+            "overall_episode_state": "preflight_complete",
+            "shots": []
+        }
+        
+        episode_plan = {
+            "episode_id": "ep01",
+            "episode_title": "Test Episode",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "reference_character": "TestCharacter",
+                    "scene_goal": "Test goal"
+                }
+            ]
+        }
+        
+        with open(control_dir / "artifact_index.json", "w") as f:
+            json.dump(artifact_index, f)
+        with open(control_dir / "episode_plan.json", "w") as f:
+            json.dump(episode_plan, f)
+        
+        # Materialize cards
+        materializer = ProductionCardMaterializer()
+        materializer.materialize_project_cards(str(tmp_path))
+        
+        # Read character card
+        character_path = tmp_path / "cards" / "characters" / "character_card.json"
+        with open(character_path, 'r') as f:
+            character_card = json.load(f)
+        
+        # Verify character data is preserved
+        assert character_card["name"] == "TestCharacter"
+        assert character_card["display_name"] == "TestCharacter"
+        assert character_card["reference_character"] == "TestCharacter"
+        assert "aliases" in character_card
+        assert character_card["project_specific_data_allowed"] == True
+
+    def test_shot_card_preserves_character_reference(self, tmp_path):
+        """Test that ShotCard preserves character_reference from source data."""
+        # Create output/control directory structure
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+        
+        artifact_index = {
+            "episode_id": "ep01",
+            "episode_title": "Test Episode",
+            "overall_episode_state": "preflight_complete",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "status": "preflight_complete"
+                }
+            ]
+        }
+        
+        episode_plan = {
+            "episode_id": "ep01",
+            "episode_title": "Test Episode",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "reference_character": "TestCharacter",
+                    "scene_goal": "Test goal"
+                }
+            ]
+        }
+        
+        with open(control_dir / "artifact_index.json", "w") as f:
+            json.dump(artifact_index, f)
+        with open(control_dir / "episode_plan.json", "w") as f:
+            json.dump(episode_plan, f)
+        
+        # Materialize cards
+        materializer = ProductionCardMaterializer()
+        materializer.materialize_project_cards(str(tmp_path))
+        
+        # Read shot card
+        shot_path = tmp_path / "cards" / "shots" / "shot01.json"
+        with open(shot_path, 'r') as f:
+            shot_card = json.load(f)
+        
+        # Verify character_reference is preserved
+        assert shot_card["character_reference"] == "TestCharacter"
+        assert shot_card["project_specific_data_allowed"] == True
+
+    def test_validator_allows_project_specific_data_with_flag(self, tmp_path):
+        """Test that validator allows project-specific data with project_specific_data_allowed flag."""
+        from app.production_cards.validator import validate_production_cards
+        
+        # Create output/control directory structure
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+        
+        artifact_index = {
+            "episode_id": "ep01",
+            "episode_title": "Alya's Awakening",
+            "overall_episode_state": "preflight_complete",
+            "shots": []
+        }
+        
+        episode_plan = {
+            "episode_id": "ep01",
+            "episode_title": "Alya's Awakening",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "reference_character": "Alya",
+                    "scene_goal": "Test goal"
+                }
+            ]
+        }
+        
+        with open(control_dir / "artifact_index.json", "w") as f:
+            json.dump(artifact_index, f)
+        with open(control_dir / "episode_plan.json", "w") as f:
+            json.dump(episode_plan, f)
+        
+        # Materialize cards
+        materializer = ProductionCardMaterializer()
+        materializer.materialize_project_cards(str(tmp_path))
+        
+        # Validate cards
+        validation_result = validate_production_cards(str(tmp_path), json_output=True)
+        
+        # Validation should pass because cards have project_specific_data_allowed flag
+        assert validation_result["status"] == "passed"
+        assert validation_result["summary"]["failed_checks"] == 0
+
+    def test_validator_rejects_project_specific_hardcode_in_template_cards(self, tmp_path):
+        """Test that validator rejects project-specific hardcode in template cards."""
+        from app.production_cards.validator import CardValidator
+        from pathlib import Path
+        
+        # Create a template card directory structure
+        template_dir = tmp_path / "project_templates" / "film_project" / "cards"
+        template_dir.mkdir(parents=True)
+        
+        # Create a template card with project-specific hardcode
+        template_card = {
+            "card_id": "template_card",
+            "card_type": "ProjectCard",
+            "project_id": "template_project",
+            "owner_role": "Executive Producer",
+            "status": "draft",
+            "title": "Alya's Template"  # Project-specific hardcode in template
+        }
+        
+        template_file = template_dir / "project_card.json"
+        with open(template_file, 'w') as f:
+            json.dump(template_card, f)
+        
+        # Validate template card
+        validator = CardValidator()
+        validation = validator.validate_card_file(template_file)
+        
+        # Template card should fail validation due to project-specific hardcode
+        assert validation["validation_status"] == "failed"
+        assert any("project-specific hardcode detected in template card" in error for error in validation["errors"])
 

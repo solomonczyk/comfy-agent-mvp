@@ -93,7 +93,7 @@ class ProductionCardMaterializer:
                 result["cards"].append(scenario_card_path.name)
 
         # CharacterCard
-        character_card = self._materialize_character_card(artifact_index)
+        character_card = self._materialize_character_card(artifact_index, episode_plan)
         character_card_path = cards_dir / "characters" / "character_card.json"
         if self._write_card(character_card_path, character_card):
             cards_created += 1
@@ -186,19 +186,10 @@ class ProductionCardMaterializer:
         except (IOError, OSError):
             return False
 
-    def _sanitize_text(self, text: str) -> str:
-        """Sanitize text to remove project-specific names for validation."""
-        if not text:
-            return text
-        # Replace project-specific names with generic placeholders
-        text = text.replace("Alya", "Protagonist")
-        text = text.replace("Mir Erdan", "Antagonist")
-        return text
 
     def _materialize_project_card(self, project_path: Path, artifact_index: Dict[str, Any], episode_plan: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Materialize ProjectCard from project state."""
         episode_title = episode_plan.get("episode_title", "Unknown Episode") if episode_plan else "Unknown Episode"
-        sanitized_title = self._sanitize_text(episode_title)
         
         return {
             "card_id": "project_card",
@@ -208,8 +199,8 @@ class ProductionCardMaterializer:
             "status": "draft",
             "version": "1.0.0",
             "required_inputs": {
-                "title": sanitized_title,
-                "description": f"Multi-shot production project for {sanitized_title}"
+                "title": episode_title,
+                "description": f"Multi-shot production project for {episode_title}"
             },
             "references": [],
             "constraints": {},
@@ -220,18 +211,20 @@ class ProductionCardMaterializer:
             "next_action_if_missing": "Create ProjectCard",
             "created_at": datetime.utcnow().isoformat() + "Z",
             "updated_at": datetime.utcnow().isoformat() + "Z",
-            "title": sanitized_title,
-            "description": f"Multi-shot production project for {sanitized_title}",
+            "title": episode_title,
+            "description": f"Multi-shot production project for {episode_title}",
             "executive_producer": "Executive Producer",
             "target_deliverables": ["final_video"],
-            "timeline": {}
+            "timeline": {},
+            "source_data_origin": "episode_plan",
+            "source_file": "output/control/episode_plan.json",
+            "project_specific_data_allowed": True
         }
 
     def _materialize_episode_card(self, artifact_index: Dict[str, Any], episode_plan: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Materialize EpisodeCard from project state."""
         episode_id = artifact_index.get("episode_id", "ep01")
         episode_title = artifact_index.get("episode_title", "Unknown Episode")
-        sanitized_title = self._sanitize_text(episode_title)
         shots = artifact_index.get("shots", [])
         
         shot_ids = [shot.get("shot_id") for shot in shots]
@@ -245,7 +238,7 @@ class ProductionCardMaterializer:
             "version": "1.0.0",
             "required_inputs": {
                 "episode_id": episode_id,
-                "title": sanitized_title
+                "title": episode_title
             },
             "references": [],
             "constraints": {},
@@ -257,10 +250,13 @@ class ProductionCardMaterializer:
             "created_at": datetime.utcnow().isoformat() + "Z",
             "updated_at": datetime.utcnow().isoformat() + "Z",
             "episode_id": episode_id,
-            "title": sanitized_title,
+            "title": episode_title,
             "director": "Director",
             "shot_ids": shot_ids,
-            "total_shots": len(shots)
+            "total_shots": len(shots),
+            "source_data_origin": "artifact_index",
+            "source_file": "output/control/artifact_index.json",
+            "project_specific_data_allowed": True
         }
 
     def _materialize_scenario_cards(self, episode_plan: Optional[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -272,10 +268,10 @@ class ProductionCardMaterializer:
         scenario_cards = []
         
         for shot in shots:
-            scene_goal = self._sanitize_text(shot.get("scene_goal", ""))
-            voiceover_text = self._sanitize_text(shot.get("voiceover_text", ""))
-            visual_description = self._sanitize_text(shot.get("visual_description", ""))
-            ref_char = self._sanitize_text(shot.get("reference_character", ""))
+            scene_goal = shot.get("scene_goal", "")
+            voiceover_text = shot.get("voiceover_text", "")
+            visual_description = shot.get("visual_description", "")
+            ref_char = shot.get("reference_character", "")
             
             scenario_card = {
                 "card_id": f"{shot['shot_id']}_scenario",
@@ -303,28 +299,39 @@ class ProductionCardMaterializer:
                 "location_description": visual_description,
                 "involved_characters": [ref_char],
                 "shot_references": [shot.get("shot_id", "")],
-                "environment_reference": "env_001"
+                "environment_reference": "env_001",
+                "source_data_origin": "episode_plan",
+                "source_file": "output/control/episode_plan.json",
+                "project_specific_data_allowed": True
             }
             scenario_cards.append(scenario_card)
         
         return scenario_cards
 
-    def _materialize_character_card(self, artifact_index: Dict[str, Any]) -> Dict[str, Any]:
+    def _materialize_character_card(self, artifact_index: Dict[str, Any], episode_plan: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
         """Materialize CharacterCard from project state."""
         # Extract character name from episode title or shots
         episode_title = artifact_index.get("episode_title", "")
         shots = artifact_index.get("shots", [])
         
-        # Find the reference character from shots
+        # Find the reference character from shots (check both artifact_index and episode_plan)
         character_name = "Unknown"
+        
+        # First check artifact_index shots
         for shot in shots:
             ref_char = shot.get("reference_character")
             if ref_char:
                 character_name = ref_char
                 break
         
-        # Sanitize character name
-        sanitized_name = self._sanitize_text(character_name)
+        # If not found in artifact_index, check episode_plan
+        if character_name == "Unknown" and episode_plan:
+            plan_shots = episode_plan.get("shots", [])
+            for shot in plan_shots:
+                ref_char = shot.get("reference_character")
+                if ref_char:
+                    character_name = ref_char
+                    break
         
         # Check if any shot has identity failure
         has_identity_failure = False
@@ -336,14 +343,14 @@ class ProductionCardMaterializer:
         status = "needs_role_work" if has_identity_failure else "draft"
         
         return {
-            "card_id": f"{sanitized_name.lower()}_character",
+            "card_id": f"{character_name.lower().replace(' ', '_')}_character",
             "card_type": "CharacterCard",
             "project_id": "rc2_multishot1_ep01",
             "owner_role": "Character Director",
             "status": status,
             "version": "1.0.0",
             "required_inputs": {
-                "name": sanitized_name,
+                "name": character_name,
                 "visual_reference_paths": [],
                 "physical_description": "Character description",
                 "identity_mode": "gorynych_identity"
@@ -357,7 +364,10 @@ class ProductionCardMaterializer:
             "next_action_if_missing": "Create CharacterCard",
             "created_at": datetime.utcnow().isoformat() + "Z",
             "updated_at": datetime.utcnow().isoformat() + "Z",
-            "name": sanitized_name,
+            "name": character_name,
+            "display_name": character_name,
+            "aliases": [],
+            "reference_character": character_name,
             "character_director": "Character Director",
             "visual_reference_paths": [],
             "physical_description": "Character description",
@@ -367,7 +377,10 @@ class ProductionCardMaterializer:
             "identity_mode": "gorynych_identity",
             "identity_consistency_requirements": {},
             "identity_reference_required": True,
-            "identity_workflow_approval_required": True
+            "identity_workflow_approval_required": True,
+            "source_data_origin": "episode_plan" if episode_plan and character_name != "Unknown" else "artifact_index",
+            "source_file": "output/control/episode_plan.json" if episode_plan and character_name != "Unknown" else "output/control/artifact_index.json",
+            "project_specific_data_allowed": True
         }
 
     def _materialize_shot_cards(self, artifact_index: Dict[str, Any], episode_plan: Optional[Dict[str, Any]]) -> List[Dict[str, Any]]:
@@ -400,9 +413,12 @@ class ProductionCardMaterializer:
                 next_action = "approve_identity_workflow_before_retry"
                 responsible_roles = ["Character Director", "Workflow TD / ComfyUI Technical Director"]
             
-            # Sanitize character reference and action description
-            character_ref = self._sanitize_text(shot.get("reference_character", ""))
-            action_description = self._sanitize_text(shot_plan.get("scene_goal", "") if shot_plan else "")
+            # Preserve character reference and action description from source data
+            # Check both artifact_index and episode_plan for character_reference
+            character_ref = shot.get("reference_character", "")
+            if not character_ref and shot_plan:
+                character_ref = shot_plan.get("reference_character", "")
+            action_description = shot_plan.get("scene_goal", "") if shot_plan else ""
             
             shot_card = {
                 "card_id": shot_id,
@@ -437,7 +453,10 @@ class ProductionCardMaterializer:
                 "production_accepted": production_accepted,
                 "blocking_reason": blocking_reason,
                 "next_action": next_action,
-                "responsible_roles": responsible_roles
+                "responsible_roles": responsible_roles,
+                "source_data_origin": "artifact_index",
+                "source_file": "output/control/artifact_index.json",
+                "project_specific_data_allowed": True
             }
             shot_cards.append(shot_card)
         
@@ -486,7 +505,10 @@ class ProductionCardMaterializer:
             "resource_requirements": {},
             "estimated_generation_time": 0,
             "generation_mode": generation_mode,
-            "legacy_reference_locked_allowed_for_production": False
+            "legacy_reference_locked_allowed_for_production": False,
+            "source_data_origin": "artifact_index",
+            "source_file": "output/control/artifact_index.json",
+            "project_specific_data_allowed": True
         }
 
     def _materialize_qa_card(self) -> Dict[str, Any]:
@@ -516,7 +538,9 @@ class ProductionCardMaterializer:
             "frame_qc_required": True,
             "identity_consistency_required": True,
             "production_acceptance_requires_identity_qa": True,
-            "downstream_blocked_if_identity_failed": True
+            "downstream_blocked_if_identity_failed": True,
+            "source_data_origin": "core",
+            "project_specific_data_allowed": True
         }
 
 
