@@ -145,7 +145,7 @@ class ProductionRouter:
 
     def _check_identity_qa_failed(self, project_path: Path) -> bool:
         """
-        Check if identity QA failed in project metadata.
+        Check if identity QA failed in project metadata or artifact index.
 
         Args:
             project_path: Path to the project root
@@ -172,6 +172,28 @@ class ProductionRouter:
                         return True
                 except (json.JSONDecodeError, IOError):
                     pass
+
+        # Check artifact_index.json for identity failures in shots
+        artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+        if artifact_index_path.exists():
+            try:
+                with open(artifact_index_path, 'r', encoding='utf-8') as f:
+                    artifact_index = json.load(f)
+                
+                # Check if any shot has identity failure
+                shots = artifact_index.get("shots", [])
+                for shot in shots:
+                    # Check for identity failure indicators
+                    if shot.get("identity_consistency_passed") == False:
+                        return True
+                    if shot.get("identity_qa_passed") == False:
+                        return True
+                    if shot.get("status") == "identity_qa_failed":
+                        return True
+                    if shot.get("production_accepted") == False and "identity" in shot.get("recommended_action", "").lower():
+                        return True
+            except (json.JSONDecodeError, IOError):
+                pass
 
         return False
 

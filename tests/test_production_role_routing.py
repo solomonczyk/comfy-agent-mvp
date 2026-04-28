@@ -665,3 +665,234 @@ class TestProductionRoleRouting:
         assert char_route is not None
         assert char_route["responsible_role"] == "Character Director"
         # Should not have any special handling for the name "Alya"
+
+    def test_real_identity_failure_from_artifact_index_routes_to_character_director_and_workflow_td(self, tmp_path):
+        """Test that identity failure in artifact_index routes to Character Director + Workflow TD."""
+        cards_dir = tmp_path / "cards"
+        cards_dir.mkdir()
+        
+        # Create output/control directory structure
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+        
+        # Create artifact_index.json with identity failure
+        artifact_index = {
+            "episode_id": "ep01",
+            "overall_episode_state": "preflight_complete",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "status": "identity_qa_failed",
+                    "media_generated": True,
+                    "frame_qc_passed": True,
+                    "identity_qa_passed": False,
+                    "identity_consistency_passed": False,
+                    "production_accepted": False,
+                    "recommended_action": "route_to_character_director_and_workflow_td"
+                }
+            ]
+        }
+        
+        with open(control_dir / "artifact_index.json", "w") as f:
+            json.dump(artifact_index, f)
+        
+        router = ProductionRouter()
+        result = router.route_project_cards(str(tmp_path))
+        
+        # Find the identity failure route
+        identity_route = None
+        for route in result["routes"]:
+            if route["issue_type"] == "identity_qa_failed":
+                identity_route = route
+                break
+        
+        assert identity_route is not None
+        assert isinstance(identity_route["responsible_role"], list)
+        assert "Character Director" in identity_route["responsible_role"]
+        assert "Workflow TD / ComfyUI Technical Director" in identity_route["responsible_role"]
+        assert identity_route["recommended_action"] == "approve_identity_workflow_before_retry"
+        assert identity_route["downstream_blocked"] == True
+
+    def test_production_accepted_false_blocks_downstream(self, tmp_path):
+        """Test that production_accepted=false blocks downstream."""
+        cards_dir = tmp_path / "cards"
+        cards_dir.mkdir()
+        
+        # Create output/control directory structure
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+        
+        # Create artifact_index.json with production_accepted=false
+        artifact_index = {
+            "episode_id": "ep01",
+            "overall_episode_state": "preflight_complete",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "status": "identity_qa_failed",
+                    "media_generated": True,
+                    "frame_qc_passed": True,
+                    "identity_qa_passed": False,
+                    "identity_consistency_passed": False,
+                    "production_accepted": False,
+                    "recommended_action": "route_to_character_director_and_workflow_td"
+                }
+            ]
+        }
+        
+        with open(control_dir / "artifact_index.json", "w") as f:
+            json.dump(artifact_index, f)
+        
+        router = ProductionRouter()
+        result = router.route_project_cards(str(tmp_path))
+        
+        assert result["downstream_blocked"] == True
+        assert result["status"] == "blocked"
+
+    def test_identity_consistency_passed_false_blocks_downstream(self, tmp_path):
+        """Test that identity_consistency_passed=false blocks downstream."""
+        cards_dir = tmp_path / "cards"
+        cards_dir.mkdir()
+        
+        # Create output/control directory structure
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+        
+        # Create artifact_index.json with identity_consistency_passed=false
+        artifact_index = {
+            "episode_id": "ep01",
+            "overall_episode_state": "preflight_complete",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "status": "frames_generated",
+                    "media_generated": True,
+                    "frame_qc_passed": True,
+                    "identity_qa_passed": False,
+                    "identity_consistency_passed": False
+                }
+            ]
+        }
+        
+        with open(control_dir / "artifact_index.json", "w") as f:
+            json.dump(artifact_index, f)
+        
+        router = ProductionRouter()
+        result = router.route_project_cards(str(tmp_path))
+        
+        assert result["downstream_blocked"] == True
+        assert result["status"] == "blocked"
+
+    def test_frame_qc_passed_true_not_enough_for_production_acceptance(self, tmp_path):
+        """Test that frame_qc_passed=true is not enough for production acceptance."""
+        cards_dir = tmp_path / "cards"
+        cards_dir.mkdir()
+        
+        # Create output/control directory structure
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+        
+        # Create artifact_index.json with frame_qc_passed=true but identity failure
+        artifact_index = {
+            "episode_id": "ep01",
+            "overall_episode_state": "preflight_complete",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "status": "identity_qa_failed",
+                    "media_generated": True,
+                    "frame_qc_passed": True,  # Frame QC passed
+                    "identity_qa_passed": False,  # But identity failed
+                    "identity_consistency_passed": False,
+                    "production_accepted": False
+                }
+            ]
+        }
+        
+        with open(control_dir / "artifact_index.json", "w") as f:
+            json.dump(artifact_index, f)
+        
+        router = ProductionRouter()
+        result = router.route_project_cards(str(tmp_path))
+        
+        # Should still be blocked due to identity failure
+        assert result["downstream_blocked"] == True
+        # Should route to Character Director + Workflow TD, not just continue
+        identity_route = None
+        for route in result["routes"]:
+            if route["issue_type"] == "identity_qa_failed":
+                identity_route = route
+                break
+        
+        assert identity_route is not None
+        assert "Character Director" in identity_route["responsible_role"]
+        assert "Workflow TD / ComfyUI Technical Director" in identity_route["responsible_role"]
+
+    def test_route_production_tasks_works_on_multishot_style_state(self, tmp_path):
+        """Test that route-production-tasks works on rc2_multishot1_ep01 style state."""
+        cards_dir = tmp_path / "cards"
+        cards_dir.mkdir()
+        
+        # Create output/control directory structure
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+        
+        # Create artifact_index.json similar to rc2_multishot1_ep01
+        artifact_index = {
+            "episode_id": "ep01",
+            "episode_title": "Test Episode",
+            "overall_episode_state": "preflight_complete",
+            "shots": [
+                {
+                    "shot_id": "shot01",
+                    "status": "identity_qa_failed",
+                    "media_generated": True,
+                    "frame_qc_passed": True,
+                    "identity_qa_passed": False,
+                    "identity_consistency_passed": False,
+                    "production_accepted": False,
+                    "generation_mode": "reference_locked",
+                    "technical_fallback_only": True,
+                    "recommended_action": "route_to_character_director_and_workflow_td"
+                },
+                {
+                    "shot_id": "shot02",
+                    "status": "preflight_complete",
+                    "media_generated": False
+                }
+            ]
+        }
+        
+        with open(control_dir / "artifact_index.json", "w") as f:
+            json.dump(artifact_index, f)
+        
+        router = ProductionRouter()
+        result = router.route_project_cards(str(tmp_path))
+        
+        # Should detect identity failure and route correctly
+        assert result["status"] == "blocked"
+        assert result["downstream_blocked"] == True
+        
+        identity_route = None
+        for route in result["routes"]:
+            if route["issue_type"] == "identity_qa_failed":
+                identity_route = route
+                break
+        
+        assert identity_route is not None
+        assert isinstance(identity_route["responsible_role"], list)
+        assert "Character Director" in identity_route["responsible_role"]
+        assert "Workflow TD / ComfyUI Technical Director" in identity_route["responsible_role"]
+
+    def test_no_project_specific_hardcode_added_to_router_core(self, tmp_path):
+        """Test that no project-specific hardcode is added to router core logic."""
+        # Read the router source code to check for hardcode
+        router_path = Path(__file__).parent.parent / "app" / "production_cards" / "router.py"
+        with open(router_path, "r") as f:
+            router_content = f.read().lower()
+        
+        # Check for project-specific names
+        assert "alya" not in router_content
+        assert "mir erdan" not in router_content
+        assert "ep01" not in router_content  # No hardcode for specific episode
+        assert "shot01" not in router_content  # No hardcode for specific shot
