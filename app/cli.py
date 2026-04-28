@@ -891,6 +891,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2Y — Create resubmitted role decision drafts subcommand
+    create_resubmitted_role_decisions_parser = subparsers.add_parser("create-resubmitted-role-decisions", help="Create submitted role decision drafts from resubmission packets, without applying")
+    create_resubmitted_role_decisions_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing role decision resubmission packets",
+    )
+    create_resubmitted_role_decisions_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     # RC2-PRODCARDS2P — Evaluate submitted decision outcome gate subcommand
     evaluate_submitted_decision_outcome_parser = subparsers.add_parser("evaluate-submitted-decision-outcome", help="Evaluate submitted role decision outcomes to classify approvals vs change requests before apply or retry")
     evaluate_submitted_decision_outcome_parser.add_argument(
@@ -1147,6 +1160,8 @@ def main() -> int:
         return validate_submitted_role_decisions(args)
     elif args.command == "create-real-role-decision-drafts":
         return create_real_role_decision_drafts(args)
+    elif args.command == "create-resubmitted-role-decisions":
+        return create_resubmitted_role_decisions(args)
     elif args.command == "validate-real-role-decision-drafts":
         return validate_real_role_decision_drafts(args)
     elif args.command == "evaluate-submitted-decision-outcome":
@@ -6440,6 +6455,42 @@ def create_real_role_decision_drafts(args: argparse.Namespace) -> int:
         print(f"Downstream Blocked: {result['downstream_blocked']}")
         for draft in result['drafts']:
             print(f"  - {draft['role']}: {draft['selected_decision']} ({draft['draft_path']})")
+    
+    return 0
+
+
+def create_resubmitted_role_decisions(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2Y — Create resubmitted role decision drafts from resubmission packets.
+    
+    This command creates submitted decision drafts from validated resubmission packets.
+    These drafts have selected_decision filled in based on the resubmission packets.
+    They do NOT modify role_decisions/, do NOT open retry gate, do NOT mark production_accepted=true.
+    They do NOT run ComfyUI, do NOT generate frames, do NOT run TTS, do NOT run ffmpeg.
+    
+    Exit codes:
+    - 0: resubmitted decision creation completed successfully
+    - 1: creation failed or invalid args
+    """
+    from app.production_cards.resubmitted_decisions import create_resubmitted_role_decisions as create_resubmitted
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_resubmitted(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Status: {result['status'].upper()}")
+        print(f"Resubmitted Decisions Created: {result['resubmitted_decisions_created']}")
+        print(f"Based on Resubmission Packets: {result['based_on_resubmission_packets']}")
+        print(f"Submitted Decisions Ready: {result['submitted_decisions_ready']}")
+        print(f"Apply Performed: {result['apply_performed']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        for file_path in result.get('submitted_decision_files', []):
+            print(f"  - {file_path}")
     
     return 0
 
