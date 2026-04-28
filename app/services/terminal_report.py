@@ -1,0 +1,78 @@
+from copy import deepcopy
+from typing import Any
+
+
+def build_terminal_report(
+    *,
+    status: str,
+    user_prompt: str,
+    final_positive_prompt: str | None,
+    prompt_id: str | None,
+    failed_stage: str | None,
+    error: Exception | None,
+    preset_name: str | None,
+    rewrite_mode: str | None,
+    seed: int | None,
+    images: list[dict[str, Any]] | None,
+    preflight: dict[str, Any] | None,
+    artifact_validation: dict[str, Any] | None,
+    artifact_fetch_validation: dict[str, Any] | None,
+    metadata_path: str | None = None,
+    summary_path: str | None = None,
+    judge_status: str | None = None,
+    orchestrator_report: dict[str, Any] | None = None,
+    quality_report: dict[str, Any] | None = None,
+    retry_decision: dict[str, Any] | None = None,
+    retry_loop: dict[str, Any] | None = None,
+    workflow_switch: dict[str, Any] | None = None,
+    candidate_history: dict[str, Any] | None = None,
+    task_selection: dict[str, Any] | None = None,
+    execution_plan: dict[str, Any] | None = None,
+    mutation_report: dict[str, Any] | None = None,
+    mutation_retry: dict[str, Any] | None = None,
+    candidate_selection: dict[str, Any] | None = None,
+    corrective_action: dict[str, Any] | None = None,
+    executed_action: dict[str, Any] | None = None,
+    recipe_validation: dict[str, Any] | None = None,
+    upscale_result: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    return {
+        "status": status,
+        "prompt_id": prompt_id or "-",
+        "failed_stage": failed_stage,
+        "error_type": error.__class__.__name__ if error else None,
+        "error": str(error) if error else None,
+        "user_prompt": user_prompt,
+        "final_positive_prompt": final_positive_prompt,
+        "preset_name": preset_name,
+        "rewrite_mode": rewrite_mode,
+        "seed": seed,
+        "images": deepcopy(images or []),
+        "preflight": deepcopy(preflight) if preflight is not None else None,
+        "artifact_validation": (
+            deepcopy(artifact_validation) if artifact_validation is not None else None
+        ),
+        "artifact_fetch_validation": (
+            deepcopy(artifact_fetch_validation)
+            if artifact_fetch_validation is not None
+            else None
+        ),
+        "metadata_path": metadata_path,
+        "summary_path": summary_path,
+        "judge_status": judge_status,
+        "orchestrator_report": deepcopy(orchestrator_report) if orchestrator_report is not None else None,
+        "quality_report": deepcopy(quality_report) if quality_report is not None else None,
+        "retry_decision": deepcopy(retry_decision) if retry_decision is not None else None,
+        "retry_loop": deepcopy(retry_loop) if retry_loop is not None else None,
+        "workflow_switch": deepcopy(workflow_switch) if workflow_switch is not None else None,
+        "candidate_history": deepcopy(candidate_history) if candidate_history is not None else None,
+        "task_selection": deepcopy(task_selection) if task_selection is not None else None,
+        "execution_plan": deepcopy(execution_plan) if execution_plan is not None else None,
+        "mutation_report": deepcopy(mutation_report) if mutation_report is not None else None,
+        "mutation_retry": deepcopy(mutation_retry) if mutation_retry is not None else None,
+        "candidate_selection": deepcopy(candidate_selection) if candidate_selection is not None else None,
+        "corrective_action": deepcopy(corrective_action) if corrective_action is not None else None,
+        "executed_action": deepcopy(executed_action) if executed_action is not None else None,
+        "recipe_validation": deepcopy(recipe_validation) if recipe_validation is not None else None,
+        "upscale_result": deepcopy(upscale_result) if upscale_result is not None else None,
+    }

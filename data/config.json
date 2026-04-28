@@ -1,0 +1,81 @@
+{
+  "lora_dir": "F:/ComfyUI/models/loras",
+  "fallback_voice_id": "tts_ru_01",
+  "default_negative": "glamour, fashion model, beauty portrait, studio portrait, stock photo, advertisement, perfect makeup, smiling, looking at camera, hood up, hood covering head, blue hoodie, luxury hotel, clean staged bedroom, plastic skin, wax skin, over-smoothed face, anime, cartoon, bad anatomy, distorted face, bad hands, extra fingers, red skin, orange skin, artifacts, picture frame, decorative frame, border, text, watermark",
+  "fps": 1,
+  "min_keyframes": 2,
+  "max_scene_duration_sec": 2.0,
+  "max_frames_per_batch": 1,
+  "steps": 16,
+  "checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+  "use_reference_grid": false,
+  "reference_grid_size": 4,
+  "reference_weight": 0.25,
+  "denoise": 0.5,
+  "sampler_name": "dpmpp_sde",
+  "scheduler": "karras",
+  "cfg": 7.0,
+  "workflow_template": {
+    "__inject__": {
+      "positive_prompt_node": "6",
+      "negative_prompt_node": "7"
+    },
+    "3": {
+      "inputs": {
+        "seed": 123456789,
+        "steps": 16,
+        "cfg": 7.0,
+        "sampler_name": "dpmpp_sde",
+        "scheduler": "karras",
+        "denoise": 0.5,
+        "model": ["4", 0],
+        "positive": ["6", 0],
+        "negative": ["7", 0],
+        "latent_image": ["5", 0]
+      },
+      "class_type": "KSampler"
+    },
+    "4": {
+      "inputs": {
+        "ckpt_name": "CyberRealisticXLPlay_V7.0_FP16.safetensors"
+      },
+      "class_type": "CheckpointLoaderSimple"
+    },
+    "5": {
+      "inputs": {
+        "width": 480,
+        "height": 640,
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage"
+    },
+    "6": {
+      "inputs": {
+        "text": "",
+        "clip": ["4", 1]
+      },
+      "class_type": "CLIPTextEncode"
+    },
+    "7": {
+      "inputs": {
+        "text": "",
+        "clip": ["4", 1]
+      },
+      "class_type": "CLIPTextEncode"
+    },
+    "8": {
+      "inputs": {
+        "samples": ["3", 0],
+        "vae": ["4", 2]
+      },
+      "class_type": "VAEDecode"
+    },
+    "9": {
+      "inputs": {
+        "images": ["8", 0],
+        "filename_prefix": "agent/output"
+      },
+      "class_type": "SaveImage"
+    }
+  }
+}

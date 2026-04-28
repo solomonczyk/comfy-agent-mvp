@@ -1,0 +1,7 @@
+{
+  "tts_ru_01": {"engine": "silero", "lang": "ru", "speaker": "kseniya", "sample_rate": 48000},
+  "tts_ru_02": {"engine": "silero", "lang": "ru", "speaker": "kseniya", "sample_rate": 48000},
+  "tts_ru_03": {"engine": "silero", "lang": "ru", "speaker": "baya",    "sample_rate": 48000},
+  "tts_ru_04": {"engine": "silero", "lang": "ru", "speaker": "xenia",   "sample_rate": 48000},
+  "tts_en_01": {"engine": "kokoro", "lang": "en", "speaker": "af_heart","sample_rate": 24000}
+}

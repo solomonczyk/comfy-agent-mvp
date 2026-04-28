@@ -1,0 +1,128 @@
+[
+  {
+    "recipe_id": "sdxl_storyboard_keyframes_gtx1060",
+    "task_type": "storyboard_keyframes",
+    "model_family": "sdxl",
+    "checkpoint_allowlist": [
+      "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "realvisxlV50_v50Bakedvae.safetensors",
+      "juggernautXL_version2.safetensors"
+    ],
+    "sampler_allowlist": [
+      "dpmpp_sde",
+      "dpmpp_2m",
+      "dpm++_sde",
+      "dpm++_2m"
+    ],
+    "scheduler_allowlist": ["karras"],
+    "steps_min": 16,
+    "steps_max": 24,
+    "cfg_min": 5.0,
+    "cfg_max": 8.0,
+    "batch_size_max": 3,
+    "max_pixels": 307200,
+    "allowed_aspect_ratios": {
+      "9:16": [480, 640],
+      "4:3": [640, 480],
+      "1:1": [512, 512],
+      "16:9": [640, 360]
+    },
+    "denoise_min": null,
+    "denoise_max": null,
+    "required_negative_terms": [
+      "bad anatomy",
+      "distorted face",
+      "red skin",
+      "orange skin",
+      "blue hoodie",
+      "artifacts"
+    ],
+    "notes": []
+  },
+  {
+    "recipe_id": "sdxl_reference_locked_character_gtx1060",
+    "task_type": "reference_locked_character",
+    "model_family": "sdxl",
+    "checkpoint_allowlist": [
+      "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "realvisxlV50_v50Bakedvae.safetensors",
+      "juggernautXL_version2.safetensors"
+    ],
+    "sampler_allowlist": [
+      "dpmpp_sde",
+      "dpmpp_2m",
+      "dpm++_sde",
+      "dpm++_2m"
+    ],
+    "scheduler_allowlist": ["karras"],
+    "steps_min": 16,
+    "steps_max": 24,
+    "cfg_min": 5.0,
+    "cfg_max": 8.0,
+    "batch_size_max": 2,
+    "max_pixels": 307200,
+    "allowed_aspect_ratios": {
+      "9:16": [480, 640],
+      "4:3": [640, 480],
+      "1:1": [512, 512],
+      "16:9": [640, 360]
+    },
+    "denoise_min": 0.45,
+    "denoise_max": 0.75,
+    "required_negative_terms": [
+      "bad anatomy",
+      "distorted face",
+      "red skin",
+      "orange skin",
+      "blue hoodie",
+      "artifacts"
+    ],
+    "notes": []
+  },
+  {
+    "recipe_id": "sdxl_phone_screen_overlay_gtx1060",
+    "task_type": "phone_screen_overlay",
+    "model_family": "sdxl",
+    "checkpoint_allowlist": [
+      "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "realvisxlV50_v50Bakedvae.safetensors",
+      "juggernautXL_version2.safetensors"
+    ],
+    "sampler_allowlist": [
+      "dpmpp_sde",
+      "dpmpp_2m",
+      "dpm++_sde",
+      "dpm++_2m"
+    ],
+    "scheduler_allowlist": ["karras"],
+    "steps_min": 16,
+    "steps_max": 24,
+    "cfg_min": 5.0,
+    "cfg_max": 8.0,
+    "batch_size_max": 2,
+    "max_pixels": 307200,
+    "allowed_aspect_ratios": {
+      "9:16": [480, 640],
+      "4:3": [640, 480],
+      "1:1": [512, 512],
+      "16:9": [640, 360]
+    },
+    "denoise_min": null,
+    "denoise_max": null,
+    "required_negative_terms": [
+      "bad anatomy",
+      "distorted face",
+      "red skin",
+      "orange skin",
+      "blue hoodie",
+      "artifacts",
+      "phone hidden",
+      "screen facing away",
+      "tiny phone",
+      "text"
+    ],
+    "notes": [
+      "Do not rely on SDXL to render exact UI text. Use blank/dark screen and add UI text later as overlay."
+    ]
+  }
+]

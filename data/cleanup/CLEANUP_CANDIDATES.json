@@ -1,0 +1,1614 @@
+{
+  "cleanup_candidates": [
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/temp_output_sample",
+      "type": "directory",
+      "reason": "Temporary output sample, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/temp_test_output",
+      "type": "directory",
+      "reason": "Temporary test output, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/temp_action_plan_samples",
+      "type": "directory",
+      "reason": "Temporary action plan samples, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/_ep01_timed.py",
+      "type": "file",
+      "reason": "Temporary ep01 timed script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/_pre_check.py",
+      "type": "file",
+      "reason": "Temporary pre-check script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/_temp_check_job.py",
+      "type": "file",
+      "reason": "Temporary check job script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/check_alya_dimensions.py",
+      "type": "file",
+      "reason": "One-off check script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/check_canonical_job.py",
+      "type": "file",
+      "reason": "One-off check script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/check_checkpoints.py",
+      "type": "file",
+      "reason": "One-off check script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/check_queue.py",
+      "type": "file",
+      "reason": "One-off check script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/check_realvis_job.py",
+      "type": "file",
+      "reason": "One-off check script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/check_running_job.py",
+      "type": "file",
+      "reason": "One-off check script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/check_stability_job.py",
+      "type": "file",
+      "reason": "One-off check script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/clear_queue.py",
+      "type": "file",
+      "reason": "One-off queue clear script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/copy_r5_to_r6.py",
+      "type": "file",
+      "reason": "One-off migration script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/create_dirty_contact_sheet.py",
+      "type": "file",
+      "reason": "One-off contact sheet script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/debug_sdxl_base.py",
+      "type": "file",
+      "reason": "One-off debug script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_action_plan_samples.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_baseline_outputs.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_control_status_sample.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_ep01_artifacts.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_gate_decision_samples.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_generic_gate_decision_samples.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_gorynych_artifacts.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_kb_samples.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_mk_real3r_proof.py",
+      "type": "file",
+      "reason": "One-off proof generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_recipe_validation_samples.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_sample_action_plans.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_sample_outputs.py",
+      "type": "file",
+      "reason": "Sample generation script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/get_checkpoints.py",
+      "type": "file",
+      "reason": "One-off utility script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/get_image_metadata.py",
+      "type": "file",
+      "reason": "One-off utility script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/get_metadata.py",
+      "type": "file",
+      "reason": "One-off utility script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/inspect_imagesscale.py",
+      "type": "file",
+      "reason": "One-off inspection script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/instrumented_queue_debug.py",
+      "type": "file",
+      "reason": "One-off debug script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/list_checkpoints.py",
+      "type": "file",
+      "reason": "One-off utility script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk_ctrl14_verification.py",
+      "type": "file",
+      "reason": "One-off verification script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk_ctrl15_verification.py",
+      "type": "file",
+      "reason": "One-off verification script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk_ctrl15r1_verification.py",
+      "type": "file",
+      "reason": "One-off verification script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk_ctrl15r_verification.py",
+      "type": "file",
+      "reason": "One-off verification script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk_real3r_preflight.py",
+      "type": "file",
+      "reason": "One-off preflight script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk_real3r_preflight_output.txt",
+      "type": "file",
+      "reason": "One-off preflight output, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/proof_promptlock1.py",
+      "type": "file",
+      "reason": "One-off proof script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/realvisxl_only_test.py",
+      "type": "file",
+      "reason": "One-off test script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/run_checkpoint_exploration.py",
+      "type": "file",
+      "reason": "One-off exploration script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/run_portrait_tuning.py",
+      "type": "file",
+      "reason": "One-off tuning script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/run_refiner_test.py",
+      "type": "file",
+      "reason": "One-off test script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/test_recipe_override_fix.py",
+      "type": "file",
+      "reason": "One-off test script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/test_silero.wav",
+      "type": "file",
+      "reason": "Test audio file, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/test_single_generation.py",
+      "type": "file",
+      "reason": "One-off test script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/test_upload.py",
+      "type": "file",
+      "reason": "One-off test script, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/test_input_image.png",
+      "type": "file",
+      "reason": "Test image file, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/test_portrait.png",
+      "type": "file",
+      "reason": "Test image file, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/pipeline_output.log",
+      "type": "file",
+      "reason": "Pipeline output log, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/pytest_output.txt",
+      "type": "file",
+      "reason": "Pytest output log, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/pytest_output2.txt",
+      "type": "file",
+      "reason": "Pytest output log 2, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/pytest_output3.txt",
+      "type": "file",
+      "reason": "Pytest output log 3, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/smoke2.log",
+      "type": "file",
+      "reason": "Smoke log, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/run_raw.bat",
+      "type": "file",
+      "reason": "One-off batch file, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/run_rewrite.bat",
+      "type": "file",
+      "reason": "One-off batch file, not imported by app",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6jcp_results.json",
+      "type": "file",
+      "reason": "One-off probe results, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6k_dp_probe_a_workflow.json",
+      "type": "file",
+      "reason": "One-off probe workflow, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6k_dp_probe_b_workflow.json",
+      "type": "file",
+      "reason": "One-off probe workflow, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6k_dp_probe_c_workflow.json",
+      "type": "file",
+      "reason": "One-off probe workflow, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6k_px_probe_p1_workflow.json",
+      "type": "file",
+      "reason": "One-off probe workflow, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6k_px_probe_p2_workflow.json",
+      "type": "file",
+      "reason": "One-off probe workflow, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/stability_test_results.json",
+      "type": "file",
+      "reason": "One-off test results, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/action_plan_allowed_alya.json",
+      "type": "file",
+      "reason": "Sample action plan, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/action_plan_denied_kael.json",
+      "type": "file",
+      "reason": "Sample action plan, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/action_plan_denied_missing_characters.json",
+      "type": "file",
+      "reason": "Sample action plan, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/gate_decision_allowed_alya.json",
+      "type": "file",
+      "reason": "Sample gate decision, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/gate_decision_allowed_alya_generic.json",
+      "type": "file",
+      "reason": "Sample gate decision, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/gate_decision_allowed_hero_01_generic.json",
+      "type": "file",
+      "reason": "Sample gate decision, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/gate_decision_denied_alya_missing_lock.json",
+      "type": "file",
+      "reason": "Sample gate decision, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/gate_decision_denied_kael.json",
+      "type": "file",
+      "reason": "Sample gate decision, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/gate_decision_denied_kael_generic.json",
+      "type": "file",
+      "reason": "Sample gate decision, not source of truth",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_ep01_pilot",
+      "type": "directory",
+      "reason": "Legacy pilot run, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_ep01_pilot_r2",
+      "type": "directory",
+      "reason": "Legacy pilot run R2, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_ep01_pilot_r3",
+      "type": "directory",
+      "reason": "Legacy pilot run R3, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_ep01_pilot_r4",
+      "type": "directory",
+      "reason": "Legacy pilot run R4, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_ep01_pilot_r5",
+      "type": "directory",
+      "reason": "Legacy pilot run R5, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_ep01_pilot_r6",
+      "type": "directory",
+      "reason": "Legacy pilot run R6, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_ep01_pilot_r7",
+      "type": "directory",
+      "reason": "Legacy pilot run R7, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_ep01_pilot_r7r",
+      "type": "directory",
+      "reason": "Legacy pilot run R7r, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_recipe_smoke_r1",
+      "type": "directory",
+      "reason": "Legacy recipe smoke, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_recipe_smoke_r2",
+      "type": "directory",
+      "reason": "Legacy recipe smoke R2, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_recipe_smoke_r3",
+      "type": "directory",
+      "reason": "Legacy recipe smoke R3, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_recipe_smoke_r3_fresh",
+      "type": "directory",
+      "reason": "Legacy recipe smoke R3 fresh, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_reference_locked_alya_r1",
+      "type": "directory",
+      "reason": "Legacy reference locked, superseded by gorynych_identity workflow",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_reference_locked_alya_r3",
+      "type": "directory",
+      "reason": "Legacy reference locked R3, superseded by gorynych_identity workflow",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_reference_locked_alya_r5",
+      "type": "directory",
+      "reason": "Legacy reference locked R5, superseded by gorynych_identity workflow",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/real_reference_locked_alya_r6",
+      "type": "directory",
+      "reason": "Legacy reference locked R6, superseded by gorynych_identity workflow",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/smoke_clean_contract",
+      "type": "directory",
+      "reason": "Legacy smoke clean contract, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/smoke_clean_contract_r2",
+      "type": "directory",
+      "reason": "Legacy smoke clean contract R2, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/smoke_clean_contract_r3",
+      "type": "directory",
+      "reason": "Legacy smoke clean contract R3, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc_core1_profile_proof",
+      "type": "directory",
+      "reason": "Legacy RC core1 profile proof, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_audio1_ep01",
+      "type": "directory",
+      "reason": "Legacy RC2 audio1, superseded by rc2_voice_demo_pack_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_render1_ep01",
+      "type": "directory",
+      "reason": "Legacy RC2 render1, superseded by rc2_demo_pack_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/gorynych_ep01",
+      "type": "directory",
+      "reason": "Legacy gorynych ep01, superseded by rc2_multishot1_ep01",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/acceptance_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/canonical_portrait_workflow_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/checkpoint_exploration.py",
+      "type": "file",
+      "reason": "Exploration script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/compare_refiner_results.py",
+      "type": "file",
+      "reason": "Comparison script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/compare_tuning_results.py",
+      "type": "file",
+      "reason": "Comparison script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/generate_proofs.py",
+      "type": "file",
+      "reason": "Proof generation script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/live_runtime_recipe_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6jcp_differential_probe.py",
+      "type": "file",
+      "reason": "Probe script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6k_dp_differential_probe.py",
+      "type": "file",
+      "reason": "Probe script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6k_pp_payload_parity_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk6k_px_production_exact_probe.py",
+      "type": "file",
+      "reason": "Probe script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk8a_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk8b_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/mk_ctrl16_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/portrait_baseline_tuning.py",
+      "type": "file",
+      "reason": "Tuning script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/realvisxl_comparison.py",
+      "type": "file",
+      "reason": "Comparison script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/realvisxl_simple_comparison.py",
+      "type": "file",
+      "reason": "Comparison script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/recipe_enforcement_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/refiner_face_detail_test.py",
+      "type": "file",
+      "reason": "Test script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/sdxl_agent_recipe_proof.py",
+      "type": "file",
+      "reason": "Proof script, may be needed for reproducibility",
+      "status": "candidate_only",
+      "action_recommendation": "investigate",
+      "protected": false,
+      "risk_level": "medium",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/CANONICAL_RECIPE_PROPAGATION_REPAIR_V1_SUMMARY.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/KT8_VIDEO_QC_V1_SUMMARY.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/REALVIS_CANONICAL_PROOF_V1_STATUS.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/RUNTIME_ENVIRONMENT_RECOVERY_SUMMARY.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/SEAM_FIXES.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/STABILITY_V1_SUMMARY.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/V1.0.1_RELEASE.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/V1_1_BACKLOG.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/V1_FREEZE.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/VISION_DEFECT_DETECTION_V1_SUMMARY.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/VISION_DEFECT_PROOF_V1_SUMMARY.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/VISION_JUDGE_RELIABILITY_REPAIR_SUMMARY.md",
+      "type": "file",
+      "reason": "Summary document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/plan_4weaks.md",
+      "type": "file",
+      "reason": "Planning document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/portrait_baseline_selection.md",
+      "type": "file",
+      "reason": "Planning document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/portrait_baseline_tuning_summary.md",
+      "type": "file",
+      "reason": "Planning document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/refiner_face_detail_summary.md",
+      "type": "file",
+      "reason": "Planning document, safe to archive",
+      "status": "candidate_only",
+      "action_recommendation": "archive",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/ComfyUI_Combine_Architectural_Pack.zip",
+      "type": "file",
+      "reason": "Protected zip, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01",
+      "type": "directory",
+      "reason": "Active multi-shot root, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_voice_demo_pack_ep01",
+      "type": "directory",
+      "reason": "Protected demo pack, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_voice_demo_pack_ep01.zip",
+      "type": "file",
+      "reason": "Protected demo pack zip, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_voice1_ep01/output/final/ep01_final_with_voiceover.mp4",
+      "type": "file",
+      "reason": "Protected final video, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_demo_pack_ep01",
+      "type": "directory",
+      "reason": "Protected demo pack, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_demo_pack_ep01.zip",
+      "type": "file",
+      "reason": "Protected demo pack zip, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/rc_mir_erdan_ep01",
+      "type": "directory",
+      "reason": "Protected Mir Erdan episode, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/external_smoke/rc2_voice_demo_pack_ep01",
+      "type": "directory",
+      "reason": "Protected external smoke copy, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/app",
+      "type": "directory",
+      "reason": "Core application code, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/tests",
+      "type": "directory",
+      "reason": "Test files, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/scripts",
+      "type": "directory",
+      "reason": "Scripts directory, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/docs",
+      "type": "directory",
+      "reason": "Documentation directory, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/requirements.txt",
+      "type": "file",
+      "reason": "Requirements file, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/.env",
+      "type": "file",
+      "reason": "Environment configuration, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/.env.example",
+      "type": "file",
+      "reason": "Environment example, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/README.md",
+      "type": "file",
+      "reason": "README, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/config.json",
+      "type": "file",
+      "reason": "Configuration, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/workflow_template.json",
+      "type": "file",
+      "reason": "Workflow template, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/voice_map.json",
+      "type": "file",
+      "reason": "Voice map, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/generation_recipes.json",
+      "type": "file",
+      "reason": "Generation recipes, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/data/hardware_profiles.json",
+      "type": "file",
+      "reason": "Hardware profiles, do not delete",
+      "status": "candidate_only",
+      "action_recommendation": "keep",
+      "protected": true,
+      "risk_level": "high",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/__pycache__",
+      "type": "directory",
+      "reason": "Python cache, safe to ignore",
+      "status": "candidate_only",
+      "action_recommendation": "delete_later",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/.pytest_cache",
+      "type": "directory",
+      "reason": "Pytest cache, safe to ignore",
+      "status": "candidate_only",
+      "action_recommendation": "delete_later",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/MagicMock",
+      "type": "directory",
+      "reason": "MagicMock cache, safe to ignore",
+      "status": "candidate_only",
+      "action_recommendation": "delete_later",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/app/__pycache__",
+      "type": "directory",
+      "reason": "App Python cache, safe to ignore",
+      "status": "candidate_only",
+      "action_recommendation": "delete_later",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    },
+    {
+      "path": "F:/ComfyUI/comfy-agent-mvp/tests/__pycache__",
+      "type": "directory",
+      "reason": "Tests Python cache, safe to ignore",
+      "status": "candidate_only",
+      "action_recommendation": "delete_later",
+      "protected": false,
+      "risk_level": "low",
+      "depends_on": []
+    }
+  ]
+}

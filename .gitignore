@@ -1,0 +1,125 @@
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific cleanup candidates
+temp_output_sample/
+temp_test_output/
+temp_action_plan_samples/
+
+# Log files
+*.log
+pytest_output*.txt
+pipeline_output.log
+smoke*.log
+
+# One-off scripts (cleanup candidates)
+_ep01_timed.py
+_pre_check.py
+_temp_check_job.py
+check_*.py
+clear_queue.py
+copy_r5_to_r6.py
+create_dirty_contact_sheet.py
+debug_sdxl_base.py
+generate_*.py
+get_*.py
+inspect_imagesscale.py
+instrumented_queue_debug.py
+list_checkpoints.py
+mk_*.py
+proof_*.py
+realvisxl_*.py
+run_*.py
+test_*.py
+compare_*.py
+acceptance_proof.py
+canonical_portrait_workflow_proof.py
+checkpoint_exploration.py
+recipe_enforcement_proof.py
+sdxl_agent_recipe_proof.py
+refiner_face_detail_test.py
+portrait_baseline_tuning.py
+
+# Batch files
+run_raw.bat
+run_rewrite.bat
+
+# Test assets
+test_silero.wav
+test_input_image.png
+test_portrait.png
+
+# JSON artifacts
+mk6jcp_results.json
+mk6k_*.json
+stability_test_results.json
+
+# Output directories
+output/
+temp_output_sample/
+
+# Summary documents (cleanup candidates)
+CANONICAL_RECIPE_PROPAGATION_REPAIR_V1_SUMMARY.md
+KT8_VIDEO_QC_V1_SUMMARY.md
+REALVIS_CANONICAL_PROOF_V1_STATUS.md
+RUNTIME_ENVIRONMENT_RECOVERY_SUMMARY.md
+SEAM_FIXES.md
+STABILITY_V1_SUMMARY.md
+V1.0.1_RELEASE.md
+V1_1_BACKLOG.md
+V1_FREEZE.md
+VISION_DEFECT_DETECTION_V1_SUMMARY.md
+VISION_DEFECT_PROOF_V1_SUMMARY.md
+VISION_JUDGE_RELIABILITY_REPAIR_SUMMARY.md
+plan_4weaks.md
+portrait_baseline_selection.md
+portrait_baseline_tuning_summary.md
+refiner_face_detail_summary.md
+to-do-plan-for-agent.md
+
+# Preflight output
+mk_real3r_preflight_output.txt
+
+# Sample data files in data root
+data/action_plan_*.json
+data/gate_decision_*.json
+
+# Legacy data directories
+data/real_ep01_pilot*/
+data/real_recipe_smoke*/
+data/real_reference_locked_alya_*/
+data/smoke_clean_contract*/
+data/rc_core1_profile_proof/
+data/rc2_audio1_ep01/
+data/rc2_render1_ep01/
+data/gorynych_ep01/
+
+# External smoke
+data/external_smoke/
+
+# Quarantine
+data/_quarantine_*/

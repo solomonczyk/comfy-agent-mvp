@@ -1,0 +1,14 @@
+{
+  "profile_id": "gtx_1060_5gb",
+  "gpu_name": "GTX 1060 5GB",
+  "vram_gb": 5,
+  "max_pixels_sdxl": 307200,
+  "max_batch_size_sdxl": 3,
+  "recommended_batch_size_sdxl": 2,
+  "notes": [
+    "SDXL is usable but slow",
+    "Avoid large 9:16 resolutions like 480x848",
+    "Prefer 480x640 for 9:16 on this hardware",
+    "Keep storyboard/keyframe batches small"
+  ]
+}
