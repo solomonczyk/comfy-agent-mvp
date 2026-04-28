@@ -11,6 +11,15 @@ This index documents all accepted RC (Release Candidate) layers for the comfy-ag
 **Commit References:**
 - Initial commit: `94c9a7a` - chore: initial commit of comfy-agent-mvp project
 - Post-git audit: `2e3c2a0` - docs: add post-git audit and artifact storage strategy
+- Release freeze: `90f2c3a` - docs: verify rc2 release assets
+
+**GitHub Release:**
+- **Release URL:** https://github.com/solomonczyk/comfy-agent-mvp/releases/tag/rc2-demo-v1
+- **Release Tag:** rc2-demo-v1
+- **Release Type:** Pre-release (draft)
+- **Verification Status:** PASSED (2026-04-28)
+- **Verification Report:** docs/releases/RC2_RELEASE_ASSET_VERIFICATION.md
+- **Freeze Documentation:** docs/RC2_GITHUB_RELEASE_FREEZE.md
 
 ## Accepted Reports
 

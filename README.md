@@ -22,6 +22,18 @@ RC2 includes:
 
 See [docs/acceptance/ACCEPTANCE_INDEX.md](docs/acceptance/ACCEPTANCE_INDEX.md) for detailed acceptance reports.
 
+## Release
+
+**GitHub Release:** https://github.com/solomonczyk/comfy-agent-mvp/releases/tag/rc2-demo-v1
+
+**Release Tag:** rc2-demo-v1
+
+**Assets Available:**
+- rc2_demo_pack_ep01.zip (~95 KB) - Single-shot character generation demo
+- rc2_voice_demo_pack_ep01.zip (~313 KB) - Real voiceover integration demo
+
+**Note:** Generated zip files are distributed as GitHub Release assets, not Git-tracked files. Download the assets from the GitHub Release to verify SHA256 checksums and run demos.
+
 ## What is in Git
 
 **Source Code & Tests:**
