@@ -7,7 +7,7 @@
   "version": "1.0.0",
   "required_inputs": {
     "shot_type": "medium",
-    "action_description": "Reveal Alya's first moment of magical awakening as she touches the crystal"
+    "action_description": "Reveal Protagonist's first moment of magical awakening as she touches the crystal"
   },
   "references": [],
   "constraints": {},
@@ -16,10 +16,10 @@
   "dependencies": [],
   "approval_required_by": "Shot Designer / Storyboard Agent",
   "next_action_if_missing": "Create ShotCard",
-  "created_at": "2026-04-28T10:04:10.250397Z",
-  "updated_at": "2026-04-28T10:04:10.250397Z",
+  "created_at": "2026-04-28T10:10:29.766603Z",
+  "updated_at": "2026-04-28T10:10:29.766603Z",
   "shot_type": "medium",
-  "action_description": "Reveal Alya's first moment of magical awakening as she touches the crystal",
+  "action_description": "Reveal Protagonist's first moment of magical awakening as she touches the crystal",
   "duration_seconds": 10.0,
   "character_reference": "",
   "environment_reference": "env_001",

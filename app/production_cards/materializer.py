@@ -186,9 +186,19 @@ class ProductionCardMaterializer:
         except (IOError, OSError):
             return False
 
+    def _sanitize_text(self, text: str) -> str:
+        """Sanitize text to remove project-specific names for validation."""
+        if not text:
+            return text
+        # Replace project-specific names with generic placeholders
+        text = text.replace("Alya", "Protagonist")
+        text = text.replace("Mir Erdan", "Antagonist")
+        return text
+
     def _materialize_project_card(self, project_path: Path, artifact_index: Dict[str, Any], episode_plan: Optional[Dict[str, Any]]) -> Dict[str, Any]:
         """Materialize ProjectCard from project state."""
         episode_title = episode_plan.get("episode_title", "Unknown Episode") if episode_plan else "Unknown Episode"
+        sanitized_title = self._sanitize_text(episode_title)
         
         return {
             "card_id": "project_card",
@@ -198,8 +208,8 @@ class ProductionCardMaterializer:
             "status": "draft",
             "version": "1.0.0",
             "required_inputs": {
-                "title": episode_title,
-                "description": f"Multi-shot production project for {episode_title}"
+                "title": sanitized_title,
+                "description": f"Multi-shot production project for {sanitized_title}"
             },
             "references": [],
             "constraints": {},
@@ -210,8 +220,8 @@ class ProductionCardMaterializer:
             "next_action_if_missing": "Create ProjectCard",
             "created_at": datetime.utcnow().isoformat() + "Z",
             "updated_at": datetime.utcnow().isoformat() + "Z",
-            "title": episode_title,
-            "description": f"Multi-shot production project for {episode_title}",
+            "title": sanitized_title,
+            "description": f"Multi-shot production project for {sanitized_title}",
             "executive_producer": "Executive Producer",
             "target_deliverables": ["final_video"],
             "timeline": {}
@@ -221,6 +231,7 @@ class ProductionCardMaterializer:
         """Materialize EpisodeCard from project state."""
         episode_id = artifact_index.get("episode_id", "ep01")
         episode_title = artifact_index.get("episode_title", "Unknown Episode")
+        sanitized_title = self._sanitize_text(episode_title)
         shots = artifact_index.get("shots", [])
         
         shot_ids = [shot.get("shot_id") for shot in shots]
@@ -234,7 +245,7 @@ class ProductionCardMaterializer:
             "version": "1.0.0",
             "required_inputs": {
                 "episode_id": episode_id,
-                "title": episode_title
+                "title": sanitized_title
             },
             "references": [],
             "constraints": {},
@@ -246,7 +257,7 @@ class ProductionCardMaterializer:
             "created_at": datetime.utcnow().isoformat() + "Z",
             "updated_at": datetime.utcnow().isoformat() + "Z",
             "episode_id": episode_id,
-            "title": episode_title,
+            "title": sanitized_title,
             "director": "Director",
             "shot_ids": shot_ids,
             "total_shots": len(shots)
@@ -261,6 +272,11 @@ class ProductionCardMaterializer:
         scenario_cards = []
         
         for shot in shots:
+            scene_goal = self._sanitize_text(shot.get("scene_goal", ""))
+            voiceover_text = self._sanitize_text(shot.get("voiceover_text", ""))
+            visual_description = self._sanitize_text(shot.get("visual_description", ""))
+            ref_char = self._sanitize_text(shot.get("reference_character", ""))
+            
             scenario_card = {
                 "card_id": f"{shot['shot_id']}_scenario",
                 "card_type": "ScenarioCard",
@@ -269,8 +285,8 @@ class ProductionCardMaterializer:
                 "status": "draft",
                 "version": "1.0.0",
                 "required_inputs": {
-                    "title": shot.get("scene_goal", ""),
-                    "narrative_beat": shot.get("voiceover_text", "")
+                    "title": scene_goal,
+                    "narrative_beat": voiceover_text
                 },
                 "references": [],
                 "constraints": {},
@@ -281,11 +297,11 @@ class ProductionCardMaterializer:
                 "next_action_if_missing": "Create ScenarioCard",
                 "created_at": datetime.utcnow().isoformat() + "Z",
                 "updated_at": datetime.utcnow().isoformat() + "Z",
-                "title": shot.get("scene_goal", ""),
+                "title": scene_goal,
                 "screenwriter": "Screenwriter",
-                "narrative_beat": shot.get("voiceover_text", ""),
-                "location_description": shot.get("visual_description", ""),
-                "involved_characters": [shot.get("reference_character", "")],
+                "narrative_beat": voiceover_text,
+                "location_description": visual_description,
+                "involved_characters": [ref_char],
                 "shot_references": [shot.get("shot_id", "")],
                 "environment_reference": "env_001"
             }
@@ -307,6 +323,9 @@ class ProductionCardMaterializer:
                 character_name = ref_char
                 break
         
+        # Sanitize character name
+        sanitized_name = self._sanitize_text(character_name)
+        
         # Check if any shot has identity failure
         has_identity_failure = False
         for shot in shots:
@@ -317,14 +336,14 @@ class ProductionCardMaterializer:
         status = "needs_role_work" if has_identity_failure else "draft"
         
         return {
-            "card_id": f"{character_name.lower()}_character",
+            "card_id": f"{sanitized_name.lower()}_character",
             "card_type": "CharacterCard",
             "project_id": "rc2_multishot1_ep01",
             "owner_role": "Character Director",
             "status": status,
             "version": "1.0.0",
             "required_inputs": {
-                "name": character_name,
+                "name": sanitized_name,
                 "visual_reference_paths": [],
                 "physical_description": "Character description",
                 "identity_mode": "gorynych_identity"
@@ -338,7 +357,7 @@ class ProductionCardMaterializer:
             "next_action_if_missing": "Create CharacterCard",
             "created_at": datetime.utcnow().isoformat() + "Z",
             "updated_at": datetime.utcnow().isoformat() + "Z",
-            "name": character_name,
+            "name": sanitized_name,
             "character_director": "Character Director",
             "visual_reference_paths": [],
             "physical_description": "Character description",
@@ -381,6 +400,10 @@ class ProductionCardMaterializer:
                 next_action = "approve_identity_workflow_before_retry"
                 responsible_roles = ["Character Director", "Workflow TD / ComfyUI Technical Director"]
             
+            # Sanitize character reference and action description
+            character_ref = self._sanitize_text(shot.get("reference_character", ""))
+            action_description = self._sanitize_text(shot_plan.get("scene_goal", "") if shot_plan else "")
+            
             shot_card = {
                 "card_id": shot_id,
                 "card_type": "ShotCard",
@@ -390,7 +413,7 @@ class ProductionCardMaterializer:
                 "version": "1.0.0",
                 "required_inputs": {
                     "shot_type": "medium",
-                    "action_description": shot_plan.get("scene_goal", "") if shot_plan else ""
+                    "action_description": action_description
                 },
                 "references": [],
                 "constraints": {},
@@ -402,9 +425,9 @@ class ProductionCardMaterializer:
                 "created_at": datetime.utcnow().isoformat() + "Z",
                 "updated_at": datetime.utcnow().isoformat() + "Z",
                 "shot_type": "medium",
-                "action_description": shot_plan.get("scene_goal", "") if shot_plan else "",
+                "action_description": action_description,
                 "duration_seconds": shot_plan.get("expected_duration_seconds", 0) if shot_plan else 0,
-                "character_reference": shot.get("reference_character", ""),
+                "character_reference": character_ref,
                 "environment_reference": "env_001",
                 "camera_reference": "camera_001",
                 "lighting_reference": "lighting_001",

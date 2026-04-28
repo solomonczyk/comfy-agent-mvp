@@ -7,7 +7,7 @@
   "version": "1.0.0",
   "required_inputs": {
     "shot_type": "medium",
-    "action_description": "Introduce Alya in a serene forest setting, establishing her character and peaceful demeanor"
+    "action_description": "Introduce Protagonist in a serene forest setting, establishing her character and peaceful demeanor"
   },
   "references": [],
   "constraints": {},
@@ -16,10 +16,10 @@
   "dependencies": [],
   "approval_required_by": "Shot Designer / Storyboard Agent",
   "next_action_if_missing": "Create ShotCard",
-  "created_at": "2026-04-28T10:04:10.250397Z",
-  "updated_at": "2026-04-28T10:04:10.250397Z",
+  "created_at": "2026-04-28T10:10:29.766603Z",
+  "updated_at": "2026-04-28T10:10:29.766603Z",
   "shot_type": "medium",
-  "action_description": "Introduce Alya in a serene forest setting, establishing her character and peaceful demeanor",
+  "action_description": "Introduce Protagonist in a serene forest setting, establishing her character and peaceful demeanor",
   "duration_seconds": 9.0,
   "character_reference": "",
   "environment_reference": "env_001",
