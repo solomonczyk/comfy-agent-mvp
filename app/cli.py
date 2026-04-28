@@ -796,6 +796,32 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2L — Create role review evidence packets subcommand
+    create_role_review_packets_parser = subparsers.add_parser("create-role-review-packets", help="Create structured review evidence packets for Character Director and Workflow TD")
+    create_role_review_packets_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing cards",
+    )
+    create_role_review_packets_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2L — Validate role review evidence packets subcommand
+    validate_role_review_packets_parser = subparsers.add_parser("validate-role-review-packets", help="Validate role review evidence packets and determine if decisions are ready")
+    validate_role_review_packets_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing role review packets",
+    )
+    validate_role_review_packets_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -858,6 +884,10 @@ def main() -> int:
         return inspect_production_decision_state(args)
     elif args.command == "repair-production-decision-state":
         return repair_production_decision_state(args)
+    elif args.command == "create-role-review-packets":
+        return create_role_review_packets(args)
+    elif args.command == "validate-role-review-packets":
+        return validate_role_review_packets(args)
     else:
         parser.print_help()
         return 1
@@ -5841,6 +5871,76 @@ def repair_production_decision_state(args: argparse.Namespace) -> int:
             print(f"  Retry Gate Closed: {validation.get('retry_gate_closed', False)}")
             print(f"  Production Accepted False: {validation.get('production_accepted_false', False)}")
             print(f"  Downstream Blocked: {validation.get('downstream_blocked', False)}")
+    
+    return 0
+
+
+def create_role_review_packets(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2L — Create role review evidence packets for Character Director and Workflow TD.
+    
+    This command creates structured review evidence packets so real role decisions can be made
+    from complete project evidence, not from fixture approvals or ad-hoc assumptions.
+    
+    Evidence packets are NOT decisions - they are review evidence only.
+    They do NOT approve decisions, do NOT open retry gate, do NOT mark production_accepted=true.
+    
+    Exit codes:
+    - 0: evidence packets created successfully
+    - 1: evidence packet creation failed or invalid args
+    """
+    from app.production_cards.role_review_packets import create_role_review_packets as create_packets
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_packets(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Evidence Packets Status: {result['status'].upper()}")
+        print(f"Project Root: {result['project_root']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Evidence Only: {result['evidence_only']}")
+        print(f"Not Decisions: {result['not_decisions']}")
+        print(f"Packets Created: {result['evidence_packets_created']}")
+        for packet in result['packets']:
+            print(f"  - {packet['role']}: {packet['packet_path']}")
+    
+    return 0
+
+
+def validate_role_review_packets(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2L — Validate role review evidence packets and determine if decisions are ready.
+    
+    This command validates role review evidence packets.
+    Evidence packets are NOT decisions, so decision_ready is always false
+    until actual role decisions are made and applied.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.role_review_packets import validate_role_review_packets as validate_packets
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_packets(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Packets Found: {result['packets_found']}")
+        print(f"Decision Ready: {result['decision_ready']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Evidence Only: {result['evidence_only']}")
+        print(f"Not Decisions: {result['not_decisions']}")
+        if result['missing_required_evidence']:
+            print(f"Missing Required Evidence: {result['missing_required_evidence']}")
     
     return 0
 
