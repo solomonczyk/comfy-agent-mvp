@@ -1047,6 +1047,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2W — Create change request completion drafts subcommand
+    create_change_request_completion_drafts_parser = subparsers.add_parser("create-change-request-completion-drafts", help="Create submitted change request completion drafts from execution plans")
+    create_change_request_completion_drafts_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing execution plans and completion templates",
+    )
+    create_change_request_completion_drafts_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -1145,9 +1158,44 @@ def main() -> int:
         return create_change_request_execution_plan(args)
     elif args.command == "validate-change-request-execution-plan":
         return validate_change_request_execution_plan(args)
+    elif args.command == "create-change-request-completion-drafts":
+        return create_change_request_completion_drafts(args)
     else:
         parser.print_help()
-        return 1
+        return 0
+
+
+def create_change_request_completion_drafts(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2W — Create submitted change request completion drafts from execution plans.
+
+    This command creates formal submitted completion drafts for Workflow TD and Character Director
+    work orders from execution plans and completion templates, without executing workflow changes,
+    rebuilding references, applying decisions, or opening retry generation.
+
+    Exit codes:
+    - 0: completion draft creation completed successfully
+    - 1: completion draft creation failed or invalid args
+    """
+    from app.production_cards.change_request_completion import create_change_request_completion_drafts as create_drafts
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = create_drafts(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Completion Draft Creation Status: {result['status'].upper()}")
+        print(f"Submitted Completions Created: {result['submitted_completions_created']}")
+        print(f"Execution Performed: {result['execution_performed']}")
+        print(f"Ready for Resubmission: {result['ready_for_resubmission']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Submitted Path: {result['submitted_path']}")
+
+    return 0
 
 
 def director_command(args: argparse.Namespace) -> int:
