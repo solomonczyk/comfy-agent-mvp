@@ -732,6 +732,34 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2I — Apply role decisions transactional subcommand
+    apply_role_decisions_parser = subparsers.add_parser("apply-role-decisions", help="Apply validated role decisions to a project with transactional safety")
+    apply_role_decisions_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root to apply decisions to",
+    )
+    apply_role_decisions_parser.add_argument(
+        "--decisions-root",
+        required=True,
+        help="Path to directory containing approved decision files",
+    )
+    apply_role_decisions_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Dry-run mode (default behavior)",
+    )
+    apply_role_decisions_parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Apply mode (must be explicit)",
+    )
+    apply_role_decisions_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -788,6 +816,8 @@ def main() -> int:
         return validate_role_approval_gate(args)
     elif args.command == "validate-role-decision-intake":
         return validate_role_decision_intake(args)
+    elif args.command == "apply-role-decisions":
+        return apply_role_decisions(args)
     else:
         parser.print_help()
         return 1
@@ -5599,6 +5629,70 @@ def validate_role_decision_intake(args: argparse.Namespace) -> int:
             print("\nErrors:")
             for error in result["errors"]:
                 print(f"  - {error}")
+    
+    return 0
+
+
+def apply_role_decisions(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2I — Apply validated role decisions to a project with transactional safety.
+    
+    This command applies approved role decisions to a project. Default is dry-run mode.
+    Explicit --apply flag is required for actual application.
+    
+    Safety rule:
+    - If neither --dry-run nor --apply is provided, behaves as dry-run
+    - Default is dry-run for safety
+    
+    Exit codes:
+    - 0: operation completed successfully
+    - 1: operation failed or invalid args
+    """
+    from app.production_cards.decision_apply import apply_role_decisions
+    
+    project_root = args.project_root
+    decisions_root = args.decisions_root
+    dry_run_flag = getattr(args, "dry_run", False)
+    apply_flag = getattr(args, "apply", False)
+    json_output = args.json
+    
+    # Safety rule: default is dry-run if neither flag provided
+    dry_run = dry_run_flag or not apply_flag
+    
+    result = apply_role_decisions(project_root, decisions_root, dry_run=dry_run)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        if dry_run:
+            print(f"Apply Status: {result['status'].upper()}")
+            print(f"Dry Run: {result['dry_run']}")
+            print(f"Would Apply Decisions: {result['would_apply_decisions']}")
+            print(f"Would Allow Retry Generation: {result['would_allow_retry_generation']}")
+            print(f"Next Allowed Action If Applied: {result['next_allowed_action_if_applied']}")
+            print(f"Production Accepted After Apply: {result['production_accepted_after_apply']}")
+            print(f"Real Project Mutated: {result['real_project_mutated']}")
+        else:
+            print(f"Apply Status: {result['status'].upper()}")
+            print(f"Dry Run: {result['dry_run']}")
+            print(f"Applied Decisions: {result['applied_decisions']}")
+            print(f"Can Retry Generation: {result['can_retry_generation']}")
+            print(f"Next Allowed Action: {result['next_allowed_action']}")
+            print(f"Production Accepted: {result['production_accepted']}")
+            print(f"Downstream Unblocked For: {result['downstream_unblocked_for']}")
+            print(f"Backup Created: {result['backup_created']}")
+            print(f"Real Project Mutated: {result['real_project_mutated']}")
+            if 'backup_path' in result:
+                print(f"Backup Path: {result['backup_path']}")
+        
+        if 'validation_errors' in result and result['validation_errors']:
+            print("\nValidation Errors:")
+            for error in result['validation_errors']:
+                print(f"  - {error}")
+        
+        if 'missing_decisions' in result and result['missing_decisions']:
+            print("\nMissing Decisions:")
+            for decision in result['missing_decisions']:
+                print(f"  - {decision}")
     
     return 0
 
