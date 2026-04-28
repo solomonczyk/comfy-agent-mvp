@@ -1,0 +1,37 @@
+{
+  "card_id": "shot03",
+  "card_type": "ShotCard",
+  "project_id": "rc2_multishot1_ep01",
+  "owner_role": "Shot Designer / Storyboard Agent",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "shot_type": "medium",
+    "action_description": "Reveal Alya's first moment of magical awakening as she touches the crystal"
+  },
+  "references": [],
+  "constraints": {},
+  "allowed_variations": [],
+  "forbidden_drift": [],
+  "dependencies": [],
+  "approval_required_by": "Shot Designer / Storyboard Agent",
+  "next_action_if_missing": "Create ShotCard",
+  "created_at": "2026-04-28T10:04:10.250397Z",
+  "updated_at": "2026-04-28T10:04:10.250397Z",
+  "shot_type": "medium",
+  "action_description": "Reveal Alya's first moment of magical awakening as she touches the crystal",
+  "duration_seconds": 10.0,
+  "character_reference": "",
+  "environment_reference": "env_001",
+  "camera_reference": "camera_001",
+  "lighting_reference": "lighting_001",
+  "style_reference": "style_001",
+  "frame_qc_passed": false,
+  "identity_consistency_passed": true,
+  "production_accepted": true,
+  "blocking_reason": null,
+  "next_action": "complete_and_approve_card",
+  "responsible_roles": [
+    "Shot Designer / Storyboard Agent"
+  ]
+}

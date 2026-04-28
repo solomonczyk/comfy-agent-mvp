@@ -645,6 +645,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2A — Materialize production cards subcommand
+    materialize_production_cards_parser = subparsers.add_parser("materialize-production-cards", help="Materialize production cards from project state")
+    materialize_production_cards_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root to materialize cards for",
+    )
+    materialize_production_cards_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -689,6 +702,8 @@ def main() -> int:
         return validate_production_cards(args)
     elif args.command == "route-production-tasks":
         return route_production_tasks(args)
+    elif args.command == "materialize-production-cards":
+        return materialize_production_cards(args)
     else:
         parser.print_help()
         return 1
@@ -5310,6 +5325,42 @@ def route_production_tasks(args: argparse.Namespace) -> int:
                 print(f"     Reason: {action['reason']}")
     
     return 0 if result["status"] in ["routed", "ready"] else 1
+
+
+def materialize_production_cards(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2A — Materialize production cards from project state.
+    
+    This command reads artifact_index.json and episode_plan.json to create
+    role-owned production cards reflecting the current project state.
+    
+    Exit codes:
+    - 0: materialization completed successfully
+    - 1: materialization failed or invalid args
+    """
+    from app.production_cards.materializer import materialize_production_cards as materialize
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = materialize(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Materialization Status: {result['status'].upper()}")
+        print(f"Project Root: {result['project_root']}")
+        print(f"Cards Created: {result['cards_created']}")
+        print(f"Cards Updated: {result['cards_updated']}")
+        print(f"Blocked Cards: {result['blocked_cards']}")
+        print(f"Routes Preserved: {result['routes_preserved']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        
+        if result["cards"]:
+            print("\nCards Created:")
+            for card in result["cards"]:
+                print(f"  - {card}")
+    
+    return 0 if result["status"] == "completed" else 1
 
 
 if __name__ == "__main__":

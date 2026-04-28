@@ -1,0 +1,32 @@
+{
+  "card_id": "shot01_scenario",
+  "card_type": "ScenarioCard",
+  "project_id": "rc2_multishot1_ep01",
+  "owner_role": "Screenwriter / Script Agent",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "title": "Introduce Alya in a serene forest setting, establishing her character and peaceful demeanor",
+    "narrative_beat": "In the ancient forest of Eldoria, where the trees whispered secrets to those who would listen, there lived a young woman named Alya. She was known throughout the realm for her gentle spirit and the way the creatures of the wild would gather around her as if drawn by some invisible thread of kindness."
+  },
+  "references": [],
+  "constraints": {},
+  "allowed_variations": [],
+  "forbidden_drift": [],
+  "dependencies": [],
+  "approval_required_by": "Screenwriter / Script Agent",
+  "next_action_if_missing": "Create ScenarioCard",
+  "created_at": "2026-04-28T10:04:10.248266Z",
+  "updated_at": "2026-04-28T10:04:10.248266Z",
+  "title": "Introduce Alya in a serene forest setting, establishing her character and peaceful demeanor",
+  "screenwriter": "Screenwriter",
+  "narrative_beat": "In the ancient forest of Eldoria, where the trees whispered secrets to those who would listen, there lived a young woman named Alya. She was known throughout the realm for her gentle spirit and the way the creatures of the wild would gather around her as if drawn by some invisible thread of kindness.",
+  "location_description": "Alya stands in a sun-dappled forest clearing, wearing a flowing white dress, surrounded by wildflowers. Soft golden light filters through the canopy, creating a dreamlike atmosphere. Her expression is calm and contemplative as she gazes at a distant mountain peak.",
+  "involved_characters": [
+    "Alya"
+  ],
+  "shot_references": [
+    "shot01"
+  ],
+  "environment_reference": "env_001"
+}
