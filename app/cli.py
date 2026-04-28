@@ -714,6 +714,24 @@ def main() -> int:
         help="Optional custom path to load decisions from (for fixture validation)",
     )
 
+    # RC2-PRODCARDS2H — Validate role decision intake dry-run subcommand
+    validate_role_decision_intake_parser = subparsers.add_parser("validate-role-decision-intake", help="Validate role decision intake in dry-run mode before applying to real project")
+    validate_role_decision_intake_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root for comparison",
+    )
+    validate_role_decision_intake_parser.add_argument(
+        "--decisions-root",
+        required=True,
+        help="Path to directory containing intake decision files",
+    )
+    validate_role_decision_intake_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -768,6 +786,8 @@ def main() -> int:
         return validate_role_decisions(args)
     elif args.command == "validate-role-approval-gate":
         return validate_role_approval_gate(args)
+    elif args.command == "validate-role-decision-intake":
+        return validate_role_decision_intake(args)
     else:
         parser.print_help()
         return 1
@@ -5534,6 +5554,53 @@ def validate_role_decisions(args: argparse.Namespace) -> int:
                 print(f"  - {approval}")
     
     return 0 if result["status"] in ["ready", "blocked"] else 1
+
+
+def validate_role_decision_intake(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2H — Validate role decision intake in dry-run mode before applying to real project.
+    
+    This command validates decision files before applying them to the real project.
+    It never writes to the real project - it only validates and reports what would happen.
+    
+    Exit codes:
+    - 0: validation completed successfully (even if decisions are invalid)
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.decision_intake import validate_decision_intake
+    
+    project_root = args.project_root
+    decisions_root = args.decisions_root
+    json_output = args.json
+    
+    result = validate_decision_intake(project_root, decisions_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Intake Status: {result['status'].upper()}")
+        print(f"Dry Run: {result['dry_run']}")
+        print(f"Would Allow Retry Generation: {result['would_allow_retry_generation']}")
+        print(f"Would Apply Decisions: {result['would_apply_decisions']}")
+        print(f"Next Allowed Action If Applied: {result['next_allowed_action_if_applied']}")
+        print(f"Production Accepted After Apply: {result['production_accepted_after_apply']}")
+        print(f"Real Project Mutated: {result['real_project_mutated']}")
+        
+        if result["intake_decisions_found"]:
+            print("\nIntake Decisions Found:")
+            for decision in result["intake_decisions_found"]:
+                print(f"  - {decision}")
+        
+        if result["missing_decisions"]:
+            print("\nMissing Decisions:")
+            for decision in result["missing_decisions"]:
+                print(f"  - {decision}")
+        
+        if result["errors"]:
+            print("\nErrors:")
+            for error in result["errors"]:
+                print(f"  - {error}")
+    
+    return 0
 
 
 def validate_role_approval_gate(args: argparse.Namespace) -> int:
