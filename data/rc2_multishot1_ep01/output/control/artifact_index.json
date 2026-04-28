@@ -158,5 +158,22 @@
     "retry_gate_open": false,
     "production_accepted": false,
     "downstream_blocked": true
+  },
+  "decision_change_request_routing": {
+    "status": "blocked",
+    "change_requests_found": 2,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "downstream_blocked": true
+  },
+  "change_request_work_orders": {
+    "status": "created",
+    "work_orders_created": 2,
+    "execution_performed": false,
+    "apply_performed": false,
+    "ready_for_apply": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "downstream_blocked": true
   }
 }

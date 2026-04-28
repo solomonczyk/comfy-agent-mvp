@@ -951,6 +951,32 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2S — Create change request work orders subcommand
+    create_change_request_work_orders_parser = subparsers.add_parser("create-change-request-work-orders", help="Create work orders for routed decision change requests")
+    create_change_request_work_orders_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing routed change requests",
+    )
+    create_change_request_work_orders_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2S — Validate change request work orders subcommand
+    validate_change_request_work_orders_parser = subparsers.add_parser("validate-change-request-work-orders", help="Validate change request work orders")
+    validate_change_request_work_orders_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing work orders",
+    )
+    validate_change_request_work_orders_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -1035,6 +1061,10 @@ def main() -> int:
         return validate_decision_change_request_pack(args)
     elif args.command == "route-decision-change-requests":
         return route_decision_change_requests(args)
+    elif args.command == "create-change-request-work-orders":
+        return create_change_request_work_orders(args)
+    elif args.command == "validate-change-request-work-orders":
+        return validate_change_request_work_orders(args)
     else:
         parser.print_help()
         return 1
@@ -6456,6 +6486,86 @@ def route_decision_change_requests(args: argparse.Namespace) -> int:
         print(f"Next Actions:")
         for action in result['next_actions']:
             print(f"  - Priority {action['priority']}: {action['role']} - {action['task']}")
+    
+    return 0
+
+
+def create_change_request_work_orders(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2S — Create work orders for routed decision change requests.
+    
+    This command creates concrete role work orders for Workflow TD and Character
+    Director after routed change requests, without executing workflow changes,
+    rebuilding references, applying decisions, or opening retry generation.
+    
+    This is a read-only work order creation that does NOT:
+    - Execute workflow changes
+    - Rebuild references
+    - Apply decisions
+    - Open retry gate
+    - Mark production_accepted=true
+    - Run ComfyUI or generation
+    - Mutate role_decisions/
+    - Mutate final artifacts
+    - Create new generated references
+    
+    Exit codes:
+    - 0: work order creation completed successfully
+    - 1: work order creation failed or invalid args
+    """
+    from app.production_cards.change_request_work_orders import create_change_request_work_orders as create_orders
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_orders(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Work Order Creation Status: {result['status'].upper()}")
+        print(f"Work Orders Created: {result['work_orders_created']}")
+        print(f"Execution Performed: {result['execution_performed']}")
+        print(f"Apply Performed: {result['apply_performed']}")
+        print(f"Ready for Apply: {result['ready_for_apply']}")
+        print(f"Can Retry Generation: {result['can_retry_generation']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+    
+    return 0
+
+
+def validate_change_request_work_orders(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2S — Validate change request work orders.
+    
+    This command validates that change request work orders exist and are
+    correctly structured, ensuring execution_performed=false, retry_gate_open=false,
+    production_accepted=false, and downstream_blocked=true.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.change_request_work_orders import validate_change_request_work_orders as validate_orders
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_orders(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Work Orders Found: {result['work_orders_found']}")
+        print(f"Next Required Roles: {result['next_required_roles']}")
+        print(f"Execution Performed: {result['execution_performed']}")
+        print(f"Ready for Apply: {result['ready_for_apply']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        if result['validation_errors']:
+            print(f"Validation Errors: {result['validation_errors']}")
     
     return 0
 
