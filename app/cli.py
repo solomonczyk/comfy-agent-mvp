@@ -891,6 +891,23 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2P — Evaluate submitted decision outcome gate subcommand
+    evaluate_submitted_decision_outcome_parser = subparsers.add_parser("evaluate-submitted-decision-outcome", help="Evaluate submitted role decision outcomes to classify approvals vs change requests before apply or retry")
+    evaluate_submitted_decision_outcome_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing submitted role decisions",
+    )
+    evaluate_submitted_decision_outcome_parser.add_argument(
+        "--submission-root",
+        help="Optional custom path to load submissions from (for fixture validation)",
+    )
+    evaluate_submitted_decision_outcome_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -967,6 +984,8 @@ def main() -> int:
         return create_real_role_decision_drafts(args)
     elif args.command == "validate-real-role-decision-drafts":
         return validate_real_role_decision_drafts(args)
+    elif args.command == "evaluate-submitted-decision-outcome":
+        return evaluate_submitted_decision_outcome(args)
     else:
         parser.print_help()
         return 1
@@ -6208,6 +6227,57 @@ def validate_real_role_decision_drafts(args: argparse.Namespace) -> int:
         if result['validation_errors']:
             print(f"Validation Errors: {result['validation_errors']}")
         print(f"Safety Checks: {result['safety_checks']}")
+    
+    return 0
+
+
+def evaluate_submitted_decision_outcome(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2P — Evaluate submitted role decision outcomes to classify approvals vs change requests.
+    
+    This command evaluates submitted decisions and determines:
+    - Whether decisions are approvals or change requests
+    - Whether ready for apply
+    - Whether retry generation is allowed
+    - Next required role actions
+    
+    This is a read-only evaluation that does NOT:
+    - Apply decisions
+    - Open retry gate
+    - Mark production_accepted=true
+    - Run ComfyUI or generation
+    - Mutate role_decisions/
+    - Mutate final artifacts
+    
+    Exit codes:
+    - 0: evaluation completed successfully
+    - 1: evaluation failed or invalid args
+    """
+    from app.production_cards.decision_submission_outcome import evaluate_submitted_decision_outcome as evaluate_outcome
+    
+    project_root = args.project_root
+    submission_root = getattr(args, 'submission_root', None)
+    json_output = args.json
+    
+    result = evaluate_outcome(project_root, submission_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Outcome Status: {result['status'].upper()}")
+        print(f"Submitted Decisions Valid: {result['submitted_decisions_valid']}")
+        print(f"Ready for Apply: {result['ready_for_apply']}")
+        print(f"Can Retry Generation: {result['can_retry_generation']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Character Director Outcome: {result['character_director_outcome']}")
+        print(f"Workflow TD Outcome: {result['workflow_td_outcome']}")
+        print(f"Apply Performed: {result['apply_performed']}")
+        print(f"Real Project Mutated: {result['real_project_mutated']}")
+        if result.get('next_required_actions'):
+            print(f"Next Required Actions:")
+            for action in result['next_required_actions']:
+                print(f"  - {action['role']}: {action['action']}")
     
     return 0
 
