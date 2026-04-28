@@ -632,6 +632,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS1C — Route production tasks subcommand
+    route_production_tasks_parser = subparsers.add_parser("route-production-tasks", help="Route production cards to determine next actions")
+    route_production_tasks_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing cards",
+    )
+    route_production_tasks_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -674,6 +687,8 @@ def main() -> int:
         return validate_multishot_generation(args)
     elif args.command == "validate-production-cards":
         return validate_production_cards(args)
+    elif args.command == "route-production-tasks":
+        return route_production_tasks(args)
     else:
         parser.print_help()
         return 1
@@ -5244,6 +5259,57 @@ def validate_production_cards(args: argparse.Namespace) -> int:
                 print(f"  - {warning}")
     
     return 0 if result["status"] == "passed" else 1
+
+
+def route_production_tasks(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS1C — Route production cards to determine next actions.
+    
+    This command routes production card issues to responsible roles:
+    - detects missing, draft, blocked, incomplete cards
+    - maps card issues to responsible production roles
+    - handles identity QA failure with special routing
+    - returns structured JSON with next actions
+    - blocks downstream when cards are incomplete
+    
+    Exit codes:
+    - 0: routing completed successfully
+    - 1: routing failed or invalid args
+    """
+    from app.production_cards.router import route_production_cards as route_cards
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = route_cards(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Routing Status: {result['status'].upper()}")
+        print(f"Project Root: {result['project_root']}")
+        print(f"Generation Ready: {result['generation_ready']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Cards Found: {result['summary']['cards_found']}")
+        print(f"Issues Found: {result['summary']['issues_found']}")
+        print(f"Blocked Count: {result['summary']['blocked_count']}")
+        print(f"Roles Needed: {', '.join(result['summary']['roles_needed'])}")
+        
+        if result["routes"]:
+            print("\nRoutes:")
+            for route in result["routes"]:
+                print(f"  [{route['issue_type']}] {route['card_type']} [{route['card_id']}]")
+                print(f"    Status: {route['current_status']}")
+                print(f"    Responsible Role: {route['responsible_role']}")
+                print(f"    Recommended Action: {route['recommended_action']}")
+                print(f"    Downstream Blocked: {route['downstream_blocked']}")
+        
+        if result["next_actions"]:
+            print("\nNext Actions:")
+            for action in result["next_actions"]:
+                print(f"  {action['priority']}. {action['role']}: {action['task']}")
+                print(f"     Reason: {action['reason']}")
+    
+    return 0 if result["status"] in ["routed", "ready"] else 1
 
 
 if __name__ == "__main__":
