@@ -658,6 +658,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2D — Create production work orders subcommand
+    create_production_work_orders_parser = subparsers.add_parser("create-production-work-orders", help="Create role work orders for blocked production issues")
+    create_production_work_orders_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing cards",
+    )
+    create_production_work_orders_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -704,6 +717,8 @@ def main() -> int:
         return route_production_tasks(args)
     elif args.command == "materialize-production-cards":
         return materialize_production_cards(args)
+    elif args.command == "create-production-work-orders":
+        return create_production_work_orders(args)
     else:
         parser.print_help()
         return 1
@@ -5359,6 +5374,42 @@ def materialize_production_cards(args: argparse.Namespace) -> int:
             print("\nCards Created:")
             for card in result["cards"]:
                 print(f"  - {card}")
+    
+    return 0 if result["status"] == "completed" else 1
+
+
+def create_production_work_orders(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2D — Create role work orders for blocked production issues.
+    
+    This command converts production routing output into concrete role work orders
+    for Character Director and Workflow TD to address blocked issues.
+    
+    Exit codes:
+    - 0: work orders created successfully
+    - 1: work order creation failed or invalid args
+    """
+    from app.production_cards.work_orders import create_work_orders
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_work_orders(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Work Orders Status: {result['status'].upper()}")
+        print(f"Project Root: {result['project_root']}")
+        print(f"Work Orders Created: {result['work_orders_created']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        
+        if result["work_orders"]:
+            print("\nWork Orders Created:")
+            for wo in result["work_orders"]:
+                print(f"  - Role: {wo['role']}")
+                print(f"    Path: {wo['work_order_path']}")
+                print(f"    Blocking Reason: {wo['blocking_reason']}")
+                print(f"    Required Output: {wo['required_output']}")
     
     return 0 if result["status"] == "completed" else 1
 
