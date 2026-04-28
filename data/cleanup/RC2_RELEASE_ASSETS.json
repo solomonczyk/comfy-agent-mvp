@@ -1,0 +1,43 @@
+{
+  "release_version": "rc2-demo-v1",
+  "release_date": "2026-04-28",
+  "commit": "1aa089a",
+  "branch": "main",
+  "assets": [
+    {
+      "asset_name": "rc2_demo_pack_ep01.zip",
+      "local_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01.zip",
+      "size_bytes": 97158,
+      "sha256": "4037b308fa6844332d53b9d27db858bee0b3ccdefd678838aa83fea6d601c2a9",
+      "artifact_kind": "visual_demo_pack",
+      "release_target": "github_release_asset",
+      "do_not_commit_to_git": true,
+      "description": "Single-shot character generation demo with consistent identity"
+    },
+    {
+      "asset_name": "rc2_voice_demo_pack_ep01.zip",
+      "local_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01.zip",
+      "size_bytes": 320818,
+      "sha256": "c328eff4d4da107f7fa5706f09340cce6a0d0c6ba29716934b87ef3f08499099",
+      "artifact_kind": "voice_demo_pack",
+      "release_target": "github_release_asset",
+      "do_not_commit_to_git": true,
+      "description": "Real voiceover integration demo with TTS"
+    }
+  ],
+  "metadata": {
+    "total_assets": 2,
+    "total_size_bytes": 417976,
+    "total_size_human": "408 KB",
+    "accepted_rc_stack": {
+      "single_shot_identity": "ACCEPTED",
+      "real_voiceover": "ACCEPTED",
+      "multi_shot_identity": "BLOCKED"
+    },
+    "known_limitations": [
+      "Single-shot demo only",
+      "Multi-shot identity workflow blocked pending Character Director and Workflow TD approval",
+      "Generated artifacts excluded from Git"
+    ]
+  }
+}
