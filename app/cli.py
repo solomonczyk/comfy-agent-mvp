@@ -6155,7 +6155,10 @@ def inspect_production_decision_state(args: argparse.Namespace) -> int:
     else:
         print(f"Project Root: {result['project_root']}")
         print(f"Has Corruption: {result['has_corruption']}")
+        print(f"Has Active Corruption: {result['has_active_corruption']}")
+        print(f"Historical Contamination Documented: {result['historical_contamination_documented']}")
         print(f"Safe for Next Step: {result['safe_for_next_step']}")
+        print(f"Role Decisions Pending: {result['role_decisions_pending']}")
         print(f"\nRole Decisions:")
         print(f"  Character Director Status: {result['role_decisions']['character_director']['decision_status']}")
         print(f"  Character Director Production Accepted: {result['role_decisions']['character_director']['production_accepted']}")

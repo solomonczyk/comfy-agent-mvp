@@ -55,16 +55,21 @@ def inspect_real_project_decision_state(project_root: str) -> Dict[str, Any]:
     episode_ledger_path = project_path / "output" / "control" / "episode_ledger.json"
     episode_ledger = {}
     role_decision_apply_events = []
+    pre_fix_invalidation_events = []
     
     if episode_ledger_path.exists():
         with open(episode_ledger_path, 'r') as f:
             episode_ledger = json.load(f)
         
-        # Extract role_decisions_applied events
+        # Extract role_decisions_applied events and pre_fix_fixture_apply_invalidated events
         events = episode_ledger.get("events", [])
         role_decision_apply_events = [
             e for e in events 
             if e.get("event_type") == "role_decisions_applied"
+        ]
+        pre_fix_invalidation_events = [
+            e for e in events
+            if e.get("event_type") == "pre_fix_fixture_apply_invalidated"
         ]
     
     # Detect corruption indicators
@@ -79,9 +84,32 @@ def inspect_real_project_decision_state(project_root: str) -> Dict[str, Any]:
         "has_role_decision_apply_events": len(role_decision_apply_events) > 0
     }
     
-    # Determine if state is safe
+    # Determine if historical contamination is documented (invalidated by corrective event)
+    historical_contamination_documented = (
+        len(role_decision_apply_events) > 0 and len(pre_fix_invalidation_events) > 0
+    )
+    
+    # Determine active corruption (excluding historical contamination if invalidated)
+    # If there's a pre_fix_invalidation event, historical role_decisions_applied events
+    # are treated as documented contamination, not active corruption
+    active_corruption_indicators = corruption_indicators.copy()
+    if historical_contamination_documented:
+        # Historical apply events are invalidated, so they don't count as active corruption
+        active_corruption_indicators["has_role_decision_apply_events"] = False
+    
+    has_active_corruption = any(active_corruption_indicators.values())
+    
+    # Legacy has_corruption field for backward compatibility
     has_corruption = any(corruption_indicators.values())
-    safe_for_next_step = not has_corruption
+    
+    # Determine if state is safe for next step (based on active corruption only)
+    safe_for_next_step = not has_active_corruption
+    
+    # Determine if role decisions are pending
+    role_decisions_pending = (
+        char_decision.get("decision_status") == "pending" and
+        workflow_decision.get("decision_status") == "pending"
+    )
     
     return {
         "project_root": str(project_root),
@@ -108,11 +136,16 @@ def inspect_real_project_decision_state(project_root: str) -> Dict[str, Any]:
         },
         "episode_ledger": {
             "role_decision_apply_event_count": len(role_decision_apply_events),
-            "most_recent_apply_event": role_decision_apply_events[-1] if role_decision_apply_events else None
+            "pre_fix_invalidation_event_count": len(pre_fix_invalidation_events),
+            "most_recent_apply_event": role_decision_apply_events[-1] if role_decision_apply_events else None,
+            "most_recent_invalidation_event": pre_fix_invalidation_events[-1] if pre_fix_invalidation_events else None
         },
         "corruption_indicators": corruption_indicators,
         "has_corruption": has_corruption,
+        "has_active_corruption": has_active_corruption,
+        "historical_contamination_documented": historical_contamination_documented,
         "safe_for_next_step": safe_for_next_step,
+        "role_decisions_pending": role_decisions_pending,
         "inspection_timestamp": datetime.utcnow().isoformat() + "Z"
     }
 

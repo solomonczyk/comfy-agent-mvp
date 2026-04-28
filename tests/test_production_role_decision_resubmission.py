@@ -424,3 +424,168 @@ def test_apply_performed_remains_false(sample_project_root):
     with open(workflow_packet_file, 'r') as f:
         workflow_packet = json.load(f)
     assert workflow_packet["apply_performed"] == False
+
+
+def test_resubmission_files_under_size_limit(sample_project_root):
+    """Test that all generated resubmission files are under 100 KB limit."""
+    create_role_decision_resubmission_pack(sample_project_root)
+    
+    resubmission_dir = Path(sample_project_root) / "output" / "control" / "role_decision_resubmissions"
+    
+    # Check each file size
+    for file_path in resubmission_dir.glob("*.json"):
+        file_size_kb = file_path.stat().st_size / 1024
+        assert file_size_kb < 100, f"{file_path.name} is {file_size_kb:.2f} KB, exceeds 100 KB limit"
+    
+    # Check MD file size
+    for file_path in resubmission_dir.glob("*.md"):
+        file_size_kb = file_path.stat().st_size / 1024
+        assert file_size_kb < 100, f"{file_path.name} is {file_size_kb:.2f} KB, exceeds 100 KB limit"
+
+
+def test_total_resubmission_pack_under_size_limit(sample_project_root):
+    """Test that total resubmission pack is under 500 KB limit."""
+    create_role_decision_resubmission_pack(sample_project_root)
+    
+    resubmission_dir = Path(sample_project_root) / "output" / "control" / "role_decision_resubmissions"
+    
+    total_size_bytes = sum(f.stat().st_size for f in resubmission_dir.glob("*") if f.is_file())
+    total_size_kb = total_size_bytes / 1024
+    
+    assert total_size_kb < 500, f"Total resubmission pack is {total_size_kb:.2f} KB, exceeds 500 KB limit"
+
+
+def test_no_artifact_index_embedded(sample_project_root):
+    """Test that artifact_index is not embedded in resubmission packets."""
+    create_role_decision_resubmission_pack(sample_project_root)
+    
+    resubmission_dir = Path(sample_project_root) / "output" / "control" / "role_decision_resubmissions"
+    
+    for file_path in resubmission_dir.glob("*.json"):
+        with open(file_path, 'r') as f:
+            content = f.read()
+        
+        # Check for artifact_index key
+        assert "artifact_index" not in content.lower(), f"{file_path.name} contains artifact_index reference"
+        
+        # Also check the JSON structure
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        
+        def check_for_artifact_index(obj, path=""):
+            if isinstance(obj, dict):
+                for key, value in obj.items():
+                    if "artifact_index" in key.lower():
+                        raise AssertionError(f"Found artifact_index at {path}.{key}")
+                    check_for_artifact_index(value, f"{path}.{key}")
+            elif isinstance(obj, list):
+                for i, item in enumerate(obj):
+                    check_for_artifact_index(item, f"{path}[{i}]")
+        
+        check_for_artifact_index(data)
+
+
+def test_no_episode_ledger_embedded(sample_project_root):
+    """Test that episode_ledger is not embedded in resubmission packets."""
+    create_role_decision_resubmission_pack(sample_project_root)
+    
+    resubmission_dir = Path(sample_project_root) / "output" / "control" / "role_decision_resubmissions"
+    
+    for file_path in resubmission_dir.glob("*.json"):
+        with open(file_path, 'r') as f:
+            content = f.read()
+        
+        # Check for episode_ledger key
+        assert "episode_ledger" not in content.lower(), f"{file_path.name} contains episode_ledger reference"
+        
+        # Also check the JSON structure
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        
+        def check_for_episode_ledger(obj, path=""):
+            if isinstance(obj, dict):
+                for key, value in obj.items():
+                    if "episode_ledger" in key.lower():
+                        raise AssertionError(f"Found episode_ledger at {path}.{key}")
+                    check_for_episode_ledger(value, f"{path}.{key}")
+            elif isinstance(obj, list):
+                for i, item in enumerate(obj):
+                    check_for_episode_ledger(item, f"{path}[{i}]")
+        
+        check_for_episode_ledger(data)
+
+
+def test_no_recursive_self_reference(sample_project_root):
+    """Test that resubmission packets have no recursive self-references."""
+    create_role_decision_resubmission_pack(sample_project_root)
+    
+    resubmission_dir = Path(sample_project_root) / "output" / "control" / "role_decision_resubmissions"
+    
+    for file_path in resubmission_dir.glob("*.json"):
+        with open(file_path, 'r') as f:
+            data = json.load(f)
+        
+        # Check for circular references by tracking visited objects
+        visited = set()
+        
+        def check_circular(obj, path=""):
+            obj_id = id(obj)
+            if obj_id in visited:
+                raise AssertionError(f"Circular reference detected at {path}")
+            visited.add(obj_id)
+            
+            if isinstance(obj, dict):
+                for key, value in obj.items():
+                    check_circular(value, f"{path}.{key}")
+            elif isinstance(obj, list):
+                for i, item in enumerate(obj):
+                    check_circular(item, f"{path}[{i}]")
+            
+            visited.remove(obj_id)
+        
+        # JSON loads create new objects, so circular references in JSON would be
+        # represented as repeated references. We check for suspicious patterns.
+        def check_suspicious_patterns(obj, path="", depth=0):
+            if depth > 50:  # Arbitrary depth limit
+                raise AssertionError(f"Excessive depth detected at {path} ({depth} levels)")
+            
+            if isinstance(obj, dict):
+                for key, value in obj.items():
+                    check_suspicious_patterns(value, f"{path}.{key}", depth + 1)
+            elif isinstance(obj, list):
+                for i, item in enumerate(obj):
+                    check_suspicious_patterns(item, f"{path}[{i}]", depth + 1)
+        
+        check_suspicious_patterns(data)
+
+
+def test_cli_json_output_is_compact(sample_project_root):
+    """Test that CLI JSON output is compact (not embedding full packets)."""
+    import io
+    import sys
+    from app.production_cards.role_decision_resubmission import create_role_decision_resubmission_pack
+    
+    # Capture stdout
+    old_stdout = sys.stdout
+    sys.stdout = captured_output = io.StringIO()
+    
+    try:
+        result = create_role_decision_resubmission_pack(sample_project_root)
+        json_output = json.dumps(result, indent=2)
+        print(json_output)
+        output = captured_output.getvalue()
+    finally:
+        sys.stdout = old_stdout
+    
+    # Check output size
+    output_size_kb = len(output.encode('utf-8')) / 1024
+    assert output_size_kb < 10, f"CLI JSON output is {output_size_kb:.2f} KB, exceeds 10 KB limit"
+    
+    # Check that output doesn't contain full packet data
+    assert "completion_evidence" not in output, "CLI output contains full completion_evidence"
+    assert "required_artifacts" not in output, "CLI output contains full required_artifacts"
+    
+    # Check that output only contains summary fields
+    assert "status" in output
+    assert "resubmission_packets_created" in output
+    assert "resubmission_path" in output
