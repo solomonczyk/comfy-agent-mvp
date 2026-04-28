@@ -3,7 +3,7 @@
 ## Release Information
 - **Version:** rc2-demo-v1
 - **Release Date:** 2026-04-28
-- **Commit:** 1aa089a
+- **Commit:** ad33d58
 - **Branch:** main
 
 ## Overview
