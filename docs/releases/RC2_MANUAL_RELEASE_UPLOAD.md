@@ -8,7 +8,7 @@ This document provides step-by-step instructions for manually creating a GitHub 
 - **Release Tag:** rc2-demo-v1
 - **Release Title:** RC2 Demo Pack v1
 - **Target Branch:** main
-- **Target Commit:** 7e93e40
+- **Target Commit:** 16c3f9a
 - **Release Type:** Draft (do not publish)
 
 ## Assets to Upload
@@ -140,7 +140,7 @@ Get-FileHash rc2_voice_demo_pack_ep01.zip -Algorithm SHA256
 
 3. **Verify release notes:**
    - Confirm release notes display correctly
-   - Confirm commit reference is `7e93e40`
+   - Confirm commit reference is `16c3f9a`
    - Confirm SHA256 checksums are listed
 
 4. **Verify no zips in Git:**
