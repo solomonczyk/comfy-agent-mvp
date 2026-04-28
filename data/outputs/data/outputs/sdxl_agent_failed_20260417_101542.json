@@ -1,0 +1,161 @@
+{
+  "status": "failed",
+  "failed_stage": "generation",
+  "error_type": "generation_error",
+  "error_code": "GENERATION_FAILED",
+  "error": "Generation failed: cannot access free variable 'retry_loop_result' where it is not associated with a value in enclosing scope",
+  "user_prompt": "upscale this image to higher resolution",
+  "task_selection": {
+    "task_type": "upscale",
+    "confidence": 1.0,
+    "reason": "Mode override: upscale",
+    "routing_source": "cli",
+    "required_inputs": [
+      "input_image"
+    ],
+    "missing_inputs": [],
+    "ambiguity_level": "low",
+    "safe_fallback_used": false
+  },
+  "execution_plan": {
+    "user_prompt": "upscale this image to higher resolution",
+    "task_type": "upscale",
+    "workflow_id": "upscale_v1",
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\upscale_template.json",
+    "preset_name": "upscale",
+    "rewrite_mode": "raw",
+    "required_inputs": [
+      "input_image"
+    ],
+    "resolved_inputs": {
+      "prompt": "upscale this image to higher resolution",
+      "input_image": "test_portrait.png"
+    },
+    "enable_judging": false,
+    "enable_retry_loop": false,
+    "notes": []
+  },
+  "mutation_report": {
+    "workflow_id": "upscale_v1",
+    "mutated_nodes": [
+      "6",
+      "5"
+    ],
+    "applied_changes": {
+      "positive_prompt": "upscale this image to higher resolution",
+      "input_image": "test_portrait.png"
+    },
+    "notes": []
+  },
+  "mutation_retry": null,
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": {
+    "switch_applied": false,
+    "from_workflow_id": "upscale_v1",
+    "to_workflow_id": null,
+    "switch_reason": null,
+    "source_trigger": null,
+    "switch_allowed": false,
+    "missing_inputs": [],
+    "notes": []
+  },
+  "corrective_action": {
+    "action": "accept",
+    "reason_code": "accepted_by_judge",
+    "reason": "No judge evaluation - accepting result",
+    "source_repairs": [],
+    "selected_workflow_id": "upscale_v1",
+    "target_workflow_id": null,
+    "required_inputs": [],
+    "missing_inputs": [],
+    "switch_allowed": false,
+    "notes": [
+      "Judging was disabled or judge pipeline failed"
+    ]
+  },
+  "candidate_history": {
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "selection_reason": null,
+    "attempts": [
+      {
+        "attempt_index": 1,
+        "candidate_id": "cand_fc60d438",
+        "parent_candidate_id": null,
+        "attempt_kind": "initial",
+        "workflow_id": "upscale_v1",
+        "task_type": "upscale",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "selected": false,
+        "selection_reason": null,
+        "source_trigger": null,
+        "mutation_report": {
+          "workflow_id": "upscale_v1",
+          "mutated_nodes": [
+            "6",
+            "5"
+          ],
+          "applied_changes": {
+            "positive_prompt": "upscale this image to higher resolution",
+            "input_image": "test_portrait.png"
+          },
+          "notes": []
+        },
+        "mutation_retry": null,
+        "workflow_switch": null,
+        "corrective_action": null,
+        "executed_action": {
+          "executed_action": "none",
+          "execution_status": "failed",
+          "branch_taken": null,
+          "notes": [
+            "Generation failed during execution"
+          ],
+          "error_type": "generation_error",
+          "error": "Generation failed: cannot access free variable 'retry_loop_result' where it is not associated with a value in enclosing scope"
+        },
+        "images": [],
+        "metadata_path": null,
+        "summary_path": null,
+        "error_type": "generation_error",
+        "error_code": "GENERATION_FAILED",
+        "error": "Generation failed: cannot access free variable 'retry_loop_result' where it is not associated with a value in enclosing scope"
+      }
+    ]
+  },
+  "candidate_selection": {
+    "selected_candidate_id": "cand_fc60d438",
+    "selected_attempt_index": 1,
+    "selection_reason": "only_candidate_available",
+    "selected_workflow_id": "upscale_v1",
+    "ranking_snapshot": [
+      {
+        "candidate_id": "cand_fc60d438",
+        "attempt_index": 1,
+        "workflow_id": "upscale_v1",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "rank": 1
+      }
+    ]
+  },
+  "executed_action": {
+    "executed_action": "none",
+    "execution_status": "failed",
+    "branch_taken": null,
+    "notes": [
+      "Generation failed during execution"
+    ],
+    "error_type": "generation_error",
+    "error": "Generation failed: cannot access free variable 'retry_loop_result' where it is not associated with a value in enclosing scope"
+  },
+  "images": [],
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\data\\outputs\\sdxl_agent_failed_20260417_101542.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\data\\outputs\\run_summary_failed_upscale_this_image_to_higher_resolution.txt"
+}

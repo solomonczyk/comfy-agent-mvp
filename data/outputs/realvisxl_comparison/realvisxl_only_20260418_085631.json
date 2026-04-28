@@ -1,0 +1,42 @@
+[
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "status": "error",
+    "error": "History for prompt_id=06bd409b-ac49-437d-9c0d-aaea4d96e178 not found after 120 attempts. Last queue state: running=True, pending=False."
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 123456790,
+    "status": "error",
+    "error": "History for prompt_id=7a97ea76-c422-4ccc-afca-04bc7f640064 not found after 120 attempts. Last queue state: running=False, pending=True."
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 123456791,
+    "status": "error",
+    "error": "ComfyUI connection error for GET http://127.0.0.1:8188/queue: "
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 123456792,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 123456793,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  }
+]

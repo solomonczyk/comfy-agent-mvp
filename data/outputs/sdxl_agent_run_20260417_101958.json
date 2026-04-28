@@ -1,0 +1,79 @@
+{
+  "status": "completed",
+  "prompt_id": "6610b354-0ee7-4ac7-b5ba-3e9fd0a44c02",
+  "failed_stage": null,
+  "error_type": null,
+  "error": null,
+  "user_prompt": "cinematic portrait photo of a realistic woman, natural skin texture, detailed eyes, soft cinematic light, 4K",
+  "final_positive_prompt": "cinematic portrait photo of a realistic woman, natural skin texture, detailed eyes, soft cinematic light, 4K, cinematic lighting, realistic details, high quality, professional photography, detailed texture",
+  "preset_name": "portrait",
+  "rewrite_mode": "fallback",
+  "seed": 1176652635,
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "portrait_00022_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "preflight": {
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\data\\runtime_workflows\\4077093a_portrait_sdxl_v1.json",
+    "preset_name": "portrait",
+    "checkpoint_name": "sd_xl_base_1.0_0.9vae.safetensors",
+    "required_node_ids": [
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "available_checkpoints_count": 2,
+    "contract": {
+      "contract_valid": true,
+      "validated_node_ids": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    }
+  },
+  "artifact_validation": {
+    "artifact_valid": true,
+    "validated_image_count": 1,
+    "expected_node_id": "9"
+  },
+  "artifact_fetch_validation": {
+    "fetch_valid": true,
+    "validated_image_count": 1,
+    "fetch_results": [
+      {
+        "filename": "portrait_00022_.png",
+        "status_code": 200,
+        "content_type": "image/png",
+        "content_length": 1505781
+      }
+    ]
+  },
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260417_101958.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_6610b354_cinematic_portrait_photo_of_a_realistic_woman_natural_skin_texture_detailed_eyes.txt",
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": null,
+  "candidate_history": null,
+  "task_selection": null,
+  "execution_plan": null,
+  "mutation_report": null,
+  "mutation_retry": null,
+  "candidate_selection": null,
+  "corrective_action": null,
+  "executed_action": null
+}

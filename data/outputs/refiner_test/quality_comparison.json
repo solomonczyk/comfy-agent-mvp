@@ -1,0 +1,199 @@
+[
+  {
+    "config_name": "variant_base_only",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_only_00001_.png",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "final_verdict": "pass",
+    "final_score": 0.8304,
+    "global_blockers": [
+      "no_face_detected",
+      "plastic_skin"
+    ],
+    "best_next_action": "accept",
+    "quality_report": {
+      "verdict": "accept",
+      "hard_fails": [],
+      "scorecard": {
+        "technical": 8,
+        "anatomy": 10,
+        "semantic": 9,
+        "aesthetic": 8,
+        "weighted": 8.899999999999999
+      }
+    }
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_refiner_00001_.png",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "final_verdict": "pass",
+    "final_score": 0.8243,
+    "global_blockers": [
+      "blurry_image",
+      "plastic_skin"
+    ],
+    "best_next_action": "accept",
+    "quality_report": {
+      "verdict": "accept",
+      "hard_fails": [],
+      "scorecard": {
+        "technical": 7,
+        "anatomy": 10,
+        "semantic": 9,
+        "aesthetic": 8,
+        "weighted": 8.7
+      }
+    }
+  },
+  {
+    "config_name": "variant_base_only",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_only_00002_.png",
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "final_verdict": "pass",
+    "final_score": 0.8935,
+    "global_blockers": [
+      "no_face_detected",
+      "plastic_skin"
+    ],
+    "best_next_action": "accept",
+    "quality_report": {
+      "verdict": "accept",
+      "hard_fails": [],
+      "scorecard": {
+        "technical": 7,
+        "anatomy": 10,
+        "semantic": 10,
+        "aesthetic": 9,
+        "weighted": 9.200000000000001
+      }
+    }
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_refiner_00002_.png",
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "final_verdict": "pass",
+    "final_score": 0.8724,
+    "global_blockers": [
+      "blurry_image",
+      "no_face_detected",
+      "plastic_skin"
+    ],
+    "best_next_action": "accept",
+    "quality_report": {
+      "verdict": "accept",
+      "hard_fails": [],
+      "scorecard": {
+        "technical": 7,
+        "anatomy": 10,
+        "semantic": 9,
+        "aesthetic": 9,
+        "weighted": 8.9
+      }
+    }
+  },
+  {
+    "config_name": "variant_base_only",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_only_00003_.png",
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "final_verdict": "reject",
+    "final_score": 0.0,
+    "global_blockers": [
+      "multi_subject_confirmed"
+    ],
+    "best_next_action": "retry_settings",
+    "quality_report": null
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_refiner_00003_.png",
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "final_verdict": "reject",
+    "final_score": 0.0,
+    "global_blockers": [
+      "multi_subject_confirmed"
+    ],
+    "best_next_action": "retry_settings",
+    "quality_report": null
+  },
+  {
+    "config_name": "variant_base_only",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_only_00004_.png",
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "final_verdict": "pass",
+    "final_score": 0.915,
+    "global_blockers": [
+      "plastic_skin",
+      "plastic_skin",
+      "plastic_skin"
+    ],
+    "best_next_action": "accept",
+    "quality_report": {
+      "verdict": "accept",
+      "hard_fails": [],
+      "scorecard": {
+        "technical": 8,
+        "anatomy": 10,
+        "semantic": 10,
+        "aesthetic": 9,
+        "weighted": 9.4
+      }
+    }
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_refiner_00004_.png",
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "final_verdict": "reject",
+    "final_score": 0.0,
+    "global_blockers": [
+      "watermark_text_detected"
+    ],
+    "best_next_action": "reject",
+    "quality_report": null
+  },
+  {
+    "config_name": "variant_base_only",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_only_00005_.png",
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "final_verdict": "pass",
+    "final_score": 0.8907,
+    "global_blockers": [
+      "plastic_skin"
+    ],
+    "best_next_action": "accept",
+    "quality_report": {
+      "verdict": "accept",
+      "hard_fails": [],
+      "scorecard": {
+        "technical": 8,
+        "anatomy": 10,
+        "semantic": 9,
+        "aesthetic": 9,
+        "weighted": 9.1
+      }
+    }
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\refiner_test\\variant_base_refiner_00005_.png",
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "final_verdict": "pass",
+    "final_score": 0.8821,
+    "global_blockers": [
+      "plastic_skin"
+    ],
+    "best_next_action": "accept",
+    "quality_report": {
+      "verdict": "accept",
+      "hard_fails": [],
+      "scorecard": {
+        "technical": 8,
+        "anatomy": 10,
+        "semantic": 9,
+        "aesthetic": 9,
+        "weighted": 9.1
+      }
+    }
+  }
+]

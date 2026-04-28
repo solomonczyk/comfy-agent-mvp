@@ -1,0 +1,25 @@
+{
+  "user_prompt": "a realistic portrait of a woman near a rainy window",
+  "final_positive_prompt": "realistic portrait of a woman standing by a rainy window, soft natural light, detailed facial features, moody atmosphere, cinematic depth, high resolution, photorealistic",
+  "rewrite_mode": "llm",
+  "preset_name": "portrait",
+  "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+  "width": 1024,
+  "height": 1024,
+  "steps": 30,
+  "cfg": 6.0,
+  "seed": 888814157,
+  "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+  "prefix": "agent/portrait",
+  "sampler_name": "dpmpp_2m",
+  "scheduler": "karras",
+  "prompt_id": "19a8ebcc-5172-4913-9f3a-ecf8e429b14f",
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "portrait_00003_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ]
+}

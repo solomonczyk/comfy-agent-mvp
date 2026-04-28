@@ -1,0 +1,69 @@
+{
+  "user_prompt": "test prompt",
+  "final_positive_prompt": "test prompt",
+  "rewrite_mode": "raw",
+  "preset_name": "portrait",
+  "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+  "width": 1024,
+  "height": 1024,
+  "steps": 30,
+  "cfg": 6.0,
+  "seed": 1067843670,
+  "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+  "prefix": "agent/portrait",
+  "sampler_name": "dpmpp_2m",
+  "scheduler": "karras",
+  "prompt_id": "3f133041-1810-41c3-a786-20b1793376c5",
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "portrait_00013_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "preflight": {
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\sdxl_txt2img_template.json",
+    "preset_name": "portrait",
+    "checkpoint_name": "sd_xl_base_1.0_0.9vae.safetensors",
+    "required_node_ids": [
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "available_checkpoints_count": 2,
+    "contract": {
+      "contract_valid": true,
+      "validated_node_ids": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    }
+  },
+  "artifact_validation": {
+    "artifact_valid": true,
+    "validated_image_count": 1,
+    "expected_node_id": "9"
+  },
+  "artifact_fetch_validation": {
+    "fetch_valid": true,
+    "validated_image_count": 1,
+    "fetch_results": [
+      {
+        "filename": "portrait_00013_.png",
+        "status_code": 200,
+        "content_type": "image/png",
+        "content_length": 1114771
+      }
+    ]
+  }
+}

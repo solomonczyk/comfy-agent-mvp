@@ -1,0 +1,82 @@
+[
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 987654321,
+    "status": "error",
+    "error": "History for prompt_id=608aa467-9b0d-4296-b172-ae2ff9530d64 not found after 120 attempts. Last queue state: running=True, pending=False."
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "status": "error",
+    "error": "History for prompt_id=be73f729-cc7a-43a6-960d-3f9195e89589 not found after 120 attempts. Last queue state: running=False, pending=True."
+  },
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 987654322,
+    "status": "error",
+    "error": "ComfyUI connection error for GET http://127.0.0.1:8188/history/e9ee22f1-891d-459b-893d-90c96fb7848a: "
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 123456790,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 987654323,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 123456791,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 987654324,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 123456792,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 987654325,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 123456793,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  }
+]

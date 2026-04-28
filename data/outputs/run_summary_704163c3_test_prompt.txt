@@ -1,0 +1,11 @@
+prompt_id: 704163c3-b7d9-41e3-91e3-6576733272c9
+status: failed
+preset: portrait
+rewrite_mode: raw
+seed: 1586314982
+final_prompt: test prompt
+output_filename: portrait_00014_.png
+metadata_path: disabled
+failed_stage: artifact_fetch_validation
+error_type: RuntimeError
+error: TEMPORARY: Simulated fetch failure for test

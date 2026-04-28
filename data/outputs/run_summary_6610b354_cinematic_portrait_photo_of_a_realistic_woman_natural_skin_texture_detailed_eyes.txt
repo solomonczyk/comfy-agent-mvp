@@ -1,0 +1,8 @@
+prompt_id: 6610b354-0ee7-4ac7-b5ba-3e9fd0a44c02
+status: completed
+preset: portrait
+rewrite_mode: fallback
+seed: 1176652635
+final_prompt: cinematic portrait photo of a realistic woman, natural skin texture, detailed eyes, soft cinematic light, 4K, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: portrait_00022_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260417_101958.json

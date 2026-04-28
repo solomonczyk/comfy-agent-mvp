@@ -865,6 +865,32 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2O — Create real role decision drafts subcommand
+    create_real_role_decision_drafts_parser = subparsers.add_parser("create-real-role-decision-drafts", help="Create completed real role decision draft submissions from evidence packets and templates, without applying them")
+    create_real_role_decision_drafts_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing evidence packets and submission templates",
+    )
+    create_real_role_decision_drafts_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2O — Validate real role decision drafts subcommand
+    validate_real_role_decision_drafts_parser = subparsers.add_parser("validate-real-role-decision-drafts", help="Validate real role decision drafts and confirm they are not applied")
+    validate_real_role_decision_drafts_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing draft submissions",
+    )
+    validate_real_role_decision_drafts_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -937,6 +963,10 @@ def main() -> int:
         return validate_role_decision_submission_contract(args)
     elif args.command == "validate-submitted-role-decisions":
         return validate_submitted_role_decisions(args)
+    elif args.command == "create-real-role-decision-drafts":
+        return create_real_role_decision_drafts(args)
+    elif args.command == "validate-real-role-decision-drafts":
+        return validate_real_role_decision_drafts(args)
     else:
         parser.print_help()
         return 1
@@ -6097,6 +6127,87 @@ def validate_submitted_role_decisions(args: argparse.Namespace) -> int:
         print(f"Downstream Blocked: {result['downstream_blocked']}")
         if result['rejection_reasons']:
             print(f"Rejection Reasons: {result['rejection_reasons']}")
+    
+    return 0
+
+
+def create_real_role_decision_drafts(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2O — Create completed real role decision draft submissions from evidence packets and templates.
+    
+    This command creates draft submissions in a separate submitted/ folder.
+    These drafts have selected_decision filled in based on evidence.
+    They do NOT modify role_decisions/, do NOT open retry gate, do NOT mark production_accepted=true.
+    They do NOT run ComfyUI, do NOT generate frames, do NOT run TTS, do NOT run ffmpeg.
+    
+    Exit codes:
+    - 0: draft creation completed successfully
+    - 1: draft creation failed or invalid args
+    """
+    from app.production_cards.decision_submission import create_real_role_decision_drafts as create_drafts
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_drafts(project_root, json_output)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Status: {result['status'].upper()}")
+        print(f"Drafts Created: {result['drafts_created']}")
+        print(f"Drafts Are Submitted Decisions: {result['drafts_are_submitted_decisions']}")
+        print(f"Apply Performed: {result['apply_performed']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        for draft in result['drafts']:
+            print(f"  - {draft['role']}: {draft['selected_decision']} ({draft['draft_path']})")
+    
+    return 0
+
+
+def validate_real_role_decision_drafts(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2O — Validate real role decision drafts and confirm they are not applied.
+    
+    This command validates draft submissions and checks safety:
+    - Drafts exist in submitted/ folder
+    - Drafts have selected_decision filled (not null)
+    - Drafts use decision_source=real_role_decision
+    - Drafts use fixture_only=false
+    - Drafts are based on evidence packets
+    - Drafts are based on work orders
+    - Drafts include required artifacts
+    - Drafts do NOT modify role_decisions/
+    - Drafts do NOT open retry gate
+    - Drafts keep production_accepted=false
+    - Drafts keep downstream_blocked=true
+    - No generation or downstream action executed
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.decision_submission import validate_real_role_decision_drafts as validate_drafts
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_drafts(project_root, json_output)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Submitted Decisions Ready: {result['submitted_decisions_ready']}")
+        print(f"Valid Submissions: {result['valid_submissions']}")
+        print(f"Would Allow Intake: {result['would_allow_intake']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Real Project Mutated: {result['real_project_mutated']}")
+        if result['validation_errors']:
+            print(f"Validation Errors: {result['validation_errors']}")
+        print(f"Safety Checks: {result['safety_checks']}")
     
     return 0
 

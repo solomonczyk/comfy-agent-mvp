@@ -1,0 +1,22 @@
+prompt_id: -
+status: failed
+preset: -
+rewrite_mode: -
+seed: -
+final_prompt: -
+output_filename: -
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_failed_20260420_080357.json
+failed_stage: workflow_mutation
+error_type: mutation_error
+error: Workflow mutation failed: Node 5 is not EmptyLatentImage (workflow_id=unknown, node_id=5)
+selected_candidate_id: None
+selected_attempt_index: None
+selection_reason: None
+attempts_count: 1
+workflow_switch_applied: False
+candidate_selection_reason: only_candidate_available
+corrective_action: accept
+corrective_action_reason_code: accepted_by_judge
+executed_action: none
+execution_status: failed
+branch_taken: None

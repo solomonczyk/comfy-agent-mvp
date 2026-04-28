@@ -1,0 +1,11 @@
+prompt_id: -
+status: failed
+preset: portrait
+rewrite_mode: raw
+seed: -
+final_prompt: test prompt
+output_filename: -
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_failed_20260416_112401.json
+failed_stage: preflight_validation
+error_type: ValueError
+error: Checkpoint not found in ComfyUI models/checkpoints: definitely_missing_checkpoint.safetensors. Available: sd_xl_base_1.0_0.9vae.safetensors, sd_xl_refiner_1.0.safetensors

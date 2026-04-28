@@ -1,0 +1,15 @@
+{
+  "video_id": "scene_20260420_111123_0199fdb0",
+  "input_path": "test_input_image.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111123_0199fdb0",
+  "started_at": "2026-04-20T11:11:23.996918",
+  "completed_at": "2026-04-20T11:15:00.072381",
+  "status": "failed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {},
+  "export": {},
+  "qc": {},
+  "error": "No frames were generated"
+}

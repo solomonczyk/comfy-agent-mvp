@@ -1,0 +1,18 @@
+{
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "characters": [
+    "Alya"
+  ],
+  "beats": [
+    {
+      "beat_id": "beat_001",
+      "positive_prompt": "vertical portrait composition, ordinary tired young woman 24 years old, dark brown hair in messy bun clearly visible, hood down, pale skin, dark eyes, gray oversized sweatshirt, blue jeans, sitting on messy bed in small modest apartment bedroom, holding simple black smartphone in both hands, tired focused expression, slightly worried, early morning cold gray-blue window light, documentary realism, realistic Ukrainian Eastern European apartment mood, no makeup, candid moment, realistic skin texture",
+      "negative_prompt": "glamour, fashion model, beauty portrait, studio portrait, stock photo, advertisement, perfect makeup, smiling, looking at camera, hood up, hood covering head, blue hoodie, luxury hotel, clean staged bedroom, plastic skin, wax skin, over-smoothed face, anime, cartoon, bad anatomy, distorted face, bad hands, extra fingers, red skin, orange skin, artifacts, picture frame, decorative frame, border, text, watermark",
+      "seed_policy": "deterministic"
+    }
+  ],
+  "generation_mode": "reference_locked",
+  "reference_image_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\pytest-of-taras\\pytest-559\\test_generate_artifact_proofs0\\референсы\\Аля.png",
+  "denoise": 0.5
+}

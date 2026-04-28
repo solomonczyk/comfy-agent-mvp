@@ -1,0 +1,9 @@
+prompt_id: d749b864-9fb5-40a3-bd74-2f63d5063caa
+status: completed
+preset: -
+rewrite_mode: fallback
+seed: 1174214304
+final_prompt: kt5 portrait proof, natural skin, soft light, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: sdxl_agent_00010_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260418_155031.json
+recipe_validation_passed: True

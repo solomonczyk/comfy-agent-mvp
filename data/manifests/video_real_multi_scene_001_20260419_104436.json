@@ -1,0 +1,46 @@
+{
+  "video_id": "real_multi_scene_001_20260419_104436",
+  "input_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\inputs\\real_multi_scene_001.mp4",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\real_multi_scene_001_20260419_104436",
+  "started_at": "2026-04-19T10:44:36.071247",
+  "completed_at": "2026-04-19T10:45:39.611106",
+  "status": "completed",
+  "probe": {
+    "duration_s": 20.125,
+    "fps": 24.0,
+    "frame_count": 483,
+    "width": 1072,
+    "height": 1928,
+    "codec": "h264"
+  },
+  "extraction": {
+    "frames_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\real_multi_scene_001_20260419_104436\\frames",
+    "frame_count": 483,
+    "fps": null,
+    "completed_at": "2026-04-19T10:44:43.337915"
+  },
+  "selection": {
+    "strategy": "intelligence_v1",
+    "selected_count": 2,
+    "selected_frames": [
+      "frame_000061.png",
+      "frame_000363.png"
+    ]
+  },
+  "processing": {
+    "processed_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\real_multi_scene_001_20260419_104436\\processed",
+    "processed_count": 2,
+    "processor": "autocontrast+sharpen_1.3",
+    "prompt": null,
+    "recipe": null,
+    "per_frame": [],
+    "completed_at": "2026-04-19T10:45:39.147110"
+  },
+  "export": {
+    "export_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\real_multi_scene_001_20260419_104436\\export.mp4",
+    "fps": 12.0,
+    "completed_at": "2026-04-19T10:45:39.611106"
+  },
+  "qc": {},
+  "error": null
+}

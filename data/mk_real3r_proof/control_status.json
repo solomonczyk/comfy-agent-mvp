@@ -1,0 +1,64 @@
+{
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "current_state": "missing_brief",
+  "expected_next_action": "create_brief",
+  "is_done": false,
+  "artifact_path": null,
+  "brief_path": null,
+  "available_actions": [],
+  "blocked_actions": {
+    "generate_frames": "expected next action is 'create_brief'",
+    "assemble_scene": "expected next action is 'create_brief'",
+    "qa_review": "expected next action is 'create_brief'",
+    "attach_audio": "expected next action is 'create_brief'",
+    "render_episode": "expected next action is 'create_brief'"
+  },
+  "ledger_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmpzemenpra\\output\\control\\ep01_shot01_ledger.json",
+  "ledger_exists": false,
+  "recent_events": [],
+  "recipe_validation": {
+    "available": true,
+    "settings_source": "observed",
+    "verdict": "pass",
+    "recipe_id": "sdxl_reference_locked_character_gtx1060",
+    "score": 1.0,
+    "issues": [
+      {
+        "severity": "info",
+        "code": "SETTINGS_MATCH_RECIPE",
+        "message": "All settings match the recipe requirements",
+        "expected": "pass",
+        "actual": "pass",
+        "recommendation": "No changes needed"
+      },
+      {
+        "severity": "info",
+        "code": "HARDWARE_PROFILE_RECOGNIZED",
+        "message": "Hardware profile 'gtx_1060_5gb' recognized",
+        "expected": "gtx_1060_5gb",
+        "actual": "gtx_1060_5gb",
+        "recommendation": "Settings are appropriate for this hardware"
+      },
+      {
+        "severity": "info",
+        "code": "PIXEL_COUNT_WITHIN_LIMIT",
+        "message": "Pixel count 307200 is within safe limit 307200",
+        "expected": "<= 307200",
+        "actual": 307200,
+        "recommendation": "Resolution is safe for this hardware"
+      }
+    ],
+    "summary": {
+      "title": "Recipe ready",
+      "risk_level": "low",
+      "operator_message": "Generation settings match the selected recipe and GTX 1060 5GB constraints.",
+      "top_reasons": [
+        "All settings match the recipe requirements",
+        "Hardware profile 'gtx_1060_5gb' recognized",
+        "Pixel count 307200 is within safe limit 307200"
+      ],
+      "recommended_next_action": "Proceed with generate_frames."
+    }
+  }
+}

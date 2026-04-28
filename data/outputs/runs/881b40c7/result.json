@@ -1,0 +1,168 @@
+{
+  "status": "failed",
+  "failed_stage": "workflow_mutation",
+  "error_type": "mutation_error",
+  "error_code": "MUTATION_CONTRACT_ERROR",
+  "error": "Workflow mutation failed: Node 5 is not EmptyLatentImage (workflow_id=unknown, node_id=5)",
+  "user_prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+  "task_selection": {
+    "task_type": "img2img",
+    "confidence": 1.0,
+    "reason": "Mode override: edit",
+    "routing_source": "cli",
+    "required_inputs": [
+      "input_image"
+    ],
+    "missing_inputs": [],
+    "ambiguity_level": "low",
+    "safe_fallback_used": false
+  },
+  "execution_plan": {
+    "user_prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+    "task_type": "img2img",
+    "workflow_id": "img2img_v1",
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\img2img_simple_template.json",
+    "preset_name": "portrait",
+    "rewrite_mode": "raw",
+    "required_inputs": [
+      "input_image"
+    ],
+    "resolved_inputs": {
+      "prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+      "input_image": "temp_portrait_00044_.png"
+    },
+    "enable_judging": false,
+    "enable_retry_loop": false,
+    "canonical_recipe": {
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "seed": null,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+      "filename_prefix": "agent/portrait"
+    },
+    "notes": []
+  },
+  "mutation_report": null,
+  "mutation_retry": null,
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": {
+    "switch_applied": false,
+    "from_workflow_id": "img2img_v1",
+    "to_workflow_id": null,
+    "switch_reason": null,
+    "source_trigger": null,
+    "switch_allowed": false,
+    "missing_inputs": [],
+    "notes": []
+  },
+  "corrective_action": {
+    "action": "accept",
+    "reason_code": "accepted_by_judge",
+    "reason": "No judge evaluation - accepting result",
+    "source_repairs": [],
+    "selected_workflow_id": "img2img_v1",
+    "target_workflow_id": null,
+    "required_inputs": [],
+    "missing_inputs": [],
+    "switch_allowed": false,
+    "notes": [
+      "Judging was disabled or judge pipeline failed"
+    ]
+  },
+  "candidate_history": {
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "selection_reason": null,
+    "attempts": [
+      {
+        "attempt_index": 1,
+        "candidate_id": "cand_7d81dc68",
+        "parent_candidate_id": null,
+        "attempt_kind": "initial",
+        "workflow_id": "img2img_v1",
+        "task_type": "img2img",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "selected": false,
+        "selection_reason": null,
+        "source_trigger": null,
+        "mutation_report": null,
+        "mutation_retry": null,
+        "workflow_switch": null,
+        "corrective_action": null,
+        "executed_action": {
+          "executed_action": "none",
+          "execution_status": "failed",
+          "branch_taken": null,
+          "notes": [
+            "Mutation failed before execution"
+          ],
+          "error_type": "mutation_error",
+          "error": "Workflow mutation failed: Node 5 is not EmptyLatentImage"
+        },
+        "images": [],
+        "metadata_path": null,
+        "summary_path": null,
+        "error_type": "mutation_error",
+        "error_code": "MUTATION_CONTRACT_ERROR",
+        "error": "Workflow mutation failed: Node 5 is not EmptyLatentImage (workflow_id=unknown, node_id=5)"
+      }
+    ]
+  },
+  "candidate_selection": {
+    "selected_candidate_id": "cand_7d81dc68",
+    "selected_attempt_index": 1,
+    "selection_reason": "only_candidate_available",
+    "selected_workflow_id": "img2img_v1",
+    "ranking_snapshot": [
+      {
+        "candidate_id": "cand_7d81dc68",
+        "attempt_index": 1,
+        "workflow_id": "img2img_v1",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "rank": 1
+      }
+    ]
+  },
+  "executed_action": {
+    "executed_action": "none",
+    "execution_status": "failed",
+    "branch_taken": null,
+    "notes": [
+      "Mutation failed before execution"
+    ],
+    "error_type": "mutation_error",
+    "error": "Workflow mutation failed: Node 5 is not EmptyLatentImage"
+  },
+  "images": [],
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260420_080335.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_cinematic_portrait_scene_subtle_head_movement_professional_lighting_cinematic_sc.txt",
+  "recipe_validation": null,
+  "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\881b40c7.jsonl",
+  "tool_chain": [
+    "detect_task",
+    "select_workflow",
+    "validate_required_inputs",
+    "load_workflow",
+    "mutate_workflow",
+    "persist_run"
+  ],
+  "upscale_result": null,
+  "qc_status": "not_applicable",
+  "qc_errors": [],
+  "qa_status": "not_applicable",
+  "qa_errors": [],
+  "verdict": "failed",
+  "run_id": "881b40c7"
+}

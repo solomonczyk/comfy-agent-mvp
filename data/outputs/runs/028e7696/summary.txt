@@ -1,0 +1,10 @@
+prompt_id: 39da431e-b3b3-4093-a8ef-f23d9c52e8e2
+status: completed
+preset: -
+rewrite_mode: fallback
+seed: 1420194812
+final_prompt: realistic female portrait for premium advertising look, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: portrait_00029_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260419_154913.json
+judge_status: accept
+recipe_validation_passed: True

@@ -1,0 +1,85 @@
+{
+  "recipe_validation": {
+    "available": true,
+    "settings_source": "observed",
+    "recipe_id": "sdxl_reference_locked_character_gtx1060",
+    "verdict": "pass"
+  },
+  "validation_result": {
+    "verdict": "pass",
+    "recipe_id": "sdxl_reference_locked_character_gtx1060",
+    "task_type": "reference_locked_character",
+    "hardware_profile_id": "gtx_1060_5gb",
+    "score": 1.0,
+    "issues": [
+      {
+        "severity": "info",
+        "code": "SETTINGS_MATCH_RECIPE",
+        "message": "All settings match the recipe requirements",
+        "expected": "pass",
+        "actual": "pass",
+        "recommendation": "No changes needed"
+      },
+      {
+        "severity": "info",
+        "code": "HARDWARE_PROFILE_RECOGNIZED",
+        "message": "Hardware profile 'gtx_1060_5gb' recognized",
+        "expected": "gtx_1060_5gb",
+        "actual": "gtx_1060_5gb",
+        "recommendation": "Settings are appropriate for this hardware"
+      },
+      {
+        "severity": "info",
+        "code": "PIXEL_COUNT_WITHIN_LIMIT",
+        "message": "Pixel count 307200 is within safe limit 512000",
+        "expected": "<= 512000",
+        "actual": 307200,
+        "recommendation": "Resolution is safe for this hardware"
+      }
+    ],
+    "observed_settings": {
+      "checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "karras",
+      "steps": 20,
+      "cfg": 7.0,
+      "width": 480,
+      "height": 640,
+      "batch_size": 1,
+      "denoise": 0.5,
+      "negative_prompt": "glamour, fashion model, beauty portrait, studio portrait, stock photo, advertisement, perfect makeup, smiling, looking at camera, hood up, hood covering head, blue hoodie, luxury hotel, clean staged bedroom, plastic skin, wax skin, over-smoothed face, anime, cartoon, bad anatomy, distorted face, bad hands, extra fingers, red skin, orange skin, artifacts, picture frame, decorative frame, border, text, watermark",
+      "raw_nodes": {
+        "source": "patched_workflow_before_submit",
+        "checkpoint_node": "10",
+        "ksampler_node": "7",
+        "latent_node": "3",
+        "negative_prompt_node": "6",
+        "load_image_node": "1",
+        "resize_node": "2",
+        "image_scale_node": "2",
+        "vae_encode_node": "3"
+      },
+      "generation_mode": "reference_locked",
+      "reference_image_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\pytest-of-taras\\pytest-559\\test_generate_artifact_proofs0\\референсы\\Аля.png"
+    },
+    "recommended_settings": {
+      "checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "karras",
+      "steps_min": 10,
+      "steps_max": 30,
+      "cfg_min": 5.0,
+      "cfg_max": 10.0,
+      "batch_size_max": 1,
+      "recommended_batch_size": 1,
+      "max_pixels": 512000,
+      "required_negative_terms": [
+        "bad anatomy"
+      ],
+      "recommended_9_16_resolution": [
+        480,
+        640
+      ]
+    }
+  }
+}

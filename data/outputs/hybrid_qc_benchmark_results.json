@@ -1,0 +1,36 @@
+{
+  "by_category": {
+    "golden_accept": [],
+    "good": [],
+    "borderline": [],
+    "bad": []
+  },
+  "vision_response_cases": {
+    "valid_json": [],
+    "malformed_json": [],
+    "none_or_error": []
+  },
+  "summary": {
+    "total_tested": 0,
+    "accept": 0,
+    "retry": 0,
+    "reject": 0,
+    "local_hard_reject": 0,
+    "vision_failed": 0,
+    "true_accept": 0,
+    "false_accept": 0,
+    "true_retry": 0,
+    "false_retry": 0,
+    "true_reject": 0,
+    "false_reject": 0
+  },
+  "fragments": {
+    "accept": null,
+    "retry": null,
+    "reject": null
+  },
+  "changes": {
+    "multi_subject_releases": [],
+    "semantic_collapse_retries": []
+  }
+}

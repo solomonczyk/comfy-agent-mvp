@@ -1,0 +1,15 @@
+{
+  "video_id": "scene_20260422_083951_4365db99",
+  "input_path": "test_input_image.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260422_083951_4365db99",
+  "started_at": "2026-04-22T08:39:51.681565",
+  "completed_at": "2026-04-22T08:39:52.755462",
+  "status": "failed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {},
+  "export": {},
+  "qc": {},
+  "error": "MK-6J-CQ: Queue not clean after recovery - 1 prompts remain: ['22977d1a-898d-4bd6-bd59-fad6453eef11']. Manual cleanup required."
+}

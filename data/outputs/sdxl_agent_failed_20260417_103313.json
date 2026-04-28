@@ -1,0 +1,183 @@
+{
+  "status": "failed",
+  "failed_stage": "execution_plan_build",
+  "error_type": "ValueError",
+  "error_code": null,
+  "error": "Workflow template contract validation failed: node 9: expected class_type=None, got class_type=VAEDecode",
+  "user_prompt": "improve realism and details",
+  "task_selection": {
+    "task_type": "img2img",
+    "confidence": 1.0,
+    "reason": "Mode override: edit",
+    "routing_source": "cli",
+    "required_inputs": [
+      "input_image"
+    ],
+    "missing_inputs": [],
+    "ambiguity_level": "low",
+    "safe_fallback_used": false
+  },
+  "execution_plan": {
+    "user_prompt": "improve realism and details",
+    "task_type": "img2img",
+    "workflow_id": "img2img_v1",
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\sdxl_img2img_template.json",
+    "preset_name": "portrait",
+    "rewrite_mode": "raw",
+    "required_inputs": [
+      "input_image"
+    ],
+    "resolved_inputs": {
+      "prompt": "improve realism and details",
+      "input_image": "test_input_image.png"
+    },
+    "enable_judging": false,
+    "enable_retry_loop": false,
+    "notes": []
+  },
+  "mutation_report": {
+    "workflow_id": "img2img_v1",
+    "mutated_nodes": [
+      "6",
+      "7",
+      "3",
+      "11",
+      "5",
+      "3"
+    ],
+    "applied_changes": {
+      "positive_prompt": "improve realism and details",
+      "negative_prompt": "blurry, low quality, distorted, oversaturated, artifacts",
+      "steps": 30,
+      "cfg": 6.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "filename_prefix": "agent/img2img",
+      "input_image": "test_input_image.png",
+      "denoise": 0.6
+    },
+    "notes": [
+      "Applied task-specific overrides for img2img"
+    ]
+  },
+  "mutation_retry": null,
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": {
+    "switch_applied": false,
+    "from_workflow_id": "img2img_v1",
+    "to_workflow_id": null,
+    "switch_reason": null,
+    "source_trigger": null,
+    "switch_allowed": false,
+    "missing_inputs": [],
+    "notes": []
+  },
+  "corrective_action": {
+    "action": "accept",
+    "reason_code": "accepted_by_judge",
+    "reason": "No judge evaluation - accepting result",
+    "source_repairs": [],
+    "selected_workflow_id": "img2img_v1",
+    "target_workflow_id": null,
+    "required_inputs": [],
+    "missing_inputs": [],
+    "switch_allowed": false,
+    "notes": [
+      "Judging was disabled or judge pipeline failed"
+    ]
+  },
+  "candidate_history": {
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "selection_reason": null,
+    "attempts": [
+      {
+        "attempt_index": 1,
+        "candidate_id": "cand_cdd647c0",
+        "parent_candidate_id": null,
+        "attempt_kind": "initial",
+        "workflow_id": "img2img_v1",
+        "task_type": "img2img",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "selected": false,
+        "selection_reason": null,
+        "source_trigger": null,
+        "mutation_report": {
+          "workflow_id": "img2img_v1",
+          "mutated_nodes": [
+            "6",
+            "7",
+            "3",
+            "11",
+            "5",
+            "3"
+          ],
+          "applied_changes": {
+            "positive_prompt": "improve realism and details",
+            "negative_prompt": "blurry, low quality, distorted, oversaturated, artifacts",
+            "steps": 30,
+            "cfg": 6.0,
+            "sampler_name": "dpmpp_2m",
+            "scheduler": "karras",
+            "filename_prefix": "agent/img2img",
+            "input_image": "test_input_image.png",
+            "denoise": 0.6
+          },
+          "notes": [
+            "Applied task-specific overrides for img2img"
+          ]
+        },
+        "mutation_retry": null,
+        "workflow_switch": null,
+        "corrective_action": null,
+        "executed_action": null,
+        "images": [],
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260417_103313.json",
+        "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_improve_realism_and_details.txt",
+        "error_type": "ValueError",
+        "error_code": null,
+        "error": "Workflow template contract validation failed: node 9: expected class_type=None, got class_type=VAEDecode"
+      }
+    ]
+  },
+  "candidate_selection": {
+    "selected_candidate_id": "cand_cdd647c0",
+    "selected_attempt_index": 1,
+    "selection_reason": "only_candidate_available",
+    "selected_workflow_id": "img2img_v1",
+    "ranking_snapshot": [
+      {
+        "candidate_id": "cand_cdd647c0",
+        "attempt_index": 1,
+        "workflow_id": "img2img_v1",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "rank": 1
+      }
+    ]
+  },
+  "executed_action": {
+    "executed_action": "accept",
+    "execution_status": "completed",
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "branch_taken": "accept",
+    "target_workflow_id": null,
+    "notes": [
+      "Default executed action for non-retry case"
+    ]
+  },
+  "images": [],
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260417_103313.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_improve_realism_and_details.txt",
+  "qc_status": "not_applicable",
+  "qc_errors": [],
+  "qa_status": "not_applicable",
+  "qa_errors": []
+}

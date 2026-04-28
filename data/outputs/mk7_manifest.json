@@ -1,0 +1,35 @@
+{
+  "audit": "MK-7",
+  "title": "Scene Assembly & Video Output v1",
+  "timestamp": "2026-04-21T11:06:30.368489+00:00",
+  "source_frames": [
+    "mk6r2_sub0_node15.png",
+    "mk6r2_sub0_node12.png",
+    "mk6r2_sub0_node9.png",
+    "mk6r2_sub1_node15.png",
+    "mk6r2_sub1_node12.png",
+    "mk6r2_sub1_node9.png"
+  ],
+  "frame_count": 6,
+  "fps": 8,
+  "duration_seconds": 0.75,
+  "output_file": "mk7_scene_v1.mp4",
+  "output_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\mk7_scene_v1.mp4",
+  "file_size_bytes": 99812,
+  "resolution": "512x512",
+  "codec": "h264",
+  "pix_fmt": "yuv420p",
+  "comfy_submission_count": 2,
+  "reference_locked": true,
+  "generation_strategy": "bounded_2x3",
+  "assembly_tool": "ffmpeg",
+  "comfy_submissions_this_layer": 0,
+  "acceptance": {
+    "mp4_exists": true,
+    "duration_ok": true,
+    "resolution_ok": true,
+    "frame_count_ok": true,
+    "codec_ok": true,
+    "pix_fmt_ok": true
+  }
+}

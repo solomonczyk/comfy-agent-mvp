@@ -1,0 +1,10 @@
+{
+  "rc1_frozen_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc_mir_erdan_ep01",
+  "rc2_render_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_render1_ep01",
+  "rc2_audio_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_audio1_ep01",
+  "package_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01",
+  "created_at": "2026-04-28T05:23:12.930704Z",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "rc_version": "rc2_demo_pack"
+}

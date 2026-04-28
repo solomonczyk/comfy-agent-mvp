@@ -1,0 +1,133 @@
+{
+  "by_category": {
+    "good": [
+      {
+        "path": "f:\\ComfyUI\\comfy-agent-mvp\\test_portrait.png",
+        "expected_verdict": "accept",
+        "actual_verdict": "accept",
+        "hard_fails": [],
+        "corrective_action": "accept",
+        "scorecard": {
+          "technical": 8,
+          "anatomy": 10,
+          "semantic": 9,
+          "aesthetic": 9,
+          "weighted": 9.1
+        },
+        "vision_defect_raw": {}
+      },
+      {
+        "path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\portrait_00008_.png",
+        "expected_verdict": "accept",
+        "actual_verdict": "reject",
+        "hard_fails": [
+          "semantic_collapse_conditional"
+        ],
+        "corrective_action": "retry_seed",
+        "scorecard": {
+          "technical": 8,
+          "anatomy": 6,
+          "semantic": 9,
+          "aesthetic": 5,
+          "weighted": 7.1
+        },
+        "vision_defect_raw": {}
+      }
+    ],
+    "borderline": [
+      {
+        "path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\portrait_00005_.png",
+        "expected_verdict": "retry",
+        "actual_verdict": "accept",
+        "hard_fails": [],
+        "corrective_action": "accept",
+        "scorecard": {
+          "technical": 8,
+          "anatomy": 10,
+          "semantic": 9,
+          "aesthetic": 8,
+          "weighted": 8.899999999999999
+        },
+        "vision_defect_raw": {}
+      },
+      {
+        "path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\portrait_00010_.png",
+        "expected_verdict": "retry",
+        "actual_verdict": "accept",
+        "hard_fails": [],
+        "corrective_action": "accept",
+        "scorecard": {
+          "technical": 8,
+          "anatomy": 10,
+          "semantic": 9,
+          "aesthetic": 7,
+          "weighted": 8.7
+        },
+        "vision_defect_raw": {}
+      },
+      {
+        "path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\portrait_00015_.png",
+        "expected_verdict": "retry",
+        "actual_verdict": "accept",
+        "hard_fails": [],
+        "corrective_action": "accept",
+        "scorecard": {
+          "technical": 8,
+          "anatomy": 10,
+          "semantic": 9,
+          "aesthetic": 7,
+          "weighted": 8.7
+        },
+        "vision_defect_raw": {}
+      }
+    ],
+    "bad": []
+  },
+  "summary": {
+    "total_tested": 5,
+    "accept": 4,
+    "retry": 0,
+    "reject": 1,
+    "true_accept": 1,
+    "false_accept": 3,
+    "true_retry": 0,
+    "false_retry": 0,
+    "true_reject": 0,
+    "false_reject": 1
+  },
+  "fragments": {
+    "accept": {
+      "path": "f:\\ComfyUI\\comfy-agent-mvp\\test_portrait.png",
+      "expected_verdict": "accept",
+      "actual_verdict": "accept",
+      "hard_fails": [],
+      "corrective_action": "accept",
+      "scorecard": {
+        "technical": 8,
+        "anatomy": 10,
+        "semantic": 9,
+        "aesthetic": 9,
+        "weighted": 9.1
+      },
+      "vision_defect_raw": {}
+    },
+    "retry": null,
+    "reject": {
+      "path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\portrait_00008_.png",
+      "expected_verdict": "accept",
+      "actual_verdict": "reject",
+      "hard_fails": [
+        "semantic_collapse_conditional"
+      ],
+      "corrective_action": "retry_seed",
+      "scorecard": {
+        "technical": 8,
+        "anatomy": 6,
+        "semantic": 9,
+        "aesthetic": 5,
+        "weighted": 7.1
+      },
+      "vision_defect_raw": {}
+    }
+  }
+}

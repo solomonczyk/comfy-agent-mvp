@@ -1,0 +1,65 @@
+{
+  "status": "accepted",
+  "package_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01",
+  "zip_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01.zip",
+  "best_media_artifact": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01\\output\\final\\ep01_final_with_audio.mp4",
+  "validation_status": "passed",
+  "validation_summary": {
+    "total_checks": 12,
+    "passed_checks": 12,
+    "failed_checks": 0
+  },
+  "checksums_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01\\proof\\CHECKSUMS_SHA256.txt",
+  "known_limitations": [
+    "Technical placeholder audio, not real voiceover",
+    "Single-shot / single-scene demo",
+    "Final MP4 derived from existing scene.mp4"
+  ],
+  "accepted_rc2_layers": [
+    "RC2-DIRECTOR1B",
+    "RC2-RENDER1B",
+    "RC2-AUDIO1",
+    "RC2-PACK1"
+  ],
+  "pytest_result": {
+    "total_passed": 90,
+    "skipped": 8,
+    "warnings": 11
+  },
+  "boundary_compliance": {
+    "frozen_rc1_mutated": false,
+    "rc2_render_mutated": false,
+    "rc2_audio_mutated": false,
+    "comfyui_generation": false,
+    "pipeline_action_rerun": false
+  },
+  "package_contents": {
+    "media": [
+      "output/final/ep01_final_with_audio.mp4",
+      "output/final/ep01_final_no_audio.mp4",
+      "output/audio/ep01_voiceover.wav"
+    ],
+    "control": [
+      "output/control/ep01_audio_manifest.json",
+      "output/control/ep01_final_with_audio_manifest.json",
+      "output/control/artifact_index.json",
+      "output/control/ep01_shot01_ledger.json"
+    ],
+    "proof": [
+      "proof/source_roots.json",
+      "proof/RC2_DEMO_PACK_VALIDATION.json",
+      "proof/CHECKSUMS_SHA256.txt",
+      "proof/RC2_FREEZE_SUMMARY.json"
+    ],
+    "documentation": [
+      "README_RC2_DEMO_PACK.md"
+    ]
+  },
+  "source_roots": {
+    "rc1_frozen_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc_mir_erdan_ep01",
+    "rc2_render_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_render1_ep01",
+    "rc2_audio_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_audio1_ep01"
+  },
+  "created_at": "2026-04-28T05:23:13.072118Z",
+  "freeze_version": "RC2-FREEZE1"
+}

@@ -1,0 +1,8 @@
+prompt_id: 77ea8424-7ad5-43e7-b58f-fe17a678f594
+status: completed
+preset: portrait
+rewrite_mode: llm
+seed: 991005925
+final_prompt: Realistic portrait of a woman standing by a rainy window, soft natural light, detailed facial features, moody atmosphere, cinematic depth, high resolution, photorealistic
+output_filename: portrait_00016_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260416_103906.json

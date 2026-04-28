@@ -1,0 +1,20 @@
+{
+  "accept": [
+    {
+      "image_path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\portrait_00002_.png",
+      "prompt": "cinematic portrait photo of a realistic woman",
+      "verdict": "accept",
+      "hard_fails": [],
+      "corrective_action": "accept",
+      "scorecard": {
+        "technical": 8,
+        "anatomy": 10,
+        "semantic": 9,
+        "aesthetic": 9,
+        "weighted": 9.1
+      }
+    }
+  ],
+  "retry": [],
+  "reject": []
+}

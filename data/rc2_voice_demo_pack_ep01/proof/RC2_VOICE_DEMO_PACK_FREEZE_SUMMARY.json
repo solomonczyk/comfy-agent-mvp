@@ -1,0 +1,37 @@
+{
+  "status": "accepted",
+  "freeze_version": "RC2-VOICE-DEMO-PACK-FREEZE1",
+  "package_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01",
+  "zip_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01.zip",
+  "best_media_artifact": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01\\output\\final\\ep01_final_with_voiceover.mp4",
+  "validation_status": "passed",
+  "validation_summary": {
+    "total_checks": 13,
+    "passed_checks": 13,
+    "failed_checks": 0
+  },
+  "audio_kind": "voiceover",
+  "voiceover_duration": 9.336,
+  "final_duration": 9.336,
+  "duration_fit_passed": true,
+  "tts_engine": "edge-tts",
+  "known_limitations": [
+    "Single-shot demo (only ep01_shot01)",
+    "Video is extended/looped to match voiceover duration",
+    "Not multi-shot production ready",
+    "Edge-tts dependency for voiceover generation",
+    "This is a demo pack, not a production deliverable"
+  ],
+  "boundary_compliance": {
+    "frozen_rc1_mutated": false,
+    "frozen_rc2_demo_pack_mutated": false,
+    "rc2_voice_root_mutated": false,
+    "comfyui_generation": false,
+    "pipeline_action_rerun": false,
+    "tts_regenerated": false,
+    "ffmpeg_rerun": false
+  },
+  "created_at": "2026-04-28T08:07:00Z",
+  "freeze_document": "docs/RC2_VOICE_DEMO_PACK_FREEZE.md",
+  "handoff_document": "docs/HANDOFF_AFTER_RC2_VOICE_DEMO_PACK.md"
+}

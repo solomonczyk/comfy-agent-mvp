@@ -1,0 +1,66 @@
+{
+  "batch_id": "portrait_demo_001",
+  "spec_path": "portrait_demo_001",
+  "output_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\batches\\portrait_demo_001",
+  "total_jobs": 5,
+  "started_at": "2026-04-18T12:29:35.580381",
+  "completed_at": "2026-04-18T13:28:01.773383",
+  "status": "completed",
+  "jobs": {
+    "job_001": {
+      "status": "failed",
+      "verdict": "failed",
+      "failed_stage": "generation",
+      "error": "History for prompt_id=96199ba0-2220-4203-b966-376143e5d32a not found after 180 attempts. Last queue state: running=True, pending=False.",
+      "images": [],
+      "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260418_144111.json",
+      "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_realistic_female_portrait_natural_skin_texture_detailed_eyes_soft_natural_light_.txt",
+      "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\f13125b8.jsonl",
+      "completed_at": "2026-04-18T12:41:11.488544"
+    },
+    "job_002": {
+      "status": "failed",
+      "verdict": "failed",
+      "failed_stage": "generation",
+      "error": "History for prompt_id=4ab9d957-dd84-4b24-9a7c-0f91736a51cb not found after 180 attempts. Last queue state: running=True, pending=False.",
+      "images": [],
+      "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260418_145250.json",
+      "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_professional_male_portrait_sharp_focus_studio_lighting_high_detail_cinematic_lig.txt",
+      "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\9f678e1a.jsonl",
+      "completed_at": "2026-04-18T12:52:50.320197"
+    },
+    "job_003": {
+      "status": "failed",
+      "verdict": "failed",
+      "failed_stage": "generation",
+      "error": "History for prompt_id=48683424-977e-4372-a1fa-913da22493db not found after 180 attempts. Last queue state: running=True, pending=False.",
+      "images": [],
+      "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260418_150436.json",
+      "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_artistic_portrait_dramatic_lighting_moody_atmosphere_cinematic_cinematic_lightin.txt",
+      "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\9ea52024.jsonl",
+      "completed_at": "2026-04-18T13:04:36.437098"
+    },
+    "job_004": {
+      "status": "failed",
+      "verdict": "failed",
+      "failed_stage": "generation",
+      "error": "History for prompt_id=f100f476-4d20-41cc-8e16-6c0e523aa78c not found after 180 attempts. Last queue state: running=True, pending=False.",
+      "images": [],
+      "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260418_151623.json",
+      "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_young_adult_portrait_natural_beauty_golden_hour_lighting_soft_focus_cinematic_li.txt",
+      "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\21bdecd3.jsonl",
+      "completed_at": "2026-04-18T13:16:23.141018"
+    },
+    "job_005": {
+      "status": "failed",
+      "verdict": "failed",
+      "failed_stage": "generation",
+      "error": "History for prompt_id=9dcf7e81-608d-43e0-b7fd-ec659e248dd6 not found after 180 attempts. Last queue state: running=True, pending=False.",
+      "images": [],
+      "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260418_152801.json",
+      "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_elderly_portrait_wisdom_lines_warm_lighting_dignified_expression_cinematic_light.txt",
+      "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\a46662a4.jsonl",
+      "completed_at": "2026-04-18T13:28:01.771509"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+prompt_id: 342d80a4-8a58-4de1-89c6-d07f833e6f93
+status: completed
+preset: portrait
+rewrite_mode: raw
+seed: 49532431
+final_prompt: test prompt
+output_filename: portrait_00007_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260416_090834.json

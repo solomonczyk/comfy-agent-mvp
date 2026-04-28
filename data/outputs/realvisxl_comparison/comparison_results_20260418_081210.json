@@ -1,0 +1,26 @@
+[
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "status": "error",
+    "error": "ComfyUI completed for prompt_id=fd433d05-2281-427b-be51-ab1e3b2a8789, but no output images were found."
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "realvisxl_v50_00003_.png",
+        "subfolder": "realvisxl_comparison",
+        "type": "output"
+      }
+    ],
+    "prompt_id": "7ba2d1f5-ff05-46ce-b0bd-ba9743c7213e",
+    "status": "success"
+  }
+]

@@ -1,0 +1,19 @@
+prompt_id: 23bd8589-69de-46b1-ab40-1b3f01062616
+status: completed
+preset: -
+rewrite_mode: fallback
+seed: 258484317
+final_prompt: realistic female portrait for premium advertising look, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: portrait_00042_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260419_164130.json
+judge_status: reject
+quality_profile: portrait_premium_v1
+quality_verdict: reject
+technical_score: 0
+anatomy_score: 0
+semantic_score: 5
+aesthetic_score: 5
+weighted_score: 2.5
+soft_fail_reasons: image_unreadable, missing_image_for_vision_defect_judge
+recommended_corrective_action: retry_settings
+recipe_validation_passed: True

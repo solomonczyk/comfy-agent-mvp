@@ -1,0 +1,106 @@
+{
+  "layer": "Workflow Recipe Override Repair v1",
+  "proof_type": "Pre-Submit Recipe Parity Proof",
+  "timestamp": "2026-04-18T10:20:00Z",
+  "canonical_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+  "checkpoint_purpose": "Fixed canonical checkpoint for runtime/recipe parity proof (not quality generation target)",
+  
+  "changed_files": [
+    "app/agent/execution_plan.py",
+    "app/workflows/workflow_mutator.py"
+  ],
+  
+  "root_cause_note": {
+    "overwrite_path": "Requested settings were being overwritten by preset defaults at two locations:",
+    "location_1": "workflow_mutator.py - TASK_OVERRIDES dictionary (lines 52-123) hardcoded values for PORTRAIT_TXT2IMG including sampler_name='dpmpp_2m', extended negative_prompt, random seed",
+    "location_2": "generation_service.py - _resolve_settings() method (lines 106-140) loaded presets from sdxl_presets.json and applied them",
+    "precedence_before_fix": "preset defaults > requested settings",
+    "precedence_after_fix": "canonical_recipe > resolved_inputs > overrides > task_overrides > preset defaults"
+  },
+  
+  "requested_mutated_fragment_after_fix": {
+    "requested_settings": {
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "seed": 123456789,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "filename_prefix": "portrait_comparison/test"
+    },
+    "mutated_settings": {
+      "positive_prompt": "test prompt",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "width": 1024,
+      "height": 1024,
+      "seed": 123456789,
+      "steps": 30,
+      "cfg": 6.0,
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "filename_prefix": "portrait_comparison/test"
+    },
+    "parity_status": "PASS",
+    "parity_failures": []
+  },
+  
+  "pass_fail_parity": "PASS",
+  
+  "explicit_precedence_rules": {
+    "rule_1": "canonical_recipe (highest precedence) - wins over all defaults",
+    "rule_2": "resolved_inputs - user-provided explicit inputs",
+    "rule_3": "overrides - runtime overrides for this attempt",
+    "rule_4": "task_overrides - TASK_OVERRIDES dictionary from workflow_mutator.py",
+    "rule_5": "preset defaults - sdxl_presets.json (lowest precedence)",
+    "implementation": "Precedence enforced in workflow_mutator.apply_plan() method (lines 234-276)",
+    "fail_fast": "MutationError raised if canonical_recipe field != final_overrides field for any load-bearing parameter"
+  },
+  
+  "test_results": {
+    "test_1_canonical_recipe_precedence": "PASS",
+    "test_2_fail_fast_on_mismatch": "PASS",
+    "test_3_explicit_mismatch_fail_fast": "PASS",
+    "overall_verdict": "PASS"
+  },
+  
+  "load_bearing_fields_protected": [
+    "sampler_name",
+    "scheduler",
+    "steps",
+    "cfg",
+    "width",
+    "height",
+    "seed",
+    "negative_prompt",
+    "filename_prefix",
+    "checkpoint"
+  ],
+  
+  "queue_history_status": {
+    "still_blocks_submitted_proof": true,
+    "reason": "ComfyUI server queue/history synchronization failure prevents prompt execution. Prompts get stuck in running/pending state and history endpoint never returns completed prompts.",
+    "impact": "Pre-submit recipe parity is now PASS, but submitted/live proof still blocked by server-side issues",
+    "next_layer_required": "Live Runtime Queue/History Sync Repair v1 (server-side infrastructure issue)"
+  },
+  
+  "code_changes_summary": {
+    "execution_plan.py": [
+      "Added canonical_recipe field to ExecutionPlan dataclass",
+      "Added canonical_recipe parameter to ExecutionPlanBuilder.build()",
+      "Added canonical_recipe to ExecutionPlan.to_dict()"
+    ],
+    "workflow_mutator.py": [
+      "Modified apply_plan() to accept canonical_recipe from ExecutionPlan",
+      "Changed precedence to: canonical_recipe > resolved_inputs > overrides > task_overrides",
+      "Added fail-fast validation that raises MutationError if canonical_recipe != final_overrides",
+      "Validation checks all load-bearing fields: sampler_name, scheduler, steps, cfg, width, height, seed, negative_prompt, filename_prefix, checkpoint"
+    ]
+  },
+  
+  "real_run_artifact": null,
+  "real_run_artifact_note": "No real run artifact generated because ComfyUI queue/history synchronization is still broken. However, pre-submit recipe parity is now proven PASS through unit tests."
+}

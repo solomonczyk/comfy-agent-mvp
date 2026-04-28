@@ -1,0 +1,11 @@
+{
+  "audio_required": false,
+  "audio_attached": false,
+  "policy": "no_audio_for_rc",
+  "reason": "RC-FLOW1H: Real audio attachment (TTS synthesis, audio muxing) is out of scope for this RC. Explicit no-audio policy applied.",
+  "scene_mp4_path": null,
+  "brief_path": null,
+  "next_action_policy": "render_episode_allowed_without_audio",
+  "episode_id": "ep01",
+  "shot_id": "shot01"
+}

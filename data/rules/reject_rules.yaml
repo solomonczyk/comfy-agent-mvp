@@ -1,0 +1,112 @@
+# Reject Rules
+
+This file defines content safety and quality rejection rules to prevent inappropriate or low-quality generations.
+
+safety_rules:
+  # Content categories to reject
+  prohibited_categories:
+    - "explicit_sexual_content"
+    - "violence_and_gore"
+    - "hate_speech"
+    - "self_harm"
+    - "illegal_activities"
+    - "child_exploitation"
+    - "non_consensual_content"
+    - "dangerous_weapons"
+    - "terrorism"
+    - "extremism"
+
+  # Keyword-based rejection
+  reject_keywords:
+    explicit:
+      - "porn"
+      - "nsfw"
+      - "nude"
+      - "naked"
+      - "sex"
+      - "erotic"
+    violence:
+      - "kill"
+      - "murder"
+      - "torture"
+      - "gore"
+      - "blood"
+      - "violence"
+    hate:
+      - "hate"
+      - "racist"
+      - "nazi"
+      - "supremacist"
+      - "discrimination"
+    harm:
+      - "suicide"
+      - "self-harm"
+      - "overdose"
+      - "drug abuse"
+
+  # Context-aware exceptions (allowed in specific contexts)
+  allowed_contexts:
+    medical:
+      keywords: ["anatomy", "medical", "diagram"]
+      allows: ["body", "organ", "tissue"]
+    artistic:
+      keywords: ["artistic", "abstract", "surreal"]
+      allows: ["figure", "form", "shape"]
+
+quality_rules:
+  # Minimum quality thresholds
+  min_quality_standards:
+    min_resolution: "512x512"
+    min_steps: 10
+    max_steps: 100
+    min_cfg: 1.0
+    max_cfg: 20.0
+
+  # Reject patterns in prompts
+  reject_prompt_patterns:
+    - pattern: "^(\\s+)$"
+      reason: "Empty or whitespace-only prompt"
+    - pattern: "^.{0,5}$"
+      reason: "Prompt too short (minimum 6 characters)"
+    - pattern: "^.{500,}$"
+      reason: "Prompt too long (maximum 500 characters)"
+    - pattern: "^[^a-zA-Z0-9]+$"
+      reason: "Prompt contains no alphanumeric characters"
+
+  # Technical rejection rules
+  technical_rejections:
+    invalid_model:
+      reason: "Requested model not available"
+      action: "fallback_to_default_model"
+    
+    invalid_resolution:
+      reason: "Resolution outside valid range"
+      action: "clamp_to_valid_range"
+    
+    invalid_steps:
+      reason: "Step count outside valid range"
+      action: "clamp_to_valid_range"
+    
+    invalid_cfg:
+      reason: "CFG value outside valid range"
+      action: "clamp_to_valid_range"
+
+# Rejection handling
+rejection_handling:
+  on_safety_rejection:
+    action: "block_generation"
+    message: "This request cannot be processed due to safety guidelines."
+    log: true
+    notify_user: true
+
+  on_quality_rejection:
+    action: "modify_and_continue"
+    message: "Adjusting parameters to meet quality standards."
+    log: true
+    notify_user: false
+
+  on_technical_rejection:
+    action: "auto_correct"
+    message: "Automatically correcting technical parameters."
+    log: true
+    notify_user: false

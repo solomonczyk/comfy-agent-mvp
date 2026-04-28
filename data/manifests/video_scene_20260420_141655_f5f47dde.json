@@ -1,0 +1,15 @@
+{
+  "video_id": "scene_20260420_141655_f5f47dde",
+  "input_path": "test_input_image.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_141655_f5f47dde",
+  "started_at": "2026-04-20T14:16:55.806638",
+  "completed_at": "2026-04-20T14:16:56.470050",
+  "status": "failed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {},
+  "export": {},
+  "qc": {},
+  "error": "cannot access local variable 'Path' where it is not associated with a value"
+}

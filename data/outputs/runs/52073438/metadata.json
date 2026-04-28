@@ -1,0 +1,298 @@
+{
+  "status": "completed",
+  "failed_stage": null,
+  "error_type": null,
+  "error_code": null,
+  "error": null,
+  "user_prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+  "task_selection": {
+    "task_type": "img2img",
+    "confidence": 1.0,
+    "reason": "Mode override: edit",
+    "routing_source": "cli",
+    "required_inputs": [
+      "input_image"
+    ],
+    "missing_inputs": [],
+    "ambiguity_level": "low",
+    "safe_fallback_used": false
+  },
+  "execution_plan": {
+    "user_prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+    "task_type": "img2img",
+    "workflow_id": "img2img_v1",
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\img2img_simple_template.json",
+    "preset_name": "portrait",
+    "rewrite_mode": "raw",
+    "required_inputs": [
+      "input_image"
+    ],
+    "resolved_inputs": {
+      "prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+      "input_image": "temp_portrait_00044_.png"
+    },
+    "enable_judging": false,
+    "enable_retry_loop": false,
+    "canonical_recipe": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 20,
+      "cfg": 6.0,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter"
+    },
+    "notes": []
+  },
+  "mutation_report": {
+    "workflow_id": "img2img_v1",
+    "mutated_nodes": [
+      "6",
+      "7",
+      "4",
+      "3",
+      "10",
+      "5",
+      "3"
+    ],
+    "applied_changes": {
+      "positive_prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter",
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "steps": 20,
+      "cfg": 6.0,
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "filename_prefix": "agent/img2img",
+      "input_image": "temp_portrait_00044_.png",
+      "denoise": 0.6
+    },
+    "notes": [
+      "Applied task-specific overrides for img2img"
+    ]
+  },
+  "mutation_retry": null,
+  "judge_status": "accept",
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": {
+    "switch_applied": false,
+    "from_workflow_id": "img2img_v1",
+    "to_workflow_id": null,
+    "switch_reason": null,
+    "source_trigger": null,
+    "switch_allowed": false,
+    "missing_inputs": [],
+    "notes": []
+  },
+  "corrective_action": {
+    "action": "accept",
+    "reason_code": "accepted_by_judge",
+    "reason": "No judge evaluation - accepting result",
+    "source_repairs": [],
+    "selected_workflow_id": "img2img_v1",
+    "target_workflow_id": null,
+    "required_inputs": [],
+    "missing_inputs": [],
+    "switch_allowed": false,
+    "notes": [
+      "Judging was disabled or judge pipeline failed"
+    ]
+  },
+  "candidate_history": {
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "selection_reason": null,
+    "attempts": [
+      {
+        "attempt_index": 1,
+        "candidate_id": "cand_a5ce2402",
+        "parent_candidate_id": null,
+        "attempt_kind": "initial",
+        "workflow_id": "img2img_v1",
+        "task_type": "img2img",
+        "judge_status": "accept",
+        "final_verdict": null,
+        "final_score": null,
+        "selected": false,
+        "selection_reason": null,
+        "source_trigger": null,
+        "mutation_report": {
+          "workflow_id": "img2img_v1",
+          "mutated_nodes": [
+            "6",
+            "7",
+            "4",
+            "3",
+            "10",
+            "5",
+            "3"
+          ],
+          "applied_changes": {
+            "positive_prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+            "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter",
+            "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+            "steps": 20,
+            "cfg": 6.0,
+            "sampler_name": "euler",
+            "scheduler": "karras",
+            "filename_prefix": "agent/img2img",
+            "input_image": "temp_portrait_00044_.png",
+            "denoise": 0.6
+          },
+          "notes": [
+            "Applied task-specific overrides for img2img"
+          ]
+        },
+        "mutation_retry": null,
+        "workflow_switch": null,
+        "corrective_action": null,
+        "executed_action": null,
+        "images": [
+          {
+            "node_id": "10",
+            "filename": "img2img_00013_.png",
+            "subfolder": "agent",
+            "type": "output"
+          }
+        ],
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260419_174307.json",
+        "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_a1cc5483_cinematic_portrait_scene_subtle_head_movement_professional_lighting_cinematic_sc.txt",
+        "error_type": null,
+        "error_code": null,
+        "error": null
+      }
+    ]
+  },
+  "candidate_selection": {
+    "selected_candidate_id": "cand_a5ce2402",
+    "selected_attempt_index": 1,
+    "selection_reason": "only_candidate_available",
+    "selected_workflow_id": "img2img_v1",
+    "ranking_snapshot": [
+      {
+        "candidate_id": "cand_a5ce2402",
+        "attempt_index": 1,
+        "workflow_id": "img2img_v1",
+        "judge_status": "accept",
+        "final_verdict": null,
+        "final_score": null,
+        "rank": 1
+      }
+    ]
+  },
+  "executed_action": {
+    "executed_action": "accept",
+    "execution_status": "completed",
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "branch_taken": "accept",
+    "target_workflow_id": null,
+    "notes": [
+      "Default executed action for non-retry case"
+    ]
+  },
+  "images": [
+    {
+      "node_id": "10",
+      "filename": "img2img_00013_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260419_174307.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_a1cc5483_cinematic_portrait_scene_subtle_head_movement_professional_lighting_cinematic_sc.txt",
+  "recipe_validation": {
+    "requested": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 20,
+      "cfg": 6.0,
+      "seed": 1953440678,
+      "width": 1024,
+      "height": 1024,
+      "positive_prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter"
+    },
+    "workflow_actual": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 20,
+      "cfg": 6.0,
+      "seed": 1953440678,
+      "width": 1024,
+      "height": 1024,
+      "positive_prompt": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter"
+    },
+    "parity": {
+      "checkpoint": {
+        "requested": "realvisxlV50_v50Bakedvae.safetensors",
+        "actual": "realvisxlV50_v50Bakedvae.safetensors",
+        "passed": true
+      },
+      "sampler_name": {
+        "requested": "euler",
+        "actual": "euler",
+        "passed": true
+      },
+      "scheduler": {
+        "requested": "karras",
+        "actual": "karras",
+        "passed": true
+      },
+      "steps": {
+        "requested": 20,
+        "actual": 20,
+        "passed": true
+      },
+      "cfg": {
+        "requested": 6.0,
+        "actual": 6.0,
+        "passed": true
+      },
+      "seed": {
+        "requested": 1953440678,
+        "actual": 1953440678,
+        "passed": true
+      },
+      "width": {
+        "requested": 1024,
+        "actual": 1024,
+        "passed": true
+      },
+      "height": {
+        "requested": 1024,
+        "actual": 1024,
+        "passed": true
+      },
+      "positive_prompt": {
+        "requested": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+        "actual": "cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+        "passed": true
+      },
+      "negative_prompt": {
+        "requested": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter",
+        "actual": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter",
+        "passed": true
+      }
+    },
+    "passed": true,
+    "failures": []
+  },
+  "trace_path": null,
+  "tool_chain": null,
+  "upscale_result": {
+    "status": "completed",
+    "input_image": "img2img_00013_.png",
+    "output_image": "upscaled_img2img_00013_.png",
+    "output_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\upscaled_img2img_00013_.png",
+    "workflow": "upscale_v1"
+  },
+  "qc_status": "pass",
+  "qc_errors": [],
+  "qa_status": "pass",
+  "qa_errors": []
+}

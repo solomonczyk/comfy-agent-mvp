@@ -1,0 +1,123 @@
+{
+  "layer": "Portrait Workflow Canonicalization & Recipe Enforcement v1",
+  "proof_type": "Live Runtime Recipe Parity Proof",
+  "timestamp": "2026-04-18T09:57:00Z",
+  "canonical_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+  "checkpoint_purpose": "Fixed canonical checkpoint for runtime/recipe parity proof (not quality generation target)",
+  
+  "changed_files": [
+    "app/services/generation_service.py",
+    "app/services/terminal_report.py",
+    "app/services/run_metadata.py",
+    "app/agent/workflow_agent_service.py",
+    "app/agent/result_contract.py"
+  ],
+  
+  "canonical_workflow_fragment": {
+    "workflow_id": "portrait_sdxl_v1",
+    "template_path": "data/workflows/sdxl_txt2img_template.json",
+    "canonical_node_ids": {
+      "checkpoint": "4",
+      "positive_prompt": "6",
+      "negative_prompt": "7",
+      "empty_latent_image": "5",
+      "ksampler": "3",
+      "vae_decode": "8",
+      "save_image": "9"
+    },
+    "output_node": "9",
+    "load_bearing_fields": [
+      "checkpoint",
+      "positive_prompt",
+      "negative_prompt",
+      "width",
+      "height",
+      "steps",
+      "cfg",
+      "sampler_name",
+      "scheduler",
+      "seed",
+      "filename_prefix"
+    ]
+  },
+  
+  "requested_mutated_submitted_fragment": {
+    "requested_settings": {
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "seed": 123456789,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated"
+    },
+    "mutated_settings": {
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "seed": 1267465677,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+      "filename_prefix": "agent/portrait"
+    },
+    "parity_status": "FAIL",
+    "parity_failures": [
+      {
+        "parameter": "sampler_name",
+        "requested": "euler",
+        "actual": "dpmpp_2m"
+      },
+      {
+        "parameter": "seed",
+        "requested": 123456789,
+        "actual": 1267465677
+      },
+      {
+        "parameter": "negative_prompt",
+        "requested": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+        "actual": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting"
+      }
+    ]
+  },
+  
+  "final_submitted_payload_fragment": {
+    "status": "failed",
+    "failed_stage": "generation",
+    "error_type": "RuntimeError",
+    "error": "History for prompt_id=fc0a3a74-b768-4681-a05f-c55e99d75f71 not found after 120 attempts. Last queue state: running=True, pending=False.",
+    "recipe_validation": null
+  },
+  
+  "metadata_fragment": {
+    "recipe_validation_passed": null,
+    "recipe_validation_wired": true,
+    "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260418_094359.json",
+    "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_realistic_female_portrait_natural_skin_texture_detailed_eyes_soft_natural_light_.txt"
+  },
+  
+  "summary_fragment": {
+    "status": "failed",
+    "failed_stage": "generation",
+    "error_type": "RuntimeError",
+    "recipe_validation_passed": null
+  },
+  
+  "pass_fail_parity": "FAIL",
+  
+  "root_cause_note": {
+    "primary_issue": "ComfyUI queue/history synchronization failure",
+    "primary_description": "The ComfyUI server is not executing queued prompts. Prompts get stuck in running/pending state and the history endpoint never returns completed prompts. This is a server-side issue that blocks the execution proof.",
+    "secondary_issue": "Requested settings not applied by WorkflowMutator",
+    "secondary_description": "The mutation path shows that requested settings (sampler_name=euler, seed=123456789, canonical negative prompt) are being overridden by WorkflowMutator with preset defaults (sampler_name=dpmpp_2m, random seed, extended negative prompt). This is a separate issue from the queue sync failure.",
+    "code_changes_made": "Successfully wired recipe_validation through the entire live runtime path (GenerationService → TerminalReport → RunMetadata → WorkflowAgentService → AgentResult). The recipe_validation field is now part of the unified agent result contract and will be populated when SDXLAgent.generate() completes successfully.",
+    "execution_blocked": "The execution proof is blocked by ComfyUI server queue/history sync issues. The code infrastructure for recipe enforcement is complete, but cannot be demonstrated due to server-side execution failures."
+  },
+  
+  "real_run_artifact": null,
+  "real_run_artifact_note": "No real run artifact generated due to ComfyUI server queue/history synchronization failure. The prompt was queued but never executed, so no image was generated."
+}

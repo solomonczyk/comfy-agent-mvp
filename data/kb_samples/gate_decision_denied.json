@@ -1,0 +1,12 @@
+{
+  "allowed": false,
+  "reason": "Missing required artifacts: project_manifest.json, series_bible.json, character_registry.json, style_bible.json, reference_lock_contract.json, kb_readiness_report.json",
+  "missing_artifacts": [
+    "project_manifest.json",
+    "series_bible.json",
+    "character_registry.json",
+    "style_bible.json",
+    "reference_lock_contract.json",
+    "kb_readiness_report.json"
+  ]
+}

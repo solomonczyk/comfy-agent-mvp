@@ -1,0 +1,34 @@
+{
+  "path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\portrait_00005_.png",
+  "score": 0.1,
+  "verdict": "reject",
+  "blocking_issues": [
+    {
+      "code": "subject_mismatch",
+      "message": "The image does not depict a cinematic portrait photo.",
+      "severity": "high"
+    }
+  ],
+  "issues": [
+    {
+      "code": "style_mismatch",
+      "message": "The image style is more illustrative than photographic.",
+      "severity": "medium"
+    }
+  ],
+  "strengths": [],
+  "recommended_repairs": [
+    "Generate a portrait photo",
+    "Ensure cinematic style",
+    "Introduce minor quality issues"
+  ],
+  "subscores": {
+    "prompt_alignment_score": 0.1,
+    "subject_presence_score": 0.0,
+    "camera_angle_score": 0.0,
+    "mood_match_score": 0.1,
+    "meaning_preservation_score": 0.1
+  },
+  "_vision_status": "valid_json",
+  "_raw_response_length": 733
+}

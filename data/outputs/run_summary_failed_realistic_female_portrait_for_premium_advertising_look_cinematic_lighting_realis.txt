@@ -1,0 +1,12 @@
+prompt_id: -
+status: failed
+preset: -
+rewrite_mode: fallback
+seed: -
+final_prompt: realistic female portrait for premium advertising look, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: -
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_failed_20260419_161539.json
+failed_stage: generation
+error_type: RuntimeError
+error: ComfyUI execution failed for prompt_id=b85a8432-25d1-49a9-87fa-25687c4624e7: [enforce fail at alloc_cpu.cpp:117] data. DefaultCPUAllocator: not enough memory: you tried to allocate 12582912 bytes.
+ | node_id=8 | node_type=VAEDecode

@@ -1,0 +1,11 @@
+prompt_id: -
+status: failed
+preset: portrait
+rewrite_mode: fallback
+seed: -
+final_prompt: elderly portrait, wisdom lines, warm lighting, dignified expression, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: -
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_failed_20260418_152801.json
+failed_stage: generation
+error_type: RuntimeError
+error: History for prompt_id=9dcf7e81-608d-43e0-b7fd-ec659e248dd6 not found after 180 attempts. Last queue state: running=True, pending=False.

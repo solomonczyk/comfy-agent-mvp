@@ -1,0 +1,79 @@
+{
+  "status": "completed",
+  "prompt_id": "4d2b143c-c9dc-4844-8724-e97e0b67aa61",
+  "failed_stage": null,
+  "error_type": null,
+  "error": null,
+  "user_prompt": "professional product photography of a luxury watch, clean white background, studio lighting, high detail",
+  "final_positive_prompt": "professional product photography of a luxury watch, clean white background, studio lighting, high detail, cinematic lighting, realistic details, high quality, professional photography, detailed texture",
+  "preset_name": "product",
+  "rewrite_mode": "fallback",
+  "seed": 105413755,
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "product_00001_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "preflight": {
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\data\\runtime_workflows\\2c7d2d09_product_sdxl_v1.json",
+    "preset_name": "product",
+    "checkpoint_name": "sd_xl_base_1.0_0.9vae.safetensors",
+    "required_node_ids": [
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "available_checkpoints_count": 2,
+    "contract": {
+      "contract_valid": true,
+      "validated_node_ids": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    }
+  },
+  "artifact_validation": {
+    "artifact_valid": true,
+    "validated_image_count": 1,
+    "expected_node_id": "9"
+  },
+  "artifact_fetch_validation": {
+    "fetch_valid": true,
+    "validated_image_count": 1,
+    "fetch_results": [
+      {
+        "filename": "product_00001_.png",
+        "status_code": 200,
+        "content_type": "image/png",
+        "content_length": 1808948
+      }
+    ]
+  },
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260417_101432.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_4d2b143c_professional_product_photography_of_a_luxury_watch_clean_white_background_studio.txt",
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": null,
+  "candidate_history": null,
+  "task_selection": null,
+  "execution_plan": null,
+  "mutation_report": null,
+  "mutation_retry": null,
+  "candidate_selection": null,
+  "corrective_action": null,
+  "executed_action": null
+}

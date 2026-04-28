@@ -1,0 +1,116 @@
+# Quality Profiles
+
+This file defines quality standards and validation rules for different use cases.
+
+profiles:
+  portrait:
+    name: "Portrait Photography"
+    description: "High-quality portrait generation with focus on facial details"
+    quality_standards:
+      min_resolution: "1024x1024"
+      recommended_steps: 30
+      cfg_range: [5.5, 7.0]
+      negative_keywords:
+        - "blurry"
+        - "low quality"
+        - "bad anatomy"
+        - "deformed face"
+        - "deformed eyes"
+        - "extra fingers"
+        - "duplicate"
+        - "distorted features"
+      positive_keywords:
+        - "detailed eyes"
+        - "natural skin texture"
+        - "professional photography"
+        - "cinematic lighting"
+    validation_rules:
+      - ensure_aspect_ratio_square
+      - check_facial_clarity
+      - validate_skin_tones
+
+  product:
+    name: "Product Photography"
+    description: "Commercial product photography with clean backgrounds"
+    quality_standards:
+      min_resolution: "1024x1024"
+      recommended_steps: 32
+      cfg_range: [5.0, 6.0]
+      negative_keywords:
+        - "blurry"
+        - "low quality"
+        - "distorted object"
+        - "warped edges"
+        - "extra objects"
+        - "duplicate product"
+        - "bad reflections"
+        - "oversaturated"
+      positive_keywords:
+        - "studio lighting"
+        - "clean background"
+        - "sharp focus"
+        - "professional photography"
+    validation_rules:
+      - ensure_aspect_ratio_square
+      - check_object_clarity
+      - validate_lighting
+
+  cinematic:
+    name: "Cinematic Scene"
+    description: "Wide aspect ratio cinematic scene generation"
+    quality_standards:
+      min_resolution: "1024x576"
+      recommended_steps: 35
+      cfg_range: [6.0, 7.5]
+      negative_keywords:
+        - "blurry"
+        - "low quality"
+        - "bad anatomy"
+        - "deformed face"
+        - "flat lighting"
+        - "duplicate subjects"
+        - "distorted features"
+        - "oversaturated"
+      positive_keywords:
+        - "cinematic lighting"
+        - "atmospheric"
+        - "detailed"
+        - "high quality"
+        - "professional photography"
+    validation_rules:
+      - ensure_aspect_ratio_wide
+      - check_composition
+      - validate_atmosphere
+
+validation_rules:
+  ensure_aspect_ratio_square:
+    description: "Ensure width equals height"
+    check: "width == height"
+  
+  ensure_aspect_ratio_wide:
+    description: "Ensure width is approximately 16:9"
+    check: "abs(width / height - 16/9) < 0.1"
+  
+  check_facial_clarity:
+    description: "Validate facial features are present and clear"
+    check: "contains_positive_keywords(['face', 'portrait', 'eyes'])"
+  
+  check_object_clarity:
+    description: "Validate main object is clearly visible"
+    check: "contains_positive_keywords(['product', 'object', 'item'])"
+  
+  check_composition:
+    description: "Validate scene has proper composition"
+    check: "contains_positive_keywords(['scene', 'background', 'composition'])"
+  
+  validate_lighting:
+    description: "Ensure appropriate lighting keywords present"
+    check: "contains_positive_keywords(['lighting', 'light', 'shadows'])"
+  
+  validate_atmosphere:
+    description: "Ensure atmospheric elements present"
+    check: "contains_positive_keywords(['atmosphere', 'mood', 'tone'])"
+  
+  validate_skin_tones:
+    description: "Ensure natural skin tone representation"
+    check: "not_contains_negative_keywords(['unnatural skin', 'weird skin'])"

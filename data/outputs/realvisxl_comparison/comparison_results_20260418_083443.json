@@ -1,0 +1,114 @@
+[
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "status": "error",
+    "error": "ComfyUI completed for prompt_id=c39d307c-dcc2-4836-81f0-baba63c0b022, but no output images were found."
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "status": "error",
+    "error": "ComfyUI completed for prompt_id=c42d8e20-c568-4085-b74d-108ef11e0ce2, but no output images were found."
+  },
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 123456790,
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "sdxl_base_00002_.png",
+        "subfolder": "realvisxl_comparison",
+        "type": "output"
+      }
+    ],
+    "prompt_id": "4ed1d7fe-02a5-45a3-8771-e2838ca48226",
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 123456790,
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "realvisxl_v50_00002_.png",
+        "subfolder": "realvisxl_comparison",
+        "type": "output"
+      }
+    ],
+    "prompt_id": "88274207-49e0-4a67-aecd-f5f1bcb7f040",
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 123456791,
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "sdxl_base_00006_.png",
+        "subfolder": "realvisxl_comparison",
+        "type": "output"
+      }
+    ],
+    "prompt_id": "f5795a9a-86ac-4726-8666-7aa6750c0d0d",
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 123456791,
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "realvisxl_v50_00005_.png",
+        "subfolder": "realvisxl_comparison",
+        "type": "output"
+      }
+    ],
+    "prompt_id": "6df2688f-3d0f-4f1c-bedb-9675954eae23",
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 123456792,
+    "status": "error",
+    "error": "History for prompt_id=a7b13e33-bc44-4df9-8616-d99da95b1017 not found after 120 attempts. Last queue state: running=False, pending=True."
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 123456792,
+    "status": "error",
+    "error": "History for prompt_id=2dd9edfa-a499-4f4b-9819-739b8fe66f71 not found after 120 attempts. Last queue state: running=False, pending=True."
+  },
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 123456793,
+    "status": "error",
+    "error": "ComfyUI connection error for GET http://127.0.0.1:8188/history/5d3a789a-4dcd-4bb4-b01a-918508a3c645: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 123456793,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  }
+]

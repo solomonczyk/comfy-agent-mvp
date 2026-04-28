@@ -1,0 +1,76 @@
+{
+  "video_id": "kt6_synth_input_20260419_093413",
+  "total_frames": 36,
+  "fps": 12.0,
+  "scenes": [
+    {
+      "start_frame": 0,
+      "end_frame": 12,
+      "representative_frame": 6,
+      "avg_brightness": 112.8220567703247,
+      "motion_score": 9.935196734052928e-06,
+      "decision": "process",
+      "decision_reason": "First scene - always processed for context"
+    },
+    {
+      "start_frame": 12,
+      "end_frame": 24,
+      "representative_frame": 18,
+      "avg_brightness": 112.82091267903645,
+      "motion_score": 9.599154711597496e-07,
+      "decision": "skip",
+      "decision_reason": "Very low motion - likely frozen segment"
+    },
+    {
+      "start_frame": 24,
+      "end_frame": 36,
+      "representative_frame": 30,
+      "avg_brightness": 112.81953080495198,
+      "motion_score": 2.6585035407657013e-08,
+      "decision": "skip",
+      "decision_reason": "Very low motion - likely frozen segment"
+    }
+  ],
+  "keyframes": [
+    {
+      "frame_index": 6,
+      "score": 9.935196734052928e-06,
+      "reason": "scene representative"
+    }
+  ],
+  "defects": [
+    {
+      "type": "frozen_segment",
+      "start_frame": 0,
+      "end_frame": 12,
+      "severity": "low",
+      "description": "Scene 0-12 has very low motion"
+    },
+    {
+      "type": "frozen_segment",
+      "start_frame": 12,
+      "end_frame": 24,
+      "severity": "low",
+      "description": "Scene 12-24 has very low motion"
+    },
+    {
+      "type": "frozen_segment",
+      "start_frame": 24,
+      "end_frame": 36,
+      "severity": "low",
+      "description": "Scene 24-36 has very low motion"
+    }
+  ],
+  "selected_subset": [
+    6
+  ],
+  "metadata": {
+    "num_scenes": 3,
+    "num_keyframes": 1,
+    "num_defects": 3,
+    "multi_scene_mode": true,
+    "scenes_processed": 1,
+    "scenes_skipped": 2,
+    "scenes_retry": 0
+  }
+}

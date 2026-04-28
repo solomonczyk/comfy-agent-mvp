@@ -1,0 +1,11 @@
+prompt_id: -
+status: failed
+preset: portrait
+rewrite_mode: fallback
+seed: -
+final_prompt: young adult portrait, natural beauty, golden hour lighting, soft focus, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: -
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_failed_20260418_151623.json
+failed_stage: generation
+error_type: RuntimeError
+error: History for prompt_id=f100f476-4d20-41cc-8e16-6c0e523aa78c not found after 180 attempts. Last queue state: running=True, pending=False.

@@ -1,0 +1,8 @@
+prompt_id: 1fae8f44-8ace-4657-aea0-030e42429fb1
+status: completed
+preset: portrait
+rewrite_mode: raw
+seed: 2004116077
+final_prompt: test prompt
+output_filename: portrait_00004_.png
+metadata_path: disabled

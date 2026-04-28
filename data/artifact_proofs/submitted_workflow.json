@@ -1,0 +1,95 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "C:/Users/taras/AppData/Local/Temp/pytest-of-taras/pytest-559/test_generate_artifact_proofs0/output/control/references/alya_clean_single_portrait_480x640.png"
+    }
+  },
+  "2": {
+    "class_type": "ImageScale",
+    "inputs": {
+      "image": [
+        "1",
+        0
+      ],
+      "width": 480,
+      "height": 640,
+      "crop": "disabled",
+      "upscale_method": "lanczos"
+    }
+  },
+  "3": {
+    "class_type": "VAEEncode",
+    "inputs": {
+      "pixels": [
+        "2",
+        0
+      ],
+      "vae": [
+        "10",
+        2
+      ]
+    }
+  },
+  "4": {
+    "class_type": "EmptyLatentImage",
+    "inputs": {
+      "width": 640,
+      "height": 480,
+      "batch_size": 1
+    }
+  },
+  "5": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "vertical portrait composition, ordinary tired young woman 24 years old, dark brown hair in messy bun clearly visible, hood down, pale skin, dark eyes, gray oversized sweatshirt, blue jeans, sitting on messy bed in small modest apartment bedroom, holding simple black smartphone in both hands, tired focused expression, slightly worried, early morning cold gray-blue window light, documentary realism, realistic Ukrainian Eastern European apartment mood, no makeup, candid moment, realistic skin texture",
+      "clip": [
+        "10",
+        1
+      ]
+    }
+  },
+  "6": {
+    "class_type": "CLIPTextEncode",
+    "inputs": {
+      "text": "glamour, fashion model, beauty portrait, studio portrait, stock photo, advertisement, perfect makeup, smiling, looking at camera, hood up, hood covering head, blue hoodie, luxury hotel, clean staged bedroom, plastic skin, wax skin, over-smoothed face, anime, cartoon, bad anatomy, distorted face, bad hands, extra fingers, red skin, orange skin, artifacts, picture frame, decorative frame, border, text, watermark",
+      "clip": [
+        "10",
+        1
+      ]
+    }
+  },
+  "7": {
+    "class_type": "KSampler",
+    "inputs": {
+      "seed": 3942495516,
+      "steps": 20,
+      "cfg": 7.0,
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "karras",
+      "denoise": 0.5,
+      "model": [
+        "10",
+        0
+      ],
+      "positive": [
+        "5",
+        0
+      ],
+      "negative": [
+        "6",
+        0
+      ],
+      "latent_image": [
+        "3",
+        0
+      ]
+    }
+  },
+  "10": {
+    "class_type": "CheckpointLoaderSimple",
+    "inputs": {
+      "ckpt_name": "CyberRealisticXLPlay_V7.0_FP16.safetensors"
+    }
+  }
+}

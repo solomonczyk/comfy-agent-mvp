@@ -1,0 +1,232 @@
+[
+  {
+    "checkpoint_name": "checkpoint_sd_xl_base_1.0",
+    "config": {
+      "name": "checkpoint_sd_xl_base_1.0",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "Original SDXL 1.0 base - control group with known plastic_skin issue"
+    },
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "status": "error",
+    "error": "History for prompt_id=03dd6d53-c4ac-4480-bf3a-7b470aec91d0 not found after 120 attempts. Last queue state: running=True, pending=False."
+  },
+  {
+    "checkpoint_name": "checkpoint_realvisxl_v50",
+    "config": {
+      "name": "checkpoint_realvisxl_v50",
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "RealVis XL v5.0 - realistic portrait focused checkpoint"
+    },
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "prompt_id": "4809379a-c07d-4a19-8cf6-1a266ee40a6f",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "checkpoint_realvisxl_v50_00005_.png",
+        "subfolder": "checkpoint_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "checkpoint_sd_xl_base_1.0",
+    "config": {
+      "name": "checkpoint_sd_xl_base_1.0",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "Original SDXL 1.0 base - control group with known plastic_skin issue"
+    },
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 123456790,
+    "prompt_id": "c970ec1d-c52a-418a-8a48-63b850f06e05",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "checkpoint_sd_xl_base_1.0_00006_.png",
+        "subfolder": "checkpoint_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "checkpoint_realvisxl_v50",
+    "config": {
+      "name": "checkpoint_realvisxl_v50",
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "RealVis XL v5.0 - realistic portrait focused checkpoint"
+    },
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 123456790,
+    "prompt_id": "8371a790-04e4-43d0-9dd8-4526ef3e0f41",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "checkpoint_realvisxl_v50_00006_.png",
+        "subfolder": "checkpoint_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "checkpoint_sd_xl_base_1.0",
+    "config": {
+      "name": "checkpoint_sd_xl_base_1.0",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "Original SDXL 1.0 base - control group with known plastic_skin issue"
+    },
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 123456791,
+    "prompt_id": "843bfd6e-0081-4bb8-b90c-27e6f90dd617",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "checkpoint_sd_xl_base_1.0_00007_.png",
+        "subfolder": "checkpoint_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "checkpoint_realvisxl_v50",
+    "config": {
+      "name": "checkpoint_realvisxl_v50",
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "RealVis XL v5.0 - realistic portrait focused checkpoint"
+    },
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 123456791,
+    "prompt_id": "8cba5a46-8930-4ae3-8945-ddf9bba93cd9",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "checkpoint_realvisxl_v50_00007_.png",
+        "subfolder": "checkpoint_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "checkpoint_name": "checkpoint_sd_xl_base_1.0",
+    "config": {
+      "name": "checkpoint_sd_xl_base_1.0",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "Original SDXL 1.0 base - control group with known plastic_skin issue"
+    },
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 123456792,
+    "status": "error",
+    "error": "History for prompt_id=9ea362f6-c35b-4f6e-9e3b-d06783f54b0d not found after 120 attempts. Last queue state: running=True, pending=False."
+  },
+  {
+    "checkpoint_name": "checkpoint_realvisxl_v50",
+    "config": {
+      "name": "checkpoint_realvisxl_v50",
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "RealVis XL v5.0 - realistic portrait focused checkpoint"
+    },
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 123456792,
+    "status": "error",
+    "error": "History for prompt_id=bf87ada4-804a-4f45-bf3c-52194eeb9543 not found after 120 attempts. Last queue state: running=False, pending=True."
+  },
+  {
+    "checkpoint_name": "checkpoint_sd_xl_base_1.0",
+    "config": {
+      "name": "checkpoint_sd_xl_base_1.0",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "Original SDXL 1.0 base - control group with known plastic_skin issue"
+    },
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 123456793,
+    "status": "error",
+    "error": "ComfyUI connection error for GET http://127.0.0.1:8188/history/bf7c3c27-0d61-4e98-995f-26515b44a9bb: All connection attempts failed"
+  },
+  {
+    "checkpoint_name": "checkpoint_realvisxl_v50",
+    "config": {
+      "name": "checkpoint_realvisxl_v50",
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "RealVis XL v5.0 - realistic portrait focused checkpoint"
+    },
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 123456793,
+    "status": "error",
+    "error": "ComfyUI connection error for POST http://127.0.0.1:8188/prompt: All connection attempts failed"
+  }
+]

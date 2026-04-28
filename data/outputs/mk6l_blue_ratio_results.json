@@ -1,0 +1,47 @@
+{
+  "frames": [
+    {
+      "file": "img2img_batch_00117_.png",
+      "node": "9",
+      "blue_ratio": 0.24408187695527941,
+      "mean_brightness": 62.906856536865234,
+      "pass": true
+    },
+    {
+      "file": "img2img_batch_00116_.png",
+      "node": "12",
+      "blue_ratio": 0.25159193794563284,
+      "mean_brightness": 70.12622706095378,
+      "pass": true
+    },
+    {
+      "file": "img2img_batch_00115_.png",
+      "node": "15",
+      "blue_ratio": 0.24832086324584227,
+      "mean_brightness": 72.98598988850911,
+      "pass": true
+    },
+    {
+      "file": "img2img_batch_00120_.png",
+      "node": "9",
+      "blue_ratio": 0.29585230748932906,
+      "mean_brightness": 53.241519927978516,
+      "pass": true
+    },
+    {
+      "file": "img2img_batch_00119_.png",
+      "node": "12",
+      "blue_ratio": 0.2603139484494776,
+      "mean_brightness": 55.77784093221029,
+      "pass": true
+    },
+    {
+      "file": "img2img_batch_00118_.png",
+      "node": "15",
+      "blue_ratio": 0.2582462355099325,
+      "mean_brightness": 61.097066243489586,
+      "pass": true
+    }
+  ],
+  "all_pass": true
+}

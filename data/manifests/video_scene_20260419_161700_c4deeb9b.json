@@ -1,0 +1,93 @@
+{
+  "video_id": "scene_20260419_161700_c4deeb9b",
+  "input_path": "data\\outputs\\temp_portrait_00044_.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161700_c4deeb9b",
+  "started_at": "2026-04-19T16:17:00.354185",
+  "completed_at": "2026-04-19T16:18:43.038948",
+  "status": "completed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {
+    "processed_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161700_c4deeb9b\\processed",
+    "processed_count": 3,
+    "processor": "comfy_img2img_v1",
+    "prompt": "static portrait, no movement, frozen scene, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+    "recipe": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 5,
+      "cfg": 6.0,
+      "denoise": 0.05,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter"
+    },
+    "per_frame": [
+      {
+        "index": 1,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\temp_portrait_00044_.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161700_c4deeb9b\\processed\\frame_000001.png",
+        "run_id": "1a719078",
+        "prompt_id": "cee1b9f1-67fe-43ba-a151-b2191bd710a6",
+        "status": "completed",
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\1a719078\\metadata.json",
+        "result_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\1a719078\\result.json",
+        "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\1a719078.jsonl",
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\1a719078\\images\\img2img_00037_.png",
+        "error": null
+      },
+      {
+        "index": 2,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\temp_portrait_00044_.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161700_c4deeb9b\\processed\\frame_000002.png",
+        "run_id": "cde24430",
+        "prompt_id": "89bae4f9-c0f5-44e4-89e5-97eb794bc1e6",
+        "status": "completed",
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\cde24430\\metadata.json",
+        "result_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\cde24430\\result.json",
+        "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\cde24430.jsonl",
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\cde24430\\images\\img2img_00038_.png",
+        "error": null
+      },
+      {
+        "index": 3,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\temp_portrait_00044_.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161700_c4deeb9b\\processed\\frame_000003.png",
+        "run_id": "132924c2",
+        "prompt_id": "03b9d654-7bf0-44dc-bfc9-8a599a7dfda6",
+        "status": "completed",
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\132924c2\\metadata.json",
+        "result_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\132924c2\\result.json",
+        "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\132924c2.jsonl",
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\132924c2\\images\\img2img_00039_.png",
+        "error": null
+      }
+    ],
+    "completed_at": "2026-04-19T16:18:42.283694"
+  },
+  "export": {
+    "export_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161700_c4deeb9b\\scene.mp4",
+    "fps": 12.0,
+    "completed_at": "2026-04-19T16:18:42.685672"
+  },
+  "qc": {
+    "scene_verdict": "accept",
+    "scene_reasons": [],
+    "qc_report_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\manifests\\video_qc_scene_20260419_161700_c4deeb9b.json",
+    "quality_analysis": {
+      "motion_analysis": {
+        "motion_score": 0.203125,
+        "repetitive_ratio": 0.0,
+        "frozen_ratio": 0.0,
+        "avg_frame_similarity": 0.796875
+      },
+      "temporal_analysis": {
+        "temporal_inconsistency": false,
+        "brightness_variance": 23.750336888888853,
+        "avg_brightness": 78.82266666666668
+      },
+      "intended_motion": "subtle motion"
+    }
+  },
+  "error": null
+}

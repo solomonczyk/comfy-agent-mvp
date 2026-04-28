@@ -1,0 +1,124 @@
+{
+  "video_id": "kt8_neg_proof_001",
+  "generated_at": "2026-04-18T14:27:18.393340",
+  "manifest_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\manifests\\video_kt8_neg_proof_001.json",
+  "export_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\kt8_neg_proof_001\\export.mp4",
+  "processed_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\kt8_neg_proof_001\\processed",
+  "qc_version": "kt8_minimal_v1",
+  "verdict": "retry",
+  "reasons": [
+    "retry:black_frames",
+    "retry:size_mismatch"
+  ],
+  "summary": {
+    "export_ok": true,
+    "export_frame_count": 4,
+    "export_size_bytes": 63517,
+    "processed_frames_on_disk": 4,
+    "manifest_processed_count": 4,
+    "manifest_selected_count": 4,
+    "black_frame_count": 1,
+    "black_frame_ratio": 0.25,
+    "size_mismatch_count": 1,
+    "size_mismatch_ratio": 0.25,
+    "frozen_run_max_length": 1,
+    "frozen_run_ratio": 0.25
+  },
+  "checks": {
+    "export_broken": {
+      "passed": true,
+      "detail": "export ok",
+      "size_bytes": 63517
+    },
+    "missing_processed_frames": {
+      "passed": true,
+      "severity": null,
+      "on_disk_count": 4,
+      "expected_count": 4,
+      "detail": "4 processed frames on disk"
+    },
+    "black_frames": {
+      "passed": false,
+      "severity": "retry",
+      "black_count": 1,
+      "black_ratio": 0.25,
+      "black_indices": [
+        2
+      ]
+    },
+    "frame_count_mismatch": {
+      "passed": true,
+      "severity": null,
+      "on_disk_count": 4,
+      "manifest_processed_count": 4,
+      "export_frame_count": 4,
+      "tolerance": 1
+    },
+    "size_mismatch": {
+      "passed": false,
+      "severity": "retry",
+      "median_size_bytes": 189944,
+      "mismatch_count": 1,
+      "mismatch_ratio": 0.25,
+      "mismatch_indices": [
+        2
+      ],
+      "low_factor": 0.25,
+      "high_factor": 4.0
+    },
+    "frozen_output": {
+      "passed": true,
+      "severity": null,
+      "max_consecutive_run": 1,
+      "max_run_ratio": 0.25,
+      "min_run": 3,
+      "min_ratio": 0.5
+    }
+  },
+  "per_frame_qc": [
+    {
+      "index": 1,
+      "filename": "frame_000001.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\kt8_neg_proof_001\\processed\\frame_000001.png",
+      "size_bytes": 286845,
+      "mean": 127.055,
+      "std": 69.32,
+      "is_black": false,
+      "dhash": "1111110010111100101111001001111011011111100111011001101111010011",
+      "error": null
+    },
+    {
+      "index": 2,
+      "filename": "frame_000002.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\kt8_neg_proof_001\\processed\\frame_000002.png",
+      "size_bytes": 843,
+      "mean": 0.0,
+      "std": 0.0,
+      "is_black": true,
+      "dhash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "error": null
+    },
+    {
+      "index": 3,
+      "filename": "frame_000003.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\kt8_neg_proof_001\\processed\\frame_000003.png",
+      "size_bytes": 223987,
+      "mean": 112.283,
+      "std": 86.246,
+      "is_black": false,
+      "dhash": "1011010001001111100011011001110010001101110011101000010010110001",
+      "error": null
+    },
+    {
+      "index": 4,
+      "filename": "frame_000004.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\kt8_neg_proof_001\\processed\\frame_000004.png",
+      "size_bytes": 155902,
+      "mean": 149.51,
+      "std": 76.419,
+      "is_black": false,
+      "dhash": "1111100011110001100101101001011010010110111000001111001011010010",
+      "error": null
+    }
+  ]
+}

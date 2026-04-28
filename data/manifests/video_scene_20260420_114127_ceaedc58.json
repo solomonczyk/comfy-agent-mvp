@@ -1,0 +1,223 @@
+{
+  "video_id": "scene_20260420_114127_ceaedc58",
+  "input_path": "test_input_image.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58",
+  "started_at": "2026-04-20T11:41:27.504230",
+  "completed_at": "2026-04-20T11:45:00.255096",
+  "status": "completed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {
+    "processed_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed",
+    "processed_count": 6,
+    "processor": "comfy_img2img_v1",
+    "prompt": "cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+    "recipe": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 20,
+      "cfg": 6.0,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter"
+    },
+    "per_frame": [
+      {
+        "index": 1,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000001.png",
+        "run_id": "f2ebe840-0a9f-4a84-bc9d-84e129ef5336",
+        "prompt_id": "f2ebe840-0a9f-4a84-bc9d-84e129ef5336",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000001.png",
+        "error": null,
+        "batch_index": 0,
+        "batch_offset": 0,
+        "frame_diagnostics": {
+          "frame_index": 1,
+          "source_submission_index": 0,
+          "source_output_index": 0,
+          "black_frame": false,
+          "mean_brightness": 40.421531677246094,
+          "min_brightness": 37,
+          "max_brightness": 76,
+          "output_filename": "img2img_batch_00073_.png",
+          "output_node": "unknown",
+          "fetch_source": "comfy_fetch_image",
+          "linkage_source": "bounded_batch"
+        }
+      },
+      {
+        "index": 2,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000002.png",
+        "run_id": "f2ebe840-0a9f-4a84-bc9d-84e129ef5336",
+        "prompt_id": "f2ebe840-0a9f-4a84-bc9d-84e129ef5336",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000002.png",
+        "error": null,
+        "batch_index": 0,
+        "batch_offset": 1,
+        "frame_diagnostics": {
+          "frame_index": 2,
+          "source_submission_index": 0,
+          "source_output_index": 1,
+          "black_frame": false,
+          "mean_brightness": 44.3258056640625,
+          "min_brightness": 43,
+          "max_brightness": 73,
+          "output_filename": "img2img_batch_00074_.png",
+          "output_node": "unknown",
+          "fetch_source": "comfy_fetch_image",
+          "linkage_source": "bounded_batch"
+        }
+      },
+      {
+        "index": 3,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000003.png",
+        "run_id": "f2ebe840-0a9f-4a84-bc9d-84e129ef5336",
+        "prompt_id": "f2ebe840-0a9f-4a84-bc9d-84e129ef5336",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000003.png",
+        "error": null,
+        "batch_index": 0,
+        "batch_offset": 2,
+        "frame_diagnostics": {
+          "frame_index": 3,
+          "source_submission_index": 0,
+          "source_output_index": 2,
+          "black_frame": false,
+          "mean_brightness": 47.49626159667969,
+          "min_brightness": 43,
+          "max_brightness": 74,
+          "output_filename": "img2img_batch_00075_.png",
+          "output_node": "unknown",
+          "fetch_source": "comfy_fetch_image",
+          "linkage_source": "bounded_batch"
+        }
+      },
+      {
+        "index": 4,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000004.png",
+        "run_id": "c99fb34e-59a0-4e4e-994b-197bf4127481",
+        "prompt_id": "c99fb34e-59a0-4e4e-994b-197bf4127481",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000004.png",
+        "error": null,
+        "batch_index": 1,
+        "batch_offset": 0,
+        "frame_diagnostics": {
+          "frame_index": 4,
+          "source_submission_index": 1,
+          "source_output_index": 0,
+          "black_frame": false,
+          "mean_brightness": 45.70315170288086,
+          "min_brightness": 42,
+          "max_brightness": 82,
+          "output_filename": "img2img_batch_00076_.png",
+          "output_node": "unknown",
+          "fetch_source": "comfy_fetch_image",
+          "linkage_source": "bounded_batch"
+        }
+      },
+      {
+        "index": 5,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000005.png",
+        "run_id": "c99fb34e-59a0-4e4e-994b-197bf4127481",
+        "prompt_id": "c99fb34e-59a0-4e4e-994b-197bf4127481",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000005.png",
+        "error": null,
+        "batch_index": 1,
+        "batch_offset": 1,
+        "frame_diagnostics": {
+          "frame_index": 5,
+          "source_submission_index": 1,
+          "source_output_index": 1,
+          "black_frame": false,
+          "mean_brightness": 45.39485168457031,
+          "min_brightness": 30,
+          "max_brightness": 246,
+          "output_filename": "img2img_batch_00077_.png",
+          "output_node": "unknown",
+          "fetch_source": "comfy_fetch_image",
+          "linkage_source": "bounded_batch"
+        }
+      },
+      {
+        "index": 6,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000006.png",
+        "run_id": "c99fb34e-59a0-4e4e-994b-197bf4127481",
+        "prompt_id": "c99fb34e-59a0-4e4e-994b-197bf4127481",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\processed\\frame_000006.png",
+        "error": null,
+        "batch_index": 1,
+        "batch_offset": 2,
+        "frame_diagnostics": {
+          "frame_index": 6,
+          "source_submission_index": 1,
+          "source_output_index": 2,
+          "black_frame": false,
+          "mean_brightness": 44.081443786621094,
+          "min_brightness": 38,
+          "max_brightness": 100,
+          "output_filename": "img2img_batch_00078_.png",
+          "output_node": "unknown",
+          "fetch_source": "comfy_fetch_image",
+          "linkage_source": "bounded_batch"
+        }
+      }
+    ],
+    "completed_at": "2026-04-20T11:44:59.850804"
+  },
+  "export": {
+    "export_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_114127_ceaedc58\\scene.mp4",
+    "fps": 12.0,
+    "completed_at": "2026-04-20T11:45:00.100863"
+  },
+  "qc": {
+    "scene_verdict": "reject",
+    "scene_reasons": [
+      "reject:black_frames"
+    ],
+    "qc_report_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\manifests\\video_qc_scene_20260420_114127_ceaedc58.json",
+    "quality_analysis": {
+      "motion_analysis": {
+        "motion_score": 0.19999999999999996,
+        "repetitive_ratio": 0.2,
+        "frozen_ratio": 0.0,
+        "avg_frame_similarity": 0.8
+      },
+      "temporal_analysis": {
+        "temporal_inconsistency": false,
+        "brightness_variance": 4.671724916666674,
+        "avg_brightness": 44.5705
+      },
+      "intended_motion": "subtle motion"
+    }
+  },
+  "error": null
+}

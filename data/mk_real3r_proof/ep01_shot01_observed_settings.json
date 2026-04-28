@@ -1,0 +1,28 @@
+{
+  "observed_settings": {
+    "checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+    "sampler_name": "dpmpp_sde",
+    "scheduler": "karras",
+    "steps": 16,
+    "cfg": 7.0,
+    "width": 480,
+    "height": 640,
+    "batch_size": 1,
+    "denoise": 0.5,
+    "negative_prompt": "glamour, fashion model, beauty portrait, studio portrait, stock photo, advertisement, perfect makeup, smiling, looking at camera, hood up, hood covering head, blue hoodie, luxury hotel, clean staged bedroom, plastic skin, wax skin, over-smoothed face, anime, cartoon, bad anatomy, distorted face, bad hands, extra fingers, red skin, orange skin, artifacts, picture frame, decorative frame, border, text, watermark",
+    "raw_nodes": {
+      "source": "patched_workflow_before_submit",
+      "checkpoint_node": "4",
+      "ksampler_node": "3",
+      "latent_node": "8",
+      "negative_prompt_node": "7",
+      "load_image_node": "5",
+      "resize_node": "11",
+      "image_scale_node": "11",
+      "vae_encode_node": "8"
+    },
+    "generation_mode": "reference_locked",
+    "reference_image_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmpzemenpra\\data\\references\\alya_clean_reference_480x640.png",
+    "staged_reference_image_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmpzemenpra\\data\\references\\alya_clean_reference_480x640.png"
+  }
+}

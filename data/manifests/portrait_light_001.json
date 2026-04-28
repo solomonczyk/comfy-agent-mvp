@@ -1,0 +1,47 @@
+{
+  "batch_id": "portrait_light_001",
+  "spec_path": "portrait_light_001",
+  "output_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\batches\\portrait_light_001",
+  "total_jobs": 2,
+  "started_at": "2026-04-18T13:34:19.340112",
+  "completed_at": "2026-04-18T13:40:16.979285",
+  "status": "completed",
+  "jobs": {
+    "job_001": {
+      "status": "completed",
+      "verdict": "completed",
+      "failed_stage": null,
+      "error": null,
+      "images": [
+        {
+          "node_id": "9",
+          "filename": "sdxl_agent_00008_.png",
+          "subfolder": "agent",
+          "type": "output"
+        }
+      ],
+      "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260418_153710.json",
+      "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_c43c0c3c_realistic_female_portrait_natural_skin_texture_soft_lighting_cinematic_lighting_.txt",
+      "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\39a6414c.jsonl",
+      "completed_at": "2026-04-18T13:37:10.489814"
+    },
+    "job_002": {
+      "status": "completed",
+      "verdict": "completed",
+      "failed_stage": null,
+      "error": null,
+      "images": [
+        {
+          "node_id": "9",
+          "filename": "sdxl_agent_00009_.png",
+          "subfolder": "agent",
+          "type": "output"
+        }
+      ],
+      "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260418_154016.json",
+      "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_f2b10333_male_portrait_studio_lighting_sharp_focus_cinematic_lighting_realistic_details_h.txt",
+      "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\32b44377.jsonl",
+      "completed_at": "2026-04-18T13:40:16.979285"
+    }
+  }
+}

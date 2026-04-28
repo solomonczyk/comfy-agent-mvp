@@ -1,0 +1,95 @@
+{
+  "validation_status": "passed",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "package_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01",
+  "timestamp": "2026-04-28T05:55:31.418702Z",
+  "checks": [
+    {
+      "check": "final_mp4_exists",
+      "passed": true,
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01\\output\\final\\ep01_final_with_voiceover.mp4"
+    },
+    {
+      "check": "voiceover_audio_exists",
+      "passed": true,
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01\\output\\audio\\ep01_real_voiceover.wav"
+    },
+    {
+      "check": "audio_stream_exists",
+      "passed": true,
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01\\output\\final\\ep01_final_with_voiceover.mp4"
+    },
+    {
+      "check": "video_stream_exists",
+      "passed": true,
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01\\output\\final\\ep01_final_with_voiceover.mp4"
+    },
+    {
+      "check": "audio_kind_is_voiceover",
+      "passed": true,
+      "value": "voiceover"
+    },
+    {
+      "check": "duration_fit_passed",
+      "passed": true,
+      "value": true
+    },
+    {
+      "check": "duration_match",
+      "passed": true,
+      "voiceover_duration": 9.336,
+      "final_duration": 9.336
+    },
+    {
+      "check": "no_technical_placeholder_claim",
+      "passed": true,
+      "reason": "audio_kind honestly reflects real voiceover"
+    },
+    {
+      "check": "no_comfyui_generation",
+      "passed": true,
+      "reason": "packaging command only copies existing artifacts"
+    },
+    {
+      "check": "no_pipeline_action_rerun",
+      "passed": true,
+      "reason": "packaging command only copies existing artifacts"
+    },
+    {
+      "check": "source_roots_not_mutated",
+      "passed": true,
+      "reason": "packaging command only reads from source roots, never writes"
+    },
+    {
+      "check": "all_package_paths_exist",
+      "passed": true
+    },
+    {
+      "check": "json_artifacts_parse_correctly",
+      "passed": true,
+      "errors": null
+    }
+  ],
+  "summary": {
+    "total_checks": 13,
+    "passed_checks": 13,
+    "failed_checks": 0
+  },
+  "voiceover_metadata": {
+    "audio_kind": "voiceover",
+    "is_voiceover": true,
+    "duration_fit_passed": true,
+    "voiceover_duration": 9.336,
+    "final_duration": 9.336
+  },
+  "boundary_compliance": {
+    "frozen_rc1_mutated": false,
+    "frozen_rc2_demo_pack_mutated": false,
+    "rc2_voice_root_mutated": false,
+    "comfyui_generation": false,
+    "pipeline_action_rerun": false,
+    "tts_regenerated": false,
+    "ffmpeg_rerun": false
+  }
+}

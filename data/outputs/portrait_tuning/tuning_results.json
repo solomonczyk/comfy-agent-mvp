@@ -1,0 +1,158 @@
+[
+  {
+    "config_name": "baseline_v1",
+    "config": {
+      "name": "baseline_v1",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "Current production baseline - produces glossy/uncanny artifacts"
+    },
+    "seed": 123456789,
+    "prompt_id": "af990a48-a0b1-4c03-8fcc-24a1eb120d59",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_v1_00001_.png",
+        "subfolder": "tuning",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_more_steps",
+    "config": {
+      "name": "variant_more_steps",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras",
+      "steps": 40,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "More sampling steps for better detail convergence"
+    },
+    "seed": 123456789,
+    "prompt_id": "8a013403-c545-48cf-a411-2f8da3bdea51",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_more_steps_00001_.png",
+        "subfolder": "tuning",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_lower_cfg",
+    "config": {
+      "name": "variant_lower_cfg",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 5.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "Lower CFG for less prompt adherence, more natural output"
+    },
+    "seed": 123456789,
+    "prompt_id": "374a225e-a533-44cc-8562-fb983ff53bc6",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_lower_cfg_00001_.png",
+        "subfolder": "tuning",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_anti_glossy",
+    "config": {
+      "name": "variant_anti_glossy",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated, plastic skin, smooth skin texture, doll-like, anime, cartoon, oily skin, shiny skin, airbrushed, over-smoothed, artificial lighting",
+      "description": "Enhanced negative prompt with specific anti-glossy terms"
+    },
+    "seed": 123456789,
+    "prompt_id": "87c76909-23e9-426f-b239-6bc9c8be7397",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_anti_glossy_00001_.png",
+        "subfolder": "tuning",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_euler",
+    "config": {
+      "name": "variant_euler",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "description": "Euler sampler for different texture characteristics"
+    },
+    "seed": 123456789,
+    "prompt_id": "36fed291-9a21-4213-9b42-cca9c32bd214",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_euler_00001_.png",
+        "subfolder": "tuning",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_combined",
+    "config": {
+      "name": "variant_combined",
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler": "dpmpp_2m",
+      "scheduler": "karras",
+      "steps": 35,
+      "cfg": 5.5,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated, plastic skin, smooth skin texture, doll-like, anime, cartoon, oily skin, shiny skin, airbrushed, over-smoothed, artificial lighting",
+      "description": "Combined: more steps, lower CFG, enhanced negative prompt"
+    },
+    "seed": 123456789,
+    "prompt_id": "42d95513-cc56-4caf-9421-682854744405",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_combined_00001_.png",
+        "subfolder": "tuning",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  }
+]

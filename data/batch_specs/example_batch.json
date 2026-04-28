@@ -1,0 +1,71 @@
+{
+  "batch_id": "portrait_demo_001",
+  "description": "Demo batch with 5 portrait variations",
+  "jobs": [
+    {
+      "job_id": "job_001",
+      "mode": "portrait",
+      "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light",
+      "settings": {
+        "width": 1024,
+        "height": 1024,
+        "steps": 30,
+        "cfg": 6.0,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras"
+      }
+    },
+    {
+      "job_id": "job_002",
+      "mode": "portrait",
+      "prompt": "professional male portrait, sharp focus, studio lighting, high detail",
+      "settings": {
+        "width": 1024,
+        "height": 1024,
+        "steps": 30,
+        "cfg": 6.0,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras"
+      }
+    },
+    {
+      "job_id": "job_003",
+      "mode": "portrait",
+      "prompt": "artistic portrait, dramatic lighting, moody atmosphere, cinematic",
+      "settings": {
+        "width": 1024,
+        "height": 1024,
+        "steps": 30,
+        "cfg": 6.0,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras"
+      }
+    },
+    {
+      "job_id": "job_004",
+      "mode": "portrait",
+      "prompt": "young adult portrait, natural beauty, golden hour lighting, soft focus",
+      "settings": {
+        "width": 1024,
+        "height": 1024,
+        "steps": 30,
+        "cfg": 6.0,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras"
+      }
+    },
+    {
+      "job_id": "job_005",
+      "mode": "portrait",
+      "prompt": "elderly portrait, wisdom lines, warm lighting, dignified expression",
+      "settings": {
+        "width": 1024,
+        "height": 1024,
+        "steps": 30,
+        "cfg": 6.0,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras"
+      }
+    }
+  ]
+}

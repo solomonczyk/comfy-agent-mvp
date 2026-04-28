@@ -1,0 +1,139 @@
+{
+  "video_id": "scene_20260420_075920_34845b16",
+  "generated_at": "2026-04-20T08:11:12.404214",
+  "manifest_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\manifests\\video_scene_20260420_075920_34845b16.json",
+  "export_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_075920_34845b16\\scene.mp4",
+  "processed_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_075920_34845b16\\processed",
+  "qc_version": "kt8_minimal_v1",
+  "verdict": "accept",
+  "reasons": [],
+  "summary": {
+    "export_ok": true,
+    "export_frame_count": 6,
+    "export_size_bytes": 293652,
+    "processed_frames_on_disk": 6,
+    "manifest_processed_count": 6,
+    "manifest_selected_count": 0,
+    "black_frame_count": 0,
+    "black_frame_ratio": 0.0,
+    "size_mismatch_count": 0,
+    "size_mismatch_ratio": 0.0,
+    "frozen_run_max_length": 1,
+    "frozen_run_ratio": 0.167
+  },
+  "checks": {
+    "export_broken": {
+      "passed": true,
+      "detail": "export ok",
+      "size_bytes": 293652
+    },
+    "missing_processed_frames": {
+      "passed": true,
+      "severity": null,
+      "on_disk_count": 6,
+      "expected_count": 6,
+      "detail": "6 processed frames on disk"
+    },
+    "black_frames": {
+      "passed": true,
+      "severity": null,
+      "black_count": 0,
+      "black_ratio": 0.0,
+      "black_indices": []
+    },
+    "frame_count_mismatch": {
+      "passed": true,
+      "severity": null,
+      "on_disk_count": 6,
+      "manifest_processed_count": 6,
+      "export_frame_count": 6,
+      "tolerance": 1
+    },
+    "size_mismatch": {
+      "passed": true,
+      "severity": null,
+      "median_size_bytes": 1346445,
+      "mismatch_count": 0,
+      "mismatch_ratio": 0.0,
+      "mismatch_indices": [],
+      "low_factor": 0.25,
+      "high_factor": 4.0
+    },
+    "frozen_output": {
+      "passed": true,
+      "severity": null,
+      "max_consecutive_run": 1,
+      "max_run_ratio": 0.167,
+      "min_run": 3,
+      "min_ratio": 0.5
+    }
+  },
+  "per_frame_qc": [
+    {
+      "index": 1,
+      "filename": "frame_000001.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_075920_34845b16\\processed\\frame_000001.png",
+      "size_bytes": 1398032,
+      "mean": 65.833,
+      "std": 54.504,
+      "is_black": false,
+      "dhash": "1110001011101000110011011100011011000111111001011010011101000011",
+      "error": null
+    },
+    {
+      "index": 2,
+      "filename": "frame_000002.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_075920_34845b16\\processed\\frame_000002.png",
+      "size_bytes": 1235382,
+      "mean": 68.346,
+      "std": 51.842,
+      "is_black": false,
+      "dhash": "1010100101101001110001001100010011000100110001001100011110000011",
+      "error": null
+    },
+    {
+      "index": 3,
+      "filename": "frame_000003.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_075920_34845b16\\processed\\frame_000003.png",
+      "size_bytes": 1340019,
+      "mean": 65.872,
+      "std": 52.649,
+      "is_black": false,
+      "dhash": "1111000111101001010011011100011011000110110001101100011110000011",
+      "error": null
+    },
+    {
+      "index": 4,
+      "filename": "frame_000004.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_075920_34845b16\\processed\\frame_000004.png",
+      "size_bytes": 1352872,
+      "mean": 64.802,
+      "std": 48.58,
+      "is_black": false,
+      "dhash": "1011000100101011010011111100011111000110110001001100010010000110",
+      "error": null
+    },
+    {
+      "index": 5,
+      "filename": "frame_000005.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_075920_34845b16\\processed\\frame_000005.png",
+      "size_bytes": 1301226,
+      "mean": 74.384,
+      "std": 56.19,
+      "is_black": false,
+      "dhash": "0011001101101011010001101100011011000110110001001100010010010110",
+      "error": null
+    },
+    {
+      "index": 6,
+      "filename": "frame_000006.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_075920_34845b16\\processed\\frame_000006.png",
+      "size_bytes": 1412665,
+      "mean": 67.115,
+      "std": 45.832,
+      "is_black": false,
+      "dhash": "0111001001001101110011001100010011000100110001001100110011001110",
+      "error": null
+    }
+  ]
+}

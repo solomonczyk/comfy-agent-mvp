@@ -1,0 +1,81 @@
+{
+  "video_id": "real_multi_scene_001_20260419_103922",
+  "total_frames": 483,
+  "fps": 24.0,
+  "scenes": [
+    {
+      "start_frame": 0,
+      "end_frame": 121,
+      "representative_frame": 60,
+      "avg_brightness": 66.97310208488695,
+      "motion_score": 97.36559790561331,
+      "decision": "process",
+      "decision_reason": ""
+    },
+    {
+      "start_frame": 121,
+      "end_frame": 242,
+      "representative_frame": 181,
+      "avg_brightness": 24.47874989459573,
+      "motion_score": 2.903829826053064,
+      "decision": "process",
+      "decision_reason": ""
+    },
+    {
+      "start_frame": 242,
+      "end_frame": 483,
+      "representative_frame": 362,
+      "avg_brightness": 133.9814045059017,
+      "motion_score": 42.20869806318859,
+      "decision": "process",
+      "decision_reason": ""
+    }
+  ],
+  "keyframes": [
+    {
+      "frame_index": 60,
+      "score": 97.36559790561331,
+      "reason": "scene representative"
+    },
+    {
+      "frame_index": 181,
+      "score": 2.903829826053064,
+      "reason": "scene representative"
+    },
+    {
+      "frame_index": 362,
+      "score": 42.20869806318859,
+      "reason": "scene representative"
+    }
+  ],
+  "defects": [
+    {
+      "type": "frozen_segment",
+      "start_frame": 121,
+      "end_frame": 242,
+      "severity": "low",
+      "description": "Scene 121-242 has very low motion"
+    },
+    {
+      "type": "brightness_drift",
+      "start_frame": 0,
+      "end_frame": 482,
+      "severity": "low",
+      "description": "Brightness drift detected (45.8 -> 133.5)"
+    }
+  ],
+  "selected_subset": [
+    60,
+    181,
+    362
+  ],
+  "metadata": {
+    "num_scenes": 3,
+    "num_keyframes": 3,
+    "num_defects": 2,
+    "multi_scene_mode": false,
+    "scenes_processed": 3,
+    "scenes_skipped": 0,
+    "scenes_retry": 0
+  }
+}

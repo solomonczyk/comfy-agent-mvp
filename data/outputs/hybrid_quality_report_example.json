@@ -1,0 +1,29 @@
+{
+  "path": "f:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\portrait_00005_.png",
+  "expected_verdict": "retry",
+  "actual_verdict": "reject",
+  "local_hard_reject": false,
+  "vision_failed": false,
+  "vision_status": "valid_json",
+  "final_score": 0.33,
+  "global_blockers": [
+    "no_face_detected",
+    "subject_mismatch",
+    "incorrect_subject",
+    "semantic_collapse",
+    "semantic_collapse"
+  ],
+  "best_next_action": "retry_prompt",
+  "quality_verdict": "reject",
+  "hard_fails": [
+    "semantic_collapse",
+    "semantic_collapse"
+  ],
+  "scorecard": {
+    "technical": 8,
+    "anatomy": 6,
+    "semantic": 1,
+    "aesthetic": 0,
+    "weighted": 3.6999999999999997
+  }
+}

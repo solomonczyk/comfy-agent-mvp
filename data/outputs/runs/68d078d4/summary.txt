@@ -1,0 +1,13 @@
+prompt_id: 1140e37f-02e6-491c-97c8-a9e981823463
+status: completed
+preset: -
+rewrite_mode: raw
+seed: 1842632250
+final_prompt: static portrait, no movement, frozen scene, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions
+output_filename: img2img_00045_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260419_182321.json
+judge_status: accept
+recipe_validation_passed: True
+upscale_status: completed
+upscale_output: upscaled_img2img_00045_.png
+upscale_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\upscaled_img2img_00045_.png

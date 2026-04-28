@@ -1,0 +1,170 @@
+[
+  {
+    "index": 1,
+    "prompt": "professional portrait photo of a young woman, natural skin texture, detailed eyes, soft studio lighting, high detail, realistic face",
+    "seed": 786579303,
+    "prompt_id": "dd269b56-981e-4d75-b3dc-d2e7af26035a",
+    "config": {
+      "name": "variant_euler",
+      "sampler": "euler",
+      "steps": 30,
+      "cfg": 6.0
+    },
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_euler_00001_.png",
+        "subfolder": "",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "index": 2,
+    "prompt": "cinematic portrait of a man, natural lighting, detailed facial features, professional photography, high resolution",
+    "seed": 219540831,
+    "prompt_id": "0e8e0acb-9b54-4b8d-9200-6b66f3eff50b",
+    "config": {
+      "name": "variant_euler",
+      "sampler": "euler",
+      "steps": 30,
+      "cfg": 6.0
+    },
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_euler_00002_.png",
+        "subfolder": "",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "index": 3,
+    "prompt": "portrait of a woman with natural makeup, soft natural light, detailed eyes, realistic skin texture, professional quality",
+    "seed": 126855092,
+    "prompt_id": "0d2ee0ab-e46c-4250-8366-2ce0ee7e29fd",
+    "config": {
+      "name": "variant_euler",
+      "sampler": "euler",
+      "steps": 30,
+      "cfg": 6.0
+    },
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_euler_00003_.png",
+        "subfolder": "",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "index": 4,
+    "prompt": "studio portrait of a young adult, professional lighting, detailed features, high quality photography",
+    "seed": 896233790,
+    "prompt_id": "7562856e-f807-4278-bf7c-4bd7d362dd67",
+    "config": {
+      "name": "variant_euler",
+      "sampler": "euler",
+      "steps": 30,
+      "cfg": 6.0
+    },
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_euler_00004_.png",
+        "subfolder": "",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "index": 5,
+    "prompt": "natural light portrait of a person, detailed facial features, realistic skin, professional photography",
+    "seed": 395310485,
+    "prompt_id": "3d924302-5f87-4e64-b8fa-4aa0eb90f600",
+    "config": {
+      "name": "variant_euler",
+      "sampler": "euler",
+      "steps": 30,
+      "cfg": 6.0
+    },
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_euler_00005_.png",
+        "subfolder": "",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "index": 6,
+    "prompt": "headshot portrait, professional lighting, detailed eyes, natural skin texture, high detail",
+    "seed": 362950628,
+    "prompt_id": "8c81ec90-12e2-4cbf-8858-f30bef22cb43",
+    "config": {
+      "name": "variant_euler",
+      "sampler": "euler",
+      "steps": 30,
+      "cfg": 6.0
+    },
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_euler_00006_.png",
+        "subfolder": "",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "index": 7,
+    "prompt": "portrait photography of a woman, soft lighting, realistic details, professional quality",
+    "seed": 339670711,
+    "prompt_id": "a56c0106-d633-4aaf-88db-dc93cc40f508",
+    "config": {
+      "name": "variant_euler",
+      "sampler": "euler",
+      "steps": 30,
+      "cfg": 6.0
+    },
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_euler_00007_.png",
+        "subfolder": "",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "index": 8,
+    "prompt": "environmental portrait, natural light, detailed face, professional photography",
+    "seed": 249827706,
+    "prompt_id": "5374e6be-a69e-4747-8d57-301a6748d64f",
+    "config": {
+      "name": "variant_euler",
+      "sampler": "euler",
+      "steps": 30,
+      "cfg": 6.0
+    },
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "baseline_euler_00008_.png",
+        "subfolder": "",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  }
+]

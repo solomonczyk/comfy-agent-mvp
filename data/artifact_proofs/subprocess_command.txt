@@ -1,0 +1,1 @@
+C:\Users\taras\AppData\Local\Programs\Python\Python312\python.exe -m app generate-frames --brief C:\Users\taras\AppData\Local\Temp\pytest-of-taras\pytest-534\test_generate_artifact_proofs0\data\briefs\ep01_shot01_brief.md --output C:\Users\taras\AppData\Local\Temp\pytest-of-taras\pytest-534\test_generate_artifact_proofs0\output --episode-id ep01 --shot-id shot01 --prompt-pack

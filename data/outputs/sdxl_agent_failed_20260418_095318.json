@@ -1,0 +1,178 @@
+{
+  "status": "failed",
+  "failed_stage": "generation",
+  "error_type": "RuntimeError",
+  "error_code": "GENERATION_FAILED",
+  "error": "History for prompt_id=dea53a9b-cd45-476a-8cc5-1deac017c2ed not found after 120 attempts. Last queue state: running=False, pending=True.",
+  "user_prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+  "task_selection": {
+    "task_type": "portrait_txt2img",
+    "confidence": 1.0,
+    "reason": "Mode override: portrait",
+    "routing_source": "cli",
+    "required_inputs": [],
+    "missing_inputs": [],
+    "ambiguity_level": "low",
+    "safe_fallback_used": false
+  },
+  "execution_plan": {
+    "user_prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "task_type": "portrait_txt2img",
+    "workflow_id": "portrait_sdxl_v1",
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\sdxl_txt2img_template.json",
+    "preset_name": "portrait",
+    "rewrite_mode": "fallback",
+    "required_inputs": [
+      "prompt"
+    ],
+    "resolved_inputs": {
+      "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography"
+    },
+    "enable_judging": false,
+    "enable_retry_loop": false,
+    "notes": []
+  },
+  "mutation_report": {
+    "workflow_id": "portrait_sdxl_v1",
+    "mutated_nodes": [
+      "6",
+      "7",
+      "5",
+      "3",
+      "9"
+    ],
+    "applied_changes": {
+      "positive_prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+      "width": 1024,
+      "height": 1024,
+      "steps": 30,
+      "cfg": 6.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "filename_prefix": "agent/portrait"
+    },
+    "notes": [
+      "Applied task-specific overrides for portrait_txt2img"
+    ]
+  },
+  "mutation_retry": null,
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": {
+    "switch_applied": false,
+    "from_workflow_id": "portrait_sdxl_v1",
+    "to_workflow_id": null,
+    "switch_reason": null,
+    "source_trigger": null,
+    "switch_allowed": false,
+    "missing_inputs": [],
+    "notes": []
+  },
+  "corrective_action": {
+    "action": "accept",
+    "reason_code": "accepted_by_judge",
+    "reason": "No judge evaluation - accepting result",
+    "source_repairs": [],
+    "selected_workflow_id": "portrait_sdxl_v1",
+    "target_workflow_id": null,
+    "required_inputs": [],
+    "missing_inputs": [],
+    "switch_allowed": false,
+    "notes": [
+      "Judging was disabled or judge pipeline failed"
+    ]
+  },
+  "candidate_history": {
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "selection_reason": null,
+    "attempts": [
+      {
+        "attempt_index": 1,
+        "candidate_id": "cand_562da11e",
+        "parent_candidate_id": null,
+        "attempt_kind": "initial",
+        "workflow_id": "portrait_sdxl_v1",
+        "task_type": "portrait_txt2img",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "selected": false,
+        "selection_reason": null,
+        "source_trigger": null,
+        "mutation_report": {
+          "workflow_id": "portrait_sdxl_v1",
+          "mutated_nodes": [
+            "6",
+            "7",
+            "5",
+            "3",
+            "9"
+          ],
+          "applied_changes": {
+            "positive_prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+            "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+            "width": 1024,
+            "height": 1024,
+            "steps": 30,
+            "cfg": 6.0,
+            "sampler_name": "dpmpp_2m",
+            "scheduler": "karras",
+            "filename_prefix": "agent/portrait"
+          },
+          "notes": [
+            "Applied task-specific overrides for portrait_txt2img"
+          ]
+        },
+        "mutation_retry": null,
+        "workflow_switch": null,
+        "corrective_action": null,
+        "executed_action": null,
+        "images": [],
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260418_095318.json",
+        "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_realistic_female_portrait_natural_skin_texture_detailed_eyes_soft_natural_light_.txt",
+        "error_type": "RuntimeError",
+        "error_code": "GENERATION_FAILED",
+        "error": "History for prompt_id=dea53a9b-cd45-476a-8cc5-1deac017c2ed not found after 120 attempts. Last queue state: running=False, pending=True."
+      }
+    ]
+  },
+  "candidate_selection": {
+    "selected_candidate_id": "cand_562da11e",
+    "selected_attempt_index": 1,
+    "selection_reason": "only_candidate_available",
+    "selected_workflow_id": "portrait_sdxl_v1",
+    "ranking_snapshot": [
+      {
+        "candidate_id": "cand_562da11e",
+        "attempt_index": 1,
+        "workflow_id": "portrait_sdxl_v1",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "rank": 1
+      }
+    ]
+  },
+  "executed_action": {
+    "executed_action": "accept",
+    "execution_status": "completed",
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "branch_taken": "accept",
+    "target_workflow_id": null,
+    "notes": [
+      "Default executed action for non-retry case"
+    ]
+  },
+  "images": [],
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260418_095318.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_realistic_female_portrait_natural_skin_texture_detailed_eyes_soft_natural_light_.txt",
+  "qc_status": "not_applicable",
+  "qc_errors": [],
+  "qa_status": "not_applicable",
+  "qa_errors": []
+}

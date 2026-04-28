@@ -1,0 +1,8 @@
+prompt_id: d8e6d44c-1e48-45e1-ac7e-f12bce2320cb
+status: completed
+preset: portrait
+rewrite_mode: fallback
+seed: 1481358815
+final_prompt: test portrait, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: portrait_00003_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260417_111115.json

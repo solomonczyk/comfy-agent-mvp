@@ -1,0 +1,85 @@
+{
+  "validation_status": "passed",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "package_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01",
+  "timestamp": "2026-04-28T05:23:13.072118Z",
+  "checks": [
+    {
+      "check": "final_with_audio_mp4_exists",
+      "passed": true,
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01\\output\\final\\ep01_final_with_audio.mp4"
+    },
+    {
+      "check": "audio_artifact_exists",
+      "passed": true,
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01\\output\\audio\\ep01_voiceover.wav"
+    },
+    {
+      "check": "audio_stream_exists",
+      "passed": true,
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01\\output\\final\\ep01_final_with_audio.mp4"
+    },
+    {
+      "check": "video_stream_exists",
+      "passed": true,
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_demo_pack_ep01\\output\\final\\ep01_final_with_audio.mp4"
+    },
+    {
+      "check": "audio_kind_is_technical_placeholder",
+      "passed": true,
+      "value": "technical_placeholder"
+    },
+    {
+      "check": "no_fake_voiceover_claim",
+      "passed": true,
+      "reason": "audio_kind honestly reflects technical placeholder"
+    },
+    {
+      "check": "no_comfyui_generation",
+      "passed": true,
+      "reason": "packaging command only copies existing artifacts"
+    },
+    {
+      "check": "no_pipeline_action_rerun",
+      "passed": true,
+      "reason": "packaging command only copies existing artifacts"
+    },
+    {
+      "check": "frozen_rc1_not_mutated",
+      "passed": true,
+      "reason": "packaging command only reads from RC1, never writes"
+    },
+    {
+      "check": "rc2_render_root_not_mutated",
+      "passed": true,
+      "reason": "packaging command only reads from RC2 render root, never writes"
+    },
+    {
+      "check": "all_package_paths_exist",
+      "passed": true
+    },
+    {
+      "check": "json_artifacts_parse_correctly",
+      "passed": true,
+      "errors": null
+    }
+  ],
+  "summary": {
+    "total_checks": 12,
+    "passed_checks": 12,
+    "failed_checks": 0
+  },
+  "audio_kind_honesty": {
+    "audio_kind": "technical_placeholder",
+    "is_technical_placeholder": true,
+    "no_fake_voiceover_claim": true
+  },
+  "boundary_compliance": {
+    "frozen_rc1_mutated": false,
+    "rc2_render_mutated": false,
+    "rc2_audio_mutated": false,
+    "comfyui_generation": false,
+    "pipeline_action_rerun": false
+  }
+}

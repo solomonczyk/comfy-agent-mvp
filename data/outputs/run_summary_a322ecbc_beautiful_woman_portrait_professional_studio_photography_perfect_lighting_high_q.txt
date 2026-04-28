@@ -1,0 +1,10 @@
+prompt_id: a322ecbc-24d4-4f93-b9f4-5260d996d7e8
+status: completed
+preset: -
+rewrite_mode: fallback
+seed: 508824789
+final_prompt: beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: portrait_00041_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260419_163759.json
+judge_status: reject
+recipe_validation_passed: True

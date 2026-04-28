@@ -1,0 +1,15 @@
+{
+  "video_id": "export_20260419_093949",
+  "input_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\kt6_proof_001\\export.mp4",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\export_20260419_093949",
+  "started_at": "2026-04-19T09:39:49.312985",
+  "completed_at": "2026-04-19T09:39:49.332025",
+  "status": "failed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {},
+  "export": {},
+  "qc": {},
+  "error": "[WinError 1455] The paging file is too small for this operation to complete"
+}

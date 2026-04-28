@@ -1,0 +1,11 @@
+{
+  "characters": [
+    {
+      "character_id": "alya",
+      "name": "Alya",
+      "role": "character",
+      "reference_required": true,
+      "status": "approved"
+    }
+  ]
+}

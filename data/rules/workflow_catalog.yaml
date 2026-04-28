@@ -1,0 +1,57 @@
+# Workflow Catalog
+
+This catalog defines available ComfyUI workflows and their characteristics.
+
+workflows:
+  sdxl_txt2img:
+    name: "SDXL Text-to-Image"
+    file: "sdxl_txt2img_template.json"
+    description: "Standard SDXL text-to-image generation with checkpoint, VAE, CLIP, and save nodes"
+    capabilities:
+      - text_to_image
+      - checkpoint_loading
+      - custom_resolution
+      - batch_generation
+    required_models:
+      checkpoint: "sd_xl_base_1.0_0.9vae.safetensors"
+    parameters:
+      width:
+        min: 512
+        max: 2048
+        default: 1024
+        step: 64
+      height:
+        min: 512
+        max: 2048
+        default: 1024
+        step: 64
+      steps:
+        min: 10
+        max: 100
+        default: 30
+      cfg:
+        min: 1.0
+        max: 20.0
+        default: 6.0
+    presets:
+      portrait:
+        width: 1024
+        height: 1024
+        steps: 30
+        cfg: 6.0
+      product:
+        width: 1024
+        height: 1024
+        steps: 32
+        cfg: 5.5
+      cinematic:
+        width: 1024
+        height: 576
+        steps: 35
+        cfg: 6.5
+
+# Future workflows to be added:
+# - img2img workflows
+# - inpainting workflows
+# - controlnet workflows
+# - LoRA workflows

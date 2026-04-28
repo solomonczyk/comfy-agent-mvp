@@ -1,0 +1,341 @@
+{
+  "status": "completed",
+  "failed_stage": null,
+  "error_type": null,
+  "error_code": null,
+  "error": null,
+  "user_prompt": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic",
+  "task_selection": {
+    "task_type": "portrait_txt2img",
+    "confidence": 1.0,
+    "reason": "Mode override: portrait",
+    "routing_source": "cli",
+    "required_inputs": [],
+    "missing_inputs": [],
+    "ambiguity_level": "low",
+    "safe_fallback_used": false
+  },
+  "execution_plan": {
+    "user_prompt": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic",
+    "task_type": "portrait_txt2img",
+    "workflow_id": "portrait_sdxl_v1",
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\sdxl_txt2img_template.json",
+    "preset_name": "portrait",
+    "rewrite_mode": "fallback",
+    "required_inputs": [
+      "prompt"
+    ],
+    "resolved_inputs": {
+      "prompt": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic"
+    },
+    "enable_judging": true,
+    "enable_retry_loop": false,
+    "canonical_recipe": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "seed": null,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+      "filename_prefix": "agent/portrait"
+    },
+    "notes": []
+  },
+  "mutation_report": {
+    "workflow_id": "portrait_sdxl_v1",
+    "mutated_nodes": [
+      "6",
+      "7",
+      "4",
+      "5",
+      "3",
+      "9"
+    ],
+    "applied_changes": {
+      "positive_prompt": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "width": 1024,
+      "height": 1024,
+      "steps": 30,
+      "cfg": 6.0,
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "filename_prefix": "agent/portrait"
+    },
+    "notes": [
+      "Applied task-specific overrides for portrait_txt2img"
+    ]
+  },
+  "mutation_retry": null,
+  "judge_status": "reject",
+  "orchestrator_report": {
+    "final_score": 0.0,
+    "final_verdict": "reject",
+    "best_next_action": "regenerate_output",
+    "technical": {
+      "judge_name": "local_qc",
+      "score": 0.0,
+      "verdict": "reject",
+      "issues": [],
+      "strengths": [],
+      "recommended_repairs": [
+        "regenerate_output"
+      ]
+    },
+    "semantic": {
+      "judge_name": null,
+      "score": null,
+      "verdict": null,
+      "issues": [],
+      "strengths": [],
+      "recommended_repairs": []
+    },
+    "artistic": {
+      "judge_name": null,
+      "score": null,
+      "verdict": null,
+      "issues": [],
+      "strengths": [],
+      "recommended_repairs": []
+    }
+  },
+  "retry_decision": {
+    "action": "reject",
+    "max_retries": 3,
+    "suggested_prompt_suffixes": [],
+    "suggested_settings_updates": {},
+    "notes": [
+      "Reject after judge aggregation"
+    ]
+  },
+  "retry_loop": null,
+  "workflow_switch": {
+    "switch_applied": false,
+    "from_workflow_id": "portrait_sdxl_v1",
+    "to_workflow_id": null,
+    "switch_reason": null,
+    "source_trigger": null,
+    "switch_allowed": false,
+    "missing_inputs": [],
+    "notes": []
+  },
+  "corrective_action": {
+    "action": "reject",
+    "reason_code": "reject_after_judge",
+    "reason": "Reject after judge aggregation",
+    "source_repairs": [],
+    "selected_workflow_id": "portrait_sdxl_v1",
+    "target_workflow_id": null,
+    "required_inputs": [],
+    "missing_inputs": [],
+    "switch_allowed": false,
+    "notes": [
+      "Judge rejected the result"
+    ]
+  },
+  "candidate_history": {
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "selection_reason": null,
+    "attempts": [
+      {
+        "attempt_index": 1,
+        "candidate_id": "cand_bbec4ebd",
+        "parent_candidate_id": null,
+        "attempt_kind": "initial",
+        "workflow_id": "portrait_sdxl_v1",
+        "task_type": "portrait_txt2img",
+        "judge_status": "reject",
+        "final_verdict": "reject",
+        "final_score": 0.0,
+        "selected": false,
+        "selection_reason": null,
+        "source_trigger": null,
+        "mutation_report": {
+          "workflow_id": "portrait_sdxl_v1",
+          "mutated_nodes": [
+            "6",
+            "7",
+            "4",
+            "5",
+            "3",
+            "9"
+          ],
+          "applied_changes": {
+            "positive_prompt": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic",
+            "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+            "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+            "width": 1024,
+            "height": 1024,
+            "steps": 30,
+            "cfg": 6.0,
+            "sampler_name": "euler",
+            "scheduler": "karras",
+            "filename_prefix": "agent/portrait"
+          },
+          "notes": [
+            "Applied task-specific overrides for portrait_txt2img"
+          ]
+        },
+        "mutation_retry": null,
+        "workflow_switch": null,
+        "corrective_action": null,
+        "executed_action": null,
+        "images": [
+          {
+            "node_id": "9",
+            "filename": "portrait_00041_.png",
+            "subfolder": "agent",
+            "type": "output"
+          }
+        ],
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260419_163759.json",
+        "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_a322ecbc_beautiful_woman_portrait_professional_studio_photography_perfect_lighting_high_q.txt",
+        "error_type": null,
+        "error_code": null,
+        "error": null
+      }
+    ]
+  },
+  "candidate_selection": {
+    "selected_candidate_id": "cand_bbec4ebd",
+    "selected_attempt_index": 1,
+    "selection_reason": "only_candidate_available",
+    "selected_workflow_id": "portrait_sdxl_v1",
+    "ranking_snapshot": [
+      {
+        "candidate_id": "cand_bbec4ebd",
+        "attempt_index": 1,
+        "workflow_id": "portrait_sdxl_v1",
+        "judge_status": "reject",
+        "final_verdict": "reject",
+        "final_score": 0.0,
+        "rank": 1
+      }
+    ]
+  },
+  "executed_action": {
+    "executed_action": "reject",
+    "execution_status": "completed",
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "branch_taken": "reject",
+    "target_workflow_id": null,
+    "notes": [
+      "Default executed action for non-retry case"
+    ]
+  },
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "portrait_00041_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260419_163759.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_a322ecbc_beautiful_woman_portrait_professional_studio_photography_perfect_lighting_high_q.txt",
+  "recipe_validation": {
+    "requested": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "seed": 508824789,
+      "width": 1024,
+      "height": 1024,
+      "positive_prompt": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic, cinematic lighting, realistic details, high quality, professional photography, detailed texture",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting"
+    },
+    "workflow_actual": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "seed": 508824789,
+      "width": 1024,
+      "height": 1024,
+      "positive_prompt": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic, cinematic lighting, realistic details, high quality, professional photography, detailed texture",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting"
+    },
+    "parity": {
+      "checkpoint": {
+        "requested": "realvisxlV50_v50Bakedvae.safetensors",
+        "actual": "realvisxlV50_v50Bakedvae.safetensors",
+        "passed": true
+      },
+      "sampler_name": {
+        "requested": "euler",
+        "actual": "euler",
+        "passed": true
+      },
+      "scheduler": {
+        "requested": "karras",
+        "actual": "karras",
+        "passed": true
+      },
+      "steps": {
+        "requested": 30,
+        "actual": 30,
+        "passed": true
+      },
+      "cfg": {
+        "requested": 6.0,
+        "actual": 6.0,
+        "passed": true
+      },
+      "seed": {
+        "requested": 508824789,
+        "actual": 508824789,
+        "passed": true
+      },
+      "width": {
+        "requested": 1024,
+        "actual": 1024,
+        "passed": true
+      },
+      "height": {
+        "requested": 1024,
+        "actual": 1024,
+        "passed": true
+      },
+      "positive_prompt": {
+        "requested": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic, cinematic lighting, realistic details, high quality, professional photography, detailed texture",
+        "actual": "beautiful woman portrait, professional studio photography, perfect lighting, high quality, detailed, realistic, cinematic lighting, realistic details, high quality, professional photography, detailed texture",
+        "passed": true
+      },
+      "negative_prompt": {
+        "requested": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+        "actual": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+        "passed": true
+      }
+    },
+    "passed": true,
+    "failures": []
+  },
+  "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\b6aadc94.jsonl",
+  "tool_chain": [
+    "detect_task",
+    "select_workflow",
+    "validate_required_inputs",
+    "load_workflow",
+    "mutate_workflow",
+    "validate_graph_contract",
+    "submit_to_comfy",
+    "watch_progress",
+    "fetch_outputs",
+    "persist_run"
+  ],
+  "qc_status": "pass",
+  "qc_errors": [],
+  "qa_status": "pass",
+  "qa_errors": [],
+  "verdict": "rejected",
+  "run_id": "b6aadc94"
+}

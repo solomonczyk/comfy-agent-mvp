@@ -1,0 +1,145 @@
+{
+  "video_id": "scene_20260420_111855_295f28cc",
+  "input_path": "test_input_image.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc",
+  "started_at": "2026-04-20T11:18:55.524026",
+  "completed_at": "2026-04-20T11:22:33.996800",
+  "status": "completed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {
+    "processed_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed",
+    "processed_count": 6,
+    "processor": "comfy_img2img_v1",
+    "prompt": "cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+    "recipe": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 20,
+      "cfg": 6.0,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter"
+    },
+    "per_frame": [
+      {
+        "index": 1,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000001.png",
+        "run_id": "a76240ee-d98f-4d75-be48-fdccabdd0c7a",
+        "prompt_id": "a76240ee-d98f-4d75-be48-fdccabdd0c7a",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000001.png",
+        "error": null,
+        "batch_index": 0,
+        "batch_offset": 0
+      },
+      {
+        "index": 2,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000002.png",
+        "run_id": "a76240ee-d98f-4d75-be48-fdccabdd0c7a",
+        "prompt_id": "a76240ee-d98f-4d75-be48-fdccabdd0c7a",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000002.png",
+        "error": null,
+        "batch_index": 0,
+        "batch_offset": 1
+      },
+      {
+        "index": 3,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000003.png",
+        "run_id": "a76240ee-d98f-4d75-be48-fdccabdd0c7a",
+        "prompt_id": "a76240ee-d98f-4d75-be48-fdccabdd0c7a",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000003.png",
+        "error": null,
+        "batch_index": 0,
+        "batch_offset": 2
+      },
+      {
+        "index": 4,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000004.png",
+        "run_id": "d03d6b56-5f62-494a-b74e-30eb6cdc7d17",
+        "prompt_id": "d03d6b56-5f62-494a-b74e-30eb6cdc7d17",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000004.png",
+        "error": null,
+        "batch_index": 1,
+        "batch_offset": 0
+      },
+      {
+        "index": 5,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000005.png",
+        "run_id": "d03d6b56-5f62-494a-b74e-30eb6cdc7d17",
+        "prompt_id": "d03d6b56-5f62-494a-b74e-30eb6cdc7d17",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000005.png",
+        "error": null,
+        "batch_index": 1,
+        "batch_offset": 1
+      },
+      {
+        "index": 6,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000006.png",
+        "run_id": "d03d6b56-5f62-494a-b74e-30eb6cdc7d17",
+        "prompt_id": "d03d6b56-5f62-494a-b74e-30eb6cdc7d17",
+        "status": "completed",
+        "metadata_path": null,
+        "result_path": null,
+        "trace_path": null,
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\processed\\frame_000006.png",
+        "error": null,
+        "batch_index": 1,
+        "batch_offset": 2
+      }
+    ],
+    "completed_at": "2026-04-20T11:22:31.202347"
+  },
+  "export": {
+    "export_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_111855_295f28cc\\scene.mp4",
+    "fps": 12.0,
+    "completed_at": "2026-04-20T11:22:32.761797"
+  },
+  "qc": {
+    "scene_verdict": "reject",
+    "scene_reasons": [
+      "reject:black_frames"
+    ],
+    "qc_report_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\manifests\\video_qc_scene_20260420_111855_295f28cc.json",
+    "quality_analysis": {
+      "motion_analysis": {
+        "motion_score": 0.19999999999999996,
+        "repetitive_ratio": 0.2,
+        "frozen_ratio": 0.0,
+        "avg_frame_similarity": 0.8
+      },
+      "temporal_analysis": {
+        "temporal_inconsistency": false,
+        "brightness_variance": 4.671724916666674,
+        "avg_brightness": 44.5705
+      },
+      "intended_motion": "subtle motion"
+    }
+  },
+  "error": null
+}

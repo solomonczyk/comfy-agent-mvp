@@ -1,0 +1,13 @@
+{
+  "kb_ready": false,
+  "blocking_reasons": [
+    "project brief required",
+    "source root or brief required"
+  ],
+  "missing_artifacts": [
+    "project_brief",
+    "source_root"
+  ],
+  "ready_for_reference_selection": false,
+  "ready_for_generation": false
+}

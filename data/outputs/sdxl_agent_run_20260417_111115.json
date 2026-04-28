@@ -1,0 +1,198 @@
+{
+  "status": "completed",
+  "failed_stage": null,
+  "error_type": null,
+  "error_code": null,
+  "error": null,
+  "user_prompt": "test portrait",
+  "task_selection": {
+    "task_type": "portrait_txt2img",
+    "confidence": 1.0,
+    "reason": "Mode override: portrait",
+    "routing_source": "cli",
+    "required_inputs": [],
+    "missing_inputs": [],
+    "ambiguity_level": "low",
+    "safe_fallback_used": false
+  },
+  "execution_plan": {
+    "user_prompt": "test portrait",
+    "task_type": "portrait_txt2img",
+    "workflow_id": "portrait_sdxl_v1",
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\sdxl_txt2img_template.json",
+    "preset_name": "portrait",
+    "rewrite_mode": "fallback",
+    "required_inputs": [
+      "prompt"
+    ],
+    "resolved_inputs": {
+      "prompt": "test portrait"
+    },
+    "enable_judging": false,
+    "enable_retry_loop": false,
+    "notes": []
+  },
+  "mutation_report": {
+    "workflow_id": "portrait_sdxl_v1",
+    "mutated_nodes": [
+      "6",
+      "7",
+      "5",
+      "3",
+      "9"
+    ],
+    "applied_changes": {
+      "positive_prompt": "test portrait",
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+      "width": 1024,
+      "height": 1024,
+      "steps": 30,
+      "cfg": 6.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "filename_prefix": "agent/portrait"
+    },
+    "notes": [
+      "Applied task-specific overrides for portrait_txt2img"
+    ]
+  },
+  "mutation_retry": null,
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": {
+    "switch_applied": false,
+    "from_workflow_id": "portrait_sdxl_v1",
+    "to_workflow_id": null,
+    "switch_reason": null,
+    "source_trigger": null,
+    "switch_allowed": false,
+    "missing_inputs": [],
+    "notes": []
+  },
+  "corrective_action": {
+    "action": "retry_prompt",
+    "reason_code": "semantic_alignment_retry",
+    "reason": "Semantic mismatch detected - prompt/intent alignment needs correction",
+    "source_repairs": [
+      "forced proof mode"
+    ],
+    "selected_workflow_id": "portrait_sdxl_v1",
+    "target_workflow_id": null,
+    "required_inputs": [],
+    "missing_inputs": [],
+    "switch_allowed": false,
+    "notes": [
+      "Judge recommended prompt or intent alignment repair"
+    ]
+  },
+  "candidate_history": {
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "selection_reason": null,
+    "attempts": [
+      {
+        "attempt_index": 1,
+        "candidate_id": "cand_a9fc70df",
+        "parent_candidate_id": null,
+        "attempt_kind": "initial",
+        "workflow_id": "portrait_sdxl_v1",
+        "task_type": "portrait_txt2img",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "selected": false,
+        "selection_reason": null,
+        "source_trigger": null,
+        "mutation_report": {
+          "workflow_id": "portrait_sdxl_v1",
+          "mutated_nodes": [
+            "6",
+            "7",
+            "5",
+            "3",
+            "9"
+          ],
+          "applied_changes": {
+            "positive_prompt": "test portrait",
+            "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting",
+            "width": 1024,
+            "height": 1024,
+            "steps": 30,
+            "cfg": 6.0,
+            "sampler_name": "dpmpp_2m",
+            "scheduler": "karras",
+            "filename_prefix": "agent/portrait"
+          },
+          "notes": [
+            "Applied task-specific overrides for portrait_txt2img"
+          ]
+        },
+        "mutation_retry": null,
+        "workflow_switch": null,
+        "corrective_action": null,
+        "executed_action": null,
+        "images": [
+          {
+            "node_id": "9",
+            "filename": "portrait_00003_.png",
+            "subfolder": "agent",
+            "type": "output"
+          }
+        ],
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260417_111115.json",
+        "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_d8e6d44c_test_portrait_cinematic_lighting_realistic_details_high_quality_professional_pho.txt",
+        "error_type": null,
+        "error_code": null,
+        "error": null
+      }
+    ]
+  },
+  "candidate_selection": {
+    "selected_candidate_id": "cand_a9fc70df",
+    "selected_attempt_index": 1,
+    "selection_reason": "only_candidate_available",
+    "selected_workflow_id": "portrait_sdxl_v1",
+    "ranking_snapshot": [
+      {
+        "candidate_id": "cand_a9fc70df",
+        "attempt_index": 1,
+        "workflow_id": "portrait_sdxl_v1",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "rank": 1
+      }
+    ]
+  },
+  "executed_action": {
+    "executed_action": "retry_prompt",
+    "execution_status": "failed",
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "branch_taken": "retry",
+    "target_workflow_id": "portrait_sdxl_v1",
+    "notes": [
+      "Judge recommended prompt or intent alignment repair",
+      "Retry execution initiated: retry_prompt"
+    ],
+    "error_type": "retry_execution_error",
+    "error_code": null,
+    "error": "'dict' object has no attribute 'workflow_id'"
+  },
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "portrait_00003_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260417_111115.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_d8e6d44c_test_portrait_cinematic_lighting_realistic_details_high_quality_professional_pho.txt",
+  "qc_status": "pass",
+  "qc_errors": [],
+  "qa_status": "pass",
+  "qa_errors": []
+}

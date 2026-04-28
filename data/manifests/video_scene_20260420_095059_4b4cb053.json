@@ -1,0 +1,15 @@
+{
+  "video_id": "scene_20260420_095059_4b4cb053",
+  "input_path": "test_portrait.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_095059_4b4cb053",
+  "started_at": "2026-04-20T09:50:59.369304",
+  "completed_at": "2026-04-20T09:53:00.269665",
+  "status": "failed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {},
+  "export": {},
+  "qc": {},
+  "error": "MK-6J-QV: Foreign queue block timeout - queue did not clear after 120s"
+}

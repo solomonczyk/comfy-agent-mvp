@@ -1,0 +1,298 @@
+{
+  "status": "completed",
+  "failed_stage": null,
+  "error_type": null,
+  "error_code": null,
+  "error": null,
+  "user_prompt": "cinematic lighting, sharp focus, high detail",
+  "task_selection": {
+    "task_type": "img2img",
+    "confidence": 1.0,
+    "reason": "Mode override: edit",
+    "routing_source": "cli",
+    "required_inputs": [
+      "input_image"
+    ],
+    "missing_inputs": [],
+    "ambiguity_level": "low",
+    "safe_fallback_used": false
+  },
+  "execution_plan": {
+    "user_prompt": "cinematic lighting, sharp focus, high detail",
+    "task_type": "img2img",
+    "workflow_id": "img2img_v1",
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\img2img_simple_template.json",
+    "preset_name": "portrait",
+    "rewrite_mode": "raw",
+    "required_inputs": [
+      "input_image"
+    ],
+    "resolved_inputs": {
+      "prompt": "cinematic lighting, sharp focus, high detail",
+      "input_image": "frame_000028.png"
+    },
+    "enable_judging": false,
+    "enable_retry_loop": false,
+    "canonical_recipe": {
+      "steps": 15,
+      "cfg": 6.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras"
+    },
+    "notes": []
+  },
+  "mutation_report": {
+    "workflow_id": "img2img_v1",
+    "mutated_nodes": [
+      "6",
+      "7",
+      "3",
+      "10",
+      "5",
+      "3"
+    ],
+    "applied_changes": {
+      "positive_prompt": "cinematic lighting, sharp focus, high detail",
+      "negative_prompt": "blurry, low quality, distorted, oversaturated, artifacts",
+      "steps": 15,
+      "cfg": 6.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "filename_prefix": "agent/img2img",
+      "input_image": "frame_000028.png",
+      "denoise": 0.6
+    },
+    "notes": [
+      "Applied task-specific overrides for img2img"
+    ]
+  },
+  "mutation_retry": null,
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": {
+    "switch_applied": false,
+    "from_workflow_id": "img2img_v1",
+    "to_workflow_id": null,
+    "switch_reason": null,
+    "source_trigger": null,
+    "switch_allowed": false,
+    "missing_inputs": [],
+    "notes": []
+  },
+  "corrective_action": {
+    "action": "accept",
+    "reason_code": "accepted_by_judge",
+    "reason": "No judge evaluation - accepting result",
+    "source_repairs": [],
+    "selected_workflow_id": "img2img_v1",
+    "target_workflow_id": null,
+    "required_inputs": [],
+    "missing_inputs": [],
+    "switch_allowed": false,
+    "notes": [
+      "Judging was disabled or judge pipeline failed"
+    ]
+  },
+  "candidate_history": {
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "selection_reason": null,
+    "attempts": [
+      {
+        "attempt_index": 1,
+        "candidate_id": "cand_ae1893aa",
+        "parent_candidate_id": null,
+        "attempt_kind": "initial",
+        "workflow_id": "img2img_v1",
+        "task_type": "img2img",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "selected": false,
+        "selection_reason": null,
+        "source_trigger": null,
+        "mutation_report": {
+          "workflow_id": "img2img_v1",
+          "mutated_nodes": [
+            "6",
+            "7",
+            "3",
+            "10",
+            "5",
+            "3"
+          ],
+          "applied_changes": {
+            "positive_prompt": "cinematic lighting, sharp focus, high detail",
+            "negative_prompt": "blurry, low quality, distorted, oversaturated, artifacts",
+            "steps": 15,
+            "cfg": 6.0,
+            "sampler_name": "dpmpp_2m",
+            "scheduler": "karras",
+            "filename_prefix": "agent/img2img",
+            "input_image": "frame_000028.png",
+            "denoise": 0.6
+          },
+          "notes": [
+            "Applied task-specific overrides for img2img"
+          ]
+        },
+        "mutation_retry": null,
+        "workflow_switch": null,
+        "corrective_action": null,
+        "executed_action": null,
+        "images": [
+          {
+            "node_id": "10",
+            "filename": "img2img_00005_.png",
+            "subfolder": "agent",
+            "type": "output"
+          }
+        ],
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260418_161640.json",
+        "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_ebdf57d8_cinematic_lighting_sharp_focus_high_detail.txt",
+        "error_type": null,
+        "error_code": null,
+        "error": null
+      }
+    ]
+  },
+  "candidate_selection": {
+    "selected_candidate_id": "cand_ae1893aa",
+    "selected_attempt_index": 1,
+    "selection_reason": "only_candidate_available",
+    "selected_workflow_id": "img2img_v1",
+    "ranking_snapshot": [
+      {
+        "candidate_id": "cand_ae1893aa",
+        "attempt_index": 1,
+        "workflow_id": "img2img_v1",
+        "judge_status": null,
+        "final_verdict": null,
+        "final_score": null,
+        "rank": 1
+      }
+    ]
+  },
+  "executed_action": {
+    "executed_action": "accept",
+    "execution_status": "completed",
+    "selected_candidate_id": null,
+    "selected_attempt_index": null,
+    "branch_taken": "accept",
+    "target_workflow_id": null,
+    "notes": [
+      "Default executed action for non-retry case"
+    ]
+  },
+  "images": [
+    {
+      "node_id": "10",
+      "filename": "img2img_00005_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260418_161640.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_ebdf57d8_cinematic_lighting_sharp_focus_high_detail.txt",
+  "recipe_validation": {
+    "requested": {
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "steps": 15,
+      "cfg": 6.0,
+      "seed": 416883058,
+      "width": 1024,
+      "height": 1024,
+      "positive_prompt": "cinematic lighting, sharp focus, high detail",
+      "negative_prompt": "blurry, low quality, distorted, oversaturated, artifacts"
+    },
+    "workflow_actual": {
+      "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "steps": 15,
+      "cfg": 6.0,
+      "seed": 416883058,
+      "width": 1024,
+      "height": 1024,
+      "positive_prompt": "cinematic lighting, sharp focus, high detail",
+      "negative_prompt": "blurry, low quality, distorted, oversaturated, artifacts"
+    },
+    "parity": {
+      "checkpoint": {
+        "requested": "sd_xl_base_1.0_0.9vae.safetensors",
+        "actual": "sd_xl_base_1.0_0.9vae.safetensors",
+        "passed": true
+      },
+      "sampler_name": {
+        "requested": "dpmpp_2m",
+        "actual": "dpmpp_2m",
+        "passed": true
+      },
+      "scheduler": {
+        "requested": "karras",
+        "actual": "karras",
+        "passed": true
+      },
+      "steps": {
+        "requested": 15,
+        "actual": 15,
+        "passed": true
+      },
+      "cfg": {
+        "requested": 6.0,
+        "actual": 6.0,
+        "passed": true
+      },
+      "seed": {
+        "requested": 416883058,
+        "actual": 416883058,
+        "passed": true
+      },
+      "width": {
+        "requested": 1024,
+        "actual": 1024,
+        "passed": true
+      },
+      "height": {
+        "requested": 1024,
+        "actual": 1024,
+        "passed": true
+      },
+      "positive_prompt": {
+        "requested": "cinematic lighting, sharp focus, high detail",
+        "actual": "cinematic lighting, sharp focus, high detail",
+        "passed": true
+      },
+      "negative_prompt": {
+        "requested": "blurry, low quality, distorted, oversaturated, artifacts",
+        "actual": "blurry, low quality, distorted, oversaturated, artifacts",
+        "passed": true
+      }
+    },
+    "passed": true,
+    "failures": []
+  },
+  "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\533593f2.jsonl",
+  "tool_chain": [
+    "detect_task",
+    "select_workflow",
+    "validate_required_inputs",
+    "load_workflow",
+    "mutate_workflow",
+    "validate_graph_contract",
+    "submit_to_comfy",
+    "watch_progress",
+    "fetch_outputs",
+    "persist_run"
+  ],
+  "qc_status": "pass",
+  "qc_errors": [],
+  "qa_status": "pass",
+  "qa_errors": [],
+  "verdict": "completed",
+  "run_id": "533593f2"
+}

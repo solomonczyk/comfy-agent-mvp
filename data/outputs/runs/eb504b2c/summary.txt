@@ -1,0 +1,13 @@
+prompt_id: d8d52c89-806d-4c62-adb7-b9adc3a9e3cf
+status: completed
+preset: -
+rewrite_mode: raw
+seed: 1490095909
+final_prompt: cinematic portrait scene, subtle head movement, professional lighting, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions
+output_filename: img2img_00056_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260420_094258.json
+judge_status: accept
+recipe_validation_passed: True
+upscale_status: completed
+upscale_output: upscaled_img2img_00056_.png
+upscale_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\upscaled_img2img_00056_.png

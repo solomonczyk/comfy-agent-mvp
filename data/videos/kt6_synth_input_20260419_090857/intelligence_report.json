@@ -1,0 +1,38 @@
+{
+  "video_id": "kt6_synth_input_20260419_090857",
+  "total_frames": 36,
+  "fps": 12.0,
+  "scenes": [
+    {
+      "start_frame": 0,
+      "end_frame": 36,
+      "representative_frame": 18,
+      "avg_brightness": 112.82083341810439,
+      "motion_score": 4.707123738581337e-06
+    }
+  ],
+  "keyframes": [
+    {
+      "frame_index": 18,
+      "score": 4.707123738581337e-06,
+      "reason": "scene representative"
+    }
+  ],
+  "defects": [
+    {
+      "type": "frozen_segment",
+      "start_frame": 0,
+      "end_frame": 36,
+      "severity": "low",
+      "description": "Scene 0-36 has very low motion"
+    }
+  ],
+  "selected_subset": [
+    18
+  ],
+  "metadata": {
+    "num_scenes": 1,
+    "num_keyframes": 1,
+    "num_defects": 1
+  }
+}

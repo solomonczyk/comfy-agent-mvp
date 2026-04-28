@@ -1,0 +1,79 @@
+{
+  "status": "completed",
+  "prompt_id": "5478b120-b8c5-482a-9adc-d26e23bf544f",
+  "failed_stage": null,
+  "error_type": null,
+  "error": null,
+  "user_prompt": "test portrait",
+  "final_positive_prompt": "test portrait, cinematic lighting, realistic details, high quality, professional photography, detailed texture",
+  "preset_name": "portrait",
+  "rewrite_mode": "fallback",
+  "seed": 1100463577,
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "portrait_00021_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "preflight": {
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\data\\runtime_workflows\\09ab9304_portrait_sdxl_v1.json",
+    "preset_name": "portrait",
+    "checkpoint_name": "sd_xl_base_1.0_0.9vae.safetensors",
+    "required_node_ids": [
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "available_checkpoints_count": 2,
+    "contract": {
+      "contract_valid": true,
+      "validated_node_ids": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    }
+  },
+  "artifact_validation": {
+    "artifact_valid": true,
+    "validated_image_count": 1,
+    "expected_node_id": "9"
+  },
+  "artifact_fetch_validation": {
+    "fetch_valid": true,
+    "validated_image_count": 1,
+    "fetch_results": [
+      {
+        "filename": "portrait_00021_.png",
+        "status_code": 200,
+        "content_type": "image/png",
+        "content_length": 1406191
+      }
+    ]
+  },
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260417_121831.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_5478b120_test_portrait_cinematic_lighting_realistic_details_high_quality_professional_pho.txt",
+  "judge_status": null,
+  "orchestrator_report": null,
+  "retry_decision": null,
+  "retry_loop": null,
+  "workflow_switch": null,
+  "candidate_history": null,
+  "task_selection": null,
+  "execution_plan": null,
+  "mutation_report": null,
+  "mutation_retry": null,
+  "candidate_selection": null,
+  "corrective_action": null,
+  "executed_action": null
+}

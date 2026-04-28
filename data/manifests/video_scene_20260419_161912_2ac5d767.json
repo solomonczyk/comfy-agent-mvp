@@ -1,0 +1,75 @@
+{
+  "video_id": "scene_20260419_161912_2ac5d767",
+  "input_path": "data\\outputs\\temp_portrait_00044_.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161912_2ac5d767",
+  "started_at": "2026-04-19T16:19:12.971003",
+  "completed_at": "2026-04-19T16:21:09.644536",
+  "status": "failed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {
+    "processed_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161912_2ac5d767\\processed",
+    "processed_count": 3,
+    "processor": "comfy_img2img_v1",
+    "prompt": "static portrait, no movement, frozen scene, cinematic scene, subtle motion, professional quality, realistic details, smooth transitions",
+    "recipe": {
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "sampler_name": "euler",
+      "scheduler": "karras",
+      "steps": 5,
+      "cfg": 6.0,
+      "denoise": 0.05,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, plastic skin, smooth skin texture, doll-like, anime, cartoon, oversaturated, harsh lighting, frozen, repetitive, jitter"
+    },
+    "per_frame": [
+      {
+        "index": 1,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\temp_portrait_00044_.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161912_2ac5d767\\processed\\frame_000001.png",
+        "run_id": "d4c6bad2",
+        "prompt_id": "d8c4ad7c-0865-4f07-8b90-118abf277633",
+        "status": "completed",
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\d4c6bad2\\metadata.json",
+        "result_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\d4c6bad2\\result.json",
+        "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\d4c6bad2.jsonl",
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\d4c6bad2\\images\\img2img_00040_.png",
+        "error": null
+      },
+      {
+        "index": 2,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\temp_portrait_00044_.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161912_2ac5d767\\processed\\frame_000002.png",
+        "run_id": "c15e77ef",
+        "prompt_id": "f207a214-8ffc-4e5b-a8ae-fe14ee7123c2",
+        "status": "completed",
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\c15e77ef\\metadata.json",
+        "result_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\c15e77ef\\result.json",
+        "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\c15e77ef.jsonl",
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\c15e77ef\\images\\img2img_00041_.png",
+        "error": null
+      },
+      {
+        "index": 3,
+        "source_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\temp_portrait_00044_.png",
+        "processed_frame": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161912_2ac5d767\\processed\\frame_000003.png",
+        "run_id": "2693b9a1",
+        "prompt_id": "3ef61def-d3cc-443e-9b51-2d11425c9f85",
+        "status": "completed",
+        "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\2693b9a1\\metadata.json",
+        "result_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\2693b9a1\\result.json",
+        "trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\traces\\2693b9a1.jsonl",
+        "source_generated_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\runs\\2693b9a1\\images\\img2img_00042_.png",
+        "error": null
+      }
+    ],
+    "completed_at": "2026-04-19T16:21:08.881656"
+  },
+  "export": {
+    "export_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260419_161912_2ac5d767\\scene.mp4",
+    "fps": 12.0,
+    "completed_at": "2026-04-19T16:21:09.294285"
+  },
+  "qc": {},
+  "error": "name 'comfy_recipe' is not defined"
+}

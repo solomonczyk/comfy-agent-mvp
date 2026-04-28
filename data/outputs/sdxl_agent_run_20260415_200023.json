@@ -1,0 +1,21 @@
+{
+  "user_prompt": "a realistic cinematic portrait of a woman in soft window light",
+  "final_positive_prompt": "a realistic cinematic portrait of a woman in soft window light, cinematic lighting, realistic details, high quality, professional photography, detailed texture",
+  "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+  "width": 1024,
+  "height": 1024,
+  "steps": 30,
+  "cfg": 6.0,
+  "seed": 2046906575,
+  "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+  "prefix": "agent/sdxl_agent",
+  "prompt_id": "55e84a70-1733-4d03-af75-1f430cb310ba",
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "sdxl_agent_00002_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ]
+}

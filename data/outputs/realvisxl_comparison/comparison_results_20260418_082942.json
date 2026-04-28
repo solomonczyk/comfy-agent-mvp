@@ -1,0 +1,18 @@
+[
+  {
+    "checkpoint_name": "sdxl_base",
+    "checkpoint_path": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 987654321,
+    "status": "error",
+    "error": "History for prompt_id=fa556d94-a32d-4f2e-9557-e0e52f3fa1f7 not found after 120 attempts. Last queue state: running=True, pending=False."
+  },
+  {
+    "checkpoint_name": "realvisxl_v50",
+    "checkpoint_path": "realvisxlV50_v50Bakedvae.safetensors",
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "status": "error",
+    "error": "History for prompt_id=ca8e6d83-4e64-4ee3-b59d-43cb89c6a679 not found after 120 attempts. Last queue state: running=False, pending=True."
+  }
+]

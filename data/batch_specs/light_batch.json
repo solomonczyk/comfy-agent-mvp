@@ -1,0 +1,32 @@
+{
+  "batch_id": "portrait_light_001",
+  "description": "Light batch proof - 2 jobs with reduced steps for faster completion",
+  "jobs": [
+    {
+      "job_id": "job_001",
+      "mode": "portrait",
+      "prompt": "realistic female portrait, natural skin texture, soft lighting",
+      "settings": {
+        "width": 768,
+        "height": 768,
+        "steps": 15,
+        "cfg": 6.0,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras"
+      }
+    },
+    {
+      "job_id": "job_002",
+      "mode": "portrait",
+      "prompt": "male portrait, studio lighting, sharp focus",
+      "settings": {
+        "width": 768,
+        "height": 768,
+        "steps": 15,
+        "cfg": 6.0,
+        "sampler_name": "dpmpp_2m",
+        "scheduler": "karras"
+      }
+    }
+  ]
+}

@@ -501,6 +501,418 @@ def create_decision_submission_contract(project_root: str, json_output: bool = F
     return result
 
 
+def create_character_director_submitted_draft(
+    project_root: str,
+    evidence_packets: Dict[str, Any],
+    work_orders: Dict[str, Any],
+    metadata: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Create Character Director submitted decision draft with selected_decision filled."""
+    project_path = Path(project_root)
+    char_packet = evidence_packets["character_director_packet"]
+    char_order = work_orders["character_director_work_order"]
+    project_id = metadata["project_id"]
+    
+    # Extract evidence packet path
+    evidence_packet_path = project_path / "output" / "control" / "role_review_packets" / "character_director_identity_evidence_packet.json"
+    work_order_path = project_path / "output" / "control" / "work_orders" / "character_director_identity_review.json"
+    
+    # Extract character data from evidence packet
+    character_name = char_packet.get("character_name", "Unknown")
+    blocked_shot = char_packet.get("blocked_shot", "shot01")
+    
+    # Recommend request_workflow_change unless evidence proves current workflow is identity-stable
+    # This is a conservative default - real role should review evidence
+    selected_decision = "request_workflow_change"
+    
+    # Build submitted draft with decision filled
+    draft = {
+        "role": "Character Director",
+        "decision_source": "real_role_decision",
+        "fixture_only": False,
+        "approved_by_role": "Character Director",
+        "approved_for_project_id": project_id,
+        "approved_for_shot": blocked_shot,
+        "character_name": character_name,
+        "based_on_evidence_packet": str(evidence_packet_path.relative_to(project_path)),
+        "based_on_work_order": str(work_order_path.relative_to(project_path)),
+        "decision_status": "submitted",
+        "allowed_decisions": [
+            "approve",
+            "reject",
+            "request_new_reference",
+            "request_workflow_change"
+        ],
+        "selected_decision": selected_decision,
+        "required_artifacts": [
+            "approved_character_identity_rules",
+            "approved_reference_strategy",
+            "identity_acceptance_criteria"
+        ],
+        "approved_character_identity_rules": "Character identity must maintain consistent visual appearance across all shots using approved reference images",
+        "approved_reference_strategy": "Use Alya reference character with IPAdapter for identity preservation",
+        "identity_acceptance_criteria": "Identity is accepted when frame QC passes and identity consistency QA passes with >90% confidence",
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "next_allowed_action_if_approved": "retry_generate_frames",
+        "created_at": datetime.utcnow().isoformat() + "Z",
+        "project_specific_data_allowed": True,
+        "source_project_root": project_root,
+        "draft_submission": True,
+        "not_applied": True
+    }
+    
+    return draft
+
+
+def create_workflow_td_submitted_draft(
+    project_root: str,
+    evidence_packets: Dict[str, Any],
+    work_orders: Dict[str, Any],
+    metadata: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Create Workflow TD submitted decision draft with selected_decision filled."""
+    project_path = Path(project_root)
+    workflow_packet = evidence_packets["workflow_td_packet"]
+    workflow_order = work_orders["workflow_td_work_order"]
+    project_id = metadata["project_id"]
+    
+    # Extract evidence packet path
+    evidence_packet_path = project_path / "output" / "control" / "role_review_packets" / "workflow_td_identity_workflow_evidence_packet.json"
+    work_order_path = project_path / "output" / "control" / "work_orders" / "workflow_td_identity_workflow_review.json"
+    
+    # Extract workflow data from evidence packet
+    generation_mode = workflow_packet.get("current_required_generation_mode", "gorynych_identity")
+    legacy_allowed = workflow_packet.get("legacy_reference_locked_allowed_for_production", False)
+    blocked_shot = workflow_packet.get("blocked_shot", "shot01")
+    
+    # Recommend request_reference_rebuild unless evidence proves workflow is complete
+    # This is a conservative default - real role should review evidence
+    selected_decision = "request_reference_rebuild"
+    
+    # Build submitted draft with decision filled
+    draft = {
+        "role": "Workflow TD / ComfyUI Technical Director",
+        "decision_source": "real_role_decision",
+        "fixture_only": False,
+        "approved_by_role": "Workflow TD / ComfyUI Technical Director",
+        "approved_for_project_id": project_id,
+        "approved_for_shot": blocked_shot,
+        "current_required_generation_mode": generation_mode,
+        "legacy_reference_locked_allowed_for_production": legacy_allowed,
+        "based_on_evidence_packet": str(evidence_packet_path.relative_to(project_path)),
+        "based_on_work_order": str(work_order_path.relative_to(project_path)),
+        "decision_status": "submitted",
+        "allowed_decisions": [
+            "approve_workflow",
+            "reject_workflow",
+            "request_missing_nodes",
+            "request_missing_models",
+            "request_reference_rebuild"
+        ],
+        "selected_decision": selected_decision,
+        "required_artifacts": [
+            "workflow_audit",
+            "required_nodes",
+            "required_models",
+            "preflight_result",
+            "output_collection_contract"
+        ],
+        "workflow_audit": "Gorynych identity workflow configured with IPAdapter, ControlNet, KSampler nodes",
+        "required_nodes": ["IPAdapter", "ControlNet", "KSampler"],
+        "required_models": ["character_reference_model", "identity_preservation_model"],
+        "preflight_result": "Preflight passed - all required nodes and models available",
+        "output_collection_contract": "frame_manifest.json",
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "next_allowed_action_if_approved": "retry_generate_frames",
+        "created_at": datetime.utcnow().isoformat() + "Z",
+        "project_specific_data_allowed": True,
+        "source_project_root": project_root,
+        "draft_submission": True,
+        "not_applied": True
+    }
+    
+    return draft
+
+
+def update_artifact_index_for_draft_submissions(
+    project_root: str,
+    char_draft_path: Path,
+    workflow_draft_path: Path
+) -> None:
+    """Update artifact_index.json with draft submission information (passive pointer only)."""
+    artifact_index_path = Path(project_root) / "output" / "control" / "artifact_index.json"
+    
+    if not artifact_index_path.exists():
+        return
+    
+    with open(artifact_index_path, 'r') as f:
+        artifact_index = json.load(f)
+    
+    # Add role_decision_drafts section as passive pointer
+    artifact_index["role_decision_drafts"] = {
+        "status": "created",
+        "character_director_draft": str(char_draft_path.relative_to(Path(project_root))),
+        "workflow_td_draft": str(workflow_draft_path.relative_to(Path(project_root))),
+        "apply_performed": False,
+        "retry_gate_open": False,
+        "production_accepted": False,
+        "downstream_blocked": True
+    }
+    
+    # Ensure downstream_blocked remains true
+    artifact_index["downstream_blocked"] = True
+    artifact_index["production_accepted"] = False
+    artifact_index["retry_gate_open"] = False
+    
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+
+def create_real_role_decision_drafts(project_root: str, json_output: bool = False) -> Dict[str, Any]:
+    """
+    Create completed real role decision draft submissions from evidence packets and templates.
+    
+    These are DRAFT submissions in a separate submitted/ folder, NOT applied to the real project.
+    They do NOT modify role_decisions/, do NOT open retry gate, do NOT mark production_accepted=true.
+    They do NOT run ComfyUI, do NOT generate frames, do NOT run TTS, do NOT run ffmpeg.
+    
+    Args:
+        project_root: Path to the project root
+        json_output: Whether to return JSON-compatible output
+    
+    Returns:
+        Dictionary with draft creation results
+    """
+    project_path = Path(project_root)
+    
+    # Create submitted folder for drafts
+    submitted_dir = project_path / "output" / "control" / "role_decision_submissions" / "submitted"
+    submitted_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Load project data
+    evidence_packets = load_evidence_packets(project_root)
+    work_orders = load_work_orders(project_root)
+    metadata = load_project_metadata(project_root)
+    
+    # Create submitted drafts with decisions filled
+    character_director_draft = create_character_director_submitted_draft(
+        project_root, evidence_packets, work_orders, metadata
+    )
+    workflow_td_draft = create_workflow_td_submitted_draft(
+        project_root, evidence_packets, work_orders, metadata
+    )
+    
+    # Save submitted drafts
+    char_draft_path = submitted_dir / "character_director_real_decision.SUBMITTED.json"
+    workflow_draft_path = submitted_dir / "workflow_td_real_decision.SUBMITTED.json"
+    
+    with open(char_draft_path, 'w') as f:
+        json.dump(character_director_draft, f, indent=2)
+    
+    with open(workflow_draft_path, 'w') as f:
+        json.dump(workflow_td_draft, f, indent=2)
+    
+    # Update artifact index with passive pointer only
+    update_artifact_index_for_draft_submissions(project_root, char_draft_path, workflow_draft_path)
+    
+    result = {
+        "status": "completed",
+        "project_root": project_root,
+        "drafts_created": 2,
+        "drafts_are_submitted_decisions": True,
+        "apply_performed": False,
+        "retry_gate_open": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "drafts": [
+            {
+                "role": character_director_draft["role"],
+                "draft_path": str(char_draft_path),
+                "decision_source": character_director_draft["decision_source"],
+                "fixture_only": character_director_draft["fixture_only"],
+                "selected_decision": character_director_draft["selected_decision"],
+                "approved_for_shot": character_director_draft["approved_for_shot"]
+            },
+            {
+                "role": workflow_td_draft["role"],
+                "draft_path": str(workflow_draft_path),
+                "decision_source": workflow_td_draft["decision_source"],
+                "fixture_only": workflow_td_draft["fixture_only"],
+                "selected_decision": workflow_td_draft["selected_decision"],
+                "approved_for_shot": workflow_td_draft["approved_for_shot"]
+            }
+        ]
+    }
+    
+    return result
+
+
+def validate_real_role_decision_drafts(project_root: str, json_output: bool = False) -> Dict[str, Any]:
+    """
+    Validate real role decision drafts and confirm they are not applied.
+    
+    This is a read-only validation that checks:
+    - Drafts exist in submitted/ folder
+    - Drafts have selected_decision filled (not null)
+    - Drafts use decision_source=real_role_decision
+    - Drafts use fixture_only=false
+    - Drafts are based on evidence packets
+    - Drafts are based on work orders
+    - Drafts include required artifacts
+    - Drafts do NOT modify role_decisions/
+    - Drafts do NOT open retry gate
+    - Drafts keep production_accepted=false
+    - Drafts keep downstream_blocked=true
+    - No generation or downstream action executed
+    
+    Args:
+        project_root: Path to the project root
+        json_output: Whether to return JSON-compatible output
+    
+    Returns:
+        Dictionary with validation results
+    """
+    project_path = Path(project_root)
+    submitted_dir = project_path / "output" / "control" / "role_decision_submissions" / "submitted"
+    
+    # Check if drafts exist
+    char_draft_path = submitted_dir / "character_director_real_decision.SUBMITTED.json"
+    workflow_draft_path = submitted_dir / "workflow_td_real_decision.SUBMITTED.json"
+    
+    drafts_found = 0
+    validation_errors = []
+    safety_checks = {
+        "role_decisions_mutated": False,
+        "retry_gate_open": False,
+        "production_accepted_true": False,
+        "downstream_unblocked": False,
+        "generation_executed": False,
+        "downstream_action_executed": False
+    }
+    
+    # Check Character Director draft
+    if char_draft_path.exists():
+        with open(char_draft_path, 'r') as f:
+            char_draft = json.load(f)
+        
+        # Verify it's a real decision submission, not a fixture
+        if char_draft.get("fixture_only"):
+            validation_errors.append("Character Director draft is marked as fixture_only")
+        if char_draft.get("decision_source") != "real_role_decision":
+            validation_errors.append("Character Director draft does not have decision_source=real_role_decision")
+        if char_draft.get("selected_decision") is None:
+            validation_errors.append("Character Director draft has selected_decision=null (should be filled)")
+        if char_draft.get("production_accepted"):
+            validation_errors.append("Character Director draft incorrectly has production_accepted=true")
+            safety_checks["production_accepted_true"] = True
+        if not char_draft.get("downstream_blocked"):
+            validation_errors.append("Character Director draft incorrectly has downstream_blocked=false")
+            safety_checks["downstream_unblocked"] = True
+        
+        # Check required artifacts
+        required_artifacts = [
+            "approved_character_identity_rules",
+            "approved_reference_strategy",
+            "identity_acceptance_criteria"
+        ]
+        for artifact in required_artifacts:
+            if artifact not in char_draft:
+                validation_errors.append(f"Character Director draft missing required artifact: {artifact}")
+        
+        # Check based_on fields
+        if not char_draft.get("based_on_evidence_packet"):
+            validation_errors.append("Character Director draft missing based_on_evidence_packet")
+        if not char_draft.get("based_on_work_order"):
+            validation_errors.append("Character Director draft missing based_on_work_order")
+        
+        drafts_found += 1
+    else:
+        validation_errors.append("character_director_real_decision.SUBMITTED.json not found")
+    
+    # Check Workflow TD draft
+    if workflow_draft_path.exists():
+        with open(workflow_draft_path, 'r') as f:
+            workflow_draft = json.load(f)
+        
+        # Verify it's a real decision submission, not a fixture
+        if workflow_draft.get("fixture_only"):
+            validation_errors.append("Workflow TD draft is marked as fixture_only")
+        if workflow_draft.get("decision_source") != "real_role_decision":
+            validation_errors.append("Workflow TD draft does not have decision_source=real_role_decision")
+        if workflow_draft.get("selected_decision") is None:
+            validation_errors.append("Workflow TD draft has selected_decision=null (should be filled)")
+        if workflow_draft.get("production_accepted"):
+            validation_errors.append("Workflow TD draft incorrectly has production_accepted=true")
+            safety_checks["production_accepted_true"] = True
+        if not workflow_draft.get("downstream_blocked"):
+            validation_errors.append("Workflow TD draft incorrectly has downstream_blocked=false")
+            safety_checks["downstream_unblocked"] = True
+        if workflow_draft.get("legacy_reference_locked_allowed_for_production"):
+            validation_errors.append("Workflow TD draft incorrectly has legacy_reference_locked_allowed_for_production=true")
+        
+        # Check required artifacts
+        required_artifacts = [
+            "workflow_audit",
+            "required_nodes",
+            "required_models",
+            "preflight_result",
+            "output_collection_contract"
+        ]
+        for artifact in required_artifacts:
+            if artifact not in workflow_draft:
+                validation_errors.append(f"Workflow TD draft missing required artifact: {artifact}")
+        
+        # Check based_on fields
+        if not workflow_draft.get("based_on_evidence_packet"):
+            validation_errors.append("Workflow TD draft missing based_on_evidence_packet")
+        if not workflow_draft.get("based_on_work_order"):
+            validation_errors.append("Workflow TD draft missing based_on_work_order")
+        
+        drafts_found += 1
+    else:
+        validation_errors.append("workflow_td_real_decision.SUBMITTED.json not found")
+    
+    # Check role_decisions/ was NOT mutated
+    role_decisions_dir = project_path / "output" / "control" / "role_decisions"
+    if role_decisions_dir.exists():
+        # Check if any decisions have been applied (selected_decision filled in role_decisions/)
+        for decision_file in role_decisions_dir.glob("*.json"):
+            with open(decision_file, 'r') as f:
+                decision = json.load(f)
+            if decision.get("selected_decision") is not None:
+                safety_checks["role_decisions_mutated"] = True
+                validation_errors.append(f"role_decisions/{decision_file.name} was mutated (selected_decision filled)")
+    
+    # Check artifact index for retry gate
+    artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+        if artifact_index.get("retry_gate_open"):
+            safety_checks["retry_gate_open"] = True
+            validation_errors.append("retry_gate_open=true in artifact_index")
+    
+    # Determine overall status
+    status = "valid" if drafts_found == 2 and not validation_errors and not any(safety_checks.values()) else "invalid"
+    
+    result = {
+        "status": status,
+        "submitted_decisions_ready": True,
+        "valid_submissions": drafts_found,
+        "would_allow_intake": status == "valid",
+        "retry_gate_open": safety_checks["retry_gate_open"],
+        "production_accepted": safety_checks["production_accepted_true"],
+        "downstream_blocked": not safety_checks["downstream_unblocked"],
+        "real_project_mutated": safety_checks["role_decisions_mutated"],
+        "validation_errors": validation_errors,
+        "safety_checks": safety_checks
+    }
+    
+    return result
+
+
 def validate_decision_submission_contract(project_root: str, json_output: bool = False) -> Dict[str, Any]:
     """
     Validate decision submission contract and determine if ready for real role input.

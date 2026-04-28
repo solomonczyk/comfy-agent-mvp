@@ -1,0 +1,13 @@
+{
+  "kb_ready": false,
+  "blocking_reasons": [
+    "source root missing",
+    "references missing"
+  ],
+  "missing_artifacts": [
+    "source_root",
+    "character references"
+  ],
+  "ready_for_reference_selection": false,
+  "ready_for_generation": false
+}

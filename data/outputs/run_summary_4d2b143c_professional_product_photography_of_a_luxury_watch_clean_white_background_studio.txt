@@ -1,0 +1,8 @@
+prompt_id: 4d2b143c-c9dc-4844-8724-e97e0b67aa61
+status: completed
+preset: product
+rewrite_mode: fallback
+seed: 105413755
+final_prompt: professional product photography of a luxury watch, clean white background, studio lighting, high detail, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: product_00001_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260417_101432.json

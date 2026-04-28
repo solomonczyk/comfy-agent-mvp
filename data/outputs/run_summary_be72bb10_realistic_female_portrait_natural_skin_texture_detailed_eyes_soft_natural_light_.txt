@@ -1,0 +1,9 @@
+prompt_id: be72bb10-b18a-4614-8090-f1667771faf3
+status: completed
+preset: -
+rewrite_mode: fallback
+seed: 123456789
+final_prompt: realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: sdxl_agent_00007_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260418_142634.json
+recipe_validation_passed: True

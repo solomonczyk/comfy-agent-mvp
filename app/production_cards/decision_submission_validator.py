@@ -15,6 +15,8 @@ def load_submitted_decisions(project_root: str, submission_root: Optional[str] =
     """
     Load submitted role decision files from submission directory.
 
+    Supports both .SUBMIT.json (templates) and .SUBMITTED.json (completed drafts).
+
     Args:
         project_root: Path to the project root
         submission_root: Optional custom path to load submissions from (for fixture validation)
@@ -30,16 +32,26 @@ def load_submitted_decisions(project_root: str, submission_root: Optional[str] =
     character_director_submission = {}
     workflow_td_submission = {}
 
-    # Look for Character Director submission
-    char_submission_path = submissions_dir / "character_director_real_decision.SUBMIT.json"
-    if char_submission_path.exists():
-        with open(char_submission_path, 'r') as f:
+    # Look for Character Director submission (prefer .SUBMITTED.json, fall back to .SUBMIT.json)
+    char_submitted_path = submissions_dir / "character_director_real_decision.SUBMITTED.json"
+    char_submit_path = submissions_dir / "character_director_real_decision.SUBMIT.json"
+    
+    if char_submitted_path.exists():
+        with open(char_submitted_path, 'r') as f:
+            character_director_submission = json.load(f)
+    elif char_submit_path.exists():
+        with open(char_submit_path, 'r') as f:
             character_director_submission = json.load(f)
 
-    # Look for Workflow TD submission
-    workflow_submission_path = submissions_dir / "workflow_td_real_decision.SUBMIT.json"
-    if workflow_submission_path.exists():
-        with open(workflow_submission_path, 'r') as f:
+    # Look for Workflow TD submission (prefer .SUBMITTED.json, fall back to .SUBMIT.json)
+    workflow_submitted_path = submissions_dir / "workflow_td_real_decision.SUBMITTED.json"
+    workflow_submit_path = submissions_dir / "workflow_td_real_decision.SUBMIT.json"
+    
+    if workflow_submitted_path.exists():
+        with open(workflow_submitted_path, 'r') as f:
+            workflow_td_submission = json.load(f)
+    elif workflow_submit_path.exists():
+        with open(workflow_submit_path, 'r') as f:
             workflow_td_submission = json.load(f)
 
     return {

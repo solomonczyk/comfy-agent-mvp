@@ -1,0 +1,66 @@
+{
+  "status": "completed",
+  "prompt_id": "1746dbb4-20fe-4fbc-9989-645a95ce9230",
+  "failed_stage": null,
+  "error_type": null,
+  "error": null,
+  "user_prompt": "a realistic portrait of a woman near a rainy window",
+  "final_positive_prompt": "Realistic portrait of a woman standing by a rainy window, soft natural light, detailed facial features, subtle reflections on glass, moody atmosphere, cinematic depth, high resolution, photorealistic style",
+  "preset_name": "portrait",
+  "rewrite_mode": "llm",
+  "seed": 704582372,
+  "images": [
+    {
+      "node_id": "9",
+      "filename": "portrait_00018_.png",
+      "subfolder": "agent",
+      "type": "output"
+    }
+  ],
+  "preflight": {
+    "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\workflows\\sdxl_txt2img_template.json",
+    "preset_name": "portrait",
+    "checkpoint_name": "sd_xl_base_1.0_0.9vae.safetensors",
+    "required_node_ids": [
+      "3",
+      "4",
+      "5",
+      "6",
+      "7",
+      "8",
+      "9"
+    ],
+    "available_checkpoints_count": 2,
+    "contract": {
+      "contract_valid": true,
+      "validated_node_ids": [
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9"
+      ]
+    }
+  },
+  "artifact_validation": {
+    "artifact_valid": true,
+    "validated_image_count": 1,
+    "expected_node_id": "9"
+  },
+  "artifact_fetch_validation": {
+    "fetch_valid": true,
+    "validated_image_count": 1,
+    "fetch_results": [
+      {
+        "filename": "portrait_00018_.png",
+        "status_code": 200,
+        "content_type": "image/png",
+        "content_length": 1591027
+      }
+    ]
+  },
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_run_20260416_105719.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_1746dbb4_Realistic_portrait_of_a_woman_standing_by_a_rainy_window_soft_natural_light_deta.txt"
+}

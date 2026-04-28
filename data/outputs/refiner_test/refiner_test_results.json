@@ -1,0 +1,352 @@
+[
+  {
+    "config_name": "variant_base_only",
+    "config": {
+      "name": "variant_base_only",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": null,
+      "use_refiner": false,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Current baseline - control group with no second pass"
+    },
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "prompt_id": "6096ec0b-9330-449f-a909-e9d10bf968dd",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_base_only_00001_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "config": {
+      "name": "variant_base_refiner",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": "sd_xl_refiner_1.0.safetensors",
+      "use_refiner": true,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Base checkpoint + SDXL refiner for detail enhancement"
+    },
+    "prompt": "realistic female portrait, natural skin texture, detailed eyes, soft natural light, high detail, professional photography",
+    "seed": 123456789,
+    "prompt_id": "afd35d21-efa6-4545-bada-674766f073db",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "sdxl_base_refiner_00001_.png",
+        "subfolder": "agent",
+        "type": "output"
+      },
+      {
+        "node_id": "15",
+        "filename": "variant_base_refiner_00001_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_only",
+    "config": {
+      "name": "variant_base_only",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": null,
+      "use_refiner": false,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Current baseline - control group with no second pass"
+    },
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 123456790,
+    "prompt_id": "a03dbcae-38e2-4644-950b-9497e260ef21",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_base_only_00002_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "config": {
+      "name": "variant_base_refiner",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": "sd_xl_refiner_1.0.safetensors",
+      "use_refiner": true,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Base checkpoint + SDXL refiner for detail enhancement"
+    },
+    "prompt": "close-up portrait of a woman, realistic skin, sharp eyes, cinematic lighting, detailed face, professional photo",
+    "seed": 123456790,
+    "prompt_id": "6eb6279a-f26e-4791-a5db-f6f161fd6ce2",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "sdxl_base_refiner_00002_.png",
+        "subfolder": "agent",
+        "type": "output"
+      },
+      {
+        "node_id": "15",
+        "filename": "variant_base_refiner_00002_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_only",
+    "config": {
+      "name": "variant_base_only",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": null,
+      "use_refiner": false,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Current baseline - control group with no second pass"
+    },
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 123456791,
+    "prompt_id": "a6d16717-3c79-4afd-8490-2014f2f6adc0",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_base_only_00003_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "config": {
+      "name": "variant_base_refiner",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": "sd_xl_refiner_1.0.safetensors",
+      "use_refiner": true,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Base checkpoint + SDXL refiner for detail enhancement"
+    },
+    "prompt": "soft cinematic portrait, woman with natural skin texture, detailed eyes, gentle lighting, high quality photography",
+    "seed": 123456791,
+    "prompt_id": "2d736a6f-66c8-43ce-b880-f4cad56a1dfd",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "sdxl_base_refiner_00003_.png",
+        "subfolder": "agent",
+        "type": "output"
+      },
+      {
+        "node_id": "15",
+        "filename": "variant_base_refiner_00003_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_only",
+    "config": {
+      "name": "variant_base_only",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": null,
+      "use_refiner": false,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Current baseline - control group with no second pass"
+    },
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 123456792,
+    "prompt_id": "9e0f15aa-c767-414d-a1be-b07105d09268",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_base_only_00004_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "config": {
+      "name": "variant_base_refiner",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": "sd_xl_refiner_1.0.safetensors",
+      "use_refiner": true,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Base checkpoint + SDXL refiner for detail enhancement"
+    },
+    "prompt": "clean studio portrait, realistic female, natural skin, detailed eyes, professional lighting, sharp focus",
+    "seed": 123456792,
+    "prompt_id": "5771da7a-de40-48e6-9465-506747c88fe9",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "sdxl_base_refiner_00004_.png",
+        "subfolder": "agent",
+        "type": "output"
+      },
+      {
+        "node_id": "15",
+        "filename": "variant_base_refiner_00004_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_only",
+    "config": {
+      "name": "variant_base_only",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": null,
+      "use_refiner": false,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Current baseline - control group with no second pass"
+    },
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 123456793,
+    "prompt_id": "0cf4cf63-4d2a-49c3-a0b8-f16c2454aa8d",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "variant_base_only_00005_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  },
+  {
+    "config_name": "variant_base_refiner",
+    "config": {
+      "name": "variant_base_refiner",
+      "base_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+      "refiner_checkpoint": "sd_xl_refiner_1.0.safetensors",
+      "use_refiner": true,
+      "use_face_detail": false,
+      "sampler": "euler",
+      "scheduler": "karras",
+      "steps": 30,
+      "cfg": 6.0,
+      "width": 1024,
+      "height": 1024,
+      "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+      "face_detail_denoise": 0.4,
+      "refiner_denoise": 0.2,
+      "description": "Base checkpoint + SDXL refiner for detail enhancement"
+    },
+    "prompt": "portrait of a woman, realistic skin texture, detailed eyes, natural lighting, high detail, professional photography",
+    "seed": 123456793,
+    "prompt_id": "a10fc7a8-8565-404f-a871-d21ea2d5de67",
+    "images": [
+      {
+        "node_id": "9",
+        "filename": "sdxl_base_refiner_00005_.png",
+        "subfolder": "agent",
+        "type": "output"
+      },
+      {
+        "node_id": "15",
+        "filename": "variant_base_refiner_00005_.png",
+        "subfolder": "refiner_test",
+        "type": "output"
+      }
+    ],
+    "status": "success"
+  }
+]

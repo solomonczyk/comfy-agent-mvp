@@ -1,0 +1,11 @@
+prompt_id: -
+status: failed
+preset: portrait
+rewrite_mode: fallback
+seed: -
+final_prompt: realistic female portrait, natural skin texture, detailed eyes, soft natural light, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: -
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_failed_20260418_144111.json
+failed_stage: generation
+error_type: RuntimeError
+error: History for prompt_id=96199ba0-2220-4203-b966-376143e5d32a not found after 180 attempts. Last queue state: running=True, pending=False.

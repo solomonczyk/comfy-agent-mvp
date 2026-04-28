@@ -1,0 +1,8 @@
+{
+  "rc2_voice_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice1_ep01",
+  "package_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_voice_demo_pack_ep01",
+  "created_at": "2026-04-28T05:55:31.236926Z",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "rc_version": "rc2_voice_demo_pack"
+}

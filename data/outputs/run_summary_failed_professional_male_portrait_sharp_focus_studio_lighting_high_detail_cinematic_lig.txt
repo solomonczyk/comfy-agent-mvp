@@ -1,0 +1,11 @@
+prompt_id: -
+status: failed
+preset: portrait
+rewrite_mode: fallback
+seed: -
+final_prompt: professional male portrait, sharp focus, studio lighting, high detail, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: -
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_failed_20260418_145250.json
+failed_stage: generation
+error_type: RuntimeError
+error: History for prompt_id=4ab9d957-dd84-4b24-9a7c-0f91736a51cb not found after 180 attempts. Last queue state: running=True, pending=False.

@@ -1,0 +1,23 @@
+{
+  "workflow_id": "sdxl_txt2img_v1",
+  "workflow_version": "1.0",
+  "timestamp": "2026-04-18T09:12:11.856583",
+  "error": "History for prompt_id=4b394437-844f-4f0b-b969-3a718a8c5cc3 not found after 120 attempts. Last queue state: running=True, pending=False.",
+  "requested_recipe": {
+    "workflow_id": "sdxl_txt2img_v1",
+    "workflow_version": "1.0",
+    "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+    "sampler_name": "euler",
+    "scheduler": "karras",
+    "steps": 30,
+    "cfg": 6.0,
+    "width": 1024,
+    "height": 1024,
+    "seed": 123456789,
+    "denoise": 1.0,
+    "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated",
+    "filename_prefix": "portrait_comparison/canonical_proof"
+  },
+  "status": "FAIL",
+  "failed_stage": "recipe_enforcement"
+}

@@ -1,0 +1,214 @@
+{
+  "audit": "MK-6Q",
+  "title": "Scene Frame Quality & Coherence Audit v1",
+  "date": "2026-04-21",
+  "source_run": "MK-6L",
+  "prompt_ids": [
+    "e8dc198c-0c9f-45f7-98d9-0dc459e1cbda",
+    "add33b8b-a790-47ff-96ca-e4328d808bb7"
+  ],
+  "frames": [
+    {
+      "id": "F1",
+      "file": "img2img_batch_00115_.png",
+      "submission": 0,
+      "node": "15",
+      "size": [512, 512],
+      "mean_lum": 75.1,
+      "std_lum": 55.1,
+      "blue_ratio": 0.2483,
+      "laplacian_var": 248.7,
+      "mean_tile_std": 41.6,
+      "r_mean": 93.4,
+      "g_mean": 69.6,
+      "b_mean": 56.0,
+      "dhash": "0100011011000110100001101001011111010011110000111100011111100110",
+      "is_black": false,
+      "is_overexposed": false,
+      "is_blurry": false,
+      "is_over_smooth": false,
+      "flags": [],
+      "visual_description": "Female portrait, close-up face, warm golden-hour sidelighting, sharp facial features, realistic skin texture",
+      "coherence_notes": "Strong subject identity. Reference-derived. High detail."
+    },
+    {
+      "id": "F2",
+      "file": "img2img_batch_00116_.png",
+      "submission": 0,
+      "node": "12",
+      "size": [512, 512],
+      "mean_lum": 72.6,
+      "std_lum": 43.2,
+      "blue_ratio": 0.2516,
+      "laplacian_var": 292.7,
+      "mean_tile_std": 30.3,
+      "r_mean": 88.9,
+      "g_mean": 68.0,
+      "b_mean": 53.5,
+      "dhash": "1000011011000110111001011111011111110011111100111100011010000110",
+      "is_black": false,
+      "is_overexposed": false,
+      "is_blurry": false,
+      "is_over_smooth": false,
+      "flags": ["SPLIT_FRAME_SEAM"],
+      "visual_description": "Dual-panel split: left half bright/bloomed, right half sharper portrait of same subject. Visible vertical seam divides the frame.",
+      "coherence_notes": "SEAM DEFECT: visible vertical split line. Frame appears to be a before/after composite artifact from the img2img batch template tiling. Not a crash but semantically incoherent as a standalone scene frame."
+    },
+    {
+      "id": "F3",
+      "file": "img2img_batch_00117_.png",
+      "submission": 0,
+      "node": "9",
+      "size": [512, 512],
+      "mean_lum": 64.8,
+      "std_lum": 76.5,
+      "blue_ratio": 0.2441,
+      "laplacian_var": 1142.0,
+      "mean_tile_std": 66.0,
+      "r_mean": 74.4,
+      "g_mean": 62.5,
+      "b_mean": 51.8,
+      "dhash": "0010000101001010110001101101011100110110111101101101011001010110",
+      "is_black": false,
+      "is_overexposed": false,
+      "is_blurry": false,
+      "is_over_smooth": false,
+      "flags": ["SUBJECT_DRIFT"],
+      "visual_description": "Cinematic architectural/interior scene with glowing neon signage panels, dark walls, golden light strips. No portrait subject. Hallucinated text visible.",
+      "coherence_notes": "SUBJECT DRIFT: completely different scene category from F1/F2 (portrait -> architecture). High sharpness (lap=1142) confirms real generation, not a copy. The seed-per-slot variation with denoise=0.8 caused the model to drift away from the portrait reference into an unrelated scene. Hallucinated text on signage panels."
+    },
+    {
+      "id": "F4",
+      "file": "img2img_batch_00118_.png",
+      "submission": 1,
+      "node": "15",
+      "size": [512, 512],
+      "mean_lum": 62.5,
+      "std_lum": 51.0,
+      "blue_ratio": 0.2582,
+      "laplacian_var": 1173.6,
+      "mean_tile_std": 44.0,
+      "r_mean": 87.7,
+      "g_mean": 53.7,
+      "b_mean": 41.9,
+      "dhash": "0100011011000110111000111110011111100011111000111110011111110100",
+      "is_black": false,
+      "is_overexposed": false,
+      "is_blurry": false,
+      "is_over_smooth": false,
+      "flags": ["SUBJECT_DRIFT"],
+      "visual_description": "Curved array of red/gold/black speaker cabinets or luxury audio equipment, cinematic product-style composition. No portrait subject.",
+      "coherence_notes": "SUBJECT DRIFT: completely unrelated to portrait reference. High sharpness (lap=1174). Seed/denoise variation across submission boundary produced independent hallucination."
+    },
+    {
+      "id": "F5",
+      "file": "img2img_batch_00119_.png",
+      "submission": 1,
+      "node": "12",
+      "size": [512, 512],
+      "mean_lum": 57.3,
+      "std_lum": 50.6,
+      "blue_ratio": 0.2603,
+      "laplacian_var": 606.1,
+      "mean_tile_std": 38.8,
+      "r_mean": 70.6,
+      "g_mean": 53.3,
+      "b_mean": 43.5,
+      "dhash": "1100111001000010111100101011001000000110000011110111111101101001",
+      "is_black": false,
+      "is_overexposed": false,
+      "is_blurry": false,
+      "is_over_smooth": false,
+      "flags": ["WATERMARK_TEXT", "SUBJECT_DRIFT"],
+      "visual_description": "Male portrait, cinematic street/urban nighttime setting. Partially legible text overlay at bottom: 'Tomicinic SCENE'. Realistic quality, correct portrait category.",
+      "coherence_notes": "SUBJECT DRIFT (gender/identity): switched from female to male subject. WATERMARK_TEXT: baked-in text 'Tomicinic SCENE' visible in lower portion — appears to be model-hallucinated text from training data contamination, not a real watermark. Otherwise high quality frame."
+    },
+    {
+      "id": "F6",
+      "file": "img2img_batch_00120_.png",
+      "submission": 1,
+      "node": "9",
+      "size": [512, 512],
+      "mean_lum": 54.4,
+      "std_lum": 52.2,
+      "blue_ratio": 0.2959,
+      "laplacian_var": 642.1,
+      "mean_tile_std": 36.5,
+      "r_mean": 63.2,
+      "g_mean": 51.8,
+      "b_mean": 44.8,
+      "dhash": "0000011110000001110001101111001111101000010000100110011001101011",
+      "is_black": false,
+      "is_overexposed": false,
+      "is_blurry": false,
+      "is_over_smooth": false,
+      "flags": ["SUBJECT_DRIFT"],
+      "visual_description": "Overhead shot of a road/highway at night with motion-blur light trails (red streaks). No portrait subject. Cinematic, sharp.",
+      "coherence_notes": "SUBJECT DRIFT: road/motion scene, entirely different category from reference portrait."
+    }
+  ],
+  "deterministic_checks": {
+    "black_frames": {"count": 0, "verdict": "PASS"},
+    "overexposed_frames": {"count": 0, "verdict": "PASS"},
+    "blurry_frames": {"count": 0, "verdict": "PASS"},
+    "over_smooth_frames": {"count": 0, "verdict": "PASS"},
+    "frozen_output": {"max_consecutive_identical_dhash": 1, "verdict": "PASS"},
+    "blue_contamination": {"all_below_0.35": true, "max": 0.2959, "verdict": "PASS"},
+    "size_uniformity": {"all_512x512": true, "verdict": "PASS"}
+  },
+  "coherence_checks": {
+    "split_frame_seam": {
+      "affected_frames": ["F2"],
+      "verdict": "WARN",
+      "description": "F2 contains a visible vertical split seam dividing the image into two halves — a known artifact of the 3-slot batch template layout bleeding into a single output frame."
+    },
+    "subject_drift": {
+      "affected_frames": ["F3", "F4", "F5", "F6"],
+      "verdict": "FAIL",
+      "description": "4 of 6 frames show completely different subjects/scenes from the portrait reference. The model's high denoise (0.8) combined with varied seeds caused each KSampler slot to hallucinate independent content rather than adhering to the input image."
+    },
+    "hallucinated_text": {
+      "affected_frames": ["F3", "F5"],
+      "verdict": "WARN",
+      "description": "F3 contains illegible signage hallucinations. F5 contains partially legible text overlay ('Tomicinic SCENE') that resembles a watermark but is a model-generated artifact."
+    },
+    "inter_frame_consistency": {
+      "hamming_distances": [14, 22, 27, 28, 27],
+      "verdict": "FAIL",
+      "description": "Hamming distances between consecutive frames range from 14 to 28 (out of 64 bits). Values above 10 indicate perceptually distinct frames. No two consecutive frames share the same scene category, confirming incoherence."
+    }
+  },
+  "root_cause_analysis": {
+    "primary_cause": "denoise=0.8 + independent seed per slot",
+    "explanation": "The batch template intentionally uses denoise=0.8 (see MK-6K comment in comfy_processor.py) to avoid low_stddev_uniform_frames. At this strength, the model treats the input image only as a weak latent prior. Combined with a different seed per KSampler slot (seeds 123466789/123466889/123466989 in sub0, and next batch with similar offsets), each slot generates an effectively independent image with minimal adherence to the portrait reference. The fix for blue contamination (replacing the solid-blue input) correctly solved the color defect but exposed the pre-existing coherence problem that was masked by the contamination."
+  },
+  "verdict": {
+    "deterministic_qc": "PASS",
+    "coherence_qc": "FAIL",
+    "overall": "CONDITIONAL_PASS",
+    "rationale": "All 6 frames pass hard deterministic checks (no black, no overexposed, no blurry, no frozen, no blue contamination). However 4/6 frames show subject drift away from the portrait reference, 1/6 has a split-frame seam artifact, and 2/6 contain hallucinated text. The pipeline produces valid, high-quality images but they do not cohere as a scene derived from the reference."
+  },
+  "recommended_fixes": [
+    {
+      "id": "FIX-1",
+      "priority": "HIGH",
+      "title": "Reduce denoise for reference-locked bounded mode",
+      "action": "Re-enable denoise override in comfy_processor.py (lines 435-438) when --reference-locked flag is active. Set denoise=0.55-0.65 to preserve reference adherence.",
+      "expected_outcome": "Frames stay close to the portrait reference identity across all 6 slots."
+    },
+    {
+      "id": "FIX-2",
+      "priority": "MEDIUM",
+      "title": "Seed coherence strategy",
+      "action": "Use the same base seed (or seed+small_offset) across all 3 slots in a submission when reference-locked, rather than seed+100/+200 offsets that diverge the generation.",
+      "expected_outcome": "Reduced inter-frame hallucination divergence."
+    },
+    {
+      "id": "FIX-3",
+      "priority": "LOW",
+      "title": "Add subject-drift check to post-processing QC",
+      "action": "Add a coherence gate in comfy_processor.py: if blue_ratio passes but laplacian_var > 800 AND the frame has no face detected, flag as possible subject_drift.",
+      "expected_outcome": "Pipeline auto-detects scene-category drift without manual audit."
+    }
+  ]
+}

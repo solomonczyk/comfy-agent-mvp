@@ -1,0 +1,8 @@
+prompt_id: 4470598e-87ed-4c3f-a152-de02b8712719
+status: completed
+preset: portrait
+rewrite_mode: raw
+seed: 246067865
+final_prompt: improve realism and details
+output_filename: img2img_00002_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260417_103732.json

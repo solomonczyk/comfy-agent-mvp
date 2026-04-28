@@ -1,0 +1,35 @@
+{
+  "portrait": {
+    "width": 1024,
+    "height": 1024,
+    "steps": 30,
+    "cfg": 6.0,
+    "sampler_name": "dpmpp_2m",
+    "scheduler": "karras",
+    "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prefix": "agent/portrait",
+    "negative_prompt": "blurry, low quality, bad anatomy, deformed face, deformed eyes, extra fingers, duplicate, distorted features, oversaturated"
+  },
+  "product": {
+    "width": 1024,
+    "height": 1024,
+    "steps": 32,
+    "cfg": 5.5,
+    "sampler_name": "dpmpp_2m",
+    "scheduler": "karras",
+    "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prefix": "agent/product",
+    "negative_prompt": "blurry, low quality, distorted object, warped edges, extra objects, duplicate product, bad reflections, oversaturated"
+  },
+  "cinematic": {
+    "width": 1024,
+    "height": 576,
+    "steps": 35,
+    "cfg": 6.5,
+    "sampler_name": "dpmpp_2m",
+    "scheduler": "karras",
+    "checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+    "prefix": "agent/cinematic",
+    "negative_prompt": "blurry, low quality, bad anatomy, deformed face, flat lighting, duplicate subjects, distorted features, oversaturated"
+  }
+}

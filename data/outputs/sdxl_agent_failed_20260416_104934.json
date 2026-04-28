@@ -1,0 +1,18 @@
+{
+  "status": "failed",
+  "prompt_id": "-",
+  "failed_stage": "preflight_validation",
+  "error_type": "ValueError",
+  "error": "Checkpoint not found in ComfyUI models/checkpoints: definitely_missing_checkpoint.safetensors. Available: sd_xl_base_1.0_0.9vae.safetensors, sd_xl_refiner_1.0.safetensors",
+  "user_prompt": "test prompt",
+  "final_positive_prompt": "test prompt",
+  "preset_name": "portrait",
+  "rewrite_mode": "raw",
+  "seed": null,
+  "images": [],
+  "preflight": null,
+  "artifact_validation": null,
+  "artifact_fetch_validation": null,
+  "metadata_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\sdxl_agent_failed_20260416_104934.json",
+  "summary_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\outputs\\run_summary_failed_test_prompt.txt"
+}

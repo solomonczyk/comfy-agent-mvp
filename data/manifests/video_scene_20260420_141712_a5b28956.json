@@ -1,0 +1,15 @@
+{
+  "video_id": "scene_20260420_141712_a5b28956",
+  "input_path": "test_input_image.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260420_141712_a5b28956",
+  "started_at": "2026-04-20T14:17:12.494447",
+  "completed_at": "2026-04-20T14:17:13.991230",
+  "status": "failed",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {},
+  "export": {},
+  "qc": {},
+  "error": "MK-6J-S: Bounded integrity fail - not all submissions completed: ['aborted', 'aborted']"
+}

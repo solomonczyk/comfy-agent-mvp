@@ -1,0 +1,9 @@
+prompt_id: 3f77d417-022a-40bb-9f86-d4404b770671
+status: completed
+preset: -
+rewrite_mode: fallback
+seed: 1437526132
+final_prompt: kt5 asset proof portrait B, studio lighting, sharp focus, cinematic lighting, realistic details, high quality, professional photography, detailed texture
+output_filename: sdxl_agent_00012_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260418_155636.json
+recipe_validation_passed: True

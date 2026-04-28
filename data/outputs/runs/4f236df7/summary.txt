@@ -1,0 +1,9 @@
+prompt_id: d7b40aa5-8976-4122-9d2c-4416b7f346c8
+status: completed
+preset: -
+rewrite_mode: raw
+seed: 1407188899
+final_prompt: cinematic lighting, sharp focus, high detail
+output_filename: img2img_00003_.png
+metadata_path: F:\ComfyUI\comfy-agent-mvp\data\outputs\sdxl_agent_run_20260418_161543.json
+recipe_validation_passed: True

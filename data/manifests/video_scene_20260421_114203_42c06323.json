@@ -1,0 +1,15 @@
+{
+  "video_id": "scene_20260421_114203_42c06323",
+  "input_path": "data\\outputs\\runs\\3a29051c\\images\\portrait_00049_.png",
+  "video_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\videos\\scenes\\scene_20260421_114203_42c06323",
+  "started_at": "2026-04-21T11:42:03.812950",
+  "completed_at": null,
+  "status": "running",
+  "probe": {},
+  "extraction": {},
+  "selection": {},
+  "processing": {},
+  "export": {},
+  "qc": {},
+  "error": null
+}
