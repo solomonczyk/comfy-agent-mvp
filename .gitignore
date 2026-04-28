@@ -54,7 +54,6 @@ mk_*.py
 proof_*.py
 realvisxl_*.py
 run_*.py
-test_*.py
 compare_*.py
 acceptance_proof.py
 canonical_portrait_workflow_proof.py
