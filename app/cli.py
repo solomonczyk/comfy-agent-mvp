@@ -697,6 +697,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2F — Validate role approval gate subcommand
+    validate_role_approval_gate_parser = subparsers.add_parser("validate-role-approval-gate", help="Validate role approval gate to determine if blocked shot may retry generation")
+    validate_role_approval_gate_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing role decisions",
+    )
+    validate_role_approval_gate_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -749,6 +762,8 @@ def main() -> int:
         return create_role_decision_templates(args)
     elif args.command == "validate-role-decisions":
         return validate_role_decisions(args)
+    elif args.command == "validate-role-approval-gate":
+        return validate_role_approval_gate(args)
     else:
         parser.print_help()
         return 1
@@ -5515,6 +5530,52 @@ def validate_role_decisions(args: argparse.Namespace) -> int:
                 print(f"  - {approval}")
     
     return 0 if result["status"] in ["ready", "blocked"] else 1
+
+
+def validate_role_approval_gate(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2F — Validate role approval gate to determine if blocked shot may retry generation.
+    
+    This command validates role decisions to determine if blocked shot01 may proceed
+    to retry generation after Character Director and Workflow TD decisions.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.approval_gate import validate_role_approval_gate as validate_gate
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_gate(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Gate Status: {result['status'].upper()}")
+        print(f"Can Retry Generation: {result['can_retry_generation']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        
+        if result["required_approvals"]:
+            print("\nRequired Approvals:")
+            for approval in result["required_approvals"]:
+                print(f"  - {approval}")
+        
+        if result["missing_approvals"]:
+            print("\nMissing Approvals:")
+            for approval in result["missing_approvals"]:
+                print(f"  - {approval}")
+        
+        if result["blocking_roles"]:
+            print("\nBlocking Roles:")
+            for role in result["blocking_roles"]:
+                print(f"  - {role}")
+        
+        if result["next_allowed_action"]:
+            print(f"\nNext Allowed Action: {result['next_allowed_action']}")
+    
+    return 0 if result["status"] in ["blocked", "ready_for_retry"] else 1
 
 
 if __name__ == "__main__":
