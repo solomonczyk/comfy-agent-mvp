@@ -1021,6 +1021,32 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS2V — Create change request execution plan subcommand
+    create_change_request_execution_plan_parser = subparsers.add_parser("create-change-request-execution-plan", help="Create change request execution plan")
+    create_change_request_execution_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing change request work orders",
+    )
+    create_change_request_execution_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS2V — Validate change request execution plan subcommand
+    validate_change_request_execution_plan_parser = subparsers.add_parser("validate-change-request-execution-plan", help="Validate change request execution plan")
+    validate_change_request_execution_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing execution plans",
+    )
+    validate_change_request_execution_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -1115,6 +1141,10 @@ def main() -> int:
         return validate_change_request_completion_contracts(args)
     elif args.command == "validate-submitted-change-request-completions":
         return validate_submitted_change_request_completions(args)
+    elif args.command == "create-change-request-execution-plan":
+        return create_change_request_execution_plan(args)
+    elif args.command == "validate-change-request-execution-plan":
+        return validate_change_request_execution_plan(args)
     else:
         parser.print_help()
         return 1
@@ -6734,6 +6764,75 @@ def validate_submitted_change_request_completions(args: argparse.Namespace) -> i
             print(f"Would Allow New Role Decision Drafts: {result['would_allow_new_role_decision_drafts']}")
         if result.get('rejection_reasons'):
             print(f"Rejection Reasons: {result['rejection_reasons']}")
+    
+    return 0
+
+
+def create_change_request_execution_plan(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2V — Create change request execution plan.
+    
+    This command creates concrete execution plans for unresolved change request work orders
+    before any workflow change, reference rebuild, completion submission, apply, or retry
+    generation is allowed.
+    
+    Exit codes:
+    - 0: execution plan created successfully
+    - 1: execution plan creation failed or invalid args
+    """
+    from app.production_cards.change_request_execution_plan import create_change_request_execution_plan as create_plan
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = create_plan(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Plan Creation Status: {result['status'].upper()}")
+        print(f"Execution Plans Created: {result['execution_plans_created']}")
+        print(f"Execution Performed: {result['execution_performed']}")
+        print(f"Completion Submission Allowed: {result['completion_submission_allowed']}")
+        print(f"Ready for Resubmission: {result['ready_for_resubmission']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+    
+    return 0
+
+
+def validate_change_request_execution_plan(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS2V — Validate change request execution plan.
+    
+    This command validates that change request execution plans exist and are correctly
+    structured, ensuring execution_status=planned, execution_performed=false,
+    completion_submission_allowed=false, retry_gate_open=false, production_accepted=false,
+    and downstream_blocked=true.
+    
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from app.production_cards.change_request_execution_plan import validate_change_request_execution_plan as validate_plan
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_plan(project_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Execution Plans Found: {result['execution_plans_found']}")
+        print(f"Execution Performed: {result['execution_performed']}")
+        print(f"Completion Submission Allowed: {result['completion_submission_allowed']}")
+        print(f"Ready for Resubmission: {result['ready_for_resubmission']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Downstream Blocked: {result['downstream_blocked']}")
+        if result['validation_errors']:
+            print(f"Validation Errors: {result['validation_errors']}")
     
     return 0
 

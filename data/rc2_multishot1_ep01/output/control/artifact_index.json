@@ -185,5 +185,15 @@
     "retry_gate_open": false,
     "production_accepted": false,
     "downstream_blocked": true
+  },
+  "change_request_execution_plan": {
+    "status": "created",
+    "execution_plans_created": 2,
+    "execution_performed": false,
+    "completion_submission_allowed": false,
+    "ready_for_resubmission": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "downstream_blocked": true
   }
 }

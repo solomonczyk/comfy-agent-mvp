@@ -423,6 +423,31 @@
       "comfyui_generation": false,
       "pipeline_action_rerun": false,
       "timestamp": "2026-04-28T14:03:33.846404Z"
+    },
+    {
+      "event_type": "change_request_completion_contracts_created",
+      "completion_templates_created": 2,
+      "execution_performed": false,
+      "ready_for_resubmission": false,
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "timestamp": "2026-04-28T14:26:07.694283Z"
+    },
+    {
+      "event_type": "change_request_execution_plan_created",
+      "execution_plans_created": 2,
+      "execution_performed": false,
+      "completion_submission_allowed": false,
+      "ready_for_resubmission": false,
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "timestamp": "2026-04-28T14:51:04.281416Z"
     }
   ]
 }
