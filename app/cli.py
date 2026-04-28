@@ -619,6 +619,19 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS1B — Validate production cards subcommand
+    validate_production_cards_parser = subparsers.add_parser("validate-production-cards", help="Validate production cards in a project")
+    validate_production_cards_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root containing cards",
+    )
+    validate_production_cards_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     args = parser.parse_args()
 
     if args.command == "generate-frames":
@@ -659,6 +672,8 @@ def main() -> int:
         return validate_multishot_preflight(args)
     elif args.command == "validate-multishot-generation":
         return validate_multishot_generation(args)
+    elif args.command == "validate-production-cards":
+        return validate_production_cards(args)
     else:
         parser.print_help()
         return 1
@@ -5179,6 +5194,56 @@ def validate_multishot_generation(args: argparse.Namespace) -> int:
                 print(f"  - {e}")
     
     return 0 if all_passed else 1
+
+
+def validate_production_cards(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS1B — Validate production cards in a project.
+    
+    This command validates production cards against schemas and business rules:
+    - card folders exist
+    - JSON parses
+    - card_id exists and is unique
+    - card_type is valid
+    - owner_role is valid
+    - status is valid
+    - required fields exist
+    - dependencies reference existing cards
+    - references either exist or card has next_action_if_missing
+    - no project-specific hardcode in template/core
+    - no downstream readiness if required cards are blocked/incomplete
+    
+    Exit codes:
+    - 0: validation passed
+    - 1: validation failed
+    """
+    from app.production_cards.validator import validate_production_cards as validate_cards
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = validate_cards(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Validation Status: {result['status'].upper()}")
+        print(f"Cards Found: {result['summary']['cards_found']}")
+        print(f"Passed: {result['summary']['passed_checks']}")
+        print(f"Failed: {result['summary']['failed_checks']}")
+        print(f"Warnings: {result['summary']['warnings']}")
+        print(f"Generation Ready: {result['generation_ready']}")
+        
+        if result["errors"]:
+            print("\nErrors:")
+            for error in result["errors"]:
+                print(f"  - {error}")
+        
+        if result["warnings"]:
+            print("\nWarnings:")
+            for warning in result["warnings"]:
+                print(f"  - {warning}")
+    
+    return 0 if result["status"] == "passed" else 1
 
 
 if __name__ == "__main__":
