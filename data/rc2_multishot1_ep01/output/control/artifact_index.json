@@ -1,14 +1,16 @@
 {
   "episode_id": "ep01",
   "episode_title": "Alya's Awakening",
-  "overall_episode_state": "preflight_complete",
+  "overall_episode_state": "qa_failed",
   "shots": [
     {
       "shot_id": "shot01",
       "brief_path": "data/briefs/ep01_shot01_brief.md",
       "prompt_pack_path": "output/control/ep01_shot01_prompt_pack.json",
-      "intended_next_action": "qa_review",
-      "status": "frames_generated",
+      "intended_next_action": "controlled_retry_decision",
+      "status": "qa_failed",
+      "qa_verdict": "qa_failed",
+      "qa_passed": false,
       "media_generated": true,
       "frame_qc_passed": true,
       "identity_qa_passed": false,
@@ -100,16 +102,17 @@
     "Character Director",
     "Workflow TD / ComfyUI Technical Director"
   ],
-  "downstream_blocked": false,
   "role_decisions": {
     "character_director_decision": "output\\control\\role_decisions\\character_director_identity_decision.json",
     "workflow_td_decision": "output\\control\\role_decisions\\workflow_td_identity_workflow_decision.json",
-    "decision_status": "applied",
-    "downstream_blocked": false
+    "decision_status": "applied"
   },
   "production_accepted": false,
   "retry_gate_open": false,
-  "next_allowed_action": "qa_review",
+  "next_allowed_action": "controlled_retry_decision",
+  "downstream_blocked": true,
+  "assemble_scene_allowed": false,
+  "qa_report_path": "output/control/rc2_prodcards3f_qa_report.json",
   "state_repair": {
     "repair_type": "pre_fix_fixture_apply_invalidated",
     "repair_timestamp": "2026-04-28T12:34:15.028696Z",
