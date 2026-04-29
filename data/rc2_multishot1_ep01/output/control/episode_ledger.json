@@ -623,6 +623,35 @@
       "downstream_actions_executed": false,
       "timestamp": "2026-04-29T15:53:32.000000Z",
       "qa_report_path": "output/control/rc2_prodcards3j_qa_report.json"
+    },
+    {
+      "event_type": "qa_review_operator_override",
+      "source": "operator_visual_review",
+      "retry_attempt": 2,
+      "previous_qa_verdict": "qa_passed",
+      "corrected_qa_verdict": "qa_failed",
+      "operator_override": true,
+      "operator_verdict": "rejected_visual_quality",
+      "failure_reasons": [
+        "operator_rejected_visual_quality",
+        "low_visual_quality",
+        "unacceptable_for_assemble_scene",
+        "qa_false_positive"
+      ],
+      "next_allowed_action": "manual_review",
+      "retry_gate_open": false,
+      "assemble_scene_allowed": false,
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_review_executed": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "timestamp": "2026-04-29T15:58:00.000000Z",
+      "operator_override_report_path": "output/control/rc2_prodcards3j_operator_override_report.json"
     }
   ]
 }

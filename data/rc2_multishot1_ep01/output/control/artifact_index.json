@@ -1,16 +1,18 @@
 {
   "episode_id": "ep01",
   "episode_title": "Alya's Awakening",
-  "overall_episode_state": "qa_passed",
+  "overall_episode_state": "manual_review_required",
   "shots": [
     {
       "shot_id": "shot01",
       "brief_path": "data/briefs/ep01_shot01_brief.md",
       "prompt_pack_path": "output/control/ep01_shot01_prompt_pack.json",
-      "intended_next_action": "assemble_scene",
-      "status": "qa_passed",
-      "qa_verdict": "qa_passed",
-      "qa_passed": true,
+      "intended_next_action": "manual_review",
+      "status": "manual_review_required",
+      "qa_verdict": "qa_failed",
+      "qa_passed": false,
+      "operator_override": true,
+      "operator_verdict": "rejected_visual_quality",
       "media_generated": true,
       "frame_qc_passed": true,
       "identity_qa_passed": true,
@@ -18,10 +20,11 @@
       "production_accepted": false,
       "generation_mode": "reference_locked",
       "retry_attempt": 2,
-      "recommended_action": "assemble_scene",
+      "recommended_action": "manual_review",
       "frames_generated": 3,
       "frames_dir": "output/frames/ep01_shot01",
-      "qa_report_path": "output/control/rc2_prodcards3j_qa_report.json"
+      "qa_report_path": "output/control/rc2_prodcards3j_qa_report.json",
+      "operator_override_report_path": "output/control/rc2_prodcards3j_operator_override_report.json"
     },
     {
       "shot_id": "shot02",
@@ -108,10 +111,13 @@
   },
   "production_accepted": false,
   "retry_gate_open": false,
-  "next_allowed_action": "assemble_scene",
-  "downstream_blocked": false,
-  "assemble_scene_allowed": true,
+  "next_allowed_action": "manual_review",
+  "downstream_blocked": true,
+  "assemble_scene_allowed": false,
+  "operator_override": true,
+  "operator_verdict": "rejected_visual_quality",
   "qa_report_path": "output/control/rc2_prodcards3j_qa_report.json",
+  "operator_override_report_path": "output/control/rc2_prodcards3j_operator_override_report.json",
   "state_repair": {
     "repair_type": "pre_fix_fixture_apply_invalidated",
     "repair_timestamp": "2026-04-28T12:34:15.028696Z",
@@ -201,11 +207,9 @@
   "role_decision_apply": {
     "status": "frames_generated",
     "retry_gate_open": false,
-    "next_allowed_action": "assemble_scene",
+    "next_allowed_action": "manual_review",
     "production_accepted": false,
-    "downstream_unblocked_for": [
-      "assemble_scene"
-    ]
+    "downstream_unblocked_for": []
   },
   "controlled_retry_decision": {
     "status": "retry_decision_made",
