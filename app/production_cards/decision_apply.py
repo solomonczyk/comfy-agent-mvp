@@ -283,9 +283,10 @@ def update_artifact_index_for_retry_gate(project_root: str) -> None:
     artifact_index["next_allowed_action"] = "retry_generate_frames"
     artifact_index["downstream_blocked"] = False
     
-    # Update role_decisions section
-    artifact_index["role_decisions"]["decision_status"] = "applied"
-    artifact_index["role_decisions"]["downstream_blocked"] = False
+    # Update role_decisions section if it exists
+    if "role_decisions" in artifact_index:
+        artifact_index["role_decisions"]["decision_status"] = "applied"
+        artifact_index["role_decisions"]["downstream_blocked"] = False
     
     # Ensure production_accepted is false
     artifact_index["production_accepted"] = False
