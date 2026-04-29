@@ -108,8 +108,8 @@
     "decision_status": "applied"
   },
   "production_accepted": false,
-  "retry_gate_open": true,
-  "next_allowed_action": "retry_generate_frames",
+  "retry_gate_open": false,
+  "next_allowed_action": "qa_review",
   "downstream_blocked": false,
   "assemble_scene_allowed": false,
   "qa_report_path": "output/control/rc2_prodcards3f_qa_report.json",

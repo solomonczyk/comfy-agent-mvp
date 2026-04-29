@@ -6699,7 +6699,17 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         print("")
         print("Proceeding with ComfyUI submission...")
         print("")
-        
+
+        # RC2-PRODCARDS3I-FIX: Read retry_attempt from corrective_retry_plan
+        retry_attempt = 1  # Default fallback
+        artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+        if artifact_index_path.exists():
+            with open(artifact_index_path, 'r') as f:
+                artifact_index = json.load(f)
+            controlled_retry_decision = artifact_index.get("controlled_retry_decision", {})
+            corrective_retry_plan = controlled_retry_decision.get("corrective_retry_plan", {})
+            retry_attempt = corrective_retry_plan.get("retry_attempt", controlled_retry_decision.get("next_retry_attempt", 1))
+
         # Execute actual generation using generate_frames_from_prompt_pack
         # Create args object for generate_frames_from_prompt_pack
         from argparse import Namespace
@@ -6738,10 +6748,14 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
                 # Update role_decision_apply state
                 if "role_decision_apply" not in artifact_index:
                     artifact_index["role_decision_apply"] = {}
-                
+
                 artifact_index["role_decision_apply"]["retry_gate_open"] = False
                 artifact_index["role_decision_apply"]["next_allowed_action"] = "qa_review"
                 artifact_index["role_decision_apply"]["status"] = "frames_generated"
+
+                # Also update top-level fields for consistency
+                artifact_index["retry_gate_open"] = False
+                artifact_index["next_allowed_action"] = "qa_review"
                 artifact_index["production_accepted"] = False
                 artifact_index["downstream_blocked"] = False
                 
@@ -6760,7 +6774,7 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
                 retry_event = {
                     "event_type": "retry_generate_frames",
                     "action": "retry_generate_frames",
-                    "retry_attempt": 1,
+                    "retry_attempt": retry_attempt,
                     "generation_performed": True,
                     "comfyui_generation": True,
                     "frames_generated": True,
@@ -6788,7 +6802,7 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
             "generation_performed": generation_result == 0,
             "comfyui_generation": generation_result == 0,
             "frames_generated": generation_result == 0,
-            "retry_attempt": 1,
+            "retry_attempt": retry_attempt,
             "expected_width": expected_width,
             "expected_height": expected_height,
             "actual_width": resolved_workflow_width,
