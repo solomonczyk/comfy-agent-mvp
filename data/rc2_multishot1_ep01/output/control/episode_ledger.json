@@ -505,30 +505,7 @@
       "assemble_scene_executed": false,
       "audio_executed": false,
       "render_executed": false,
-      "timestamp": "2026-04-29T10:42:38.000000Z"
-    },
-    {
-      "event_type": "qa_review",
-      "action": "qa_review",
-      "qa_review_executed": true,
-      "frame_count": 3,
-      "frame_paths": [
-        "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000001.png",
-        "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000002.png",
-        "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000003.png"
-      ],
-      "qa_verdict": "identity_drift",
-      "qa_reason": "Inconsistent face counts across frames: [0, 0, 2]",
-      "identity_consistency_passed": false,
-      "recommended_action": "retry_generate_frames",
-      "next_allowed_action": "retry_generate_frames",
-      "production_accepted": false,
-      "downstream_actions_executed": false,
-      "assemble_scene_executed": false,
-      "audio_executed": false,
-      "render_executed": false,
-      "qa_report_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\ep01_shot01_identity_qa_report.json",
-      "timestamp": "2026-04-29T10:54:30.862032Z"
+      "timestamp": "2026-04-29T14:43:32.988115Z"
     }
   ]
 }

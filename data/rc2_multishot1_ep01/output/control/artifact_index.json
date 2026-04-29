@@ -7,8 +7,8 @@
       "shot_id": "shot01",
       "brief_path": "data/briefs/ep01_shot01_brief.md",
       "prompt_pack_path": "output/control/ep01_shot01_prompt_pack.json",
-      "intended_next_action": "retry_generate_frames",
-      "status": "qa_failed",
+      "intended_next_action": "qa_review",
+      "status": "frames_generated",
       "media_generated": true,
       "frame_qc_passed": true,
       "identity_qa_passed": false,
@@ -17,7 +17,7 @@
       "generation_mode": "reference_locked",
       "technical_fallback_only": true,
       "legacy_workflow_reason": "Generated with legacy reference_locked img2img workflow; faces are inconsistent",
-      "recommended_action": "retry_generate_frames",
+      "recommended_action": "qa_review",
       "frames_generated": 3,
       "frames_dir": "output/frames/ep01_shot01",
       "identity_qa_report_path": "output/control/ep01_shot01_identity_qa_report.json"
@@ -108,8 +108,8 @@
     "downstream_blocked": false
   },
   "production_accepted": false,
-  "retry_gate_open": true,
-  "next_allowed_action": "retry_generate_frames",
+  "retry_gate_open": false,
+  "next_allowed_action": "qa_review",
   "state_repair": {
     "repair_type": "pre_fix_fixture_apply_invalidated",
     "repair_timestamp": "2026-04-28T12:34:15.028696Z",
@@ -197,9 +197,9 @@
     "downstream_blocked": true
   },
   "role_decision_apply": {
-    "status": "qa_failed",
-    "retry_gate_open": true,
-    "next_allowed_action": "retry_generate_frames",
+    "status": "frames_generated",
+    "retry_gate_open": false,
+    "next_allowed_action": "qa_review",
     "production_accepted": false,
     "downstream_unblocked_for": [
       "retry_generate_frames"
