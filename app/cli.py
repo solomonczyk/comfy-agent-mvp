@@ -6882,6 +6882,55 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
     would_run_comfyui = would_run_comfyui and generation_sanity_preflight_passed
     would_execute_action = "retry_generate_frames" if would_run_comfyui else None
     
+    # RC2-PRODCARDS3G: Detect qa_failed state and read corrective retry plan
+    qa_failed_state = False
+    source_qa_verdict = None
+    corrective_retry_plan_found = False
+    corrective_retry_plan = None
+    would_apply_prompt_patch = False
+    
+    try:
+        from app.control.shot_state_storage import ShotStateStorage
+        state_storage = ShotStateStorage(project_root)
+        
+        # Try to load state for ep01/shot01
+        persisted_state = state_storage.load("ep01", "shot01")
+        
+        if persisted_state and persisted_state.current_state == "qa_failed":
+            qa_failed_state = True
+            # Try to read QA report to get verdict
+            if persisted_state.qa_report_path:
+                qa_report_path = Path(persisted_state.qa_report_path)
+                if qa_report_path.exists():
+                    with open(qa_report_path, encoding="utf-8") as f:
+                        qa_report = json.load(f)
+                        source_qa_verdict = qa_report.get("verdict")
+        
+        # RC2-PRODCARDS3G-FIX: Also check QA report directly if shot state doesn't have qa_failed
+        if not qa_failed_state:
+            qa_report_path = project_path / "output" / "control" / "ep01_shot01_identity_qa_report.json"
+            if qa_report_path.exists():
+                with open(qa_report_path, encoding="utf-8") as f:
+                    qa_report = json.load(f)
+                    if qa_report.get("verdict") == "identity_drift":
+                        qa_failed_state = True
+                        source_qa_verdict = qa_report.get("verdict")
+        
+        # RC2-PRODCARDS3G-FIX: Try to read corrective retry plan directly regardless of qa_failed state
+        corrective_retry_plan_path = project_path / "output" / "control" / "corrective_retry_plan.json"
+        if corrective_retry_plan_path.exists():
+            with open(corrective_retry_plan_path, encoding="utf-8") as f:
+                corrective_retry_plan = json.load(f)
+                corrective_retry_plan_found = True
+                would_apply_prompt_patch = True
+                # If qa_failed_state wasn't set, infer it from the corrective retry plan
+                if not qa_failed_state and corrective_retry_plan.get("source_failure") == "identity_drift":
+                    qa_failed_state = True
+                    source_qa_verdict = corrective_retry_plan.get("source_failure")
+        
+    except Exception:
+        pass  # If state detection fails, continue without corrective info
+    
     result = {
         "status": "valid" if (auth_result.get("ready_for_retry_generation") and dimension_preflight_passed and generation_sanity_preflight_passed) else "invalid",
         "dry_run": True,
@@ -6908,7 +6957,12 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
             "save_image_configured": save_image_configured,
             "blank_source_image_detected": blank_source_image_detected,
             "generation_sanity_preflight_reason": generation_sanity_preflight_reason
-        }
+        },
+        "qa_failed_state": qa_failed_state,
+        "source_qa_verdict": source_qa_verdict,
+        "corrective_retry_plan_found": corrective_retry_plan_found,
+        "would_apply_prompt_patch": would_apply_prompt_patch,
+        "corrective_retry_plan": corrective_retry_plan
     }
     
     if json_output:
