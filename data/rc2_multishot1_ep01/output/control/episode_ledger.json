@@ -532,6 +532,26 @@
       "downstream_actions_executed": false,
       "timestamp": "2026-04-29T15:04:32.000000Z",
       "qa_report_path": "output/control/rc2_prodcards3f_qa_report.json"
+    },
+    {
+      "event_type": "controlled_retry_decision",
+      "timestamp": "2026-04-29T15:15:07.620675Z",
+      "source": "qa_failed_retry_frames",
+      "previous_retry_attempt": 1,
+      "qa_verdict": "qa_failed",
+      "decision": "authorize_retry",
+      "next_retry_attempt": 2,
+      "retry_gate_open": true,
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_review_executed": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false
     }
   ]
 }

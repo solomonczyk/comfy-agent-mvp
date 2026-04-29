@@ -108,9 +108,9 @@
     "decision_status": "applied"
   },
   "production_accepted": false,
-  "retry_gate_open": false,
-  "next_allowed_action": "controlled_retry_decision",
-  "downstream_blocked": true,
+  "retry_gate_open": true,
+  "next_allowed_action": "retry_generate_frames",
+  "downstream_blocked": false,
   "assemble_scene_allowed": false,
   "qa_report_path": "output/control/rc2_prodcards3f_qa_report.json",
   "state_repair": {
@@ -207,5 +207,17 @@
     "downstream_unblocked_for": [
       "retry_generate_frames"
     ]
+  },
+  "controlled_retry_decision": {
+    "status": "retry_decision_made",
+    "decision": "authorize_retry",
+    "reason": "correctable_failures_with_role_decisions",
+    "retry_gate_open": true,
+    "next_allowed_action": "retry_generate_frames",
+    "next_retry_attempt": 2,
+    "current_retry_attempt": 1,
+    "failure_reasons": [],
+    "requires_operator_confirmation": true,
+    "decision_timestamp": "2026-04-29T15:15:07.618725Z"
   }
 }

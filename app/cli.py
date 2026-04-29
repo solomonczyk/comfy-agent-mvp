@@ -41,6 +41,7 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'apply-role-decisions',
         'authorize-real-role-decision-apply',
         'authorize-controlled-retry-generation',
+        'decide-controlled-retry',
         'inspect-production-decision-state',
         'repair-production-decision-state',
         'create-change-request-completion-drafts',
@@ -899,6 +900,29 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS3H — Decide controlled retry subcommand
+    decide_controlled_retry_parser = subparsers.add_parser("decide-controlled-retry", help="Make controlled retry decision after QA failure (decision/state planning only, no generation)")
+    decide_controlled_retry_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root to decide retry for",
+    )
+    decide_controlled_retry_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Dry-run mode (default behavior)",
+    )
+    decide_controlled_retry_parser.add_argument(
+        "--apply",
+        action="store_true",
+        help="Apply mode (must be explicit)",
+    )
+    decide_controlled_retry_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     # RC2-PRODCARDS2L — Create role review evidence packets subcommand
     create_role_review_packets_parser = subparsers.add_parser("create-role-review-packets", help="Create structured review evidence packets for Character Director and Workflow TD")
     create_role_review_packets_parser.add_argument(
@@ -1258,6 +1282,8 @@ def main() -> int:
         return repair_production_decision_state(args)
     elif args.command == "authorize-controlled-retry-generation":
         return authorize_controlled_retry_generation(args)
+    elif args.command == "decide-controlled-retry":
+        return decide_controlled_retry(args)
     elif args.command == "retry-generate-frames":
         return retry_generate_frames(args)
     elif args.command == "create-role-review-packets":
@@ -6354,6 +6380,50 @@ def authorize_controlled_retry_generation(args: argparse.Namespace) -> int:
         print(f"Approval Gate Ready: {result['approval_gate_ready']}")
         print(f"Production Accepted: {result['production_accepted']}")
         print(f"Generation Performed: {result['generation_performed']}")
+    
+    return 0
+
+
+def decide_controlled_retry(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS3H — Make controlled retry decision after QA failure.
+    
+    This command reviews the failed QA state and determines whether another
+    controlled retry can be authorized. This is decision/state planning only -
+    it does NOT execute generation or downstream actions.
+    
+    Exit codes:
+    - 0: decision completed
+    - 1: decision failed
+    """
+    from app.production_cards.controlled_retry_decision import apply_controlled_retry_decision
+    
+    project_root = args.project_root
+    dry_run = getattr(args, "dry_run", True)
+    apply_mode = getattr(args, "apply", False)
+    json_output = args.json
+    
+    # If --apply is not specified, default to dry-run
+    if not apply_mode:
+        dry_run = True
+    
+    result = apply_controlled_retry_decision(project_root, dry_run=dry_run)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        if dry_run:
+            print(f"Status: {result['status'].upper()}")
+            print(f"Dry Run: {result['dry_run']}")
+            print(f"Would Mutate Files: {result.get('would_mutate_files', [])}")
+        else:
+            print(f"Status: {result['status'].upper()}")
+            print(f"Decision: {result['decision']['decision'].upper()}")
+            print(f"Reason: {result['decision']['reason']}")
+            print(f"Retry Gate Open: {result['decision']['retry_gate_open']}")
+            print(f"Next Allowed Action: {result['decision']['next_allowed_action']}")
+            print(f"Next Retry Attempt: {result['decision']['next_retry_attempt']}")
+            print(f"Production Accepted: {result['decision']['production_accepted']}")
+            print(f"Files Mutated: {result.get('files_mutated', [])}")
     
     return 0
 
