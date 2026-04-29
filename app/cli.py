@@ -18,6 +18,52 @@ from app.pipeline import PipelineConfig
 from app.runner import ExecutionRunner
 
 
+def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
+    """
+    RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
+    
+    Reject non-absolute --project-root for production-card/RC2 commands.
+    Fail fast with explicit error to prevent silent mis-targeting.
+    
+    Raises:
+        SystemExit: If project_root is not an absolute path
+    """
+    # Commands that require absolute project-root
+    strict_commands = {
+        'validate-production-cards',
+        'route-production-tasks',
+        'materialize-production-cards',
+        'create-work-orders',
+        'create-pending-role-decisions',
+        'validate-role-decisions',
+        'validate-decision-intake',
+        'apply-role-decisions',
+        'authorize-real-role-decision-apply',
+        'authorize-controlled-retry-generation',
+        'inspect-production-decision-state',
+        'repair-production-decision-state',
+        'create-change-request-completion-drafts',
+        'create-role-decision-resubmission-pack',
+        'validate-multishot-plan',
+        'validate-multishot-preflight',
+        'validate-multishot-generation',
+        'director',
+    }
+    
+    if command not in strict_commands:
+        return
+    
+    if hasattr(args, 'project_root'):
+        value = args.project_root
+        if value is not None and value != '':
+            path = Path(value)
+            if not path.is_absolute():
+                print(f"ERROR: --project-root must be an absolute path for this command", file=sys.stderr)
+                print(f"       Received: '{value}'", file=sys.stderr)
+                print(f"       Use absolute path like: F:\\path\\to\\project or /path/to/project", file=sys.stderr)
+                sys.exit(1)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -1143,7 +1189,10 @@ def main() -> int:
     )
 
     args = parser.parse_args()
-
+    
+    # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
+    _require_absolute_project_root(args, args.command)
+    
     if args.command == "generate-frames":
         return generate_frames(args)
     elif args.command == "assemble-scene":
