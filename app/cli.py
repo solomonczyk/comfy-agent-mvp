@@ -815,7 +815,8 @@ def main() -> int:
     )
 
     # RC2-PRODCARDS3D — Retry generate frames subcommand (dry-run only for authorization)
-    retry_generate_frames_parser = subparsers.add_parser("retry-generate-frames", help="Retry generate frames with dry-run authorization (does NOT actually run ComfyUI)")
+    # RC2-PRODCARDS3E-RETRY1 — Added --execute flag for actual generation
+    retry_generate_frames_parser = subparsers.add_parser("retry-generate-frames", help="Retry generate frames with controlled authorization")
     retry_generate_frames_parser.add_argument(
         "--project-root",
         required=True,
@@ -825,7 +826,12 @@ def main() -> int:
         "--dry-run",
         action="store_true",
         default=True,
-        help="Dry-run mode (default: True, always dry-run for safety)",
+        help="Dry-run mode (default: True)",
+    )
+    retry_generate_frames_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute actual ComfyUI generation (requires explicit operator intent)",
     )
     retry_generate_frames_parser.add_argument(
         "--json",
@@ -1882,6 +1888,15 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
             raise RuntimeError(f"prompt_pack.json not found for {episode_id}/{shot_id} in {project_root}")
 
         print(f"[1/3] Loading prompt_pack.json for {episode_id}/{shot_id}...")
+        # RC2-PRODCARDS3E-FIX2: Use top-level prompts from prompt_pack.json
+        # beats array contains beat metadata (description, camera, focus) but not prompts
+        positive_prompt = prompt_pack.get("positive_prompt", "")
+        negative_prompt = prompt_pack.get("negative_prompt", "")
+        if not positive_prompt or not negative_prompt:
+            raise RuntimeError("prompt_pack.json must have positive_prompt and negative_prompt at top level")
+        print(f"  Positive prompt length: {len(positive_prompt)} chars")
+        print(f"  Negative prompt length: {len(negative_prompt)} chars")
+        
         beats = prompt_pack.get("beats", [])
         if not beats:
             raise RuntimeError("prompt_pack.json has no beats")
@@ -1971,12 +1986,14 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
         
         for idx, beat in enumerate(beats):
             beat_id = beat.get("beat_id", f"beat_{idx+1}")
-            positive_prompt = beat.get("positive_prompt", "")
-            negative_prompt = beat.get("negative_prompt", "")
-            steps = beat.get("steps", 20)
-            cfg = beat.get("cfg", 7.0)
-            sampler = beat.get("sampler", "dpmpp_sde")
-            scheduler = beat.get("scheduler", "karras")
+            # RC2-PRODCARDS3E-FIX2: Use top-level prompts from prompt_pack.json
+            # beats array contains beat metadata but not prompts
+            beat_positive_prompt = positive_prompt  # Use top-level prompt
+            beat_negative_prompt = negative_prompt  # Use top-level prompt
+            steps = beat.get("steps", 20) if beat.get("steps") else prompt_pack.get("steps", 20)
+            cfg = beat.get("cfg", 7.0) if beat.get("cfg") else prompt_pack.get("cfg_scale", 7.0)
+            sampler = beat.get("sampler", "dpmpp_sde") if beat.get("sampler") else prompt_pack.get("sampler", "dpmpp_sde")
+            scheduler = beat.get("scheduler", "karras") if beat.get("scheduler") else prompt_pack.get("scheduler", "karras")
             
             # Calculate deterministic seed
             seed = get_beat_seed(prompt_pack, beat_id)
@@ -2018,8 +2035,8 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
                 
                 built_scene = BuiltScene(
                     scene_id=beat_id,
-                    positive_prompt=positive_prompt,
-                    negative_prompt=negative_prompt,
+                    positive_prompt=beat_positive_prompt,
+                    negative_prompt=beat_negative_prompt,
                     lora_stack=[],
                     voice_ids=[],
                     total_frames=1,
@@ -2075,8 +2092,8 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
                 
                 # Record payload trace
                 frame_path = str(result.frame_paths[0]) if result.frame_paths else ""
-                positive_sha256 = hashlib.sha256(positive_prompt.encode()).hexdigest()
-                negative_sha256 = hashlib.sha256(negative_prompt.encode()).hexdigest()
+                positive_sha256 = hashlib.sha256(beat_positive_prompt.encode()).hexdigest()
+                negative_sha256 = hashlib.sha256(beat_negative_prompt.encode()).hexdigest()
                 payload_trace.append({
                     "beat_id": beat_id,
                     "frame_path": frame_path,
@@ -6295,13 +6312,14 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
     """RC2-PRODCARDS3D — Retry generate frames with dry-run authorization.
     
     RC2-PRODCARDS3E-FIX1 — Added dimension preflight and reporting.
+    RC2-PRODCARDS3E-RETRY1 — Added --execute flag for actual generation.
     
-    This command validates that retry generation is authorized but does NOT
-    actually run ComfyUI or generate frames. It's a dry-run planning tool.
+    This command validates that retry generation is authorized and can optionally
+    execute frame generation when --execute flag is provided.
     
     Exit codes:
-    - 0: dry-run validation completed
-    - 1: validation failed
+    - 0: validation completed or generation completed
+    - 1: validation failed or generation failed
     """
     from app.production_cards.approval_gate import authorize_controlled_retry_generation as auth_retry_gen
     from app.production_cards.state_repair import inspect_real_project_decision_state
@@ -6309,13 +6327,361 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
     
     project_root = args.project_root
     dry_run = getattr(args, "dry_run", True)
+    execute = getattr(args, "execute", False)
     json_output = args.json
     
-    # Always enforce dry-run for safety
-    if not dry_run:
-        print("ERROR: retry-generate-frames only supports dry-run mode for safety")
-        print("Use --dry-run flag (default) or run actual generate-frames command for execution")
-        return 1
+    # RC2-PRODCARDS3E-RETRY1: Support --execute flag for actual generation
+    if execute:
+        print("EXECUTION MODE: retry-generate-frames will submit to ComfyUI")
+        print("This is a controlled retry generation operation.")
+        print("")
+        
+        # Run all preflight checks before execution
+        auth_result = auth_retry_gen(project_root, json_output=True)
+        
+        if not auth_result.get("ready_for_retry_generation"):
+            error_result = {
+                "status": "blocked",
+                "reason": "not_authorized_for_retry",
+                "generation_performed": False,
+                "comfyui_submission_performed": False
+            }
+            if json_output:
+                print(json.dumps(error_result, indent=2))
+            else:
+                print("ERROR: Not authorized for retry generation")
+            return 1
+        
+        # Dimension preflight
+        expected_width = None
+        expected_height = None
+        resolved_workflow_width = None
+        resolved_workflow_height = None
+        dimension_preflight_passed = True
+        dimension_preflight_reason = None
+        
+        try:
+            from pathlib import Path
+            project_path = Path(project_root)
+            prompt_pack_path = project_path / "output" / "control" / "prompt_pack.json"
+            
+            if prompt_pack_path.exists():
+                with open(prompt_pack_path, encoding="utf-8") as f:
+                    prompt_pack = json.load(f)
+                
+                expected_width = prompt_pack.get("width", 640)
+                expected_height = prompt_pack.get("height", 480)
+                
+                # Calculate aspect ratio from dimensions and map to WorkflowPatcher keys
+                if expected_width == 480 and expected_height == 640:
+                    calculated_aspect_ratio = "9:16"  # Portrait
+                elif expected_width == 640 and expected_height == 480:
+                    calculated_aspect_ratio = "4:3"  # Landscape
+                elif expected_width == 512 and expected_height == 512:
+                    calculated_aspect_ratio = "1:1"  # Square
+                elif expected_width == 768 and expected_height == 432:
+                    calculated_aspect_ratio = "16:9"  # Widescreen
+                else:
+                    divisor = gcd(expected_width, expected_height)
+                    ar_width = expected_width // divisor
+                    ar_height = expected_height // divisor
+                    calculated_aspect_ratio = f"{ar_width}:{ar_height}"
+                
+                from app.comfy.workflow_patcher import WorkflowPatcher
+                resolved_dimensions = WorkflowPatcher.ASPECT_RATIO_MAP.get(calculated_aspect_ratio, (expected_width, expected_height))
+                resolved_workflow_width, resolved_workflow_height = resolved_dimensions
+                
+                if resolved_workflow_width != expected_width or resolved_workflow_height != expected_height:
+                    dimension_preflight_passed = False
+                    dimension_preflight_reason = (
+                        f"dimension_mismatch: prompt_pack expects {expected_width}x{expected_height} "
+                        f"but workflow would resolve to {resolved_workflow_width}x{resolved_workflow_height}"
+                    )
+            else:
+                dimension_preflight_passed = False
+                dimension_preflight_reason = "prompt_pack.json not found"
+        except Exception as e:
+            dimension_preflight_passed = False
+            dimension_preflight_reason = f"dimension preflight error: {str(e)}"
+        
+        if not dimension_preflight_passed:
+            error_result = {
+                "status": "blocked_by_preflight",
+                "reason": "dimension_mismatch",
+                "expected_width": expected_width,
+                "expected_height": expected_height,
+                "actual_width": resolved_workflow_width,
+                "actual_height": resolved_workflow_height,
+                "comfyui_submission_performed": False,
+                "generation_performed": False
+            }
+            if json_output:
+                print(json.dumps(error_result, indent=2))
+            else:
+                print(f"ERROR: Dimension preflight failed: {dimension_preflight_reason}")
+            return 1
+        
+        print(f"Preflight checks passed:")
+        print(f"  Authorization: ready_for_retry")
+        print(f"  Dimensions: {expected_width}x{expected_height} -> {resolved_workflow_width}x{resolved_workflow_height}")
+
+        # Load config_data for workflow template validation
+        config_data = None
+        try:
+            config_path = Path("data/config.json")
+            if config_path.exists():
+                with open(config_path, encoding="utf-8") as f:
+                    config_data = json.load(f)
+        except Exception:
+            config_data = {}
+
+        # RC2-PRODCARDS3E-FIX2: Add generation sanity preflight
+        generation_sanity_preflight_passed = True
+        generation_sanity_preflight_reason = None
+        positive_prompt_present = False
+        checkpoint_present = False
+        ksampler_connected = False
+        latent_or_image_source_valid = False
+        save_image_configured = False
+        blank_source_image_detected = False
+
+        try:
+            # Validate positive prompt is non-empty
+            positive_prompt = prompt_pack.get("positive_prompt", "")
+            negative_prompt = prompt_pack.get("negative_prompt", "")
+            positive_prompt_present = bool(positive_prompt and positive_prompt.strip())
+            
+            if not positive_prompt_present:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "positive_prompt is empty or whitespace"
+            
+            # Validate checkpoint exists
+            checkpoint = prompt_pack.get("checkpoint") or config_data.get("checkpoint")
+            checkpoint_present = bool(checkpoint and checkpoint.strip())
+            
+            if not checkpoint_present:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "checkpoint is missing or empty"
+            
+            # Validate workflow has required nodes
+            # Load workflow template based on generation_mode
+            generation_mode = prompt_pack.get("generation_mode")
+            if generation_mode == "reference_locked":
+                reference_workflow_path = Path("data/config/workflow_template_img2img_reference.json")
+                if reference_workflow_path.exists():
+                    with open(reference_workflow_path, encoding="utf-8") as f:
+                        workflow_template = json.load(f)
+                else:
+                    workflow_template = {}
+            else:
+                workflow_template = config_data.get("workflow_template")
+                if workflow_template and isinstance(workflow_template, str):
+                    workflow_template = json.loads(workflow_template)
+                elif not workflow_template:
+                    default_workflow_path = Path("data/workflow_template.json")
+                    if default_workflow_path.exists():
+                        with open(default_workflow_path, encoding="utf-8") as f:
+                            workflow_template = json.load(f)
+                    else:
+                        workflow_template = {}
+            
+            # Check for KSampler node
+            ksampler_node_id = None
+            for node_id, node in workflow_template.items():
+                if isinstance(node, dict) and node.get("class_type") == "KSampler":
+                    ksampler_node_id = node_id
+                    break
+            
+            ksampler_connected = bool(ksampler_node_id)
+            if not ksampler_connected:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "KSampler node not found in workflow"
+            
+            # Check KSampler has positive/negative conditioning
+            if ksampler_node_id:
+                ksampler_inputs = workflow_template[ksampler_node_id].get("inputs", {})
+                has_positive = bool(ksampler_inputs.get("positive"))
+                has_negative = bool(ksampler_inputs.get("negative"))
+                if not (has_positive and has_negative):
+                    generation_sanity_preflight_passed = False
+                    generation_sanity_preflight_reason = "KSampler missing positive or negative conditioning"
+            
+            # Check for SaveImage node
+            save_image_node_id = None
+            for node_id, node in workflow_template.items():
+                if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+                    save_image_node_id = node_id
+                    break
+            
+            save_image_configured = bool(save_image_node_id)
+            if not save_image_configured:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "SaveImage node not found in workflow"
+            
+            # Check for valid latent or image source
+            has_empty_latent = False
+            has_load_image = False
+            has_vae_encode = False
+            
+            for node_id, node in workflow_template.items():
+                if isinstance(node, dict):
+                    class_type = node.get("class_type")
+                    if class_type == "EmptyLatentImage":
+                        has_empty_latent = True
+                    elif class_type == "LoadImage":
+                        has_load_image = True
+                    elif class_type == "VAEEncode":
+                        has_vae_encode = True
+            
+            latent_or_image_source_valid = has_empty_latent or (has_load_image and has_vae_encode)
+            if not latent_or_image_source_valid:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "Workflow has no valid latent or image source"
+            
+            # Check for blank placeholder image as only source
+            if has_load_image and not has_empty_latent:
+                for node_id, node in workflow_template.items():
+                    if isinstance(node, dict) and node.get("class_type") == "LoadImage":
+                        image_path = node.get("inputs", {}).get("image", "")
+                        if image_path and ("placeholder" in image_path.lower() or "blank" in image_path.lower()):
+                            blank_source_image_detected = True
+                            generation_sanity_preflight_passed = False
+                            generation_sanity_preflight_reason = "Workflow uses blank/placeholder image as source"
+                            break
+            
+        except Exception as e:
+            generation_sanity_preflight_passed = False
+            generation_sanity_preflight_reason = f"generation sanity preflight error: {str(e)}"
+        
+        if not generation_sanity_preflight_passed:
+            error_result = {
+                "status": "blocked_by_generation_sanity_preflight",
+                "reason": generation_sanity_preflight_reason,
+                "generation_sanity_preflight": {
+                    "passed": False,
+                    "positive_prompt_present": positive_prompt_present,
+                    "checkpoint_present": checkpoint_present,
+                    "ksampler_connected": ksampler_connected,
+                    "latent_or_image_source_valid": latent_or_image_source_valid,
+                    "save_image_configured": save_image_configured,
+                    "blank_source_image_detected": blank_source_image_detected,
+                },
+                "comfyui_submission_performed": False,
+                "generation_performed": False
+            }
+            if json_output:
+                print(json.dumps(error_result, indent=2))
+            else:
+                print(f"ERROR: Generation sanity preflight failed: {generation_sanity_preflight_reason}")
+            return 1
+        
+        print(f"  Generation sanity: positive_prompt={positive_prompt_present}, checkpoint={checkpoint_present}, ksampler={ksampler_connected}")
+        print("")
+        print("Proceeding with ComfyUI submission...")
+        print("")
+        
+        # Execute actual generation using generate_frames_from_prompt_pack
+        # Create args object for generate_frames_from_prompt_pack
+        from argparse import Namespace
+        gen_args = Namespace(
+            output=str(project_path / "output"),
+            host="127.0.0.1",
+            port=8188,
+            config="data/config.json",
+            episode_id="ep01",
+            shot_id="shot01",
+            brief="-",
+            prompt_pack=True
+        )
+        
+        generation_result = generate_frames_from_prompt_pack(gen_args)
+
+        # RC2-PRODCARDS3E-RETRY2-FIX: Update state after successful retry generation
+        if generation_result == 0:
+            # Load frame manifest to get frame count and paths
+            frame_manifest_path = project_path / "output" / "control" / "frames_manifest.json"
+            frame_count = 0
+            frame_manifest_path_str = str(frame_manifest_path) if frame_manifest_path.exists() else None
+            
+            if frame_manifest_path.exists():
+                with open(frame_manifest_path, encoding="utf-8") as f:
+                    frame_manifest = json.load(f)
+                    frame_count = frame_manifest.get("frame_count", 0)
+                    frame_manifest_path_str = str(frame_manifest_path)
+
+            # Update artifact_index to close retry gate and set next action
+            artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+            if artifact_index_path.exists():
+                with open(artifact_index_path, 'r') as f:
+                    artifact_index = json.load(f)
+                
+                # Update role_decision_apply state
+                if "role_decision_apply" not in artifact_index:
+                    artifact_index["role_decision_apply"] = {}
+                
+                artifact_index["role_decision_apply"]["retry_gate_open"] = False
+                artifact_index["role_decision_apply"]["next_allowed_action"] = "qa_review"
+                artifact_index["role_decision_apply"]["status"] = "frames_generated"
+                artifact_index["production_accepted"] = False
+                artifact_index["downstream_blocked"] = False
+                
+                with open(artifact_index_path, 'w') as f:
+                    json.dump(artifact_index, f, indent=2)
+
+            # Append retry_generate_frames event to episode_ledger
+            ledger_path = project_path / "output" / "control" / "episode_ledger.json"
+            if ledger_path.exists():
+                with open(ledger_path, 'r') as f:
+                    ledger = json.load(f)
+                
+                if "events" not in ledger:
+                    ledger["events"] = []
+                
+                retry_event = {
+                    "event_type": "retry_generate_frames",
+                    "action": "retry_generate_frames",
+                    "retry_attempt": 1,
+                    "generation_performed": True,
+                    "comfyui_generation": True,
+                    "frames_generated": True,
+                    "frame_count": frame_count,
+                    "valid_frame_count": frame_count,
+                    "frame_manifest_path": frame_manifest_path_str,
+                    "next_allowed_action": "qa_review",
+                    "production_accepted": False,
+                    "downstream_actions_executed": False,
+                    "qa_review_executed": False,
+                    "assemble_scene_executed": False,
+                    "audio_executed": False,
+                    "render_executed": False,
+                    "timestamp": datetime.utcnow().isoformat() + "Z"
+                }
+                
+                ledger["events"].append(retry_event)
+                
+                with open(ledger_path, 'w') as f:
+                    json.dump(ledger, f, indent=2)
+
+        execution_result = {
+            "status": "completed" if generation_result == 0 else "failed",
+            "action_executed": "retry_generate_frames",
+            "generation_performed": generation_result == 0,
+            "comfyui_generation": generation_result == 0,
+            "frames_generated": generation_result == 0,
+            "retry_attempt": 1,
+            "expected_width": expected_width,
+            "expected_height": expected_height,
+            "actual_width": resolved_workflow_width,
+            "actual_height": resolved_workflow_height,
+            "production_accepted": False,
+            "downstream_actions_executed": False,
+            "exit_code": generation_result
+        }
+
+        if json_output:
+            print(json.dumps(execution_result, indent=2))
+
+        return generation_result
     
     # Authorize retry generation
     auth_result = auth_retry_gen(project_root, json_output=True)
@@ -6384,8 +6750,140 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
     would_run_comfyui = auth_result.get("ready_for_retry_generation", False) and dimension_preflight_passed
     would_execute_action = "retry_generate_frames" if would_run_comfyui else None
     
+    # RC2-PRODCARDS3E-FIX2: Add generation_sanity_preflight to dry-run
+    generation_sanity_preflight_passed = True
+    generation_sanity_preflight_reason = None
+    positive_prompt_present = False
+    checkpoint_present = False
+    ksampler_connected = False
+    latent_or_image_source_valid = False
+    save_image_configured = False
+    blank_source_image_detected = False
+    
+    # Load config_data for workflow template validation
+    config_data = None
+    try:
+        config_path = Path("data/config.json")
+        if config_path.exists():
+            with open(config_path, encoding="utf-8") as f:
+                config_data = json.load(f)
+    except Exception:
+        config_data = {}
+    
+    try:
+        if prompt_pack_path.exists():
+            with open(prompt_pack_path, encoding="utf-8") as f:
+                prompt_pack = json.load(f)
+            
+            # Validate positive prompt is non-empty
+            positive_prompt = prompt_pack.get("positive_prompt", "")
+            negative_prompt = prompt_pack.get("negative_prompt", "")
+            positive_prompt_present = bool(positive_prompt and positive_prompt.strip())
+            
+            # Validate checkpoint exists
+            checkpoint = prompt_pack.get("checkpoint")
+            checkpoint_present = bool(checkpoint and checkpoint.strip())
+            
+            # Validate workflow has required nodes
+            generation_mode = prompt_pack.get("generation_mode")
+            if generation_mode == "reference_locked":
+                reference_workflow_path = Path("data/config/workflow_template_img2img_reference.json")
+                if reference_workflow_path.exists():
+                    with open(reference_workflow_path, encoding="utf-8") as f:
+                        workflow_template = json.load(f)
+                else:
+                    workflow_template = {}
+            else:
+                workflow_template = config_data.get("workflow_template")
+                if workflow_template and isinstance(workflow_template, str):
+                    workflow_template = json.loads(workflow_template)
+                elif not workflow_template:
+                    default_workflow_path = Path("data/workflow_template.json")
+                    if default_workflow_path.exists():
+                        with open(default_workflow_path, encoding="utf-8") as f:
+                            workflow_template = json.load(f)
+                    else:
+                        workflow_template = {}
+            
+            # Check for KSampler node
+            ksampler_node_id = None
+            for node_id, node in workflow_template.items():
+                if isinstance(node, dict) and node.get("class_type") == "KSampler":
+                    ksampler_node_id = node_id
+                    break
+            
+            ksampler_connected = bool(ksampler_node_id)
+            
+            # Check KSampler has positive/negative conditioning
+            if ksampler_node_id:
+                ksampler_inputs = workflow_template[ksampler_node_id].get("inputs", {})
+                has_positive = bool(ksampler_inputs.get("positive"))
+                has_negative = bool(ksampler_inputs.get("negative"))
+                if not (has_positive and has_negative):
+                    generation_sanity_preflight_passed = False
+                    generation_sanity_preflight_reason = "KSampler missing positive or negative conditioning"
+            
+            # Check for SaveImage node
+            save_image_node_id = None
+            for node_id, node in workflow_template.items():
+                if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+                    save_image_node_id = node_id
+                    break
+            
+            save_image_configured = bool(save_image_node_id)
+            
+            # Check for valid latent or image source
+            has_empty_latent = False
+            has_load_image = False
+            has_vae_encode = False
+            
+            for node_id, node in workflow_template.items():
+                if isinstance(node, dict):
+                    class_type = node.get("class_type")
+                    if class_type == "EmptyLatentImage":
+                        has_empty_latent = True
+                    elif class_type == "LoadImage":
+                        has_load_image = True
+                    elif class_type == "VAEEncode":
+                        has_vae_encode = True
+            
+            latent_or_image_source_valid = has_empty_latent or (has_load_image and has_vae_encode)
+            
+            # Check for blank placeholder image as only source
+            if has_load_image and not has_empty_latent:
+                for node_id, node in workflow_template.items():
+                    if isinstance(node, dict) and node.get("class_type") == "LoadImage":
+                        image_path = node.get("inputs", {}).get("image", "")
+                        if image_path and ("placeholder" in image_path.lower() or "blank" in image_path.lower()):
+                            blank_source_image_detected = True
+                            generation_sanity_preflight_passed = False
+                            generation_sanity_preflight_reason = "Workflow uses blank/placeholder image as source"
+                            break
+            
+            if not positive_prompt_present:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "positive_prompt is empty or whitespace"
+            if not checkpoint_present:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "checkpoint is missing or empty"
+            if not ksampler_connected:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "KSampler node not found in workflow"
+            if not save_image_configured:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "SaveImage node not found in workflow"
+            if not latent_or_image_source_valid:
+                generation_sanity_preflight_passed = False
+                generation_sanity_preflight_reason = "Workflow has no valid latent or image source"
+    except Exception as e:
+        generation_sanity_preflight_passed = False
+        generation_sanity_preflight_reason = f"generation sanity preflight error: {str(e)}"
+    
+    would_run_comfyui = would_run_comfyui and generation_sanity_preflight_passed
+    would_execute_action = "retry_generate_frames" if would_run_comfyui else None
+    
     result = {
-        "status": "valid" if (auth_result.get("ready_for_retry_generation") and dimension_preflight_passed) else "invalid",
+        "status": "valid" if (auth_result.get("ready_for_retry_generation") and dimension_preflight_passed and generation_sanity_preflight_passed) else "invalid",
         "dry_run": True,
         "would_execute_action": would_execute_action,
         "would_run_comfyui": would_run_comfyui,
@@ -6400,6 +6898,16 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
             "resolved_workflow_height": resolved_workflow_height,
             "dimension_preflight_passed": dimension_preflight_passed,
             "dimension_preflight_reason": dimension_preflight_reason
+        },
+        "generation_sanity_preflight": {
+            "passed": generation_sanity_preflight_passed,
+            "positive_prompt_present": positive_prompt_present,
+            "checkpoint_present": checkpoint_present,
+            "ksampler_connected": ksampler_connected,
+            "latent_or_image_source_valid": latent_or_image_source_valid,
+            "save_image_configured": save_image_configured,
+            "blank_source_image_detected": blank_source_image_detected,
+            "generation_sanity_preflight_reason": generation_sanity_preflight_reason
         }
     }
     

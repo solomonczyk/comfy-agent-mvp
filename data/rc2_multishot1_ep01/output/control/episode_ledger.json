@@ -487,6 +487,25 @@
       "comfyui_generation": false,
       "pipeline_action_rerun": false,
       "apply_mode": "transactional"
+    },
+    {
+      "event_type": "retry_generate_frames",
+      "action": "retry_generate_frames",
+      "retry_attempt": 1,
+      "generation_performed": true,
+      "comfyui_generation": true,
+      "frames_generated": true,
+      "frame_count": 3,
+      "valid_frame_count": 3,
+      "frame_manifest_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\frames_manifest.json",
+      "next_allowed_action": "qa_review",
+      "production_accepted": false,
+      "downstream_actions_executed": false,
+      "qa_review_executed": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "timestamp": "2026-04-29T10:42:38.000000Z"
     }
   ]
 }
