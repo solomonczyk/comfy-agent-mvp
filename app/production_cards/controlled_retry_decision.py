@@ -13,7 +13,7 @@ from datetime import datetime
 
 def load_qa_state(project_root: str) -> Dict[str, Any]:
     """
-    Load QA state from artifact_index.json.
+    Load QA state from artifact_index.json and episode_ledger.json.
     
     Args:
         project_root: Path to the project root
@@ -23,6 +23,7 @@ def load_qa_state(project_root: str) -> Dict[str, Any]:
     """
     project_path = Path(project_root)
     artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+    ledger_path = project_path / "output" / "control" / "episode_ledger.json"
     
     if not artifact_index_path.exists():
         return {
@@ -52,17 +53,39 @@ def load_qa_state(project_root: str) -> Dict[str, Any]:
             qa_state["qa_verdict"] = shot.get("qa_verdict")
             qa_state["qa_failed"] = shot.get("qa_verdict") == "qa_failed"
             qa_state["frame_count"] = shot.get("frames_generated", 0)
-            
-            # Extract failure reasons from identity QA report if available
-            identity_qa_report_path = shot.get("identity_qa_report_path")
-            if identity_qa_report_path:
-                qa_report_path = project_path / identity_qa_report_path
-                if qa_report_path.exists():
-                    with open(qa_report_path, 'r') as f:
-                        qa_report = json.load(f)
-                    qa_state["failure_reasons"] = qa_report.get("failure_reasons", [])
-            
             break
+    
+    # Extract failure reasons from episode_ledger QA review events
+    # This is the authoritative source for failure reasons after retry attempts
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            ledger = json.load(f)
+        
+        events = ledger.get("events", [])
+        # Find the most recent qa_review event
+        qa_review_events = [
+            e for e in events 
+            if e.get("event_type") == "qa_review"
+        ]
+        
+        if qa_review_events:
+            most_recent_qa_review = qa_review_events[-1]
+            qa_state["failure_reasons"] = most_recent_qa_review.get("failure_reasons", [])
+            # Extract retry attempt from the QA review event
+            qa_state["retry_attempt"] = most_recent_qa_review.get("retry_attempt", 1)
+    
+    # Fallback: extract from identity QA report if no QA review event found
+    if not qa_state["failure_reasons"]:
+        for shot in shots:
+            if shot.get("shot_id") == "shot01":
+                identity_qa_report_path = shot.get("identity_qa_report_path")
+                if identity_qa_report_path:
+                    qa_report_path = project_path / identity_qa_report_path
+                    if qa_report_path.exists():
+                        with open(qa_report_path, 'r') as f:
+                            qa_report = json.load(f)
+                        qa_state["failure_reasons"] = qa_report.get("failure_reasons", [])
+                break
     
     return qa_state
 
@@ -124,21 +147,31 @@ def evaluate_retry_authorization(qa_state: Dict[str, Any], project_root: str) ->
         reason = "max_retry_attempts_exceeded"
         retry_gate_open = False
         next_allowed_action = "manual_review"
+        corrective_retry_plan = None
     elif has_uncorrectable_failures:
         decision = "block_retry"
         reason = "uncorrectable_failures_detected"
         retry_gate_open = False
         next_allowed_action = "manual_review"
+        corrective_retry_plan = None
     elif not role_decisions_ready:
         decision = "block_retry"
         reason = "role_decisions_not_ready"
         retry_gate_open = False
         next_allowed_action = "await_role_decisions"
+        corrective_retry_plan = None
     else:
         decision = "authorize_retry"
         reason = "correctable_failures_with_role_decisions"
         retry_gate_open = True
         next_allowed_action = "retry_generate_frames"
+        # Build corrective retry plan based on failure reasons
+        corrective_retry_plan = {
+            "identity_consistency": "strengthen single-character identity lock and reduce multi-face/multi-subject drift",
+            "visual_quality": "reduce haze, banding, and texture-collapse artifacts",
+            "composition": "preserve intended character framing and prevent background/texture dominance",
+            "acceptance_target": "stable single-character frames suitable for qa_review before assemble_scene"
+        }
     
     return {
         "decision": decision,
@@ -149,7 +182,8 @@ def evaluate_retry_authorization(qa_state: Dict[str, Any], project_root: str) ->
         "role_decisions_ready": role_decisions_ready,
         "has_uncorrectable_failures": has_uncorrectable_failures,
         "current_retry_attempt": retry_attempt,
-        "failure_reasons": failure_reasons
+        "failure_reasons": failure_reasons,
+        "corrective_retry_plan": corrective_retry_plan
     }
 
 
@@ -188,6 +222,7 @@ def make_controlled_retry_decision(project_root: str, json_output: bool = False)
         "downstream_blocked": not authorization["retry_gate_open"],
         "current_retry_attempt": authorization["current_retry_attempt"],
         "failure_reasons": authorization["failure_reasons"],
+        "corrective_retry_plan": authorization["corrective_retry_plan"],
         "role_decisions_ready": authorization["role_decisions_ready"],
         "comfyui_generation": False,
         "generation_performed": False,
@@ -252,6 +287,7 @@ def apply_controlled_retry_decision(project_root: str, dry_run: bool = True) -> 
             "next_retry_attempt": decision["next_retry_attempt"],
             "current_retry_attempt": decision["current_retry_attempt"],
             "failure_reasons": decision["failure_reasons"],
+            "corrective_retry_plan": decision["corrective_retry_plan"],
             "requires_operator_confirmation": decision["requires_operator_confirmation"],
             "decision_timestamp": datetime.utcnow().isoformat() + "Z"
         }
@@ -278,6 +314,8 @@ def apply_controlled_retry_decision(project_root: str, dry_run: bool = True) -> 
             "qa_verdict": "qa_failed",
             "decision": decision["decision"],
             "next_retry_attempt": decision["next_retry_attempt"],
+            "failure_reasons": decision["failure_reasons"],
+            "corrective_retry_plan": decision["corrective_retry_plan"],
             "retry_gate_open": decision["retry_gate_open"],
             "next_allowed_action": decision["next_allowed_action"],
             "production_accepted": decision["production_accepted"],

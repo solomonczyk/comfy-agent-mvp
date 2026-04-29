@@ -216,8 +216,29 @@
     "next_allowed_action": "retry_generate_frames",
     "next_retry_attempt": 2,
     "current_retry_attempt": 1,
-    "failure_reasons": [],
+    "failure_reasons": [
+      "identity_drift",
+      "visual_artifacts",
+      "haze",
+      "banding",
+      "texture_collapse"
+    ],
+    "corrective_retry_plan": {
+      "identity_consistency": "strengthen single-character identity lock and reduce multi-face/multi-subject drift",
+      "visual_quality": "reduce haze, banding, and texture-collapse artifacts",
+      "composition": "preserve intended character framing and prevent background/texture dominance",
+      "acceptance_target": "stable single-character frames suitable for qa_review before assemble_scene"
+    },
     "requires_operator_confirmation": true,
+    "production_accepted": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_review_executed": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false,
     "decision_timestamp": "2026-04-29T15:15:07.618725Z"
   }
 }

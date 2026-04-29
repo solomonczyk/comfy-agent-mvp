@@ -541,6 +541,19 @@
       "qa_verdict": "qa_failed",
       "decision": "authorize_retry",
       "next_retry_attempt": 2,
+      "failure_reasons": [
+        "identity_drift",
+        "visual_artifacts",
+        "haze",
+        "banding",
+        "texture_collapse"
+      ],
+      "corrective_retry_plan": {
+        "identity_consistency": "strengthen single-character identity lock and reduce multi-face/multi-subject drift",
+        "visual_quality": "reduce haze, banding, and texture-collapse artifacts",
+        "composition": "preserve intended character framing and prevent background/texture dominance",
+        "acceptance_target": "stable single-character frames suitable for qa_review before assemble_scene"
+      },
       "retry_gate_open": true,
       "next_allowed_action": "retry_generate_frames",
       "production_accepted": false,
