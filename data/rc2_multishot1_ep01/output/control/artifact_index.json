@@ -100,16 +100,16 @@
     "Character Director",
     "Workflow TD / ComfyUI Technical Director"
   ],
-  "downstream_blocked": true,
+  "downstream_blocked": false,
   "role_decisions": {
     "character_director_decision": "output\\control\\role_decisions\\character_director_identity_decision.json",
     "workflow_td_decision": "output\\control\\role_decisions\\workflow_td_identity_workflow_decision.json",
-    "decision_status": "pending",
-    "downstream_blocked": true
+    "decision_status": "applied",
+    "downstream_blocked": false
   },
   "production_accepted": false,
-  "retry_gate_open": false,
-  "next_allowed_action": "blocked_by_role_approval",
+  "retry_gate_open": true,
+  "next_allowed_action": "retry_generate_frames",
   "state_repair": {
     "repair_type": "pre_fix_fixture_apply_invalidated",
     "repair_timestamp": "2026-04-28T12:34:15.028696Z",
@@ -195,5 +195,14 @@
     "retry_gate_open": false,
     "production_accepted": false,
     "downstream_blocked": true
+  },
+  "role_decision_apply": {
+    "status": "applied",
+    "retry_gate_open": true,
+    "next_allowed_action": "retry_generate_frames",
+    "production_accepted": false,
+    "downstream_unblocked_for": [
+      "retry_generate_frames"
+    ]
   }
 }

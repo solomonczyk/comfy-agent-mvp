@@ -313,6 +313,8 @@ def write_approved_decisions(project_root: str, decisions_root: str) -> None:
     """
     Write approved decisions to the project's role_decisions directory.
     
+    After real apply, normalizes decision status to 'decided' so approval_gate can understand them.
+    
     Args:
         project_root: Path to the project root
         decisions_root: Path to directory containing intake decision files
@@ -324,19 +326,42 @@ def write_approved_decisions(project_root: str, decisions_root: str) -> None:
     # Load intake decisions
     intake_decisions = load_intake_decisions(decisions_root)
     
-    # Write Character Director decision
+    # Write Character Director decision with normalization
     char_decision = intake_decisions.get("character_director_decision", {})
     if char_decision:
+        # Normalize decision status for approval_gate compatibility
+        char_decision_normalized = char_decision.copy()
+        char_decision_normalized["decision_status"] = "decided"
+        char_decision_normalized["apply_performed"] = True
+        char_decision_normalized["retry_gate_open"] = True
+        char_decision_normalized["next_allowed_action"] = "retry_generate_frames"
+        char_decision_normalized["downstream_blocked"] = False
+        
+        # Normalize artifact names from resubmission format to standard format
+        if "required_artifacts" in char_decision_normalized and isinstance(char_decision_normalized["required_artifacts"], dict):
+            artifacts = char_decision_normalized["required_artifacts"]
+            if "updated_character_identity_rules" in artifacts:
+                artifacts["approved_character_identity_rules"] = artifacts["updated_character_identity_rules"]
+            if "updated_reference_strategy" in artifacts:
+                artifacts["approved_reference_strategy"] = artifacts["updated_reference_strategy"]
+        
         char_decision_path = decisions_dir / "character_director_identity_decision.json"
         with open(char_decision_path, 'w') as f:
-            json.dump(char_decision, f, indent=2)
+            json.dump(char_decision_normalized, f, indent=2)
     
-    # Write Workflow TD decision
+    # Write Workflow TD decision with normalization
     workflow_decision = intake_decisions.get("workflow_td_decision", {})
     if workflow_decision:
+        # Normalize decision status for approval_gate compatibility
+        workflow_decision_normalized = workflow_decision.copy()
+        workflow_decision_normalized["decision_status"] = "decided"
+        workflow_decision_normalized["apply_performed"] = True
+        workflow_decision_normalized["retry_gate_open"] = True
+        workflow_decision_normalized["next_allowed_action"] = "retry_generate_frames"
+        workflow_decision_normalized["downstream_blocked"] = False
         workflow_decision_path = decisions_dir / "workflow_td_identity_workflow_decision.json"
         with open(workflow_decision_path, 'w') as f:
-            json.dump(workflow_decision, f, indent=2)
+            json.dump(workflow_decision_normalized, f, indent=2)
 
 
 def update_artifact_index_for_retry_gate(project_root: str) -> None:
@@ -524,5 +549,5 @@ def apply_role_decisions(project_root: str, decisions_root: str, dry_run: bool =
         "downstream_unblocked_for": ["retry_generate_frames"],
         "backup_created": backup_info["backup_created"],
         "backup_path": backup_info["backup_path"],
-        "real_project_mutated": False
+        "real_project_mutated": not is_temp_copy  # True for real project, False for temp copy
     }
