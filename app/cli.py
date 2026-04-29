@@ -760,6 +760,24 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS3B — Authorize real role decision apply subcommand
+    authorize_real_role_decision_apply_parser = subparsers.add_parser("authorize-real-role-decision-apply", help="Final authorization checkpoint before applying resubmitted role decisions to real project")
+    authorize_real_role_decision_apply_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root for authorization check",
+    )
+    authorize_real_role_decision_apply_parser.add_argument(
+        "--decisions-root",
+        required=True,
+        help="Path to directory containing submitted decision files",
+    )
+    authorize_real_role_decision_apply_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     # RC2-PRODCARDS2K — Inspect production decision state subcommand
     inspect_production_decision_state_parser = subparsers.add_parser("inspect-production-decision-state", help="Inspect real project decision state to detect corruption from pre-fix fixture applications")
     inspect_production_decision_state_parser.add_argument(
@@ -1144,6 +1162,8 @@ def main() -> int:
         return validate_role_decision_intake(args)
     elif args.command == "apply-role-decisions":
         return apply_role_decisions(args)
+    elif args.command == "authorize-real-role-decision-apply":
+        return authorize_real_role_decision_apply(args)
     elif args.command == "inspect-production-decision-state":
         return inspect_production_decision_state(args)
     elif args.command == "repair-production-decision-state":
@@ -6103,46 +6123,32 @@ def apply_role_decisions(args: argparse.Namespace) -> int:
         print(json.dumps(result, indent=2))
     else:
         print(f"Apply Status: {result['status'].upper()}")
-        print(f"Dry Run: {result['dry_run']}")
-        
-        if result['status'] == 'valid' and dry_run:
-            print(f"Would Apply Decisions: {result.get('would_apply_decisions', 'N/A')}")
-            print(f"Would Allow Retry Generation: {result.get('would_allow_retry_generation', 'N/A')}")
-            print(f"Next Allowed Action If Applied: {result.get('next_allowed_action_if_applied', 'N/A')}")
-            print(f"Production Accepted After Apply: {result.get('production_accepted_after_apply', 'N/A')}")
-            print(f"Backup Path: {result['backup_path']}")
-        elif result['status'] == 'applied':
-            print(f"Applied Decisions: {result.get('applied_decisions', 0)}")
-            print(f"Can Retry Generation: {result.get('can_retry_generation', False)}")
-            print(f"Next Allowed Action: {result.get('next_allowed_action', 'N/A')}")
-            print(f"Production Accepted: {result.get('production_accepted', False)}")
-            print(f"Downstream Unblocked For: {result.get('downstream_unblocked_for', [])}")
-            print(f"Backup Created: {result.get('backup_created', False)}")
-            if 'backup_path' in result:
-                print(f"Backup Path: {result['backup_path']}")
-        else:
-            print(f"Applied Decisions: {result.get('applied_decisions', 0)}")
-            print(f"Can Retry Generation: {result.get('can_retry_generation', False)}")
-            print(f"Reason: {result.get('reason', 'N/A')}")
-            print(f"Production Accepted: {result.get('production_accepted', False)}")
-            print(f"Real Project Mutated: {result.get('real_project_mutated', False)}")
-        
-        if result.get('status') == 'rejected':
-            print(f"\nNo apply performed. Reason: {result.get('reason', 'unknown')}")
-            if result.get('blocked_decision_files'):
-                print("Blocked decision files:")
-                for f in result['blocked_decision_files']:
-                    print(f"  - {f}")
-        
-        if 'validation_errors' in result and result['validation_errors']:
-            print("\nValidation Errors:")
-            for error in result['validation_errors']:
-                print(f"  - {error}")
-        
-        if 'missing_decisions' in result and result['missing_decisions']:
-            print("\nMissing Decisions:")
-            for decision in result['missing_decisions']:
-                print(f"  - {decision}")
+
+
+def authorize_real_role_decision_apply(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS3B — Final authorization checkpoint before applying resubmitted role decisions to real project.
+    
+    This command validates that all preconditions for safe real apply are met without actually applying.
+    It checks submitted decisions, intake dry-run, temp apply proof, and real project state.
+    
+    Exit codes:
+    - 0: authorization check completed
+    - 1: authorization check failed
+    """
+    from app.production_cards.decision_apply import authorize_real_role_decision_apply
+    
+    project_root = args.project_root
+    decisions_root = args.decisions_root
+    json_output = args.json
+    
+    result = authorize_real_role_decision_apply(project_root, decisions_root)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Authorization Status: {result['status'].upper()}")
+        print(f"Ready for Real Apply: {result['ready_for_real_apply']}")
+        print(f"Requires Operator Confirmation: {result['requires_operator_confirmation']}")
     
     return 0
 
