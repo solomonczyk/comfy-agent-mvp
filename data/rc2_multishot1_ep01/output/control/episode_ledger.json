@@ -603,6 +603,26 @@
       "audio_executed": false,
       "render_executed": false,
       "timestamp": "2026-04-29T15:41:52.633782Z"
+    },
+    {
+      "event_type": "qa_review",
+      "qa_verdict": "qa_passed",
+      "qa_passed": true,
+      "source": "retry_frames",
+      "retry_attempt": 2,
+      "frame_count": 3,
+      "failure_reasons": [],
+      "next_allowed_action": "assemble_scene",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "timestamp": "2026-04-29T15:53:32.000000Z",
+      "qa_report_path": "output/control/rc2_prodcards3j_qa_report.json"
     }
   ]
 }
