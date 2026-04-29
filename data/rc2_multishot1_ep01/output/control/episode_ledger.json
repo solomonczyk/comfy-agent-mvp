@@ -448,6 +448,45 @@
       "comfyui_generation": false,
       "pipeline_action_rerun": false,
       "timestamp": "2026-04-28T14:51:04.281416Z"
+    },
+    {
+      "event_type": "role_decisions_applied",
+      "timestamp": "2026-04-29T08:08:13.637714Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "apply_mode": "transactional"
+    },
+    {
+      "event_type": "role_decisions_applied",
+      "timestamp": "2026-04-29T08:14:13.215329Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "apply_mode": "transactional"
+    },
+    {
+      "event_type": "role_decisions_applied",
+      "timestamp": "2026-04-29T08:14:47.938555Z",
+      "roles": [
+        "Character Director",
+        "Workflow TD / ComfyUI Technical Director"
+      ],
+      "next_allowed_action": "retry_generate_frames",
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "pipeline_action_rerun": false,
+      "apply_mode": "transactional"
     }
   ]
 }

@@ -5,18 +5,117 @@
   "character_name": "Alya",
   "display_name": "Alya",
   "reference_character": "Alya",
-  "decision_status": "pending",
-  "selected_decision": null,
+  "decision_status": "decided",
+  "selected_decision": "approve",
   "allowed_decisions": [
     "approve",
     "reject",
     "request_new_reference",
     "request_workflow_change"
   ],
-  "required_artifacts": {},
-  "downstream_blocked": true,
+  "required_artifacts": {
+    "updated_character_identity_rules": {
+      "identity_preservation_level": "strict",
+      "reference_fidelity": "high",
+      "consistency_requirements": [
+        "pose",
+        "expression",
+        "lighting"
+      ],
+      "notes": "Identity rules updated to ensure strict character consistency"
+    },
+    "updated_reference_strategy": {
+      "strategy_type": "identity_first",
+      "reference_selection": "curated_identity_set",
+      "multi_reference_handling": "weighted_average",
+      "notes": "Reference strategy updated to prioritize identity preservation"
+    },
+    "identity_acceptance_criteria": {
+      "identity_similarity_threshold": 0.85,
+      "expression_match_required": true,
+      "pose_consistency_required": true,
+      "quality_threshold": 0.9
+    },
+    "reference_rebuild_notes": {
+      "rebuild_status": "strategy_updated",
+      "new_references_required": false,
+      "existing_references_sufficient": true,
+      "notes": "Reference strategy updated without requiring new reference images"
+    },
+    "approved_character_identity_rules": {
+      "identity_preservation_level": "strict",
+      "reference_fidelity": "high",
+      "consistency_requirements": [
+        "pose",
+        "expression",
+        "lighting"
+      ],
+      "notes": "Identity rules updated to ensure strict character consistency"
+    },
+    "approved_reference_strategy": {
+      "strategy_type": "identity_first",
+      "reference_selection": "curated_identity_set",
+      "multi_reference_handling": "weighted_average",
+      "notes": "Reference strategy updated to prioritize identity preservation"
+    }
+  },
+  "downstream_blocked": false,
   "production_accepted": false,
-  "next_allowed_action": null,
-  "created_at": "2026-04-28T10:20:56.942724Z",
-  "decision_source": "role_decision_template"
+  "retry_gate_open": true,
+  "apply_performed": true,
+  "next_allowed_action": "retry_generate_frames",
+  "created_at": "2026-04-28T16:02:04.797310Z",
+  "decision_source": "real_role_decision",
+  "fixture_only": false,
+  "approved_by_role": "Character Director",
+  "approved_for_project_id": "rc2_multishot1_ep01",
+  "approved_for_shot": "shot01",
+  "based_on_resubmission_packet": "output/control/role_decision_resubmissions/character_director_resubmission_packet.json",
+  "resubmission_timestamp": "2026-04-28T15:31:41.839791Z",
+  "completion_evidence": {
+    "updated_character_identity_rules": {
+      "identity_preservation_level": "strict",
+      "reference_fidelity": "high",
+      "consistency_requirements": [
+        "pose",
+        "expression",
+        "lighting"
+      ],
+      "notes": "Identity rules updated to ensure strict character consistency"
+    },
+    "updated_reference_strategy": {
+      "strategy_type": "identity_first",
+      "reference_selection": "curated_identity_set",
+      "multi_reference_handling": "weighted_average",
+      "notes": "Reference strategy updated to prioritize identity preservation"
+    },
+    "identity_acceptance_criteria": {
+      "identity_similarity_threshold": 0.85,
+      "expression_match_required": true,
+      "pose_consistency_required": true,
+      "quality_threshold": 0.9
+    },
+    "reference_rebuild_notes": {
+      "rebuild_status": "strategy_updated",
+      "new_references_required": false,
+      "existing_references_sufficient": true,
+      "notes": "Reference strategy updated without requiring new reference images"
+    },
+    "approved_character_identity_rules": {
+      "identity_preservation_level": "strict",
+      "reference_fidelity": "high",
+      "consistency_requirements": [
+        "pose",
+        "expression",
+        "lighting"
+      ],
+      "notes": "Identity rules updated to ensure strict character consistency"
+    },
+    "approved_reference_strategy": {
+      "strategy_type": "identity_first",
+      "reference_selection": "curated_identity_set",
+      "multi_reference_handling": "weighted_average",
+      "notes": "Reference strategy updated to prioritize identity preservation"
+    }
+  }
 }
