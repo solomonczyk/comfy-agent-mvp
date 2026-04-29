@@ -1992,6 +1992,30 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
                 # Create a minimal BuiltScene object for ComfyUI submission
                 from app.scenes.models import BuiltScene
                 
+                # RC2-PRODCARDS3E-FIX1: Calculate aspect_ratio from prompt_pack width/height
+                pack_width = prompt_pack.get("width", 640)
+                pack_height = prompt_pack.get("height", 480)
+                
+                # Map dimensions to WorkflowPatcher aspect ratio keys
+                # WorkflowPatcher uses: "4:3" (640x480), "16:9" (768x432), "1:1" (512x512), "9:16" (480x640)
+                if pack_width == 480 and pack_height == 640:
+                    calculated_aspect_ratio = "9:16"  # Portrait
+                elif pack_width == 640 and pack_height == 480:
+                    calculated_aspect_ratio = "4:3"  # Landscape
+                elif pack_width == 512 and pack_height == 512:
+                    calculated_aspect_ratio = "1:1"  # Square
+                elif pack_width == 768 and pack_height == 432:
+                    calculated_aspect_ratio = "16:9"  # Widescreen
+                else:
+                    # Fallback: calculate from dimensions
+                    from math import gcd
+                    divisor = gcd(pack_width, pack_height)
+                    ar_width = pack_width // divisor
+                    ar_height = pack_height // divisor
+                    calculated_aspect_ratio = f"{ar_width}:{ar_height}"
+                
+                print(f"  Dimensions from prompt_pack: {pack_width}x{pack_height} -> aspect_ratio={calculated_aspect_ratio}")
+                
                 built_scene = BuiltScene(
                     scene_id=beat_id,
                     positive_prompt=positive_prompt,
@@ -2001,7 +2025,7 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
                     total_frames=1,
                     duration_sec=1.0,
                     fps=config_data.get("fps", 24),
-                    aspect_ratio="4:3",
+                    aspect_ratio=calculated_aspect_ratio,
                     keyframe_hints=[],
                     location=None,
                     dialogue=None,
@@ -2156,6 +2180,7 @@ def generate_frames(args: argparse.Namespace) -> int:
     """MK-CTRL20 — Generation-only command.
     
     MK-CTRL26 — Added prompt-pack mode for contract-driven generation.
+    RC2-PRODCARDS3E-FIX1 — Added controlled retry path enforcement.
     
     This command only:
     - parses brief OR loads prompt_pack.json
@@ -2171,6 +2196,50 @@ def generate_frames(args: argparse.Namespace) -> int:
     - run QA
     - auto-run next stages
     """
+    # RC2-PRODCARDS3E-FIX1-GATE: Hard-block generic generate-frames in controlled retry state
+    from pathlib import Path
+    output_dir = Path(args.output)
+    if output_dir.is_absolute():
+        project_root = output_dir.parent
+    else:
+        project_root = (Path.cwd() / output_dir).parent
+    
+    # Check if project has artifact_index with retry_gate_open=true
+    artifact_index_path = project_root / "artifact_index.json"
+    if artifact_index_path.exists():
+        try:
+            with open(artifact_index_path, encoding="utf-8") as f:
+                artifact_index = json.load(f)
+            retry_gate_open = artifact_index.get("retry_gate_open", False)
+            next_allowed_action = artifact_index.get("next_allowed_action", "")
+            production_accepted = artifact_index.get("production_accepted", False)
+            
+            if retry_gate_open and next_allowed_action == "retry_generate_frames" and not production_accepted:
+                # Hard block: refuse generic generate-frames in controlled retry state
+                block_result = {
+                    "status": "blocked",
+                    "reason": "controlled_retry_command_required",
+                    "required_command": "retry-generate-frames",
+                    "comfyui_submission_performed": False,
+                    "generation_performed": False,
+                    "production_accepted": False
+                }
+                if getattr(args, "json", False):
+                    print(json.dumps(block_result, indent=2))
+                else:
+                    print("ERROR: Project is in controlled retry state")
+                    print(f"  retry_gate_open: {retry_gate_open}")
+                    print(f"  next_allowed_action: {next_allowed_action}")
+                    print(f"  production_accepted: {production_accepted}")
+                    print("")
+                    print("Generic generate-frames command is blocked in this state.")
+                    print("Use the controlled retry command instead:")
+                    print(f"  python -m app retry-generate-frames --project-root \"{project_root}\" --dry-run --json")
+                return 1
+        except Exception:
+            # If we can't read artifact_index, continue without blocking
+            pass
+    
     # MK-CTRL26 — Check for prompt-pack mode
     if getattr(args, "prompt_pack", False):
         return generate_frames_from_prompt_pack(args)
@@ -6225,6 +6294,8 @@ def authorize_controlled_retry_generation(args: argparse.Namespace) -> int:
 def retry_generate_frames(args: argparse.Namespace) -> int:
     """RC2-PRODCARDS3D — Retry generate frames with dry-run authorization.
     
+    RC2-PRODCARDS3E-FIX1 — Added dimension preflight and reporting.
+    
     This command validates that retry generation is authorized but does NOT
     actually run ComfyUI or generate frames. It's a dry-run planning tool.
     
@@ -6234,6 +6305,7 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
     """
     from app.production_cards.approval_gate import authorize_controlled_retry_generation as auth_retry_gen
     from app.production_cards.state_repair import inspect_real_project_decision_state
+    from math import gcd
     
     project_root = args.project_root
     dry_run = getattr(args, "dry_run", True)
@@ -6251,19 +6323,84 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
     # Inspect project state
     project_state = inspect_real_project_decision_state(project_root)
     
+    # RC2-PRODCARDS3E-FIX1: Dimension preflight - load prompt_pack and check dimensions
+    expected_width = None
+    expected_height = None
+    resolved_workflow_width = None
+    resolved_workflow_height = None
+    dimension_preflight_passed = True
+    dimension_preflight_reason = None
+    
+    try:
+        from pathlib import Path
+        project_path = Path(project_root)
+        prompt_pack_path = project_path / "output" / "control" / "prompt_pack.json"
+        
+        if prompt_pack_path.exists():
+            with open(prompt_pack_path, encoding="utf-8") as f:
+                prompt_pack = json.load(f)
+            
+            expected_width = prompt_pack.get("width", 640)
+            expected_height = prompt_pack.get("height", 480)
+            
+            # Calculate aspect ratio from dimensions and map to WorkflowPatcher keys
+            # WorkflowPatcher uses: "4:3" (640x480), "16:9" (768x432), "1:1" (512x512), "9:16" (480x640)
+            # We need to map dimensions to the correct key
+            if expected_width == 480 and expected_height == 640:
+                calculated_aspect_ratio = "9:16"  # Portrait
+            elif expected_width == 640 and expected_height == 480:
+                calculated_aspect_ratio = "4:3"  # Landscape
+            elif expected_width == 512 and expected_height == 512:
+                calculated_aspect_ratio = "1:1"  # Square
+            elif expected_width == 768 and expected_height == 432:
+                calculated_aspect_ratio = "16:9"  # Widescreen
+            else:
+                # Fallback: calculate from dimensions and map to nearest known ratio
+                divisor = gcd(expected_width, expected_height)
+                ar_width = expected_width // divisor
+                ar_height = expected_height // divisor
+                calculated_aspect_ratio = f"{ar_width}:{ar_height}"
+            
+            # Resolve workflow dimensions using WorkflowPatcher.ASPECT_RATIO_MAP
+            from app.comfy.workflow_patcher import WorkflowPatcher
+            resolved_dimensions = WorkflowPatcher.ASPECT_RATIO_MAP.get(calculated_aspect_ratio, (expected_width, expected_height))
+            resolved_workflow_width, resolved_workflow_height = resolved_dimensions
+            
+            # Dimension preflight check
+            if resolved_workflow_width != expected_width or resolved_workflow_height != expected_height:
+                dimension_preflight_passed = False
+                dimension_preflight_reason = (
+                    f"dimension_mismatch: prompt_pack expects {expected_width}x{expected_height} "
+                    f"but workflow would resolve to {resolved_workflow_width}x{resolved_workflow_height}"
+                )
+        else:
+            dimension_preflight_passed = False
+            dimension_preflight_reason = "prompt_pack.json not found"
+    except Exception as e:
+        dimension_preflight_passed = False
+        dimension_preflight_reason = f"dimension preflight error: {str(e)}"
+    
     # Determine dry-run result
-    would_run_comfyui = auth_result.get("ready_for_retry_generation", False)
+    would_run_comfyui = auth_result.get("ready_for_retry_generation", False) and dimension_preflight_passed
     would_execute_action = "retry_generate_frames" if would_run_comfyui else None
     
     result = {
-        "status": "valid" if auth_result.get("ready_for_retry_generation") else "invalid",
+        "status": "valid" if (auth_result.get("ready_for_retry_generation") and dimension_preflight_passed) else "invalid",
         "dry_run": True,
         "would_execute_action": would_execute_action,
         "would_run_comfyui": would_run_comfyui,
         "generation_performed": False,
         "production_accepted": auth_result.get("production_accepted", False),
         "real_project_mutated": False,
-        "authorization": auth_result
+        "authorization": auth_result,
+        "dimension_preflight": {
+            "expected_width": expected_width,
+            "expected_height": expected_height,
+            "resolved_workflow_width": resolved_workflow_width,
+            "resolved_workflow_height": resolved_workflow_height,
+            "dimension_preflight_passed": dimension_preflight_passed,
+            "dimension_preflight_reason": dimension_preflight_reason
+        }
     }
     
     if json_output:
@@ -6275,6 +6412,14 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         print(f"Would Run ComfyUI: {result['would_run_comfyui']}")
         print(f"Generation Performed: {result['generation_performed']}")
         print(f"Real Project Mutated: {result['real_project_mutated']}")
+        if result.get("dimension_preflight"):
+            print(f"Dimension Preflight Passed: {result['dimension_preflight']['dimension_preflight_passed']}")
+            if result['dimension_preflight']['expected_width']:
+                print(f"Expected Dimensions: {result['dimension_preflight']['expected_width']}x{result['dimension_preflight']['expected_height']}")
+            if result['dimension_preflight']['resolved_workflow_width']:
+                print(f"Resolved Workflow Dimensions: {result['dimension_preflight']['resolved_workflow_width']}x{result['dimension_preflight']['resolved_workflow_height']}")
+            if result['dimension_preflight']['dimension_preflight_reason']:
+                print(f"Dimension Preflight Reason: {result['dimension_preflight']['dimension_preflight_reason']}")
     
     return 0
 
