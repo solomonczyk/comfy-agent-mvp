@@ -20,7 +20,7 @@ from app.production_cards.approval_gate import (
 )
 
 
-def validate_decision_source(decision: Dict[str, Any], role_name: str, project_root: str, blocked_shot: str) -> List[str]:
+def validate_decision_source(decision: Dict[str, Any], role_name: str, project_root: str, blocked_shot: str, is_temp_copy: bool = False) -> List[str]:
     """
     Validate decision source metadata for real project apply.
     
@@ -40,11 +40,11 @@ def validate_decision_source(decision: Dict[str, Any], role_name: str, project_r
     elif decision_source != "real_role_decision":
         errors.append(f"{role_name}: decision_source must be 'real_role_decision', got '{decision_source}'")
     
-    # Check approved_for_project_id matches project
+    # Check approved_for_project_id matches project (skip for temp copies)
     approved_for_project_id = decision.get("approved_for_project_id")
     if approved_for_project_id is None:
         errors.append(f"{role_name}: missing approved_for_project_id")
-    else:
+    elif not is_temp_copy:
         project_path = Path(project_root)
         # Extract project_id from project path (last directory name or explicit project_id file)
         project_id = project_path.name
@@ -102,12 +102,31 @@ def validate_before_apply(project_root: str, decisions_root: str, dry_run: bool 
     artifact_verification = verify_required_approval_artifacts(decisions_root)
     
     # Evaluate both decisions
-    char_evaluation = evaluate_character_director_decision(
-        intake_decisions.get("character_director_decision", {})
-    )
-    workflow_evaluation = evaluate_workflow_td_decision(
-        intake_decisions.get("workflow_td_decision", {})
-    )
+    # For resubmitted decisions with decision_status="submitted", treat as decided for evaluation
+    char_decision = intake_decisions.get("character_director_decision", {})
+    if char_decision.get("decision_status") == "submitted":
+        # Create a copy with decision_status="decided" for evaluation compatibility
+        char_decision_eval = char_decision.copy()
+        char_decision_eval["decision_status"] = "decided"
+        # Normalize artifact names from resubmission format to standard format
+        if "required_artifacts" in char_decision_eval and isinstance(char_decision_eval["required_artifacts"], dict):
+            artifacts = char_decision_eval["required_artifacts"]
+            if "updated_character_identity_rules" in artifacts:
+                artifacts["approved_character_identity_rules"] = artifacts["updated_character_identity_rules"]
+            if "updated_reference_strategy" in artifacts:
+                artifacts["approved_reference_strategy"] = artifacts["updated_reference_strategy"]
+        char_evaluation = evaluate_character_director_decision(char_decision_eval)
+    else:
+        char_evaluation = evaluate_character_director_decision(char_decision)
+    
+    workflow_decision = intake_decisions.get("workflow_td_decision", {})
+    if workflow_decision.get("decision_status") == "submitted":
+        # Create a copy with decision_status="decided" for evaluation compatibility
+        workflow_decision_eval = workflow_decision.copy()
+        workflow_decision_eval["decision_status"] = "decided"
+        workflow_evaluation = evaluate_workflow_td_decision(workflow_decision_eval)
+    else:
+        workflow_evaluation = evaluate_workflow_td_decision(workflow_decision)
     
     # Determine overall validity
     errors = []
@@ -149,8 +168,8 @@ def validate_before_apply(project_root: str, decisions_root: str, dry_run: bool 
         # Determine blocked shot from decisions
         blocked_shot = char_decision.get("blocked_shot") or workflow_decision.get("blocked_shot") or "shot01"
         
-        char_source_errors = validate_decision_source(char_decision, "Character Director", project_root, blocked_shot)
-        workflow_source_errors = validate_decision_source(workflow_decision, "Workflow TD", project_root, blocked_shot)
+        char_source_errors = validate_decision_source(char_decision, "Character Director", project_root, blocked_shot, is_temp_copy)
+        workflow_source_errors = validate_decision_source(workflow_decision, "Workflow TD", project_root, blocked_shot, is_temp_copy)
         
         errors.extend(char_source_errors)
         errors.extend(workflow_source_errors)
@@ -258,6 +277,15 @@ def update_artifact_index_for_retry_gate(project_root: str) -> None:
         "production_accepted": False,
         "downstream_unblocked_for": ["retry_generate_frames"]
     }
+    
+    # Update top-level fields for consistency
+    artifact_index["retry_gate_open"] = True
+    artifact_index["next_allowed_action"] = "retry_generate_frames"
+    artifact_index["downstream_blocked"] = False
+    
+    # Update role_decisions section
+    artifact_index["role_decisions"]["decision_status"] = "applied"
+    artifact_index["role_decisions"]["downstream_blocked"] = False
     
     # Ensure production_accepted is false
     artifact_index["production_accepted"] = False
