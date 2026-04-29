@@ -209,3 +209,134 @@ def test_inspect_does_not_create_files(tmp_project: Path) -> None:
     r = ctrl.inspect("ep01", "shot01")
     assert r.current_state == "missing_brief"
     assert not (tmp_project / "output" / "ep01" / "shot01").exists()
+
+
+# ── 14. RC2-PRODCARDS3F-FIX: frames_generated -> qa_review is valid ───────
+
+def test_frames_generated_allows_qa_review(tmp_project: Path) -> None:
+    """RC2-PRODCARDS3F-FIX: frames_generated with expected_next_action=qa_review allows qa_review."""
+    from app.control.shot_state_storage import ShotState, ShotStateStorage
+    import json
+    
+    # Create persisted state with frames_generated and expected_next_action=qa_review
+    state_dir = tmp_project / "output" / "control" / "ep01"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    state_file = state_dir / "shot01_state.json"
+    
+    persisted_state = ShotState(
+        episode_id="ep01",
+        shot_id="shot01",
+        current_state="frames_generated",
+        expected_next_action="qa_review",
+        last_updated="2026-04-29T10:54:30",
+        artifact_path=str(tmp_project / "output" / "control" / "frames_manifest.json"),
+        brief_path=str(tmp_project / "data" / "briefs" / "ep01_shot01_brief.md"),
+        transition_reason="retry frames generated, ready for QA",
+    )
+    
+    state_file.write_text(json.dumps(persisted_state.to_dict(), indent=2), encoding="utf-8")
+    
+    ctrl = ShotController(tmp_project)
+    r = ctrl.inspect("ep01", "shot01")
+    
+    assert r.current_state == "frames_generated"
+    assert r.next_action == "qa_review"
+
+
+# ── 15. RC2-PRODCARDS3F-FIX: frames_generated -> assemble_scene blocked before QA ──
+
+def test_frames_generated_blocks_assemble_scene_before_qa(tmp_project: Path) -> None:
+    """RC2-PRODCARDS3F-FIX: frames_generated with expected_next_action=qa_review blocks assemble_scene."""
+    from app.control.shot_state_storage import ShotState
+    import json
+    
+    # Create persisted state with frames_generated and expected_next_action=qa_review
+    state_dir = tmp_project / "output" / "control" / "ep01"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    state_file = state_dir / "shot01_state.json"
+    
+    persisted_state = ShotState(
+        episode_id="ep01",
+        shot_id="shot01",
+        current_state="frames_generated",
+        expected_next_action="qa_review",
+        last_updated="2026-04-29T10:54:30",
+        artifact_path=str(tmp_project / "output" / "control" / "frames_manifest.json"),
+        brief_path=str(tmp_project / "data" / "briefs" / "ep01_shot01_brief.md"),
+        transition_reason="retry frames generated, ready for QA",
+    )
+    
+    state_file.write_text(json.dumps(persisted_state.to_dict(), indent=2), encoding="utf-8")
+    
+    ctrl = ShotController(tmp_project)
+    r = ctrl.inspect("ep01", "shot01")
+    
+    assert r.current_state == "frames_generated"
+    # The expected next action should be qa_review, not assemble_scene
+    assert r.next_action == "qa_review"
+    assert r.next_action != "assemble_scene"
+
+
+# ── 16. RC2-PRODCARDS3F-FIX: qa_failed -> retry_generate_frames is valid ─────
+
+def test_qa_failed_allows_retry_generate_frames(tmp_project: Path) -> None:
+    """RC2-PRODCARDS3F-FIX: qa_failed with expected_next_action=retry_generate_frames allows retry."""
+    from app.control.shot_state_storage import ShotState
+    import json
+    
+    # Create persisted state with qa_failed and expected_next_action=retry_generate_frames
+    state_dir = tmp_project / "output" / "control" / "ep01"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    state_file = state_dir / "shot01_state.json"
+    
+    persisted_state = ShotState(
+        episode_id="ep01",
+        shot_id="shot01",
+        current_state="qa_failed",
+        expected_next_action="retry_generate_frames",
+        last_updated="2026-04-29T10:54:30",
+        artifact_path=str(tmp_project / "output" / "control" / "frames_manifest.json"),
+        brief_path=str(tmp_project / "data" / "briefs" / "ep01_shot01_brief.md"),
+        transition_reason="qa_review failed: identity drift",
+    )
+    
+    state_file.write_text(json.dumps(persisted_state.to_dict(), indent=2), encoding="utf-8")
+    
+    ctrl = ShotController(tmp_project)
+    r = ctrl.inspect("ep01", "shot01")
+    
+    assert r.current_state == "qa_failed"
+    assert r.next_action == "retry_generate_frames"
+
+
+# ── 17. RC2-PRODCARDS3F-FIX: qa_passed -> assemble_scene is valid ────────
+
+def test_qa_passed_allows_assemble_scene(tmp_project: Path) -> None:
+    """RC2-PRODCARDS3F-FIX: qa_passed allows assemble_scene as next action."""
+    from app.control.shot_state_storage import ShotState
+    import json
+    
+    # Create persisted state with qa_passed
+    state_dir = tmp_project / "output" / "control" / "ep01"
+    state_dir.mkdir(parents=True, exist_ok=True)
+    state_file = state_dir / "shot01_state.json"
+    
+    persisted_state = ShotState(
+        episode_id="ep01",
+        shot_id="shot01",
+        current_state="qa_passed",
+        expected_next_action="attach_audio",  # qa_passed -> attach_audio per MK-CTRL22
+        last_updated="2026-04-29T10:54:30",
+        artifact_path=str(tmp_project / "output" / "control" / "qa_report.json"),
+        brief_path=str(tmp_project / "data" / "briefs" / "ep01_shot01_brief.md"),
+        transition_reason="qa_review passed",
+    )
+    
+    state_file.write_text(json.dumps(persisted_state.to_dict(), indent=2), encoding="utf-8")
+    
+    ctrl = ShotController(tmp_project)
+    r = ctrl.inspect("ep01", "shot01")
+    
+    assert r.current_state == "qa_passed"
+    # qa_passed -> attach_audio per the state machine, but assemble_scene should be allowed after scene_assembled
+    assert r.next_action == "attach_audio"

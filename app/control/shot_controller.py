@@ -235,8 +235,11 @@ class ShotController:
         """
         # Determine next action based on current state
         state = persisted_state.current_state
+        # RC2-PRODCARDS3F-FIX: Respect persisted state's expected_next_action instead of hardcoding
+        # This allows qa_review after frames_generated when next_allowed_action=qa_review
         if state == "frames_generated":
-            next_action = "assemble_scene"  # or whatever the next step is
+            # Use persisted expected_next_action if available, otherwise default to assemble_scene
+            next_action = persisted_state.expected_next_action if persisted_state.expected_next_action else "assemble_scene"
         elif state == "scene_assembled":
             next_action = "qa_review"  # MK-CTRL22
         elif state == "qa_passed":
@@ -246,7 +249,9 @@ class ShotController:
         elif state == "episode_rendered":
             next_action = "none"  # MK-CTRL24 - episode_rendered is terminal state
         elif state == "qa_failed":
-            next_action = "generate_frames"  # MK-CTRL22
+            # RC2-PRODCARDS3F-FIX: Allow retry_generate_frames after qa_failed when retry gate is open
+            # This respects the persisted state's expected_next_action instead of hardcoding
+            next_action = persisted_state.expected_next_action if persisted_state.expected_next_action else "generate_frames"  # MK-CTRL22
         elif state == "ready_for_generation":
             next_action = "generate_frames"
         elif state == "partial_generation":
