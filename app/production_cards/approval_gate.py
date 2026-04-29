@@ -301,3 +301,76 @@ def validate_role_approval_gate(project_root: str, json_output: bool = False, de
         result["fixture_mode"] = True
     
     return result
+
+
+def authorize_controlled_retry_generation(project_root: str, json_output: bool = False) -> Dict[str, Any]:
+    """
+    Authorize controlled retry generation after role decisions are applied.
+    
+    This is the final authorization checkpoint before retry generation execution.
+    It validates that the project is ready for controlled retry generation but
+    does NOT execute generation. Requires explicit operator confirmation.
+    
+    Args:
+        project_root: Path to the project root
+        json_output: Whether to return JSON-compatible output
+    
+    Returns:
+        Dictionary with authorization status and validation results
+    """
+    from app.production_cards.state_repair import inspect_real_project_decision_state
+    
+    # Validate role approval gate
+    gate_validation = validate_role_approval_gate(project_root, json_output=True)
+    
+    # Inspect real project state
+    project_state = inspect_real_project_decision_state(project_root)
+    
+    # Extract key state indicators
+    role_decisions_applied = (
+        project_state.get("role_decisions", {}).get("character_director", {}).get("decision_status") == "decided" and
+        project_state.get("role_decisions", {}).get("workflow_td", {}).get("decision_status") == "decided"
+    )
+    
+    retry_gate_open = project_state.get("artifact_index", {}).get("retry_gate_open", False)
+    next_allowed_action = project_state.get("artifact_index", {}).get("next_allowed_action")
+    production_accepted = project_state.get("artifact_index", {}).get("production_accepted", False)
+    downstream_blocked = project_state.get("artifact_index", {}).get("downstream_blocked", True)
+    
+    approval_gate_ready = gate_validation.get("status") == "ready_for_retry"
+    
+    # Check no generation executed
+    comfyui_generation = False
+    pipeline_action_rerun = False
+    most_recent_apply_event = project_state.get("episode_ledger", {}).get("most_recent_apply_event", {})
+    if most_recent_apply_event:
+        comfyui_generation = most_recent_apply_event.get("comfyui_generation", False)
+        pipeline_action_rerun = most_recent_apply_event.get("pipeline_action_rerun", False)
+    
+    # Determine overall readiness for controlled retry generation
+    ready_for_retry_generation = (
+        role_decisions_applied and
+        retry_gate_open and
+        next_allowed_action == "retry_generate_frames" and
+        approval_gate_ready and
+        not production_accepted and
+        not downstream_blocked and
+        not comfyui_generation and
+        not pipeline_action_rerun
+    )
+    
+    return {
+        "status": "authorization_required",
+        "ready_for_retry_generation": ready_for_retry_generation,
+        "requires_operator_confirmation": True,
+        "retry_gate_open": retry_gate_open,
+        "next_allowed_action": next_allowed_action,
+        "role_decisions_applied": role_decisions_applied,
+        "approval_gate_ready": approval_gate_ready,
+        "production_accepted": production_accepted,
+        "generation_performed": comfyui_generation or pipeline_action_rerun,
+        "downstream_actions_executed": pipeline_action_rerun,
+        "no_comfyui_execution": not comfyui_generation,
+        "no_frame_generation": not comfyui_generation,
+        "no_downstream_action": not pipeline_action_rerun
+    }

@@ -814,6 +814,38 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC2-PRODCARDS3D — Retry generate frames subcommand (dry-run only for authorization)
+    retry_generate_frames_parser = subparsers.add_parser("retry-generate-frames", help="Retry generate frames with dry-run authorization (does NOT actually run ComfyUI)")
+    retry_generate_frames_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root for retry generation",
+    )
+    retry_generate_frames_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Dry-run mode (default: True, always dry-run for safety)",
+    )
+    retry_generate_frames_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC2-PRODCARDS3D — Authorize controlled retry generation subcommand
+    authorize_controlled_retry_generation_parser = subparsers.add_parser("authorize-controlled-retry-generation", help="Authorize controlled retry generation after role decisions are applied (dry-run authorization only)")
+    authorize_controlled_retry_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root to authorize",
+    )
+    authorize_controlled_retry_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
     # RC2-PRODCARDS2L — Create role review evidence packets subcommand
     create_role_review_packets_parser = subparsers.add_parser("create-role-review-packets", help="Create structured review evidence packets for Character Director and Workflow TD")
     create_role_review_packets_parser.add_argument(
@@ -1168,6 +1200,10 @@ def main() -> int:
         return inspect_production_decision_state(args)
     elif args.command == "repair-production-decision-state":
         return repair_production_decision_state(args)
+    elif args.command == "authorize-controlled-retry-generation":
+        return authorize_controlled_retry_generation(args)
+    elif args.command == "retry-generate-frames":
+        return retry_generate_frames(args)
     elif args.command == "create-role-review-packets":
         return create_role_review_packets(args)
     elif args.command == "validate-role-review-packets":
@@ -6149,6 +6185,96 @@ def authorize_real_role_decision_apply(args: argparse.Namespace) -> int:
         print(f"Authorization Status: {result['status'].upper()}")
         print(f"Ready for Real Apply: {result['ready_for_real_apply']}")
         print(f"Requires Operator Confirmation: {result['requires_operator_confirmation']}")
+    
+    return 0
+
+
+def authorize_controlled_retry_generation(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS3D — Authorize controlled retry generation after role decisions are applied.
+    
+    This command validates that the project is ready for controlled retry generation
+    but does NOT execute generation. Requires explicit operator confirmation.
+    
+    Exit codes:
+    - 0: authorization check completed
+    - 1: authorization check failed
+    """
+    from app.production_cards.approval_gate import authorize_controlled_retry_generation as auth_retry_gen
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    result = auth_retry_gen(project_root, json_output=True)
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Authorization Status: {result['status'].upper()}")
+        print(f"Ready for Retry Generation: {result['ready_for_retry_generation']}")
+        print(f"Requires Operator Confirmation: {result['requires_operator_confirmation']}")
+        print(f"Retry Gate Open: {result['retry_gate_open']}")
+        print(f"Next Allowed Action: {result['next_allowed_action']}")
+        print(f"Role Decisions Applied: {result['role_decisions_applied']}")
+        print(f"Approval Gate Ready: {result['approval_gate_ready']}")
+        print(f"Production Accepted: {result['production_accepted']}")
+        print(f"Generation Performed: {result['generation_performed']}")
+    
+    return 0
+
+
+def retry_generate_frames(args: argparse.Namespace) -> int:
+    """RC2-PRODCARDS3D — Retry generate frames with dry-run authorization.
+    
+    This command validates that retry generation is authorized but does NOT
+    actually run ComfyUI or generate frames. It's a dry-run planning tool.
+    
+    Exit codes:
+    - 0: dry-run validation completed
+    - 1: validation failed
+    """
+    from app.production_cards.approval_gate import authorize_controlled_retry_generation as auth_retry_gen
+    from app.production_cards.state_repair import inspect_real_project_decision_state
+    
+    project_root = args.project_root
+    dry_run = getattr(args, "dry_run", True)
+    json_output = args.json
+    
+    # Always enforce dry-run for safety
+    if not dry_run:
+        print("ERROR: retry-generate-frames only supports dry-run mode for safety")
+        print("Use --dry-run flag (default) or run actual generate-frames command for execution")
+        return 1
+    
+    # Authorize retry generation
+    auth_result = auth_retry_gen(project_root, json_output=True)
+    
+    # Inspect project state
+    project_state = inspect_real_project_decision_state(project_root)
+    
+    # Determine dry-run result
+    would_run_comfyui = auth_result.get("ready_for_retry_generation", False)
+    would_execute_action = "retry_generate_frames" if would_run_comfyui else None
+    
+    result = {
+        "status": "valid" if auth_result.get("ready_for_retry_generation") else "invalid",
+        "dry_run": True,
+        "would_execute_action": would_execute_action,
+        "would_run_comfyui": would_run_comfyui,
+        "generation_performed": False,
+        "production_accepted": auth_result.get("production_accepted", False),
+        "real_project_mutated": False,
+        "authorization": auth_result
+    }
+    
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Dry Run: {result['dry_run']}")
+        print(f"Status: {result['status'].upper()}")
+        print(f"Would Execute Action: {result['would_execute_action']}")
+        print(f"Would Run ComfyUI: {result['would_run_comfyui']}")
+        print(f"Generation Performed: {result['generation_performed']}")
+        print(f"Real Project Mutated: {result['real_project_mutated']}")
     
     return 0
 
