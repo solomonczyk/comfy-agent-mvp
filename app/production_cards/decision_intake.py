@@ -19,6 +19,9 @@ def load_intake_decisions(decisions_root: str) -> Dict[str, Any]:
     """
     Load role decision files from intake directory for validation.
     
+    Supports both standard intake decision files and resubmitted decision files
+    with embedded artifacts in completion_evidence.
+    
     Args:
         decisions_root: Path to directory containing decision files
     
@@ -30,7 +33,7 @@ def load_intake_decisions(decisions_root: str) -> Dict[str, Any]:
     character_director_decision = {}
     workflow_td_decision = {}
     
-    # Try both .json and .approved.json extensions
+    # Try standard intake decision files first
     for filename in ["character_director_identity_decision.json", "character_director_identity_decision.approved.json"]:
         char_decision_path = decisions_dir / filename
         if char_decision_path.exists():
@@ -44,6 +47,29 @@ def load_intake_decisions(decisions_root: str) -> Dict[str, Any]:
             with open(workflow_decision_path, 'r') as f:
                 workflow_td_decision = json.load(f)
             break
+    
+    # If standard files not found, try resubmitted decision files with embedded artifacts
+    if not character_director_decision:
+        for filename in ["character_director_real_decision.SUBMITTED.json", "character_director_resubmitted_decision.SUBMITTED.json"]:
+            char_decision_path = decisions_dir / filename
+            if char_decision_path.exists():
+                with open(char_decision_path, 'r') as f:
+                    character_director_decision = json.load(f)
+                # Extract embedded artifacts from completion_evidence
+                if "completion_evidence" in character_director_decision:
+                    character_director_decision["required_artifacts"] = character_director_decision["completion_evidence"]
+                break
+    
+    if not workflow_td_decision:
+        for filename in ["workflow_td_real_decision.SUBMITTED.json", "workflow_td_resubmitted_decision.SUBMITTED.json"]:
+            workflow_decision_path = decisions_dir / filename
+            if workflow_decision_path.exists():
+                with open(workflow_decision_path, 'r') as f:
+                    workflow_td_decision = json.load(f)
+                # Extract embedded artifacts from completion_evidence
+                if "completion_evidence" in workflow_td_decision:
+                    workflow_td_decision["required_artifacts"] = workflow_td_decision["completion_evidence"]
+                break
     
     return {
         "character_director_decision": character_director_decision,
@@ -110,6 +136,8 @@ def verify_required_approval_artifacts(decisions_root: str) -> Dict[str, Any]:
     """
     Verify that intake decisions have all required approval artifacts.
     
+    Supports both standard artifact names and resubmission completion_evidence naming.
+    
     Args:
         decisions_root: Path to directory containing intake decision files
     
@@ -131,10 +159,22 @@ def verify_required_approval_artifacts(decisions_root: str) -> Dict[str, Any]:
         "identity_acceptance_criteria"
     ]
     
+    # Also support resubmission naming convention
+    resubmission_char_artifacts = [
+        "updated_character_identity_rules",
+        "updated_reference_strategy",
+        "identity_acceptance_criteria"
+    ]
+    
     required_artifacts = char_decision.get("required_artifacts", {})
     if isinstance(required_artifacts, dict):
         for artifact in expected_char_artifacts:
             if artifact not in required_artifacts or not required_artifacts[artifact]:
+                # Check resubmission naming convention
+                resubmission_idx = expected_char_artifacts.index(artifact)
+                resubmission_name = resubmission_char_artifacts[resubmission_idx]
+                if resubmission_name in required_artifacts and required_artifacts[resubmission_name]:
+                    continue  # Found in resubmission format
                 verification["character_director_artifacts"]["valid"] = False
                 verification["character_director_artifacts"]["missing"].append(artifact)
     else:
@@ -144,6 +184,15 @@ def verify_required_approval_artifacts(decisions_root: str) -> Dict[str, Any]:
     # Verify Workflow TD artifacts
     workflow_decision = intake_decisions.get("workflow_td_decision", {})
     expected_workflow_artifacts = [
+        "workflow_audit",
+        "required_nodes",
+        "required_models",
+        "preflight_result",
+        "output_collection_contract"
+    ]
+    
+    # Also support resubmission naming convention
+    resubmission_workflow_artifacts = [
         "workflow_audit",
         "required_nodes",
         "required_models",
@@ -188,12 +237,31 @@ def validate_decision_intake(project_root: str, decisions_root: str) -> Dict[str
     artifact_verification = verify_required_approval_artifacts(decisions_root)
     
     # Evaluate both decisions using existing approval gate logic
-    char_evaluation = evaluate_character_director_decision(
-        intake_decisions.get("character_director_decision", {})
-    )
-    workflow_evaluation = evaluate_workflow_td_decision(
-        intake_decisions.get("workflow_td_decision", {})
-    )
+    # For resubmitted decisions with decision_status="submitted", treat as decided for dry-run
+    char_decision = intake_decisions.get("character_director_decision", {})
+    if char_decision.get("decision_status") == "submitted":
+        # Create a copy with decision_status="decided" for evaluation compatibility
+        char_decision_eval = char_decision.copy()
+        char_decision_eval["decision_status"] = "decided"
+        # Normalize artifact names from resubmission format to standard format
+        if "required_artifacts" in char_decision_eval and isinstance(char_decision_eval["required_artifacts"], dict):
+            artifacts = char_decision_eval["required_artifacts"]
+            if "updated_character_identity_rules" in artifacts:
+                artifacts["approved_character_identity_rules"] = artifacts["updated_character_identity_rules"]
+            if "updated_reference_strategy" in artifacts:
+                artifacts["approved_reference_strategy"] = artifacts["updated_reference_strategy"]
+        char_evaluation = evaluate_character_director_decision(char_decision_eval)
+    else:
+        char_evaluation = evaluate_character_director_decision(char_decision)
+    
+    workflow_decision = intake_decisions.get("workflow_td_decision", {})
+    if workflow_decision.get("decision_status") == "submitted":
+        # Create a copy with decision_status="decided" for evaluation compatibility
+        workflow_decision_eval = workflow_decision.copy()
+        workflow_decision_eval["decision_status"] = "decided"
+        workflow_evaluation = evaluate_workflow_td_decision(workflow_decision_eval)
+    else:
+        workflow_evaluation = evaluate_workflow_td_decision(workflow_decision)
     
     # Determine overall validity
     errors = []
