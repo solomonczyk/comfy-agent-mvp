@@ -1,0 +1,9 @@
+{
+  "identity_adapter_compatibility_checked": true,
+  "checkpoint_family": "SDXL",
+  "identity_adapter_family": null,
+  "compatible": true,
+  "blocker": null,
+  "no_identity_adapter_in_workflow": true,
+  "identity_adapter_detection": "no_identity_adapter_nodes_found"
+}

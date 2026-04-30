@@ -1,0 +1,29 @@
+{
+  "workflow_payload_checkpoint_binding_fixed": true,
+  "retry_plan_checkpoint": "juggernautXL_version2.safetensors",
+  "final_payload_checkpoint": "juggernautXL_version2.safetensors",
+  "final_workflow_checkpoint": "juggernautXL_version2.safetensors",
+  "template_original_checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+  "template_checkpoint_overridden": true,
+  "prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+  "prompt_pack_checkpoint_overridden": true,
+  "checkpoint_state_payload_mismatch": true,
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "dry_run": true,
+  "generation_performed": false,
+  "comfyui_submission_performed": false,
+  "identity_adapter_compatibility_check": {
+    "identity_adapter_compatibility_checked": true,
+    "checkpoint_family": "SDXL",
+    "identity_adapter_family": null,
+    "compatible": true,
+    "blocker": null,
+    "no_identity_adapter_in_workflow": true,
+    "identity_adapter_detection": "no_identity_adapter_nodes_found"
+  },
+  "timestamp": "2026-04-30T09:17:58.012454Z"
+}

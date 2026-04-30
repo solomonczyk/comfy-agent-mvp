@@ -1,0 +1,65 @@
+{
+  "dry_run_performed": true,
+  "checkpoint_consistency_check": {
+    "checkpoint_preflight_performed": true,
+    "checkpoint_source": "controlled_retry_implementation_plan.json",
+    "checkpoint_used": "juggernautXL_version2.safetensors",
+    "checks": {
+      "artifact_index_checkpoint": "juggernautXL_version2.safetensors",
+      "artifact_index_match": true,
+      "retry_plan_checkpoint": "juggernautXL_version2.safetensors",
+      "retry_plan_match": true,
+      "prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "prompt_pack_match": false,
+      "workflow_checkpoint_original": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "workflow_checkpoint_final": "juggernautXL_version2.safetensors",
+      "workflow_match": true,
+      "template_checkpoint_overridden": true
+    },
+    "all_layers_match": false,
+    "checkpoint_state_payload_mismatch": true
+  },
+  "identity_adapter_compatibility_check": {
+    "identity_adapter_compatibility_checked": true,
+    "checkpoint_family": "SDXL",
+    "identity_adapter_family": null,
+    "compatible": true,
+    "blocker": null,
+    "no_identity_adapter_in_workflow": true,
+    "identity_adapter_detection": "no_identity_adapter_nodes_found"
+  },
+  "authorization": {
+    "status": "authorization_required",
+    "ready_for_retry_generation": false,
+    "requires_operator_confirmation": true,
+    "retry_gate_open": false,
+    "next_allowed_action": "workflow_regression_diagnosis_review",
+    "role_decisions_applied": true,
+    "approval_gate_ready": true,
+    "production_accepted": false,
+    "generation_performed": false,
+    "downstream_actions_executed": false,
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_downstream_action": true
+  },
+  "dimension_preflight": {
+    "expected_width": 480,
+    "expected_height": 640,
+    "resolved_workflow_width": 480,
+    "resolved_workflow_height": 640,
+    "dimension_preflight_passed": true,
+    "dimension_preflight_reason": null
+  },
+  "generation_sanity_preflight": {
+    "passed": true,
+    "positive_prompt_present": true,
+    "checkpoint_present": true,
+    "ksampler_connected": true,
+    "latent_or_image_source_valid": true,
+    "save_image_configured": true,
+    "blank_source_image_detected": false,
+    "generation_sanity_preflight_reason": null
+  },
+  "timestamp": "2026-04-30T09:17:58.013706Z"
+}

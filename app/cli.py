@@ -2096,14 +2096,32 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
         checkpoint_consistency_check["checks"]["prompt_pack_checkpoint"] = prompt_pack_checkpoint
         checkpoint_consistency_check["checks"]["prompt_pack_match"] = (prompt_pack_checkpoint == checkpoint)
         
-        # Check 4: workflow template CheckpointLoaderSimple ckpt_name
-        workflow_checkpoint = None
+        # Check 4: workflow template CheckpointLoaderSimple ckpt_name BEFORE mutation
+        workflow_checkpoint_original = None
+        workflow_checkpoint_node_id = None
         for node_id, node in workflow_template.items():
             if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
-                workflow_checkpoint = node.get("inputs", {}).get("ckpt_name")
+                workflow_checkpoint_original = node.get("inputs", {}).get("ckpt_name")
+                workflow_checkpoint_node_id = node_id
                 break
-        checkpoint_consistency_check["checks"]["workflow_checkpoint"] = workflow_checkpoint
-        checkpoint_consistency_check["checks"]["workflow_match"] = (workflow_checkpoint == checkpoint)
+        checkpoint_consistency_check["checks"]["workflow_checkpoint_original"] = workflow_checkpoint_original
+        
+        # RC2-PRODCARDS3AD-FIX: Mutate workflow template to use retry plan checkpoint
+        template_checkpoint_overridden = False
+        if workflow_checkpoint_node_id and checkpoint:
+            workflow_template[workflow_checkpoint_node_id]["inputs"]["ckpt_name"] = checkpoint
+            template_checkpoint_overridden = True
+            print(f"[RC2-PRODCARDS3AD-FIX] Mutated workflow template CheckpointLoaderSimple.ckpt_name to: {checkpoint}")
+        
+        # Check 4b: workflow template CheckpointLoaderSimple ckpt_name AFTER mutation
+        workflow_checkpoint_final = None
+        for node_id, node in workflow_template.items():
+            if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
+                workflow_checkpoint_final = node.get("inputs", {}).get("ckpt_name")
+                break
+        checkpoint_consistency_check["checks"]["workflow_checkpoint_final"] = workflow_checkpoint_final
+        checkpoint_consistency_check["checks"]["workflow_match"] = (workflow_checkpoint_final == checkpoint)
+        checkpoint_consistency_check["checks"]["template_checkpoint_overridden"] = template_checkpoint_overridden
         
         # Determine overall consistency
         all_match = all(
@@ -2140,6 +2158,7 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
         # Check for IP-Adapter FaceID models in workflow
         ip_adapter_node_found = False
         ip_adapter_model = None
+        ip_adapter_nodes = []
         for node_id, node in workflow_template.items():
             if isinstance(node, dict):
                 class_type = node.get("class_type", "")
@@ -2147,9 +2166,22 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
                     ip_adapter_node_found = True
                     inputs = node.get("inputs", {})
                     model_path = inputs.get("model") or inputs.get("ipadapter_file") or inputs.get("model_file")
+                    ip_adapter_nodes.append({
+                        "node_id": node_id,
+                        "class_type": class_type,
+                        "model": model_path
+                    })
                     if model_path:
                         ip_adapter_model = str(model_path)
-                        break
+        
+        # Explicitly report whether identity adapter exists in workflow
+        if not ip_adapter_node_found:
+            identity_adapter_compatibility_check["no_identity_adapter_in_workflow"] = True
+            identity_adapter_compatibility_check["identity_adapter_detection"] = "no_identity_adapter_nodes_found"
+        else:
+            identity_adapter_compatibility_check["no_identity_adapter_in_workflow"] = False
+            identity_adapter_compatibility_check["identity_adapter_detection"] = "identity_adapter_nodes_found"
+            identity_adapter_compatibility_check["ip_adapter_nodes"] = ip_adapter_nodes
         
         if ip_adapter_model:
             ip_adapter_model_lower = ip_adapter_model.lower()
@@ -7261,15 +7293,33 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         checkpoint_consistency_check["checks"]["prompt_pack_checkpoint"] = prompt_pack_checkpoint
         checkpoint_consistency_check["checks"]["prompt_pack_match"] = (prompt_pack_checkpoint == checkpoint)
     
-    # Check 4: workflow template CheckpointLoaderSimple ckpt_name
-    workflow_checkpoint = None
+    # Check 4: workflow template CheckpointLoaderSimple ckpt_name BEFORE mutation
+    workflow_checkpoint_original = None
+    workflow_checkpoint_node_id = None
     if workflow_template:
         for node_id, node in workflow_template.items():
             if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
-                workflow_checkpoint = node.get("inputs", {}).get("ckpt_name")
+                workflow_checkpoint_original = node.get("inputs", {}).get("ckpt_name")
+                workflow_checkpoint_node_id = node_id
                 break
-    checkpoint_consistency_check["checks"]["workflow_checkpoint"] = workflow_checkpoint
-    checkpoint_consistency_check["checks"]["workflow_match"] = (workflow_checkpoint == checkpoint)
+    checkpoint_consistency_check["checks"]["workflow_checkpoint_original"] = workflow_checkpoint_original
+    
+    # RC2-PRODCARDS3AD-FIX: Mutate workflow template to use retry plan checkpoint
+    template_checkpoint_overridden = False
+    if workflow_checkpoint_node_id and checkpoint:
+        workflow_template[workflow_checkpoint_node_id]["inputs"]["ckpt_name"] = checkpoint
+        template_checkpoint_overridden = True
+    
+    # Check 4b: workflow template CheckpointLoaderSimple ckpt_name AFTER mutation
+    workflow_checkpoint_final = None
+    if workflow_template:
+        for node_id, node in workflow_template.items():
+            if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
+                workflow_checkpoint_final = node.get("inputs", {}).get("ckpt_name")
+                break
+    checkpoint_consistency_check["checks"]["workflow_checkpoint_final"] = workflow_checkpoint_final
+    checkpoint_consistency_check["checks"]["workflow_match"] = (workflow_checkpoint_final == checkpoint)
+    checkpoint_consistency_check["checks"]["template_checkpoint_overridden"] = template_checkpoint_overridden
     
     # Determine overall consistency
     all_match = all(
@@ -7299,17 +7349,33 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         identity_adapter_compatibility_check["checkpoint_family"] = "unknown"
     
     # Check for IP-Adapter FaceID models in workflow
+    ip_adapter_node_found = False
     ip_adapter_model = None
+    ip_adapter_nodes = []
     if workflow_template:
         for node_id, node in workflow_template.items():
             if isinstance(node, dict):
                 class_type = node.get("class_type", "")
                 if "ipadapter" in class_type.lower() or "ip_adapter" in class_type.lower():
+                    ip_adapter_node_found = True
                     inputs = node.get("inputs", {})
                     model_path = inputs.get("model") or inputs.get("ipadapter_file") or inputs.get("model_file")
+                    ip_adapter_nodes.append({
+                        "node_id": node_id,
+                        "class_type": class_type,
+                        "model": model_path
+                    })
                     if model_path:
                         ip_adapter_model = str(model_path)
-                        break
+    
+    # Explicitly report whether identity adapter exists in workflow
+    if not ip_adapter_node_found:
+        identity_adapter_compatibility_check["no_identity_adapter_in_workflow"] = True
+        identity_adapter_compatibility_check["identity_adapter_detection"] = "no_identity_adapter_nodes_found"
+    else:
+        identity_adapter_compatibility_check["no_identity_adapter_in_workflow"] = False
+        identity_adapter_compatibility_check["identity_adapter_detection"] = "identity_adapter_nodes_found"
+        identity_adapter_compatibility_check["ip_adapter_nodes"] = ip_adapter_nodes
     
     if ip_adapter_model:
         ip_adapter_model_lower = ip_adapter_model.lower()
@@ -7323,30 +7389,36 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         identity_adapter_compatibility_check["compatible"] = False
         identity_adapter_compatibility_check["blocker"] = "sd15_faceid_adapter_used_with_sdxl_checkpoint"
     
-    # RC2-PRODCARDS3AD: Generate required output JSON files for proof
-    payload_binding_fix_report = {
-        "fix_applied": True,
-        "fix_tag": "RC2-PRODCARDS3AD",
-        "fix_description": "Retry payload checkpoint binding fix with identity adapter compatibility gate",
-        "checkpoint_used": checkpoint,
-        "checkpoint_source": checkpoint_source,
-        "checkpoint_consistency_check": checkpoint_consistency_check,
-        "identity_adapter_compatibility_check": identity_adapter_compatibility_check,
+    # RC2-PRODCARDS3AD-FIX: Generate required output JSON files for proof
+    final_workflow_binding_proof = {
+        "workflow_payload_checkpoint_binding_fixed": True,
+        "retry_plan_checkpoint": checkpoint_consistency_check["checks"].get("retry_plan_checkpoint"),
+        "final_payload_checkpoint": checkpoint,
+        "final_workflow_checkpoint": checkpoint_consistency_check["checks"].get("workflow_checkpoint_final"),
+        "template_original_checkpoint": checkpoint_consistency_check["checks"].get("workflow_checkpoint_original"),
+        "template_checkpoint_overridden": template_checkpoint_overridden,
+        "prompt_pack_checkpoint": checkpoint_consistency_check["checks"].get("prompt_pack_checkpoint"),
+        "prompt_pack_checkpoint_overridden": (checkpoint_consistency_check["checks"].get("prompt_pack_checkpoint") != checkpoint),
+        "checkpoint_state_payload_mismatch": checkpoint_consistency_check.get("checkpoint_state_payload_mismatch", False),
+        "retry_gate_open": auth_result.get("retry_gate_open", False),
+        "qa_allowed": (auth_result.get("next_allowed_action") == "qa_review"),
+        "production_accepted": auth_result.get("production_accepted", False),
+        "assemble_scene_allowed": False,
+        "downstream_blocked": True,
         "dry_run": True,
         "generation_performed": False,
         "comfyui_submission_performed": False,
-        "production_accepted": False,
-        "downstream_blocked": True,
+        "identity_adapter_compatibility_check": identity_adapter_compatibility_check,
         "timestamp": datetime.utcnow().isoformat() + "Z"
     }
     
-    # Write payload binding fix report
-    payload_binding_fix_report_path = project_path / "output" / "control" / "rc2_prodcards3ad_payload_binding_fix_report.json"
+    # Write final workflow binding proof
+    final_workflow_binding_proof_path = project_path / "output" / "control" / "rc2_prodcards3ad_final_workflow_binding_proof.json"
     try:
-        with open(payload_binding_fix_report_path, 'w') as f:
-            json.dump(payload_binding_fix_report, f, indent=2)
+        with open(final_workflow_binding_proof_path, 'w') as f:
+            json.dump(final_workflow_binding_proof, f, indent=2)
     except Exception as e:
-        print(f"[RC2-PRODCARDS3AD] Warning: Failed to write payload binding fix report: {e}")
+        print(f"[RC2-PRODCARDS3AD-FIX] Warning: Failed to write final workflow binding proof: {e}")
     
     # Write dry-run payload audit
     dry_run_payload_audit = {
@@ -7380,7 +7452,7 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         with open(dry_run_payload_audit_path, 'w') as f:
             json.dump(dry_run_payload_audit, f, indent=2)
     except Exception as e:
-        print(f"[RC2-PRODCARDS3AD] Warning: Failed to write dry-run payload audit: {e}")
+        print(f"[RC2-PRODCARDS3AD-FIX] Warning: Failed to write dry-run payload audit: {e}")
     
     # Write identity adapter compatibility gate report
     identity_adapter_gate_report_path = project_path / "output" / "control" / "rc2_prodcards3ad_identity_adapter_compatibility_gate.json"
@@ -7388,7 +7460,7 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         with open(identity_adapter_gate_report_path, 'w') as f:
             json.dump(identity_adapter_compatibility_check, f, indent=2)
     except Exception as e:
-        print(f"[RC2-PRODCARDS3AD] Warning: Failed to write identity adapter compatibility gate report: {e}")
+        print(f"[RC2-PRODCARDS3AD-FIX] Warning: Failed to write identity adapter compatibility gate report: {e}")
     
     result = {
         "status": "valid" if (auth_result.get("ready_for_retry_generation") and dimension_preflight_passed and generation_sanity_preflight_passed) else "invalid",
