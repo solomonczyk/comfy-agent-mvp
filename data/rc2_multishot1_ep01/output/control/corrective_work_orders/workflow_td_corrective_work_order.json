@@ -1,0 +1,75 @@
+{
+  "work_order_id": "corrective-wo-wd-001",
+  "work_order_type": "corrective_work_order",
+  "role": "Workflow TD",
+  "task_code": "RC2-PRODCARDS3L",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "corrective_plan_source": "output/control/corrective_plan.json",
+  "corrective_plan_task": "RC2-PRODCARDS3K",
+  "created_at": "2026-04-30T06:21:00.000000Z",
+  "status": "pending",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "work_order_description": "Workflow TD corrective work order for ep01_shot01. Derived from accepted corrective_plan.json actions wd-001 through wd-004. All items required before controlled retry authorization.",
+  "issue_summary": "Retry #2 frames rejected due to extremely low visual quality and character identity instability. Primary cause identified as model/checkpoint incompatibility (realvisxlV50_v50Bakedvae.safetensors) and insufficient identity preservation in current workflow.",
+  "corrective_tasks": [
+    {
+      "task_id": "wd-001",
+      "action_type": "alternative_checkpoint_workflow_compatibility",
+      "description": "Evaluate alternative checkpoint options recommended by Character Director for workflow compatibility. Test that the alternative checkpoint(s) can be loaded and executed within the current ComfyUI workflow structure. Document compatibility findings.",
+      "priority": "high",
+      "required_for_retry": true,
+      "status": "pending",
+      "depends_on": ["cd-002"],
+      "completion_criteria": "Compatibility report listing tested checkpoints, workflow load status, and recommended checkpoint for retry"
+    },
+    {
+      "task_id": "wd-002",
+      "action_type": "workflow_parameter_changes",
+      "description": "Review and recommend changes to reference_locked workflow parameters affecting identity strength: denoising strength, guidance scale, reference image weighting, and any sampler/scheduler settings. Document current values and proposed revision values.",
+      "priority": "high",
+      "required_for_retry": true,
+      "status": "pending",
+      "completion_criteria": "Parameter change specification listing current vs. proposed values with rationale for each change"
+    },
+    {
+      "task_id": "wd-003",
+      "action_type": "identity_preservation_component_evaluation",
+      "description": "Evaluate identity preservation components present in or compatible with current architecture: IP-Adapter, LoRA, reference lock, or stronger reference weighting mechanisms. Determine which components should be added or adjusted to prevent identity drift.",
+      "priority": "high",
+      "required_for_retry": true,
+      "status": "pending",
+      "depends_on": ["wd-001"],
+      "completion_criteria": "Evaluation report of available identity preservation components with enable/disable recommendations and configuration values"
+    },
+    {
+      "task_id": "wd-004",
+      "action_type": "workflow_revision_requirements",
+      "description": "Define complete workflow revision requirements before retry: new checkpoint path, revised parameter values, identity preservation configuration, and any structural workflow changes needed. This constitutes the Workflow TD sign-off specification for retry authorization.",
+      "priority": "high",
+      "required_for_retry": true,
+      "status": "pending",
+      "depends_on": ["wd-001", "wd-002", "wd-003"],
+      "completion_criteria": "Complete workflow revision specification document ready for controlled retry authorization review"
+    }
+  ],
+  "joint_gate_dependency": {
+    "description": "Workflow TD work order must be completed and reviewed before controlled retry can be authorized. Retry remains blocked until joint-001 (corrective_plan_approval) gate is cleared by both Character Director and Workflow TD.",
+    "joint_gate_id": "joint-001",
+    "retry_authorized_by": "joint approval of both role work orders",
+    "retry_gate_open": false
+  },
+  "boundary_conditions": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true
+  }
+}

@@ -1,0 +1,75 @@
+{
+  "work_order_id": "corrective-wo-cd-001",
+  "work_order_type": "corrective_work_order",
+  "role": "Character Director",
+  "task_code": "RC2-PRODCARDS3L",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "corrective_plan_source": "output/control/corrective_plan.json",
+  "corrective_plan_task": "RC2-PRODCARDS3K",
+  "created_at": "2026-04-30T06:21:00.000000Z",
+  "status": "pending",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "work_order_description": "Character Director corrective work order for ep01_shot01. Derived from accepted corrective_plan.json actions cd-001 through cd-004. All items required before controlled retry authorization.",
+  "issue_summary": "Retry #2 frames rejected due to extremely low visual quality and character identity instability. Primary cause identified as model/checkpoint incompatibility with desired character type (realvisxlV50_v50Bakedvae.safetensors).",
+  "corrective_tasks": [
+    {
+      "task_id": "cd-001",
+      "action_type": "model_checkpoint_evaluation",
+      "description": "Evaluate whether current checkpoint (realvisxlV50_v50Bakedvae.safetensors) can reliably render the specified character type. Document findings with explicit pass/fail verdict.",
+      "priority": "high",
+      "required_for_retry": true,
+      "status": "pending",
+      "completion_criteria": "Written evaluation with checkpoint compatibility verdict (compatible/incompatible) and supporting rationale"
+    },
+    {
+      "task_id": "cd-002",
+      "action_type": "alternative_checkpoint_specification",
+      "description": "If current checkpoint is inadequate, specify alternative model/checkpoint recommendation that better supports the character type. Include model name, version, and justification.",
+      "priority": "high",
+      "required_for_retry": true,
+      "status": "pending",
+      "depends_on": ["cd-001"],
+      "completion_criteria": "Explicit checkpoint recommendation with model name/path and character compatibility rationale"
+    },
+    {
+      "task_id": "cd-003",
+      "action_type": "character_identity_guidance_revision",
+      "description": "Revise character identity guidance and specification to be compatible with the selected checkpoint. Update positive/negative prompt guidance, identity preservation requirements, and consistency targets.",
+      "priority": "medium",
+      "required_for_retry": true,
+      "status": "pending",
+      "depends_on": ["cd-002"],
+      "completion_criteria": "Revised character identity specification document with updated prompt guidance and identity preservation requirements"
+    },
+    {
+      "task_id": "cd-004",
+      "action_type": "reference_identity_preservation_requirements",
+      "description": "Define reference and identity preservation requirements for retry. If character specification changes, provide updated reference images compatible with the new checkpoint style.",
+      "priority": "medium",
+      "required_for_retry": false,
+      "status": "pending",
+      "depends_on": ["cd-003"],
+      "completion_criteria": "Updated reference image path(s) or explicit confirmation that existing reference remains valid for revised specification"
+    }
+  ],
+  "joint_gate_dependency": {
+    "description": "Character Director work order must be completed and reviewed before controlled retry can be authorized. Retry remains blocked until joint-001 (corrective_plan_approval) gate is cleared by both Character Director and Workflow TD.",
+    "joint_gate_id": "joint-001",
+    "retry_authorized_by": "joint approval of both role work orders",
+    "retry_gate_open": false
+  },
+  "boundary_conditions": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true
+  }
+}
