@@ -823,6 +823,55 @@
       "audio_executed": false,
       "render_executed": false,
       "downstream_actions_executed": false
+    },
+    {
+      "event_type": "retry_implementation_plan_review_completed",
+      "timestamp": "2026-04-30T07:02:00.000000Z",
+      "task_code": "RC2-PRODCARDS3P",
+      "shot_id": "shot01",
+      "retry_implementation_plan_review_completed": true,
+      "retry_pre_authorization_checks_completed": true,
+      "retry_pre_authorization_passed": false,
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "retry_generate_frames_executed": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "blocking_prerequisites": [
+        "checkpoint_availability",
+        "ip_adapter_model_availability"
+      ],
+      "checkpoint_availability_check": {
+        "checkpoint": "dynavision_v10.safetensors",
+        "available": false,
+        "blocking": true
+      },
+      "ip_adapter_availability_check": {
+        "model": "ip-adapter-faceid-plus_sd15.bin",
+        "available": false,
+        "blocking": true
+      },
+      "workflow_compatibility_check": {
+        "status": "verified_pending_validation",
+        "compatibility": "compatible_with_modifications"
+      },
+      "identity_preservation_components_check": {
+        "reference_node_available": true,
+        "ip_adapter_available": false,
+        "blocking": true
+      },
+      "parameter_changes_consistency_check": {
+        "status": "passed",
+        "consistent": true
+      },
+      "next_allowed_action": "retry_implementation_plan_blocked"
     }
   ]
 }
