@@ -349,16 +349,7 @@
       "audio_authorized": false,
       "render_authorized": false,
       "comfyui_generation": false,
-      "generation_performed": false,
-      "retry_generate_frames_executed": false,
-      "qa_rerun": false,
-      "assemble_scene_executed": false,
-      "audio_executed": false,
-      "render_executed": false,
-      "downstream_actions_executed": false,
-      "authorization_revalidation_path": "output/control/rc2_prodcards3an_retry_authorization_revalidation.json",
-      "retry_generation_preflight_path": "output/control/rc2_prodcards3an_retry_generation_preflight.json",
-      "repo_hygiene_check_path": "output/control/rc2_prodcards3an_repo_hygiene_check.json"
+      "generation_performed": false
     }
   ],
   "dry_proof_only": false,
@@ -2128,6 +2119,32 @@
       "pre_generation_state_check_path": "output/control/rc2_prodcards3au_pre_generation_state_check.json",
       "hyperrealism_prompt_guard_path": "output/control/rc2_prodcards3au_hyperrealism_prompt_guard.json",
       "execution_result_path": "output/control/rc2_prodcards3au_execution_result.json"
+    },
+    {
+      "event_type": "hyperrealism_prompt_recipe_corrected",
+      "task_code": "RC2-PRODCARDS3AV",
+      "episode_id": "ep01",
+      "shot_id": "shot01",
+      "hyperrealism_guard_recheck_passed": true,
+      "generation_performed": false,
+      "comfyui_generation": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "timestamp": "2026-04-30T17:56:00.000000Z",
+      "hyperrealism_prompt_correction_path": "output/control/rc2_prodcards3av_hyperrealism_prompt_correction.json",
+      "recipe_correction_path": "output/control/rc2_prodcards3av_recipe_correction.json",
+      "hyperrealism_guard_recheck_path": "output/control/rc2_prodcards3av_hyperrealism_guard_recheck.json",
+      "retry_preflight_result_path": "output/control/rc2_prodcards3av_retry_preflight_result.json"
     }
   ]
 }

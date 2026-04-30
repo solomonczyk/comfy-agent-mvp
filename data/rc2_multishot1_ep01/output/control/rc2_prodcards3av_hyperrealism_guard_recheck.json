@@ -1,0 +1,124 @@
+{
+  "task_code": "RC2-PRODCARDS3AV",
+  "shot_id": "shot01",
+  "guard_type": "hyperrealism_guard_recheck",
+  "recheck_timestamp": "2026-04-30T17:56:00Z",
+  "positive_prompt_guard": {
+    "checked": true,
+    "forbidden_terms_checked": [
+      "sun-dappled",
+      "dreamlike",
+      "ethereal",
+      "haze",
+      "fog",
+      "mist",
+      "soft focus",
+      "atmospheric veil",
+      "washed-out atmosphere",
+      "over-soft cinematic glow"
+    ],
+    "forbidden_terms_found": [],
+    "forbidden_terms_removed": true,
+    "required_hyperrealistic_terms_checked": [
+      "hyperrealistic cinematic portrait",
+      "crisp natural skin texture",
+      "visible pores",
+      "sharp eyelashes",
+      "detailed eyes",
+      "realistic fabric texture",
+      "detailed forest bark and leaves",
+      "clean natural daylight",
+      "high local contrast",
+      "high micro-detail",
+      "realistic full-frame camera look",
+      "face visible",
+      "medium close-up or upper-body composition",
+      "no haze",
+      "no fog",
+      "no soft focus"
+    ],
+    "required_hyperrealistic_terms_present": true,
+    "positive_prompt_guard_passed": true
+  },
+  "negative_prompt_guard": {
+    "checked": true,
+    "required_anti_soft_haze_terms": [
+      "haze",
+      "fog",
+      "mist",
+      "smoke",
+      "soft focus",
+      "blurry",
+      "washed out",
+      "low contrast",
+      "overexposed",
+      "underexposed",
+      "plastic skin",
+      "waxy skin",
+      "CGI",
+      "doll face",
+      "painterly",
+      "low detail",
+      "muddy background",
+      "flat lighting",
+      "gray veil"
+    ],
+    "required_terms_present_count": 19,
+    "required_terms_present": true,
+    "negative_prompt_guard_passed": true
+  },
+  "workflow_binding_guard": {
+    "checked": true,
+    "patched_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+    "patched_workflow_binding_preserved": true,
+    "workflow_binding_guard_passed": true
+  },
+  "identity_wiring_guard": {
+    "checked": true,
+    "ip_adapter_advanced_present": true,
+    "sdxl_faceid_adapter_referenced": true,
+    "sdxl_faceid_adapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "sdxl_faceid_lora_referenced": true,
+    "sdxl_faceid_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "reference_image_connected": true,
+    "identity_wiring_preserved": true,
+    "identity_wiring_guard_passed": true
+  },
+  "checkpoint_guard": {
+    "checked": true,
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_match": true,
+    "checkpoint_guard_passed": true
+  },
+  "resolution_guard": {
+    "checked": true,
+    "resolution": "1344x768",
+    "width": 1344,
+    "height": 768,
+    "resolution_match": true,
+    "resolution_guard_passed": true
+  },
+  "single_frame_policy_guard": {
+    "checked": true,
+    "frames_to_generate": 1,
+    "single_frame_retry_policy_enabled": true,
+    "single_frame_policy_guard_passed": true
+  },
+  "overall_guard_result": {
+    "all_guards_passed": true,
+    "positive_prompt_guard_passed": true,
+    "negative_prompt_guard_passed": true,
+    "workflow_binding_guard_passed": true,
+    "identity_wiring_guard_passed": true,
+    "checkpoint_guard_passed": true,
+    "resolution_guard_passed": true,
+    "single_frame_policy_guard_passed": true,
+    "hyperrealism_guard_recheck_passed": true
+  },
+  "next_allowed_action": "controlled_retry_authorization_required",
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true
+}

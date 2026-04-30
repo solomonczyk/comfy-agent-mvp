@@ -1,0 +1,75 @@
+{
+  "task_code": "RC2-PRODCARDS3AV",
+  "shot_id": "shot01",
+  "preflight_type": "hyperrealism_retry_dry_run",
+  "preflight_timestamp": "2026-04-30T17:56:00Z",
+  "dry_run": true,
+  "would_execute_action": "retry_generate_frames",
+  "would_run_comfyui": true,
+  "generation_performed": false,
+  "comfyui_generation": false,
+  "real_project_mutated": false,
+  "authorization": {
+    "status": "authorization_required",
+    "ready_for_retry_generation": true,
+    "requires_operator_confirmation": true,
+    "retry_gate_open": true,
+    "next_allowed_action": "retry_generate_frames",
+    "role_decisions_applied": true,
+    "approval_gate_ready": true,
+    "production_accepted": false,
+    "generation_performed": false,
+    "downstream_actions_executed": false,
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_downstream_action": true
+  },
+  "dimension_preflight": {
+    "expected_width": 1344,
+    "expected_height": 768,
+    "resolved_workflow_width": 1344,
+    "resolved_workflow_height": 768,
+    "dimension_preflight_passed": true,
+    "dimension_preflight_reason": null
+  },
+  "generation_sanity_preflight": {
+    "passed": true,
+    "positive_prompt_present": true,
+    "checkpoint_present": true,
+    "ksampler_connected": true,
+    "latent_or_image_source_valid": true,
+    "save_image_configured": true,
+    "blank_source_image_detected": false,
+    "generation_sanity_preflight_reason": null
+  },
+  "resolution_policy_preflight": {
+    "passed": true,
+    "reason": null,
+    "resolution": "1344x768",
+    "aspect_ratio": "16:9",
+    "orientation": "landscape",
+    "policy_compliant": true
+  },
+  "patched_workflow_binding": {
+    "patched_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+    "binding_preserved": true,
+    "ip_adapter_advanced_present": true,
+    "sdxl_faceid_adapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "sdxl_faceid_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "reference_image_connected": true,
+    "checkpoint": "juggernautXL_version2.safetensors"
+  },
+  "single_frame_policy": {
+    "frames_to_generate": 1,
+    "single_frame_retry_policy_enabled": true,
+    "single_frame_policy_passed": true
+  },
+  "preflight_result": "passed",
+  "preflight_summary": "Dry-run verification passed. Hyperrealism prompt corrections applied, recipe corrections applied, patched SDXL FaceID workflow binding preserved, identity wiring intact, checkpoint correct, resolution correct, single-frame policy enabled. No ComfyUI execution, no frame generation, no downstream actions.",
+  "next_allowed_action": "controlled_retry_authorization_required",
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true
+}
