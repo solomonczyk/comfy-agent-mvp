@@ -1,0 +1,106 @@
+{
+  "task_code": "RC2-PRODCARDS3AU-CLEAN",
+  "guard_timestamp": "2026-04-30T17:35:30Z",
+  "guard_status": "FAILED",
+  "generation_blocked": true,
+  "block_reason": "hyperrealism_prompt_recipe_preflight_failed",
+  "positive_prompt_guard": {
+    "prompt_source": "output/control/ep01_shot01_prompt_pack.json",
+    "positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+    "forbidden_terms_detected": [
+      "sun-dappled",
+      "dreamlike"
+    ],
+    "forbidden_terms_definitions": {
+      "sun-dappled": "atmospheric haze-like lighting effect",
+      "dreamlike": "explicitly forbidden soft atmosphere term"
+    },
+    "positive_prompt_guard_status": "FAILED",
+    "positive_prompt_guard_reason": "Forbidden hyperrealism-blocking terms present in positive prompt"
+  },
+  "negative_prompt_guard": {
+    "negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence",
+    "required_anti_soft_terms": [
+      "haze",
+      "fog",
+      "mist",
+      "smoke",
+      "soft focus",
+      "blurry",
+      "washed out",
+      "low contrast",
+      "overexposed",
+      "underexposed",
+      "plastic skin",
+      "waxy skin",
+      "CGI",
+      "doll face",
+      "painterly",
+      "low detail",
+      "muddy background",
+      "flat lighting",
+      "gray veil"
+    ],
+    "required_terms_present": [
+      "blurry"
+    ],
+    "required_terms_missing": [
+      "haze",
+      "fog",
+      "mist",
+      "smoke",
+      "soft focus",
+      "washed out",
+      "low contrast",
+      "overexposed",
+      "underexposed",
+      "plastic skin",
+      "waxy skin",
+      "CGI",
+      "doll face",
+      "painterly",
+      "low detail",
+      "muddy background",
+      "flat lighting",
+      "gray veil"
+    ],
+    "negative_prompt_guard_status": "FAILED",
+    "negative_prompt_guard_reason": "Missing required anti-soft/anti-haze terms in negative prompt"
+  },
+  "overall_guard_result": {
+    "guard_passed": false,
+    "generation_allowed": false,
+    "next_allowed_action": "hyperrealism_prompt_recipe_correction_required",
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "required_corrections": {
+    "positive_prompt_corrections": [
+      "Remove 'sun-dappled'",
+      "Remove 'dreamlike atmosphere'",
+      "Replace with sharp, clear lighting terms"
+    ],
+    "negative_prompt_corrections": [
+      "Add 'haze'",
+      "Add 'fog'",
+      "Add 'mist'",
+      "Add 'soft focus'",
+      "Add 'washed out'",
+      "Add 'low contrast'",
+      "Add 'overexposed'",
+      "Add 'underexposed'",
+      "Add 'plastic skin'",
+      "Add 'waxy skin'",
+      "Add 'CGI'",
+      "Add 'doll face'",
+      "Add 'painterly'",
+      "Add 'low detail'",
+      "Add 'muddy background'",
+      "Add 'flat lighting'",
+      "Add 'gray veil'"
+    ]
+  }
+}

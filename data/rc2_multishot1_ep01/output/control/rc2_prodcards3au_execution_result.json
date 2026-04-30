@@ -1,0 +1,45 @@
+{
+  "task_code": "RC2-PRODCARDS3AU-CLEAN",
+  "execution_timestamp": "2026-04-30T17:36:00Z",
+  "rc2_prodcards3au_generation_blocked": true,
+  "block_reason": "hyperrealism_prompt_recipe_preflight_failed",
+  "retry_generate_frames_executed": false,
+  "generation_performed": false,
+  "comfyui_generation": false,
+  "frames_generated": false,
+  "frame_count": 0,
+  "generated_frame_paths": [],
+  "next_allowed_action": "hyperrealism_prompt_recipe_correction_required",
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "qa_review_executed": false,
+  "assemble_scene_executed": false,
+  "audio_executed": false,
+  "render_executed": false,
+  "downstream_actions_executed": false,
+  "pre_generation_state_check": {
+    "artifact_path": "output/control/rc2_prodcards3au_pre_generation_state_check.json",
+    "status": "completed",
+    "proceed_to_guard": true
+  },
+  "hyperrealism_prompt_guard": {
+    "artifact_path": "output/control/rc2_prodcards3au_hyperrealism_prompt_guard.json",
+    "status": "FAILED",
+    "generation_blocked": true
+  },
+  "dry_run_verification": {
+    "status": "passed",
+    "resolution": "1344x768",
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "ipadapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "ipadapter_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "patched_workflow_verified": true
+  },
+  "frames_manifest_unchanged": true,
+  "generate_frames_payload_trace_unchanged": true,
+  "artifact_index_unchanged": true,
+  "episode_ledger_unchanged": true
+}

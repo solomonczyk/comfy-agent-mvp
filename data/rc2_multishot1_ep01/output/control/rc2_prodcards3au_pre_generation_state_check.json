@@ -1,0 +1,41 @@
+{
+  "task_code": "RC2-PRODCARDS3AU-CLEAN",
+  "check_timestamp": "2026-04-30T17:35:00Z",
+  "git_commit": "0bd4f3e",
+  "git_commit_message": "RC2-PRODCARDS3AT: Authorize patched SDXL FaceID retry generation",
+  "repo_synced_with_origin": true,
+  "rc2_prodcards3at_exists": true,
+  "rc2_prodcards3at_in_artifact_index": true,
+  "rc2_prodcards3at_in_episode_ledger": true,
+  "rc2_prodcards3au_exists": false,
+  "rc2_prodcards3au_in_artifact_index": false,
+  "rc2_prodcards3au_in_episode_ledger": false,
+  "rc2_prodcards3au_partial_frame_evidence": false,
+  "rc2_prodcards3au_memory_error_evidence": false,
+  "current_artifact_index_state": {
+    "retry_gate_open": false,
+    "next_allowed_action": "qa_review",
+    "production_accepted": false,
+    "downstream_blocked": false
+  },
+  "controlled_retry_decision_state": {
+    "retry_gate_open": true,
+    "next_allowed_action": "retry_generate_frames",
+    "production_accepted": false,
+    "assemble_scene_allowed": false
+  },
+  "patched_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+  "patched_workflow_exists": true,
+  "dry_run_status": "valid",
+  "dry_run_resolution": "1344x768",
+  "dry_run_checkpoint": "juggernautXL_version2.safetensors",
+  "dry_run_ipadapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+  "dry_run_ipadapter_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+  "state_corruption_detected": true,
+  "state_corruption_details": {
+    "has_corruption": true,
+    "has_active_corruption": true,
+    "safe_for_next_step": false
+  },
+  "proceed_to_hyperrealism_guard": true
+}
