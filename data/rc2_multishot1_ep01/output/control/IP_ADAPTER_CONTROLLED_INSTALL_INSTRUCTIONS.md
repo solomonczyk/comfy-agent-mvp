@@ -167,4 +167,4 @@ The following actions are NOT permitted as part of this contract:
 - **Model Move/Copy Performed:** false
 - **Verification Performed:** false
 - **All Checks Passed:** false
-- **Next Allowed Action:** controlled_ip_adapter_asset_resolution_required
+- **Next Allowed Action:** controlled_ip_adapter_asset_acquisition_required

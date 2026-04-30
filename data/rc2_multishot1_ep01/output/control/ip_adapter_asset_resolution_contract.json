@@ -24,7 +24,7 @@
     "ip_adapter_candidates_found": false,
     "remaining_prerequisites_available": false,
     "missing_prerequisites": ["ip-adapter-faceid-plus_sd15.bin"],
-    "next_allowed_action": "controlled_ip_adapter_asset_resolution_required",
+    "next_allowed_action": "controlled_ip_adapter_asset_acquisition_required",
     "retry_gate_open": false,
     "production_accepted": false,
     "assemble_scene_allowed": false,

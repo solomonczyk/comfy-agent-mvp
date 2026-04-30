@@ -78,7 +78,7 @@
       "downstream_blocked": true
     },
     "any_check_failed": {
-      "next_allowed_action": "controlled_ip_adapter_asset_resolution_required",
+      "next_allowed_action": "controlled_ip_adapter_asset_acquisition_required",
       "retry_gate_open": false,
       "production_accepted": false,
       "assemble_scene_allowed": false,
@@ -88,7 +88,7 @@
   "current_state": {
     "verification_performed": false,
     "all_checks_passed": false,
-    "next_allowed_action": "controlled_ip_adapter_asset_resolution_required",
+    "next_allowed_action": "controlled_ip_adapter_asset_acquisition_required",
     "retry_gate_open": false,
     "production_accepted": false,
     "assemble_scene_allowed": false,
