@@ -1,0 +1,138 @@
+{
+  "task_code": "RC2-PRODCARDS3AJ",
+  "validation_policy_type": "sdxl_faceid_asset_validation",
+  "timestamp": "2026-04-30T13:00:00.000000Z",
+  "adapter_validation_policy": {
+    "asset_name": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "validation_checks": [
+      {
+        "check_name": "filename_exact_match",
+        "required": true,
+        "expected_value": "ip-adapter-faceid-plusv2_sdxl.bin",
+        "validation_method": "string_comparison"
+      },
+      {
+        "check_name": "extension_validation",
+        "required": true,
+        "expected_value": ".bin",
+        "validation_method": "extension_check"
+      },
+      {
+        "check_name": "file_size_validation",
+        "required": true,
+        "expected_range_mb": [1420, 1560],
+        "tolerance_percent": 5,
+        "validation_method": "size_check"
+      },
+      {
+        "check_name": "sha256_hash_recording",
+        "required": true,
+        "validation_method": "hash_computation_and_record"
+      },
+      {
+        "check_name": "source_reference_recording",
+        "required": true,
+        "expected_source": "https://huggingface.co/h94/IP-Adapter-FaceID",
+        "expected_commit": "36ce7f96f0c76c1e8b100f10fa094a2ac48ea1c6",
+        "validation_method": "metadata_record"
+      }
+    ]
+  },
+  "lora_validation_policy": {
+    "asset_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "validation_checks": [
+      {
+        "check_name": "filename_exact_match",
+        "required": true,
+        "expected_value": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+        "validation_method": "string_comparison"
+      },
+      {
+        "check_name": "extension_validation",
+        "required": true,
+        "expected_value": ".safetensors",
+        "validation_method": "extension_check"
+      },
+      {
+        "check_name": "file_size_validation",
+        "required": true,
+        "expected_range_mb": [353, 391],
+        "tolerance_percent": 5,
+        "validation_method": "size_check"
+      },
+      {
+        "check_name": "sha256_hash_recording",
+        "required": true,
+        "validation_method": "hash_computation_and_record"
+      },
+      {
+        "check_name": "source_reference_recording",
+        "required": true,
+        "expected_source": "https://huggingface.co/h94/IP-Adapter-FaceID",
+        "expected_commit": "6eba56f",
+        "validation_method": "metadata_record"
+      }
+    ]
+  },
+  "post_install_validation_policy": {
+    "validation_checks": [
+      {
+        "check_name": "comfyui_ipadapter_directory_exists",
+        "required": true,
+        "expected_path": "ComfyUI/models/ipadapter/",
+        "validation_method": "directory_exists"
+      },
+      {
+        "check_name": "comfyui_lora_directory_exists",
+        "required": true,
+        "expected_path": "ComfyUI/models/lora/",
+        "validation_method": "directory_exists"
+      },
+      {
+        "check_name": "adapter_install_path_valid",
+        "required": true,
+        "expected_path": "ComfyUI/models/ipadapter/ip-adapter-faceid-plusv2_sdxl.bin",
+        "validation_method": "file_exists"
+      },
+      {
+        "check_name": "lora_install_path_valid",
+        "required": true,
+        "expected_path": "ComfyUI/models/lora/ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+        "validation_method": "file_exists"
+      },
+      {
+        "check_name": "no_overwrite_unless_validated",
+        "required": true,
+        "validation_method": "overwrite_prevention_check"
+      }
+    ]
+  },
+  "validation_gates": {
+    "all_checks_must_pass": true,
+    "any_failure_blocks_install": true,
+    "any_failure_blocks_retry": true,
+    "validation_required_before_install": true,
+    "validation_required_before_retry_authorization": true
+  },
+  "rejection_policy": {
+    "rejected_assets_must_not_be_used": [
+      "ip-adapter-faceid-plus_sd15.bin",
+      "ip-adapter_sdxl.safetensors"
+    ],
+    "rejection_reason_must_be_recorded": true,
+    "silent_substitution_forbidden": true
+  },
+  "boundary_enforcement": {
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "no_download_until_precheck_complete": true,
+    "no_install_until_validation_complete": true,
+    "no_retry_until_separate_authorization": true
+  },
+  "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_precheck_required"
+}

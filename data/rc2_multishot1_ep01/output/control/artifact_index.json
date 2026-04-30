@@ -482,5 +482,27 @@
     "resolution_source_audit_path": "output/control/rc2_prodcards3ai_resolution_source_audit.json",
     "aspect_ratio_policy_path": "output/control/rc2_prodcards3ai_aspect_ratio_policy.json",
     "resolution_preflight_gate_path": "output/control/rc2_prodcards3ai_resolution_preflight_gate.json"
+  },
+  "rc2_prodcards3aj": {
+    "sdxl_faceid_source_resolution_completed": true,
+    "sdxl_faceid_trusted_source_resolved": true,
+    "selected_sdxl_faceid_adapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "selected_sdxl_faceid_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "sdxl_faceid_lora_required": true,
+    "sdxl_faceid_acquisition_path_created": true,
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false,
+    "identity_preservation_strategy_satisfied": false,
+    "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_precheck_required",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "timestamp": "2026-04-30T13:00:00.000000Z",
+    "sdxl_faceid_source_resolution_path": "output/control/rc2_prodcards3aj_sdxl_faceid_source_resolution.json",
+    "sdxl_faceid_allowlist_decision_path": "output/control/rc2_prodcards3aj_sdxl_faceid_allowlist_decision.json",
+    "sdxl_faceid_acquisition_path_path": "output/control/rc2_prodcards3aj_sdxl_faceid_acquisition_path.json",
+    "sdxl_faceid_validation_policy_path": "output/control/rc2_prodcards3aj_sdxl_faceid_validation_policy.json"
   }
 }

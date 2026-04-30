@@ -1,0 +1,83 @@
+{
+  "task_code": "RC2-PRODCARDS3AJ",
+  "task_description": "Resolve controlled SDXL FaceID asset acquisition path",
+  "timestamp": "2026-04-30T13:00:00.000000Z",
+  "checkpoint_family_confirmation": {
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_family": "SDXL",
+    "checkpoint_family_confirmed": true
+  },
+  "rejected_assets_confirmation": {
+    "ip_adapter_faceid_plus_sd15_bin": {
+      "filename": "ip-adapter-faceid-plus_sd15.bin",
+      "family": "SD15",
+      "rejection_reason": "rejected_for_sdxl_checkpoint_family",
+      "status": "rejected"
+    },
+    "ip_adapter_sdxl_safetensors": {
+      "filename": "ip-adapter_sdxl.safetensors",
+      "family": "SDXL",
+      "faceid_capable": false,
+      "rejection_reason": "generic_sdxl_adapter_not_faceid_lock",
+      "status": "rejected"
+    }
+  },
+  "trusted_source_resolution": {
+    "source_name": "h94/IP-Adapter-FaceID",
+    "source_type": "huggingface_repository",
+    "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID",
+    "source_trusted": true,
+    "source_allowlisted": true,
+    "verified_commit": "36ce7f96f0c76c1e8b100f10fa094a2ac48ea1c6",
+    "license_or_usage_note": "Non-commercial use per model card limitations"
+  },
+  "sdxl_faceid_adapter_candidate": {
+    "expected_filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "expected_asset_type": "bin",
+    "expected_family": "SDXL",
+    "faceid_capable": true,
+    "plusv2": true,
+    "source_file_url": "https://huggingface.co/h94/IP-Adapter-FaceID/blob/main/ip-adapter-faceid-plusv2_sdxl.bin",
+    "file_size_approximate": "1.49 GB",
+    "verified_exists": true
+  },
+  "sdxl_faceid_lora_candidate": {
+    "expected_filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "expected_asset_type": "safetensors",
+    "expected_family": "SDXL",
+    "faceid_capable": true,
+    "plusv2": true,
+    "source_file_url": "https://huggingface.co/h94/IP-Adapter-FaceID/blob/main/ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "file_size_approximate": "372 MB",
+    "verified_exists": true,
+    "lora_required": true
+  },
+  "acquisition_set_decision": {
+    "decision_case": "B",
+    "case_description": "adapter + LoRA required",
+    "selected_sdxl_faceid_adapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "selected_sdxl_faceid_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "sdxl_faceid_lora_required": true,
+    "source_resolved": true,
+    "trusted_source_resolved": true
+  },
+  "lower_priority_candidates": {
+    "ip_adapter_faceid_sdxl_bin": {
+      "filename": "ip-adapter-faceid_sdxl.bin",
+      "family": "SDXL",
+      "faceid_capable": true,
+      "plusv2": false,
+      "source_file_url": "https://huggingface.co/h94/IP-Adapter-FaceID/blob/main/ip-adapter-faceid_sdxl.bin",
+      "selection_status": "not_selected",
+      "reason": "plusv2 variant provides stronger identity lock"
+    }
+  },
+  "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_precheck_required",
+  "download_authorized": false,
+  "install_authorized": false,
+  "retry_authorized": false,
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true
+}

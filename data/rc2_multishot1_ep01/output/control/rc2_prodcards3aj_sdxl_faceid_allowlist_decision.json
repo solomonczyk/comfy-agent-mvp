@@ -1,0 +1,60 @@
+{
+  "task_code": "RC2-PRODCARDS3AJ",
+  "decision_type": "sdxl_faceid_source_allowlist",
+  "timestamp": "2026-04-30T13:00:00.000000Z",
+  "allowlist_decision": {
+    "source_name": "h94/IP-Adapter-FaceID",
+    "source_type": "huggingface_repository",
+    "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID",
+    "allowlist_status": "approved",
+    "allowlist_reason": "Trusted source with verified SDXL FaceID assets, official repository from original IP-Adapter-FaceID author",
+    "allowlist_conditions": [
+      "Non-commercial use only per model card license",
+      "Exact filename match required for acquisition",
+      "SHA256 verification required post-download",
+      "No modification or redistribution of acquired assets"
+    ]
+  },
+  "adapter_allowlist": {
+    "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "allowlist_status": "approved",
+    "family": "SDXL",
+    "faceid_capable": true,
+    "plusv2": true,
+    "source_verified": true,
+    "commit_verified": "36ce7f96f0c76c1e8b100f10fa094a2ac48ea1c6"
+  },
+  "lora_allowlist": {
+    "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "allowlist_status": "approved",
+    "family": "SDXL",
+    "faceid_capable": true,
+    "plusv2": true,
+    "source_verified": true,
+    "commit_verified": "6eba56f",
+    "lora_required": true
+  },
+  "rejected_assets": {
+    "ip_adapter_faceid_plus_sd15_bin": {
+      "filename": "ip-adapter-faceid-plus_sd15.bin",
+      "allowlist_status": "rejected_for_sdxl",
+      "reason": "SD15 family incompatible with SDXL checkpoint juggernautXL_version2.safetensors"
+    },
+    "ip_adapter_sdxl_safetensors": {
+      "filename": "ip-adapter_sdxl.safetensors",
+      "allowlist_status": "rejected_not_faceid",
+      "reason": "Generic SDXL IP-Adapter lacks FaceID capability for identity lock"
+    }
+  },
+  "acquisition_authorization": {
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false,
+    "authorization_blocked_reason": "Pre-acquisition review and controlled acquisition path must be established before download authorization"
+  },
+  "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_precheck_required",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true
+}
