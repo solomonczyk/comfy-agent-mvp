@@ -1,0 +1,74 @@
+{
+  "task_code": "RC2-PRODCARDS3AH",
+  "task_name": "SDXL FaceID Adapter Asset Resolution",
+  "timestamp": "2026-04-30T10:03:00Z",
+  "searched_directories": [
+    "F:\\ComfyUI\\models\\ipadapter",
+    "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\models\\ipadapter",
+    "custom_nodes\\ComfyUI_IPAdapter_plus\\models",
+    "extra_model_paths.yaml model roots (none configured)"
+  ],
+  "search_results": {
+    "total_candidates_found": 2,
+    "sdxl_faceid_candidates_found": 0,
+    "candidates": [
+      {
+        "filename": "ip-adapter-faceid-plus_sd15.bin",
+        "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plus_sd15.bin",
+        "size_bytes": 156558503,
+        "size_mb": 149.28,
+        "extension": ".bin",
+        "adapter_family": "IP-Adapter FaceID",
+        "faceid_capable": true,
+        "sdxl_compatible": false,
+        "compatible_with_juggernautxl": false,
+        "source": "h94/IP-Adapter-FaceID (controlled acquisition path exists in controlled_ip_adapter_download.py)",
+        "review_required": false,
+        "rejection_reason": "SD15 model incompatible with SDXL/JuggernautXL checkpoint"
+      },
+      {
+        "filename": "ip-adapter_sdxl.safetensors",
+        "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter_sdxl.safetensors",
+        "size_bytes": 702585376,
+        "size_mb": 669.88,
+        "extension": ".safetensors",
+        "adapter_family": "IP-Adapter SDXL",
+        "faceid_capable": false,
+        "sdxl_compatible": true,
+        "compatible_with_juggernautxl": true,
+        "source": "unknown",
+        "review_required": false,
+        "rejection_reason": "Standard IP-Adapter without FaceID capability - cannot provide identity lock"
+      }
+    ]
+  },
+  "temp_acquisition_artifact": {
+    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\temp\\ip_adapter_acquisition\\ip-adapter-faceid-plus_sd15.bin",
+    "note": "SD15 FaceID adapter acquired via controlled_ip_adapter_download.py - not SDXL-compatible"
+  },
+  "classification_summary": {
+    "ip_adapter_faceid_plus_sd15_bin": {
+      "status": "REJECTED",
+      "reason": "SD15 model incompatible with SDXL/JuggernautXL checkpoint"
+    },
+    "ip_adapter_sdxl_safetensors": {
+      "status": "REJECTED",
+      "reason": "Standard IP-Adapter without FaceID capability - cannot provide identity lock"
+    }
+  },
+  "sdxl_faceid_search_patterns_used": [
+    "faceid",
+    "face-id",
+    "ip-adapter-faceid",
+    "sdxl",
+    "plus",
+    "plusv2",
+    ".bin",
+    ".safetensors"
+  ],
+  "sdxl_faceid_specific_searches": [
+    "*faceid*sdxl*",
+    "*sdxl*faceid*"
+  ],
+  "sdxl_faceid_specific_search_results": 0
+}

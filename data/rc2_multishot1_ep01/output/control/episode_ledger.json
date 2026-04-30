@@ -1463,6 +1463,66 @@
         "faceid_capability_decision": "output/control/rc2_prodcards3ag_faceid_capability_decision.json",
         "identity_strategy_next_step": "output/control/rc2_prodcards3ag_identity_strategy_next_step.json"
       }
+    },
+    {
+      "event_type": "sdxl_faceid_adapter_asset_resolution_completed",
+      "timestamp": "2026-04-30T10:03:00.000000Z",
+      "task_code": "RC2-PRODCARDS3AH",
+      "task_description": "SDXL FaceID Adapter Asset Resolution",
+      "shot_id": "shot01",
+      "sdxl_faceid_adapter_resolution_completed": true,
+      "valid_sdxl_faceid_adapter_found": false,
+      "candidate_sdxl_faceid_adapter_found": false,
+      "identity_preservation_strategy_satisfied": false,
+      "resolution_outcome": "B",
+      "resolution_outcome_description": "No valid local SDXL FaceID adapter found",
+      "decision_outcome": "controlled_sdxl_faceid_asset_acquisition_required",
+      "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "no_generation_executed": true,
+      "no_comfyui_execution": true,
+      "no_frame_generation": true,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "download_performed": false,
+      "install_performed": false,
+      "model_move_or_copy_performed": false,
+      "searched_directories": [
+        "F:\\ComfyUI\\models\\ipadapter",
+        "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\models\\ipadapter (does not exist)",
+        "custom_nodes\\ComfyUI_IPAdapter_plus\\models (not found)",
+        "extra_model_paths.yaml model roots (none configured)"
+      ],
+      "assets_found": 2,
+      "assets_rejected": 2,
+      "rejection_details": [
+        {
+          "asset": "ip-adapter-faceid-plus_sd15.bin",
+          "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plus_sd15.bin",
+          "rejection_reason": "SD15 model incompatible with SDXL/JuggernautXL checkpoint",
+          "faceid_capable": true,
+          "sdxl_compatible": false
+        },
+        {
+          "asset": "ip-adapter_sdxl.safetensors",
+          "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter_sdxl.safetensors",
+          "rejection_reason": "Standard IP-Adapter without FaceID capability - cannot provide identity lock",
+          "faceid_capable": false,
+          "sdxl_compatible": true
+        }
+      ],
+      "artifact_paths": {
+        "sdxl_faceid_asset_inventory": "output/control/rc2_prodcards3ah_sdxl_faceid_asset_inventory.json",
+        "sdxl_faceid_resolution_decision": "output/control/rc2_prodcards3ah_sdxl_faceid_resolution_decision.json",
+        "identity_asset_next_step": "output/control/rc2_prodcards3ah_identity_asset_next_step.json"
+      }
     }
   ]
 }

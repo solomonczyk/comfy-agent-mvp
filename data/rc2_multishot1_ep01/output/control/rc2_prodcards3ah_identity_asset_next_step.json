@@ -1,0 +1,37 @@
+{
+  "task_code": "RC2-PRODCARDS3AH",
+  "task_name": "SDXL FaceID Adapter Asset Resolution",
+  "timestamp": "2026-04-30T10:03:00Z",
+  "current_state": {
+    "sdxl_faceid_adapter_resolution_completed": true,
+    "valid_sdxl_faceid_adapter_found": false,
+    "candidate_sdxl_faceid_adapter_found": false,
+    "identity_preservation_strategy_satisfied": false,
+    "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_required",
+    "retry_gate_open": false
+  },
+  "next_step": {
+    "action": "controlled_sdxl_faceid_asset_acquisition_required",
+    "description": "Establish controlled acquisition path for SDXL FaceID adapter",
+    "blocking_reason": "No valid SDXL FaceID adapter found locally; existing controlled acquisition path only targets SD15 FaceID adapter",
+    "prerequisites": [
+      "Identify trusted source for SDXL FaceID adapter (e.g., h94/IP-Adapter-FaceID SDXL variant or equivalent)",
+      "Create controlled acquisition script similar to controlled_ip_adapter_download.py",
+      "Validate SDXL FaceID adapter compatibility with JuggernautXL checkpoint",
+      "Test identity preservation workflow with acquired SDXL FaceID adapter"
+    ],
+    "blocked_operations": [
+      "identity_workflow_patch_required",
+      "retry_generate_frames",
+      "qa_allowed",
+      "production_accepted",
+      "assemble_scene_allowed",
+      "downstream_unblocked"
+    ]
+  },
+  "transition_from_previous_state": {
+    "previous_next_allowed_action": "sdxl_faceid_adapter_asset_resolution_required",
+    "current_next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_required",
+    "reason": "Asset resolution completed - no valid SDXL FaceID adapter found locally, controlled acquisition required"
+  }
+}

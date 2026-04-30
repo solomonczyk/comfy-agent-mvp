@@ -1,0 +1,56 @@
+{
+  "task_code": "RC2-PRODCARDS3AH",
+  "task_name": "SDXL FaceID Adapter Asset Resolution",
+  "timestamp": "2026-04-30T10:03:00Z",
+  "resolution_outcome": "B",
+  "outcome_description": "No valid local SDXL FaceID adapter found",
+  "sdxl_faceid_adapter_resolution_completed": true,
+  "valid_sdxl_faceid_adapter_found": false,
+  "candidate_sdxl_faceid_adapter_found": false,
+  "identity_preservation_strategy_satisfied": false,
+  "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_required",
+  "retry_gate_open": false,
+  "decision_basis": {
+    "searched_locations": [
+      "F:\\ComfyUI\\models\\ipadapter",
+      "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\models\\ipadapter (does not exist)",
+      "custom_nodes\\ComfyUI_IPAdapter_plus\\models (not found)",
+      "extra_model_paths.yaml model roots (none configured)"
+    ],
+    "assets_found": 2,
+    "assets_rejected": 2,
+    "rejection_details": [
+      {
+        "asset": "ip-adapter-faceid-plus_sd15.bin",
+        "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plus_sd15.bin",
+        "rejection_reason": "SD15 model incompatible with SDXL/JuggernautXL checkpoint",
+        "faceid_capable": true,
+        "sdxl_compatible": false
+      },
+      {
+        "asset": "ip-adapter_sdxl.safetensors",
+        "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter_sdxl.safetensors",
+        "rejection_reason": "Standard IP-Adapter without FaceID capability - cannot provide identity lock",
+        "faceid_capable": false,
+        "sdxl_compatible": true
+      }
+    ],
+    "sdxl_faceid_specific_searches": [
+      "*faceid*sdxl*",
+      "*sdxl*faceid*"
+    ],
+    "sdxl_faceid_specific_results": 0
+  },
+  "blocking_conditions": {
+    "no_sdxl_faceid_adapter_available_locally": true,
+    "sd15_faceid_adapter_incompatible_with_sdxl": true,
+    "sdxl_ip_adapter_lacks_faceid_capability": true,
+    "controlled_acquisition_path_exists_for_sdxl_faceid": false
+  },
+  "required_action": "Controlled SDXL FaceID asset acquisition path must be established before identity preservation can proceed",
+  "notes": [
+    "Existing controlled acquisition path (controlled_ip_adapter_download.py) only targets SD15 FaceID adapter",
+    "No SDXL FaceID adapter found in any local ComfyUI model directories",
+    "Project requires SDXL FaceID adapter for JuggernautXL identity preservation workflow"
+  ]
+}
