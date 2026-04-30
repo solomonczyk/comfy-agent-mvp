@@ -1,0 +1,224 @@
+{
+  "task_id": "RC2-PRODCARDS3AR",
+  "review_timestamp": "2026-04-30T16:45:34.407145Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "ap_artifacts_review": {
+    "identity_wiring_corrective_plan": {
+      "path": "output/control/rc2_prodcards3ap_identity_wiring_corrective_plan.json",
+      "exists": true,
+      "valid_json": true,
+      "timestamp": "2026-04-30T18:30:00Z",
+      "root_cause_source": "rc2_prodcards3ao_workflow_identity_wiring_audit.json",
+      "addresses_ao_root_cause": true,
+      "corrective_specifications": {
+        "ipadapter_advanced_node": {
+          "node_id_to_add": "11",
+          "class_type": "IPAdapterAdvanced",
+          "adapter_file": "ip-adapter-faceid-plusv2_sdxl.bin",
+          "weight": 0.7,
+          "start": 0.0,
+          "end": 1.0,
+          "weight_type": "linear"
+        },
+        "lora_loader_node_10": {
+          "lora_stack": [
+            {
+              "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+              "strength_model": 1.0,
+              "strength_clip": 1.0
+            }
+          ]
+        },
+        "reference_image_input": {
+          "node_id_to_add": "12",
+          "class_type": "LoadImage",
+          "reference_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\reference\\clean\\shot01_reference.png"
+        }
+      },
+      "verification_requirements": [
+        "IPAdapterAdvanced node present in workflow",
+        "SDXL FaceID adapter file path specified correctly",
+        "SDXL FaceID LoRA loaded in LoraLoader lora_stack",
+        "LoraLoader connected to CheckpointLoaderSimple outputs",
+        "IPAdapterAdvanced connected to LoraLoader model output",
+        "LoadImage node present and connected to reference image",
+        "IPAdapterAdvanced connected to LoadImage image output",
+        "IPAdapterAdvanced output connected to KSampler model input",
+        "CLIPTextEncode nodes connected to LoraLoader clip output",
+        "Identity weight set to 0.7 with linear schedule 0.0-1.0"
+      ]
+    },
+    "prompt_composition_correction_plan": {
+      "path": "output/control/rc2_prodcards3ap_prompt_composition_correction_plan.json",
+      "exists": true,
+      "valid_json": true,
+      "note": "Plan addresses prompt haze/fog issues and composition adjustments identified in AO audit"
+    }
+  },
+  "aq_artifacts_review": {
+    "sdxl_faceid_asset_preflight": {
+      "path": "output/control/rc2_prodcards3aq_sdxl_faceid_asset_preflight.json",
+      "exists": true,
+      "valid_json": true,
+      "timestamp": "2026-04-30T16:31:04.792380+00:00",
+      "assets_verified": [
+        {
+          "asset_type": "sdxl_faceid_adapter",
+          "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+          "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+          "exists": true,
+          "file_size": 1487555181,
+          "sha256": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb"
+        },
+        {
+          "asset_type": "sdxl_faceid_lora",
+          "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+          "path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+          "exists": true,
+          "file_size": 371842896,
+          "sha256": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b"
+        }
+      ],
+      "overall_status": "assets_available"
+    },
+    "identity_workflow_wiring_implementation": {
+      "path": "output/control/rc2_prodcards3aq_identity_workflow_wiring_implementation.json",
+      "exists": true,
+      "valid_json": true,
+      "timestamp": "2026-04-30T16:31:04.792528+00:00",
+      "implementation_status": "complete",
+      "implementation_details": {
+        "lora_loader_node_updated": {
+          "node_id": "10",
+          "class_type": "LoraLoader",
+          "lora_stack_added": [
+            {
+              "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+              "strength_model": 1.0,
+              "strength_clip": 1.0
+            }
+          ]
+        },
+        "load_image_node_added": {
+          "node_id": "12",
+          "class_type": "LoadImage",
+          "reference_image_path": "f:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01/output/reference/clean/shot01_reference.png"
+        },
+        "ipadapter_advanced_node_added": {
+          "node_id": "11",
+          "class_type": "IPAdapterAdvanced",
+          "adapter_file": "ip-adapter-faceid-plusv2_sdxl.bin",
+          "identity_settings": {
+            "weight": 0.7,
+            "start": 0.0,
+            "end": 1.0,
+            "weight_type": "linear"
+          }
+        }
+      },
+      "boundary_verification": {
+        "comfyui_generation": false,
+        "generation_performed": false,
+        "retry_generate_frames_executed": false,
+        "qa_rerun": false,
+        "assemble_scene_executed": false,
+        "audio_executed": false,
+        "render_executed": false,
+        "downstream_actions_executed": false
+      }
+    },
+    "patched_workflow_graph_audit": {
+      "path": "output/control/rc2_prodcards3aq_patched_workflow_graph_audit.json",
+      "exists": true,
+      "valid_json": true,
+      "timestamp": "2026-04-30T16:31:04.793186+00:00",
+      "audit_results": {
+        "ipadapter_advanced_node_present": true,
+        "ipadapter_advanced_node_id": "11",
+        "lora_loader_node_present": true,
+        "lora_loader_node_id": "10",
+        "load_image_node_present": true,
+        "load_image_node_id": "12",
+        "sdxl_faceid_adapter_specified": true,
+        "sdxl_faceid_lora_loaded": true,
+        "reference_image_connected": true,
+        "identity_weight_set": true,
+        "identity_schedule_set": true,
+        "connections_verified": {
+          "ipadapter_model_source": "node_10",
+          "ipadapter_image_source": "node_12",
+          "ksampler_model_source": "node_11",
+          "cliptextencode_6_clip_source": "node_10",
+          "cliptextencode_7_clip_source": "node_10"
+        },
+        "wiring_complete": true
+      },
+      "verification_requirements_met": [
+        "IPAdapterAdvanced node present in workflow",
+        "SDXL FaceID adapter file path specified correctly",
+        "SDXL FaceID LoRA loaded in LoraLoader lora_stack",
+        "LoraLoader connected to CheckpointLoaderSimple outputs",
+        "IPAdapterAdvanced connected to LoraLoader model output",
+        "LoadImage node present and connected to reference image",
+        "IPAdapterAdvanced connected to LoadImage image output",
+        "IPAdapterAdvanced output connected to KSampler model input",
+        "CLIPTextEncode nodes connected to LoraLoader clip output",
+        "Identity weight set to 0.7 with linear schedule 0.0-1.0"
+      ],
+      "wiring_verification_status": "passed"
+    },
+    "patched_workflow": {
+      "path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+      "exists": true,
+      "valid_json": true,
+      "note": "Patched workflow with identity wiring complete"
+    },
+    "freeze_verification": {
+      "path": "output/control/rc2_prodcards3aq_freeze_verification.json",
+      "exists": true,
+      "valid_json": true,
+      "timestamp": "2026-04-30T16:35:00.000000+00:00",
+      "freeze_status": "frozen",
+      "workflow_graph_audit_summary": {
+        "ipadapter_advanced_node_present": true,
+        "lora_loader_node_present": true,
+        "load_image_node_present": true,
+        "sdxl_faceid_adapter_specified": true,
+        "sdxl_faceid_lora_loaded": true,
+        "reference_image_connected": true,
+        "identity_weight_set": true,
+        "identity_schedule_set": true
+      }
+    }
+  },
+  "ao_root_cause_addressed_verification": {
+    "ao_root_cause": {
+      "ipadapter_advanced_node_present": false,
+      "sdxl_faceid_adapter_connected": false,
+      "sdxl_faceid_lora_connected": false,
+      "reference_image_connected": false,
+      "identity_influence_on_generation": "NONE"
+    },
+    "aq_patched_workflow_state": {
+      "ipadapter_advanced_node_present": true,
+      "sdxl_faceid_adapter_specified": true,
+      "sdxl_faceid_lora_loaded": true,
+      "reference_image_connected": true,
+      "identity_weight_set": 0.7,
+      "identity_schedule_set": "0.0-1.0 linear"
+    },
+    "all_ao_root_causes_addressed": true,
+    "verification_status": "PASSED"
+  },
+  "overall_artifact_review_verdict": {
+    "ap_artifacts_valid": true,
+    "aq_artifacts_valid": true,
+    "ap_aq_address_ao_root_cause": true,
+    "boundary_conditions_respected": true,
+    "no_generation_executed": true,
+    "no_qa_executed": true,
+    "no_downstream_executed": true,
+    "verdict": "VALID"
+  }
+}

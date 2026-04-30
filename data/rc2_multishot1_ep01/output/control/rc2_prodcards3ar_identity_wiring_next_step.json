@@ -1,0 +1,108 @@
+{
+  "task_id": "RC2-PRODCARDS3AR",
+  "next_step_timestamp": "2026-04-30T16:45:34.407145Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "reconciliation_summary": {
+    "ao_reject_reconciled": true,
+    "existing_ap_aq_artifacts_valid": true,
+    "identity_wiring_root_cause_addressed_by_plan": true
+  },
+  "current_state_verification": {
+    "from_artifact_index": {
+      "next_allowed_action": "qa_review",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "downstream_blocked": false,
+      "assemble_scene_allowed": false
+    },
+    "from_rc2_prodcards3ao_section": {
+      "next_allowed_action": "retry_quality_regression_diagnosis_review",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true
+    },
+    "from_rc2_prodcards3ap_section": {
+      "next_allowed_action": "identity_workflow_wiring_implementation_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true
+    },
+    "from_rc2_prodcards3aq_section": {
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false
+    }
+  },
+  "state_inconsistency_detected": true,
+  "state_inconsistency_details": {
+    "artifact_index_next_action": "qa_review",
+    "rc2_prodcards3ao_next_action": "retry_quality_regression_diagnosis_review",
+    "rc2_prodcards3ap_next_action": "identity_workflow_wiring_implementation_required",
+    "rc2_prodcards3aq_next_action": "controlled_retry_authorization_required",
+    "artifact_index_downstream_blocked": false,
+    "rc2_prodcards3aq_downstream_blocked": true,
+    "issue": "Top-level artifact_index shows downstream_blocked=false and next_allowed_action=qa_review, but AO/AP/AQ sections show downstream_blocked=true and different next_allowed_actions"
+  },
+  "recommended_state_repair": {
+    "recommended_next_allowed_action": "identity_workflow_patch_required",
+    "recommended_retry_gate_open": false,
+    "recommended_qa_allowed": false,
+    "recommended_production_accepted": false,
+    "recommended_assemble_scene_allowed": false,
+    "recommended_downstream_blocked": true,
+    "rationale": "AP/AQ artifacts are valid and address AO root cause. The patched workflow exists and passes audit. The next step should be to use the patched workflow for identity workflow patch verification before retry authorization."
+  },
+  "identity_wiring_next_step": {
+    "step": "verify_patched_workflow_integration",
+    "description": "Verify that the patched workflow (ep01_shot01_patched_workflow_sdxl_faceid.json) is properly integrated into the generation pipeline before retry authorization",
+    "verification_required": [
+      "Confirm patched workflow is set as retry_authorization_workflow in artifact_index",
+      "Confirm patched workflow will be used for next retry_generate_frames",
+      "Confirm identity wiring audit passes for patched workflow",
+      "Confirm no generation has occurred since AO rejection"
+    ],
+    "blocking_conditions": [
+      "Do NOT run ComfyUI",
+      "Do NOT generate frames",
+      "Do NOT execute retry_generate_frames",
+      "Do NOT run QA",
+      "Do NOT assemble scene",
+      "Do NOT attach audio",
+      "Do NOT render episode",
+      "Do NOT open retry gate",
+      "Do NOT mark production_accepted=true",
+      "Do NOT unblock downstream"
+    ],
+    "after_verification": {
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true
+    }
+  },
+  "expected_outcome": "Outcome A - AP/AQ are valid and current",
+  "expected_outcome_details": {
+    "ao_reject_reconciled": true,
+    "existing_ap_aq_artifacts_valid": true,
+    "identity_wiring_root_cause_addressed_by_plan": true,
+    "next_allowed_action": "identity_workflow_patch_required",
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  }
+}

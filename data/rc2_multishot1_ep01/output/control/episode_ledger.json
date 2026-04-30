@@ -1973,6 +1973,54 @@
       "render_executed": false,
       "downstream_actions_executed": false,
       "timestamp": "2026-04-30T16:31:04.793186+00:00"
+    },
+    {
+      "event_type": "ao_reject_state_reconciliation",
+      "action": "rc2_prodcards3ar_reconciliation",
+      "task_id": "RC2-PRODCARDS3AR",
+      "shot_id": "shot01",
+      "episode_id": "ep01",
+      "ao_rejection_commit": "b0c7a73",
+      "ap_corrective_plan_commit": "a87dd0d",
+      "aq_freeze_commit": "b92505d",
+      "ao_reject_reconciled": true,
+      "existing_ap_aq_artifacts_valid": true,
+      "identity_wiring_root_cause_addressed_by_plan": true,
+      "ao_root_cause": {
+        "ipadapter_advanced_node_present": false,
+        "sdxl_faceid_adapter_connected": false,
+        "sdxl_faceid_lora_connected": false,
+        "reference_image_connected": false,
+        "identity_influence_on_generation": "NONE"
+      },
+      "aq_patched_workflow_state": {
+        "ipadapter_advanced_node_present": true,
+        "sdxl_faceid_adapter_specified": true,
+        "sdxl_faceid_lora_loaded": true,
+        "reference_image_connected": true,
+        "identity_weight_set": 0.7,
+        "identity_schedule_set": "0.0-1.0 linear"
+      },
+      "reconciliation_artifacts": {
+        "ao_rejection_state_reconciliation_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\rc2_prodcards3ar_ao_reject_state_reconciliation.json",
+        "existing_ap_aq_artifact_review_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\rc2_prodcards3ar_existing_ap_aq_artifact_review.json",
+        "identity_wiring_next_step_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\rc2_prodcards3ar_identity_wiring_next_step.json"
+      },
+      "next_allowed_action": "identity_workflow_patch_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "timestamp": "2026-04-30T16:45:34.407145Z"
     }
   ]
 }

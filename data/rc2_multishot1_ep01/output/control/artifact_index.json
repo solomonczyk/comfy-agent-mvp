@@ -641,5 +641,28 @@
     "render_executed": false,
     "downstream_actions_executed": false,
     "timestamp": "2026-04-30T16:31:04.793186+00:00"
+  },
+  "rc2_prodcards3ar": {
+    "ao_reject_reconciled": true,
+    "existing_ap_aq_artifacts_valid": true,
+    "identity_wiring_root_cause_addressed_by_plan": true,
+    "next_allowed_action": "identity_workflow_patch_required",
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "reconciliation_timestamp": "2026-04-30T16:45:34.407145Z",
+    "ao_rejection_state_reconciliation_path": "output/control/rc2_prodcards3ar_ao_reject_state_reconciliation.json",
+    "existing_ap_aq_artifact_review_path": "output/control/rc2_prodcards3ar_existing_ap_aq_artifact_review.json",
+    "identity_wiring_next_step_path": "output/control/rc2_prodcards3ar_identity_wiring_next_step.json",
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
   }
 }
