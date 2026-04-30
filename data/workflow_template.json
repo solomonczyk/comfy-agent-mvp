@@ -1,7 +1,8 @@
 {
   "__inject__": {
     "positive_prompt_node": "6",
-    "negative_prompt_node": "7"
+    "negative_prompt_node": "7",
+    "lora_stack_node": "23"
   },
   "3": {
     "inputs": {
@@ -11,51 +12,23 @@
       "sampler_name": "euler",
       "scheduler": "karras",
       "denoise": 1.0,
-      "model": ["20", 0],
+      "model": ["24", 0],
       "positive": ["6", 0],
       "negative": ["7", 0],
       "latent_image": ["5", 0]
     },
     "class_type": "KSampler"
   },
-  "20": {
-    "inputs": {
-      "model": ["21", 0],
-      "ipadapter": ["21", 1],
-      "image": ["22", 0],
-      "weight": 0.6,
-      "weight_type": "linear",
-      "combine_embeds": "concat",
-      "start_at": 0.0,
-      "end_at": 1.0,
-      "embeds_scaling": "V only"
-    },
-    "class_type": "IPAdapterAdvanced"
-  },
-  "21": {
-    "inputs": {
-      "preset": "PLUS (high strength)",
-      "model": ["4", 0]
-    },
-    "class_type": "IPAdapterUnifiedLoader"
-  },
-  "22": {
-    "inputs": {
-      "image": "",
-      "upload": "image"
-    },
-    "class_type": "LoadImage"
-  },
   "4": {
     "inputs": {
-      "ckpt_name": "realvisxlV50_v50Bakedvae.safetensors"
+      "ckpt_name": "juggernautXL_version2.safetensors"
     },
     "class_type": "CheckpointLoaderSimple"
   },
   "5": {
     "inputs": {
-      "width": 512,
-      "height": 512,
+      "width": 1344,
+      "height": 768,
       "batch_size": 1
     },
     "class_type": "EmptyLatentImage"
@@ -87,5 +60,39 @@
       "filename_prefix": "agent/output"
     },
     "class_type": "SaveImage"
+  },
+  "22": {
+    "inputs": {
+      "image": "data/references/alya_reference_01.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage"
+  },
+  "23": {
+    "inputs": {
+      "lora_stack": [
+        {
+          "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+          "model": 0.8,
+          "clip": 0.8
+        }
+      ]
+    },
+    "class_type": "LoraLoader"
+  },
+  "24": {
+    "inputs": {
+      "model": ["23", 0],
+      "clip": ["23", 1],
+      "ipadapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "image": ["22", 0],
+      "weight": 0.8,
+      "start_at": 0.0,
+      "end_at": 1.0,
+      "embed_dim": 1024,
+      "faceid_v2": true,
+      "weight_v2": false
+    },
+    "class_type": "IPAdapterAdvanced"
   }
 }

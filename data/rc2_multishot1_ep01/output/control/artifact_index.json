@@ -529,5 +529,28 @@
     "acquisition_result_path": "output/control/rc2_prodcards3ak_al_sdxl_faceid_acquisition_result.json",
     "validation_result_path": "output/control/rc2_prodcards3ak_al_sdxl_faceid_validation_result.json",
     "post_install_verification_result_path": "output/control/rc2_prodcards3ak_al_sdxl_faceid_post_install_verification_result.json"
+  },
+  "rc2_prodcards3am": {
+    "sdxl_faceid_asset_verification_completed": true,
+    "sdxl_faceid_assets_verified": true,
+    "sdxl_faceid_workflow_integration_checked": true,
+    "identity_adapter_present_in_final_workflow": true,
+    "identity_lora_present_in_final_workflow": true,
+    "identity_preservation_strategy_satisfied": true,
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "required_checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_match": true,
+    "resolution_policy_satisfied": true,
+    "current_resolution": "1344x768",
+    "forbidden_resolution": false,
+    "next_allowed_action": "controlled_retry_authorization_required",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "timestamp": "2026-04-30T14:15:00.000000Z",
+    "asset_verification_path": "output/control/rc2_prodcards3am_sdxl_faceid_asset_verification.json",
+    "workflow_integration_audit_path": "output/control/rc2_prodcards3am_final_workflow_identity_integration_audit.json",
+    "dry_run_workflow_payload_proof_path": "output/control/rc2_prodcards3am_dry_run_workflow_payload_proof.json"
   }
 }

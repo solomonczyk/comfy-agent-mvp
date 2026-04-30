@@ -1,0 +1,35 @@
+{
+  "card_id": "shot02_scenario",
+  "card_type": "ScenarioCard",
+  "project_id": "rc2_multishot1_ep01",
+  "owner_role": "Screenwriter / Script Agent",
+  "status": "draft",
+  "version": "1.0.0",
+  "required_inputs": {
+    "title": "Show Alya discovering a mysterious glowing artifact that hints at her destiny",
+    "narrative_beat": "One fateful morning, as the mists still clung to the valley floor, Alya discovered something that would change her path forever. Half-hidden beneath the roots of an ancient oak, she found a crystal that seemed to hum with a song only she could hear."
+  },
+  "references": [],
+  "constraints": {},
+  "allowed_variations": [],
+  "forbidden_drift": [],
+  "dependencies": [],
+  "approval_required_by": "Screenwriter / Script Agent",
+  "next_action_if_missing": "Create ScenarioCard",
+  "created_at": "2026-04-28T10:20:56.944723Z",
+  "updated_at": "2026-04-28T10:20:56.944723Z",
+  "title": "Show Alya discovering a mysterious glowing artifact that hints at her destiny",
+  "screenwriter": "Screenwriter",
+  "narrative_beat": "One fateful morning, as the mists still clung to the valley floor, Alya discovered something that would change her path forever. Half-hidden beneath the roots of an ancient oak, she found a crystal that seemed to hum with a song only she could hear.",
+  "location_description": "Alya kneels beside a crystal-clear stream where an ancient stone altar lies partially buried. A mysterious glowing crystal orb rests upon it, pulsing with soft blue light. Alya reaches toward it with wonder and hesitation, her reflection visible in the water below.",
+  "involved_characters": [
+    "Alya"
+  ],
+  "shot_references": [
+    "shot02"
+  ],
+  "environment_reference": "env_001",
+  "source_data_origin": "episode_plan",
+  "source_file": "output/control/episode_plan.json",
+  "project_specific_data_allowed": true
+}

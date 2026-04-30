@@ -3,15 +3,11 @@
   "retry_plan_checkpoint": "juggernautXL_version2.safetensors",
   "final_payload_checkpoint": "juggernautXL_version2.safetensors",
   "final_workflow_checkpoint": "juggernautXL_version2.safetensors",
-  "template_original_checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+  "template_original_checkpoint": "juggernautXL_version2.safetensors",
   "template_checkpoint_overridden": true,
-  "prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
-  "prompt_pack_checkpoint_overridden": true,
-  "pre_override_checkpoint_mismatch": true,
-  "post_override_checkpoint_mismatch": false,
-  "final_workflow_checkpoint_binding_valid": true,
-  "checkpoint_binding_normalization_applied": true,
-  "checkpoint_binding_normalization_reference": "rc2_prodcards3ae_checkpoint_binding_flag_normalization.json",
+  "prompt_pack_checkpoint": "juggernautXL_version2.safetensors",
+  "prompt_pack_checkpoint_overridden": false,
+  "checkpoint_state_payload_mismatch": false,
   "retry_gate_open": false,
   "qa_allowed": false,
   "production_accepted": false,
@@ -20,18 +16,24 @@
   "dry_run": true,
   "generation_performed": false,
   "comfyui_submission_performed": false,
-  "identity_adapter_strategy_checked": true,
-  "identity_adapter_strategy_gate_reference": "rc2_prodcards3ae_identity_adapter_strategy_gate.json",
   "identity_adapter_compatibility_check": {
     "identity_adapter_compatibility_checked": true,
     "checkpoint_family": "SDXL",
     "identity_adapter_family": null,
     "compatible": true,
     "blocker": null,
-    "no_identity_adapter_in_workflow": true,
-    "identity_adapter_detection": "no_identity_adapter_nodes_found"
+    "no_identity_adapter_in_workflow": false,
+    "identity_adapter_detection": "identity_adapter_nodes_found",
+    "ip_adapter_nodes": [
+      {
+        "node_id": "11",
+        "class_type": "IPAdapterAdvanced",
+        "model": [
+          "10",
+          0
+        ]
+      }
+    ]
   },
-  "identity_preservation_strategy_satisfied": false,
-  "next_allowed_action": "identity_adapter_strategy_fix_required",
-  "timestamp": "2026-04-30T11:26:00.000000Z"
+  "timestamp": "2026-04-30T14:06:58.447650Z"
 }

@@ -18,7 +18,8 @@
   "workflow_template": {
     "__inject__": {
       "positive_prompt_node": "6",
-      "negative_prompt_node": "7"
+      "negative_prompt_node": "7",
+      "lora_stack_node": "10"
     },
     "3": {
       "inputs": {
@@ -28,7 +29,7 @@
         "sampler_name": "dpmpp_sde",
         "scheduler": "karras",
         "denoise": 0.5,
-        "model": ["4", 0],
+        "model": ["11", 0],
         "positive": ["6", 0],
         "negative": ["7", 0],
         "latent_image": ["5", 0]
@@ -37,14 +38,14 @@
     },
     "4": {
       "inputs": {
-        "ckpt_name": "CyberRealisticXLPlay_V7.0_FP16.safetensors"
+        "ckpt_name": "juggernautXL_version2.safetensors"
       },
       "class_type": "CheckpointLoaderSimple"
     },
     "5": {
       "inputs": {
-        "width": 480,
-        "height": 640,
+        "width": 1344,
+        "height": 768,
         "batch_size": 1
       },
       "class_type": "EmptyLatentImage"
@@ -76,6 +77,40 @@
         "filename_prefix": "agent/output"
       },
       "class_type": "SaveImage"
+    },
+    "10": {
+      "inputs": {
+        "lora_stack": [
+          {
+            "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+            "model": 0.8,
+            "clip": 0.8
+          }
+        ]
+      },
+      "class_type": "LoraLoader"
+    },
+    "11": {
+      "inputs": {
+        "model": ["10", 0],
+        "clip": ["10", 1],
+        "ipadapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+        "image": ["12", 0],
+        "weight": 0.8,
+        "start_at": 0.0,
+        "end_at": 1.0,
+        "embed_dim": 1024,
+        "faceid_v2": true,
+        "weight_v2": false
+      },
+      "class_type": "IPAdapterAdvanced"
+    },
+    "12": {
+      "inputs": {
+        "image": "data/references/alya_reference_01.png",
+        "upload": "image"
+      },
+      "class_type": "LoadImage"
     }
   }
 }

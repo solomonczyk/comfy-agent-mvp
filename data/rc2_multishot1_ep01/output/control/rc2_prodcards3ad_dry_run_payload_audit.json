@@ -9,15 +9,15 @@
       "artifact_index_match": true,
       "retry_plan_checkpoint": "juggernautXL_version2.safetensors",
       "retry_plan_match": true,
-      "prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
-      "prompt_pack_match": false,
-      "workflow_checkpoint_original": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "prompt_pack_checkpoint": "juggernautXL_version2.safetensors",
+      "prompt_pack_match": true,
+      "workflow_checkpoint_original": "juggernautXL_version2.safetensors",
       "workflow_checkpoint_final": "juggernautXL_version2.safetensors",
       "workflow_match": true,
       "template_checkpoint_overridden": true
     },
-    "all_layers_match": false,
-    "checkpoint_state_payload_mismatch": true
+    "all_layers_match": true,
+    "checkpoint_state_payload_mismatch": false
   },
   "identity_adapter_compatibility_check": {
     "identity_adapter_compatibility_checked": true,
@@ -25,15 +25,25 @@
     "identity_adapter_family": null,
     "compatible": true,
     "blocker": null,
-    "no_identity_adapter_in_workflow": true,
-    "identity_adapter_detection": "no_identity_adapter_nodes_found"
+    "no_identity_adapter_in_workflow": false,
+    "identity_adapter_detection": "identity_adapter_nodes_found",
+    "ip_adapter_nodes": [
+      {
+        "node_id": "11",
+        "class_type": "IPAdapterAdvanced",
+        "model": [
+          "10",
+          0
+        ]
+      }
+    ]
   },
   "authorization": {
     "status": "authorization_required",
     "ready_for_retry_generation": false,
     "requires_operator_confirmation": true,
     "retry_gate_open": false,
-    "next_allowed_action": "workflow_regression_diagnosis_review",
+    "next_allowed_action": "controlled_retry_authorization_required",
     "role_decisions_applied": true,
     "approval_gate_ready": true,
     "production_accepted": false,
@@ -44,10 +54,10 @@
     "no_downstream_action": true
   },
   "dimension_preflight": {
-    "expected_width": 480,
-    "expected_height": 640,
-    "resolved_workflow_width": 480,
-    "resolved_workflow_height": 640,
+    "expected_width": 1344,
+    "expected_height": 768,
+    "resolved_workflow_width": 1344,
+    "resolved_workflow_height": 768,
     "dimension_preflight_passed": true,
     "dimension_preflight_reason": null
   },
@@ -61,5 +71,5 @@
     "blank_source_image_detected": false,
     "generation_sanity_preflight_reason": null
   },
-  "timestamp": "2026-04-30T09:17:58.013706Z"
+  "timestamp": "2026-04-30T14:06:58.449208Z"
 }

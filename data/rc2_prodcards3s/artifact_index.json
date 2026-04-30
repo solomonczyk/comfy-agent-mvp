@@ -1,0 +1,43 @@
+{
+  "artifact_index_timestamp": "2026-04-30T08:44:00Z",
+  "artifact_index_scope": "RC2-PRODCARDS3S",
+  "artifacts": [
+    {
+      "artifact_name": "model_asset_discovery_report.json",
+      "artifact_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_prodcards3s\\model_asset_discovery_report.json",
+      "artifact_type": "discovery_report",
+      "description": "Report summarizing model asset discovery results"
+    },
+    {
+      "artifact_name": "local_model_inventory.json",
+      "artifact_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_prodcards3s\\local_model_inventory.json",
+      "artifact_type": "inventory",
+      "description": "Complete inventory of local SDXL checkpoints and diffusers models"
+    },
+    {
+      "artifact_name": "model_asset_path_reconciliation.json",
+      "artifact_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_prodcards3s\\model_asset_path_reconciliation.json",
+      "artifact_type": "reconciliation",
+      "description": "Reconciliation of planned model paths against available inventory"
+    },
+    {
+      "artifact_name": "model_candidate_review_packet.json",
+      "artifact_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_prodcards3s\\model_candidate_review_packet.json",
+      "artifact_type": "review_packet",
+      "description": "Review packet for model substitution approval"
+    },
+    {
+      "artifact_name": "artifact_index.json",
+      "artifact_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_prodcards3s\\artifact_index.json",
+      "artifact_type": "index",
+      "description": "Index of all RC2-PRODCARDS3S artifacts"
+    },
+    {
+      "artifact_name": "episode_ledger.json",
+      "artifact_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_prodcards3s\\episode_ledger.json",
+      "artifact_type": "ledger",
+      "description": "Episode ledger with review gate status"
+    }
+  ],
+  "total_artifacts": 6
+}
