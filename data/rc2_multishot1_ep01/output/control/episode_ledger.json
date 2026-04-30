@@ -2098,6 +2098,36 @@
         "retry_preflight_result_path": "output/control/rc2_prodcards3at_retry_preflight_result.json"
       },
       "timestamp": "2026-04-30T16:58:54.000000Z"
+    },
+    {
+      "event_type": "hyperrealism_prompt_guard_blocked_generation",
+      "task_code": "RC2-PRODCARDS3AU-CLEAN",
+      "episode_id": "ep01",
+      "shot_id": "shot01",
+      "guard_status": "FAILED",
+      "generation_blocked": true,
+      "block_reason": "hyperrealism_prompt_recipe_preflight_failed",
+      "forbidden_terms_detected": ["sun-dappled", "dreamlike"],
+      "negative_prompt_required_terms_missing_count": 18,
+      "retry_generate_frames_executed": false,
+      "generation_performed": false,
+      "comfyui_generation": false,
+      "frames_generated": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "next_allowed_action": "hyperrealism_prompt_recipe_correction_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "timestamp": "2026-04-30T17:00:00.000000Z",
+      "pre_generation_state_check_path": "output/control/rc2_prodcards3au_pre_generation_state_check.json",
+      "hyperrealism_prompt_guard_path": "output/control/rc2_prodcards3au_hyperrealism_prompt_guard.json",
+      "execution_result_path": "output/control/rc2_prodcards3au_execution_result.json"
     }
   ]
 }
