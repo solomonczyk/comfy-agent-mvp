@@ -1,0 +1,43 @@
+{
+  "contract_type": "ip_adapter_asset_resolution",
+  "contract_version": "1.0",
+  "task_code": "RC2-PRODCARDS3X",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "created_at": "2026-04-30T09:31:00Z",
+  "required_asset": {
+    "asset_id": "ip_adapter_faceid_plus_sd15_v1",
+    "filename": "ip-adapter-faceid-plus_sd15.bin",
+    "asset_type": "ip_adapter_faceid_plus_sd15",
+    "required_for": "dual-lock identity preservation for shot01 retry",
+    "expected_install_path": "models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+    "allowed_source_type": "trusted_model_source_only",
+    "checksum_required": true,
+    "size_validation_required": true,
+    "extension_validation_required": true,
+    "install_status": "pending",
+    "availability_status": "missing"
+  },
+  "current_state": {
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "required_ip_adapter_found": false,
+    "ip_adapter_candidates_found": false,
+    "remaining_prerequisites_available": false,
+    "missing_prerequisites": ["ip-adapter-faceid-plus_sd15.bin"],
+    "next_allowed_action": "controlled_ip_adapter_asset_resolution_required",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "boundary_conditions": {
+    "download_performed": false,
+    "install_performed": false,
+    "model_move_or_copy_performed": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  }
+}

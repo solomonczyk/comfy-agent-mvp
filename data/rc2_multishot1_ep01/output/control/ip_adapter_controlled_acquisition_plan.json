@@ -1,0 +1,100 @@
+{
+  "plan_type": "ip_adapter_controlled_acquisition",
+  "plan_version": "1.0",
+  "task_code": "RC2-PRODCARDS3X",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "created_at": "2026-04-30T09:31:00Z",
+  "target_asset": {
+    "filename": "ip-adapter-faceid-plus_sd15.bin",
+    "asset_type": "ip_adapter_faceid_plus_sd15"
+  },
+  "source_resolution_requirements": {
+    "trusted_source_must_be_explicitly_recorded": true,
+    "source_url_or_reference_must_be_reviewed_before_download": true,
+    "license_or_status_must_be_recorded_if_available": true,
+    "model_filename_from_source_must_match_expected_filename": true,
+    "no_mirror_or_random_source_allowed": true,
+    "no_silent_model_substitution_allowed": true,
+    "source_allowlist_required": true
+  },
+  "controlled_acquisition_flow": {
+    "dry_run_by_default": true,
+    "explicit_execution_flag_required": true,
+    "source_allowlist_required": true,
+    "hash_or_checksum_or_at_least_file_size_recorded": true,
+    "temp_download_location_first": true,
+    "validate_before_final_placement": true,
+    "atomic_move_or_copy_only_after_validation": true,
+    "post_install_verifier_required": true,
+    "retry_gate_remains_closed_after_install_until_verification_layer_passes": true
+  },
+  "acquisition_phases": [
+    {
+      "phase": "source_review",
+      "description": "Review and record trusted source before any download",
+      "requirements": [
+        "source URL/reference documented",
+        "license/status recorded if available",
+        "filename match verified"
+      ],
+      "execution_mode": "dry_run",
+      "explicit_flag_required": true
+    },
+    {
+      "phase": "temp_download",
+      "description": "Download to temporary location only",
+      "requirements": [
+        "temp directory used",
+        "file size recorded",
+        "hash/checksum calculated if possible"
+      ],
+      "execution_mode": "dry_run",
+      "explicit_flag_required": true
+    },
+    {
+      "phase": "validation",
+      "description": "Validate downloaded file before final placement",
+      "requirements": [
+        "extension validation (.bin)",
+        "size validation",
+        "hash/checksum validation if available",
+        "filename match"
+      ],
+      "execution_mode": "dry_run",
+      "explicit_flag_required": true
+    },
+    {
+      "phase": "atomic_placement",
+      "description": "Atomic move/copy to final location only after validation passes",
+      "requirements": [
+        "atomic operation",
+        "target path: models/ipadapter/ip-adapter-faceid-plus_sd15.bin"
+      ],
+      "execution_mode": "dry_run",
+      "explicit_flag_required": true
+    },
+    {
+      "phase": "post_install_verification",
+      "description": "Run post-install verification contract",
+      "requirements": [
+        "file exists at expected path",
+        "extension is .bin",
+        "size recorded",
+        "hash/checksum recorded",
+        "source reference recorded"
+      ],
+      "execution_mode": "dry_run",
+      "explicit_flag_required": true
+    }
+  ],
+  "current_state": {
+    "download_performed": false,
+    "install_performed": false,
+    "model_move_or_copy_performed": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  }
+}

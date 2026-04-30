@@ -1,0 +1,97 @@
+{
+  "contract_type": "ip_adapter_post_install_verification",
+  "contract_version": "1.0",
+  "task_code": "RC2-PRODCARDS3X",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "created_at": "2026-04-30T09:31:00Z",
+  "target_asset": {
+    "filename": "ip-adapter-faceid-plus_sd15.bin",
+    "expected_install_path": "models/ipadapter/ip-adapter-faceid-plus_sd15.bin"
+  },
+  "verification_requirements": {
+    "file_exists_at_expected_path": true,
+    "extension_is_bin": true,
+    "size_recorded": true,
+    "hash_or_checksum_recorded_if_available": true,
+    "source_reference_recorded": true,
+    "active_checkpoint_still_juggernautXL_version2_safetensors": true,
+    "target_shot_still_shot01": true,
+    "retry_gate_open_remains_false": true
+  },
+  "post_install_verification_checks": [
+    {
+      "check_id": "file_existence",
+      "description": "Verify file exists at expected path",
+      "expected_path": "models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+      "required": true
+    },
+    {
+      "check_id": "extension_validation",
+      "description": "Verify file extension is .bin",
+      "expected_extension": ".bin",
+      "required": true
+    },
+    {
+      "check_id": "size_validation",
+      "description": "Record and verify file size",
+      "size_recorded": false,
+      "required": true
+    },
+    {
+      "check_id": "checksum_validation",
+      "description": "Record hash/checksum if available",
+      "checksum_recorded": false,
+      "required": true
+    },
+    {
+      "check_id": "source_reference",
+      "description": "Verify source reference is recorded",
+      "source_reference_recorded": false,
+      "required": true
+    },
+    {
+      "check_id": "checkpoint_integrity",
+      "description": "Verify active checkpoint remains juggernautXL_version2.safetensors",
+      "expected_checkpoint": "juggernautXL_version2.safetensors",
+      "required": true
+    },
+    {
+      "check_id": "shot_integrity",
+      "description": "Verify target shot remains shot01",
+      "expected_shot": "shot01",
+      "required": true
+    },
+    {
+      "check_id": "retry_gate_integrity",
+      "description": "Verify retry_gate_open remains false",
+      "expected_value": false,
+      "required": true
+    }
+  ],
+  "verification_outcome_conditions": {
+    "all_checks_passed": {
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true
+    },
+    "any_check_failed": {
+      "next_allowed_action": "controlled_ip_adapter_asset_resolution_required",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true
+    }
+  },
+  "current_state": {
+    "verification_performed": false,
+    "all_checks_passed": false,
+    "next_allowed_action": "controlled_ip_adapter_asset_resolution_required",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  }
+}
