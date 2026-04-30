@@ -145,7 +145,7 @@
   "ip_adapter_download_authorized": true,
   "ip_adapter_install_authorized": true,
   "ip_adapter_retry_authorized": false,
-  "next_allowed_action": "workflow_regression_diagnosis_review",
+  "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_required",
   "ip_adapter_asset_resolution_contract_created": true,
   "ip_adapter_controlled_acquisition_plan_created": true,
   "ip_adapter_post_install_verification_contract_created": true,
