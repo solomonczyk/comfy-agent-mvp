@@ -1,0 +1,52 @@
+{
+  "task_code": "RC2-PRODCARDS3AQ",
+  "phase": "SDXL_FaceID_Asset_Preflight",
+  "timestamp": "2026-04-30T16:31:04.792380+00:00",
+  "assets_verified": [
+    {
+      "asset_type": "sdxl_faceid_adapter",
+      "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+      "exists": true,
+      "file_size": 1487555181,
+      "sha256": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb"
+    },
+    {
+      "asset_type": "sdxl_faceid_lora",
+      "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "exists": true,
+      "file_size": 371842896,
+      "sha256": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b"
+    }
+  ],
+  "comfyui_nodes_verified": [
+    {
+      "node_type": "IPAdapterAdvanced",
+      "available": true,
+      "purpose": "SDXL FaceID identity conditioning"
+    },
+    {
+      "node_type": "LoraLoader",
+      "available": true,
+      "purpose": "SDXL FaceID LoRA loading"
+    },
+    {
+      "node_type": "LoadImage",
+      "available": true,
+      "purpose": "Reference image input"
+    }
+  ],
+  "overall_status": "assets_available",
+  "next_allowed_action": "identity_workflow_wiring_implementation_required",
+  "boundary_verification": {
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
+  }
+}

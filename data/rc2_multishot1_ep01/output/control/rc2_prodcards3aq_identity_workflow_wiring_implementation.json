@@ -1,0 +1,121 @@
+{
+  "task_code": "RC2-PRODCARDS3AQ",
+  "phase": "Identity_Workflow_Wiring_Implementation",
+  "timestamp": "2026-04-30T16:31:04.792528+00:00",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "corrective_plan_source": "rc2_prodcards3ap_identity_wiring_corrective_plan.json",
+  "original_workflow_path": "ep01_shot01_submitted_workflow.json",
+  "patched_workflow_path": "ep01_shot01_patched_workflow_sdxl_faceid.json",
+  "reference_image_path": "f:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01/output/reference/clean/shot01_reference.png",
+  "implementation_details": {
+    "lora_loader_node_updated": {
+      "node_id": "10",
+      "class_type": "LoraLoader",
+      "lora_stack_added": [
+        {
+          "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+          "strength_model": 1.0,
+          "strength_clip": 1.0
+        }
+      ],
+      "inputs_connected": {
+        "model": [
+          "4",
+          0
+        ],
+        "clip": [
+          "4",
+          1
+        ]
+      }
+    },
+    "load_image_node_added": {
+      "node_id": "12",
+      "class_type": "LoadImage",
+      "reference_image_path": "f:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01/output/reference/clean/shot01_reference.png"
+    },
+    "ipadapter_advanced_node_added": {
+      "node_id": "11",
+      "class_type": "IPAdapterAdvanced",
+      "adapter_file": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "identity_settings": {
+        "weight": 0.7,
+        "start": 0.0,
+        "end": 1.0,
+        "weight_type": "linear"
+      },
+      "inputs_connected": {
+        "model": [
+          "10",
+          0
+        ],
+        "image": [
+          "12",
+          0
+        ]
+      }
+    },
+    "ksampler_rewired": {
+      "node_id": "3",
+      "class_type": "KSampler",
+      "model_input_changed": {
+        "from": [
+          "4",
+          0
+        ],
+        "to": [
+          "11",
+          0
+        ]
+      }
+    },
+    "cliptextencode_rewired": [
+      {
+        "node_id": "6",
+        "class_type": "CLIPTextEncode",
+        "clip_input_changed": {
+          "from": [
+            "4",
+            1
+          ],
+          "to": [
+            "10",
+            1
+          ]
+        }
+      },
+      {
+        "node_id": "7",
+        "class_type": "CLIPTextEncode",
+        "clip_input_changed": {
+          "from": [
+            "4",
+            1
+          ],
+          "to": [
+            "10",
+            1
+          ]
+        }
+      }
+    ]
+  },
+  "workflow_flow_corrected": {
+    "original_flow": "CheckpointLoaderSimple -> KSampler -> VAEDecode -> SaveImage",
+    "corrected_flow": "CheckpointLoaderSimple -> LoraLoader -> IPAdapterAdvanced -> KSampler -> VAEDecode -> SaveImage",
+    "reference_flow": "LoadImage -> IPAdapterAdvanced",
+    "clip_flow": "CheckpointLoaderSimple -> LoraLoader -> CLIPTextEncode -> KSampler"
+  },
+  "implementation_status": "complete",
+  "boundary_verification": {
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
+  }
+}

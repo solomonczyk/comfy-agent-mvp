@@ -1,0 +1,58 @@
+{
+  "task_code": "RC2-PRODCARDS3AQ",
+  "phase": "Patched_Workflow_Graph_Audit",
+  "timestamp": "2026-04-30T16:31:04.793186+00:00",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "patched_workflow_path": "ep01_shot01_patched_workflow_sdxl_faceid.json",
+  "audit_results": {
+    "ipadapter_advanced_node_present": true,
+    "ipadapter_advanced_node_id": "11",
+    "lora_loader_node_present": true,
+    "lora_loader_node_id": "10",
+    "load_image_node_present": true,
+    "load_image_node_id": "12",
+    "sdxl_faceid_adapter_specified": true,
+    "sdxl_faceid_lora_loaded": true,
+    "reference_image_connected": true,
+    "identity_weight_set": true,
+    "identity_schedule_set": true,
+    "connections_verified": {
+      "ipadapter_model_source": "node_10",
+      "ipadapter_image_source": "node_12",
+      "ksampler_model_source": "node_11",
+      "cliptextencode_6_clip_source": "node_10",
+      "cliptextencode_7_clip_source": "node_10"
+    },
+    "wiring_complete": true
+  },
+  "verification_requirements_met": [
+    "IPAdapterAdvanced node present in workflow",
+    "SDXL FaceID adapter file path specified correctly",
+    "SDXL FaceID LoRA loaded in LoraLoader lora_stack",
+    "LoraLoader connected to CheckpointLoaderSimple outputs",
+    "IPAdapterAdvanced connected to LoraLoader model output",
+    "LoadImage node present and connected to reference image",
+    "IPAdapterAdvanced connected to LoadImage image output",
+    "IPAdapterAdvanced output connected to KSampler model input",
+    "CLIPTextEncode nodes connected to LoraLoader clip output",
+    "Identity weight set to 0.7 with linear schedule 0.0-1.0"
+  ],
+  "wiring_verification_status": "passed",
+  "next_allowed_action": "controlled_retry_authorization_required",
+  "boundary_verification": {
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false,
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  }
+}

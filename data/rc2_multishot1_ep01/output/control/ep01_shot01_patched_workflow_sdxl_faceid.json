@@ -1,0 +1,134 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 3384919772,
+      "steps": 20,
+      "cfg": 7.5,
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "karras",
+      "denoise": 0.5,
+      "model": [
+        "11",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "juggernautXL_version2.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "5": {
+    "inputs": {
+      "width": 1344,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+      "clip": [
+        "10",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence",
+      "clip": [
+        "10",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "filename_prefix": "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777564511"
+    },
+    "class_type": "SaveImage"
+  },
+  "10": {
+    "inputs": {
+      "lora_stack": [
+        {
+          "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+          "strength_model": 1.0,
+          "strength_clip": 1.0
+        }
+      ],
+      "model": [
+        "4",
+        0
+      ],
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "LoraLoader"
+  },
+  "12": {
+    "inputs": {
+      "image": "f:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01/output/reference/clean/shot01_reference.png",
+      "upload": "image"
+    },
+    "class_type": "LoadImage"
+  },
+  "11": {
+    "inputs": {
+      "model": [
+        "10",
+        0
+      ],
+      "image": [
+        "12",
+        0
+      ],
+      "ipadapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "weight": 0.7,
+      "start": 0.0,
+      "end": 1.0,
+      "weight_type": "linear",
+      "embed_dim": 1024,
+      "faceid_v2": true,
+      "weight_v2": false
+    },
+    "class_type": "IPAdapterAdvanced"
+  }
+}

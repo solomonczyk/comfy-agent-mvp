@@ -1,0 +1,105 @@
+{
+  "task_code": "RC2-PRODCARDS3AQ-FREEZE",
+  "phase": "Freeze_Verification",
+  "timestamp": "2026-04-30T16:35:00.000000+00:00",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "freeze_verification": {
+    "sdxl_faceid_assets_available": true,
+    "sdxl_faceid_adapter_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+    "sdxl_faceid_adapter_exists": true,
+    "sdxl_faceid_adapter_size": 1487555181,
+    "sdxl_faceid_adapter_sha256": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb",
+    "sdxl_faceid_lora_path": "F:\\ComfyUI\\models\\loras\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "sdxl_faceid_lora_exists": true,
+    "sdxl_faceid_lora_size": 371842896,
+    "sdxl_faceid_lora_sha256": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b",
+    "patched_workflow_exists": true,
+    "patched_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+    "patched_workflow_wiring_complete": true,
+    "wiring_verification_status": "passed",
+    "identity_adapter_present": true,
+    "identity_adapter_node_id": "11",
+    "identity_lora_loaded": true,
+    "identity_lora_node_id": "10",
+    "reference_image_connected": true,
+    "reference_image_node_id": "12",
+    "identity_weight_set": 0.7,
+    "identity_schedule_set": "0.0-1.0 linear",
+    "retry_authorization_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+    "artifact_index_workflow_pointer_correct": true,
+    "comfyui_nodes_verified": [
+      "IPAdapterAdvanced",
+      "LoraLoader",
+      "LoadImage"
+    ]
+  },
+  "boundary_verification": {
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_review_executed": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "comfyui_generation": false,
+    "downstream_actions_executed": false
+  },
+  "artifact_verification": {
+    "rc2_prodcards3aq_sdxl_faceid_asset_preflight_json": {
+      "path": "output/control/rc2_prodcards3aq_sdxl_faceid_asset_preflight.json",
+      "exists": true,
+      "valid_json": true
+    },
+    "rc2_prodcards3aq_identity_workflow_wiring_implementation_json": {
+      "path": "output/control/rc2_prodcards3aq_identity_workflow_wiring_implementation.json",
+      "exists": true,
+      "valid_json": true
+    },
+    "rc2_prodcards3aq_patched_workflow_graph_audit_json": {
+      "path": "output/control/rc2_prodcards3aq_patched_workflow_graph_audit.json",
+      "exists": true,
+      "valid_json": true
+    },
+    "ep01_shot01_patched_workflow_sdxl_faceid_json": {
+      "path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+      "exists": true,
+      "valid_json": true
+    },
+    "artifact_index_json": {
+      "path": "output/control/artifact_index.json",
+      "exists": true,
+      "valid_json": true,
+      "retry_authorization_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json"
+    },
+    "episode_ledger_json": {
+      "path": "output/control/episode_ledger.json",
+      "exists": true,
+      "valid_json": true
+    }
+  },
+  "workflow_graph_audit_summary": {
+    "ipadapter_advanced_node_present": true,
+    "lora_loader_node_present": true,
+    "load_image_node_present": true,
+    "sdxl_faceid_adapter_specified": true,
+    "sdxl_faceid_lora_loaded": true,
+    "reference_image_connected": true,
+    "identity_weight_set": true,
+    "identity_schedule_set": true,
+    "connections_verified": {
+      "ipadapter_model_source": "node_10",
+      "ipadapter_image_source": "node_12",
+      "ksampler_model_source": "node_11",
+      "cliptextencode_6_clip_source": "node_10",
+      "cliptextencode_7_clip_source": "node_10"
+    }
+  },
+  "next_allowed_action": "controlled_retry_authorization_required",
+  "freeze_status": "frozen",
+  "freeze_timestamp": "2026-04-30T16:35:00.000000+00:00"
+}
