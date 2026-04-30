@@ -7,7 +7,11 @@
   "template_checkpoint_overridden": true,
   "prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
   "prompt_pack_checkpoint_overridden": true,
-  "checkpoint_state_payload_mismatch": true,
+  "pre_override_checkpoint_mismatch": true,
+  "post_override_checkpoint_mismatch": false,
+  "final_workflow_checkpoint_binding_valid": true,
+  "checkpoint_binding_normalization_applied": true,
+  "checkpoint_binding_normalization_reference": "rc2_prodcards3ae_checkpoint_binding_flag_normalization.json",
   "retry_gate_open": false,
   "qa_allowed": false,
   "production_accepted": false,
@@ -16,6 +20,8 @@
   "dry_run": true,
   "generation_performed": false,
   "comfyui_submission_performed": false,
+  "identity_adapter_strategy_checked": true,
+  "identity_adapter_strategy_gate_reference": "rc2_prodcards3ae_identity_adapter_strategy_gate.json",
   "identity_adapter_compatibility_check": {
     "identity_adapter_compatibility_checked": true,
     "checkpoint_family": "SDXL",
@@ -25,5 +31,7 @@
     "no_identity_adapter_in_workflow": true,
     "identity_adapter_detection": "no_identity_adapter_nodes_found"
   },
-  "timestamp": "2026-04-30T09:27:12.089552Z"
+  "identity_preservation_strategy_satisfied": false,
+  "next_allowed_action": "identity_adapter_strategy_fix_required",
+  "timestamp": "2026-04-30T11:26:00.000000Z"
 }
