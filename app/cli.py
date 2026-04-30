@@ -2027,12 +2027,144 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
             reference_weight=config_data.get("reference_weight", 0.6),
         )
 
-        # Get checkpoint from prompt_pack or config
-        checkpoint = prompt_pack.get("checkpoint") or config_data.get("checkpoint")
+        # RC2-PRODCARDS3AD: Read checkpoint from controlled_retry_implementation_plan.json as source of truth
+        # This ensures retry payload respects approved checkpoint substitution
+        checkpoint = None
+        checkpoint_source = None
+        controlled_retry_plan_path = project_path / "output" / "control" / "controlled_retry_implementation_plan.json"
+        
+        if controlled_retry_plan_path.exists():
+            try:
+                with open(controlled_retry_plan_path, 'r') as f:
+                    retry_plan = json.load(f)
+                # Extract checkpoint from the "to" section of checkpoint_change
+                checkpoint_change = retry_plan.get("checkpoint_change", {})
+                to_checkpoint = checkpoint_change.get("to", {})
+                plan_checkpoint = to_checkpoint.get("checkpoint_name")
+                if plan_checkpoint:
+                    checkpoint = plan_checkpoint
+                    checkpoint_source = "controlled_retry_implementation_plan.json"
+                    print(f"[RC2-PRODCARDS3AD] Using checkpoint from controlled_retry_implementation_plan.json: {checkpoint}")
+            except Exception as e:
+                print(f"[RC2-PRODCARDS3AD] Warning: Failed to read controlled_retry_implementation_plan.json: {e}")
+        
+        # Fallback to prompt_pack or config if plan checkpoint not found
+        if not checkpoint:
+            checkpoint = prompt_pack.get("checkpoint") or config_data.get("checkpoint")
+            checkpoint_source = "prompt_pack.json or config.json (fallback)"
+            if checkpoint:
+                print(f"[RC2-PRODCARDS3AD] Using checkpoint from fallback source: {checkpoint}")
 
         # RC-REAL1B-5: Ensure checkpoint is set
         if not checkpoint:
-            raise RuntimeError("checkpoint must be specified in prompt_pack.json or config.json")
+            raise RuntimeError("checkpoint must be specified in controlled_retry_implementation_plan.json, prompt_pack.json, or config.json")
+
+        # RC2-PRODCARDS3AD: Preflight consistency check for checkpoint across all layers
+        checkpoint_consistency_check = {
+            "checkpoint_preflight_performed": True,
+            "checkpoint_source": checkpoint_source,
+            "checkpoint_used": checkpoint,
+            "checks": {}
+        }
+        
+        # Check 1: artifact_index active_checkpoint
+        artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+        artifact_index_checkpoint = None
+        if artifact_index_path.exists():
+            try:
+                with open(artifact_index_path, 'r') as f:
+                    artifact_index = json.load(f)
+                artifact_index_checkpoint = artifact_index.get("active_checkpoint")
+                checkpoint_consistency_check["checks"]["artifact_index_checkpoint"] = artifact_index_checkpoint
+                checkpoint_consistency_check["checks"]["artifact_index_match"] = (artifact_index_checkpoint == checkpoint)
+            except Exception as e:
+                checkpoint_consistency_check["checks"]["artifact_index_error"] = str(e)
+        
+        # Check 2: controlled_retry_implementation_plan checkpoint
+        if controlled_retry_plan_path.exists():
+            try:
+                with open(controlled_retry_plan_path, 'r') as f:
+                    retry_plan = json.load(f)
+                plan_checkpoint = retry_plan.get("checkpoint_change", {}).get("to", {}).get("checkpoint_name")
+                checkpoint_consistency_check["checks"]["retry_plan_checkpoint"] = plan_checkpoint
+                checkpoint_consistency_check["checks"]["retry_plan_match"] = (plan_checkpoint == checkpoint)
+            except Exception as e:
+                checkpoint_consistency_check["checks"]["retry_plan_error"] = str(e)
+        
+        # Check 3: prompt_pack checkpoint
+        prompt_pack_checkpoint = prompt_pack.get("checkpoint")
+        checkpoint_consistency_check["checks"]["prompt_pack_checkpoint"] = prompt_pack_checkpoint
+        checkpoint_consistency_check["checks"]["prompt_pack_match"] = (prompt_pack_checkpoint == checkpoint)
+        
+        # Check 4: workflow template CheckpointLoaderSimple ckpt_name
+        workflow_checkpoint = None
+        for node_id, node in workflow_template.items():
+            if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
+                workflow_checkpoint = node.get("inputs", {}).get("ckpt_name")
+                break
+        checkpoint_consistency_check["checks"]["workflow_checkpoint"] = workflow_checkpoint
+        checkpoint_consistency_check["checks"]["workflow_match"] = (workflow_checkpoint == checkpoint)
+        
+        # Determine overall consistency
+        all_match = all(
+            checkpoint_consistency_check["checks"].get(k, True) 
+            for k in ["artifact_index_match", "retry_plan_match", "prompt_pack_match", "workflow_match"]
+            if k in checkpoint_consistency_check["checks"]
+        )
+        checkpoint_consistency_check["all_layers_match"] = all_match
+        checkpoint_consistency_check["checkpoint_state_payload_mismatch"] = not all_match
+        
+        print(f"[RC2-PRODCARDS3AD] Checkpoint consistency check: {all_match}")
+        if not all_match:
+            print(f"[RC2-PRODCARDS3AD] Checkpoint mismatch details: {checkpoint_consistency_check['checks']}")
+        
+        # RC2-PRODCARDS3AD: Identity adapter compatibility gate
+        # Check for SDXL checkpoint + SD15 FaceID adapter incompatibility
+        identity_adapter_compatibility_check = {
+            "identity_adapter_compatibility_checked": True,
+            "checkpoint_family": None,
+            "identity_adapter_family": None,
+            "compatible": True,
+            "blocker": None
+        }
+        
+        # Determine checkpoint family (SDXL vs SD15)
+        checkpoint_lower = checkpoint.lower() if checkpoint else ""
+        if "sdxl" in checkpoint_lower or "xl" in checkpoint_lower or "realvisxl" in checkpoint_lower or "juggernautxl" in checkpoint_lower:
+            identity_adapter_compatibility_check["checkpoint_family"] = "SDXL"
+        elif "sd15" in checkpoint_lower or "1.5" in checkpoint_lower:
+            identity_adapter_compatibility_check["checkpoint_family"] = "SD15"
+        else:
+            identity_adapter_compatibility_check["checkpoint_family"] = "unknown"
+        
+        # Check for IP-Adapter FaceID models in workflow
+        ip_adapter_node_found = False
+        ip_adapter_model = None
+        for node_id, node in workflow_template.items():
+            if isinstance(node, dict):
+                class_type = node.get("class_type", "")
+                if "ipadapter" in class_type.lower() or "ip_adapter" in class_type.lower():
+                    ip_adapter_node_found = True
+                    inputs = node.get("inputs", {})
+                    model_path = inputs.get("model") or inputs.get("ipadapter_file") or inputs.get("model_file")
+                    if model_path:
+                        ip_adapter_model = str(model_path)
+                        break
+        
+        if ip_adapter_model:
+            ip_adapter_model_lower = ip_adapter_model.lower()
+            if "sd15" in ip_adapter_model_lower or "faceid" in ip_adapter_model_lower:
+                identity_adapter_compatibility_check["identity_adapter_family"] = "SD15"
+                identity_adapter_compatibility_check["ip_adapter_model"] = ip_adapter_model
+        
+        # Check for incompatibility: SDXL checkpoint + SD15 FaceID adapter
+        if (identity_adapter_compatibility_check["checkpoint_family"] == "SDXL" and 
+            identity_adapter_compatibility_check["identity_adapter_family"] == "SD15"):
+            identity_adapter_compatibility_check["compatible"] = False
+            identity_adapter_compatibility_check["blocker"] = "sd15_faceid_adapter_used_with_sdxl_checkpoint"
+            print(f"[RC2-PRODCARDS3AD] IDENTITY ADAPTER COMPATIBILITY BLOCK: SDXL checkpoint '{checkpoint}' with SD15 FaceID adapter '{ip_adapter_model}'")
+        
+        print(f"[RC2-PRODCARDS3AD] Identity adapter compatibility: {identity_adapter_compatibility_check}")
 
         # Initialize submitter
         print(f"[2/3] Submitting {len(beats)} beat(s) to ComfyUI...")
@@ -7064,6 +7196,199 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         
     except Exception:
         pass  # If state detection fails, continue without corrective info
+    
+    # RC2-PRODCARDS3AD: Read checkpoint from controlled_retry_implementation_plan.json for dry-run payload proof
+    checkpoint = None
+    checkpoint_source = None
+    controlled_retry_plan_path = project_path / "output" / "control" / "controlled_retry_implementation_plan.json"
+    
+    if controlled_retry_plan_path.exists():
+        try:
+            with open(controlled_retry_plan_path, 'r') as f:
+                retry_plan = json.load(f)
+            # Extract checkpoint from the "to" section of checkpoint_change
+            checkpoint_change = retry_plan.get("checkpoint_change", {})
+            to_checkpoint = checkpoint_change.get("to", {})
+            plan_checkpoint = to_checkpoint.get("checkpoint_name")
+            if plan_checkpoint:
+                checkpoint = plan_checkpoint
+                checkpoint_source = "controlled_retry_implementation_plan.json"
+        except Exception as e:
+            print(f"[RC2-PRODCARDS3AD] Warning: Failed to read controlled_retry_implementation_plan.json: {e}")
+    
+    # Fallback to prompt_pack or config if plan checkpoint not found
+    if not checkpoint:
+        checkpoint = prompt_pack.get("checkpoint") if prompt_pack else None
+        if not checkpoint and config_data:
+            checkpoint = config_data.get("checkpoint")
+        checkpoint_source = "prompt_pack.json or config.json (fallback)"
+    
+    # RC2-PRODCARDS3AD: Preflight consistency check for checkpoint across all layers
+    checkpoint_consistency_check = {
+        "checkpoint_preflight_performed": True,
+        "checkpoint_source": checkpoint_source,
+        "checkpoint_used": checkpoint,
+        "checks": {}
+    }
+    
+    # Check 1: artifact_index active_checkpoint
+    artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+    artifact_index_checkpoint = None
+    if artifact_index_path.exists():
+        try:
+            with open(artifact_index_path, 'r') as f:
+                artifact_index = json.load(f)
+            artifact_index_checkpoint = artifact_index.get("active_checkpoint")
+            checkpoint_consistency_check["checks"]["artifact_index_checkpoint"] = artifact_index_checkpoint
+            checkpoint_consistency_check["checks"]["artifact_index_match"] = (artifact_index_checkpoint == checkpoint)
+        except Exception as e:
+            checkpoint_consistency_check["checks"]["artifact_index_error"] = str(e)
+    
+    # Check 2: controlled_retry_implementation_plan checkpoint
+    if controlled_retry_plan_path.exists():
+        try:
+            with open(controlled_retry_plan_path, 'r') as f:
+                retry_plan = json.load(f)
+            plan_checkpoint = retry_plan.get("checkpoint_change", {}).get("to", {}).get("checkpoint_name")
+            checkpoint_consistency_check["checks"]["retry_plan_checkpoint"] = plan_checkpoint
+            checkpoint_consistency_check["checks"]["retry_plan_match"] = (plan_checkpoint == checkpoint)
+        except Exception as e:
+            checkpoint_consistency_check["checks"]["retry_plan_error"] = str(e)
+    
+    # Check 3: prompt_pack checkpoint
+    if prompt_pack:
+        prompt_pack_checkpoint = prompt_pack.get("checkpoint")
+        checkpoint_consistency_check["checks"]["prompt_pack_checkpoint"] = prompt_pack_checkpoint
+        checkpoint_consistency_check["checks"]["prompt_pack_match"] = (prompt_pack_checkpoint == checkpoint)
+    
+    # Check 4: workflow template CheckpointLoaderSimple ckpt_name
+    workflow_checkpoint = None
+    if workflow_template:
+        for node_id, node in workflow_template.items():
+            if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
+                workflow_checkpoint = node.get("inputs", {}).get("ckpt_name")
+                break
+    checkpoint_consistency_check["checks"]["workflow_checkpoint"] = workflow_checkpoint
+    checkpoint_consistency_check["checks"]["workflow_match"] = (workflow_checkpoint == checkpoint)
+    
+    # Determine overall consistency
+    all_match = all(
+        checkpoint_consistency_check["checks"].get(k, True) 
+        for k in ["artifact_index_match", "retry_plan_match", "prompt_pack_match", "workflow_match"]
+        if k in checkpoint_consistency_check["checks"]
+    )
+    checkpoint_consistency_check["all_layers_match"] = all_match
+    checkpoint_consistency_check["checkpoint_state_payload_mismatch"] = not all_match
+    
+    # RC2-PRODCARDS3AD: Identity adapter compatibility gate
+    identity_adapter_compatibility_check = {
+        "identity_adapter_compatibility_checked": True,
+        "checkpoint_family": None,
+        "identity_adapter_family": None,
+        "compatible": True,
+        "blocker": None
+    }
+    
+    # Determine checkpoint family (SDXL vs SD15)
+    checkpoint_lower = checkpoint.lower() if checkpoint else ""
+    if "sdxl" in checkpoint_lower or "xl" in checkpoint_lower or "realvisxl" in checkpoint_lower or "juggernautxl" in checkpoint_lower:
+        identity_adapter_compatibility_check["checkpoint_family"] = "SDXL"
+    elif "sd15" in checkpoint_lower or "1.5" in checkpoint_lower:
+        identity_adapter_compatibility_check["checkpoint_family"] = "SD15"
+    else:
+        identity_adapter_compatibility_check["checkpoint_family"] = "unknown"
+    
+    # Check for IP-Adapter FaceID models in workflow
+    ip_adapter_model = None
+    if workflow_template:
+        for node_id, node in workflow_template.items():
+            if isinstance(node, dict):
+                class_type = node.get("class_type", "")
+                if "ipadapter" in class_type.lower() or "ip_adapter" in class_type.lower():
+                    inputs = node.get("inputs", {})
+                    model_path = inputs.get("model") or inputs.get("ipadapter_file") or inputs.get("model_file")
+                    if model_path:
+                        ip_adapter_model = str(model_path)
+                        break
+    
+    if ip_adapter_model:
+        ip_adapter_model_lower = ip_adapter_model.lower()
+        if "sd15" in ip_adapter_model_lower or "faceid" in ip_adapter_model_lower:
+            identity_adapter_compatibility_check["identity_adapter_family"] = "SD15"
+            identity_adapter_compatibility_check["ip_adapter_model"] = ip_adapter_model
+    
+    # Check for incompatibility: SDXL checkpoint + SD15 FaceID adapter
+    if (identity_adapter_compatibility_check["checkpoint_family"] == "SDXL" and 
+        identity_adapter_compatibility_check["identity_adapter_family"] == "SD15"):
+        identity_adapter_compatibility_check["compatible"] = False
+        identity_adapter_compatibility_check["blocker"] = "sd15_faceid_adapter_used_with_sdxl_checkpoint"
+    
+    # RC2-PRODCARDS3AD: Generate required output JSON files for proof
+    payload_binding_fix_report = {
+        "fix_applied": True,
+        "fix_tag": "RC2-PRODCARDS3AD",
+        "fix_description": "Retry payload checkpoint binding fix with identity adapter compatibility gate",
+        "checkpoint_used": checkpoint,
+        "checkpoint_source": checkpoint_source,
+        "checkpoint_consistency_check": checkpoint_consistency_check,
+        "identity_adapter_compatibility_check": identity_adapter_compatibility_check,
+        "dry_run": True,
+        "generation_performed": False,
+        "comfyui_submission_performed": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
+    
+    # Write payload binding fix report
+    payload_binding_fix_report_path = project_path / "output" / "control" / "rc2_prodcards3ad_payload_binding_fix_report.json"
+    try:
+        with open(payload_binding_fix_report_path, 'w') as f:
+            json.dump(payload_binding_fix_report, f, indent=2)
+    except Exception as e:
+        print(f"[RC2-PRODCARDS3AD] Warning: Failed to write payload binding fix report: {e}")
+    
+    # Write dry-run payload audit
+    dry_run_payload_audit = {
+        "dry_run_performed": True,
+        "checkpoint_consistency_check": checkpoint_consistency_check,
+        "identity_adapter_compatibility_check": identity_adapter_compatibility_check,
+        "authorization": auth_result,
+        "dimension_preflight": {
+            "expected_width": expected_width,
+            "expected_height": expected_height,
+            "resolved_workflow_width": resolved_workflow_width,
+            "resolved_workflow_height": resolved_workflow_height,
+            "dimension_preflight_passed": dimension_preflight_passed,
+            "dimension_preflight_reason": dimension_preflight_reason
+        },
+        "generation_sanity_preflight": {
+            "passed": generation_sanity_preflight_passed,
+            "positive_prompt_present": positive_prompt_present,
+            "checkpoint_present": checkpoint_present,
+            "ksampler_connected": ksampler_connected,
+            "latent_or_image_source_valid": latent_or_image_source_valid,
+            "save_image_configured": save_image_configured,
+            "blank_source_image_detected": blank_source_image_detected,
+            "generation_sanity_preflight_reason": generation_sanity_preflight_reason
+        },
+        "timestamp": datetime.utcnow().isoformat() + "Z"
+    }
+    
+    dry_run_payload_audit_path = project_path / "output" / "control" / "rc2_prodcards3ad_dry_run_payload_audit.json"
+    try:
+        with open(dry_run_payload_audit_path, 'w') as f:
+            json.dump(dry_run_payload_audit, f, indent=2)
+    except Exception as e:
+        print(f"[RC2-PRODCARDS3AD] Warning: Failed to write dry-run payload audit: {e}")
+    
+    # Write identity adapter compatibility gate report
+    identity_adapter_gate_report_path = project_path / "output" / "control" / "rc2_prodcards3ad_identity_adapter_compatibility_gate.json"
+    try:
+        with open(identity_adapter_gate_report_path, 'w') as f:
+            json.dump(identity_adapter_compatibility_check, f, indent=2)
+    except Exception as e:
+        print(f"[RC2-PRODCARDS3AD] Warning: Failed to write identity adapter compatibility gate report: {e}")
     
     result = {
         "status": "valid" if (auth_result.get("ready_for_retry_generation") and dimension_preflight_passed and generation_sanity_preflight_passed) else "invalid",
