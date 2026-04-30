@@ -1,0 +1,41 @@
+{
+  "task_code": "RC2-PRODCARDS3AG",
+  "task_description": "Identity Adapter Candidate Review / FaceID Capability Decision",
+  "review_timestamp": "2026-04-30T11:54:00.000000Z",
+  "candidate_adapter": {
+    "filename": "ip-adapter_sdxl.safetensors",
+    "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter_sdxl.safetensors",
+    "size_bytes": 702585376,
+    "extension": ".safetensors",
+    "adapter_family": "SDXL",
+    "type": "generic",
+    "faceid_capable": false,
+    "classification": "sdxl_generic_adapter_faceid_not_proven"
+  },
+  "filename_analysis": {
+    "contains_faceid_indicator": false,
+    "contains_identity_lock_indicator": false,
+    "generic_sdxl_naming": true,
+    "inference": "Filename does not indicate FaceID capability - generic SDXL IP-Adapter"
+  },
+  "target_requirements": {
+    "target_checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_family": "SDXL",
+    "target_shot": "shot01",
+    "required_use_case": "identity preservation / face identity lock",
+    "previous_issue": "identity not preserved across frame batch"
+  },
+  "compatibility_assessment": {
+    "checkpoint_family_compatible": true,
+    "sdxl_compatible": true,
+    "compatible_with_juggernautxl_sdxl": true,
+    "faceid_capable": false,
+    "identity_preservation_capable": false
+  },
+  "review_conclusion": {
+    "candidate_proven_faceid_capable": false,
+    "candidate_sdxl_compatible": true,
+    "candidate_sufficient_for_identity_lock": false,
+    "rationale": "Generic SDXL IP-Adapter is checkpoint-family compatible but lacks proven FaceID identity lock capability required for identity preservation use case"
+  }
+}

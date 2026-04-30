@@ -1,0 +1,25 @@
+{
+  "task_code": "RC2-PRODCARDS3AG",
+  "task_description": "FaceID Capability Decision",
+  "decision_timestamp": "2026-04-30T11:54:00.000000Z",
+  "decision_outcome": "B",
+  "decision_outcome_description": "candidate is SDXL-compatible but NOT FaceID-capable",
+  "candidate_adapter": "ip-adapter_sdxl.safetensors",
+  "faceid_capable": false,
+  "identity_preservation_strategy_satisfied": false,
+  "identity_strategy_blocker": "generic_sdxl_ip_adapter_not_sufficient_for_faceid_identity_lock",
+  "blocker_details": {
+    "blocker_type": "capability_mismatch",
+    "adapter_type": "generic_sdxl_ip_adapter",
+    "required_capability": "faceid_identity_lock",
+    "available_capability": "generic_image_conditioning",
+    "gap": "Generic SDXL IP-Adapter provides image conditioning but not FaceID-specific identity lock required for consistent character identity preservation"
+  },
+  "selected_identity_adapter": null,
+  "next_allowed_action": "sdxl_faceid_adapter_asset_resolution_required",
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true
+}

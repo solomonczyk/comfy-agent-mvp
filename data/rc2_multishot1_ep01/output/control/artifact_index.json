@@ -432,5 +432,17 @@
     "assemble_scene_allowed": false,
     "downstream_blocked": true,
     "timestamp": "2026-04-30T09:40:00.000000Z"
+  },
+  "rc2_prodcards3ag": {
+    "identity_adapter_candidate_review_completed": true,
+    "candidate_adapter": "ip-adapter_sdxl.safetensors",
+    "identity_preservation_strategy_satisfied": false,
+    "next_allowed_action": "sdxl_faceid_adapter_asset_resolution_required",
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "timestamp": "2026-04-30T11:54:00.000000Z"
   }
 }

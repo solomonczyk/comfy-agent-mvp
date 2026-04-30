@@ -1,0 +1,29 @@
+{
+  "task_code": "RC2-PRODCARDS3AG",
+  "task_description": "Identity Strategy Next Step",
+  "step_timestamp": "2026-04-30T11:54:00.000000Z",
+  "identity_adapter_candidate_review_completed": true,
+  "selected_identity_adapter": null,
+  "candidate_adapter": "ip-adapter_sdxl.safetensors",
+  "faceid_capable": false,
+  "identity_preservation_strategy_satisfied": false,
+  "identity_strategy_blocker": "generic_sdxl_ip_adapter_not_sufficient_for_faceid_identity_lock",
+  "next_allowed_action": "sdxl_faceid_adapter_asset_resolution_required",
+  "next_action_description": "Resolve SDXL FaceID adapter asset - acquire SDXL-compatible FaceID IP-Adapter or document alternative identity preservation strategy",
+  "required_asset": {
+    "adapter_type": "sdxl_faceid_ip_adapter",
+    "compatible_with": "juggernautXL_version2.safetensors",
+    "capability": "faceid_identity_lock",
+    "current_status": "not_available"
+  },
+  "alternative_paths": [
+    "acquire SDXL FaceID IP-Adapter from trusted source",
+    "document alternative identity preservation strategy if FaceID adapter unavailable",
+    "evaluate if generic SDXL IP-Adapter with reference image conditioning can achieve acceptable identity consistency"
+  ],
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true
+}

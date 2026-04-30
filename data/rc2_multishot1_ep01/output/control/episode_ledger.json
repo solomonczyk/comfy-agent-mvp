@@ -1423,6 +1423,46 @@
         "identity_strategy_decision": "output/control/rc2_prodcards3af_identity_strategy_decision.json",
         "identity_workflow_patch_plan": "output/control/rc2_prodcards3af_identity_workflow_patch_plan.json"
       }
+    },
+    {
+      "event_type": "identity_adapter_candidate_review_completed",
+      "timestamp": "2026-04-30T11:54:00.000000Z",
+      "task_code": "RC2-PRODCARDS3AG",
+      "task_description": "Identity Adapter Candidate Review / FaceID Capability Decision",
+      "shot_id": "shot01",
+      "identity_adapter_candidate_review_completed": true,
+      "candidate_adapter": "ip-adapter_sdxl.safetensors",
+      "candidate_adapter_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter_sdxl.safetensors",
+      "candidate_adapter_size_bytes": 702585376,
+      "adapter_family": "SDXL",
+      "faceid_capable": false,
+      "identity_preservation_strategy_satisfied": false,
+      "identity_strategy_blocker": "generic_sdxl_ip_adapter_not_sufficient_for_faceid_identity_lock",
+      "decision_outcome": "B",
+      "decision_outcome_description": "candidate is SDXL-compatible but NOT FaceID-capable",
+      "selected_identity_adapter": null,
+      "next_allowed_action": "sdxl_faceid_adapter_asset_resolution_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "no_generation_executed": true,
+      "no_comfyui_execution": true,
+      "no_frame_generation": true,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "download_performed": false,
+      "install_performed": false,
+      "model_move_or_copy_performed": false,
+      "artifact_paths": {
+        "identity_adapter_candidate_review": "output/control/rc2_prodcards3ag_identity_adapter_candidate_review.json",
+        "faceid_capability_decision": "output/control/rc2_prodcards3ag_faceid_capability_decision.json",
+        "identity_strategy_next_step": "output/control/rc2_prodcards3ag_identity_strategy_next_step.json"
+      }
     }
   ]
 }
