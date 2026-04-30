@@ -130,7 +130,11 @@
   "original_planned_model": "dynavision_v10.safetensors",
   "retry_implementation_plan_updated": true,
   "operator_approval_task_code": "RC2-PRODCARDS3U",
-  "next_allowed_action": "retry_implementation_plan_revalidation_required",
+  "retry_implementation_plan_revalidated": true,
+  "checkpoint_available": true,
+  "active_checkpoint": "juggernautXL_version2.safetensors",
+  "remaining_prerequisites_available": false,
+  "next_allowed_action": "remaining_prerequisite_resolution_required",
   "work_orders": {
     "character_director_work_order": "output/control/work_orders/character_director_identity_review.json",
     "workflow_td_work_order": "output/control/work_orders/workflow_td_identity_workflow_review.json"
@@ -159,7 +163,6 @@
   "retry_prerequisite_check_completed": true,
   "retry_prerequisites_available": false,
   "missing_prerequisites": [
-    "dynavision_v10.safetensors",
     "ip-adapter-faceid-plus_sd15.bin"
   ],
   "retry_model_asset_check_path": "output/control/retry_model_asset_check.json",
