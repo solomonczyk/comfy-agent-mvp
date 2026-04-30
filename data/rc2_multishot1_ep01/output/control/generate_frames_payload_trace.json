@@ -1,0 +1,53 @@
+{
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "action": "generate_frames",
+  "mode": "prompt_pack",
+  "total_beats": 3,
+  "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+  "payloads": [
+    {
+      "beat_id": "beat_1",
+      "frame_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\rc2_multishot1_ep01_ep01_shot01_generate_frames_1777538303_00001_.png",
+      "seed": 747001,
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "steps": 20,
+      "cfg": 7.5,
+      "sampler": "dpmpp_sde",
+      "scheduler": "karras",
+      "positive_prompt_source": "prompt_pack.json",
+      "negative_prompt_source": "prompt_pack.json",
+      "positive_prompt_sha256": "6be21d6b3c76c56a1d8a5982508243fdf7ac6eb2a5101a9e321d7efcf6bb650f",
+      "negative_prompt_sha256": "7b6f90344d1eae65afb05d2676b321a47a103f6973f109ea8b6e8b60087d0624"
+    },
+    {
+      "beat_id": "beat_2",
+      "frame_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\rc2_multishot1_ep01_ep01_shot01_generate_frames_1777538401_00001_.png",
+      "seed": 747002,
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "steps": 20,
+      "cfg": 7.5,
+      "sampler": "dpmpp_sde",
+      "scheduler": "karras",
+      "positive_prompt_source": "prompt_pack.json",
+      "negative_prompt_source": "prompt_pack.json",
+      "positive_prompt_sha256": "6be21d6b3c76c56a1d8a5982508243fdf7ac6eb2a5101a9e321d7efcf6bb650f",
+      "negative_prompt_sha256": "7b6f90344d1eae65afb05d2676b321a47a103f6973f109ea8b6e8b60087d0624"
+    },
+    {
+      "beat_id": "beat_3",
+      "frame_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\rc2_multishot1_ep01_ep01_shot01_generate_frames_1777538488_00001_.png",
+      "seed": 747003,
+      "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "steps": 20,
+      "cfg": 7.5,
+      "sampler": "dpmpp_sde",
+      "scheduler": "karras",
+      "positive_prompt_source": "prompt_pack.json",
+      "negative_prompt_source": "prompt_pack.json",
+      "positive_prompt_sha256": "6be21d6b3c76c56a1d8a5982508243fdf7ac6eb2a5101a9e321d7efcf6bb650f",
+      "negative_prompt_sha256": "7b6f90344d1eae65afb05d2676b321a47a103f6973f109ea8b6e8b60087d0624"
+    }
+  ],
+  "created_at": "2026-04-30T10:42:58"
+}

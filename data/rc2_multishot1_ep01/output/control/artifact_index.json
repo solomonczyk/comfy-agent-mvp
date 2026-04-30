@@ -348,7 +348,7 @@
   "role_decision_apply": {
     "status": "frames_generated",
     "retry_gate_open": false,
-    "next_allowed_action": "corrective_plan_review",
+    "next_allowed_action": "qa_review",
     "production_accepted": false,
     "downstream_unblocked_for": []
   },
@@ -368,6 +368,6 @@
       "acceptance_target": "stable single-character frames suitable for qa_review before assemble_scene"
     },
     "requires_operator_confirmation": true,
-    "decision_timestamp": "2026-04-30T08:20:22.554588Z"
+    "decision_timestamp": "2026-04-30T08:43:44.968866Z"
   }
 }

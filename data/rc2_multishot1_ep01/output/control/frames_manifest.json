@@ -1,0 +1,24 @@
+{
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "action": "generate_frames",
+  "artifact_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01",
+  "brief_path": "F:\\ComfyUI\\comfy-agent-mvp\\-",
+  "generated_frames_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01",
+  "frame_count": 3,
+  "frame_paths": [
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000001.png",
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000002.png",
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000003.png"
+  ],
+  "created_at": "2026-04-30T10:42:58",
+  "source_artifacts": {
+    "brief": "F:\\ComfyUI\\comfy-agent-mvp\\-",
+    "original_comfy_paths": [
+      "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\rc2_multishot1_ep01_ep01_shot01_generate_frames_1777538303_00001_.png",
+      "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\rc2_multishot1_ep01_ep01_shot01_generate_frames_1777538401_00001_.png",
+      "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\rc2_multishot1_ep01_ep01_shot01_generate_frames_1777538488_00001_.png"
+    ],
+    "prompt_pack": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\prompt_pack.json"
+  }
+}
