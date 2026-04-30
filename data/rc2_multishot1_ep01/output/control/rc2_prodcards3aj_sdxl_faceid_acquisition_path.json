@@ -2,6 +2,22 @@
   "task_code": "RC2-PRODCARDS3AJ",
   "acquisition_path_type": "controlled_sdxl_faceid_asset_acquisition",
   "timestamp": "2026-04-30T13:00:00.000000Z",
+  "required_asset_set": [
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "asset_type": "sdxl_faceid_adapter",
+      "temp_download_path": "data/rc2_multishot1_ep01/temp_downloads/ip-adapter-faceid-plusv2_sdxl.bin",
+      "final_install_path": "ComfyUI/models/ipadapter/ip-adapter-faceid-plusv2_sdxl.bin"
+    },
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "asset_type": "sdxl_faceid_lora",
+      "temp_download_path": "data/rc2_multishot1_ep01/temp_downloads/ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "final_install_path": "ComfyUI/models/lora/ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+    }
+  ],
+  "asset_set_complete": true,
+  "sdxl_faceid_lora_required": true,
   "adapter_acquisition_path": {
     "asset_name": "ip-adapter-faceid-plusv2_sdxl.bin",
     "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID/blob/main/ip-adapter-faceid-plusv2_sdxl.bin",

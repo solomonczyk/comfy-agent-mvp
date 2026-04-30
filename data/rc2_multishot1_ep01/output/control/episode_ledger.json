@@ -1587,6 +1587,44 @@
       "qa_rerun": false,
       "downstream_actions_executed": false,
       "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_precheck_required"
+    },
+    {
+      "event_type": "sdxl_faceid_acquisition_path_proof_completed",
+      "timestamp": "2026-04-30T13:15:00.000000Z",
+      "task_code": "RC2-PRODCARDS3AJ-FIX",
+      "shot_id": "shot01",
+      "required_asset_set": [
+        "ip-adapter-faceid-plusv2_sdxl.bin",
+        "ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+      ],
+      "asset_set_complete": true,
+      "sdxl_faceid_lora_required": true,
+      "selected_sdxl_faceid_adapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "selected_sdxl_faceid_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "acquisition_path_updated": true,
+      "validation_policy_updated": true,
+      "source_resolution_confirmed": true,
+      "download_authorized": false,
+      "install_authorized": false,
+      "retry_authorized": false,
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "download_performed": false,
+      "install_performed": false,
+      "model_move_or_copy_performed": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "downstream_actions_executed": false,
+      "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_precheck_required",
+      "artifact_paths": {
+        "acquisition_path": "output/control/rc2_prodcards3aj_sdxl_faceid_acquisition_path.json",
+        "validation_policy": "output/control/rc2_prodcards3aj_sdxl_faceid_validation_policy.json",
+        "source_resolution": "output/control/rc2_prodcards3aj_sdxl_faceid_source_resolution.json"
+      }
     }
   ]
 }
