@@ -2173,6 +2173,38 @@
       "timestamp": "2026-04-30T18:12:10.000000Z",
       "single_frame_retry_authorization_result_path": "output/control/rc2_prodcards3aw_single_frame_retry_authorization_result.json",
       "retry_preflight_result_path": "output/control/rc2_prodcards3aw_retry_preflight_result.json"
+    },
+    {
+      "event_type": "operator_visual_rejection",
+      "task_code": "RC2-PRODCARDS3AX",
+      "episode_id": "ep01",
+      "shot_id": "shot01",
+      "operator_verdict": "rejected_visual_quality",
+      "retry_frame_accepted": false,
+      "visual_failures": [
+        "duplicate_subject_generated",
+        "heavy_haze_gray_veil",
+        "not_hyperrealistic",
+        "soft_low_detail_render",
+        "identity_not_cleanly_preserved"
+      ],
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "next_allowed_action": "single_subject_hyperrealism_correction_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "timestamp": "2026-04-30T18:27:20.000000Z",
+      "operator_visual_rejection_path": "output/control/rc2_prodcards3ax_operator_visual_rejection.json",
+      "frame_quality_audit_path": "output/control/rc2_prodcards3ax_frame_quality_audit.json",
+      "prompt_payload_audit_path": "output/control/rc2_prodcards3ax_prompt_payload_audit.json",
+      "identity_duplication_audit_path": "output/control/rc2_prodcards3ax_identity_duplication_audit.json",
+      "corrective_plan_path": "output/control/rc2_prodcards3ax_corrective_plan.json"
     }
   ]
 }

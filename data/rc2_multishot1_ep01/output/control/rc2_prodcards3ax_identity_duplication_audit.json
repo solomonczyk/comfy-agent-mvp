@@ -1,0 +1,115 @@
+{
+  "task_code": "RC2-PRODCARDS3AX",
+  "shot_id": "shot01",
+  "audit_type": "identity_duplication_audit",
+  "audit_timestamp": "2026-04-30T18:27:20Z",
+  "identity_wiring_configuration": {
+    "ip_adapter_advanced_node": "present",
+    "adapter_file": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "lora_file": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "reference_image": "shot01_reference.png",
+    "identity_weight": 0.65,
+    "lora_strength": 0.8,
+    "identity_schedule": "0.0-1.0 linear"
+  },
+  "reference_image_analysis": {
+    "reference_image_path": "shot01_reference.png",
+    "potential_ambiguity": "reference image may contain single subject but composition prompt may introduce ambiguity",
+    "composition_conflict": "full-body forest scene with kneeling pose may allow model to hallucinate additional figures",
+    "identity_lock_strength": "moderate (0.65 weight) - may not prevent duplicate subject generation if prompt composition is ambiguous"
+  },
+  "duplicate_subject_generation_analysis": {
+    "expected_failure": "two women generated",
+    "potential_causes": [
+      {
+        "cause": "prompt_composition_ambiguity",
+        "description": "Prompt describes kneeling beside stream, ancient altar, crystal orb - complex scene may invite additional figures",
+        "severity": "high"
+      },
+      {
+        "cause": "missing_single_subject_constraint",
+        "description": "Prompt does not explicitly require one woman only / single subject",
+        "severity": "critical"
+      },
+      {
+        "cause": "identity_weight_insufficient",
+        "description": "Identity weight 0.65 may not be strong enough to prevent hallucination when composition is complex",
+        "severity": "medium"
+      },
+      {
+        "cause": "lora_strength_interaction",
+        "description": "LoRA strength 0.8 combined with identity weight 0.65 may create style transfer that introduces ambiguity",
+        "severity": "medium"
+      }
+    ]
+  },
+  "haze_gray_veil_persistence_analysis": {
+    "expected_failure": "haze/gray veil still present",
+    "potential_causes": [
+      {
+        "cause": "negative_prompt_terms_present_but_weak",
+        "description": "Negative prompt includes haze, fog, mist, gray veil but may not be strong enough to override atmospheric terms in positive prompt",
+        "severity": "high"
+      },
+      {
+        "cause": "positive_prompt_atmospheric_terms",
+        "description": "Positive prompt still contains 'blue glow illuminating scene', 'soft blue light' which may reintroduce atmospheric haze",
+        "severity": "high"
+      },
+      {
+        "cause": "checkpoint_style_bias",
+        "description": "JuggernautXL checkpoint may have inherent atmospheric bias that requires stronger negative terms",
+        "severity": "medium"
+      }
+    ]
+  },
+  "soft_hyperrealism_failure_analysis": {
+    "expected_failure": "image remains soft, low contrast",
+    "potential_causes": [
+      {
+        "cause": "hyperrealism_terms_present_but_conflicting",
+        "description": "Hyperrealism terms added but atmospheric terms in prompt may conflict",
+        "severity": "high"
+      },
+      {
+        "cause": "sampler_scheduler_mismatch",
+        "description": "dpmpp_2m_sde with karras scheduler may produce softer results than expected for hyperrealism",
+        "severity": "medium"
+      },
+      {
+        "cause": "cfg_too_low",
+        "description": "CFG 6.0 may be too low for sharp hyperrealistic detail",
+        "severity": "medium"
+      }
+    ]
+  },
+  "corrective_recommendations": {
+    "identity_wiring": [
+      "Increase identity weight to 0.8-0.9 for stronger single-subject lock",
+      "Consider reducing LoRA strength to 0.6-0.7 to reduce style ambiguity",
+      "Use simpler composition (medium close-up) to reduce scene complexity"
+    ],
+    "prompt_composition": [
+      "Add explicit single-subject terms: one woman only, single subject, no other people",
+      "Add duplicate subject blockers: two women, multiple women, duplicate person, second person, clone, ghost figure",
+      "Simplify scene description to reduce hallucination risk"
+    ],
+    "atmosphere_control": [
+      "Remove or weaken atmospheric terms: 'soft blue light', 'blue glow illuminating scene'",
+      "Strengthen negative terms: add very strong haze, very strong fog, atmospheric haze, dreamlike atmosphere",
+      "Consider adding: sharp lighting, hard shadows, crisp edges"
+    ],
+    "hyperrealism_enforcement": [
+      "Increase CFG to 7.0-8.0 for sharper detail",
+      "Consider alternative sampler: euler_a or ddim for sharper results",
+      "Add explicit sharpness terms: razor sharp, crystal clear, ultra detailed"
+    ]
+  },
+  "audit_conclusion": {
+    "identity_duplication_risk": "high",
+    "haze_persistence_risk": "high",
+    "soft_hyperrealism_risk": "high",
+    "corrective_action_required": true,
+    "next_step": "implement_single_subject_hyperrealism_correction"
+  }
+}

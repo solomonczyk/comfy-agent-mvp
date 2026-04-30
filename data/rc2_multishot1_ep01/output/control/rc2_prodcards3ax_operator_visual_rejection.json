@@ -1,0 +1,64 @@
+{
+  "task_code": "RC2-PRODCARDS3AX",
+  "shot_id": "shot01",
+  "rejection_type": "operator_visual_rejection",
+  "rejection_timestamp": "2026-04-30T18:27:20Z",
+  "operator_verdict": "rejected_visual_quality",
+  "retry_frame_accepted": false,
+  "observed_visual_failures": [
+    {
+      "failure_type": "duplicate_subject_generated",
+      "description": "Two women generated instead of one clear subject",
+      "severity": "critical"
+    },
+    {
+      "failure_type": "heavy_haze_gray_veil",
+      "description": "Heavy haze and gray veil still present despite hyperrealism correction",
+      "severity": "critical"
+    },
+    {
+      "failure_type": "not_hyperrealistic",
+      "description": "Image remains soft, washed out, low contrast - hyperrealism target not achieved",
+      "severity": "critical"
+    },
+    {
+      "failure_type": "soft_low_detail_render",
+      "description": "Face, skin, fabric, and forest detail are weak",
+      "severity": "high"
+    },
+    {
+      "failure_type": "identity_not_cleanly_preserved",
+      "description": "Identity preservation is not cleanly proven due to duplicate subject confusion",
+      "severity": "high"
+    },
+    {
+      "failure_type": "composition_failed",
+      "description": "Expected one clear subject, got two figures",
+      "severity": "critical"
+    }
+  ],
+  "frame_production_status": {
+    "attempted_generation": true,
+    "generation_canceled": true,
+    "no_actual_frame_produced": true,
+    "rejection_based_on": "prompt_recipe_analysis_and_operator_expectation"
+  },
+  "qa_status": {
+    "qa_rerun": false,
+    "qa_allowed": false,
+    "qa_executed": false
+  },
+  "downstream_status": {
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
+  },
+  "production_status": {
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "next_allowed_action": "single_subject_hyperrealism_correction_required",
+  "retry_gate_open": false
+}

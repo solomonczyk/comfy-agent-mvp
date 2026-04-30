@@ -1,0 +1,117 @@
+{
+  "task_code": "RC2-PRODCARDS3AX",
+  "shot_id": "shot01",
+  "audit_type": "prompt_payload_audit",
+  "audit_timestamp": "2026-04-30T18:27:20Z",
+  "corrected_prompt_source": "rc2_prodcards3av_hyperrealism_prompt_correction.json",
+  "positive_prompt_analysis": {
+    "corrected_positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, kneeling beside crystal-clear stream, ancient stone altar partially buried in streambed, mysterious glowing blue crystal orb resting on altar pulsing with soft blue light, Alya reaching toward crystal with wonder and hesitation, reflection visible in water below, blue glow illuminating scene, hyperrealistic cinematic portrait, crisp natural skin texture, visible pores, sharp eyelashes, detailed eyes, realistic fabric texture, detailed forest bark and leaves, clean natural daylight, high local contrast, high micro-detail, realistic full-frame camera look, face visible, medium close-up composition, no haze, no fog, no soft focus, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k",
+    "forbidden_terms_removed": [
+      "soft morning mist"
+    ],
+    "required_hyperrealistic_terms_added": [
+      "hyperrealistic cinematic portrait",
+      "crisp natural skin texture",
+      "visible pores",
+      "sharp eyelashes",
+      "detailed eyes",
+      "realistic fabric texture",
+      "detailed forest bark and leaves",
+      "clean natural daylight",
+      "high local contrast",
+      "high micro-detail",
+      "realistic full-frame camera look",
+      "face visible",
+      "medium close-up composition",
+      "no haze",
+      "no fog",
+      "no soft focus"
+    ],
+    "single_subject_terms_present": false,
+    "explicit_single_subject_terms": [],
+    "missing_single_subject_terms": [
+      "one woman only",
+      "single subject",
+      "no other people",
+      "no duplicate figure",
+      "solo portrait",
+      "alone"
+    ],
+    "duplicate_subject_blocking_terms": [],
+    "missing_duplicate_subject_blockers": [
+      "two women",
+      "multiple women",
+      "duplicate person",
+      "second person",
+      "clone",
+      "ghost figure",
+      "double body",
+      "extra body",
+      "extra face",
+      "extra head",
+      "extra arms",
+      "overlapping bodies",
+      "crowd",
+      "background person"
+    ]
+  },
+  "negative_prompt_analysis": {
+    "corrected_negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, harsh lighting, urban, buildings, modern, weapons, violence, bright daylight, haze, fog, mist, smoke, soft focus, blurry, washed out, low contrast, overexposed, underexposed, plastic skin, waxy skin, CGI, doll face, painterly, low detail, muddy background, flat lighting, gray veil",
+    "required_anti_soft_haze_terms_added": [
+      "haze",
+      "fog",
+      "mist",
+      "smoke",
+      "soft focus",
+      "blurry",
+      "washed out",
+      "low contrast",
+      "overexposed",
+      "underexposed",
+      "plastic skin",
+      "waxy skin",
+      "CGI",
+      "doll face",
+      "painterly",
+      "low detail",
+      "muddy background",
+      "flat lighting",
+      "gray veil"
+    ],
+    "duplicate_subject_blocking_terms_present": false,
+    "missing_duplicate_subject_blockers": [
+      "two women",
+      "multiple women",
+      "duplicate person",
+      "second person",
+      "clone",
+      "ghost figure",
+      "double body",
+      "extra body",
+      "extra face",
+      "extra head",
+      "extra arms",
+      "overlapping bodies",
+      "crowd",
+      "background person"
+    ]
+  },
+  "payload_delivery_status": {
+    "corrected_prompt_ready": true,
+    "corrected_negative_prompt_ready": true,
+    "payload_applied_to_generation": false,
+    "generation_canceled_before_payload_application": true
+  },
+  "root_cause_analysis": {
+    "primary_failure": "single_subject_constraint_missing",
+    "secondary_failure": "duplicate_subject_blockers_missing",
+    "atmospheric_failure": "haze_terms_present_in_negative_but_not_strong_enough",
+    "hyperrealism_failure": "hyperrealism_terms_added_but_composition_conflict_with_identity_lock"
+  },
+  "audit_conclusion": {
+    "prompt_correction_incomplete": true,
+    "single_subject_policy_missing": true,
+    "duplicate_subject_prevention_insufficient": true,
+    "corrective_action_required": true
+  }
+}

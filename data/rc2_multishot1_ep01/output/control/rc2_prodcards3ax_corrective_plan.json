@@ -1,0 +1,119 @@
+{
+  "task_code": "RC2-PRODCARDS3AX",
+  "shot_id": "shot01",
+  "plan_type": "single_subject_hyperrealism_corrective_plan",
+  "plan_timestamp": "2026-04-30T18:27:20Z",
+  "trigger_event": "operator_visual_rejection_of_duplicate_subject_retry",
+  "root_causes_identified": [
+    "single_subject_constraint_missing_from_prompt",
+    "duplicate_subject_blockers_missing_from_negative_prompt",
+    "atmospheric_terms_in_positive_prompt_conflicting_with_hyperrealism",
+    "identity_weight_insufficient_to_prevent_hallucination",
+    "composition_too_complex_for_single_subject_lock"
+  ],
+  "corrective_actions": {
+    "single_subject_policy": {
+      "positive_prompt_additions": [
+        "one woman only",
+        "single subject",
+        "no other people",
+        "no duplicate figure",
+        "solo portrait",
+        "alone",
+        "face visible",
+        "medium close-up portrait",
+        "centered composition"
+      ],
+      "negative_prompt_additions": [
+        "two women",
+        "multiple women",
+        "duplicate person",
+        "second person",
+        "clone",
+        "ghost figure",
+        "double body",
+        "extra body",
+        "extra face",
+        "extra head",
+        "extra arms",
+        "overlapping bodies",
+        "crowd",
+        "background person"
+      ]
+    },
+    "atmosphere_removal": {
+      "positive_prompt_removals": [
+        "soft blue light",
+        "blue glow illuminating scene"
+      ],
+      "negative_prompt_strengthening": [
+        "very strong haze",
+        "very strong fog",
+        "atmospheric haze",
+        "dreamlike atmosphere",
+        "soft glow",
+        "gray veil",
+        "washed out atmosphere"
+      ]
+    },
+    "hyperrealism_enforcement": {
+      "positive_prompt_additions": [
+        "razor sharp",
+        "crystal clear",
+        "ultra detailed",
+        "sharp lighting",
+        "hard shadows",
+        "crisp edges",
+        "natural daylight",
+        "realistic camera photo"
+      ],
+      "negative_prompt_additions": [
+        "soft focus",
+        "blurry",
+        "washed out",
+        "low contrast",
+        "dreamlike",
+        "fantasy glow"
+      ]
+    },
+    "composition_simplification": {
+      "new_composition_approach": "identity_validation_frame_first",
+      "composition_requirements": [
+        "one subject only",
+        "medium close-up / upper body",
+        "face clearly visible",
+        "less environment visible",
+        "no full-body drifting forest shot",
+        "no side/back-view ambiguity",
+        "centered or rule-of-thirds single person"
+      ]
+    },
+    "identity_wiring_adjustment": {
+      "identity_weight_increase": "0.65 -> 0.85",
+      "lora_strength_adjustment": "0.8 -> 0.7",
+      "reasoning": "Stronger identity lock to prevent hallucination, slightly reduced LoRA to reduce style ambiguity"
+    },
+    "generation_parameter_adjustment": {
+      "cfg_increase": "6.0 -> 7.5",
+      "reasoning": "Higher CFG for sharper detail and stronger adherence to prompt constraints"
+    }
+  },
+  "semantic_qc_gate": {
+    "enabled": true,
+    "rejection_criteria": [
+      "more than one person detected",
+      "face not clearly visible",
+      "low contrast / haze detected",
+      "image too soft / blurry",
+      "identity not visually clear"
+    ]
+  },
+  "runtime_memory_safety": {
+    "frames_to_generate": 1,
+    "no_batch_generation": true,
+    "no_downstream_execution": true
+  },
+  "next_task_code": "RC2-PRODCARDS3AY",
+  "next_task_description": "Apply single-subject hyperrealism correction with simplified composition and stronger identity lock",
+  "expected_outcome": "Single-frame generation with one clear subject, no haze, sharp hyperrealistic detail, clean identity preservation"
+}

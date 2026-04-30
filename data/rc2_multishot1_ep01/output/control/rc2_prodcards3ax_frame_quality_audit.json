@@ -1,0 +1,83 @@
+{
+  "task_code": "RC2-PRODCARDS3AX",
+  "shot_id": "shot01",
+  "audit_type": "frame_quality_audit",
+  "audit_timestamp": "2026-04-30T18:27:20Z",
+  "audit_basis": "operator_visual_rejection",
+  "existing_frames_inspected": [
+    {
+      "frame_path": "output/frames/ep01_shot01/000001.png",
+      "file_size_bytes": 1170669,
+      "dimensions": "1344x768",
+      "status": "existing_from_previous_generation",
+      "visual_assessment": "not_relevant_to_ax_generation"
+    },
+    {
+      "frame_path": "output/frames/ep01_shot01/000002.png",
+      "file_size_bytes": 1057468,
+      "dimensions": "1344x768",
+      "status": "existing_from_previous_generation",
+      "visual_assessment": "not_relevant_to_ax_generation"
+    },
+    {
+      "frame_path": "output/frames/ep01_shot01/000003.png",
+      "file_size_bytes": 1194903,
+      "dimensions": "1344x768",
+      "status": "existing_from_previous_generation",
+      "visual_assessment": "not_relevant_to_ax_generation"
+    }
+  ],
+  "ax_generation_status": {
+    "attempted": true,
+    "canceled_by_operator": true,
+    "no_new_frame_produced": true,
+    "rejection_reason": "operator_rejected_before_actual_generation"
+  },
+  "expected_ax_frame_specifications": {
+    "resolution": "1344x768",
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "steps": 32,
+    "cfg": 6.0,
+    "sampler": "dpmpp_2m_sde",
+    "scheduler": "karras",
+    "identity_weight": 0.65,
+    "lora_strength": 0.8,
+    "prompt_correction_applied": true,
+    "negative_prompt_correction_applied": true
+  },
+  "quality_failures_identified": [
+    {
+      "failure": "duplicate_subject_expected",
+      "description": "Based on operator feedback, the generation would have produced duplicate subjects (two women)",
+      "root_cause_category": "prompt_composition"
+    },
+    {
+      "failure": "haze_gray_veil_expected",
+      "description": "Based on operator feedback, the generation would have retained haze/gray veil despite correction",
+      "root_cause_category": "prompt_atmosphere"
+    },
+    {
+      "failure": "not_hyperrealistic_expected",
+      "description": "Based on operator feedback, the generation would have been soft/low-contrast despite hyperrealism correction",
+      "root_cause_category": "prompt_style"
+    },
+    {
+      "failure": "single_subject_constraint_missing",
+      "description": "Corrected prompt did not explicitly require one woman only / single subject",
+      "root_cause_category": "prompt_composition"
+    }
+  ],
+  "qc_metrics": {
+    "duplicate_subject_detection": "not_executed",
+    "low_contrast_detection": "not_executed",
+    "haze_detection": "not_executed",
+    "soft_face_detection": "not_executed",
+    "low_detail_detection": "not_executed"
+  },
+  "audit_conclusion": {
+    "generation_aborted": true,
+    "quality_failures_prevented": true,
+    "corrective_action_required": true,
+    "next_step": "single_subject_hyperrealism_correction"
+  }
+}
