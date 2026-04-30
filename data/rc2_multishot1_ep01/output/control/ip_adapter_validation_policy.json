@@ -1,0 +1,154 @@
+{
+  "task_code": "RC2-PRODCARDS3Z",
+  "policy_type": "ip_adapter_validation_policy",
+  "policy_created": true,
+  "timestamp": "2026-04-30T09:53:00Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "target_asset": "ip-adapter-faceid-plus_sd15.bin",
+  "trusted_source": "h94/IP-Adapter-FaceID",
+  "validation_phases": {
+    "pre_acquisition_validation": {
+      "phase_name": "pre_acquisition_validation",
+      "validation_steps": [
+        {
+          "step": "source_allowlist_verification",
+          "required": true,
+          "criteria": "source_name must match h94/IP-Adapter-FaceID",
+          "status": "passed"
+        },
+        {
+          "step": "target_asset_verification",
+          "required": true,
+          "criteria": "filename must be ip-adapter-faceid-plus_sd15.bin with .bin extension",
+          "status": "passed"
+        },
+        {
+          "step": "active_checkpoint_verification",
+          "required": true,
+          "criteria": "active checkpoint must be juggernautXL_version2.safetensors",
+          "status": "passed"
+        },
+        {
+          "step": "target_shot_verification",
+          "required": true,
+          "criteria": "target shot must be shot01",
+          "status": "passed"
+        }
+      ]
+    },
+    "post_acquisition_validation": {
+      "phase_name": "post_acquisition_validation",
+      "validation_steps": [
+        {
+          "step": "existence_check",
+          "required": true,
+          "criteria": "file must exist at temp acquisition path",
+          "status": "pending_execution"
+        },
+        {
+          "step": "file_size_recording",
+          "required": true,
+          "criteria": "file size must be recorded in bytes",
+          "status": "pending_execution"
+        },
+        {
+          "step": "hash_sha256_recording",
+          "required": true,
+          "criteria": "SHA256 hash must be computed and recorded",
+          "status": "pending_execution"
+        },
+        {
+          "step": "extension_check",
+          "required": true,
+          "criteria": "file extension must be .bin",
+          "status": "pending_execution"
+        },
+        {
+          "step": "expected_filename_exact_match",
+          "required": true,
+          "criteria": "filename must exactly match ip-adapter-faceid-plus_sd15.bin",
+          "status": "pending_execution"
+        },
+        {
+          "step": "source_reference_recording",
+          "required": true,
+          "criteria": "source reference must be recorded as h94/IP-Adapter-FaceID",
+          "status": "pending_execution"
+        },
+        {
+          "step": "allowlist_source_match",
+          "required": true,
+          "criteria": "downloaded file source must match allowlist",
+          "status": "pending_execution"
+        }
+      ]
+    },
+    "post_install_validation": {
+      "phase_name": "post_install_validation",
+      "validation_steps": [
+        {
+          "step": "final_location_existence_check",
+          "required": true,
+          "criteria": "file must exist at models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+          "status": "pending_execution"
+        },
+        {
+          "step": "file_size_match",
+          "required": true,
+          "criteria": "file size must match post-acquisition recording",
+          "status": "pending_execution"
+        },
+        {
+          "step": "hash_verification",
+          "required": true,
+          "criteria": "SHA256 hash must match post-acquisition recording",
+          "status": "pending_execution"
+        },
+        {
+          "step": "comfyui_loadability_check",
+          "required": true,
+          "criteria": "file must be loadable by ComfyUI IP-Adapter node",
+          "status": "pending_execution"
+        }
+      ]
+    }
+  },
+  "validation_criteria": {
+    "existence_check": "file must exist at specified path",
+    "file_size_recording": "record file size in bytes for verification",
+    "hash_sha256_recording": "compute and record SHA256 hash for integrity verification",
+    "extension_check": "verify file extension is .bin",
+    "expected_filename_exact_match": "filename must exactly match ip-adapter-faceid-plus_sd15.bin",
+    "source_reference_recording": "record source as h94/IP-Adapter-FaceID",
+    "allowlist_source_match": "verify downloaded file source matches allowlist",
+    "active_checkpoint_verification": "verify active checkpoint is juggernautXL_version2.safetensors",
+    "target_shot_verification": "verify target shot is shot01"
+  },
+  "failure_handling": {
+    "validation_failure_action": "block_install_and_report",
+    "hash_mismatch_action": "reject_file_and_report",
+    "filename_mismatch_action": "reject_file_and_report",
+    "source_mismatch_action": "reject_file_and_report",
+    "loadability_failure_action": "reject_file_and_report"
+  },
+  "authorization_state": {
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "boundary_compliance": {
+    "download_performed": false,
+    "install_performed": false,
+    "model_move_or_copy_performed": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  }
+}

@@ -1,0 +1,93 @@
+{
+  "task_code": "RC2-PRODCARDS3Z",
+  "contract_type": "ip_adapter_acquisition_execution_contract",
+  "contract_created": true,
+  "timestamp": "2026-04-30T09:53:00Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "target_asset": "ip-adapter-faceid-plus_sd15.bin",
+  "trusted_source": "h94/IP-Adapter-FaceID",
+  "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID",
+  "execution_requirements": {
+    "precheck_completed": true,
+    "precheck_path": "output/control/ip_adapter_acquisition_precheck.json",
+    "validation_policy_created": true,
+    "validation_policy_path": "output/control/ip_adapter_validation_policy.json",
+    "dry_run_default": true,
+    "explicit_operator_execution_flag_required": true
+  },
+  "acquisition_phases": {
+    "phase_1_download": {
+      "phase_name": "download_from_trusted_source",
+      "authorization_required": true,
+      "authorization_granted": false,
+      "source": "h94/IP-Adapter-FaceID",
+      "target_filename": "ip-adapter-faceid-plus_sd15.bin",
+      "destination": "temp/ip_adapter_acquisition/ip-adapter-faceid-plus_sd15.bin",
+      "execution_blocked": true
+    },
+    "phase_2_validation": {
+      "phase_name": "post_download_validation",
+      "authorization_required": false,
+      "depends_on": "phase_1_download",
+      "validation_steps": [
+        "existence_check",
+        "file_size_recording",
+        "hash_sha256_recording",
+        "extension_check",
+        "filename_exact_match",
+        "source_reference_verification",
+        "allowlist_source_match"
+      ],
+      "execution_blocked": true
+    },
+    "phase_3_install": {
+      "phase_name": "atomic_install_to_final_location",
+      "authorization_required": true,
+      "authorization_granted": false,
+      "source": "temp/ip_adapter_acquisition/ip-adapter-faceid-plus_sd15.bin",
+      "destination": "models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+      "atomic_placement": true,
+      "backup_policy": "backup_existing_if_present",
+      "overwrite_policy": "no_overwrite_unless_validated",
+      "execution_blocked": true
+    },
+    "phase_4_post_install_verification": {
+      "phase_name": "post_install_verification",
+      "authorization_required": false,
+      "depends_on": "phase_3_install",
+      "verification_steps": [
+        "final_location_existence_check",
+        "file_size_match",
+        "hash_verification",
+        "comfyui_loadability_check"
+      ],
+      "execution_blocked": true
+    }
+  },
+  "authorization_state": {
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "boundary_compliance": {
+    "download_performed": false,
+    "install_performed": false,
+    "model_move_or_copy_performed": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  },
+  "next_allowed_action": "controlled_ip_adapter_asset_acquisition_execution_required",
+  "execution_blocked_until": {
+    "download_authorization_granted": false,
+    "install_authorization_granted": false,
+    "explicit_operator_flag_set": false
+  }
+}

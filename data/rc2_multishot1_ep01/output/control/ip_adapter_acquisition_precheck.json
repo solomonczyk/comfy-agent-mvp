@@ -1,0 +1,78 @@
+{
+  "task_code": "RC2-PRODCARDS3Z",
+  "precheck_type": "controlled_ip_adapter_asset_acquisition_precheck",
+  "precheck_completed": true,
+  "timestamp": "2026-04-30T09:53:00Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "source_allowlist_verification": {
+    "source_name": "h94/IP-Adapter-FaceID",
+    "source_type": "hugging_face_repository",
+    "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID",
+    "target_asset_reference": "ip-adapter-faceid-plus_sd15.bin",
+    "approval_scope": "source_resolution_only",
+    "download_authorized_at_start": false,
+    "allowlist_status": "confirmed",
+    "allowlist_decision_path": "output/control/ip_adapter_source_allowlist_decision.json"
+  },
+  "target_asset_verification": {
+    "expected_filename": "ip-adapter-faceid-plus_sd15.bin",
+    "expected_extension": ".bin",
+    "expected_asset_type": "ip_adapter_faceid_plus_sd15",
+    "substitution_allowed": false,
+    "exact_match_required": true
+  },
+  "target_install_path_plan": {
+    "final_install_path": "models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+    "temp_acquisition_path": "temp/ip_adapter_acquisition/ip-adapter-faceid-plus_sd15.bin",
+    "backup_collision_policy": "backup_existing_if_present",
+    "atomic_placement_policy": "atomic_move_from_temp_to_final",
+    "overwrite_policy": "no_overwrite_unless_validated"
+  },
+  "validation_policy": {
+    "existence_check": "required",
+    "file_size_recording": "required",
+    "hash_sha256_recording": "required_after_acquisition",
+    "extension_check": "required",
+    "expected_filename_exact_match": "required",
+    "source_reference_recording": "required",
+    "allowlist_source_match": "required",
+    "active_checkpoint_verification": "juggernautXL_version2.safetensors",
+    "target_shot_verification": "shot01"
+  },
+  "execution_authorization_policy": {
+    "dry_run_default": true,
+    "explicit_operator_execution_flag_required": true,
+    "download_authorization_separate": true,
+    "install_authorization_separate": true,
+    "post_install_verifier_required": true,
+    "retry_gate_must_remain_closed": true,
+    "generation_forbidden_until_separate_retry_authorization": true
+  },
+  "precheck_outcome": {
+    "precheck_complete": true,
+    "source_allowlisted": true,
+    "target_asset_confirmed": "ip-adapter-faceid-plus_sd15.bin",
+    "trusted_source": "h94/IP-Adapter-FaceID",
+    "next_allowed_action": "controlled_ip_adapter_asset_acquisition_execution_required"
+  },
+  "authorization_state": {
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "boundary_compliance": {
+    "download_performed": false,
+    "install_performed": false,
+    "model_move_or_copy_performed": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  }
+}

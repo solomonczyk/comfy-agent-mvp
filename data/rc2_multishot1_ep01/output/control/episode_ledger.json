@@ -1138,6 +1138,37 @@
         "ip_adapter_source_allowlist_decision": "output/control/ip_adapter_source_allowlist_decision.json",
         "ip_adapter_asset_acquisition_precheck_plan": "output/control/ip_adapter_asset_acquisition_precheck_plan.json"
       }
+    },
+    {
+      "event_type": "ip_adapter_acquisition_precheck_completed",
+      "timestamp": "2026-04-30T09:53:00.000000Z",
+      "task_code": "RC2-PRODCARDS3Z",
+      "shot_id": "shot01",
+      "target_asset": "ip-adapter-faceid-plus_sd15.bin",
+      "trusted_source": "h94/IP-Adapter-FaceID",
+      "precheck_completed": true,
+      "download_authorized": false,
+      "install_authorized": false,
+      "retry_authorized": false,
+      "next_allowed_action": "controlled_ip_adapter_asset_acquisition_execution_required",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "download_performed": false,
+      "install_performed": false,
+      "model_move_or_copy_performed": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "downstream_actions_executed": false,
+      "artifact_paths": {
+        "ip_adapter_acquisition_precheck": "output/control/ip_adapter_acquisition_precheck.json",
+        "ip_adapter_acquisition_execution_contract": "output/control/ip_adapter_acquisition_execution_contract.json",
+        "ip_adapter_validation_policy": "output/control/ip_adapter_validation_policy.json",
+        "ip_adapter_acquisition_execution_instructions": "output/control/IP_ADAPTER_ACQUISITION_EXECUTION_INSTRUCTIONS.md"
+      }
     }
   ]
 }
