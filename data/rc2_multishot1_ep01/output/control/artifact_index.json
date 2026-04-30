@@ -145,7 +145,7 @@
   "ip_adapter_download_authorized": true,
   "ip_adapter_install_authorized": true,
   "ip_adapter_retry_authorized": false,
-  "next_allowed_action": "controlled_retry_authorization_required",
+  "next_allowed_action": "retry_generate_frames",
   "ip_adapter_asset_resolution_contract_created": true,
   "ip_adapter_controlled_acquisition_plan_created": true,
   "ip_adapter_post_install_verification_contract_created": true,
@@ -177,7 +177,7 @@
     "decision_status": "applied"
   },
   "production_accepted": false,
-  "retry_gate_open": false,
+  "retry_gate_open": true,
   "corrective_work_orders_created": true,
   "corrective_work_orders_count": 2,
   "corrective_submission_review_completed": true,
@@ -202,7 +202,7 @@
   "ip_adapter_controlled_acquisition_plan_path": "output/control/ip_adapter_controlled_acquisition_plan.json",
   "ip_adapter_post_install_verification_contract_path": "output/control/ip_adapter_post_install_verification_contract.json",
   "ip_adapter_controlled_install_instructions_path": "output/control/IP_ADAPTER_CONTROLLED_INSTALL_INSTRUCTIONS.md",
-  "downstream_blocked": true,
+  "downstream_blocked": false,
   "assemble_scene_allowed": false,
   "operator_override": true,
   "operator_verdict": "rejected_visual_quality",
@@ -358,15 +358,9 @@
     "reason": "correctable_failures_with_role_decisions",
     "retry_gate_open": true,
     "next_allowed_action": "retry_generate_frames",
-    "next_retry_attempt": 2,
-    "current_retry_attempt": 1,
-    "failure_reasons": [
-      "identity_drift",
-      "visual_artifacts",
-      "haze",
-      "banding",
-      "texture_collapse"
-    ],
+    "next_retry_attempt": 3,
+    "current_retry_attempt": 2,
+    "failure_reasons": [],
     "corrective_retry_plan": {
       "identity_consistency": "strengthen single-character identity lock and reduce multi-face/multi-subject drift",
       "visual_quality": "reduce haze, banding, and texture-collapse artifacts",
@@ -374,15 +368,6 @@
       "acceptance_target": "stable single-character frames suitable for qa_review before assemble_scene"
     },
     "requires_operator_confirmation": true,
-    "production_accepted": false,
-    "comfyui_generation": false,
-    "generation_performed": false,
-    "retry_generate_frames_executed": false,
-    "qa_review_executed": false,
-    "assemble_scene_executed": false,
-    "audio_executed": false,
-    "render_executed": false,
-    "downstream_actions_executed": false,
-    "decision_timestamp": "2026-04-29T15:15:07.618725Z"
+    "decision_timestamp": "2026-04-30T08:20:22.554588Z"
   }
 }

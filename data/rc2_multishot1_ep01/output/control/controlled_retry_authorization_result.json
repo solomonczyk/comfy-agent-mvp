@@ -1,0 +1,30 @@
+{
+  "authorization_status": "authorized",
+  "authorization_completed": true,
+  "controlled_retry_authorized": true,
+  "retry_gate_open": true,
+  "next_allowed_action": "retry_generate_frames",
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": false,
+  "authorization_timestamp": "2026-04-30T08:20:22.560636Z",
+  "preflight_checks": {
+    "missing_prerequisites": [],
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "ip_adapter_file_exists": true,
+    "ip_adapter_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plus_sd15.bin",
+    "ip_adapter_sha256": "252fb53e0d018489d9e7f9b9e2001a52ff700e491894011ada7cfb471e0fadf2",
+    "ip_adapter_sha256_verified": true,
+    "target_shot": "shot01",
+    "role_decisions_applied": true,
+    "approval_gate_ready": true
+  },
+  "no_comfyui_generation": true,
+  "no_frame_generation": true,
+  "no_retry_generate_frames_execution": true,
+  "no_qa_rerun": true,
+  "no_assemble_scene": true,
+  "no_audio_attach": true,
+  "no_render_episode": true,
+  "no_downstream_execution": true
+}
