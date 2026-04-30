@@ -6709,6 +6709,53 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         print(f"  Authorization: ready_for_retry")
         print(f"  Dimensions: {expected_width}x{expected_height} -> {resolved_workflow_width}x{resolved_workflow_height}")
 
+        # RC2-PRODCARDS3AI: Resolution/Aspect Ratio Policy Gate
+        resolution_policy_gate_passed = True
+        resolution_policy_gate_reason = None
+        resolution_preflight_proof = None
+        
+        try:
+            from app.production_cards.resolution_policy import create_resolution_preflight_gate
+            
+            resolution_gate = create_resolution_preflight_gate(
+                width=expected_width,
+                height=expected_height,
+                project_root=str(project_path),
+                operator_approved=False  # Require explicit operator approval for bypass
+            )
+            
+            resolution_policy_gate_passed = resolution_gate["gate_open"]
+            resolution_preflight_proof = resolution_gate["preflight_proof"]
+            
+            if not resolution_policy_gate_passed:
+                resolution_policy_gate_reason = resolution_preflight_proof["validation_result"].get("reason", "resolution_policy_violation")
+        except Exception as e:
+            resolution_policy_gate_passed = False
+            resolution_policy_gate_reason = f"resolution policy gate error: {str(e)}"
+        
+        if not resolution_policy_gate_passed:
+            error_result = {
+                "status": "blocked_by_resolution_policy",
+                "reason": resolution_policy_gate_reason,
+                "resolution_preflight_proof": resolution_preflight_proof,
+                "comfyui_submission_performed": False,
+                "generation_performed": False,
+                "retry_gate_open": False,
+                "next_allowed_action": "resolution_policy_review",
+                "qa_allowed": False,
+                "production_accepted": False,
+                "assemble_scene_allowed": False,
+                "downstream_blocked": True
+            }
+            if json_output:
+                print(json.dumps(error_result, indent=2))
+            else:
+                print(f"ERROR: Resolution policy gate failed: {resolution_policy_gate_reason}")
+            return 1
+        
+        print(f"  Resolution policy: {resolution_preflight_proof['resolution']} allowed for {resolution_preflight_proof['target_type']}")
+        print("")
+
         # Load config_data for workflow template validation
         config_data = None
         try:

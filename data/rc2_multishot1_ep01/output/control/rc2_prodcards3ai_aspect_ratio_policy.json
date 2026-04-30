@@ -1,0 +1,80 @@
+{
+  "policy_id": "rc2_prodcards3ai",
+  "policy_type": "aspect_ratio_resolution_policy",
+  "policy_timestamp": "2026-04-30T12:20:00Z",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  
+  "forbidden_resolutions": {
+    "480x640": {
+      "reason": "forbidden",
+      "forbidden_reason": "portrait_9_16_low_res",
+      "description": "Portrait 9:16 low resolution forbidden for scene/video/episode retry"
+    },
+    "640x480": {
+      "reason": "forbidden",
+      "forbidden_reason": "landscape_4_3_low_res",
+      "description": "Landscape 4:3 low resolution forbidden for scene/video/episode retry"
+    }
+  },
+  
+  "policy_by_target_type": {
+    "scene": {
+      "orientation_required": "landscape",
+      "aspect_ratio": "16:9",
+      "fast_debug_resolution": "1024x576",
+      "minimum_scene_retry_resolution": "1344x768",
+      "preferred_scene_retry_resolution": "1536x864",
+      "final_delivery_resolution": "1920x1080",
+      "forbidden_resolutions": [[480, 640]],
+      "description": "Scene retry requires landscape 16:9 orientation with minimum 1344x768"
+    },
+    "video": {
+      "orientation_required": "landscape",
+      "aspect_ratio": "16:9",
+      "fast_debug_resolution": "1024x576",
+      "minimum_scene_retry_resolution": "1344x768",
+      "preferred_scene_retry_resolution": "1536x864",
+      "final_delivery_resolution": "1920x1080",
+      "forbidden_resolutions": [[480, 640]],
+      "description": "Video retry requires landscape 16:9 orientation with minimum 1344x768"
+    },
+    "episode": {
+      "orientation_required": "landscape",
+      "aspect_ratio": "16:9",
+      "fast_debug_resolution": "1024x576",
+      "minimum_scene_retry_resolution": "1344x768",
+      "preferred_scene_retry_resolution": "1536x864",
+      "final_delivery_resolution": "1920x1080",
+      "forbidden_resolutions": [[480, 640]],
+      "description": "Episode retry requires landscape 16:9 orientation with minimum 1344x768"
+    },
+    "portrait": {
+      "orientation_required": "portrait",
+      "aspect_ratio": "9:16",
+      "allowed_resolutions": [[480, 640], [512, 768], [576, 1024]],
+      "description": "Portrait mode allows 9:16 orientation with specified resolutions"
+    },
+    "identity_validation": {
+      "orientation_required": "portrait_or_landscape",
+      "aspect_ratio": "flexible",
+      "allowed_resolutions": [[1024, 1024], [1152, 896], [896, 1152]],
+      "description": "Identity validation allows square or medium close-up resolutions with face visible"
+    }
+  },
+  
+  "resolution_policy_enforced": true,
+  "policy_enforcement_location": "app/production_cards/resolution_policy.py",
+  "gate_enforcement_location": "app/cli.py retry_generate_frames function",
+  
+  "operator_approval_required": true,
+  "operator_approval_description": "Operator must explicitly approve non-standard resolutions to bypass policy",
+  
+  "policy_summary": {
+    "480x640_forbidden_for_scene_video_episode": true,
+    "landscape_orientation_required_for_scene_video_episode": true,
+    "minimum_1344x768_for_scene_retry": true,
+    "preferred_1536x864_for_scene_retry": true,
+    "final_1920x1080_via_upscale_render": true,
+    "identity_validation_1024x1024_or_1152x896": true
+  }
+}

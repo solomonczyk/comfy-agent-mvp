@@ -1,0 +1,92 @@
+{
+  "audit_id": "rc2_prodcards3ai",
+  "audit_type": "resolution_source_audit",
+  "audit_timestamp": "2026-04-30T12:20:00Z",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "resolution_source_audit_completed": true,
+  "rc2_3ac_resolution": "480x640",
+  "resolution_regression_detected": true,
+  "project_output_orientation_required": "landscape",
+  "aspect_ratio": "16:9",
+  
+  "resolution_sources_found": {
+    "config_json": {
+      "file": "data/config.json",
+      "line": 46,
+      "node": "EmptyLatentImage",
+      "hardcoded": {
+        "width": 480,
+        "height": 640
+      },
+      "description": "Default portrait resolution in workflow template"
+    },
+    "generation_recipes_json": {
+      "file": "data/generation_recipes.json",
+      "lines": [25, 65, 105],
+      "allowed_aspect_ratios": {
+        "9:16": [480, 640],
+        "4:3": [640, 480],
+        "1:1": [512, 512],
+        "16:9": [640, 360]
+      },
+      "description": "All GTX1060 recipes allow 480x640 for 9:16"
+    },
+    "planned_settings_resolver": {
+      "file": "app/recipes/planned_settings_resolver.py",
+      "line": 29,
+      "aspect_ratio_map": {
+        "9:16": [480, 640]
+      },
+      "description": "Default aspect ratio mapping for 9:16"
+    },
+    "workflow_patcher": {
+      "file": "app/comfy/workflow_patcher.py",
+      "line": 29,
+      "aspect_ratio_map": {
+        "9:16": [480, 640]
+      },
+      "description": "Workflow patcher maps 9:16 to 480x640"
+    },
+    "cli_fallback": {
+      "file": "app/cli.py",
+      "line": 4930,
+      "default_fallback": "480x640",
+      "description": "Default fallback resolution for video rendering"
+    },
+    "prompt_pack": {
+      "file": "data/rc2_multishot1_ep01/output/control/ep01_shot02_prompt_pack.json",
+      "lines": [31, 32],
+      "current_values": {
+        "width": 480,
+        "height": 640
+      },
+      "description": "Current prompt pack has portrait 480x640"
+    }
+  },
+  
+  "root_cause_analysis": {
+    "primary_source": "config.json EmptyLatentImage hardcoded 480x640",
+    "secondary_sources": [
+      "generation_recipes.json allows 480x640 for 9:16",
+      "planned_settings_resolver defaults to 480x640 for 9:16",
+      "workflow_patcher maps 9:16 to 480x640"
+    ],
+    "why_480x640_used": "Default portrait resolution from config.json workflow template, propagated through resolution mapping chain",
+    "why_invalid_for_scene_retry": "Scene/video/episode requires landscape 16:9 orientation, 480x640 is portrait 9:16"
+  },
+  
+  "resolution_chain": {
+    "step_1": "config.json EmptyLatentImage hardcoded width=480, height=640",
+    "step_2": "prompt_pack inherits width=480, height=640 from template",
+    "step_3": "planned_settings_resolver maps aspect_ratio to 480x640 via ASPECT_RATIO_MAP",
+    "step_4": "workflow_patcher applies 480x640 to EmptyLatentImage node",
+    "step_5": "retry_generate_frames uses prompt_pack dimensions without orientation check"
+  },
+  
+  "missing_policy": {
+    "before_rc2_prodcards3ai": "No explicit resolution policy for scene/video/episode retry",
+    "no_orientation_check": "No gate to block portrait resolutions for landscape targets",
+    "no_minimum_resolution": "No minimum resolution enforcement for scene retry quality",
+    "no_operator_approval": "No mechanism to require explicit operator approval for non-standard resolutions"
+  }
+}

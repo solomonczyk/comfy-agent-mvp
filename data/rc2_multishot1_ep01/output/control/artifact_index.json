@@ -460,5 +460,27 @@
     "sdxl_faceid_asset_inventory_path": "output/control/rc2_prodcards3ah_sdxl_faceid_asset_inventory.json",
     "sdxl_faceid_resolution_decision_path": "output/control/rc2_prodcards3ah_sdxl_faceid_resolution_decision.json",
     "identity_asset_next_step_path": "output/control/rc2_prodcards3ah_identity_asset_next_step.json"
+  },
+  "rc2_prodcards3ai": {
+    "resolution_source_audit_completed": true,
+    "rc2_3ac_resolution": "480x640",
+    "resolution_regression_detected": true,
+    "project_output_orientation_required": "landscape",
+    "aspect_ratio": "16:9",
+    "fast_debug_resolution": "1024x576",
+    "minimum_scene_retry_resolution": "1344x768",
+    "preferred_scene_retry_resolution": "1536x864",
+    "final_delivery_resolution": "1920x1080 via upscale/render",
+    "resolution_preflight_gate_required": true,
+    "next_allowed_action": "resolution_policy_review",
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "timestamp": "2026-04-30T12:20:00.000000Z",
+    "resolution_source_audit_path": "output/control/rc2_prodcards3ai_resolution_source_audit.json",
+    "aspect_ratio_policy_path": "output/control/rc2_prodcards3ai_aspect_ratio_policy.json",
+    "resolution_preflight_gate_path": "output/control/rc2_prodcards3ai_resolution_preflight_gate.json"
   }
 }
