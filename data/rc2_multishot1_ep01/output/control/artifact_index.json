@@ -575,5 +575,23 @@
     "authorization_revalidation_path": "output/control/rc2_prodcards3an_retry_authorization_revalidation.json",
     "retry_generation_preflight_path": "output/control/rc2_prodcards3an_retry_generation_preflight.json",
     "repo_hygiene_check_path": "output/control/rc2_prodcards3an_repo_hygiene_check.json"
+  },
+  "rc2_prodcards3ao": {
+    "rc2_prodcards3ao_retry_generated": true,
+    "rc2_prodcards3ao_operator_rejected": true,
+    "operator_verdict": "rejected_visual_quality",
+    "retry_frames_accepted": false,
+    "qa_allowed": false,
+    "next_allowed_action": "retry_quality_regression_diagnosis_review",
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "retry_gate_open": false,
+    "rejection_timestamp": "2026-04-30T18:20:00Z",
+    "operator_visual_rejection_path": "output/control/rc2_prodcards3ao_operator_visual_rejection.json",
+    "frame_manifest_audit_path": "output/control/rc2_prodcards3ao_frame_manifest_audit.json",
+    "payload_quality_audit_path": "output/control/rc2_prodcards3ao_payload_quality_audit.json",
+    "workflow_identity_wiring_audit_path": "output/control/rc2_prodcards3ao_workflow_identity_wiring_audit.json",
+    "corrective_strategy_path": "output/control/rc2_prodcards3ao_corrective_strategy.json"
   }
 }

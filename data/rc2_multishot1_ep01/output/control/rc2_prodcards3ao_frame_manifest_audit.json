@@ -1,0 +1,61 @@
+{
+  "task_id": "RC2-PRODCARDS3AO-REJECT",
+  "audit_timestamp": "2026-04-30T18:20:00Z",
+  "frames_manifest_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\frames_manifest.json",
+  "manifest_audit": {
+    "episode_id": "ep01",
+    "shot_id": "shot01",
+    "action": "generate_frames",
+    "frame_count": 3,
+    "generated_frames_dir": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01",
+    "created_at": "2026-04-30T17:59:00",
+    "frame_paths": [
+      "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000001.png",
+      "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000002.png",
+      "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000003.png"
+    ]
+  },
+  "actual_frame_dimensions_audit": [
+    {
+      "filename": "000001.png",
+      "width": 1344,
+      "height": 768,
+      "mode": "RGB",
+      "file_size_bytes": 1170669,
+      "matches_manifest": true
+    },
+    {
+      "filename": "000002.png",
+      "width": 1344,
+      "height": 768,
+      "mode": "RGB",
+      "file_size_bytes": 1057468,
+      "matches_manifest": true
+    },
+    {
+      "filename": "000003.png",
+      "width": 1344,
+      "height": 768,
+      "mode": "RGB",
+      "file_size_bytes": 1194903,
+      "matches_manifest": true
+    }
+  ],
+  "resolution_audit": {
+    "reported_resolution": "1344x768",
+    "actual_resolution": "1344x768",
+    "resolution_consistency": true,
+    "all_frames_same_resolution": true
+  },
+  "low_resolution_audit": {
+    "640x480_frames_found": false,
+    "640x480_files_in_output_dir": false,
+    "explanation": "Operator reported seeing 640x480 frames, but audit found only 1344x768 frames in current output. Operator may have seen stale/old frames from previous generation or a different preview."
+  },
+  "manifest_consistency": {
+    "all_manifest_frames_exist": true,
+    "all_manifest_dimensions_match": true,
+    "manifest_matches_actual_files": true,
+    "operator_screenshot_mismatch": "Operator reported 640x480 frames not found in current manifest or output"
+  }
+}

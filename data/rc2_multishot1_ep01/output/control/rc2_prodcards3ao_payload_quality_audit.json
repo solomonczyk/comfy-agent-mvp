@@ -1,0 +1,63 @@
+{
+  "task_id": "RC2-PRODCARDS3AO-REJECT",
+  "audit_timestamp": "2026-04-30T18:20:00Z",
+  "payload_trace_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\generate_frames_payload_trace.json",
+  "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\ep01_shot01_submitted_workflow.json",
+  "prompt_pack_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\prompt_pack.json",
+  "generation_settings_audit": {
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_correct": true,
+    "width": 1344,
+    "height": 768,
+    "resolution_correct": true,
+    "steps": 20,
+    "cfg": 7.5,
+    "sampler": "dpmpp_sde",
+    "scheduler": "karras",
+    "denoise": 0.5
+  },
+  "prompt_audit": {
+    "positive_prompt_sha256": "6be21d6b3c76c56a1d8a5982508243fdf7ac6eb2a5101a9e321d7efcf6bb650f",
+    "negative_prompt_sha256": "7b6f90344d1eae65afb05d2676b321a47a103f6973f109ea8b6e8b60087d0624",
+    "positive_prompt_terms": [
+      "sun-dappled",
+      "soft golden light",
+      "dreamlike atmosphere",
+      "peaceful contemplative expression"
+    ],
+    "negative_prompt_terms": [
+      "ugly",
+      "deformed",
+      "noisy",
+      "blurry",
+      "distorted",
+      "out of focus"
+    ],
+    "haze_fog_terms_detected": true,
+    "soft_light_terms_detected": true,
+    "composition_terms": "distant mountain peak, standing in forest clearing",
+    "camera_distance": "wide shot / landscape composition",
+    "face_visibility": "gazing at distant mountain peak (face likely small/distant)",
+    "identity_validation_suitability": "poor - face too small/distant for identity validation"
+  },
+  "quality_blockers_identified": {
+    "prompt_haze_fog_overuse": true,
+    "prompt_soft_light_terms": true,
+    "composition_too_wide": true,
+    "face_too_small_distant": true,
+    "identity_conditioning_missing": true,
+    "forest_detail_weakness": "likely due to haze/fog terms in prompt"
+  },
+  "seed_audit": {
+    "beat_1_seed": 747001,
+    "beat_2_seed": 747002,
+    "beat_3_seed": 747003,
+    "seeds_sequential": true
+  },
+  "payload_consistency": {
+    "all_beats_use_same_checkpoint": true,
+    "all_beats_use_same_settings": true,
+    "payload_matches_workflow": true
+  },
+  "summary": "Generation settings are technically correct (1344x768, juggernautXL_version2.safetensors), but prompt contains heavy haze/fog/soft light terms that reduce contrast and detail. Composition is wide landscape with distant face, unsuitable for identity validation. Identity conditioning is completely absent from workflow (critical blocker)."
+}

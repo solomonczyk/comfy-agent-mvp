@@ -1,0 +1,130 @@
+{
+  "task_id": "RC2-PRODCARDS3AO-REJECT",
+  "strategy_timestamp": "2026-04-30T18:20:00Z",
+  "diagnosis_summary": "RC2-PRODCARDS3AO retry frames are visually unacceptable due to missing identity conditioning and suboptimal prompt composition. The workflow used for generation was a basic txt2img pipeline without SDXL FaceID adapter or LoRA connected, despite these components being present in the system.",
+  "640x480_artifact_audit": {
+    "640x480_frames_in_current_output": false,
+    "operator_reported_640x480": true,
+    "explanation": "Operator reported seeing 640x480 frames, but audit found only 1344x768 frames in current output. Operator may have seen stale/old frames from previous generation or a different preview. Resolution gate successfully prevented 640x480 generation in RC2-PRODCARDS3AO."
+  },
+  "actual_frame_dimensions": {
+    "resolution": "1344x768",
+    "all_frames_consistent": true,
+    "matches_manifest": true
+  },
+  "root_causes_identified": [
+    {
+      "cause": "IDENTITY_ADAPTER_NOT_CONNECTED",
+      "severity": "CRITICAL",
+      "description": "SDXL FaceID adapter (ip-adapter-faceid-plusv2_sdxl.bin) exists in system but is NOT connected in the submitted workflow. No IPAdapterAdvanced node present in workflow graph.",
+      "impact": "Identity conditioning completely absent from generation, resulting in weak or no face preservation"
+    },
+    {
+      "cause": "IDENTITY_LORA_NOT_CONNECTED",
+      "severity": "CRITICAL",
+      "description": "SDXL FaceID LoRA (ip-adapter-faceid-plusv2_sdxl_lora.safetensors) exists in system but is NOT loaded in the submitted workflow. LoraLoader node 10 has empty lora_stack.",
+      "impact": "No LoRA conditioning to support FaceID adapter, further reducing identity preservation"
+    },
+    {
+      "cause": "PROMPT_HAZE_FOG_OVERUSE",
+      "severity": "HIGH",
+      "description": "Positive prompt contains 'sun-dappled', 'soft golden light', 'dreamlike atmosphere' which create haze/fog effects that reduce contrast and detail.",
+      "impact": "Heavy haze/fog/gray veil destroying detail and contrast, weak forest/environment detail"
+    },
+    {
+      "cause": "COMPOSITION_TOO_WIDE_FOR_IDENTITY",
+      "severity": "HIGH",
+      "description": "Prompt describes 'standing in forest clearing', 'gazing at distant mountain peak' which creates wide landscape composition with distant face.",
+      "impact": "Face too small/distant for identity validation, composition unsuitable for FaceID identity proof"
+    },
+    {
+      "cause": "WORKFLOW_TEMPLATE_INCOMPLETE",
+      "severity": "CRITICAL",
+      "description": "Workflow template used for generation does not include identity conditioning nodes. This is a template/workflow selection issue, not a file availability issue.",
+      "impact": "All identity conditioning components are bypassed despite being correctly installed in the system"
+    }
+  ],
+  "corrective_actions_required": [
+    {
+      "action": "FIX_WORKFLOW_TEMPLATE",
+      "priority": "CRITICAL",
+      "description": "Update workflow template to include IPAdapterAdvanced node with SDXL FaceID adapter connection",
+      "details": [
+        "Add IPAdapterAdvanced node to workflow graph",
+        "Connect SDXL FaceID adapter (ip-adapter-faceid-plusv2_sdxl.bin) to IPAdapterAdvanced node",
+        "Load SDXL FaceID LoRA (ip-adapter-faceid-plusv2_sdxl_lora.safetensors) in LoraLoader",
+        "Connect LoraLoader output to model conditioning",
+        "Connect reference image to IPAdapterAdvanced node",
+        "Set appropriate IPAdapter weight (start with 0.6-0.8)"
+      ]
+    },
+    {
+      "action": "CLEANUP_PROMPT",
+      "priority": "HIGH",
+      "description": "Reduce/remove heavy haze/fog/veil terms from prompt",
+      "details": [
+        "Remove 'sun-dappled', 'soft golden light', 'dreamlike atmosphere'",
+        "Replace with 'sharp forest detail', 'crisp lighting', 'high contrast'",
+        "Add 'clear atmosphere', 'vibrant colors', 'sharp focus'"
+      ]
+    },
+    {
+      "action": "ADJUST_COMPOSITION",
+      "priority": "HIGH",
+      "description": "Require medium close-up / face visible for identity validation",
+      "details": [
+        "Change composition from wide landscape to medium close-up",
+        "Require visible face / medium shot",
+        "Remove 'distant mountain peak', replace with 'face clearly visible'",
+        "Add 'medium shot', 'close-up on face', 'identity validation composition'"
+      ]
+    },
+    {
+      "action": "COMPOSITION_SPLIT",
+      "priority": "MEDIUM",
+      "description": "Split into identity validation frame and scene frame",
+      "details": [
+        "Identity validation frame: medium close-up / face visible",
+        "Scene frame: landscape environment shot (optional, after identity validated)"
+      ]
+    },
+    {
+      "action": "IDENTITY_WIRING_PROOF",
+      "priority": "CRITICAL",
+      "description": "Require identity wiring proof before next retry",
+      "details": [
+        "SDXL FaceID adapter present in workflow",
+        "SDXL FaceID LoRA loaded in workflow",
+        "Adapter and LoRA actually connected in graph",
+        "Reference image actually used",
+        "Face/identity conditioning strength recorded",
+        "Workflow audit must pass before retry_generate_frames is allowed"
+      ]
+    }
+  ],
+  "next_retry_blocked_until": "Corrective plan is reviewed and workflow template is updated with identity conditioning",
+  "quality_targets": [
+    "Crisp forest detail without haze/fog",
+    "High contrast without gray veil",
+    "Face clearly visible at medium close-up distance",
+    "Identity preserved through SDXL FaceID conditioning",
+    "Composition suitable for FaceID identity validation"
+  ],
+  "verification_required": [
+    "Workflow template includes IPAdapterAdvanced node",
+    "SDXL FaceID adapter file path correctly specified",
+    "SDXL FaceID LoRA file path correctly specified",
+    "Reference image connected to IPAdapterAdvanced",
+    "LoraLoader output connected to model",
+    "IPAdapter weight set to appropriate value (0.6-0.8)",
+    "Prompt cleaned of haze/fog terms",
+    "Composition adjusted to medium close-up"
+  ],
+  "blocking_conditions": [
+    "Do NOT run ComfyUI until corrective plan is approved",
+    "Do NOT generate new frames until workflow template is fixed",
+    "Do NOT execute retry_generate_frames until identity wiring is proven",
+    "Do NOT run QA until frames pass visual inspection",
+    "Do NOT assemble scene until identity is validated"
+  ]
+}

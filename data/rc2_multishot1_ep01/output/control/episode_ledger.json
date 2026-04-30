@@ -1838,6 +1838,40 @@
       "audio_executed": false,
       "render_executed": false,
       "timestamp": "2026-04-30T15:59:00.791126Z"
+    },
+    {
+      "event_type": "operator_visual_rejection",
+      "action": "rc2_prodcards3ao_reject",
+      "task_id": "RC2-PRODCARDS3AO-REJECT",
+      "operator_verdict": "rejected_visual_quality",
+      "retry_attempt": 3,
+      "shot_id": "shot01",
+      "episode_id": "ep01",
+      "generation_commit": "ba2ee0a",
+      "operator_visual_problems": [
+        "low image quality despite 1344x768 frames",
+        "heavy haze/fog/gray veil destroying detail and contrast",
+        "weak forest/environment detail",
+        "soft/muddy rendering",
+        "identity not convincingly preserved",
+        "face often too small, side/back-facing, or not suitable for identity validation",
+        "composition unsuitable for FaceID identity proof",
+        "presence of IPAdapterAdvanced node does not prove identity adapter is effectively wired or influencing generation"
+      ],
+      "qa_allowed": false,
+      "retry_frames_accepted": false,
+      "production_accepted": false,
+      "downstream_blocked": true,
+      "next_allowed_action": "retry_quality_regression_diagnosis_review",
+      "frame_manifest_audit_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\rc2_prodcards3ao_frame_manifest_audit.json",
+      "payload_quality_audit_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\rc2_prodcards3ao_payload_quality_audit.json",
+      "workflow_identity_wiring_audit_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\rc2_prodcards3ao_workflow_identity_wiring_audit.json",
+      "corrective_strategy_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\rc2_prodcards3ao_corrective_strategy.json",
+      "qa_review_executed": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "timestamp": "2026-04-30T18:20:00Z"
     }
   ]
 }

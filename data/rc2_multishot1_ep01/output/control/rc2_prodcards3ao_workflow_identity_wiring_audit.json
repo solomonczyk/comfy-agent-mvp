@@ -1,0 +1,95 @@
+{
+  "task_id": "RC2-PRODCARDS3AO-REJECT",
+  "audit_timestamp": "2026-04-30T18:20:00Z",
+  "workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\ep01_shot01_submitted_workflow.json",
+  "identity_wiring_audit": {
+    "ipadapter_advanced_node_present": false,
+    "ipadapter_advanced_node_id": null,
+    "sdxl_faceid_adapter_filename_used": null,
+    "sdxl_faceid_adapter_connected": false,
+    "lora_loader_node_present": true,
+    "lora_loader_node_id": "10",
+    "lora_loader_class_type": "LoraLoader",
+    "lora_stack_loaded": [],
+    "lora_stack_empty": true,
+    "sdxl_faceid_lora_filename_used": null,
+    "sdxl_faceid_lora_connected": false,
+    "reference_image_input_path": null,
+    "reference_image_connected": false,
+    "face_crop_node_present": false,
+    "face_embedding_node_present": false,
+    "insightface_node_present": false
+  },
+  "workflow_graph_analysis": {
+    "node_3": {
+      "class_type": "KSampler",
+      "inputs": {
+        "model": ["4", 0],
+        "positive": ["6", 0],
+        "negative": ["7", 0],
+        "latent_image": ["5", 0]
+      }
+    },
+    "node_4": {
+      "class_type": "CheckpointLoaderSimple",
+      "ckpt_name": "juggernautXL_version2.safetensors",
+      "outputs": ["model", "clip", "vae"]
+    },
+    "node_5": {
+      "class_type": "EmptyLatentImage",
+      "width": 1344,
+      "height": 768,
+      "batch_size": 1
+    },
+    "node_6": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "clip": ["4", 1]
+      }
+    },
+    "node_7": {
+      "class_type": "CLIPTextEncode",
+      "inputs": {
+        "clip": ["4", 1]
+      }
+    },
+    "node_8": {
+      "class_type": "VAEDecode",
+      "inputs": {
+        "samples": ["3", 0],
+        "vae": ["4", 2]
+      }
+    },
+    "node_9": {
+      "class_type": "SaveImage",
+      "inputs": {
+        "images": ["8", 0]
+      }
+    },
+    "node_10": {
+      "class_type": "LoraLoader",
+      "inputs": {
+        "lora_stack": []
+      },
+      "outputs": ["model", "clip"],
+      "connected_to_graph": false
+    }
+  },
+  "identity_conditioning_status": {
+    "identity_adapter_present_in_system": true,
+    "identity_adapter_connected_in_workflow": false,
+    "identity_lora_present_in_system": true,
+    "identity_lora_connected_in_workflow": false,
+    "reference_image_used": false,
+    "face_conditioning_active": false,
+    "identity_influence_on_generation": "NONE"
+  },
+  "critical_blocker": "SDXL FaceID adapter and LoRA are NOT connected in the submitted workflow. The workflow is a basic txt2img pipeline without identity conditioning. This explains why identity was not preserved despite the adapter being present in the system.",
+  "system_files_present": {
+    "sdxl_faceid_adapter_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+    "sdxl_faceid_lora_path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "files_exist": true,
+    "not_used_in_workflow": true
+  },
+  "root_cause": "Workflow template used for generation does not include IPAdapterAdvanced node or SDXL FaceID LoRA connection. The identity adapter files exist in the system but were never wired into the generation graph."
+}

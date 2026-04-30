@@ -1,0 +1,40 @@
+{
+  "task_id": "RC2-PRODCARDS3AO-REJECT",
+  "timestamp": "2026-04-30T18:20:00Z",
+  "operator_verdict": "rejected_visual_quality",
+  "retry_attempt": 3,
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "generation_commit": "ba2ee0a",
+  "reported_technical_result": {
+    "frames_generated": 3,
+    "reported_resolution": "1344x768",
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "sdxl_faceid_adapter": "IPAdapterAdvanced node present in workflow"
+  },
+  "operator_visual_problems": [
+    "low image quality despite 1344x768 frames",
+    "heavy haze/fog/gray veil destroying detail and contrast",
+    "weak forest/environment detail",
+    "soft/muddy rendering",
+    "identity not convincingly preserved",
+    "face often too small, side/back-facing, or not suitable for identity validation",
+    "composition unsuitable for FaceID identity proof",
+    "presence of IPAdapterAdvanced node does not prove identity adapter is effectively wired or influencing generation"
+  ],
+  "operator_requirements": [
+    "Do NOT proceed to QA",
+    "Do NOT treat retry as successful",
+    "Do NOT accept generated frames for production",
+    "Diagnose why quality did not improve after checkpoint binding fix, SDXL FaceID adapter + LoRA installation, 1344x768 resolution gate",
+    "Verify whether generated frames match frames_manifest.json",
+    "Verify whether any 640x480 frames were generated, retained, mixed, or previewed by mistake",
+    "Audit final generation payload and workflow for actual quality-critical settings",
+    "Produce corrective strategy before any further generation"
+  ],
+  "qa_allowed": false,
+  "retry_frames_accepted": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "next_allowed_action": "retry_quality_regression_diagnosis_review"
+}
