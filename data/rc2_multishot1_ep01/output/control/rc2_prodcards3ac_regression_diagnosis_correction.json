@@ -1,0 +1,71 @@
+{
+  "task_code": "RC2-PRODCARDS3AC-DIAG-FIX",
+  "correction_type": "regression_diagnosis_correction",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "retry_attempt": 3,
+  "correction_timestamp": "2026-04-30T11:00:00Z",
+  "original_diagnosis_file": "rc2_prodcards3ac_workflow_regression_diagnosis.json",
+  "original_diagnosis_valid": true,
+  "original_diagnosis_checkpoint_reference_correct": true,
+  "original_diagnosis_correctly_identified_inconsistency": true,
+  "diagnosis_correction_required": false,
+  "diagnosis_correction_applied": false,
+  "correction_rationale": "The original regression diagnosis at rc2_prodcards3ac_workflow_regression_diagnosis.json was CORRECT in its checkpoint assessment. Line 22 correctly identified active_checkpoint=realvisxlV50_v50Bakedvae.safetensors, and line 114 correctly noted the state inconsistency: 'payload_trace shows realvisxlV50, artifact_index shows juggernautXL (state inconsistency)'. The diagnosis did not contain stale checkpoint information - it accurately reflected the actual generation parameters. The error was in the workflow builder ignoring the implementation plan, not in the diagnosis reporting.",
+  "original_diagnosis_assessments": {
+    "checkpoint_assessment_valid": true,
+    "checkpoint_family_assessment_valid": true,
+    "ip_adapter_mismatch_assessment_valid": true,
+    "resolution_insufficient_assessment_valid": true,
+    "composition_regression_assessment_valid": true,
+    "prompt_lighting_regression_assessment_valid": true,
+    "checkpoint_substitution_risk_assessment_valid": true
+  },
+  "original_diagnosis_root_causes": {
+    "checkpoint_adapter_family_mismatch": {
+      "severity": "critical",
+      "description": "SD15 FaceID adapter (ip-adapter-faceid-plus_sd15.bin) is incompatible with SDXL checkpoint (realvisxlV50_v50Bakedvae.safetensors)",
+      "valid": true,
+      "rationale": "This conclusion remains valid because the actual generation used realvisxlV50_v50Bakedvae.safetensors (SDXL) with ip-adapter-faceid-plus_sd15.bin (SD15 adapter). The incompatibility is real and correctly identified."
+    },
+    "checkpoint_substitution_risk": {
+      "severity": "medium",
+      "description": "realvisxlV50 was used instead of planned juggernautXL or baseline model",
+      "valid": true,
+      "rationale": "This was correctly identified as a risk. The reconciliation confirms that realvisxlV50 was used instead of the planned juggernautXL_version2.safetensors."
+    }
+  },
+  "state_repair_assessment": {
+    "state_repair_performed": true,
+    "state_repair_type": "pre_fix_fixture_apply_invalidated",
+    "state_repair_timestamp": "2026-04-28T12:34:15.028696Z",
+    "state_repair_preserved_stale_checkpoint_info": false,
+    "state_repair_rationale": "The state repair at 2026-04-28T12:34:15Z was for fixture approvals applied before safety hardening. This repair did not involve checkpoint information. The checkpoint mismatch occurred later during 3AC retry generation at 2026-04-30T10:42:58Z, so the state repair is not responsible for the stale checkpoint reference."
+  },
+  "canonical_state_assessment": {
+    "canonical_state_source": "artifact_index.json",
+    "canonical_state_checkpoint": "juggernautXL_version2.safetensors",
+    "canonical_state_correct": true,
+    "canonical_state_rationale": "The canonical state correctly reflects the implementation plan requirement for juggernautXL_version2.safetensors. The error is that the workflow builder did not apply this requirement to the actual payload."
+  },
+  "corrected_diagnosis_status": {
+    "original_diagnosis_requires_correction": false,
+    "original_diagnosis_status": "accurate",
+    "diagnosis_confidence_maintained": "high",
+    "diagnosis_evidence_maintained": [
+      "payload_trace.json confirms realvisxlV50 checkpoint",
+      "artifact_index.json confirms ip-adapter-faceid-plus_sd15.bin target",
+      "prompt_pack.json confirms haze terms and resolution 480x640",
+      "prompt_pack.json confirms establishing shot beat",
+      "known incompatibility: SD15 adapters do not work with SDXL checkpoints"
+    ]
+  },
+  "required_action": "workflow_payload_checkpoint_fix",
+  "next_allowed_action": "workflow_payload_checkpoint_fix_required",
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "summary": "The original regression diagnosis was accurate and correctly identified the checkpoint mismatch. No diagnosis correction is required. The required fix is in the workflow builder to apply checkpoint substitutions from the implementation plan before generating frames."
+}

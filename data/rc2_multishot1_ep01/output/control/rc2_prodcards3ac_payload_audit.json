@@ -1,0 +1,101 @@
+{
+  "task_code": "RC2-PRODCARDS3AC-DIAG-FIX",
+  "audit_type": "payload_audit",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "retry_attempt": 3,
+  "audit_timestamp": "2026-04-30T11:00:00Z",
+  "payload_audit_completed": true,
+  "audited_artifacts": [
+    {
+      "artifact_name": "artifact_index.json",
+      "artifact_path": "data/rc2_multishot1_ep01/output/control/artifact_index.json",
+      "checkpoint_reference_line": 135,
+      "checkpoint_value": "juggernautXL_version2.safetensors",
+      "checkpoint_field": "active_checkpoint",
+      "artifact_purpose": "canonical state reference for episode"
+    },
+    {
+      "artifact_name": "controlled_retry_implementation_plan.json",
+      "artifact_path": "data/rc2_multishot1_ep01/output/control/controlled_retry_implementation_plan.json",
+      "checkpoint_reference_line": 41,
+      "checkpoint_value": "juggernautXL_version2.safetensors",
+      "checkpoint_field": "checkpoint_name (in 'to' section)",
+      "artifact_purpose": "implementation plan specifying required checkpoint substitution",
+      "from_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "to_checkpoint": "juggernautXL_version2.safetensors",
+      "operator_approval": "RC2-PRODCARDS3U",
+      "execution_status": "not_executed"
+    },
+    {
+      "artifact_name": "generate_frames_payload_trace.json",
+      "artifact_path": "data/rc2_multishot1_ep01/output/control/generate_frames_payload_trace.json",
+      "checkpoint_reference_lines": [7, 13, 27, 41],
+      "checkpoint_value": "realvisxlV50_v50Bakedvae.safetensors",
+      "checkpoint_field": "checkpoint",
+      "artifact_purpose": "actual payload trace submitted to ComfyUI for generation",
+      "payload_count": 3,
+      "generation_timestamp": "2026-04-30T10:42:58",
+      "all_payloads_consistent": true
+    },
+    {
+      "artifact_name": "ep01_shot01_submitted_workflow.json",
+      "artifact_path": "data/rc2_multishot1_ep01/output/control/ep01_shot01_submitted_workflow.json",
+      "checkpoint_reference_line": 31,
+      "checkpoint_value": "realvisxlV50_v50Bakedvae.safetensors",
+      "checkpoint_field": "ckpt_name (in CheckpointLoaderSimple node)",
+      "artifact_purpose": "actual ComfyUI workflow JSON submitted for generation",
+      "node_class": "CheckpointLoaderSimple",
+      "node_id": "4"
+    },
+    {
+      "artifact_name": "rc2_prodcards3ac_workflow_regression_diagnosis.json",
+      "artifact_path": "data/rc2_multishot1_ep01/output/control/rc2_prodcards3ac_workflow_regression_diagnosis.json",
+      "checkpoint_reference_line": 22,
+      "checkpoint_value": "realvisxlV50_v50Bakedvae.safetensors",
+      "checkpoint_field": "active_checkpoint",
+      "artifact_purpose": "regression diagnosis report",
+      "inconsistency_note_line": 114,
+      "inconsistency_note": "payload_trace shows realvisxlV50, artifact_index shows juggernautXL (state inconsistency)"
+    }
+  ],
+  "checkpoint_comparison_matrix": {
+    "expected_checkpoint": "juggernautXL_version2.safetensors",
+    "expected_sources": [
+      "artifact_index.json (canonical state)",
+      "controlled_retry_implementation_plan.json (operator-approved substitution)"
+    ],
+    "actual_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "actual_sources": [
+      "generate_frames_payload_trace.json (payload trace)",
+      "ep01_shot01_submitted_workflow.json (submitted workflow)",
+      "rc2_prodcards3ac_workflow_regression_diagnosis.json (diagnosis report)"
+    ],
+    "mismatch_detected": true,
+    "mismatch_severity": "critical",
+    "impact": "Wrong checkpoint used for generation, workflow builder ignored implementation plan substitution"
+  },
+  "payload_parameters_audit": {
+    "resolution": {
+      "width": 480,
+      "height": 640,
+      "source": "ep01_shot01_submitted_workflow.json line 37-38",
+      "assessment": "insufficient for identity validation"
+    },
+    "steps": 20,
+    "cfg": 7.5,
+    "sampler": "dpmpp_sde",
+    "scheduler": "karras",
+    "denoise": 0.5,
+    "source": "ep01_shot01_submitted_workflow.json lines 4-9"
+  },
+  "ip_adapter_audit": {
+    "ip_adapter_target": "ip-adapter-faceid-plus_sd15.bin",
+    "adapter_family": "SD15 FaceID",
+    "checkpoint_family": "SDXL (realvisxlV50_v50Bakedvae.safetensors)",
+    "compatibility_assessment": "CRITICAL MISMATCH",
+    "compatibility_issue": "SD15 FaceID adapter is not designed for SDXL workflows",
+    "impact": "Identity preservation completely fails because adapter cannot process SDXL latent space"
+  },
+  "conclusion": "The workflow builder failed to apply the checkpoint substitution specified in controlled_retry_implementation_plan.json. The actual generation used realvisxlV50_v50Bakedvae.safetensors instead of the required juggernautXL_version2.safetensors. This is a critical workflow builder bug that must be fixed before retry generation."
+}
