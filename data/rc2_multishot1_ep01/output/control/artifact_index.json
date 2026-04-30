@@ -124,8 +124,13 @@
   "model_substitution_decision_created": true,
   "selected_candidate_model": "juggernautXL_version2.safetensors",
   "substitution_auto_approved": false,
-  "operator_review_required": true,
-  "next_allowed_action": "model_substitution_decision_review",
+  "operator_review_required": false,
+  "operator_model_substitution_approved": true,
+  "approved_substitution_model": "juggernautXL_version2.safetensors",
+  "original_planned_model": "dynavision_v10.safetensors",
+  "retry_implementation_plan_updated": true,
+  "operator_approval_task_code": "RC2-PRODCARDS3U",
+  "next_allowed_action": "retry_implementation_plan_revalidation_required",
   "work_orders": {
     "character_director_work_order": "output/control/work_orders/character_director_identity_review.json",
     "workflow_td_work_order": "output/control/work_orders/workflow_td_identity_workflow_review.json"

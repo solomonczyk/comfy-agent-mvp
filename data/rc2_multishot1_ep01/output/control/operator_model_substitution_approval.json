@@ -1,0 +1,72 @@
+{
+  "task_code": "RC2-PRODCARDS3U",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "approval_timestamp": "2026-04-30T08:57:00Z",
+  "approval_type": "operator_model_substitution_approval",
+  "original_planned_model": "dynavision_v10.safetensors",
+  "original_planned_model_status": "missing",
+  "approved_substitution_model": "juggernautXL_version2.safetensors",
+  "approved_substitution_model_id": 2,
+  "substitution_decision_source": "output/control/model_substitution_decision.json",
+  "operator_approval": {
+    "decision": "approved",
+    "approval_scope": "retry_implementation_plan_update_only",
+    "approval_details": "Operator approves juggernautXL_version2.safetensors as controlled substitution for missing dynavision_v10.safetensors in retry implementation plan. This approval authorizes updating the retry implementation plan with the substitution. It does NOT authorize retry generation execution.",
+    "approved_for": "retry_implementation_plan_update",
+    "not_approved_for": [
+      "retry_generate_frames",
+      "comfyui_generation",
+      "qa_rerun",
+      "assemble_scene",
+      "audio_attachment",
+      "render_episode",
+      "downstream_actions"
+    ]
+  },
+  "retry_implementation_plan_update": {
+    "update_required": true,
+    "update_status": "authorized_pending_execution",
+    "planned_update": {
+      "checkpoint_change": {
+        "from": "dynavision_v10.safetensors",
+        "to": "juggernautXL_version2.safetensors"
+      },
+      "preserve_existing_conditions": true,
+      "preserved_conditions": [
+        "target_shot_id: shot01",
+        "identity_preservation_strategy: dual-lock (ReferenceOnlySimple + IP-Adapter FaceID Plus)",
+        "reference_strength: 0.85",
+        "cfg: 8.5",
+        "denoising: 0.65",
+        "sampler: dpmpp_2m_sde",
+        "scheduler: exponential",
+        "steps: 35",
+        "ip_adapter_faceid_plus_weight: 0.8"
+      ],
+      "unresolved_conditions": [
+        "IP-Adapter FaceID Plus model availability remains unresolved if model is still missing"
+      ]
+    }
+  },
+  "boundary_conditions": {
+    "review_only": true,
+    "no_generation_performed": true,
+    "no_download_performed": true,
+    "no_install_performed": true,
+    "no_model_move_or_copy_performed": true,
+    "comfyui_generation": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "retry_implementation_plan_update_only": true
+  },
+  "next_allowed_action": "retry_implementation_plan_revalidation_required",
+  "approval_metadata": {
+    "approval_source": "RC2-PRODCARDS3U_operator_decision",
+    "model_candidate_review_source": "output/control/model_candidate_review.json",
+    "model_substitution_decision_source": "output/control/model_substitution_decision.json",
+    "controlled_retry_implementation_plan_source": "output/control/controlled_retry_implementation_plan.json"
+  }
+}

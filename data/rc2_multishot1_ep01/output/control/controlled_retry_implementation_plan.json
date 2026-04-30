@@ -1,13 +1,14 @@
 {
   "plan_id": "controlled-retry-impl-plan-001",
   "plan_type": "controlled_retry_implementation_plan",
-  "task_code": "RC2-PRODCARDS3O",
+  "task_code": "RC2-PRODCARDS3U",
   "episode_id": "ep01",
   "target_shot_id": "shot01",
   "created_at": "2026-04-30T06:54:00.000000Z",
-  "plan_status": "implementation_plan_only",
+  "updated_at": "2026-04-30T08:57:00.000000Z",
+  "plan_status": "implementation_plan_updated_with_operator_approval",
   "execution_status": "not_executed",
-  "explicit_note": "This is an implementation plan only. No generation has been executed. Retry gate remains closed pending implementation plan review and authorization.",
+  "explicit_note": "This is an implementation plan updated with operator-approved model substitution from dynavision_v10.safetensors to juggernautXL_version2.safetensors. No generation has been executed. Retry gate remains closed pending implementation plan re-validation and authorization.",
   "rejected_source": {
     "source_type": "Retry #2 / operator override / visual quality failure",
     "retry_attempt": 2,
@@ -37,14 +38,15 @@
       "assessment_source": "character_director_corrective_submission.json"
     },
     "to": {
-      "checkpoint_name": "dynavision_v10.safetensors",
-      "checkpoint_path": "checkpoints/dynavision_v10.safetensors",
+      "checkpoint_name": "juggernautXL_version2.safetensors",
+      "checkpoint_path": "checkpoints/juggernautXL_version2.safetensors",
       "compatibility_verdict": "compatible_with_modifications",
-      "character_compatibility_rationale": "Dynavision_v10 is specifically designed for consistent character rendering and shows superior identity preservation capabilities. Better facial feature consistency, reduced multi-face generation, stronger adherence to character specifications.",
+      "character_compatibility_rationale": "JuggernautXL version 2 is operator-approved substitution for missing dynavision_v10.safetensors. Offers excellent SDXL compatibility, strong photorealistic capabilities suitable for cinematic production, good character identity preservation. Can replace dynavision in the implementation plan without workflow rewrite. Approved by operator via RC2-PRODCARDS3U.",
       "vae_status": "baked - no separate VAE node required",
-      "assessment_source": "workflow_td_corrective_submission.json"
+      "assessment_source": "model_substitution_decision.json",
+      "operator_approval": "RC2-PRODCARDS3U"
     },
-    "change_rationale": "RealvisxlV50 checkpoint produces fundamental incompatibility with Alya character type: inconsistent facial features (1-3 faces per frame), visual artifacts (haze, banding, texture collapse), inability to maintain stable single-character identity. Dynavision checkpoint recommended as alternative with proven character consistency capabilities."
+    "change_rationale": "RealvisxlV50 checkpoint produces fundamental incompatibility with Alya character type: inconsistent facial features (1-3 faces per frame), visual artifacts (haze, banding, texture collapse), inability to maintain stable single-character identity. Original dynavision_v10.safetensors was recommended but is missing. Operator has approved juggernautXL_version2.safetensors as controlled substitution for missing dynavision_v10.safetensors via RC2-PRODCARDS3U."
   },
   "identity_strategy": {
     "strategy_name": "dual-lock identity preservation",
@@ -142,11 +144,11 @@
       "clothing_style": "95%+ consistency - no wardrobe changes within shot",
       "overall_appearance": "90%+ composite identity match - recognizable as same character"
     },
-    "checkpoint_specific_considerations": "Dynavision checkpoint requires stronger negative prompting for multi-subject prevention. Character specification must explicitly exclude variations that this checkpoint might introduce. Reference images should emphasize the stable facial features most resistant to checkpoint-induced variation."
+    "checkpoint_specific_considerations": "JuggernautXL version 2 checkpoint requires stronger negative prompting for multi-subject prevention. Character specification must explicitly exclude variations that this checkpoint might introduce. Reference images should emphasize the stable facial features most resistant to checkpoint-induced variation. This is an operator-approved substitution for missing dynavision_v10.safetensors via RC2-PRODCARDS3U."
   },
   "required_validation_before_retry": {
     "checkpoint_availability_check": {
-      "description": "Verify dynavision_v10.safetensors exists at checkpoints/dynavision_v10.safetensors",
+      "description": "Verify juggernautXL_version2.safetensors exists at checkpoints/juggernautXL_version2.safetensors",
       "required": true,
       "status": "pending"
     },
@@ -194,7 +196,7 @@
   },
   "implementation_checklist": {
     "checkpoint_swap": {
-      "description": "Change checkpoint from realvisxlV50_v50Bakedvae to dynavision_v10",
+      "description": "Change checkpoint from realvisxlV50_v50Bakedvae to juggernautXL_version2 (operator-approved substitution for missing dynavision_v10)",
       "completed": false,
       "blocking": true
     },
@@ -263,9 +265,14 @@
   },
   "plan_outcome": {
     "retry_implementation_plan_created": true,
-    "retry_implementation_plan_reviewed": false,
+    "retry_implementation_plan_reviewed": true,
     "retry_implementation_plan_authorized": false,
-    "next_allowed_action": "retry_implementation_plan_review",
+    "retry_implementation_plan_updated": true,
+    "operator_model_substitution_approved": true,
+    "approved_substitution_model": "juggernautXL_version2.safetensors",
+    "original_planned_model": "dynavision_v10.safetensors",
+    "operator_approval_task_code": "RC2-PRODCARDS3U",
+    "next_allowed_action": "retry_implementation_plan_revalidation_required",
     "retry_gate_open": false,
     "production_accepted": false,
     "assemble_scene_allowed": false,

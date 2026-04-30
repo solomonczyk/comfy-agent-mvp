@@ -1,16 +1,19 @@
 {
-  "task_code": "RC2-PRODCARDS3T",
+  "task_code": "RC2-PRODCARDS3U",
   "episode_id": "ep01",
   "shot_id": "shot01",
   "decision_timestamp": "2026-04-30T08:49:00Z",
+  "operator_approval_timestamp": "2026-04-30T08:57:00Z",
   "planned_model": "dynavision_v10.safetensors",
   "planned_model_status": "missing",
   "substitution_decision": {
-    "decision_status": "operator_review_required",
+    "decision_status": "operator_approved",
     "recommended_candidate": "juggernautXL_version2.safetensors",
     "recommended_candidate_id": 2,
     "substitution_auto_approved": false,
-    "operator_review_required": true,
+    "operator_review_required": false,
+    "operator_approved": true,
+    "operator_approval_task_code": "RC2-PRODCARDS3U",
     "rationale": "JuggernautXL version 2 is the strongest candidate among available local models based on Character Director and Workflow TD assessments. It offers excellent SDXL compatibility, strong photorealistic capabilities suitable for cinematic production, good character identity preservation, and can replace dynavision in the implementation plan without workflow rewrite. However, given the prior visual quality rejection with RealVisXL V50, no substitution should be auto-approved without explicit operator acknowledgment of the change.",
     "rejected_candidates": [
       {
@@ -75,7 +78,14 @@
     "additional_workflow_changes_required": false,
     "additional_workflow_changes_needed": [],
     "retry_pre_authorization_after_substitution": "conditional",
-    "pre_authorization_condition": "Operator must explicitly approve the substitution decision before retry_implementation_plan_update_required can proceed. The substitution is not auto-approved."
+    "pre_authorization_condition": "Operator must explicitly approve the substitution decision before retry_implementation_plan_update_required can proceed. The substitution is not auto-approved.",
+    "operator_approval_details": {
+      "approved": true,
+      "approval_timestamp": "2026-04-30T08:57:00Z",
+      "approval_task_code": "RC2-PRODCARDS3U",
+      "approval_scope": "retry_implementation_plan_update_only",
+      "approval_artifact": "output/control/operator_model_substitution_approval.json"
+    }
   },
   "decision_boundary_conditions": {
     "review_only": true,
@@ -88,9 +98,9 @@
     "production_accepted": false,
     "assemble_scene_allowed": false,
     "downstream_blocked": true,
-    "substitution_requires_operator_approval": true
+    "substitution_requires_operator_approval": false
   },
-  "next_allowed_action": "model_substitution_decision_review",
+  "next_allowed_action": "retry_implementation_plan_revalidation_required",
   "decision_metadata": {
     "review_files": [
       "output/control/model_candidate_review.json"
