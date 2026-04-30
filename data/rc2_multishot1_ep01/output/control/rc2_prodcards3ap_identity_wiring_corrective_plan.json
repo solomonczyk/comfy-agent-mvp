@@ -1,0 +1,191 @@
+{
+  "task_id": "RC2-PRODCARDS3AP",
+  "plan_timestamp": "2026-04-30T18:30:00Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "root_cause_preserved": "rc2_prodcards3ao_workflow_identity_wiring_audit.json",
+  "current_workflow_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\ep01_shot01_submitted_workflow.json",
+  "current_workflow_analysis": {
+    "node_4": {
+      "class_type": "CheckpointLoaderSimple",
+      "ckpt_name": "juggernautXL_version2.safetensors",
+      "outputs": ["model", "clip", "vae"]
+    },
+    "node_10": {
+      "class_type": "LoraLoader",
+      "lora_stack": [],
+      "outputs": ["model", "clip"],
+      "connected_to_graph": false
+    },
+    "missing_ipadapter_advanced_node": true,
+    "missing_face_conditioning": true,
+    "missing_reference_image": true
+  },
+  "identity_wiring_corrections_required": {
+    "sdxl_faceid_adapter": {
+      "adapter_file": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "adapter_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+      "adapter_exists": true,
+      "adapter_not_connected": true,
+      "correction": "Add IPAdapterAdvanced node with SDXL FaceID adapter connection"
+    },
+    "sdxl_faceid_lora": {
+      "lora_file": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "lora_path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "lora_exists": true,
+      "lora_not_connected": true,
+      "correction": "Load SDXL FaceID LoRA in LoraLoader node 10, connect to model conditioning"
+    },
+    "ipadapter_advanced_node": {
+      "node_id_to_add": "11",
+      "class_type": "IPAdapterAdvanced",
+      "inputs_required": {
+        "model": "from LoraLoader output model",
+        "image": "from reference image input",
+        "ipadapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+        "weight": 0.7,
+        "start": 0.0,
+        "end": 1.0,
+        "weight_type": "linear"
+      },
+      "outputs": ["model"],
+      "output_connection": "connect to KSampler model input"
+    },
+    "lora_loader_node_10": {
+      "class_type": "LoraLoader",
+      "current_lora_stack": [],
+      "corrected_lora_stack": [
+        {
+          "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+          "strength_model": 1.0,
+          "strength_clip": 1.0
+        }
+      ],
+      "inputs_required": {
+        "model": "from CheckpointLoaderSimple node 4 output model",
+        "clip": "from CheckpointLoaderSimple node 4 output clip"
+      },
+      "outputs": ["model", "clip"],
+      "output_connections": {
+        "model": "connect to IPAdapterAdvanced node 11 input model",
+        "clip": "connect to CLIPTextEncode nodes 6 and 7 input clip"
+      }
+    },
+    "reference_image_input": {
+      "node_id_to_add": "12",
+      "class_type": "LoadImage",
+      "inputs_required": {
+        "image": "reference image path from clean reference staging"
+      },
+      "outputs": ["image", "mask", "width", "height"],
+      "output_connection": "connect image output to IPAdapterAdvanced node 11 input image",
+      "reference_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\reference\\clean\\shot01_reference.png"
+    },
+    "identity_strength_schedule": {
+      "ipadapter_weight": 0.7,
+      "ipadapter_start": 0.0,
+      "ipadapter_end": 1.0,
+      "weight_type": "linear",
+      "rationale": "0.7 weight provides strong identity conditioning without overfitting, linear schedule ensures consistent identity influence throughout generation"
+    },
+    "workflow_graph_rewiring": {
+      "current_flow": "CheckpointLoaderSimple -> KSampler -> VAEDecode -> SaveImage",
+      "corrected_flow": "CheckpointLoaderSimple -> LoraLoader -> IPAdapterAdvanced -> KSampler -> VAEDecode -> SaveImage",
+      "reference_flow": "LoadImage -> IPAdapterAdvanced",
+      "clip_flow": "CheckpointLoaderSimple -> LoraLoader -> CLIPTextEncode (positive) -> KSampler",
+      "clip_flow_negative": "CheckpointLoaderSimple -> LoraLoader -> CLIPTextEncode (negative) -> KSampler"
+    },
+    "node_wiring_specifications": {
+      "node_4_checkpoint_loader": {
+        "outputs": {
+          "model": "connect to LoraLoader node 10 input model",
+          "clip": "connect to LoraLoader node 10 input clip",
+          "vae": "connect to VAEDecode node 8 input vae"
+        }
+      },
+      "node_10_lora_loader": {
+        "inputs": {
+          "model": "from node 4 output model",
+          "clip": "from node 4 output clip",
+          "lora_stack": "[{\"lora_name\": \"ip-adapter-faceid-plusv2_sdxl_lora.safetensors\", \"strength_model\": 1.0, \"strength_clip\": 1.0}]"
+        },
+        "outputs": {
+          "model": "connect to IPAdapterAdvanced node 11 input model",
+          "clip": "connect to CLIPTextEncode nodes 6 and 7 input clip"
+        }
+      },
+      "node_11_ipadapter_advanced": {
+        "inputs": {
+          "model": "from LoraLoader node 10 output model",
+          "image": "from LoadImage node 12 output image",
+          "ipadapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+          "weight": 0.7,
+          "start": 0.0,
+          "end": 1.0,
+          "weight_type": "linear"
+        },
+        "outputs": {
+          "model": "connect to KSampler node 3 input model"
+        }
+      },
+      "node_12_load_image": {
+        "inputs": {
+          "image": "reference image path from clean reference staging"
+        },
+        "outputs": {
+          "image": "connect to IPAdapterAdvanced node 11 input image"
+        }
+      },
+      "node_3_ksampler": {
+        "inputs": {
+          "model": "from IPAdapterAdvanced node 11 output model (changed from node 4)",
+          "positive": "from CLIPTextEncode node 6 output",
+          "negative": "from CLIPTextEncode node 7 output",
+          "latent_image": "from EmptyLatentImage node 5 output"
+        }
+      },
+      "node_6_clip_text_encode_positive": {
+        "inputs": {
+          "text": "corrected positive prompt from prompt composition plan",
+          "clip": "from LoraLoader node 10 output clip (changed from node 4)"
+        }
+      },
+      "node_7_clip_text_encode_negative": {
+        "inputs": {
+          "text": "corrected negative prompt from prompt composition plan",
+          "clip": "from LoraLoader node 10 output clip (changed from node 4)"
+        }
+      }
+    }
+  },
+  "workflow_implementation_priority": "CRITICAL",
+  "implementation_order": [
+    "1. Update LoraLoader node 10 with SDXL FaceID LoRA in lora_stack",
+    "2. Connect LoraLoader node 10 inputs to CheckpointLoaderSimple node 4 outputs",
+    "3. Add LoadImage node 12 for reference image input",
+    "4. Add IPAdapterAdvanced node 11 with SDXL FaceID adapter",
+    "5. Connect IPAdapterAdvanced node 11 inputs to LoraLoader and LoadImage outputs",
+    "6. Connect IPAdapterAdvanced node 11 output to KSampler node 3 model input",
+    "7. Update CLIPTextEncode nodes 6 and 7 to use LoraLoader clip output",
+    "8. Verify all connections in workflow graph"
+  ],
+  "verification_requirements": [
+    "IPAdapterAdvanced node present in workflow",
+    "SDXL FaceID adapter file path specified correctly",
+    "SDXL FaceID LoRA loaded in LoraLoader lora_stack",
+    "LoraLoader connected to CheckpointLoaderSimple outputs",
+    "IPAdapterAdvanced connected to LoraLoader model output",
+    "LoadImage node present and connected to reference image",
+    "IPAdapterAdvanced connected to LoadImage image output",
+    "IPAdapterAdvanced output connected to KSampler model input",
+    "CLIPTextEncode nodes connected to LoraLoader clip output",
+    "Identity weight set to 0.7 with linear schedule 0.0-1.0"
+  ],
+  "blocking_conditions": [
+    "Do NOT run ComfyUI until workflow template is updated",
+    "Do NOT generate new frames until identity wiring is verified",
+    "Do NOT execute retry_generate_frames until workflow audit passes",
+    "Do NOT run QA until frames pass visual inspection",
+    "Do NOT assemble scene until identity is validated"
+  ]
+}

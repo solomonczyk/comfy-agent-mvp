@@ -1,0 +1,62 @@
+{
+  "task_id": "RC2-PRODCARDS3AP",
+  "plan_timestamp": "2026-04-30T18:30:00Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "root_cause_preserved": "rc2_prodcards3ao_workflow_identity_wiring_audit.json",
+  "current_positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+  "current_negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence",
+  "prompt_correction_plan": {
+    "haze_fog_terms_to_remove": [
+      "sun-dappled",
+      "soft golden light",
+      "dreamlike atmosphere"
+    ],
+    "haze_fog_terms_replacement": [
+      "sharp forest detail",
+      "crisp lighting",
+      "high contrast",
+      "clear atmosphere",
+      "vibrant colors",
+      "sharp focus"
+    ],
+    "composition_terms_to_replace": [
+      "standing in forest clearing",
+      "gazing at distant mountain peak"
+    ],
+    "composition_terms_replacement": [
+      "medium close-up shot",
+      "face clearly visible",
+      "frontal or 3/4 face angle",
+      "identity validation composition"
+    ],
+    "environment_terms_to_retain": [
+      "forest setting",
+      "colorful wildflowers",
+      "natural environment"
+    ],
+    "environment_terms_to_adjust": [
+      "forest background",
+      "subtle environment detail",
+      "environment visible but not identity-blocking"
+    ],
+    "corrected_positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, medium close-up shot in forest setting, face clearly visible with frontal or 3/4 face angle, identity validation composition, sharp forest detail in background, crisp lighting, high contrast, clear atmosphere, vibrant colors, sharp focus, colorful wildflowers in background, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest environment",
+    "corrected_negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence, haze, fog, soft focus, dreamlike, washed out, low contrast"
+  },
+  "composition_correction_plan": {
+    "current_composition": "wide landscape shot with distant face gazing at mountain",
+    "corrected_composition": "medium close-up / identity validation shot with visible face",
+    "camera_distance": "changed from wide shot to medium close-up",
+    "face_visibility": "changed from distant/side to visible/frontal-or-3/4",
+    "face_angle": "frontal or 3/4 view",
+    "environment_retention": "forest background visible but not identity-blocking",
+    "identity_validation_suitability": "changed from poor to suitable"
+  },
+  "prompt_pack_update_required": true,
+  "prompt_pack_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\prompt_pack.json",
+  "beats_to_update": [
+    "beat_1",
+    "beat_2",
+    "beat_3"
+  ]
+}

@@ -593,5 +593,20 @@
     "payload_quality_audit_path": "output/control/rc2_prodcards3ao_payload_quality_audit.json",
     "workflow_identity_wiring_audit_path": "output/control/rc2_prodcards3ao_workflow_identity_wiring_audit.json",
     "corrective_strategy_path": "output/control/rc2_prodcards3ao_corrective_strategy.json"
+  },
+  "rc2_prodcards3ap": {
+    "identity_wiring_corrective_plan_created": true,
+    "prompt_composition_correction_plan_created": true,
+    "identity_wiring_corrective_plan_path": "output/control/rc2_prodcards3ap_identity_wiring_corrective_plan.json",
+    "prompt_composition_correction_plan_path": "output/control/rc2_prodcards3ap_prompt_composition_correction_plan.json",
+    "root_causes_preserved": true,
+    "root_cause_source": "rc2_prodcards3ao_workflow_identity_wiring_audit.json",
+    "next_allowed_action": "identity_workflow_wiring_implementation_required",
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "timestamp": "2026-04-30T18:30:00Z"
   }
 }
