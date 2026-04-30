@@ -1,0 +1,89 @@
+{
+  "manual_review_task": "RC2-PRODCARDS3K",
+  "review_type": "operator_manual_review_after_qa_override",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "review_timestamp": "2026-04-30T05:57:00.000000Z",
+  "retry_attempt": 2,
+  "previous_qa_verdict": "qa_passed",
+  "operator_override_verdict": "qa_failed",
+  "manual_review_outcome": "frames_rejected_visual_quality",
+  "visual_quality_issues": {
+    "primary_issue": "extremely low visual quality",
+    "secondary_issues": [
+      "character identity instability despite reference lock",
+      "inconsistent facial features across frames",
+      "background/scene composition drift",
+      "lighting inconsistency",
+      "possible model/checkpoint degradation"
+    ],
+    "operator_assessment": "Retry #2 frames are visually unacceptable and do not meet production standards. The previous automated QA pass was a false positive - the frames exhibit the same or worse quality issues as retry #1, despite corrective workflow adjustments."
+  },
+  "issue_classification": {
+    "primary_cause": "model/checkpoint",
+    "secondary_causes": [
+      "workflow",
+      "character_identity",
+      "prompt"
+    ],
+    "not_qa_threshold_issue": true,
+    "not_operator_only_judgment": false,
+    "classification_rationale": "The visual quality issues appear to stem from the underlying model/checkpoint (realvisxlV50_v50Bakedvae.safetensors) possibly being unsuitable for the desired character/style combination, compounded by workflow parameters that may not adequately control identity consistency. The prompt direction is adequate but the model execution is not delivering consistent results."
+  },
+  "controlled_retry_recommendation": {
+    "new_controlled_retry_recommended": true,
+    "retry_without_corrective_plan": false,
+    "requires_role_intervention": true,
+    "requires_model_checkpoint_change": true
+  },
+  "character_director_requirements": {
+    "revision_required": true,
+    "required_actions": [
+      "Re-evaluate character identity specification for model compatibility",
+      "Consider whether the current checkpoint can reliably render this character type",
+      "If checkpoint is inadequate, specify alternative model/checkpoint recommendation",
+      "Update prompt direction with stronger identity control parameters if model allows",
+      "Provide reference images that are more compatible with the checkpoint style"
+    ]
+  },
+  "workflow_td_requirements": {
+    "revision_required": true,
+    "required_actions": [
+      "Investigate alternative checkpoint options that better support character consistency",
+      "Review reference_locked workflow parameters for identity strength settings",
+      "Consider adding additional identity preservation techniques (e.g., IP-adapter, LoRA, or stronger reference image weighting)",
+      "Test workflow with different denoising strength or guidance scale parameters",
+      "Evaluate whether current checkpoint is fundamentally unsuitable for this character type"
+    ]
+  },
+  "corrective_actions_required": [
+    "Character Director must approve model/checkpoint change or provide character specification revision",
+    "Workflow TD must implement and test alternative workflow with new model/checkpoint",
+    "Both roles must agree on revised workflow before any retry authorization",
+    "New controlled retry decision must be made after corrective plan completion",
+    "QA threshold review not required - this is a model/workflow issue, not a QA sensitivity issue"
+  ],
+  "retry_authorization_requirements": {
+    "corrective_plan_completion_required": true,
+    "character_director_approval_required": true,
+    "workflow_td_approval_required": true,
+    "new_model_checkpoint_approval_required": true,
+    "cannot_proceed_without_corrective_plan": true
+  },
+  "next_allowed_action": "corrective_plan_review",
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "boundary_conditions_verified": {
+    "no_comfyui_execution": true,
+    "no_new_frames_generated": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_tts_executed": true,
+    "no_ffmpeg_executed": true,
+    "no_assemble_scene_executed": true,
+    "no_audio_attached": true,
+    "no_render_executed": true
+  }
+}
