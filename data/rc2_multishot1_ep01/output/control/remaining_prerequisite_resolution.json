@@ -1,0 +1,68 @@
+{
+  "task_code": "RC2-PRODCARDS3W",
+  "resolution_timestamp": "2026-04-30T07:27:18.000000Z",
+  "shot_id": "shot01",
+  "prerequisite_type": "ip_adapter_faceid_plus",
+  "required_prerequisite": "ip-adapter-faceid-plus_sd15.bin",
+  "discovery_completed": true,
+  "discovery_path": "output/control/ip_adapter_prerequisite_discovery.json",
+  "resolution_outcome": "no_valid_local_candidate_found",
+  "resolution_state": {
+    "exact_file_missing": true,
+    "no_valid_local_candidate_found": true,
+    "controlled_asset_acquisition_required": true
+  },
+  "current_checkpoint": "juggernautXL_version2.safetensors",
+  "checkpoint_status": "available",
+  "remaining_prerequisites_available": false,
+  "missing_prerequisites": [
+    "ip-adapter-faceid-plus_sd15.bin"
+  ],
+  "next_allowed_action": "controlled_ip_adapter_asset_resolution_required",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "required_reviewers": [
+    "Workflow TD",
+    "Operator"
+  ],
+  "resolution_requirements": {
+    "asset_acquisition": {
+      "required": true,
+      "asset_name": "ip-adapter-faceid-plus_sd15.bin",
+      "asset_type": "IP-Adapter FaceID Plus SD15",
+      "expected_format": ".bin",
+      "expected_model_base": "SD15",
+      "controlled_acquisition_only": true
+    },
+    "installation": {
+      "target_location": "to_be_determined_by_workflow_td",
+      "safe_install_contract_required": true,
+      "operator_approval_required": true
+    },
+    "validation": {
+      "post_install_validation_required": true,
+      "workflow_compatibility_check_required": true
+    }
+  },
+  "prohibited_actions": {
+    "download_performed": false,
+    "install_performed": false,
+    "model_move_or_copy_performed": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  },
+  "boundary_compliance": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_execution": true,
+    "no_qa_rerun": true,
+    "no_assemble_audio_render_downstream": true,
+    "no_download_install_move_copy": true,
+    "no_auto_substitution": true
+  }
+}

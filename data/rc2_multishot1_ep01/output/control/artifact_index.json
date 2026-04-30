@@ -134,7 +134,10 @@
   "checkpoint_available": true,
   "active_checkpoint": "juggernautXL_version2.safetensors",
   "remaining_prerequisites_available": false,
-  "next_allowed_action": "remaining_prerequisite_resolution_required",
+  "ip_adapter_prerequisite_discovery_completed": true,
+  "required_ip_adapter_found": false,
+  "ip_adapter_candidates_found": false,
+  "next_allowed_action": "controlled_ip_adapter_asset_resolution_required",
   "work_orders": {
     "character_director_work_order": "output/control/work_orders/character_director_identity_review.json",
     "workflow_td_work_order": "output/control/work_orders/workflow_td_identity_workflow_review.json"
