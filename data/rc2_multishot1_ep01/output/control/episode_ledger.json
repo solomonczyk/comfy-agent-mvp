@@ -1169,6 +1169,44 @@
         "ip_adapter_validation_policy": "output/control/ip_adapter_validation_policy.json",
         "ip_adapter_acquisition_execution_instructions": "output/control/IP_ADAPTER_ACQUISITION_EXECUTION_INSTRUCTIONS.md"
       }
+    },
+    {
+      "event_type": "ip_adapter_acquisition_execution_completed",
+      "timestamp": "2026-04-30T08:03:38.053169Z",
+      "task_code": "RC2-PRODCARDS3AA",
+      "shot_id": "shot01",
+      "target_asset": "ip-adapter-faceid-plus_sd15.bin",
+      "trusted_source": "h94/IP-Adapter-FaceID",
+      "download_path": "data\\rc2_multishot1_ep01\\output\\control\\temp\\ip_adapter_acquisition\\ip-adapter-faceid-plus_sd15.bin",
+      "final_install_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plus_sd15.bin",
+      "file_exists": true,
+      "filename_exact_match": true,
+      "extension": ".bin",
+      "file_size_bytes": 156558503,
+      "file_size_mb": 149.31,
+      "sha256": "252fb53e0d018489d9e7f9b9e2001a52ff700e491894011ada7cfb471e0fadf2",
+      "sha256_match": true,
+      "acquisition_executed": true,
+      "install_verified": true,
+      "download_performed": true,
+      "install_performed": true,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "artifact_paths": {
+        "ip_adapter_acquisition_execution_result": "output/control/ip_adapter_acquisition_execution_result.json",
+        "ip_adapter_post_install_verification_result": "output/control/ip_adapter_post_install_verification_result.json"
+      }
     }
   ]
 }

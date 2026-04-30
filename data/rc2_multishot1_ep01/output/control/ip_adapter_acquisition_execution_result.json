@@ -1,0 +1,15 @@
+{
+  "task_code": "RC2-PRODCARDS3AA",
+  "timestamp": "2026-04-30T08:03:38.053169Z",
+  "target_asset": "ip-adapter-faceid-plus_sd15.bin",
+  "trusted_source": "h94/IP-Adapter-FaceID",
+  "download_path": "data\\rc2_multishot1_ep01\\output\\control\\temp\\ip_adapter_acquisition\\ip-adapter-faceid-plus_sd15.bin",
+  "file_exists": true,
+  "filename_exact_match": true,
+  "extension": ".bin",
+  "file_size_bytes": 156558503,
+  "file_size_mb": 149.31,
+  "sha256": "252fb53e0d018489d9e7f9b9e2001a52ff700e491894011ada7cfb471e0fadf2",
+  "download_timestamp": "2026-04-30T08:03:38.054214Z",
+  "status": "download_complete"
+}

@@ -1,0 +1,15 @@
+{
+  "task_code": "RC2-PRODCARDS3AA",
+  "timestamp": "2026-04-30T08:03:38.784537Z",
+  "target_asset": "ip-adapter-faceid-plus_sd15.bin",
+  "trusted_source": "h94/IP-Adapter-FaceID",
+  "final_install_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plus_sd15.bin",
+  "file_exists": true,
+  "filename_exact_match": true,
+  "extension": ".bin",
+  "file_size_bytes": 156558503,
+  "sha256": "252fb53e0d018489d9e7f9b9e2001a52ff700e491894011ada7cfb471e0fadf2",
+  "sha256_match": true,
+  "source": "h94/IP-Adapter-FaceID",
+  "status": "install_verified"
+}
