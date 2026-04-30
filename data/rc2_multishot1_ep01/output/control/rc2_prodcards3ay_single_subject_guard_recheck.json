@@ -1,0 +1,147 @@
+{
+  "task_code": "RC2-PRODCARDS3AY",
+  "shot_id": "shot01",
+  "guard_type": "single_subject_guard_recheck",
+  "recheck_timestamp": "2026-04-30T18:36:30Z",
+  "positive_prompt_guard": {
+    "prompt_source": "rc2_prodcards3ay_single_subject_prompt_correction.json",
+    "single_subject_terms_check": {
+      "one_woman_only": true,
+      "single_subject": true,
+      "no_other_people": true,
+      "no_duplicate_figure": true,
+      "no_second_person": true,
+      "solo_portrait": true,
+      "alone": true
+    },
+    "composition_terms_check": {
+      "medium_close_up_portrait": true,
+      "upper_body_composition": true,
+      "face_visible": true,
+      "sharp_eyes": true
+    },
+    "hyperrealism_terms_check": {
+      "crisp_realistic_skin_texture": true,
+      "visible_pores": true,
+      "sharp_eyelashes": true,
+      "detailed_eyes": true,
+      "realistic_fabric_texture": true,
+      "clean_natural_daylight": true,
+      "high_local_contrast": true,
+      "high_micro_detail": true,
+      "realistic_full_frame_camera_look": true
+    },
+    "atmospheric_ambiguity_removed_check": {
+      "soft_blue_light_removed": true,
+      "blue_glow_illuminating_scene_removed": true,
+      "haze_removed": true,
+      "fog_removed": true,
+      "mist_removed": true,
+      "dreamlike_removed": true,
+      "ethereal_removed": true,
+      "atmospheric_veil_removed": true,
+      "soft_focus_removed": true
+    },
+    "composition_simplified_check": {
+      "kneeling_composition_removed": true,
+      "ancient_altar_removed": true,
+      "crystal_orb_removed": true,
+      "reflection_in_water_removed": true,
+      "full_body_drifting_forest_removed": true
+    },
+    "positive_prompt_guard_passed": true
+  },
+  "negative_prompt_guard": {
+    "prompt_source": "rc2_prodcards3ay_negative_prompt_duplication_blockers.json",
+    "duplicate_subject_blockers_check": {
+      "two_women": true,
+      "multiple_women": true,
+      "duplicate_person": true,
+      "second_person": true,
+      "clone": true,
+      "ghost_figure": true,
+      "double_body": true,
+      "extra_body": true,
+      "extra_face": true,
+      "extra_head": true,
+      "extra_arms": true,
+      "overlapping_bodies": true,
+      "crowd": true,
+      "background_person": true,
+      "another_woman": true,
+      "side_figure": true,
+      "silhouette_person": true
+    },
+    "atmospheric_blockers_check": {
+      "haze": true,
+      "fog": true,
+      "mist": true,
+      "gray_veil": true,
+      "washed_out": true,
+      "low_contrast": true,
+      "soft_focus": true,
+      "blurry": true,
+      "dreamlike": true,
+      "ethereal": true,
+      "atmospheric_veil": true
+    },
+    "hyperrealism_blockers_check": {
+      "plastic_skin": true,
+      "waxy_skin": true,
+      "CGI": true,
+      "doll_face": true,
+      "painterly": true,
+      "low_detail": true,
+      "muddy_background": true,
+      "flat_lighting": true
+    },
+    "negative_prompt_guard_passed": true
+  },
+  "recipe_guard": {
+    "recipe_source": "rc2_prodcards3ay_recipe_correction.json",
+    "frames_to_generate_check": {
+      "expected": 1,
+      "actual": 1,
+      "passed": true
+    },
+    "resolution_check": {
+      "expected": "1344x768",
+      "actual": "1344x768",
+      "passed": true
+    },
+    "cfg_check": {
+      "expected": 7.5,
+      "actual": 7.5,
+      "passed": true
+    },
+    "identity_weight_check": {
+      "expected": 0.85,
+      "actual": 0.85,
+      "passed": true
+    },
+    "lora_strength_check": {
+      "expected": 0.7,
+      "actual": 0.7,
+      "passed": true
+    },
+    "checkpoint_check": {
+      "expected": "juggernautXL_version2.safetensors",
+      "actual": "juggernautXL_version2.safetensors",
+      "passed": true
+    },
+    "composition_check": {
+      "expected": "single woman only, medium close-up, upper body, face visible, sharp eyes",
+      "actual": "single woman only, medium close-up, upper body, face visible, sharp eyes",
+      "passed": true
+    },
+    "recipe_guard_passed": true
+  },
+  "overall_guard_result": {
+    "single_subject_guard_passed": true,
+    "duplicate_subject_blockers_present": true,
+    "atmospheric_ambiguity_removed": true,
+    "hyperrealism_terms_present": true,
+    "recipe_parameters_correct": true,
+    "all_guards_passed": true
+  }
+}

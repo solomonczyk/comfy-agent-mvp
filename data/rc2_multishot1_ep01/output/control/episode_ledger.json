@@ -2205,6 +2205,38 @@
       "prompt_payload_audit_path": "output/control/rc2_prodcards3ax_prompt_payload_audit.json",
       "identity_duplication_audit_path": "output/control/rc2_prodcards3ax_identity_duplication_audit.json",
       "corrective_plan_path": "output/control/rc2_prodcards3ax_corrective_plan.json"
+    },
+    {
+      "event_type": "single_subject_hyperrealism_corrected",
+      "task_code": "RC2-PRODCARDS3AY",
+      "episode_id": "ep01",
+      "shot_id": "shot01",
+      "single_subject_guard_passed": true,
+      "duplicate_subject_blockers_present": true,
+      "atmospheric_ambiguity_removed": true,
+      "frames_to_generate": 1,
+      "identity_weight": 0.85,
+      "lora_strength": 0.7,
+      "generation_performed": false,
+      "comfyui_generation": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "timestamp": "2026-04-30T18:36:35.000000Z",
+      "single_subject_prompt_correction_path": "output/control/rc2_prodcards3ay_single_subject_prompt_correction.json",
+      "negative_prompt_duplication_blockers_path": "output/control/rc2_prodcards3ay_negative_prompt_duplication_blockers.json",
+      "recipe_correction_path": "output/control/rc2_prodcards3ay_recipe_correction.json",
+      "single_subject_guard_recheck_path": "output/control/rc2_prodcards3ay_single_subject_guard_recheck.json",
+      "retry_preflight_result_path": "output/control/rc2_prodcards3ay_retry_preflight_result.json"
     }
   ]
 }

@@ -1,0 +1,51 @@
+{
+  "task_code": "RC2-PRODCARDS3AY",
+  "shot_id": "shot01",
+  "correction_type": "negative_prompt_duplication_blockers",
+  "original_negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, harsh lighting, urban, buildings, modern, weapons, violence, bright daylight, haze, fog, mist, smoke, soft focus, blurry, washed out, low contrast, overexposed, underexposed, plastic skin, waxy skin, CGI, doll face, painterly, low detail, muddy background, flat lighting, gray veil",
+  "duplicate_subject_blockers_added": [
+    "two women",
+    "multiple women",
+    "duplicate person",
+    "second person",
+    "clone",
+    "ghost figure",
+    "double body",
+    "extra body",
+    "extra face",
+    "extra head",
+    "extra arms",
+    "overlapping bodies",
+    "crowd",
+    "background person",
+    "another woman",
+    "side figure",
+    "silhouette person"
+  ],
+  "atmospheric_ambiguity_blockers_strengthened": [
+    "haze",
+    "fog",
+    "mist",
+    "gray veil",
+    "washed out",
+    "low contrast",
+    "soft focus",
+    "blurry",
+    "dreamlike",
+    "ethereal",
+    "atmospheric veil"
+  ],
+  "hyperrealism_blockers_preserved": [
+    "plastic skin",
+    "waxy skin",
+    "CGI",
+    "doll face",
+    "painterly",
+    "low detail",
+    "muddy background",
+    "flat lighting"
+  ],
+  "corrected_negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, harsh lighting, urban, buildings, modern, weapons, violence, bright daylight, two women, multiple women, duplicate person, second person, clone, ghost figure, double body, extra body, extra face, extra head, extra arms, overlapping bodies, crowd, background person, another woman, side figure, silhouette person, haze, fog, mist, gray veil, washed out, low contrast, soft focus, blurry, dreamlike, ethereal, atmospheric veil, overexposed, underexposed, plastic skin, waxy skin, CGI, doll face, painterly, low detail, muddy background, flat lighting",
+  "correction_timestamp": "2026-04-30T18:36:30Z",
+  "correction_verified": false
+}

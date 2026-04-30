@@ -1,0 +1,49 @@
+{
+  "task_code": "RC2-PRODCARDS3AY",
+  "shot_id": "shot01",
+  "correction_type": "single_subject_hyperrealism_prompt_correction",
+  "original_positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, kneeling beside crystal-clear stream, ancient stone altar partially buried in streambed, mysterious glowing blue crystal orb resting on altar pulsing with soft blue light, Alya reaching toward crystal with wonder and hesitation, reflection visible in water below, blue glow illuminating scene, hyperrealistic cinematic portrait, crisp natural skin texture, visible pores, sharp eyelashes, detailed eyes, realistic fabric texture, detailed forest bark and leaves, clean natural daylight, high local contrast, high micro-detail, realistic full-frame camera look, face visible, medium close-up composition, no haze, no fog, no soft focus, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k",
+  "atmospheric_ambiguity_terms_removed": [
+    "soft blue light",
+    "blue glow illuminating scene",
+    "soft morning mist"
+  ],
+  "composition_terms_removed": [
+    "kneeling beside crystal-clear stream",
+    "ancient stone altar partially buried in streambed",
+    "mysterious glowing blue crystal orb resting on altar",
+    "reflection visible in water below"
+  ],
+  "single_subject_terms_added": [
+    "one woman only",
+    "single subject",
+    "no other people",
+    "no duplicate figure",
+    "no second person",
+    "solo portrait",
+    "alone"
+  ],
+  "composition_terms_added": [
+    "medium close-up portrait",
+    "upper-body composition",
+    "face visible",
+    "sharp eyes"
+  ],
+  "hyperrealism_terms_preserved": [
+    "crisp realistic skin texture",
+    "visible pores",
+    "sharp eyelashes",
+    "detailed eyes",
+    "realistic fabric texture",
+    "clean natural daylight",
+    "high local contrast",
+    "high micro-detail",
+    "realistic full-frame camera look"
+  ],
+  "background_terms_simplified": [
+    "detailed forest background but not foggy"
+  ],
+  "corrected_positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, one woman only, single subject, no other people, no duplicate figure, no second person, solo portrait, alone, medium close-up portrait, upper-body composition, face visible, sharp eyes, crisp realistic skin texture, visible pores, sharp eyelashes, detailed eyes, realistic fabric texture, detailed forest background but not foggy, clean natural daylight, high local contrast, high micro-detail, realistic full-frame camera look, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k",
+  "correction_timestamp": "2026-04-30T18:36:30Z",
+  "correction_verified": false
+}
