@@ -1,0 +1,134 @@
+{
+  "contract_id": "cd-corrective-completion-001",
+  "contract_type": "corrective_work_order_completion",
+  "role": "Character Director",
+  "work_order_id": "corrective-wo-cd-001",
+  "task_code": "RC2-PRODCARDS3M",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "created_at": "2026-04-30T06:30:00.000000Z",
+  "status": "awaiting_submission",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "submission_requirements": {
+    "description": "Character Director must complete all corrective tasks and submit conclusions in a controlled, auditable format before retry authorization",
+    "required_fields": [
+      "checkpoint_suitability_assessment",
+      "alternative_checkpoint_recommendation",
+      "character_identity_guidance_revision",
+      "reference_identity_preservation_requirements",
+      "retry_readiness_verdict"
+    ]
+  },
+  "checkpoint_suitability_assessment": {
+    "field_required": true,
+    "description": "Assessment of current checkpoint (realvisxlV50_v50Bakedvae.safetensors) suitability for target character type",
+    "required_content": {
+      "checkpoint_name": "string - exact checkpoint name evaluated",
+      "compatibility_verdict": "enum: [compatible, incompatible, partially_compatible_with_limitations]",
+      "assessment_rationale": "string - detailed rationale for verdict",
+      "character_type_match_score": "number 0-100 - how well checkpoint renders specified character type",
+      "visual_quality_benchmark": "string - expected visual quality level with this checkpoint",
+      "identity_stability_assessment": "string - assessment of identity consistency capability"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "alternative_checkpoint_recommendation": {
+    "field_required": true,
+    "description": "If current checkpoint deemed inadequate, specify alternative checkpoint recommendation",
+    "required_content": {
+      "recommendation_status": "enum: [recommend_alternative, current_checkpoint_acceptable, requires_workflow_td_evaluation]",
+      "recommended_checkpoint_name": "string - alternative checkpoint model name",
+      "recommended_checkpoint_path": "string - path or identifier for checkpoint location",
+      "checkpoint_version": "string - version identifier",
+      "character_compatibility_rationale": "string - why this checkpoint better supports character type",
+      "expected_visual_quality": "string - expected quality level with recommended checkpoint",
+      "workflow_compatibility_notes": "string - notes for Workflow TD evaluation"
+    },
+    "conditional_required": "required if checkpoint_suitability_assessment.compatibility_verdict != compatible",
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "character_identity_guidance_revision": {
+    "field_required": true,
+    "description": "Revised character identity guidance and specification compatible with selected checkpoint",
+    "required_content": {
+      "revision_required": "boolean - whether revision is needed",
+      "original_guidance_reference": "string - path to original character specification",
+      "revised_positive_prompt_guidance": "string - updated positive prompt guidance for character",
+      "revised_negative_prompt_guidance": "string - updated negative prompt guidance for character",
+      "identity_preservation_requirements": "string - specific identity preservation requirements",
+      "consistency_targets": {
+        "facial_features": "string - target consistency level for facial features",
+        "body_proportions": "string - target consistency level for body proportions",
+        "clothing_style": "string - target consistency level for clothing/style",
+        "overall_appearance": "string - target consistency level for overall character appearance"
+      },
+      "checkpoint_specific_considerations": "string - any checkpoint-specific character rendering considerations"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "reference_identity_preservation_requirements": {
+    "field_required": true,
+    "description": "Reference image and identity preservation requirements for retry",
+    "required_content": {
+      "existing_reference_valid": "boolean - whether existing reference images remain valid",
+      "existing_reference_path": "string - path to current reference image(s)",
+      "updated_reference_required": "boolean - whether new reference images needed",
+      "updated_reference_path": "string - path to updated reference image(s) if applicable",
+      "reference_compatibility_notes": "string - notes on reference compatibility with revised specification",
+      "identity_preservation_mechanism": "enum: [reference_only, ip_adapter, lora, combined_techniques, other]",
+      "identity_strength_requirements": "string - required identity preservation strength level",
+      "reference_weighting_recommendation": "string - recommended reference weighting if applicable"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "retry_readiness_verdict": {
+    "field_required": true,
+    "description": "Explicit ready/not-ready verdict for retry planning from Character Director perspective",
+    "required_content": {
+      "verdict": "enum: [ready, not_ready, ready_with_conditions]",
+      "verdict_rationale": "string - detailed rationale for readiness verdict",
+      "blocking_issues": ["string - list of any blocking issues preventing ready status"],
+      "conditions_for_readiness": ["string - conditions that must be met if verdict is ready_with_conditions"],
+      "recommended_next_action": "string - recommended next step",
+      "confidence_level": "enum: [high, medium, low] - confidence in retry success with current recommendations"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "joint_gate_dependency": {
+    "description": "Character Director completion must be submitted and validated before joint gate can clear. Both Character Director and Workflow TD completions required.",
+    "joint_gate_id": "joint-002",
+    "gate_name": "corrective_work_order_review_completion",
+    "required_completions_for_gate": [
+      "character_director_completion_contract",
+      "workflow_td_completion_contract"
+    ],
+    "retry_authorized_by": "joint validation of both role completion contracts",
+    "retry_gate_open": false
+  },
+  "boundary_conditions": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "no_production_accepted": true
+  },
+  "validation_rules": {
+    "all_required_fields_must_be_populated": true,
+    "retry_readiness_verdict_must_be_explicit": true,
+    "if_checkpoint_incompatible_then_alternative_required": true,
+    "reference_requirements_must_specify_preservation_mechanism": true,
+    "submission_must_be_completed_before_joint_gate": true
+  }
+}

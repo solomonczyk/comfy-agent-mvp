@@ -1,0 +1,182 @@
+{
+  "contract_id": "wd-corrective-completion-001",
+  "contract_type": "corrective_work_order_completion",
+  "role": "Workflow TD",
+  "work_order_id": "corrective-wo-wd-001",
+  "task_code": "RC2-PRODCARDS3M",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "created_at": "2026-04-30T06:30:00.000000Z",
+  "status": "awaiting_submission",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "submission_requirements": {
+    "description": "Workflow TD must complete all corrective tasks and submit conclusions in a controlled, auditable format before retry authorization",
+    "required_fields": [
+      "workflow_compatibility_assessment",
+      "parameter_settings_revision",
+      "identity_preservation_evaluation",
+      "implementation_requirements",
+      "retry_readiness_verdict"
+    ]
+  },
+  "workflow_compatibility_assessment": {
+    "field_required": true,
+    "description": "Assessment of alternative checkpoint compatibility with current ComfyUI workflow architecture",
+    "required_content": {
+      "character_director_recommendation_reference": "string - reference to Character Director's checkpoint recommendation",
+      "checkpoint_tested": "string - name of checkpoint tested for compatibility",
+      "workflow_load_status": "enum: [loads_successfully, loads_with_warnings, fails_to_load, not_tested]",
+      "compatibility_verdict": "enum: [compatible, compatible_with_modifications, incompatible, requires_workflow_redesign]",
+      "test_results_summary": "string - summary of compatibility testing results",
+      "checkpoint_path_verified": "boolean - whether checkpoint path is accessible and valid",
+      "vae_compatibility_notes": "string - VAE compatibility considerations",
+      "memory_requirements_assessment": "string - VRAM/memory requirements for checkpoint",
+      "performance_characteristics": "string - expected generation speed/performance"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "parameter_settings_revision": {
+    "field_required": true,
+    "description": "Review and revision of workflow parameters for identity strength and visual quality",
+    "required_content": {
+      "revision_required": "boolean - whether parameter changes are required",
+      "current_parameters": {
+        "denoising_strength": "number - current denoising strength value",
+        "guidance_scale": "number - current CFG scale value",
+        "reference_image_weight": "number - current reference image weighting",
+        "sampler_name": "string - current sampler",
+        "scheduler_name": "string - current scheduler",
+        "steps": "number - current step count"
+      },
+      "proposed_parameters": {
+        "denoising_strength": "number - proposed denoising strength value",
+        "denoising_rationale": "string - rationale for denoising change",
+        "guidance_scale": "number - proposed CFG scale value",
+        "guidance_rationale": "string - rationale for guidance scale change",
+        "reference_image_weight": "number - proposed reference weight",
+        "reference_weight_rationale": "string - rationale for reference weight change",
+        "sampler_name": "string - proposed sampler (if changed)",
+        "sampler_rationale": "string - rationale for sampler change",
+        "scheduler_name": "string - proposed scheduler (if changed)",
+        "scheduler_rationale": "string - rationale for scheduler change",
+        "steps": "number - proposed step count",
+        "steps_rationale": "string - rationale for step count change"
+      },
+      "parameter_compatibility_notes": "string - notes on parameter compatibility with recommended checkpoint"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "identity_preservation_evaluation": {
+    "field_required": true,
+    "description": "Evaluation of identity preservation components: IP-Adapter, LoRA, reference lock, and related mechanisms",
+    "required_content": {
+      "ip_adapter_evaluation": {
+        "available_in_workflow": "boolean - whether IP-Adapter is available",
+        "currently_enabled": "boolean - whether currently enabled",
+        "recommended_status": "enum: [enable, disable, keep_current, evaluate_further]",
+        "configuration_recommendation": "string - recommended IP-Adapter configuration if enabled",
+        "weight_recommendation": "number - recommended IP-Adapter weight",
+        "rationale": "string - rationale for IP-Adapter recommendation"
+      },
+      "lora_evaluation": {
+        "available_in_workflow": "boolean - whether LoRA capability is available",
+        "character_lora_available": "boolean - whether character-specific LoRA exists",
+        "recommended_status": "enum: [use_lora, no_lora_needed, consider_lora_development, not_applicable]",
+        "lora_path": "string - path to recommended LoRA if applicable",
+        "lora_weight": "number - recommended LoRA weight",
+        "rationale": "string - rationale for LoRA recommendation"
+      },
+      "reference_lock_evaluation": {
+        "currently_enabled": "boolean - whether reference lock is currently active",
+        "mechanism_type": "enum: [comfyui_reference_node, ip_adapter_reference, other, none]",
+        "recommended_configuration": "string - recommended reference lock configuration",
+        "reference_weight_adjustment": "string - recommended reference weight adjustment",
+        "rationale": "string - rationale for reference lock recommendation"
+      },
+      "combined_identity_strategy": "string - overall identity preservation strategy combining all components",
+      "identity_strength_target": "string - target identity preservation strength level",
+      "implementation_complexity": "enum: [low, medium, high] - complexity of implementing recommendations"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "implementation_requirements": {
+    "field_required": true,
+    "description": "Complete workflow revision requirements before retry - the Workflow TD sign-off specification",
+    "required_content": {
+      "workflow_revision_summary": "string - executive summary of all workflow changes required",
+      "checkpoint_implementation": {
+        "new_checkpoint_path": "string - confirmed checkpoint path for retry",
+        "checkpoint_load_requirements": ["string - requirements for successful checkpoint loading"],
+        "fallback_checkpoint": "string - fallback checkpoint if primary fails"
+      },
+      "parameter_implementation": {
+        "parameters_to_modify": ["string - list of parameters requiring modification"],
+        "workflow_file_updates_required": "boolean - whether workflow JSON requires updates",
+        "workflow_modification_notes": "string - specific workflow modification instructions"
+      },
+      "identity_preservation_implementation": {
+        "components_to_enable": ["string - list of identity components to enable/configure"],
+        "configuration_changes": "string - configuration change details",
+        "reference_image_requirements": "string - reference image requirements from Workflow TD perspective"
+      },
+      "testing_requirements_before_retry": ["string - tests that should pass before retry authorization"],
+      "risk_assessment": "string - assessment of implementation risks",
+      "rollback_plan": "string - plan if implementation fails"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "retry_readiness_verdict": {
+    "field_required": true,
+    "description": "Explicit ready/not-ready verdict for retry planning from Workflow TD perspective",
+    "required_content": {
+      "verdict": "enum: [ready, not_ready, ready_with_conditions]",
+      "verdict_rationale": "string - detailed rationale for readiness verdict",
+      "blocking_issues": ["string - list of any blocking issues preventing ready status"],
+      "conditions_for_readiness": ["string - conditions that must be met if verdict is ready_with_conditions"],
+      "character_director_dependency_status": "string - status of Character Director completion dependency",
+      "recommended_next_action": "string - recommended next step",
+      "estimated_implementation_time": "string - estimated time to implement recommendations",
+      "confidence_level": "enum: [high, medium, low] - confidence in retry success with current recommendations",
+      "technical_risk_level": "enum: [low, medium, high] - technical risk assessment"
+    },
+    "submission_status": "pending",
+    "submitted_value": null
+  },
+  "joint_gate_dependency": {
+    "description": "Workflow TD completion must be submitted and validated before joint gate can clear. Both Character Director and Workflow TD completions required.",
+    "joint_gate_id": "joint-002",
+    "gate_name": "corrective_work_order_review_completion",
+    "required_completions_for_gate": [
+      "character_director_completion_contract",
+      "workflow_td_completion_contract"
+    ],
+    "retry_authorized_by": "joint validation of both role completion contracts",
+    "retry_gate_open": false
+  },
+  "boundary_conditions": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "no_production_accepted": true
+  },
+  "validation_rules": {
+    "all_required_fields_must_be_populated": true,
+    "retry_readiness_verdict_must_be_explicit": true,
+    "workflow_compatibility_must_be_tested_or_documented": true,
+    "identity_preservation_must_specify_mechanism": true,
+    "implementation_requirements_must_be_complete": true,
+    "submission_must_be_completed_before_joint_gate": true
+  }
+}
