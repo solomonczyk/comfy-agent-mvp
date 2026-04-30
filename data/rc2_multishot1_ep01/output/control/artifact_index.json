@@ -120,7 +120,12 @@
   "available_model_count": 5,
   "planned_model": "dynavision_v10.safetensors",
   "planned_model_status": "missing",
-  "next_allowed_action": "model_asset_candidate_review_required",
+  "model_candidate_review_completed": true,
+  "model_substitution_decision_created": true,
+  "selected_candidate_model": "juggernautXL_version2.safetensors",
+  "substitution_auto_approved": false,
+  "operator_review_required": true,
+  "next_allowed_action": "model_substitution_decision_review",
   "work_orders": {
     "character_director_work_order": "output/control/work_orders/character_director_identity_review.json",
     "workflow_td_work_order": "output/control/work_orders/workflow_td_identity_workflow_review.json"

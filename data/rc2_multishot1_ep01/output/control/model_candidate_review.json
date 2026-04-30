@@ -1,0 +1,144 @@
+{
+  "task_code": "RC2-PRODCARDS3T",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "review_timestamp": "2026-04-30T08:49:00Z",
+  "planned_model": "dynavision_v10.safetensors",
+  "planned_model_status": "missing",
+  "available_model_count": 5,
+  "candidate_models": [
+    {
+      "candidate_id": 1,
+      "model_name": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "character_director_review": {
+        "visual_style_suitability": "Moderate - CyberRealisticXL is optimized for photorealistic rendering but tends toward urban/tech aesthetics which may not align with the mystical fantasy setting of Alya's Awakening",
+        "character_identity_stability_risk": "Medium - XL checkpoints generally maintain identity better than SD1.5, but this specific model may have style biases that could affect character consistency",
+        "realism_cinematic_quality": "High - Strong photorealistic capabilities, good detail rendering, suitable for cinematic output",
+        "gorynych_production_card_suitability": "Questionable - The cyber/tech aesthetic may conflict with the ancient mystical forest setting and crystal discovery scene",
+        "retry_planning_acceptance": "Conditional - Could be acceptable if prompt engineering compensates for style bias, but not ideal for fantasy content"
+      },
+      "workflow_td_review": {
+        "sdxl_checkpoint_compatibility": "Excellent - Native SDXL checkpoint, full compatibility with SDXL workflows",
+        "diffusers_compatibility_risk": "Low - Standard SDXL format, widely supported in diffusers ecosystem",
+        "workflow_structure_compatibility": "High - Compatible with existing SDXL workflow structure without major changes",
+        "reference_lock_compatibility": "High - Supports standard reference-based workflows including ReferenceOnlySimple",
+        "ip_adapter_compatibility": "High - SDXL checkpoints work with IP-Adapter FaceID Plus implementations",
+        "dynavision_replacement_feasibility": "High - Can replace dynavision in implementation plan without workflow rewrite, only parameter tuning needed"
+      }
+    },
+    {
+      "candidate_id": 2,
+      "model_name": "juggernautXL_version2.safetensors",
+      "character_director_review": {
+        "visual_style_suitability": "High - JuggernautXL is known for strong photorealistic rendering with good general-purpose capabilities across multiple genres including fantasy",
+        "character_identity_stability_risk": "Low-Medium - Well-regarded for character consistency, good single-subject preservation",
+        "realism_cinematic_quality": "Very High - Excellent detail, good lighting, strong cinematic rendering capabilities",
+        "gorynych_production_card_suitability": "Good - General-purpose photorealism should handle mystical fantasy setting adequately",
+        "retry_planning_acceptance": "Acceptable - Strong candidate for retry planning with minimal style conflict"
+      },
+      "workflow_td_review": {
+        "sdxl_checkpoint_compatibility": "Excellent - Native SDXL checkpoint, industry-standard compatibility",
+        "diffusers_compatibility_risk": "Very Low - Widely used and tested checkpoint, excellent diffusers support",
+        "workflow_structure_compatibility": "Very High - Drop-in compatible with existing SDXL workflows",
+        "reference_lock_compatibility": "Very High - Excellent support for reference-based identity preservation",
+        "ip_adapter_compatibility": "Very High - Well-tested with IP-Adapter FaceID Plus",
+        "dynavision_replacement_feasibility": "Very High - Can replace dynavision with minimal workflow changes, primarily checkpoint swap"
+      }
+    },
+    {
+      "candidate_id": 3,
+      "model_name": "realvisxlV50_v50Bakedvae.safetensors",
+      "character_director_review": {
+        "visual_style_suitability": "High - RealVisXL is optimized for photorealism, but",
+        "character_identity_stability_risk": "Medium - Identity preservation capabilities are present but",
+        "realism_cinematic_quality": "High - Good photorealistic quality, but",
+        "gorynych_production_card_suitability": "UNKNOWN - Previously failed checkpoint",
+        "retry_planning_acceptance": "HIGH RISK - NOT RECOMMENDED - This was the checkpoint used in the failed retry attempt (RC2-PRODCARDS3J) that resulted in operator visual quality rejection. Reusing this checkpoint carries significant risk of repeating the same visual quality issues.",
+        "prior_failure_note": "RealVisXL V50 was the checkpoint used in retry attempt 2 which passed automated QA but was rejected by operator override for visual quality issues including low visual quality and unacceptable output for assemble_scene. This checkpoint has a documented history of producing unsatisfactory results for this specific production card."
+      },
+      "workflow_td_review": {
+        "sdxl_checkpoint_compatibility": "Excellent - Native SDXL checkpoint",
+        "diffusers_compatibility_risk": "Low - Standard SDXL format",
+        "workflow_structure_compatibility": "High - Compatible with existing workflow",
+        "reference_lock_compatibility": "High - Supports reference-based workflows",
+        "ip_adapter_compatibility": "High - Compatible with IP-Adapter FaceID Plus",
+        "dynavision_replacement_feasibility": "High - Technically can replace dynavision, but",
+        "prior_failure_note": "While technically compatible, this checkpoint was used in the failed retry and produced operator-rejected output. Workflow compatibility is not the issue - the checkpoint itself produced unsatisfactory visual results. High risk of repeating failure."
+      },
+      "risk_assessment": {
+        "risk_level": "HIGH",
+        "risk_reason": "Previously failed checkpoint with documented operator rejection for visual quality",
+        "rejection_history": "RC2-PRODCARDS3J operator override - rejected_visual_quality",
+        "recommendation": "DO NOT SELECT without explicit operator override acknowledging prior failure risk"
+      }
+    },
+    {
+      "candidate_id": 4,
+      "model_name": "sd_xl_base_1.0_0.9vae.safetensors",
+      "character_director_review": {
+        "visual_style_suitability": "Low-Medium - Base SDXL 1.0 is a foundational model with general capabilities but lacks the fine-tuning for specific styles. May produce generic results",
+        "character_identity_stability_risk": "Medium - Base models have less specialized identity preservation training compared to fine-tuned checkpoints",
+        "realism_cinematic_quality": "Medium - Capable of photorealism but may require more prompt engineering and parameter tuning to achieve cinematic quality",
+        "gorynych_production_card_suitability": "Questionable - Base model may struggle with the specific mystical fantasy aesthetic without extensive prompt engineering",
+        "retry_planning_acceptance": "Not Recommended - Base model lacks the specialization needed for production-card quality output. Would require significant workflow adjustments"
+      },
+      "workflow_td_review": {
+        "sdxl_checkpoint_compatibility": "Excellent - This is the reference SDXL 1.0 base checkpoint",
+        "diffusers_compatibility_risk": "Very Low - Universal compatibility, the standard SDXL base",
+        "workflow_structure_compatibility": "Very High - Native compatibility with all SDXL workflows",
+        "reference_lock_compatibility": "High - Supports reference-based workflows",
+        "ip_adapter_compatibility": "High - Compatible with IP-Adapter FaceID Plus",
+        "dynavision_replacement_feasibility": "High - Can replace dynavision technically, but",
+        "concern": "Base model lacks the fine-tuning that dynavision provides. Would likely require significant parameter adjustments and may not achieve comparable visual quality without extensive tuning"
+      }
+    },
+    {
+      "candidate_id": 5,
+      "model_name": "dreamshaper-xl-1-0",
+      "character_director_review": {
+        "visual_style_suitability": "Medium - DreamShaper XL is known for artistic/illustrative styles which may not align with the photorealistic requirements for Alya's Awakening production card",
+        "character_identity_stability_risk": "Medium - Artistic models may prioritize style over strict identity preservation",
+        "realism_cinematic_quality": "Low-Medium - Leans toward artistic/illustrative rather than photorealistic, may not meet cinematic quality requirements",
+        "gorynych_production_card_suitability": "Poor - Artistic style conflicts with photorealistic production card requirements",
+        "retry_planning_acceptance": "Not Recommended - Style mismatch with photorealistic requirements"
+      },
+      "workflow_td_review": {
+        "sdxl_checkpoint_compatibility": "Excellent - Native SDXL checkpoint",
+        "diffusers_compatibility_risk": "Low - Standard SDXL format",
+        "workflow_structure_compatibility": "High - Compatible with existing workflow structure",
+        "reference_lock_compatibility": "High - Supports reference-based workflows",
+        "ip_adapter_compatibility": "High - Compatible with IP-Adapter FaceID Plus",
+        "dynavision_replacement_feasibility": "High - Can replace dynavision technically, but",
+        "concern": "Artistic style bias may conflict with photorealistic requirements. Would require workflow changes to compensate for style differences"
+      }
+    }
+  ],
+  "review_summary": {
+    "total_candidates_reviewed": 5,
+    "high_risk_candidates": 1,
+    "high_risk_reason": "realvisxlV50_v50Bakedvae.safetensors - previously failed checkpoint with operator visual rejection",
+    "technically_compatible_candidates": 5,
+    "stylistically_suitable_candidates": 2,
+    "recommended_for_consideration": [
+      "juggernautXL_version2.safetensors",
+      "CyberRealisticXLPlay_V7.0_FP16.safetensors"
+    ],
+    "not_recommended": [
+      "realvisxlV50_v50Bakedvae.safetensors",
+      "sd_xl_base_1.0_0.9vae.safetensors",
+      "dreamshaper-xl-1-0"
+    ]
+  },
+  "boundary_conditions": {
+    "review_only": true,
+    "no_generation_performed": true,
+    "no_download_performed": true,
+    "no_install_performed": true,
+    "no_model_move_or_copy_performed": true,
+    "comfyui_generation": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  }
+}

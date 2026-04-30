@@ -966,6 +966,37 @@
       "retry_generate_frames_executed": false,
       "qa_rerun": false,
       "downstream_actions_executed": false
+    },
+    {
+      "event_type": "model_candidate_review_completed",
+      "timestamp": "2026-04-30T08:49:00.000000Z",
+      "task_code": "RC2-PRODCARDS3T",
+      "shot_id": "shot01",
+      "available_model_count": 5,
+      "planned_model": "dynavision_v10.safetensors",
+      "planned_model_status": "missing",
+      "model_substitution_decision_created": true,
+      "substitution_auto_approved": false,
+      "operator_review_required": true,
+      "selected_candidate_model": "juggernautXL_version2.safetensors",
+      "next_allowed_action": "model_substitution_decision_review",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "download_performed": false,
+      "install_performed": false,
+      "model_move_or_copy_performed": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "downstream_actions_executed": false,
+      "artifact_paths": {
+        "model_candidate_review": "output/control/model_candidate_review.json",
+        "model_substitution_decision": "output/control/model_substitution_decision.json",
+        "model_substitution_operator_review_packet": "output/control/model_substitution_operator_review_packet.json"
+      }
     }
   ]
 }

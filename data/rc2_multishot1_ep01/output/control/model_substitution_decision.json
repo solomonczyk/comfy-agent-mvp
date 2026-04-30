@@ -1,0 +1,103 @@
+{
+  "task_code": "RC2-PRODCARDS3T",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "decision_timestamp": "2026-04-30T08:49:00Z",
+  "planned_model": "dynavision_v10.safetensors",
+  "planned_model_status": "missing",
+  "substitution_decision": {
+    "decision_status": "operator_review_required",
+    "recommended_candidate": "juggernautXL_version2.safetensors",
+    "recommended_candidate_id": 2,
+    "substitution_auto_approved": false,
+    "operator_review_required": true,
+    "rationale": "JuggernautXL version 2 is the strongest candidate among available local models based on Character Director and Workflow TD assessments. It offers excellent SDXL compatibility, strong photorealistic capabilities suitable for cinematic production, good character identity preservation, and can replace dynavision in the implementation plan without workflow rewrite. However, given the prior visual quality rejection with RealVisXL V50, no substitution should be auto-approved without explicit operator acknowledgment of the change.",
+    "rejected_candidates": [
+      {
+        "candidate": "realvisxlV50_v50Bakedvae.safetensors",
+        "candidate_id": 3,
+        "rejection_reason": "HIGH RISK - Previously failed checkpoint with documented operator visual rejection in RC2-PRODCARDS3J. This checkpoint was used in retry attempt 2, passed automated QA, but was rejected by operator override for low visual quality and unacceptable output for assemble_scene. Reusing this checkpoint carries significant risk of repeating the same failure.",
+        "risk_level": "HIGH",
+        "prior_failure_event": "RC2-PRODCARDS3J operator override - rejected_visual_quality"
+      },
+      {
+        "candidate": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+        "candidate_id": 1,
+        "rejection_reason": "Style mismatch - CyberRealisticXL is optimized for urban/tech aesthetics which may conflict with the mystical fantasy setting of Alya's Awakening. While technically compatible, the style bias could affect scene appropriateness. JuggernautXL offers better general-purpose fantasy compatibility.",
+        "risk_level": "MEDIUM"
+      },
+      {
+        "candidate": "sd_xl_base_1.0_0.9vae.safetensors",
+        "candidate_id": 4,
+        "rejection_reason": "Base model limitation - SDXL 1.0 base lacks the fine-tuning and specialization needed for production-card quality output. Would require significant prompt engineering and parameter tuning to achieve comparable results to dynavision. Not recommended for production retry without extensive workflow adjustments.",
+        "risk_level": "MEDIUM-HIGH"
+      },
+      {
+        "candidate": "dreamshaper-xl-1-0",
+        "candidate_id": 5,
+        "rejection_reason": "Style mismatch - DreamShaper XL leans toward artistic/illustrative styles rather than photorealism, which conflicts with the photorealistic requirements for the Alya's Awakening production card. Not suitable for the cinematic quality requirements.",
+        "risk_level": "HIGH"
+      }
+    ],
+    "substitution_risk_level": "MEDIUM",
+    "risk_factors": [
+      "Changing checkpoint from planned dynavision to alternative model",
+      "No prior generation history with juggernautXL for this specific production card",
+      "Character identity preservation may differ from dynavision behavior",
+      "Visual style may differ from original artistic intent",
+      "Parameter tuning may be required for optimal results"
+    ],
+    "mitigation_notes": [
+      "JuggernautXL has strong identity preservation track record",
+      "Workflow structure remains unchanged - only checkpoint swap required",
+      "IP-Adapter FaceID Plus compatibility verified",
+      "Reference lock workflow remains intact",
+      "Parameter adjustments can be made in retry implementation plan if operator approves substitution"
+    ],
+    "implementation_plan_update_required": true,
+    "implementation_plan_update_details": {
+      "requires_plan_update": true,
+      "update_type": "checkpoint_substitution",
+      "checkpoint_change": {
+        "from": "dynavision_v10.safetensors",
+        "to": "juggernautXL_version2.safetensors"
+      },
+      "parameter_adjustments_required": true,
+      "suggested_parameter_review": [
+        "denoising_strength",
+        "guidance_scale",
+        "reference_image_weight",
+        "ip_adapter_faceid_plus_weight"
+      ],
+      "workflow_rewrite_required": false,
+      "workflow_changes_required": "checkpoint_swap_only"
+    },
+    "additional_workflow_changes_required": false,
+    "additional_workflow_changes_needed": [],
+    "retry_pre_authorization_after_substitution": "conditional",
+    "pre_authorization_condition": "Operator must explicitly approve the substitution decision before retry_implementation_plan_update_required can proceed. The substitution is not auto-approved."
+  },
+  "decision_boundary_conditions": {
+    "review_only": true,
+    "no_generation_performed": true,
+    "no_download_performed": true,
+    "no_install_performed": true,
+    "no_model_move_or_copy_performed": true,
+    "comfyui_generation": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "substitution_requires_operator_approval": true
+  },
+  "next_allowed_action": "model_substitution_decision_review",
+  "decision_metadata": {
+    "review_files": [
+      "output/control/model_candidate_review.json"
+    ],
+    "operator_review_packet": "output/control/model_substitution_operator_review_packet.json",
+    "decision_created_by": "RC2-PRODCARDS3T_candidate_review_process",
+    "auto_approval_disabled": true,
+    "operator_intervention_required": true
+  }
+}

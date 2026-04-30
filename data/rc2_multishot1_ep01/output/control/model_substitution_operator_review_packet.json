@@ -1,0 +1,141 @@
+{
+  "task_code": "RC2-PRODCARDS3T",
+  "packet_type": "operator_review",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "packet_timestamp": "2026-04-30T08:49:00Z",
+  "packet_purpose": "Controlled substitution decision for missing planned model requiring operator review before retry authorization",
+  "context_summary": {
+    "planned_model": "dynavision_v10.safetensors",
+    "planned_model_status": "missing",
+    "available_candidate_count": 5,
+    "review_type": "candidate_model_substitution",
+    "review_layer_only": true,
+    "no_generation_executed": true
+  },
+  "recommended_candidate": {
+    "candidate_name": "juggernautXL_version2.safetensors",
+    "candidate_id": 2,
+    "recommendation_strength": "strong",
+    "recommendation_basis": {
+      "character_director_assessment": "High suitability - Strong photorealistic capabilities, good character identity preservation, suitable for fantasy setting",
+      "workflow_td_assessment": "Excellent compatibility - Native SDXL checkpoint, drop-in compatible with existing workflow, no rewrite required",
+      "overall_score": "Best available candidate among local models"
+    }
+  },
+  "rejected_candidates": [
+    {
+      "candidate_name": "realvisxlV50_v50Bakedvae.safetensors",
+      "candidate_id": 3,
+      "rejection_reason": "HIGH RISK - Previously failed checkpoint with documented operator visual rejection in RC2-PRODCARDS3J. This checkpoint was used in retry attempt 2, passed automated QA, but was rejected by operator override for low visual quality and unacceptable output for assemble_scene.",
+      "prior_failure_event": "RC2-PRODCARDS3J operator override - rejected_visual_quality",
+      "risk_level": "HIGH",
+      "explicit_warning": "DO NOT SELECT without explicit operator override acknowledging prior failure risk"
+    },
+    {
+      "candidate_name": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "candidate_id": 1,
+      "rejection_reason": "Style mismatch - Optimized for urban/tech aesthetics which may conflict with mystical fantasy setting. JuggernautXL offers better general-purpose fantasy compatibility.",
+      "risk_level": "MEDIUM"
+    },
+    {
+      "candidate_name": "sd_xl_base_1.0_0.9vae.safetensors",
+      "candidate_id": 4,
+      "rejection_reason": "Base model limitation - Lacks fine-tuning for production-card quality. Would require significant prompt engineering and parameter tuning.",
+      "risk_level": "MEDIUM-HIGH"
+    },
+    {
+      "candidate_name": "dreamshaper-xl-1-0",
+      "candidate_id": 5,
+      "rejection_reason": "Style mismatch - Leans toward artistic/illustrative styles rather than photorealism, conflicts with production card requirements.",
+      "risk_level": "HIGH"
+    }
+  ],
+  "substitution_risk_assessment": {
+    "overall_risk_level": "MEDIUM",
+    "risk_factors": [
+      "Changing checkpoint from planned dynavision to alternative model",
+      "No prior generation history with juggernautXL for this specific production card",
+      "Character identity preservation may differ from dynavision behavior",
+      "Visual style may differ from original artistic intent",
+      "Parameter tuning may be required for optimal results"
+    ],
+    "mitigation_factors": [
+      "JuggernautXL has strong identity preservation track record",
+      "Workflow structure remains unchanged - only checkpoint swap required",
+      "IP-Adapter FaceID Plus compatibility verified",
+      "Reference lock workflow remains intact",
+      "Parameter adjustments can be made in retry implementation plan"
+    ]
+  },
+  "implementation_impact": {
+    "requires_implementation_plan_update": true,
+    "update_type": "checkpoint_substitution",
+    "checkpoint_change": {
+      "from": "dynavision_v10.safetensors",
+      "to": "juggernautXL_version2.safetensors"
+    },
+    "workflow_rewrite_required": false,
+    "workflow_changes_required": "checkpoint_swap_only",
+    "parameter_adjustments_required": true,
+    "suggested_parameters_to_review": [
+      "denoising_strength",
+      "guidance_scale",
+      "reference_image_weight",
+      "ip_adapter_faceid_plus_weight"
+    ]
+  },
+  "operator_decision_required": {
+    "decision_type": "approve_or_reject_substitution",
+    "options": [
+      {
+        "option": "approve_recommended_substitution",
+        "action": "Approve juggernautXL_version2.safetensors as substitution for dynavision_v10.safetensors",
+        "next_action": "retry_implementation_plan_update_required",
+        "allows_retry_to_proceed": "after_plan_update"
+      },
+      {
+        "option": "approve_alternative_candidate",
+        "action": "Approve a different candidate from the review (specify which)",
+        "next_action": "retry_implementation_plan_update_required",
+        "allows_retry_to_proceed": "after_plan_update"
+      },
+      {
+        "option": "reject_all_candidates",
+        "action": "Reject all available local candidates",
+        "next_action": "model_asset_source_resolution_required",
+        "allows_retry_to_proceed": "false"
+      },
+      {
+        "option": "override_and_approve_realvis",
+        "action": "Explicitly override and approve realvisxlV50_v50Bakedvae.safetensors despite prior failure",
+        "next_action": "retry_implementation_plan_update_required",
+        "allows_retry_to_proceed": "after_plan_update",
+        "requires_explicit_acknowledgment": "Operator must acknowledge prior failure risk and accept responsibility for potential repeat rejection"
+      }
+    ]
+  },
+  "boundary_conditions_acknowledged": {
+    "review_only": true,
+    "no_generation_performed": true,
+    "no_download_performed": true,
+    "no_install_performed": true,
+    "no_model_move_or_copy_performed": true,
+    "comfyui_generation": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "substitution_requires_operator_approval": true
+  },
+  "supporting_documents": {
+    "candidate_review": "output/control/model_candidate_review.json",
+    "substitution_decision": "output/control/model_substitution_decision.json",
+    "original_retry_implementation_plan": "output/control/controlled_retry_implementation_plan.json",
+    "prior_qa_report": "output/control/rc2_prodcards3j_qa_report.json",
+    "prior_operator_override": "output/control/rc2_prodcards3j_operator_override_report.json"
+  },
+  "packet_status": "awaiting_operator_decision",
+  "auto_approval_disabled": true,
+  "operator_intervention_required": true
+}
