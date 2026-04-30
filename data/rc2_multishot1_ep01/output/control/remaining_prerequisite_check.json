@@ -1,0 +1,103 @@
+{
+  "prerequisite_check_id": "remaining-prerequisite-check-001",
+  "task_code": "RC2-PRODCARDS3V",
+  "check_type": "remaining_prerequisite_availability_after_checkpoint_substitution",
+  "episode_id": "ep01",
+  "target_shot_id": "shot01",
+  "checked_at": "2026-04-30T07:20:00.000000Z",
+  "check_scope": "prerequisite_verification_after_juggernautxl_substitution_no_generation",
+  "boundary_conditions": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "no_download_install_move_copy": true
+  },
+  "checkpoint_prerequisite_check": {
+    "prerequisite_name": "juggernautXL_version2.safetensors",
+    "prerequisite_type": "checkpoint",
+    "expected_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/checkpoints/juggernautXL_version2.safetensors",
+    "file_exists": true,
+    "size_bytes": 6938040706,
+    "size_gb": 6.93,
+    "format": "safetensors",
+    "architecture": "SDXL",
+    "classification": "compatible_candidate",
+    "availability_status": "AVAILABLE",
+    "blocking": false,
+    "verification_result": "PASS"
+  },
+  "ip_adapter_prerequisite_check": {
+    "prerequisite_name": "ip-adapter-faceid-plus_sd15.bin",
+    "prerequisite_type": "ip_adapter_model",
+    "expected_paths": [
+      "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+      "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/ipadapter/ip-adapter-faceid-plusv2_sd15.bin"
+    ],
+    "file_exists": false,
+    "availability_status": "MISSING",
+    "blocking": true,
+    "alternate_paths_checked": [
+      "F:/ComfyUI/models/ipadapter/",
+      "F:/ComfyUI/comfyUI_portable_inst/.../custom_nodes/ComfyUI_IPAdapter_plus/models/"
+    ],
+    "ip_adapter_custom_node_installed": true,
+    "ip_adapter_custom_node_path": "F:/ComfyUI/comfyUI_portable_inst/.../custom_nodes/ComfyUI_IPAdapter_plus/",
+    "verification_result": "FAIL",
+    "reason": "IP-Adapter FaceID Plus SD1.5 model files not found in any expected location"
+  },
+  "insightface_prerequisite_check": {
+    "prerequisite_name": "insightface buffalo_l",
+    "prerequisite_type": "preprocessor_model",
+    "availability_status": "NOT_VERIFIED",
+    "blocking": false,
+    "note": "insightface buffalo_l availability can only be confirmed at runtime when IP-Adapter node initializes; filesystem check not conclusive",
+    "verification_result": "NOT_VERIFIED"
+  },
+  "prerequisite_summary": {
+    "total_prerequisites_checked": 3,
+    "prerequisites_available": 1,
+    "prerequisites_missing": 1,
+    "prerequisites_not_verified": 1,
+    "all_prerequisites_available": false,
+    "blocking_count": 1,
+    "available_prerequisites": [
+      "juggernautXL_version2.safetensors"
+    ],
+    "missing_prerequisites": [
+      "ip-adapter-faceid-plus_sd15.bin"
+    ],
+    "not_verified_prerequisites": [
+      "insightface buffalo_l"
+    ]
+  },
+  "check_outcome": {
+    "retry_implementation_plan_revalidated": true,
+    "checkpoint_available": true,
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "remaining_prerequisites_available": false,
+    "missing_prerequisites": [
+      "ip-adapter-faceid-plus_sd15.bin"
+    ],
+    "next_allowed_action": "remaining_prerequisite_resolution_required",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "resolution_guidance": {
+    "required_action": "Acquire ip-adapter-faceid-plus_sd15.bin or ip-adapter-faceid-plusv2_sd15.bin",
+    "installation_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/ipadapter/",
+    "blocking_prerequisite": true,
+    "after_resolution_action": "Re-run remaining prerequisite check to verify all prerequisites available, then proceed to controlled_retry_authorization_required"
+  },
+  "proof_artifacts": {
+    "local_model_inventory_path": "data/rc2_prodcards3s/local_model_inventory.json",
+    "retry_model_asset_check_path": "output/control/retry_model_asset_check.json"
+  },
+  "verification_timestamp": "2026-04-30T07:20:00.000000Z"
+}

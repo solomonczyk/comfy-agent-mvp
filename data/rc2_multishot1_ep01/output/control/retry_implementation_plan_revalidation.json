@@ -1,0 +1,102 @@
+{
+  "revalidation_id": "retry-plan-revalidation-001",
+  "task_code": "RC2-PRODCARDS3V",
+  "revalidation_type": "retry_implementation_plan_revalidation_after_checkpoint_substitution",
+  "episode_id": "ep01",
+  "target_shot_id": "shot01",
+  "revalidated_at": "2026-04-30T07:20:00.000000Z",
+  "revalidation_scope": "checkpoint_substitution_verification_no_generation",
+  "boundary_conditions": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "no_download_install_move_copy": true
+  },
+  "plan_existence_check": {
+    "plan_file_path": "output/control/controlled_retry_implementation_plan.json",
+    "plan_exists": true,
+    "plan_id": "controlled-retry-impl-plan-001",
+    "plan_status": "implementation_plan_updated_with_operator_approval",
+    "verification_result": "PASS"
+  },
+  "target_shot_verification": {
+    "expected_shot_id": "shot01",
+    "actual_shot_id": "shot01",
+    "verification_result": "PASS"
+  },
+  "checkpoint_substitution_verification": {
+    "operator_approval_task_code": "RC2-PRODCARDS3U",
+    "original_planned_model": "dynavision_v10.safetensors",
+    "approved_substitution_model": "juggernautXL_version2.safetensors",
+    "active_checkpoint_in_plan": "juggernautXL_version2.safetensors",
+    "checkpoint_path_in_plan": "checkpoints/juggernautXL_version2.safetensors",
+    "operator_approval_present": true,
+    "original_checkpoint_no_longer_active": true,
+    "verification_result": "PASS"
+  },
+  "checkpoint_local_availability_check": {
+    "checkpoint_name": "juggernautXL_version2.safetensors",
+    "expected_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/checkpoints/juggernautXL_version2.safetensors",
+    "file_exists": true,
+    "size_bytes": 6938040706,
+    "size_gb": 6.93,
+    "format": "safetensors",
+    "architecture": "SDXL",
+    "classification": "compatible_candidate",
+    "verification_result": "PASS"
+  },
+  "retry_parameters_verification": {
+    "denoising_strength": {
+      "planned_value": 0.65,
+      "verification_result": "PASS"
+    },
+    "guidance_scale_cfg": {
+      "planned_value": 8.5,
+      "verification_result": "PASS"
+    },
+    "reference_image_weight": {
+      "planned_value": 0.85,
+      "verification_result": "PASS"
+    },
+    "ip_adapter_faceid_plus_weight": {
+      "planned_value": 0.8,
+      "verification_result": "PASS"
+    },
+    "overall_verification_result": "PASS"
+  },
+  "gate_state_verification": {
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "verification_result": "PASS"
+  },
+  "revalidation_summary": {
+    "retry_implementation_plan_revalidated": true,
+    "checkpoint_available": true,
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_local_availability_verified": true,
+    "retry_parameters_verified": true,
+    "gate_state_verified": true,
+    "remaining_prerequisites_available": false,
+    "missing_prerequisites": [
+      "ip-adapter-faceid-plus_sd15.bin"
+    ],
+    "next_allowed_action": "remaining_prerequisite_resolution_required",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "proof_artifacts": {
+    "controlled_retry_implementation_plan_path": "output/control/controlled_retry_implementation_plan.json",
+    "local_model_inventory_path": "data/rc2_prodcards3s/local_model_inventory.json",
+    "retry_model_asset_check_path": "output/control/retry_model_asset_check.json"
+  },
+  "verification_timestamp": "2026-04-30T07:20:00.000000Z"
+}
