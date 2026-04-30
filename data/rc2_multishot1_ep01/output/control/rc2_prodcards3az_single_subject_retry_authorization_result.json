@@ -1,0 +1,83 @@
+{
+  "task_code": "RC2-PRODCARDS3AZ",
+  "shot_id": "shot01",
+  "authorization_type": "single_subject_retry_authorization",
+  "authorization_timestamp": "2026-04-30T18:47:15Z",
+  "pre_authorization_state": {
+    "next_allowed_action": "controlled_retry_authorization_required",
+    "retry_gate_open": false,
+    "single_subject_guard_passed": true,
+    "duplicate_subject_blockers_present": true,
+    "atmospheric_ambiguity_removed": true,
+    "frames_to_generate": 1,
+    "identity_weight": 0.85,
+    "lora_strength": 0.7
+  },
+  "authorization_checks": {
+    "single_subject_guard_check": {
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    "duplicate_subject_blockers_check": {
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    "atmospheric_ambiguity_removed_check": {
+      "expected": true,
+      "actual": true,
+      "passed": true
+    },
+    "frames_to_generate_check": {
+      "expected": 1,
+      "actual": 1,
+      "passed": true
+    },
+    "identity_weight_check": {
+      "expected": 0.85,
+      "actual": 0.85,
+      "passed": true
+    },
+    "lora_strength_check": {
+      "expected": 0.7,
+      "actual": 0.7,
+      "passed": true
+    },
+    "checkpoint_check": {
+      "expected": "juggernautXL_version2.safetensors",
+      "actual": "juggernautXL_version2.safetensors",
+      "passed": true
+    },
+    "resolution_check": {
+      "expected": "1344x768",
+      "actual": "1344x768",
+      "passed": true
+    }
+  },
+  "workflow_binding_verification": {
+    "patched_workflow_binding_preserved": true,
+    "ip_adapter_advanced_present": true,
+    "sdxl_faceid_adapter_referenced": true,
+    "sdxl_faceid_lora_referenced": true,
+    "reference_image_connected": true
+  },
+  "authorization_result": {
+    "single_subject_retry_authorization_completed": true,
+    "single_subject_retry_authorized": true,
+    "authorization_status": "authorized",
+    "ready_for_retry_generation": true,
+    "requires_operator_confirmation": true,
+    "retry_gate_open": true,
+    "next_allowed_action": "retry_generate_frames",
+    "role_decisions_applied": true,
+    "approval_gate_ready": true,
+    "production_accepted": false,
+    "generation_performed": false,
+    "downstream_actions_executed": false,
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_downstream_action": true
+  },
+  "authorization_notes": "Single-frame single-subject hyperrealism retry authorized with corrected prompt/recipe and patched SDXL FaceID workflow. Authorization opens retry gate and sets next_allowed_action to retry_generate_frames. No generation or downstream action executed during authorization."
+}

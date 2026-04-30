@@ -2237,6 +2237,34 @@
       "recipe_correction_path": "output/control/rc2_prodcards3ay_recipe_correction.json",
       "single_subject_guard_recheck_path": "output/control/rc2_prodcards3ay_single_subject_guard_recheck.json",
       "retry_preflight_result_path": "output/control/rc2_prodcards3ay_retry_preflight_result.json"
+    },
+    {
+      "event_type": "single_subject_retry_authorization_completed",
+      "task_code": "RC2-PRODCARDS3AZ",
+      "episode_id": "ep01",
+      "shot_id": "shot01",
+      "single_subject_retry_authorized": true,
+      "frames_to_generate": 1,
+      "single_subject_guard_passed": true,
+      "duplicate_subject_blockers_present": true,
+      "atmospheric_ambiguity_removed": true,
+      "next_allowed_action": "retry_generate_frames",
+      "retry_gate_open": true,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "timestamp": "2026-04-30T18:47:15.000000Z",
+      "single_subject_retry_authorization_result_path": "output/control/rc2_prodcards3az_single_subject_retry_authorization_result.json",
+      "retry_preflight_result_path": "output/control/rc2_prodcards3az_retry_preflight_result.json"
     }
   ]
 }
