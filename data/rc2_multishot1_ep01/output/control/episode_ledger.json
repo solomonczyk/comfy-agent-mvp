@@ -1625,6 +1625,56 @@
         "validation_policy": "output/control/rc2_prodcards3aj_sdxl_faceid_validation_policy.json",
         "source_resolution": "output/control/rc2_prodcards3aj_sdxl_faceid_source_resolution.json"
       }
+    },
+    {
+      "event_type": "sdxl_faceid_asset_acquisition_completed",
+      "timestamp": "2026-04-30T13:57:59.000000Z",
+      "task_code": "RC2-PRODCARDS3AK-AL",
+      "shot_id": "shot01",
+      "required_asset_set": [
+        "ip-adapter-faceid-plusv2_sdxl.bin",
+        "ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+      ],
+      "trusted_source": "h94/IP-Adapter-FaceID",
+      "source_reference": "https://huggingface.co/h94/IP-Adapter-FaceID",
+      "source_commit": "36ce7f96f0c76c1e8b100f10fa094a2ac48ea1c6",
+      "active_checkpoint": "juggernautXL_version2.safetensors",
+      "download_performed": true,
+      "install_performed": true,
+      "model_move_or_copy_performed": true,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "asset_details": {
+        "adapter": {
+          "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+          "file_size_bytes": 1487555181,
+          "sha256_hash": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb",
+          "final_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin"
+        },
+        "lora": {
+          "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+          "file_size_bytes": 371842896,
+          "sha256_hash": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b",
+          "final_path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+        }
+      },
+      "artifact_paths": {
+        "precheck_result": "output/control/rc2_prodcards3ak_al_sdxl_faceid_precheck_result.json",
+        "acquisition_result": "output/control/rc2_prodcards3ak_al_sdxl_faceid_acquisition_result.json",
+        "validation_result": "output/control/rc2_prodcards3ak_al_sdxl_faceid_validation_result.json",
+        "post_install_verification_result": "output/control/rc2_prodcards3ak_al_sdxl_faceid_post_install_verification_result.json"
+      }
     }
   ]
 }

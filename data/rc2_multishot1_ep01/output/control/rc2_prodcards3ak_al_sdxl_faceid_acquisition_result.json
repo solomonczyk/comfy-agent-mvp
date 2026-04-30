@@ -1,0 +1,25 @@
+{
+  "task_code": "RC2-PRODCARDS3AK-AL",
+  "phase": "B_Acquisition",
+  "timestamp": "2026-04-30T13:06:05.054403Z",
+  "assets": [
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "download_result": {
+        "success": true,
+        "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-plusv2_sdxl.bin",
+        "temp_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\temp\\sdxl_faceid_acquisition\\ip-adapter-faceid-plusv2_sdxl.bin",
+        "download_timestamp": "2026-04-30T13:44:51.792275Z"
+      }
+    },
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "download_result": {
+        "success": true,
+        "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID/resolve/main/ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+        "temp_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\temp\\sdxl_faceid_acquisition\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+        "download_timestamp": "2026-04-30T13:57:44.507693Z"
+      }
+    }
+  ]
+}

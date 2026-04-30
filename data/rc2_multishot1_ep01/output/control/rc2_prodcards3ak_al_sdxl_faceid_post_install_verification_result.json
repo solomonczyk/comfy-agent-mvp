@@ -1,0 +1,41 @@
+{
+  "task_code": "RC2-PRODCARDS3AK-AL",
+  "phase": "E_PostInstallVerification",
+  "timestamp": "2026-04-30T13:57:59.029792Z",
+  "verification_items": [
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "final_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+      "file_exists": true,
+      "filename_matches": true,
+      "extension_matches": true,
+      "file_size": 1487555181,
+      "sha256_hash": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb"
+    },
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "final_path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "file_exists": true,
+      "filename_matches": true,
+      "extension_matches": true,
+      "file_size": 371842896,
+      "sha256_hash": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b"
+    }
+  ],
+  "boundary_verification": {
+    "active_checkpoint_unchanged": "juggernautXL_version2.safetensors",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "comfyui_generation_executed": false,
+    "frame_generation_executed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun_executed": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
+  },
+  "overall_success": true
+}

@@ -1,0 +1,36 @@
+{
+  "task_code": "RC2-PRODCARDS3AK-AL",
+  "phase": "C_Validation",
+  "timestamp": "2026-04-30T13:57:44.509561Z",
+  "assets": [
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "validation_result": {
+        "validation_passed": true,
+        "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+        "extension": ".bin",
+        "file_size_bytes": 1487555181,
+        "sha256_hash": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb",
+        "source_reference": "https://huggingface.co/h94/IP-Adapter-FaceID",
+        "source_repository": "h94/IP-Adapter-FaceID",
+        "source_commit": "36ce7f96f0c76c1e8b100f10fa094a2ac48ea1c6",
+        "temp_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\temp\\sdxl_faceid_acquisition\\ip-adapter-faceid-plusv2_sdxl.bin"
+      }
+    },
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "validation_result": {
+        "validation_passed": true,
+        "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+        "extension": ".safetensors",
+        "file_size_bytes": 371842896,
+        "sha256_hash": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b",
+        "source_reference": "https://huggingface.co/h94/IP-Adapter-FaceID",
+        "source_repository": "h94/IP-Adapter-FaceID",
+        "source_commit": "36ce7f96f0c76c1e8b100f10fa094a2ac48ea1c6",
+        "temp_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\temp\\sdxl_faceid_acquisition\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+      }
+    }
+  ],
+  "all_assets_validated": true
+}

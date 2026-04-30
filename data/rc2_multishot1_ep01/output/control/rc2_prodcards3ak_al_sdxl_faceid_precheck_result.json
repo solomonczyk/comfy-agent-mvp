@@ -1,0 +1,21 @@
+{
+  "task_code": "RC2-PRODCARDS3AK-AL",
+  "phase": "A_Precheck",
+  "timestamp": "2026-04-30T13:06:05.050886Z",
+  "precheck_passed": true,
+  "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_required",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "active_checkpoint": "juggernautXL_version2.safetensors",
+  "required_asset_set": [
+    "ip-adapter-faceid-plusv2_sdxl.bin",
+    "ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+  ],
+  "trusted_source": "h94/IP-Adapter-FaceID",
+  "source_reference": "https://huggingface.co/h94/IP-Adapter-FaceID",
+  "source_commit": "36ce7f96f0c76c1e8b100f10fa094a2ac48ea1c6",
+  "no_sd15_substitution": true,
+  "no_generic_substitution": true
+}

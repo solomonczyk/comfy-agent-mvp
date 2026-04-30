@@ -163,6 +163,7 @@
   "ip_adapter_acquisition_execution_instructions_path": "output/control/IP_ADAPTER_ACQUISITION_EXECUTION_INSTRUCTIONS.md",
   "ip_adapter_acquisition_execution_result_path": "output/control/ip_adapter_acquisition_execution_result.json",
   "ip_adapter_post_install_verification_result_path": "output/control/ip_adapter_post_install_verification_result.json",
+  "next_allowed_action": "controlled_retry_authorization_required",
   "work_orders": {
     "character_director_work_order": "output/control/work_orders/character_director_identity_review.json",
     "workflow_td_work_order": "output/control/work_orders/workflow_td_identity_workflow_review.json"
@@ -504,5 +505,29 @@
     "sdxl_faceid_allowlist_decision_path": "output/control/rc2_prodcards3aj_sdxl_faceid_allowlist_decision.json",
     "sdxl_faceid_acquisition_path_path": "output/control/rc2_prodcards3aj_sdxl_faceid_acquisition_path.json",
     "sdxl_faceid_validation_policy_path": "output/control/rc2_prodcards3aj_sdxl_faceid_validation_policy.json"
+  },
+  "rc2_prodcards3ak_al": {
+    "sdxl_faceid_acquisition_precheck_completed": true,
+    "sdxl_faceid_acquisition_executed": true,
+    "sdxl_faceid_asset_set_installed": true,
+    "sdxl_faceid_post_install_verified": true,
+    "required_asset_set": [
+      "ip-adapter-faceid-plusv2_sdxl.bin",
+      "ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+    ],
+    "selected_sdxl_faceid_adapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "selected_sdxl_faceid_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "identity_preservation_strategy_satisfied": true,
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "next_allowed_action": "controlled_retry_authorization_required",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "timestamp": "2026-04-30T13:57:59.000000Z",
+    "precheck_result_path": "output/control/rc2_prodcards3ak_al_sdxl_faceid_precheck_result.json",
+    "acquisition_result_path": "output/control/rc2_prodcards3ak_al_sdxl_faceid_acquisition_result.json",
+    "validation_result_path": "output/control/rc2_prodcards3ak_al_sdxl_faceid_validation_result.json",
+    "post_install_verification_result_path": "output/control/rc2_prodcards3ak_al_sdxl_faceid_post_install_verification_result.json"
   }
 }
