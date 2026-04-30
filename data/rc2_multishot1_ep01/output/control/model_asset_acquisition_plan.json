@@ -1,0 +1,79 @@
+{
+  "plan_id": "model-asset-acquisition-plan-001",
+  "plan_type": "model_asset_acquisition_plan",
+  "task_code": "RC2-PRODCARDS3R",
+  "episode_id": "ep01",
+  "target_shot_id": "shot01",
+  "created_at": "2026-04-30T07:46:00.000000Z",
+  "plan_status": "acquisition_plan_created",
+  "explicit_note": "This is an acquisition and safe-install planning artifact only. No model download, installation, ComfyUI execution, frame generation, retry, QA, assembly, audio, or render actions are performed in this layer.",
+  "assets": [
+    {
+      "asset_id": "asset-001-dynavision",
+      "filename": "dynavision_v10.safetensors",
+      "asset_type": "checkpoint",
+      "required_for": "controlled retry of shot01",
+      "expected_install_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/checkpoints/dynavision_v10.safetensors",
+      "expected_relative_path": "checkpoints/dynavision_v10.safetensors",
+      "allowed_source_type": "trusted model source only",
+      "checksum_required": true,
+      "manual_operator_install_required": true,
+      "install_status": "pending",
+      "availability_status": "missing",
+      "blocking": true,
+      "rationale": "RealvisxlV50 checkpoint produces fundamental incompatibility with Alya character type. Dynavision checkpoint recommended as alternative with proven character consistency capabilities.",
+      "notes": [
+        "SD1.5-based checkpoint (not SDXL)",
+        "Baked VAE variant preferred — no separate VAE node required",
+        "Do NOT use SDXL checkpoints from existing checkpoints directory for this retry"
+      ]
+    },
+    {
+      "asset_id": "asset-002-ipadapter-faceid",
+      "filename": "ip-adapter-faceid-plus_sd15.bin",
+      "asset_type": "ipadapter_faceid_model",
+      "required_for": "dual-lock identity preservation",
+      "expected_install_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+      "expected_relative_path": "models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+      "alternate_acceptable_model": "ip-adapter-faceid-plusv2_sd15.bin",
+      "alternate_install_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/ipadapter/ip-adapter-faceid-plusv2_sd15.bin",
+      "allowed_source_type": "trusted model source only",
+      "checksum_required": true,
+      "manual_operator_install_required": true,
+      "install_status": "pending",
+      "availability_status": "missing",
+      "blocking": true,
+      "rationale": "IP-Adapter FaceID Plus provides facial feature extraction that complements reference node approach for dual identity lock.",
+      "notes": [
+        "ComfyUI_IPAdapter_plus extension is already installed — only model weights file is missing",
+        "The existing ip-adapter_sdxl.safetensors at F:/ComfyUI/models/ipadapter/ is SDXL variant and NOT compatible with this SD1.5 retry plan",
+        "insightface buffalo_l availability must be confirmed at runtime after IP-Adapter model is installed"
+      ]
+    }
+  ],
+  "missing_prerequisites": [
+    "dynavision_v10.safetensors",
+    "ip-adapter-faceid-plus_sd15.bin"
+  ],
+  "retry_prerequisites_available": false,
+  "retry_prerequisite_check_completed": true,
+  "target_retry_attempt": 2,
+  "next_allowed_action": "model_asset_install_required",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "comfyui_generation": false,
+  "generation_performed": false,
+  "retry_generate_frames_executed": false,
+  "qa_rerun": false,
+  "assemble_scene_executed": false,
+  "audio_executed": false,
+  "render_executed": false,
+  "downstream_actions_executed": false,
+  "source_artifacts": {
+    "retry_model_asset_check": "output/control/retry_model_asset_check.json",
+    "retry_prerequisite_resolution_plan": "output/control/retry_prerequisite_resolution_plan.json",
+    "controlled_retry_implementation_plan": "output/control/controlled_retry_implementation_plan.json"
+  }
+}
