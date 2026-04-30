@@ -1,0 +1,137 @@
+{
+  "task_id": "RC2-PRODCARDS3AS",
+  "proof_timestamp": "2026-04-30T16:50:15.234567Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "proof_type": "identity_wiring_payload_proof",
+  "patched_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+  "workflow_analysis": {
+    "node_4_checkpoint_loader": {
+      "class_type": "CheckpointLoaderSimple",
+      "ckpt_name": "juggernautXL_version2.safetensors",
+      "checkpoint_verified": true,
+      "checkpoint_matches_retry_plan": true
+    },
+    "node_5_empty_latent": {
+      "class_type": "EmptyLatentImage",
+      "width": 1344,
+      "height": 768,
+      "batch_size": 1,
+      "resolution_policy_compliant": true,
+      "resolution_accepted": true
+    },
+    "node_10_lora_loader": {
+      "class_type": "LoraLoader",
+      "lora_stack": [
+        {
+          "lora_name": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+          "strength_model": 1.0,
+          "strength_clip": 1.0
+        }
+      ],
+      "sdxl_faceid_lora_connected": true,
+      "lora_connected_to_checkpoint": true,
+      "model_input_from_node": "4",
+      "clip_input_from_node": "4"
+    },
+    "node_11_ipadapter_advanced": {
+      "class_type": "IPAdapterAdvanced",
+      "ipadapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "weight": 0.7,
+      "start": 0.0,
+      "end": 1.0,
+      "weight_type": "linear",
+      "embed_dim": 1024,
+      "faceid_v2": true,
+      "weight_v2": false,
+      "ipadapter_advanced_node_present": true,
+      "sdxl_faceid_adapter_connected": true,
+      "model_input_from_node": "10",
+      "image_input_from_node": "12"
+    },
+    "node_12_load_image": {
+      "class_type": "LoadImage",
+      "image": "f:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01/output/reference/clean/shot01_reference.png",
+      "upload": "image",
+      "reference_image_connected": true,
+      "reference_image_path_valid": true
+    },
+    "node_3_ksampler": {
+      "class_type": "KSampler",
+      "model_input_from_node": "11",
+      "model_source_changed_from_original": true,
+      "original_model_source": "4",
+      "current_model_source": "11",
+      "ipadapter_injected_model": true
+    },
+    "node_6_clip_text_encode_positive": {
+      "class_type": "CLIPTextEncode",
+      "clip_input_from_node": "10",
+      "clip_source_changed_from_original": true,
+      "original_clip_source": "4",
+      "current_clip_source": "10",
+      "lora_injected_clip": true
+    },
+    "node_7_clip_text_encode_negative": {
+      "class_type": "CLIPTextEncode",
+      "clip_input_from_node": "10",
+      "clip_source_changed_from_original": true,
+      "original_clip_source": "4",
+      "current_clip_source": "10",
+      "lora_injected_clip": true
+    }
+  },
+  "identity_wiring_verification": {
+    "ipadapter_advanced_node_present": true,
+    "sdxl_faceid_adapter_connected": true,
+    "sdxl_faceid_adapter_file": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "sdxl_faceid_lora_connected": true,
+    "sdxl_faceid_lora_file": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "reference_image_connected": true,
+    "reference_image_path": "f:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01/output/reference/clean/shot01_reference.png",
+    "identity_weight": 0.7,
+    "identity_schedule_start": 0.0,
+    "identity_schedule_end": 1.0,
+    "identity_weight_type": "linear",
+    "identity_influence_on_generation": "STRONG",
+    "identity_wiring_complete": true
+  },
+  "comparison_with_ao_root_cause": {
+    "ao_root_cause": {
+      "ipadapter_advanced_node_present": false,
+      "sdxl_faceid_adapter_connected": false,
+      "sdxl_faceid_lora_connected": false,
+      "reference_image_connected": false,
+      "identity_influence_on_generation": "NONE"
+    },
+    "current_payload_state": {
+      "ipadapter_advanced_node_present": true,
+      "sdxl_faceid_adapter_connected": true,
+      "sdxl_faceid_lora_connected": true,
+      "reference_image_connected": true,
+      "identity_influence_on_generation": "STRONG"
+    },
+    "all_ao_root_causes_addressed": true,
+    "root_cause_fix_verified": true
+  },
+  "final_payload_uses_patched_workflow": true,
+  "no_old_template_fallback": true,
+  "identity_wiring_payload_proven": true,
+  "proof_verdict": "identity_wiring_confirmed_in_patched_workflow",
+  "next_allowed_action": "controlled_retry_authorization_required",
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "boundary_verification": {
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
+  }
+}

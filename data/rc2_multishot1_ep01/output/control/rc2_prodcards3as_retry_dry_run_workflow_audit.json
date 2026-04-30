@@ -1,0 +1,93 @@
+{
+  "task_id": "RC2-PRODCARDS3AS",
+  "audit_timestamp": "2026-04-30T16:50:15.234567Z",
+  "shot_id": "shot01",
+  "episode_id": "ep01",
+  "audit_type": "retry_dry_run_workflow_audit",
+  "dry_run_executed": true,
+  "dry_run_command": "python -m app.cli retry-generate-frames --project-root \"F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\" --dry-run --json",
+  "dry_run_status": "valid",
+  "dry_run_would_execute_action": "retry_generate_frames",
+  "dry_run_would_run_comfyui": true,
+  "dry_run_generation_performed": false,
+  "dry_run_production_accepted": false,
+  "dry_run_real_project_mutated": false,
+  "authorization_status": "authorization_required",
+  "authorization_ready_for_retry_generation": true,
+  "authorization_requires_operator_confirmation": true,
+  "authorization_retry_gate_open": true,
+  "authorization_next_allowed_action": "retry_generate_frames",
+  "authorization_role_decisions_applied": true,
+  "authorization_approval_gate_ready": true,
+  "dimension_preflight": {
+    "expected_width": 1344,
+    "expected_height": 768,
+    "resolved_workflow_width": 1344,
+    "resolved_workflow_height": 768,
+    "dimension_preflight_passed": true,
+    "dimension_preflight_reason": null
+  },
+  "generation_sanity_preflight": {
+    "passed": true,
+    "positive_prompt_present": true,
+    "checkpoint_present": true,
+    "ksampler_connected": true,
+    "latent_or_image_source_valid": true,
+    "save_image_configured": true,
+    "blank_source_image_detected": false,
+    "generation_sanity_preflight_reason": null
+  },
+  "resolution_policy_preflight": {
+    "passed": true,
+    "reason": null,
+    "final_emptylatentimage_width": 1344,
+    "final_emptylatentimage_height": 768,
+    "resolution": "1344x768",
+    "aspect_ratio": "1344:768",
+    "aspect_ratio_source": "prompt_pack",
+    "target_type": "episode",
+    "resolution_allowed": true,
+    "validation_result": {
+      "valid": true,
+      "resolution": "1344x768",
+      "target_type": "episode",
+      "reason": "policy_compliant",
+      "orientation": "landscape"
+    },
+    "policy_summary": {
+      "orientation_required": "landscape",
+      "aspect_ratio": "16:9",
+      "fast_debug_resolution": [1024, 576],
+      "minimum_scene_retry_resolution": [1344, 768],
+      "preferred_scene_retry_resolution": [1536, 864],
+      "final_delivery_resolution": [1920, 1080],
+      "forbidden_resolutions": [[480, 640]]
+    }
+  },
+  "workflow_binding_audit": {
+    "retry_authorization_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+    "retry_workflow_source": "patched_sdxl_faceid_workflow",
+    "patched_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+    "patched_workflow_required": true,
+    "workflow_binding_confirmed": true,
+    "workflow_uses_patched_template": true
+  },
+  "audit_verdict": "dry_run_confirms_patched_workflow_binding",
+  "audit_passed": true,
+  "next_allowed_action": "controlled_retry_authorization_required",
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "boundary_verification": {
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
+  }
+}
