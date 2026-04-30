@@ -1,0 +1,89 @@
+{
+  "task_code": "RC2-PRODCARDS3Y",
+  "plan_type": "ip_adapter_asset_acquisition_precheck",
+  "plan_timestamp": "2026-04-30T07:50:00Z",
+  "target_asset": {
+    "asset_name": "ip-adapter-faceid-plus_sd15.bin",
+    "asset_type": "IP-Adapter FaceID Plus SD15",
+    "expected_filename": "ip-adapter-faceid-plus_sd15.bin",
+    "expected_format": "bin (pickle)",
+    "expected_size_approx_mb": 157
+  },
+  "source_information": {
+    "source_name": "h94/IP-Adapter-FaceID",
+    "source_type": "hugging_face_repository",
+    "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID/blob/main/ip-adapter-faceid-plus_sd15.bin",
+    "repository_url": "https://huggingface.co/h94/IP-Adapter-FaceID",
+    "file_path_in_repository": "ip-adapter-faceid-plus_sd15.bin",
+    "author_organization": "Tencent AI Lab (h94)",
+    "is_trusted_allowlisted": true
+  },
+  "precheck_requirements": {
+    "source_resolution_completed": true,
+    "source_allowlist_decision_created": true,
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false
+  },
+  "precheck_steps": [
+    {
+      "step": "verify_source_trust",
+      "description": "Verify source is trusted and allowlisted",
+      "status": "completed",
+      "result": "verified"
+    },
+    {
+      "step": "verify_file_exists",
+      "description": "Verify file exists in repository",
+      "status": "completed",
+      "result": "verified"
+    },
+    {
+      "step": "verify_filename_match",
+      "description": "Verify filename matches expected",
+      "status": "completed",
+      "result": "verified"
+    },
+    {
+      "step": "verify_asset_type_match",
+      "description": "Verify asset type matches expected FaceID Plus SD15",
+      "status": "completed",
+      "result": "verified"
+    },
+    {
+      "step": "authorize_download",
+      "description": "Authorize download from trusted source",
+      "status": "pending",
+      "result": "not_authorized"
+    },
+    {
+      "step": "authorize_install",
+      "description": "Authorize install to ComfyUI models directory",
+      "status": "pending",
+      "result": "not_authorized"
+    },
+    {
+      "step": "authorize_retry",
+      "description": "Authorize retry_generate_frames after install",
+      "status": "pending",
+      "result": "not_authorized"
+    }
+  ],
+  "next_phase_requirements": {
+    "required_action": "controlled_ip_adapter_asset_acquisition_precheck",
+    "authorization_required": true,
+    "download_requires_explicit_authorization": true,
+    "install_requires_explicit_authorization": true,
+    "retry_requires_explicit_authorization": true
+  },
+  "boundary_compliance": {
+    "download_not_performed": true,
+    "install_not_performed": true,
+    "retry_not_executed": true,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  },
+  "next_allowed_action": "controlled_ip_adapter_asset_acquisition_precheck_required"
+}

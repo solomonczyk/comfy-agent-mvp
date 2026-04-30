@@ -1,0 +1,51 @@
+{
+  "task_code": "RC2-PRODCARDS3Y",
+  "decision_type": "ip_adapter_source_allowlist",
+  "decision_timestamp": "2026-04-30T07:50:00Z",
+  "target_asset": {
+    "asset_name": "ip-adapter-faceid-plus_sd15.bin",
+    "asset_type": "IP-Adapter FaceID Plus SD15"
+  },
+  "source_allowlist_decision": {
+    "approved_source": true,
+    "approval_scope": "source_resolution_only",
+    "source_name": "h94/IP-Adapter-FaceID",
+    "source_type": "hugging_face_repository",
+    "source_url": "https://huggingface.co/h94/IP-Adapter-FaceID/blob/main/ip-adapter-faceid-plus_sd15.bin",
+    "is_trusted_allowlisted": true,
+    "is_official_source": true,
+    "author_organization": "Tencent AI Lab (h94)"
+  },
+  "authorization_status": {
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false,
+    "authorization_scope": "source_resolution_only",
+    "next_required_authorization": "controlled_ip_adapter_asset_acquisition_precheck"
+  },
+  "decision_rationale": {
+    "source_is_official": true,
+    "source_is_trusted": true,
+    "author_is_original_creator": true,
+    "repository_is_widely_used": true,
+    "file_exists_in_repository": true,
+    "filename_matches_exactly": true,
+    "asset_type_matches_expected": true,
+    "license_is_non_commercial": true,
+    "approved_for_controlled_acquisition": true
+  },
+  "boundary_compliance": {
+    "download_not_authorized": true,
+    "install_not_authorized": true,
+    "retry_not_authorized": true,
+    "no_download_performed": true,
+    "no_install_performed": true,
+    "no_model_move_or_copy_performed": true,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  },
+  "next_allowed_action": "controlled_ip_adapter_asset_acquisition_precheck_required"
+}

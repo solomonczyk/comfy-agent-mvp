@@ -1,0 +1,57 @@
+{
+  "task_code": "RC2-PRODCARDS3Y",
+  "task_description": "Controlled IP-Adapter Asset Source Resolution",
+  "resolution_timestamp": "2026-04-30T07:50:00Z",
+  "required_asset": {
+    "asset_name": "ip-adapter-faceid-plus_sd15.bin",
+    "asset_type": "IP-Adapter FaceID Plus SD15",
+    "expected_filename": "ip-adapter-faceid-plus_sd15.bin",
+    "expected_format": "bin (pickle)",
+    "expected_size_approx_mb": 157
+  },
+  "source_candidate": {
+    "source_name": "h94/IP-Adapter-FaceID",
+    "source_type": "hugging_face_repository",
+    "source_url_or_reference": "https://huggingface.co/h94/IP-Adapter-FaceID/blob/main/ip-adapter-faceid-plus_sd15.bin",
+    "repository_url": "https://huggingface.co/h94/IP-Adapter-FaceID",
+    "file_path_in_repository": "ip-adapter-faceid-plus_sd15.bin",
+    "license_or_usage_note": "Non-commercial use, IP-Adapter FaceID model by Tencent AI Lab",
+    "author_organization": "Tencent AI Lab (h94)",
+    "is_trusted_allowlisted": true,
+    "is_official_source": true,
+    "filename_matches_exactly": true,
+    "asset_type_matches_expected": true,
+    "approved_for_future_controlled_acquisition": true
+  },
+  "source_verification": {
+    "verification_timestamp": "2026-04-30T07:50:00Z",
+    "verification_method": "web_search_and_repository_inspection",
+    "repository_verified": true,
+    "file_exists_in_repository": true,
+    "file_size_verified": "157 MB",
+    "file_format_verified": "bin (pickle)",
+    "author_verified": "h94 (Tencent AI Lab)",
+    "is_official_ip_adapter_repository": true,
+    "community_usage_verified": true,
+    "verification_status": "verified"
+  },
+  "resolution_status": {
+    "source_resolution_completed": true,
+    "trusted_source_resolved": true,
+    "resolution_outcome": "trusted_source_identified",
+    "next_required_action": "controlled_ip_adapter_asset_acquisition_precheck_required",
+    "download_authorized": false,
+    "install_authorized": false,
+    "retry_authorized": false
+  },
+  "boundary_compliance": {
+    "download_performed": false,
+    "install_performed": false,
+    "model_move_or_copy_performed": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  }
+}
