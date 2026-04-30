@@ -1,0 +1,75 @@
+{
+  "task_code": "RC2-PRODCARDS3AC-REJECT",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "retry_attempt": 3,
+  "operator_verdict": "rejected_visual_quality",
+  "rejection_timestamp": "2026-04-30T10:54:00Z",
+  "frames_generated": true,
+  "frame_count": 3,
+  "frame_paths": [
+    "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000001.png",
+    "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000002.png",
+    "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000003.png"
+  ],
+  "visual_quality_assessment": {
+    "overall_verdict": "unacceptable",
+    "comparison_to_baseline": "significantly degraded",
+    "specific_issues": [
+      {
+        "issue": "extremely low visual quality",
+        "description": "Generated frames show dramatically lower visual quality compared to earlier baseline portrait",
+        "severity": "critical"
+      },
+      {
+        "issue": "character identity not preserved",
+        "description": "Character identity is not recognizable or consistent across frames",
+        "severity": "critical"
+      },
+      {
+        "issue": "face too small / full-body composition",
+        "description": "Full-body composition unsuitable for identity retry validation, face appears too small",
+        "severity": "critical"
+      },
+      {
+        "issue": "overexposed haze / washed-out lighting",
+        "description": "Forest lighting appears overexposed with haze effect, washing out details",
+        "severity": "high"
+      },
+      {
+        "issue": "low detail at 480x640",
+        "description": "Resolution of 480x640 is insufficient for identity validation and production-card quality",
+        "severity": "critical"
+      },
+      {
+        "issue": "does not meet production-card quality expectations",
+        "description": "Output does not meet the quality standards expected for production-card acceptance",
+        "severity": "critical"
+      }
+    ]
+  },
+  "operator_decision": {
+    "reject_retry_frames": true,
+    "block_qa": true,
+    "block_assemble": true,
+    "block_downstream": true,
+    "require_workflow_diagnosis": true,
+    "require_corrective_action": true,
+    "do_not_mark_production_accepted": true,
+    "do_not_unblock_downstream": true,
+    "do_not_delete_frames": true,
+    "do_not_hide_failed_generation": true
+  },
+  "blocking_reasons": [
+    "Visual quality is unacceptable for production use",
+    "Identity preservation failure prevents character consistency",
+    "Composition and resolution are unsuitable for identity validation",
+    "Lighting and haze issues degrade overall visual quality",
+    "Workflow regression requires diagnosis before next retry attempt"
+  ],
+  "next_required_action": "workflow_regression_diagnosis",
+  "qa_allowed": false,
+  "assemble_allowed": false,
+  "downstream_blocked": true,
+  "production_accepted": false
+}

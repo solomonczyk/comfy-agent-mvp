@@ -1,0 +1,196 @@
+{
+  "task_code": "RC2-PRODCARDS3AC-REJECT",
+  "diagnosis_type": "workflow_regression_diagnosis",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "retry_attempt": 3,
+  "diagnosis_timestamp": "2026-04-30T10:54:00Z",
+  "baseline_comparison": {
+    "description": "Comparing RC2-PRODCARDS3AC output against earlier accepted high-quality portrait baseline",
+    "baseline_reference": "RC2-PRODCARDS3J retry_attempt 2 (prior to operator override)",
+    "current_output": "RC2-PRODCARDS3AC retry_attempt 3",
+    "quality_delta": "significant_regression"
+  },
+  "current_generation_parameters": {
+    "resolution": {
+      "width": 480,
+      "height": 640,
+      "assessment": "insufficient for identity validation",
+      "regression": "resolution too low compared to production-card quality expectations"
+    },
+    "checkpoint": {
+      "active_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "checkpoint_family": "SDXL",
+      "assessment": "SDXL checkpoint being used",
+      "regression": "checkpoint may not be optimal for identity preservation"
+    },
+    "ip_adapter": {
+      "ip_adapter_file": "ip-adapter-faceid-plus_sd15.bin",
+      "adapter_family": "SD15 FaceID",
+      "assessment": "CRITICAL MISMATCH - SD15 adapter used with SDXL checkpoint",
+      "regression": "incompatible adapter/checkpoint combination causing identity failure",
+      "compatibility_issue": "SD15 FaceID adapter is not designed for SDXL workflows"
+    },
+    "prompt_analysis": {
+      "positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+      "haze_terms_detected": [
+        "sun-dappled",
+        "soft golden light filtering through canopy",
+        "dreamlike atmosphere"
+      ],
+      "forest_terms_detected": [
+        "forest clearing",
+        "surrounded by colorful wildflowers",
+        "serene forest setting"
+      ],
+      "assessment": "prompt includes haze and forest lighting terms causing overexposure",
+      "regression": "lighting terms causing washed-out haze effect"
+    },
+    "composition_analysis": {
+      "shot_beats": [
+        {
+          "beat": "establishing_shot",
+          "description": "Wide shot of forest clearing with Alya in center",
+          "camera": "medium shot",
+          "assessment": "wide/medium shot leads to full-body composition with small face"
+        },
+        {
+          "beat": "character_reveal",
+          "description": "Focus on Alya's peaceful expression and white dress",
+          "camera": "close-up",
+          "assessment": "close-up beat exists but may be drowned by wider establishing shot"
+        },
+        {
+          "beat": "environment",
+          "description": "Show wildflowers and dappled light around her",
+          "camera": "medium shot",
+          "assessment": "environment focus reduces character prominence"
+        }
+      ],
+      "assessment": "composition drifts to full-body/small face instead of portrait/identity shot",
+      "regression": "composition unsuitable for identity validation"
+    },
+    "identity_parameters": {
+      "reference_locked": true,
+      "generation_mode": "reference_locked",
+      "assessment": "reference lock is enabled but IP-Adapter mismatch may prevent effectiveness",
+      "regression": "identity preservation parameters ineffective due to adapter mismatch"
+    }
+  },
+  "identified_root_causes": [
+    {
+      "cause": "checkpoint_adapter_family_mismatch",
+      "severity": "critical",
+      "description": "SD15 FaceID adapter (ip-adapter-faceid-plus_sd15.bin) is incompatible with SDXL checkpoint (realvisxlV50_v50Bakedvae.safetensors)",
+      "impact": "Identity preservation completely fails because adapter cannot process SDXL latent space",
+      "evidence": "adapter_family=SD15, checkpoint_family=SDXL"
+    },
+    {
+      "cause": "resolution_insufficient",
+      "severity": "critical",
+      "description": "Resolution of 480x640 is too low for identity validation and production-card quality",
+      "impact": "Insufficient detail for character identity recognition",
+      "evidence": "width=480, height=640"
+    },
+    {
+      "cause": "composition_regression",
+      "severity": "high",
+      "description": "Shot beats include establishing shot and environment focus, leading to full-body/small face composition instead of portrait",
+      "impact": "Face too small for identity validation",
+      "evidence": "shot_beats include 'establishing_shot' (wide/medium) and 'environment' (medium)"
+    },
+    {
+      "cause": "prompt_lighting_regression",
+      "severity": "high",
+      "description": "Prompt includes 'sun-dappled', 'soft golden light filtering through canopy', 'dreamlike atmosphere' causing haze and overexposure",
+      "impact": "Washed-out lighting reduces detail and identity clarity",
+      "evidence": "haze_terms_detected in positive_prompt"
+    },
+    {
+      "cause": "checkpoint_substitution_risk",
+      "severity": "medium",
+      "description": "realvisxlV50 was used instead of planned juggernautXL or baseline model",
+      "impact": "Unknown if this checkpoint is optimal for identity preservation",
+      "evidence": "payload_trace shows realvisxlV50, artifact_index shows juggernautXL (state inconsistency)"
+    }
+  ],
+  "corrected_retry_strategy": {
+    "composition_correction": {
+      "action": "restore portrait/medium-close composition for identity validation",
+      "implementation": "remove establishing shot beat, focus on character_reveal close-up beat",
+      "target_camera": "close-up or medium-close shot",
+      "target_framing": "portrait composition with face occupying 40-60% of frame"
+    },
+    "resolution_correction": {
+      "action": "increase resolution to SDXL-native size or higher",
+      "implementation": "use 1024x1024 or 896x1152 (SDXL native portrait aspect)",
+      "target_width": 1024,
+      "target_height": 1024,
+      "rationale": "SDXL native resolution provides optimal detail for identity validation"
+    },
+    "prompt_correction": {
+      "action": "remove haze/overexposure terms",
+      "terms_to_remove": [
+        "sun-dappled",
+        "soft golden light filtering through canopy",
+        "dreamlike atmosphere"
+      ],
+      "replacement_lighting": "soft natural lighting, clear visibility, balanced exposure",
+      "rationale": "eliminate washed-out haze effect to improve detail and identity clarity"
+    },
+    "adapter_correction": {
+      "action": "use SDXL-compatible identity adapter or SDXL-native workflow",
+      "critical_requirement": "DO NOT use SD15 FaceID adapter with SDXL checkpoint",
+      "options": [
+        "Use SDXL FaceID adapter if available",
+        "Use SDXL IP-Adapter with FaceID variant",
+        "Use ReferenceOnlySimple node with SDXL checkpoint (no adapter mismatch risk)",
+        "Consider using SD1.5 checkpoint with SD15 FaceID adapter if identity preservation is priority"
+      ],
+      "recommended_approach": "ReferenceOnlySimple at 0.85-0.9 strength with SDXL checkpoint, or switch to SD1.5 checkpoint + SD15 FaceID adapter"
+    },
+    "checkpoint_verification": {
+      "action": "verify correct checkpoint for identity preservation",
+      "options": [
+        "JuggernautXL version 2 (if SDXL workflow is required)",
+        "RealVisXL V50 (current - verify identity preservation capability)",
+        "SD1.5 checkpoint with SD15 FaceID adapter (if identity is priority over resolution)"
+      ],
+      "requirement": "do not use RealVisXL silently if it was previously rejected",
+      "requirement_2": "keep JuggernautXL only if workflow compatibility with identity adapter is proven"
+    },
+    "identity_parameters_correction": {
+      "action": "strengthen identity reference strength and face crop",
+      "reference_image_weight": "increase to 0.85-0.9",
+      "face_crop": "ensure proper face crop is used for reference",
+      "denoising_strength": "reduce to 0.6-0.65 to preserve identity",
+      "guidance_scale": "increase to 8.0-8.5 for better adherence to reference"
+    }
+  },
+  "baseline_comparison_recommendations": {
+    "compare_against": "RC2-PRODCARDS3J retry_attempt 2 settings",
+    "baseline_checkpoints_to_review": [
+      "juggernautXL_version2.safetensors",
+      "realvisxlV50_v50Bakedvae.safetensors"
+    ],
+    "baseline_adapter_to_review": "ip-adapter-faceid-plus_sd15.bin compatibility",
+    "baseline_resolution_to_review": "prior successful generation resolution",
+    "baseline_composition_to_review": "prior successful shot beats and camera framing"
+  },
+  "next_corrective_action": "workflow_regression_diagnosis_review",
+  "blocking_next_retry": true,
+  "require_operator_approval": true,
+  "require_role_intervention": true,
+  "required_intervention_roles": [
+    "Character Director",
+    "Workflow TD / ComfyUI Technical Director"
+  ],
+  "diagnosis_confidence": "high",
+  "diagnosis_evidence": [
+    "payload_trace.json confirms realvisxlV50 checkpoint",
+    "artifact_index.json confirms ip-adapter-faceid-plus_sd15.bin target",
+    "prompt_pack.json confirms haze terms and resolution 480x640",
+    "prompt_pack.json confirms establishing shot beat",
+    "known incompatibility: SD15 adapters do not work with SDXL checkpoints"
+  ]
+}

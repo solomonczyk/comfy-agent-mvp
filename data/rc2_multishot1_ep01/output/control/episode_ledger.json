@@ -1280,6 +1280,65 @@
       "audio_executed": false,
       "render_executed": false,
       "downstream_actions_executed": false
+    },
+    {
+      "event_type": "operator_visual_rejection",
+      "task_code": "RC2-PRODCARDS3AC-REJECT",
+      "timestamp": "2026-04-30T10:54:00Z",
+      "episode_id": "ep01",
+      "shot_id": "shot01",
+      "retry_attempt": 3,
+      "operator_verdict": "rejected_visual_quality",
+      "frames_generated": true,
+      "frame_count": 3,
+      "frame_paths": [
+        "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000001.png",
+        "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000002.png",
+        "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000003.png"
+      ],
+      "visual_issues": [
+        "extremely low visual quality compared to baseline",
+        "character identity not preserved",
+        "face too small / full-body composition unsuitable for identity retry",
+        "overexposed haze / washed-out forest lighting",
+        "low detail at 480x640 resolution",
+        "does not meet production-card quality expectations"
+      ],
+      "operator_decision": {
+        "reject_retry_frames": true,
+        "block_qa": true,
+        "block_assemble": true,
+        "block_downstream": true,
+        "require_workflow_diagnosis": true
+      },
+      "state_repair_performed": true,
+      "repaired_state": {
+        "rc2_prodcards3ac_retry_generated": true,
+        "rc2_prodcards3ac_operator_rejected": true,
+        "operator_verdict": "rejected_visual_quality",
+        "retry_frames_accepted": false,
+        "qa_allowed": false,
+        "retry_gate_open": false,
+        "next_allowed_action": "workflow_regression_diagnosis_review",
+        "production_accepted": false,
+        "assemble_scene_allowed": false,
+        "downstream_blocked": true
+      },
+      "next_allowed_action": "workflow_regression_diagnosis_review",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "qa_review_executed": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "artifact_paths": {
+        "operator_visual_rejection": "output/control/rc2_prodcards3ac_operator_visual_rejection.json",
+        "state_repair": "output/control/rc2_prodcards3ac_state_repair.json",
+        "workflow_regression_diagnosis": "output/control/rc2_prodcards3ac_workflow_regression_diagnosis.json"
+      }
     }
   ]
 }

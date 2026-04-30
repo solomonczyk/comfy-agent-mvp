@@ -1,0 +1,90 @@
+{
+  "task_code": "RC2-PRODCARDS3AC-REJECT",
+  "repair_type": "operator_visual_rejection_state_repair",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "repair_timestamp": "2026-04-30T10:54:00Z",
+  "previous_state": {
+    "retry_gate_open": true,
+    "next_allowed_action": "retry_generate_frames",
+    "downstream_blocked": false,
+    "qa_allowed": true,
+    "assemble_scene_allowed": false,
+    "production_accepted": false
+  },
+  "repaired_state": {
+    "rc2_prodcards3ac_retry_generated": true,
+    "rc2_prodcards3ac_operator_rejected": true,
+    "operator_verdict": "rejected_visual_quality",
+    "retry_frames_accepted": false,
+    "qa_allowed": false,
+    "retry_gate_open": false,
+    "next_allowed_action": "workflow_regression_diagnosis_review",
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "state_changes": [
+    {
+      "field": "retry_gate_open",
+      "previous_value": true,
+      "new_value": false,
+      "reason": "Retry frames rejected by operator visual review, gate must be closed pending workflow diagnosis"
+    },
+    {
+      "field": "next_allowed_action",
+      "previous_value": "retry_generate_frames",
+      "new_value": "workflow_regression_diagnosis_review",
+      "reason": "Workflow regression diagnosis required before any further retry generation"
+    },
+    {
+      "field": "downstream_blocked",
+      "previous_value": false,
+      "new_value": true,
+      "reason": "QA, assemble, audio, and render must be blocked until workflow regression is diagnosed and corrected"
+    },
+    {
+      "field": "qa_allowed",
+      "previous_value": true,
+      "new_value": false,
+      "reason": "QA is blocked pending workflow regression diagnosis and corrective action"
+    },
+    {
+      "field": "rc2_prodcards3ac_retry_generated",
+      "previous_value": false,
+      "new_value": true,
+      "reason": "Record that RC2-PRODCARDS3AC retry generation was executed"
+    },
+    {
+      "field": "rc2_prodcards3ac_operator_rejected",
+      "previous_value": false,
+      "new_value": true,
+      "reason": "Record that operator visually rejected the RC2-PRODCARDS3AC retry frames"
+    },
+    {
+      "field": "operator_verdict",
+      "previous_value": null,
+      "new_value": "rejected_visual_quality",
+      "reason": "Record the specific operator verdict for the rejection"
+    },
+    {
+      "field": "retry_frames_accepted",
+      "previous_value": false,
+      "new_value": false,
+      "reason": "Explicitly record that retry frames were not accepted"
+    }
+  ],
+  "blocking_actions": [
+    "retry_generate_frames",
+    "qa_review",
+    "assemble_scene",
+    "attach_audio",
+    "render_episode"
+  ],
+  "unblocked_actions": [
+    "workflow_regression_diagnosis_review"
+  ],
+  "repair_reason": "Operator visual rejection of RC2-PRODCARDS3AC retry frames due to unacceptable visual quality, identity preservation failure, composition issues, and lighting problems. State must be repaired to block downstream actions and require workflow regression diagnosis before any further retry generation.",
+  "repair_authority": "operator_visual_review",
+  "repair_commit_required": true
+}

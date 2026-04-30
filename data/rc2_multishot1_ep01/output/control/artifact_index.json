@@ -145,7 +145,7 @@
   "ip_adapter_download_authorized": true,
   "ip_adapter_install_authorized": true,
   "ip_adapter_retry_authorized": false,
-  "next_allowed_action": "retry_generate_frames",
+  "next_allowed_action": "workflow_regression_diagnosis_review",
   "ip_adapter_asset_resolution_contract_created": true,
   "ip_adapter_controlled_acquisition_plan_created": true,
   "ip_adapter_post_install_verification_contract_created": true,
@@ -177,7 +177,7 @@
     "decision_status": "applied"
   },
   "production_accepted": false,
-  "retry_gate_open": true,
+  "retry_gate_open": false,
   "corrective_work_orders_created": true,
   "corrective_work_orders_count": 2,
   "corrective_submission_review_completed": true,
@@ -202,7 +202,7 @@
   "ip_adapter_controlled_acquisition_plan_path": "output/control/ip_adapter_controlled_acquisition_plan.json",
   "ip_adapter_post_install_verification_contract_path": "output/control/ip_adapter_post_install_verification_contract.json",
   "ip_adapter_controlled_install_instructions_path": "output/control/IP_ADAPTER_CONTROLLED_INSTALL_INSTRUCTIONS.md",
-  "downstream_blocked": false,
+  "downstream_blocked": true,
   "assemble_scene_allowed": false,
   "operator_override": true,
   "operator_verdict": "rejected_visual_quality",
@@ -369,5 +369,21 @@
     },
     "requires_operator_confirmation": true,
     "decision_timestamp": "2026-04-30T08:43:44.968866Z"
+  },
+  "rc2_prodcards3ac": {
+    "retry_generated": true,
+    "operator_rejected": true,
+    "operator_verdict": "rejected_visual_quality",
+    "retry_frames_accepted": false,
+    "qa_allowed": false,
+    "retry_gate_open": false,
+    "next_allowed_action": "workflow_regression_diagnosis_review",
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "rejection_timestamp": "2026-04-30T10:54:00Z",
+    "operator_visual_rejection_path": "output/control/rc2_prodcards3ac_operator_visual_rejection.json",
+    "state_repair_path": "output/control/rc2_prodcards3ac_state_repair.json",
+    "workflow_regression_diagnosis_path": "output/control/rc2_prodcards3ac_workflow_regression_diagnosis.json"
   }
 }
