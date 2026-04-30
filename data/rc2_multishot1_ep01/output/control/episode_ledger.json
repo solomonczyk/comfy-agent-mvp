@@ -652,6 +652,60 @@
       "downstream_actions_executed": false,
       "timestamp": "2026-04-29T15:58:00.000000Z",
       "operator_override_report_path": "output/control/rc2_prodcards3j_operator_override_report.json"
+    },
+    {
+      "event_type": "manual_review_outcome",
+      "source": "operator_manual_review",
+      "retry_attempt": 2,
+      "manual_review_outcome": "frames_rejected_visual_quality",
+      "manual_review_outcome_created": true,
+      "corrective_plan_created": true,
+      "issue_classification": {
+        "primary_cause": "model/checkpoint",
+        "secondary_causes": [
+          "workflow",
+          "character_identity",
+          "prompt"
+        ]
+      },
+      "controlled_retry_recommendation": {
+        "new_controlled_retry_recommended": true,
+        "requires_role_intervention": true,
+        "requires_model_checkpoint_change": true
+      },
+      "character_director_requirements": {
+        "revision_required": true,
+        "required_actions": [
+          "model_checkpoint_evaluation",
+          "alternative_checkpoint_specification",
+          "character_specification_revision",
+          "reference_image_update"
+        ]
+      },
+      "workflow_td_requirements": {
+        "revision_required": true,
+        "required_actions": [
+          "alternative_checkpoint_testing",
+          "workflow_parameter_review",
+          "identity_preservation_technique_evaluation",
+          "workflow_revision_implementation"
+        ]
+      },
+      "next_allowed_action": "corrective_plan_review",
+      "retry_gate_open": false,
+      "assemble_scene_allowed": false,
+      "production_accepted": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_review_executed": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "timestamp": "2026-04-30T05:57:00.000000Z",
+      "manual_review_outcome_path": "output/control/manual_review_outcome.json",
+      "corrective_plan_path": "output/control/corrective_plan.json"
     }
   ]
 }

@@ -1,18 +1,20 @@
 {
   "episode_id": "ep01",
   "episode_title": "Alya's Awakening",
-  "overall_episode_state": "manual_review_required",
+  "overall_episode_state": "corrective_plan_review_required",
   "shots": [
     {
       "shot_id": "shot01",
       "brief_path": "data/briefs/ep01_shot01_brief.md",
       "prompt_pack_path": "output/control/ep01_shot01_prompt_pack.json",
-      "intended_next_action": "manual_review",
-      "status": "manual_review_required",
+      "intended_next_action": "corrective_plan_review",
+      "status": "corrective_plan_review_required",
       "qa_verdict": "qa_failed",
       "qa_passed": false,
       "operator_override": true,
       "operator_verdict": "rejected_visual_quality",
+      "manual_review_outcome_created": true,
+      "corrective_plan_created": true,
       "media_generated": true,
       "frame_qc_passed": true,
       "identity_qa_passed": true,
@@ -20,11 +22,13 @@
       "production_accepted": false,
       "generation_mode": "reference_locked",
       "retry_attempt": 2,
-      "recommended_action": "manual_review",
+      "recommended_action": "corrective_plan_review",
       "frames_generated": 3,
       "frames_dir": "output/frames/ep01_shot01",
       "qa_report_path": "output/control/rc2_prodcards3j_qa_report.json",
-      "operator_override_report_path": "output/control/rc2_prodcards3j_operator_override_report.json"
+      "operator_override_report_path": "output/control/rc2_prodcards3j_operator_override_report.json",
+      "manual_review_outcome_path": "output/control/manual_review_outcome.json",
+      "corrective_plan_path": "output/control/corrective_plan.json"
     },
     {
       "shot_id": "shot02",
@@ -111,13 +115,17 @@
   },
   "production_accepted": false,
   "retry_gate_open": false,
-  "next_allowed_action": "manual_review",
+  "next_allowed_action": "corrective_plan_review",
   "downstream_blocked": true,
   "assemble_scene_allowed": false,
   "operator_override": true,
   "operator_verdict": "rejected_visual_quality",
+  "manual_review_outcome_created": true,
+  "corrective_plan_created": true,
   "qa_report_path": "output/control/rc2_prodcards3j_qa_report.json",
   "operator_override_report_path": "output/control/rc2_prodcards3j_operator_override_report.json",
+  "manual_review_outcome_path": "output/control/manual_review_outcome.json",
+  "corrective_plan_path": "output/control/corrective_plan.json",
   "state_repair": {
     "repair_type": "pre_fix_fixture_apply_invalidated",
     "repair_timestamp": "2026-04-28T12:34:15.028696Z",
@@ -207,7 +215,7 @@
   "role_decision_apply": {
     "status": "frames_generated",
     "retry_gate_open": false,
-    "next_allowed_action": "manual_review",
+    "next_allowed_action": "corrective_plan_review",
     "production_accepted": false,
     "downstream_unblocked_for": []
   },
