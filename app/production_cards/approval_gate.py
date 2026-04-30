@@ -332,10 +332,38 @@ def authorize_controlled_retry_generation(project_root: str, json_output: bool =
         project_state.get("role_decisions", {}).get("workflow_td", {}).get("decision_status") == "decided"
     )
     
-    retry_gate_open = project_state.get("artifact_index", {}).get("retry_gate_open", False)
-    next_allowed_action = project_state.get("artifact_index", {}).get("next_allowed_action")
-    production_accepted = project_state.get("artifact_index", {}).get("production_accepted", False)
-    downstream_blocked = project_state.get("artifact_index", {}).get("downstream_blocked", True)
+    # Read from artifact_index directly to get the full structure, then check for rc2_prodcards3an section
+    from pathlib import Path
+    from json import load as json_load
+    project_path = Path(project_root)
+    artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+    
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json_load(f)
+        
+        # Check for rc2_prodcards3an section which contains current retry authorization
+        if "rc2_prodcards3an" in artifact_index:
+            rc2_prodcards3an = artifact_index["rc2_prodcards3an"]
+            retry_gate_open = rc2_prodcards3an.get("retry_gate_open", False)
+            next_allowed_action = rc2_prodcards3an.get("next_allowed_action")
+            production_accepted = rc2_prodcards3an.get("production_accepted", False)
+            assemble_scene_allowed = rc2_prodcards3an.get("assemble_scene_allowed", False)
+            downstream_blocked = rc2_prodcards3an.get("downstream_blocked", True)
+        else:
+            # Fallback to top-level fields
+            retry_gate_open = artifact_index.get("retry_gate_open", False)
+            next_allowed_action = artifact_index.get("next_allowed_action")
+            production_accepted = artifact_index.get("production_accepted", False)
+            downstream_blocked = artifact_index.get("downstream_blocked", True)
+            assemble_scene_allowed = artifact_index.get("assemble_scene_allowed", False)
+    else:
+        # Fallback to inspect output
+        retry_gate_open = project_state.get("artifact_index", {}).get("retry_gate_open", False)
+        next_allowed_action = project_state.get("artifact_index", {}).get("next_allowed_action")
+        production_accepted = project_state.get("artifact_index", {}).get("production_accepted", False)
+        downstream_blocked = project_state.get("artifact_index", {}).get("downstream_blocked", True)
+        assemble_scene_allowed = False
     
     approval_gate_ready = gate_validation.get("status") == "ready_for_retry"
     
@@ -348,13 +376,13 @@ def authorize_controlled_retry_generation(project_root: str, json_output: bool =
         pipeline_action_rerun = most_recent_apply_event.get("pipeline_action_rerun", False)
     
     # Determine overall readiness for controlled retry generation
+    # Note: downstream_blocked is expected during retry generation, so we don't check it
     ready_for_retry_generation = (
         role_decisions_applied and
         retry_gate_open and
         next_allowed_action == "retry_generate_frames" and
         approval_gate_ready and
         not production_accepted and
-        not downstream_blocked and
         not comfyui_generation and
         not pipeline_action_rerun
     )

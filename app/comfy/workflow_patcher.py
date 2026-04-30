@@ -27,6 +27,7 @@ class WorkflowPatcher:
         "16:9": (768, 432),
         "1:1":  (512, 512),
         "9:16": (480, 640),  # MK-REAL2R-3: Fixed from 480x848 to 480x640 (307200 pixels)
+        "7:4":  (1344, 768),  # RC2-PRODCARDS3AO: Support 1344x768 landscape resolution
     }
 
     @classmethod

@@ -613,7 +613,7 @@ class ComfySubmitter:
                         # RC-REAL1B-4: Apply QC gate to reject blank/solid frames
                         valid_frames = []
                         for frame_path in matching_pngs:
-                            qc_result = self._qc_check_frame(frame_path)
+                            qc_result = self._qc_check_frame(frame_path, expected_width=None, expected_height=None)
                             if qc_result["accepted"]:
                                 valid_frames.append(frame_path)
                                 print(f"[RC-REAL1B-4 QC] Frame {frame_path.name} accepted: {qc_result['reason']}")
@@ -639,7 +639,7 @@ class ComfySubmitter:
                         # Apply QC gate to legacy collection as well
                         valid_frames = []
                         for frame_path in recent_pngs:
-                            qc_result = self._qc_check_frame(frame_path)
+                            qc_result = self._qc_check_frame(frame_path, expected_width=None, expected_height=None)
                             if qc_result["accepted"]:
                                 valid_frames.append(frame_path)
                         print(f"[COLLECT] Found {len(recent_pngs)} total frames, {len(valid_frames)} passed QC from {search_dir} (legacy timestamp method)")
@@ -648,16 +648,21 @@ class ComfySubmitter:
             print(f"[WARN] No frames found modified after {job_start_time}")
             return []
 
-    def _qc_check_frame(self, frame_path: Path) -> dict:
+    def _qc_check_frame(self, frame_path: Path, expected_width: int | None = None, expected_height: int | None = None) -> dict:
         """RC-REAL1B-4: Quality control check for blank/solid frames.
         
         Checks if frame is:
         - readable
-        - correct dimensions (480x640)
+        - correct dimensions (expected_width x expected_height, or any if not specified)
         - RGB mode
         - file size above threshold
         - not mostly solid color
         - has sufficient entropy
+        
+        Args:
+            frame_path: Path to frame file
+            expected_width: Expected width in pixels (None to skip dimension check)
+            expected_height: Expected height in pixels (None to skip dimension check)
         
         Returns:
             dict with 'accepted' (bool) and 'reason' (str)
@@ -680,8 +685,10 @@ class ComfySubmitter:
                 return {"accepted": False, "reason": f"not RGB mode (got {img.mode})"}
             
             width, height = img.size
-            if width != 480 or height != 640:
-                return {"accepted": False, "reason": f"wrong dimensions ({width}x{height}, expected 480x640)"}
+            # Only check dimensions if expected dimensions are provided
+            if expected_width is not None and expected_height is not None:
+                if width != expected_width or height != expected_height:
+                    return {"accepted": False, "reason": f"wrong dimensions ({width}x{height}, expected {expected_width}x{expected_height})"}
             
             # Convert to numpy array for analysis
             img_array = np.array(img)

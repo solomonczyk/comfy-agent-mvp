@@ -14,10 +14,6 @@ import time
 from datetime import datetime
 from pathlib import Path
 
-from app.control.prompt_pack import load_prompt_pack, get_beat_seed
-from app.pipeline import PipelineConfig
-from app.runner import ExecutionRunner
-
 
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
@@ -837,6 +833,11 @@ def main() -> int:
         "--json",
         action="store_true",
         help="Output as JSON",
+    )
+    inspect_production_decision_state_parser.add_argument(
+        "--fast",
+        action="store_true",
+        help="Fast mode: read only artifact_index.json and episode_ledger.json, skip corruption scan",
     )
 
     # RC2-PRODCARDS2K — Repair production decision state subcommand
@@ -1955,8 +1956,13 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
             # Then project_root is the parent of resolved output directory
             resolved_output = (Path.cwd() / output).resolve()
             project_root = resolved_output.parent
+        
+        # Define project_path for consistency with other functions
+        project_path = Path(project_root)
 
         # Load prompt_pack.json
+        from app.control.prompt_pack import load_prompt_pack, get_beat_seed
+        
         episode_id = episode_id_arg or "ep01"
         shot_id = shot_id_arg or "shot01"
         prompt_pack = load_prompt_pack(str(project_root), episode_id, shot_id)
@@ -2014,6 +2020,8 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
             voice_map = json.load(f)
 
         # Build PipelineConfig
+        from app.pipeline import PipelineConfig
+        
         pipeline_config = PipelineConfig(
             lora_dir=config_data["lora_dir"],
             voice_map=voice_map,
@@ -2031,7 +2039,7 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
         # This ensures retry payload respects approved checkpoint substitution
         checkpoint = None
         checkpoint_source = None
-        controlled_retry_plan_path = project_path / "output" / "control" / "controlled_retry_implementation_plan.json"
+        controlled_retry_plan_path = project_root / "output" / "control" / "controlled_retry_implementation_plan.json"
         
         if controlled_retry_plan_path.exists():
             try:
@@ -2068,7 +2076,7 @@ def generate_frames_from_prompt_pack(args: argparse.Namespace) -> int:
         }
         
         # Check 1: artifact_index active_checkpoint
-        artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+        artifact_index_path = project_root / "output" / "control" / "artifact_index.json"
         artifact_index_checkpoint = None
         if artifact_index_path.exists():
             try:
@@ -2542,6 +2550,8 @@ def generate_frames(args: argparse.Namespace) -> int:
             voice_map = json.load(f)
 
         # Build PipelineConfig
+        from app.pipeline import PipelineConfig
+        
         pipeline_config = PipelineConfig(
             lora_dir=config_data["lora_dir"],
             voice_map=voice_map,
@@ -3114,6 +3124,8 @@ def run_pipeline(args: argparse.Namespace) -> int:
             voice_map = json.load(f)
 
         # Build PipelineConfig
+        from app.pipeline import PipelineConfig
+        
         pipeline_config = PipelineConfig(
             lora_dir=config_data["lora_dir"],
             voice_map=voice_map,
@@ -3135,6 +3147,8 @@ def run_pipeline(args: argparse.Namespace) -> int:
                 brief_source = f.read()
 
         # Run pipeline
+        from app.runner import ExecutionRunner
+        
         runner = ExecutionRunner(
             config=pipeline_config,
             comfy_host=host,
@@ -7612,8 +7626,9 @@ def inspect_production_decision_state(args: argparse.Namespace) -> int:
     
     project_root = args.project_root
     json_output = args.json
+    fast_mode = getattr(args, 'fast', False)
     
-    result = inspect_real_project_decision_state(project_root)
+    result = inspect_real_project_decision_state(project_root, fast_mode=fast_mode)
     
     if json_output:
         print(json.dumps(result, indent=2))

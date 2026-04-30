@@ -12,77 +12,149 @@ from typing import Dict, Any, List, Optional
 from datetime import datetime
 
 
-def inspect_real_project_decision_state(project_root: str) -> Dict[str, Any]:
+def inspect_real_project_decision_state(project_root: str, fast_mode: bool = False) -> Dict[str, Any]:
     """
     Inspect the real project decision state to detect corruption.
-    
+
     Args:
         project_root: Path to the project root
-    
+        fast_mode: If True, read only artifact_index.json and episode_ledger.json, skip role decisions and corruption scan
+
     Returns:
         Dictionary with inspection results including role decisions,
         artifact_index state, episode_ledger events, and safety assessment
     """
+    import sys
+    print(f"[DIAG] inspect_real_project_decision_state called with project_root: {project_root}, fast_mode: {fast_mode}", file=sys.stderr)
+    print(f"[DIAG] project_root type: {type(project_root)}", file=sys.stderr)
+    print(f"[DIAG] project_root repr: {repr(project_root)}", file=sys.stderr)
+    sys.stderr.flush()
+
     project_path = Path(project_root)
+    print(f"[DIAG] project_path resolved: {project_path}", file=sys.stderr)
+    print(f"[DIAG] project_path is_absolute: {project_path.is_absolute()}", file=sys.stderr)
+    print(f"[DIAG] project_path exists: {project_path.exists()}", file=sys.stderr)
+    sys.stderr.flush()
     
-    # Load role decisions
-    role_decisions_dir = project_path / "output" / "control" / "role_decisions"
-    char_decision_path = role_decisions_dir / "character_director_identity_decision.json"
-    workflow_decision_path = role_decisions_dir / "workflow_td_identity_workflow_decision.json"
-    
+    # Load role decisions (skip in fast mode)
     char_decision = {}
     workflow_decision = {}
     
-    if char_decision_path.exists():
-        with open(char_decision_path, 'r') as f:
-            char_decision = json.load(f)
-    
-    if workflow_decision_path.exists():
-        with open(workflow_decision_path, 'r') as f:
-            workflow_decision = json.load(f)
+    if not fast_mode:
+        role_decisions_dir = project_path / "output" / "control" / "role_decisions"
+        print(f"[DIAG] role_decisions_dir: {role_decisions_dir}", file=sys.stderr)
+        print(f"[DIAG] role_decisions_dir exists: {role_decisions_dir.exists()}", file=sys.stderr)
+        sys.stderr.flush()
+
+        char_decision_path = role_decisions_dir / "character_director_identity_decision.json"
+        workflow_decision_path = role_decisions_dir / "workflow_td_identity_workflow_decision.json"
+
+        print(f"[DIAG] char_decision_path: {char_decision_path}", file=sys.stderr)
+        print(f"[DIAG] char_decision_path exists: {char_decision_path.exists()}", file=sys.stderr)
+        sys.stderr.flush()
+
+        if char_decision_path.exists():
+            print(f"[DIAG] Loading char_decision from {char_decision_path}", file=sys.stderr)
+            sys.stderr.flush()
+            with open(char_decision_path, 'r') as f:
+                char_decision = json.load(f)
+            print(f"[DIAG] char_decision loaded successfully", file=sys.stderr)
+            sys.stderr.flush()
+
+        print(f"[DIAG] workflow_decision_path: {workflow_decision_path}", file=sys.stderr)
+        print(f"[DIAG] workflow_decision_path exists: {workflow_decision_path.exists()}", file=sys.stderr)
+        sys.stderr.flush()
+
+        if workflow_decision_path.exists():
+            print(f"[DIAG] Loading workflow_decision from {workflow_decision_path}", file=sys.stderr)
+            sys.stderr.flush()
+            with open(workflow_decision_path, 'r') as f:
+                workflow_decision = json.load(f)
+            print(f"[DIAG] workflow_decision loaded successfully", file=sys.stderr)
+            sys.stderr.flush()
+    else:
+        print(f"[DIAG] Fast mode: skipping role decisions load", file=sys.stderr)
+        sys.stderr.flush()
     
     # Load artifact_index
     artifact_index_path = project_path / "output" / "control" / "artifact_index.json"
+    print(f"[DIAG] artifact_index_path: {artifact_index_path}", file=sys.stderr)
+    print(f"[DIAG] artifact_index_path exists: {artifact_index_path.exists()}", file=sys.stderr)
+    sys.stderr.flush()
+
     artifact_index = {}
     role_decision_apply_state = {}
-    
+
     if artifact_index_path.exists():
+        print(f"[DIAG] Loading artifact_index from {artifact_index_path}", file=sys.stderr)
+        sys.stderr.flush()
         with open(artifact_index_path, 'r') as f:
             artifact_index = json.load(f)
+        print(f"[DIAG] artifact_index loaded successfully", file=sys.stderr)
+        sys.stderr.flush()
         role_decision_apply_state = artifact_index.get("role_decision_apply", {})
     
     # Load episode_ledger
     episode_ledger_path = project_path / "output" / "control" / "episode_ledger.json"
+    print(f"[DIAG] episode_ledger_path: {episode_ledger_path}", file=sys.stderr)
+    print(f"[DIAG] episode_ledger_path exists: {episode_ledger_path.exists()}", file=sys.stderr)
+    sys.stderr.flush()
+
     episode_ledger = {}
     role_decision_apply_events = []
     pre_fix_invalidation_events = []
-    
+
     if episode_ledger_path.exists():
+        print(f"[DIAG] Loading episode_ledger from {episode_ledger_path}", file=sys.stderr)
+        sys.stderr.flush()
         with open(episode_ledger_path, 'r') as f:
             episode_ledger = json.load(f)
-        
+        print(f"[DIAG] episode_ledger loaded successfully", file=sys.stderr)
+        sys.stderr.flush()
+
         # Extract role_decisions_applied events and pre_fix_fixture_apply_invalidated events
         events = episode_ledger.get("events", [])
+        print(f"[DIAG] Total events in ledger: {len(events)}", file=sys.stderr)
+        sys.stderr.flush()
+
         role_decision_apply_events = [
-            e for e in events 
+            e for e in events
             if e.get("event_type") == "role_decisions_applied"
         ]
         pre_fix_invalidation_events = [
             e for e in events
             if e.get("event_type") == "pre_fix_fixture_apply_invalidated"
         ]
+        print(f"[DIAG] role_decision_apply_events count: {len(role_decision_apply_events)}", file=sys.stderr)
+        print(f"[DIAG] pre_fix_invalidation_events count: {len(pre_fix_invalidation_events)}", file=sys.stderr)
+        sys.stderr.flush()
     
-    # Detect corruption indicators
-    corruption_indicators = {
-        "role_decision_apply_status_applied": role_decision_apply_state.get("status") == "applied",
-        "retry_gate_open": role_decision_apply_state.get("retry_gate_open") == True,
-        "next_action_retry_generate": role_decision_apply_state.get("next_allowed_action") == "retry_generate_frames",
-        "char_decision_not_pending": char_decision.get("decision_status") != "pending",
-        "workflow_decision_not_pending": workflow_decision.get("decision_status") != "pending",
-        "char_production_accepted_true": char_decision.get("production_accepted") == True,
-        "workflow_production_accepted_true": workflow_decision.get("production_accepted") == True,
-        "has_role_decision_apply_events": len(role_decision_apply_events) > 0
-    }
+    # Detect corruption indicators (skip role decision indicators in fast mode)
+    if fast_mode:
+        corruption_indicators = {
+            "role_decision_apply_status_applied": role_decision_apply_state.get("status") == "applied",
+            "retry_gate_open": role_decision_apply_state.get("retry_gate_open") == True,
+            "next_action_retry_generate": role_decision_apply_state.get("next_allowed_action") == "retry_generate_frames",
+            "has_role_decision_apply_events": len(role_decision_apply_events) > 0
+        }
+        # In fast mode, skip role decision corruption indicators
+        role_decisions_pending = None
+    else:
+        corruption_indicators = {
+            "role_decision_apply_status_applied": role_decision_apply_state.get("status") == "applied",
+            "retry_gate_open": role_decision_apply_state.get("retry_gate_open") == True,
+            "next_action_retry_generate": role_decision_apply_state.get("next_allowed_action") == "retry_generate_frames",
+            "char_decision_not_pending": char_decision.get("decision_status") != "pending",
+            "workflow_decision_not_pending": workflow_decision.get("decision_status") != "pending",
+            "char_production_accepted_true": char_decision.get("production_accepted") == True,
+            "workflow_production_accepted_true": workflow_decision.get("production_accepted") == True,
+            "has_role_decision_apply_events": len(role_decision_apply_events) > 0
+        }
+        # Determine if role decisions are pending
+        role_decisions_pending = (
+            char_decision.get("decision_status") == "pending" and
+            workflow_decision.get("decision_status") == "pending"
+        )
     
     # Determine if historical contamination is documented (invalidated by corrective event)
     historical_contamination_documented = (
@@ -104,27 +176,24 @@ def inspect_real_project_decision_state(project_root: str) -> Dict[str, Any]:
     
     # Determine if state is safe for next step (based on active corruption only)
     safe_for_next_step = not has_active_corruption
-    
-    # Determine if role decisions are pending
-    role_decisions_pending = (
-        char_decision.get("decision_status") == "pending" and
-        workflow_decision.get("decision_status") == "pending"
-    )
-    
-    return {
+
+    print(f"[DIAG] Building result dictionary", file=sys.stderr)
+    sys.stderr.flush()
+
+    result = {
         "project_root": str(project_root),
         "role_decisions": {
             "character_director": {
-                "decision_status": char_decision.get("decision_status"),
-                "selected_decision": char_decision.get("selected_decision"),
-                "production_accepted": char_decision.get("production_accepted"),
-                "downstream_blocked": char_decision.get("downstream_blocked")
+                "decision_status": char_decision.get("decision_status") if not fast_mode else None,
+                "selected_decision": char_decision.get("selected_decision") if not fast_mode else None,
+                "production_accepted": char_decision.get("production_accepted") if not fast_mode else None,
+                "downstream_blocked": char_decision.get("downstream_blocked") if not fast_mode else None
             },
             "workflow_td": {
-                "decision_status": workflow_decision.get("decision_status"),
-                "selected_decision": workflow_decision.get("selected_decision"),
-                "production_accepted": workflow_decision.get("production_accepted"),
-                "downstream_blocked": workflow_decision.get("downstream_blocked")
+                "decision_status": workflow_decision.get("decision_status") if not fast_mode else None,
+                "selected_decision": workflow_decision.get("selected_decision") if not fast_mode else None,
+                "production_accepted": workflow_decision.get("production_accepted") if not fast_mode else None,
+                "downstream_blocked": workflow_decision.get("downstream_blocked") if not fast_mode else None
             }
         },
         "artifact_index": {
@@ -146,8 +215,14 @@ def inspect_real_project_decision_state(project_root: str) -> Dict[str, Any]:
         "historical_contamination_documented": historical_contamination_documented,
         "safe_for_next_step": safe_for_next_step,
         "role_decisions_pending": role_decisions_pending,
+        "fast_mode": fast_mode,
         "inspection_timestamp": datetime.utcnow().isoformat() + "Z"
     }
+
+    print(f"[DIAG] Result dictionary built successfully, returning", file=sys.stderr)
+    sys.stderr.flush()
+
+    return result
 
 
 def detect_pre_fix_fixture_apply_mutations(project_root: str) -> Dict[str, Any]:

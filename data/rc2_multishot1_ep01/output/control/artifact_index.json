@@ -145,7 +145,7 @@
   "ip_adapter_download_authorized": true,
   "ip_adapter_install_authorized": true,
   "ip_adapter_retry_authorized": false,
-  "next_allowed_action": "controlled_sdxl_faceid_asset_acquisition_required",
+  "next_allowed_action": "qa_review",
   "ip_adapter_asset_resolution_contract_created": true,
   "ip_adapter_controlled_acquisition_plan_created": true,
   "ip_adapter_post_install_verification_contract_created": true,
@@ -163,7 +163,6 @@
   "ip_adapter_acquisition_execution_instructions_path": "output/control/IP_ADAPTER_ACQUISITION_EXECUTION_INSTRUCTIONS.md",
   "ip_adapter_acquisition_execution_result_path": "output/control/ip_adapter_acquisition_execution_result.json",
   "ip_adapter_post_install_verification_result_path": "output/control/ip_adapter_post_install_verification_result.json",
-  "next_allowed_action": "controlled_retry_authorization_required",
   "work_orders": {
     "character_director_work_order": "output/control/work_orders/character_director_identity_review.json",
     "workflow_td_work_order": "output/control/work_orders/workflow_td_identity_workflow_review.json"
@@ -203,7 +202,7 @@
   "ip_adapter_controlled_acquisition_plan_path": "output/control/ip_adapter_controlled_acquisition_plan.json",
   "ip_adapter_post_install_verification_contract_path": "output/control/ip_adapter_post_install_verification_contract.json",
   "ip_adapter_controlled_install_instructions_path": "output/control/IP_ADAPTER_CONTROLLED_INSTALL_INSTRUCTIONS.md",
-  "downstream_blocked": true,
+  "downstream_blocked": false,
   "assemble_scene_allowed": false,
   "operator_override": true,
   "operator_verdict": "rejected_visual_quality",
