@@ -113,6 +113,14 @@
   "comfyui_generation": true,
   "created_at": "2026-04-28T08:18:00Z",
   "plan_version": "RC2-MULTISHOT1A",
+  "model_asset_discovery_completed": true,
+  "local_model_inventory_created": true,
+  "required_model_assets_found": false,
+  "candidate_model_assets_found": true,
+  "available_model_count": 5,
+  "planned_model": "dynavision_v10.safetensors",
+  "planned_model_status": "missing",
+  "next_allowed_action": "model_asset_candidate_review_required",
   "work_orders": {
     "character_director_work_order": "output/control/work_orders/character_director_identity_review.json",
     "workflow_td_work_order": "output/control/work_orders/workflow_td_identity_workflow_review.json"
@@ -151,7 +159,6 @@
   "model_asset_install_instructions_path": "output/control/MODEL_ASSET_INSTALL_INSTRUCTIONS.md",
   "model_asset_acquisition_plan_created": true,
   "model_asset_safe_install_contract_created": true,
-  "next_allowed_action": "model_asset_install_required",
   "downstream_blocked": true,
   "assemble_scene_allowed": false,
   "operator_override": true,

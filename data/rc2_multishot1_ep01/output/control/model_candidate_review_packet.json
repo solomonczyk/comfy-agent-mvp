@@ -1,0 +1,64 @@
+{
+  "review_packet_timestamp": "2026-04-30T08:44:00Z",
+  "review_packet_scope": "RC2-PRODCARDS3S",
+  "planned_model": {
+    "filename": "dynavision_v10.safetensors",
+    "status": "missing",
+    "expected_format": "safetensors",
+    "expected_architecture": "SDXL"
+  },
+  "available_sdxl_checkpoints": [
+    {
+      "filename": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "size_gb": 6.93,
+      "classification": "compatible_candidate",
+      "notes": "FP16 precision, photorealistic style"
+    },
+    {
+      "filename": "juggernautXL_version2.safetensors",
+      "size_gb": 6.93,
+      "classification": "compatible_candidate",
+      "notes": "Version 2, general purpose SDXL model"
+    },
+    {
+      "filename": "realvisxlV50_v50Bakedvae.safetensors",
+      "size_gb": 6.93,
+      "classification": "compatible_candidate",
+      "notes": "Photorealistic focus, baked VAE"
+    },
+    {
+      "filename": "sd_xl_base_1.0_0.9vae.safetensors",
+      "size_gb": 6.93,
+      "classification": "compatible_candidate",
+      "notes": "Official SDXL base model with 0.9 VAE"
+    }
+  ],
+  "available_diffusers_models": [
+    {
+      "model_name": "dreamshaper-xl-1-0",
+      "classification": "compatible_candidate",
+      "notes": "Diffusers format, SDXL architecture"
+    }
+  ],
+  "recommended_candidate": null,
+  "recommendation_not_automatically_accepted_reason": "Model substitution requires human review for visual/identity suitability and workflow compatibility. Agent cannot unilaterally replace planned model without explicit approval.",
+  "required_reviewers": {
+    "character_director": {
+      "role": "visual/identity suitability",
+      "responsibility": "Verify candidate model produces appropriate visual style for character/scene"
+    },
+    "workflow_td": {
+      "role": "workflow compatibility",
+      "responsibility": "Verify candidate model is compatible with existing ComfyUI workflow nodes and parameters"
+    },
+    "operator": {
+      "role": "final substitution approval",
+      "responsibility": "Provide final approval for model substitution if character director and workflow TD endorse"
+    }
+  },
+  "review_gate_status": {
+    "gate_open": false,
+    "pending_review": true,
+    "auto_substitution_blocked": true
+  }
+}

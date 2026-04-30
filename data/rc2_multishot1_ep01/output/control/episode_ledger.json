@@ -941,6 +941,31 @@
         "model_asset_safe_install_contract": "output/control/model_asset_safe_install_contract.json",
         "model_asset_install_instructions": "output/control/MODEL_ASSET_INSTALL_INSTRUCTIONS.md"
       }
+    },
+    {
+      "event_type": "model_asset_discovery_completed",
+      "timestamp": "2026-04-30T08:44:00.000000Z",
+      "task_code": "RC2-PRODCARDS3S",
+      "shot_id": "shot01",
+      "available_model_count": 5,
+      "sdxl_checkpoint_count": 4,
+      "diffusers_model_count": 1,
+      "planned_model": "dynavision_v10.safetensors",
+      "planned_model_status": "missing",
+      "candidate_model_assets_found": true,
+      "next_allowed_action": "model_asset_candidate_review_required",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "download_performed": false,
+      "install_performed": false,
+      "model_move_or_copy_performed": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "retry_generate_frames_executed": false,
+      "qa_rerun": false,
+      "downstream_actions_executed": false
     }
   ]
 }
