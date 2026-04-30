@@ -1,0 +1,41 @@
+{
+  "task_code": "RC2-PRODCARDS3AT",
+  "retry_generation_preflight_completed": true,
+  "retry_generation_preflight_passed": true,
+  "patched_workflow_path": "output/control/ep01_shot01_patched_workflow_sdxl_faceid.json",
+  "patched_workflow_binding_verified": true,
+  "identity_wiring_payload_proven": true,
+  "checkpoint_verified": {
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_present": true,
+    "checkpoint_valid": true
+  },
+  "resolution_verified": {
+    "width": 1344,
+    "height": 768,
+    "resolution": "1344x768",
+    "aspect_ratio": "16:9",
+    "resolution_policy_compliant": true
+  },
+  "identity_adapter_verified": {
+    "ip_adapter_advanced_node_present": true,
+    "adapter_file": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "adapter_present": true,
+    "lora_file": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "lora_present": true,
+    "lora_strength": 1.0,
+    "reference_image_connected": true,
+    "reference_image": "shot01_reference.png",
+    "identity_weight": 0.7,
+    "identity_schedule": "0.0-1.0 linear"
+  },
+  "preflight_timestamp": "2026-04-30T16:58:54.000000Z",
+  "comfyui_generation": false,
+  "generation_performed": false,
+  "retry_generate_frames_executed": false,
+  "qa_rerun": false,
+  "assemble_scene_executed": false,
+  "audio_executed": false,
+  "render_executed": false,
+  "downstream_actions_executed": false
+}

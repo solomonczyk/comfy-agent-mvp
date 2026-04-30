@@ -693,5 +693,28 @@
     "audio_executed": false,
     "render_executed": false,
     "downstream_actions_executed": false
+  },
+  "rc2_prodcards3at": {
+    "controlled_retry_authorization_completed": true,
+    "controlled_retry_authorized": true,
+    "patched_workflow_binding_verified": true,
+    "identity_wiring_payload_proven": true,
+    "resolution_policy_passed": true,
+    "next_allowed_action": "retry_generate_frames",
+    "retry_gate_open": true,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": false,
+    "authorization_timestamp": "2026-04-30T16:58:54.000000Z",
+    "authorization_result_path": "output/control/rc2_prodcards3at_controlled_retry_authorization_result.json",
+    "retry_preflight_result_path": "output/control/rc2_prodcards3at_retry_preflight_result.json",
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
   }
 }
