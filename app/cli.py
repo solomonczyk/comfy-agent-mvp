@@ -7226,6 +7226,34 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
     
     would_run_comfyui = would_run_comfyui and generation_sanity_preflight_passed
     would_execute_action = "retry_generate_frames" if would_run_comfyui else None
+
+    # RC2-PRODCARDS3AI: Resolution/Aspect Ratio Policy Gate (dry-run)
+    resolution_policy_gate_passed = True
+    resolution_policy_gate_reason = None
+    resolution_preflight_proof = None
+
+    try:
+        from app.production_cards.resolution_policy import create_resolution_preflight_gate
+
+        resolution_gate = create_resolution_preflight_gate(
+            width=expected_width,
+            height=expected_height,
+            project_root=str(project_path),
+            operator_approved=False  # Require explicit operator approval for bypass
+        )
+
+        resolution_policy_gate_passed = resolution_gate["gate_open"]
+        resolution_preflight_proof = resolution_gate["preflight_proof"]
+
+        if not resolution_policy_gate_passed:
+            resolution_policy_gate_reason = resolution_preflight_proof["validation_result"].get("reason", "resolution_policy_violation")
+    except Exception as e:
+        resolution_policy_gate_passed = False
+        resolution_policy_gate_reason = f"resolution policy gate error: {str(e)}"
+
+    # Block ComfyUI execution if resolution policy fails
+    would_run_comfyui = would_run_comfyui and resolution_policy_gate_passed
+    would_execute_action = "retry_generate_frames" if would_run_comfyui else None
     
     # RC2-PRODCARDS3G: Detect qa_failed state and read corrective retry plan
     qa_failed_state = False
@@ -7510,7 +7538,7 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
         print(f"[RC2-PRODCARDS3AD-FIX] Warning: Failed to write identity adapter compatibility gate report: {e}")
     
     result = {
-        "status": "valid" if (auth_result.get("ready_for_retry_generation") and dimension_preflight_passed and generation_sanity_preflight_passed) else "invalid",
+        "status": "valid" if (auth_result.get("ready_for_retry_generation") and dimension_preflight_passed and generation_sanity_preflight_passed and resolution_policy_gate_passed) else "invalid",
         "dry_run": True,
         "would_execute_action": would_execute_action,
         "would_run_comfyui": would_run_comfyui,
@@ -7535,6 +7563,11 @@ def retry_generate_frames(args: argparse.Namespace) -> int:
             "save_image_configured": save_image_configured,
             "blank_source_image_detected": blank_source_image_detected,
             "generation_sanity_preflight_reason": generation_sanity_preflight_reason
+        },
+        "resolution_policy_preflight": {
+            "passed": resolution_policy_gate_passed,
+            "reason": resolution_policy_gate_reason,
+            "preflight_proof": resolution_preflight_proof
         },
         "qa_failed_state": qa_failed_state,
         "source_qa_verdict": source_qa_verdict,
