@@ -1379,6 +1379,50 @@
         "identity_adapter_strategy_gate": "output/control/rc2_prodcards3ae_identity_adapter_strategy_gate.json",
         "final_workflow_binding_proof": "output/control/rc2_prodcards3ad_final_workflow_binding_proof.json"
       }
+    },
+    {
+      "event_type": "identity_adapter_strategy_review_completed",
+      "timestamp": "2026-04-30T09:40:00.000000Z",
+      "task_code": "RC2-PRODCARDS3AF",
+      "task_description": "Identity Adapter Strategy Fix / Workflow Integration Contract",
+      "shot_id": "shot01",
+      "identity_strategy_review_completed": true,
+      "identity_asset_inventory_created": true,
+      "identity_strategy_decision_created": true,
+      "identity_workflow_patch_plan_created": true,
+      "checkpoint_family": "SDXL",
+      "active_checkpoint": "juggernautXL_version2.safetensors",
+      "identity_adapter_present_in_final_workflow": false,
+      "identity_preservation_strategy_satisfied": false,
+      "identity_strategy_fix_required": true,
+      "identity_strategy_case": "C",
+      "identity_strategy_case_description": "generic SDXL IP-Adapter exists but not FaceID",
+      "available_adapter": "ip-adapter_sdxl.safetensors",
+      "adapter_family": "SDXL",
+      "faceid_capable": false,
+      "identity_strategy_blocker": "sdxl_adapter_available_but_faceid_identity_lock_not_proven",
+      "next_allowed_action": "identity_adapter_candidate_review_required",
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "no_generation_executed": true,
+      "no_comfyui_execution": true,
+      "no_frame_generation": true,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "download_performed": false,
+      "install_performed": false,
+      "model_move_or_copy_performed": false,
+      "artifact_paths": {
+        "identity_asset_inventory": "output/control/rc2_prodcards3af_identity_asset_inventory.json",
+        "identity_strategy_decision": "output/control/rc2_prodcards3af_identity_strategy_decision.json",
+        "identity_workflow_patch_plan": "output/control/rc2_prodcards3af_identity_workflow_patch_plan.json"
+      }
     }
   ]
 }

@@ -407,5 +407,30 @@
     "assemble_scene_allowed": false,
     "downstream_blocked": true,
     "timestamp": "2026-04-30T11:26:00.000000Z"
+  },
+  "rc2_prodcards3af": {
+    "identity_strategy_review_completed": true,
+    "identity_asset_inventory_created": true,
+    "identity_asset_inventory_path": "output/control/rc2_prodcards3af_identity_asset_inventory.json",
+    "identity_strategy_decision_created": true,
+    "identity_strategy_decision_path": "output/control/rc2_prodcards3af_identity_strategy_decision.json",
+    "identity_workflow_patch_plan_created": true,
+    "identity_workflow_patch_plan_path": "output/control/rc2_prodcards3af_identity_workflow_patch_plan.json",
+    "identity_adapter_present_in_final_workflow": false,
+    "identity_preservation_strategy_satisfied": false,
+    "identity_strategy_fix_required": true,
+    "identity_strategy_case": "C",
+    "identity_strategy_case_description": "generic SDXL IP-Adapter exists but not FaceID",
+    "available_adapter": "ip-adapter_sdxl.safetensors",
+    "adapter_family": "SDXL",
+    "faceid_capable": false,
+    "identity_strategy_blocker": "sdxl_adapter_available_but_faceid_identity_lock_not_proven",
+    "next_allowed_action": "identity_adapter_candidate_review_required",
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "timestamp": "2026-04-30T09:40:00.000000Z"
   }
 }

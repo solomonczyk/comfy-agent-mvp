@@ -1,0 +1,71 @@
+{
+  "task_code": "RC2-PRODCARDS3AF",
+  "task_description": "Identity Adapter Strategy Fix / Workflow Integration Contract",
+  "decision_timestamp": "2026-04-30T09:40:00.000000Z",
+  "identity_strategy_fix_available": "review_required",
+  "available_adapter": "ip-adapter_sdxl.safetensors",
+  "adapter_family": "SDXL",
+  "faceid_capable": false,
+  "identity_strategy_blocker": "sdxl_adapter_available_but_faceid_identity_lock_not_proven",
+  "next_allowed_action": "identity_adapter_candidate_review_required",
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "checkpoint_family": "SDXL",
+  "active_checkpoint": "juggernautXL_version2.safetensors",
+  "workflow_identity_adapter_status": {
+    "identity_adapter_present_in_final_workflow": false,
+    "identity_adapter_detection": "no_identity_adapter_nodes_found",
+    "identity_preservation_strategy_satisfied": false
+  },
+  "asset_analysis": {
+    "sd15_faceid_adapter": {
+      "filename": "ip-adapter-faceid-plus_sd15.bin",
+      "family": "SD15",
+      "faceid_capable": true,
+      "sdxl_compatible": false,
+      "compatible_with_juggernautxl": false,
+      "blocking_reason": "sd15_faceid_adapter_incompatible_with_sdxl_checkpoint"
+    },
+    "sdxl_generic_adapter": {
+      "filename": "ip-adapter_sdxl.safetensors",
+      "family": "SDXL",
+      "faceid_capable": false,
+      "sdxl_compatible": true,
+      "compatible_with_juggernautxl": true,
+      "blocking_reason": "sdxl_adapter_available_but_faceid_identity_lock_not_proven",
+      "requires_review": true,
+      "review_required_for": [
+        "FaceID identity lock capability verification",
+        "SDXL FaceID adapter model documentation review",
+        "ComfyUI IP-Adapter Plus SDXL FaceID node compatibility verification",
+        "Reference image workflow integration testing required"
+      ]
+    }
+  },
+  "strategy_determination": {
+    "case": "C",
+    "case_description": "generic SDXL IP-Adapter exists but not FaceID",
+    "valid_sdxl_identity_adapter_locally_available": false,
+    "sd15_faceid_adapter_incompatible": true,
+    "sdxl_generic_adapter_requires_review": true,
+    "identity_preservation_not_implementable_without_review": true
+  },
+  "required_actions_before_retry": [
+    "Review ip-adapter_sdxl.safetensors model documentation to determine FaceID capability",
+    "Verify ComfyUI IP-Adapter Plus supports SDXL FaceID workflows",
+    "If SDXL FaceID is supported, create workflow patch plan to integrate ip-adapter_sdxl.safetensors",
+    "If SDXL FaceID is NOT supported, acquire SDXL FaceID adapter from trusted source",
+    "Implement identity adapter workflow patch",
+    "Test identity preservation with dry-run before generation"
+  ],
+  "blocking_conditions": [
+    "No SDXL FaceID-capable identity adapter proven available locally",
+    "ip-adapter_sdxl.safetensors FaceID capability not verified",
+    "Identity preservation strategy not defined for JuggernautXL retry workflow",
+    "Retry generation blocked until identity strategy is resolved"
+  ],
+  "decision_rationale": "The local inventory contains ip-adapter_sdxl.safetensors which is SDXL-family compatible with JuggernautXL checkpoint, but the filename indicates it is a generic SDXL IP-Adapter rather than a FaceID-specific adapter. FaceID identity lock capability cannot be assumed from filename alone. Without proven FaceID capability, identity preservation strategy cannot be guaranteed. Review of model documentation and ComfyUI IP-Adapter Plus SDXL FaceID support is required before this adapter can be approved for identity preservation workflows."
+}

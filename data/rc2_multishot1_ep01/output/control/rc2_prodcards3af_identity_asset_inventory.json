@@ -1,0 +1,61 @@
+{
+  "task_code": "RC2-PRODCARDS3AF",
+  "task_description": "Identity Adapter Strategy Fix / Workflow Integration Contract",
+  "inventory_timestamp": "2026-04-30T09:40:00.000000Z",
+  "checkpoint_family": "SDXL",
+  "active_checkpoint": "juggernautXL_version2.safetensors",
+  "inventory_sources": [
+    "F:\\ComfyUI\\models\\ipadapter",
+    "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\custom_nodes\\ComfyUI_IPAdapter_plus\\models"
+  ],
+  "discovered_assets": [
+    {
+      "filename": "ip-adapter-faceid-plus_sd15.bin",
+      "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plus_sd15.bin",
+      "size_bytes": 156558503,
+      "family": "SD15",
+      "type": "FaceID",
+      "sdxl_compatible": false,
+      "faceid_capable": true,
+      "compatible_with_juggernautxl_sdxl": false,
+      "classification": "incompatible_sd15_faceid_adapter"
+    },
+    {
+      "filename": "ip-adapter_sdxl.safetensors",
+      "path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter_sdxl.safetensors",
+      "size_bytes": 702585376,
+      "family": "SDXL",
+      "type": "generic",
+      "sdxl_compatible": true,
+      "faceid_capable": false,
+      "compatible_with_juggernautxl_sdxl": true,
+      "classification": "sdxl_generic_adapter_faceid_not_proven"
+    }
+  ],
+  "summary": {
+    "total_assets_found": 2,
+    "sdxl_compatible_count": 1,
+    "faceid_capable_count": 1,
+    "sdxl_faceid_capable_count": 0,
+    "sd15_only_faceid_count": 1,
+    "valid_sdxl_identity_adapter_available": false
+  },
+  "compatibility_matrix": {
+    "checkpoint_family": "SDXL",
+    "checkpoint_name": "juggernautXL_version2.safetensors",
+    "ip_adapter_faceid_plus_sd15": {
+      "adapter_family": "SD15",
+      "compatible": false,
+      "reason": "SD15 FaceID adapter is not compatible with SDXL checkpoint family"
+    },
+    "ip_adapter_sdxl": {
+      "adapter_family": "SDXL",
+      "compatible": true,
+      "faceid_capable": false,
+      "reason": "SDXL IP-Adapter is checkpoint-family compatible but FaceID identity lock capability is not proven from filename alone"
+    }
+  },
+  "inventory_status": "complete",
+  "no_valid_sdxl_faceid_adapter": true,
+  "generic_sdxl_adapter_requires_review": true
+}

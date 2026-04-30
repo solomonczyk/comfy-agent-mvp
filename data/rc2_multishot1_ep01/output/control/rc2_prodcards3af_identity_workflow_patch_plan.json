@@ -1,0 +1,113 @@
+{
+  "task_code": "RC2-PRODCARDS3AF",
+  "task_description": "Identity Adapter Strategy Fix / Workflow Integration Contract",
+  "plan_timestamp": "2026-04-30T09:40:00.000000Z",
+  "plan_status": "conditional_pending_review",
+  "target_checkpoint": "juggernautXL_version2.safetensors",
+  "checkpoint_family": "SDXL",
+  "candidate_adapter": "ip-adapter_sdxl.safetensors",
+  "adapter_family": "SDXL",
+  "faceid_capable": false,
+  "faceid_capability_unknown": true,
+  "prerequisite_review_required": true,
+  "workflow_patch_plan": {
+    "condition": "ip-adapter_sdxl_safetensors_faceid_capability_verified",
+    "if_faceid_capable": {
+      "adapter_integration": {
+        "adapter_node_type": "IPAdapterAdvanced",
+        "adapter_model_path": "ip-adapter_sdxl.safetensors",
+        "weight_range": "0.6-0.85",
+        "start_step": 0,
+        "end_step": 0.8,
+        "embeddings_required": false
+      },
+      "workflow_modifications": [
+        "Add IPAdapterAdvanced node to workflow",
+        "Connect reference image to IPAdapterAdvanced image input",
+        "Connect IPAdapterAdvanced output to KSampler ipadapter_input",
+        "Set adapter weight to 0.75 (mid-range for identity lock)",
+        "Configure start/end steps for optimal identity preservation",
+        "Test with dry-run before generation"
+      ],
+      "identity_preservation_strategy": "SDXL IP-Adapter generic identity lock",
+      "expected_identity_lock_strength": "moderate",
+      "confidence_level": "medium"
+    },
+    "if_not_faceid_capable": {
+      "alternative_strategies": [
+        {
+          "strategy": "acquire_sdxl_faceid_adapter",
+          "description": "Download SDXL-specific FaceID adapter from trusted source (h94/IP-Adapter-FaceID SDXL variant if available)",
+          "source_trust_requirement": "h94/IP-Adapter-FaceID or equivalent trusted source",
+          "blocking": true
+        },
+        {
+          "strategy": "use_reference_only_simple",
+          "description": "Rely on ReferenceOnlySimple node for identity preservation without IP-Adapter",
+          "identity_lock_strength": "weak",
+          "confidence_level": "low",
+          "blocking": false,
+          "may_not_satisfy_identity_drift_fix": true
+        },
+        {
+          "strategy": "prompt_engineering_identity_lock",
+          "description": "Strengthen prompt-based identity consistency with single-character, centered composition prompts",
+          "identity_lock_strength": "weak",
+          "confidence_level": "low",
+          "blocking": false,
+          "may_not_satisfy_identity_drift_fix": true
+        }
+      ],
+      "recommended_path": "acquire_sdxl_faceid_adapter"
+    }
+  },
+  "review_requirements": {
+    "model_documentation_review": {
+      "required": true,
+      "source": "h94/IP-Adapter GitHub repository or equivalent",
+      "verify": [
+        "SDXL FaceID adapter availability",
+        "ip-adapter_sdxl.safetensors FaceID capability",
+        "SDXL FaceID adapter compatibility with ComfyUI IP-Adapter Plus"
+      ]
+    },
+    "comfyui_node_compatibility_review": {
+      "required": true,
+      "verify": [
+        "ComfyUI IP-Adapter Plus supports SDXL FaceID workflows",
+        "IPAdapterAdvanced node works with SDXL checkpoints",
+        "Reference image integration for SDXL FaceID"
+      ]
+    },
+    "workflow_integration_test": {
+      "required": true,
+      "test_mode": "dry_run",
+      "verify": [
+        "IPAdapterAdvanced node connects properly to KSampler",
+        "No workflow errors when adapter is integrated",
+        "Identity preservation parameters are valid for SDXL"
+      ]
+    }
+  },
+  "blocking_conditions": [
+    "ip-adapter_sdxl.safetensors FaceID capability not verified",
+    "SDXL FaceID adapter model documentation not reviewed",
+    "ComfyUI IP-Adapter Plus SDXL FaceID compatibility not verified",
+    "Workflow integration not tested with dry-run"
+  ],
+  "next_actions": [
+    "Review ip-adapter_sdxl.safetensors model documentation",
+    "Verify ComfyUI IP-Adapter Plus SDXL FaceID support",
+    "If FaceID capable: proceed with workflow patch implementation",
+    "If NOT FaceID capable: acquire SDXL FaceID adapter or select alternative strategy",
+    "Execute dry-run test after workflow modification",
+    "Verify identity preservation with QA before production acceptance"
+  ],
+  "retry_gate_open": false,
+  "qa_allowed": false,
+  "production_accepted": false,
+  "assemble_scene_allowed": false,
+  "downstream_blocked": true,
+  "identity_preservation_strategy_satisfied": false,
+  "identity_strategy_fix_required": true
+}
