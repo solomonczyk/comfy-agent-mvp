@@ -593,7 +593,9 @@
     "frame_manifest_audit_path": "output/control/rc2_prodcards3ao_frame_manifest_audit.json",
     "payload_quality_audit_path": "output/control/rc2_prodcards3ao_payload_quality_audit.json",
     "workflow_identity_wiring_audit_path": "output/control/rc2_prodcards3ao_workflow_identity_wiring_audit.json",
-    "corrective_strategy_path": "output/control/rc2_prodcards3ao_corrective_strategy.json"
+    "corrective_strategy_path": "output/control/rc2_prodcards3ao_corrective_strategy.json",
+    "audit_completed": true,
+    "audit_timestamp": "2026-04-30T18:25:00Z"
   },
   "rc2_prodcards3ap": {
     "identity_wiring_corrective_plan_created": true,
