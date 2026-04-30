@@ -1,0 +1,86 @@
+{
+  "task_code": "RC2-PRODCARDS3AE",
+  "task_name": "Identity Adapter Strategy Gate",
+  "gate_type": "identity_adapter_strategy_gate",
+  "gate_applied": true,
+  "timestamp": "2026-04-30T11:26:00.000000Z",
+  
+  "identity_adapter_detection": {
+    "identity_adapter_present_in_final_workflow": false,
+    "identity_adapter_family": null,
+    "no_identity_adapter_in_workflow": true,
+    "identity_adapter_detection_method": "workflow_node_inspection",
+    "identity_adapter_nodes_found": [],
+    "adapter_types_searched": [
+      "IP-Adapter FaceID",
+      "IP-Adapter FaceID Plus",
+      "IP-Adapter SD15",
+      "IP-Adapter SDXL",
+      "ReferenceOnly",
+      "ReferenceOnlySimple",
+      "ControlNet Face"
+    ],
+    "workflow_inspection_timestamp": "2026-04-30T09:17:58.000000Z"
+  },
+  
+  "identity_preservation_strategy": {
+    "identity_preservation_strategy_satisfied": false,
+    "identity_preservation_strategy_required": true,
+    "required_for": "identity_retry_character_consistency",
+    "retry_context": "identity_qa_failed - character identity drift detected in previous generation attempt",
+    "strategy_requirement_source": "corrective_submission_review.json",
+    "corrective_plan_identity_strategy": "dual-lock identity preservation - ReferenceOnlySimple 0.85 + IP-Adapter FaceID Plus 0.8"
+  },
+  
+  "checkpoint_compatibility": {
+    "checkpoint_family": "SDXL",
+    "checkpoint_name": "juggernautXL_version2.safetensors",
+    "sdxl_checkpoint": true
+  },
+  
+  "strategy_gate_decision": {
+    "case": "A",
+    "case_description": "identity adapter is truly absent",
+    "identity_adapter_present_in_final_workflow": false,
+    "identity_preservation_strategy_satisfied": false,
+    "identity_strategy_blocker": "no_identity_adapter_nodes_found_in_final_workflow",
+    "next_allowed_action": "identity_adapter_strategy_fix_required"
+  },
+  
+  "retry_gate_impact": {
+    "retry_gate_open": false,
+    "retry_blocked_by_identity_strategy": true,
+    "blocking_reason": "Identity preservation strategy not satisfied - no identity adapter nodes found in final workflow",
+    "required_fix": "Add identity preservation nodes (IP-Adapter FaceID Plus and/or ReferenceOnlySimple) to workflow, or provide explicit role/operator decision that identity preservation can proceed without identity adapter for this specific retry"
+  },
+  
+  "downstream_gate_impact": {
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "blocking_reason": "Identity adapter strategy gate not satisfied"
+  },
+  
+  "alternative_approval_path": {
+    "explicit_approval_possible": true,
+    "approval_requirement": "Explicit role/operator decision explaining why identity preservation can proceed without FaceID/IP-Adapter for this specific retry",
+    "approval_document_required": "identity_adapter_strategy_exemption_decision.json",
+    "approval_document_location": "output/control/",
+    "exemption_criteria": [
+      "Technical justification for identity preservation without adapter",
+      "Alternative identity preservation mechanism documented",
+      "Risk assessment for identity drift accepted",
+      "Character Director approval",
+      "Workflow TD approval"
+    ],
+    "current_exemption_status": "not_provided"
+  },
+  
+  "recommendation": {
+    "recommended_action": "identity_adapter_strategy_fix_required",
+    "priority": "high",
+    "urgency": "blocks_retry_generation",
+    "suggested_fix_approach": "Add IP-Adapter FaceID Plus node and ReferenceOnlySimple node to workflow with weights specified in corrective plan (0.8 and 0.85 respectively), or provide explicit exemption decision"
+  }
+}

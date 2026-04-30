@@ -1339,6 +1339,46 @@
         "state_repair": "output/control/rc2_prodcards3ac_state_repair.json",
         "workflow_regression_diagnosis": "output/control/rc2_prodcards3ac_workflow_regression_diagnosis.json"
       }
+    },
+    {
+      "event_type": "checkpoint_binding_normalization_and_identity_strategy_gate",
+      "timestamp": "2026-04-30T11:26:00.000000Z",
+      "task_code": "RC2-PRODCARDS3AE",
+      "shot_id": "shot01",
+      "checkpoint_binding_normalization_applied": true,
+      "identity_adapter_strategy_gate_applied": true,
+      "checkpoint_binding_normalization": {
+        "pre_override_checkpoint_mismatch": true,
+        "post_override_checkpoint_mismatch": false,
+        "final_workflow_checkpoint_binding_valid": true,
+        "final_workflow_checkpoint": "juggernautXL_version2.safetensors",
+        "checkpoint_state_payload_mismatch_deprecated": true
+      },
+      "identity_adapter_strategy_gate": {
+        "identity_adapter_present_in_final_workflow": false,
+        "identity_adapter_family": null,
+        "identity_preservation_strategy_satisfied": false,
+        "identity_strategy_blocker": "no_identity_adapter_nodes_found_in_final_workflow",
+        "next_allowed_action": "identity_adapter_strategy_fix_required"
+      },
+      "retry_gate_open": false,
+      "qa_allowed": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "no_generation_executed": true,
+      "no_comfyui_execution": true,
+      "no_frame_generation": true,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false,
+      "artifact_paths": {
+        "checkpoint_binding_normalization": "output/control/rc2_prodcards3ae_checkpoint_binding_flag_normalization.json",
+        "identity_adapter_strategy_gate": "output/control/rc2_prodcards3ae_identity_adapter_strategy_gate.json",
+        "final_workflow_binding_proof": "output/control/rc2_prodcards3ad_final_workflow_binding_proof.json"
+      }
     }
   ]
 }

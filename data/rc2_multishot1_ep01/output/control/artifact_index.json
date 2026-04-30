@@ -385,5 +385,27 @@
     "operator_visual_rejection_path": "output/control/rc2_prodcards3ac_operator_visual_rejection.json",
     "state_repair_path": "output/control/rc2_prodcards3ac_state_repair.json",
     "workflow_regression_diagnosis_path": "output/control/rc2_prodcards3ac_workflow_regression_diagnosis.json"
+  },
+  "rc2_prodcards3ae": {
+    "checkpoint_binding_normalization_applied": true,
+    "identity_adapter_strategy_gate_applied": true,
+    "checkpoint_binding_normalization_path": "output/control/rc2_prodcards3ae_checkpoint_binding_flag_normalization.json",
+    "identity_adapter_strategy_gate_path": "output/control/rc2_prodcards3ae_identity_adapter_strategy_gate.json",
+    "final_workflow_binding_proof_path": "output/control/rc2_prodcards3ad_final_workflow_binding_proof.json",
+    "workflow_payload_checkpoint_binding_fixed": true,
+    "pre_override_checkpoint_mismatch": true,
+    "post_override_checkpoint_mismatch": false,
+    "final_workflow_checkpoint_binding_valid": true,
+    "final_workflow_checkpoint": "juggernautXL_version2.safetensors",
+    "identity_adapter_strategy_checked": true,
+    "identity_adapter_present_in_final_workflow": false,
+    "identity_preservation_strategy_satisfied": false,
+    "next_allowed_action": "identity_adapter_strategy_fix_required",
+    "retry_gate_open": false,
+    "qa_allowed": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "timestamp": "2026-04-30T11:26:00.000000Z"
   }
 }

@@ -1,0 +1,69 @@
+{
+  "task_code": "RC2-PRODCARDS3AE",
+  "task_name": "Normalize Checkpoint Binding Proof Flags",
+  "normalization_type": "checkpoint_binding_flag_normalization",
+  "normalization_applied": true,
+  "timestamp": "2026-04-30T11:26:00.000000Z",
+  
+  "checkpoint_state_before_normalization": {
+    "retry_plan_checkpoint": "juggernautXL_version2.safetensors",
+    "prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "template_original_checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+    "final_payload_checkpoint": "juggernautXL_version2.safetensors",
+    "final_workflow_checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_state_payload_mismatch": true,
+    "mismatch_reason": "ambiguous - final payload and final workflow both use JuggernautXL"
+  },
+  
+  "checkpoint_state_after_normalization": {
+    "retry_plan_checkpoint": "juggernautXL_version2.safetensors",
+    "prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "template_original_checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+    
+    "pre_override_checkpoint_mismatch": true,
+    "prompt_pack_checkpoint_overridden": true,
+    "template_checkpoint_overridden": true,
+    
+    "final_payload_checkpoint": "juggernautXL_version2.safetensors",
+    "final_workflow_checkpoint": "juggernautXL_version2.safetensors",
+    "post_override_checkpoint_mismatch": false,
+    "final_workflow_checkpoint_binding_valid": true
+  },
+  
+  "normalization_decisions": {
+    "checkpoint_state_payload_mismatch_deprecated": true,
+    "deprecation_reason": "Ambiguous flag that did not distinguish between pre-override and post-override states",
+    "replacement_flags": [
+      "pre_override_checkpoint_mismatch",
+      "post_override_checkpoint_mismatch",
+      "final_workflow_checkpoint_binding_valid"
+    ],
+    "final_verdict": "final_workflow_checkpoint_binding_valid=true takes precedence over deprecated checkpoint_state_payload_mismatch=true"
+  },
+  
+  "checkpoint_override_chain": {
+    "original_prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "original_template_checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+    "retry_plan_override_checkpoint": "juggernautXL_version2.safetensors",
+    "override_applied_to_prompt_pack": true,
+    "override_applied_to_template": true,
+    "override_source": "controlled_retry_implementation_plan.json",
+    "override_authorized": true,
+    "final_consistency": "payload_and_workflow_both_use_juggernautxl"
+  },
+  
+  "binding_validity": {
+    "payload_workflow_checkpoint_match": true,
+    "payload_checkpoint": "juggernautXL_version2.safetensors",
+    "workflow_checkpoint": "juggernautXL_version2.safetensors",
+    "binding_valid": true,
+    "binding_validity_reason": "Final payload and final workflow both use JuggernautXL checkpoint as specified in retry plan"
+  },
+  
+  "retry_gate_impact": {
+    "retry_gate_open_before_normalization": false,
+    "retry_gate_open_after_normalization": false,
+    "gate_change": "none",
+    "reason": "Retry gate remains closed due to identity adapter strategy requirement, not checkpoint binding"
+  }
+}
