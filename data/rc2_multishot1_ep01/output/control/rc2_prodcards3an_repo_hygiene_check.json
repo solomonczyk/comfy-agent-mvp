@@ -1,0 +1,50 @@
+{
+  "layer": "RC2-PRODCARDS3AN",
+  "task": "Repository Hygiene Check",
+  "timestamp": "2026-04-30T14:20:00Z",
+  "commit_reference": "5e36579",
+  "hygiene_status": "passed",
+  "backup_directories": {
+    "found_in_commit": true,
+    "found_tracked": true,
+    "removed_from_tracking": true,
+    "directories_removed": [
+      "data/rc2_multishot1_ep01_backup_2026-04-28T12-09-55-728221",
+      "data/rc2_multishot1_ep01_backup_2026-04-28T12-09-55-841757",
+      "data/rc2_multishot1_ep01_backup_2026-04-28T12-09-55-945974",
+      "data/rc2_multishot1_ep01_backup_2026-04-29T08-08-13-566966",
+      "data/rc2_multishot1_ep01_backup_2026-04-29T08-14-13-147662",
+      "data/rc2_multishot1_ep01_backup_2026-04-29T08-14-47-868301",
+      "data/rc2_multishot1_ep01_temp_apply_test_backup_2026-04-28T11-34-04-619201",
+      "data/rc2_prodcards3s"
+    ],
+    "local_files_preserved": true,
+    "passed": true
+  },
+  "acquisition_script": {
+    "filename": "rc2_prodcards3ak_sdxl_faceid_acquisition.py",
+    "found_tracked": true,
+    "decision": "kept_as_reproducibility_artifact",
+    "reason": "Controlled asset acquisition script from trusted source, no secrets, serves as reproducibility documentation",
+    "contains_secrets": false,
+    "passed": true
+  },
+  "temp_files": {
+    "found_tracked": true,
+    "files_removed": [
+      "temp_auth_retry.py",
+      "temp_decide_retry.py",
+      "temp_inspect_state.py",
+      "temp_retry_generate.py"
+    ],
+    "passed": true
+  },
+  "other_files": {
+    "data/workflow_template.json": {
+      "found_tracked": true,
+      "removed_from_tracking": true,
+      "passed": true
+    }
+  },
+  "verdict": "PASS - Backup directories and temp files removed from tracking, acquisition script kept as reproducibility artifact"
+}

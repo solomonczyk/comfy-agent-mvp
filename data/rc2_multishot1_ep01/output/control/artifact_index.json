@@ -552,5 +552,29 @@
     "asset_verification_path": "output/control/rc2_prodcards3am_sdxl_faceid_asset_verification.json",
     "workflow_integration_audit_path": "output/control/rc2_prodcards3am_final_workflow_identity_integration_audit.json",
     "dry_run_workflow_payload_proof_path": "output/control/rc2_prodcards3am_dry_run_workflow_payload_proof.json"
+  },
+  "rc2_prodcards3an": {
+    "controlled_retry_authorization_revalidated": true,
+    "controlled_retry_authorized": true,
+    "retry_generation_preflight_passed": true,
+    "sdxl_faceid_assets_verified": true,
+    "sdxl_faceid_workflow_integration_verified": true,
+    "resolution_policy_satisfied": true,
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "retry_target_shot": "shot01",
+    "next_allowed_action": "retry_generate_frames",
+    "retry_gate_open": true,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "retry_generation_only_authorized": true,
+    "qa_authorized": false,
+    "assemble_authorized": false,
+    "audio_authorized": false,
+    "render_authorized": false,
+    "repo_hygiene_cleaned": true,
+    "timestamp": "2026-04-30T14:20:00.000000Z",
+    "authorization_revalidation_path": "output/control/rc2_prodcards3an_retry_authorization_revalidation.json",
+    "retry_generation_preflight_path": "output/control/rc2_prodcards3an_retry_generation_preflight.json",
+    "repo_hygiene_check_path": "output/control/rc2_prodcards3an_repo_hygiene_check.json"
   }
 }

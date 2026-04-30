@@ -1,0 +1,114 @@
+{
+  "layer": "RC2-PRODCARDS3AN",
+  "task": "Controlled Retry Authorization Revalidation After SDXL FaceID Integration",
+  "timestamp": "2026-04-30T14:20:00Z",
+  "preauthorization_state": {
+    "next_allowed_action": "controlled_retry_authorization_required",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "preflight_checks": {
+    "inspect_production_decision_state": {
+      "performed": true,
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "passed": true
+    },
+    "active_checkpoint_verification": {
+      "performed": true,
+      "active_checkpoint": "juggernautXL_version2.safetensors",
+      "required_checkpoint": "juggernautXL_version2.safetensors",
+      "checkpoint_match": true,
+      "passed": true
+    },
+    "resolution_policy_verification": {
+      "performed": true,
+      "current_resolution": "1344x768",
+      "resolution_allowed": true,
+      "orientation": "landscape",
+      "forbidden_resolution_not_used": true,
+      "passed": true
+    },
+    "sdxl_faceid_asset_verification": {
+      "performed": true,
+      "adapter_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+      "adapter_sha256": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb",
+      "adapter_sha256_match": true,
+      "lora_path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "lora_sha256": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b",
+      "lora_sha256_match": true,
+      "passed": true
+    },
+    "dry_run_workflow_verification": {
+      "performed": true,
+      "checkpoint": "juggernautXL_version2.safetensors",
+      "resolution": "1344x768",
+      "resolution_policy_passed": true,
+      "generation_sanity_passed": true,
+      "passed": true
+    },
+    "sd15_faceid_not_referenced": {
+      "performed": true,
+      "sd15_faceid_adapter_referenced": false,
+      "passed": true
+    },
+    "generic_sdxl_adapter_not_used_as_faceid": {
+      "performed": true,
+      "generic_sdxl_adapter_used_as_faceid": false,
+      "passed": true
+    },
+    "target_shot_verification": {
+      "performed": true,
+      "target_shot": "shot01",
+      "passed": true
+    },
+    "no_production_acceptance": {
+      "performed": true,
+      "production_accepted": false,
+      "passed": true
+    },
+    "no_downstream_actions": {
+      "performed": true,
+      "downstream_blocked": true,
+      "passed": true
+    }
+  },
+  "repo_hygiene_check": {
+    "backup_directories_tracked": true,
+    "backup_directories_removed_from_tracking": true,
+    "acquisition_script_tracked": true,
+    "acquisition_script_decision": "kept_as_reproducibility_artifact_no_secrets",
+    "temp_files_removed_from_tracking": true,
+    "passed": true
+  },
+  "authorization_decision": {
+    "controlled_retry_authorized": true,
+    "retry_gate_open": true,
+    "next_allowed_action": "retry_generate_frames",
+    "retry_generation_only_authorized": true,
+    "qa_authorized": false,
+    "assemble_authorized": false,
+    "audio_authorized": false,
+    "render_authorized": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "reason": "All preflight checks passed after SDXL FaceID integration and resolution policy fix"
+  },
+  "boundary_verification": {
+    "comfyui_generation": false,
+    "frame_generation": false,
+    "retry_generate_frames_executed": false,
+    "qa_rerun": false,
+    "assemble_scene_executed": false,
+    "audio_executed": false,
+    "render_executed": false,
+    "downstream_actions_executed": false
+  },
+  "verdict": "PASS - Controlled retry generation re-authorized for shot01 after SDXL FaceID integration verification, resolution policy compliance, and hygiene cleanup"
+}
