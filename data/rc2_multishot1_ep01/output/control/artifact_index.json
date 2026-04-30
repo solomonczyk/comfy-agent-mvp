@@ -138,7 +138,15 @@
   "retry_pre_authorization_checks_completed": true,
   "retry_pre_authorization_checks_path": "output/control/retry_pre_authorization_checks.json",
   "retry_pre_authorization_passed": false,
-  "next_allowed_action": "retry_implementation_plan_blocked",
+  "retry_prerequisite_check_completed": true,
+  "retry_prerequisites_available": false,
+  "missing_prerequisites": [
+    "dynavision_v10.safetensors",
+    "ip-adapter-faceid-plus_sd15.bin"
+  ],
+  "retry_model_asset_check_path": "output/control/retry_model_asset_check.json",
+  "retry_prerequisite_resolution_plan_path": "output/control/retry_prerequisite_resolution_plan.json",
+  "next_allowed_action": "retry_prerequisite_resolution_required",
   "downstream_blocked": true,
   "assemble_scene_allowed": false,
   "operator_override": true,

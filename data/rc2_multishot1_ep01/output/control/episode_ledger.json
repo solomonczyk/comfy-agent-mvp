@@ -872,6 +872,47 @@
         "consistent": true
       },
       "next_allowed_action": "retry_implementation_plan_blocked"
+    },
+    {
+      "event_type": "retry_prerequisite_check_completed",
+      "timestamp": "2026-04-30T07:36:00.000000Z",
+      "task_code": "RC2-PRODCARDS3Q",
+      "shot_id": "shot01",
+      "retry_prerequisite_check_completed": true,
+      "retry_prerequisites_available": false,
+      "missing_prerequisites": [
+        "dynavision_v10.safetensors",
+        "ip-adapter-faceid-plus_sd15.bin"
+      ],
+      "checkpoint_check": {
+        "model": "dynavision_v10.safetensors",
+        "expected_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/checkpoints/dynavision_v10.safetensors",
+        "file_exists": false,
+        "result": "MISSING"
+      },
+      "ip_adapter_check": {
+        "model": "ip-adapter-faceid-plus_sd15.bin",
+        "expected_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+        "file_exists": false,
+        "result": "MISSING"
+      },
+      "artifact_paths": {
+        "retry_model_asset_check": "output/control/retry_model_asset_check.json",
+        "retry_prerequisite_resolution_plan": "output/control/retry_prerequisite_resolution_plan.json"
+      },
+      "next_allowed_action": "retry_prerequisite_resolution_required",
+      "retry_gate_open": false,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": true,
+      "retry_generate_frames_executed": false,
+      "comfyui_generation": false,
+      "generation_performed": false,
+      "qa_rerun": false,
+      "assemble_scene_executed": false,
+      "audio_executed": false,
+      "render_executed": false,
+      "downstream_actions_executed": false
     }
   ]
 }

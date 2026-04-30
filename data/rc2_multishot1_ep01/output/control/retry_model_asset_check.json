@@ -1,0 +1,100 @@
+{
+  "check_id": "retry-model-asset-check-001",
+  "task_code": "RC2-PRODCARDS3Q",
+  "check_type": "retry_model_asset_check",
+  "episode_id": "ep01",
+  "target_shot_id": "shot01",
+  "checked_at": "2026-04-30T07:36:00.000000Z",
+  "checker": "windsurf_filesystem_inspection",
+  "check_scope": "filesystem_model_path_verification_no_generation",
+  "comfyui_base_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI",
+  "models_base_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models",
+  "checkpoint_check": {
+    "model_name": "dynavision_v10.safetensors",
+    "expected_relative_path": "checkpoints/dynavision_v10.safetensors",
+    "expected_absolute_path": "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/checkpoints/dynavision_v10.safetensors",
+    "implementation_plan_path_spec": "checkpoints/dynavision_v10.safetensors",
+    "file_exists": false,
+    "result": "MISSING",
+    "blocker": true,
+    "directory_contents_observed": [
+      "CyberRealisticXLPlay_V7.0_FP16.safetensors (6.938 GB)",
+      "juggernautXL_version2.safetensors (6.938 GB)",
+      "realvisxlV50_v50Bakedvae.safetensors (6.938 GB)",
+      "sd_xl_base_1.0_0.9vae.safetensors (6.938 GB)"
+    ],
+    "filesystem_proof": "Directory F:/ComfyUI/comfyUI_portable_inst/.../models/checkpoints listed; dynavision_v10.safetensors absent from listing. 4 other checkpoints present, none matching target."
+  },
+  "ip_adapter_check": {
+    "model_name": "ip-adapter-faceid-plus_sd15.bin",
+    "expected_relative_paths": [
+      "models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+      "models/ipadapter/ip-adapter-faceid-plusv2_sd15.bin"
+    ],
+    "expected_absolute_paths": [
+      "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/ipadapter/ip-adapter-faceid-plus_sd15.bin",
+      "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/models/ipadapter/ip-adapter-faceid-plusv2_sd15.bin"
+    ],
+    "implementation_plan_path_spec": "models/ipadapter/",
+    "alternate_ipadapter_path_checked": {
+      "path": "F:/ComfyUI/models/ipadapter/",
+      "contents_observed": [
+        "ip-adapter_sdxl.safetensors (702.6 MB)"
+      ],
+      "target_found": false,
+      "note": "Only SDXL generic IP-Adapter present; FaceID Plus SD1.5 variant absent"
+    },
+    "custom_node_models_path_checked": {
+      "path": "F:/ComfyUI/comfyUI_portable_inst/.../custom_nodes/ComfyUI_IPAdapter_plus/models/",
+      "contents_observed": [
+        "legacy_directory_do_not_use.txt"
+      ],
+      "target_found": false,
+      "note": "Custom node models directory is legacy/empty"
+    },
+    "file_exists": false,
+    "result": "MISSING",
+    "blocker": true,
+    "ip_adapter_custom_node_installed": true,
+    "ip_adapter_custom_node_path": "F:/ComfyUI/comfyUI_portable_inst/.../custom_nodes/ComfyUI_IPAdapter_plus/",
+    "filesystem_proof": "All ipadapter model directories scanned. ip-adapter-faceid-plus_sd15.bin and ip-adapter-faceid-plusv2_sd15.bin absent from all locations."
+  },
+  "additional_checks": {
+    "comfyui_ipadapter_extension_installed": {
+      "result": "PRESENT",
+      "path": "F:/ComfyUI/comfyUI_portable_inst/.../custom_nodes/ComfyUI_IPAdapter_plus/",
+      "key_files": ["IPAdapterPlus.py", "__init__.py", "utils.py"],
+      "note": "Extension code is installed; model weights must be obtained separately"
+    },
+    "insightface_model_check": {
+      "model": "buffalo_l (insightface preprocessor)",
+      "result": "NOT_VERIFIED",
+      "note": "insightface buffalo_l availability can only be confirmed at runtime when IP-Adapter node initializes; filesystem check not conclusive"
+    }
+  },
+  "summary": {
+    "total_required_models_checked": 2,
+    "models_present": 0,
+    "models_missing": 2,
+    "all_prerequisites_available": false,
+    "blocking_count": 2,
+    "missing_models": [
+      "dynavision_v10.safetensors",
+      "ip-adapter-faceid-plus_sd15.bin"
+    ]
+  },
+  "boundary_conditions_confirmed": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  }
+}
