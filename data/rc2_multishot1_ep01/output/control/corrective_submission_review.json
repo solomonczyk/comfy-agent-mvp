@@ -1,0 +1,187 @@
+{
+  "review_id": "corrective-submission-review-001",
+  "task_code": "RC2-PRODCARDS3O",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "reviewed_at": "2026-04-30T06:54:00.000000Z",
+  "review_type": "corrective_work_order_submission_review",
+  "submissions_reviewed": [
+    "cd-corrective-submission-001",
+    "wd-corrective-submission-001"
+  ],
+  "character_director_submission": {
+    "submission_id": "cd-corrective-submission-001",
+    "role": "Character Director",
+    "submission_file": "output/control/corrective_work_order_submissions/character_director_corrective_submission.json",
+    "contract_reference": "cd-corrective-completion-001",
+    "contract_file": "output/control/corrective_work_order_reviews/character_director_completion_contract.json",
+    "validation_status": "validated",
+    "validation_result": "PASS",
+    "contract_compliance": {
+      "all_required_fields_populated": true,
+      "checkpoint_suitability_assessed": true,
+      "alternative_recommendation_provided": true,
+      "identity_guidance_revised": true,
+      "reference_requirements_specified": true,
+      "retry_verdict_explicit": true,
+      "evidence_basis_documented": true,
+      "contract_requirements_met": true
+    },
+    "required_fields_validation": {
+      "checkpoint_suitability_assessment": {
+        "present": true,
+        "checkpoint_name_verified": "realvisxlV50_v50Bakedvae.safetensors",
+        "compatibility_verdict": "incompatible",
+        "character_type_match_score": 35,
+        "fields_complete": true
+      },
+      "alternative_checkpoint_recommendation": {
+        "present": true,
+        "recommendation_status": "recommend_alternative",
+        "recommended_checkpoint": "dynavision_v10.safetensors",
+        "fields_complete": true
+      },
+      "character_identity_guidance_revision": {
+        "present": true,
+        "revision_required": true,
+        "positive_prompt_revised": true,
+        "negative_prompt_revised": true,
+        "fields_complete": true
+      },
+      "reference_identity_preservation_requirements": {
+        "present": true,
+        "existing_reference_valid": false,
+        "updated_reference_required": true,
+        "identity_preservation_mechanism": "combined_techniques",
+        "reference_weighting_recommendation": "0.85",
+        "fields_complete": true
+      },
+      "retry_readiness_verdict": {
+        "present": true,
+        "verdict": "ready_with_conditions",
+        "explicit": true,
+        "conditions_documented": true,
+        "fields_complete": true
+      }
+    },
+    "validation_notes": "Character Director submission meets all completion contract requirements. Checkpoint incompatibility properly assessed (score 35/100), alternative checkpoint (dynavision_v10) recommended with detailed rationale, revised identity guidance provided, reference requirements specified with dual-lock identity strategy. Verdict READY_WITH_CONDITIONS is explicit and conditions are documented."
+  },
+  "workflow_td_submission": {
+    "submission_id": "wd-corrective-submission-001",
+    "role": "Workflow TD",
+    "submission_file": "output/control/corrective_work_order_submissions/workflow_td_corrective_submission.json",
+    "contract_reference": "wd-corrective-completion-001",
+    "contract_file": "output/control/corrective_work_order_reviews/workflow_td_completion_contract.json",
+    "validation_status": "validated",
+    "validation_result": "PASS",
+    "contract_compliance": {
+      "all_required_fields_populated": true,
+      "workflow_compatibility_assessed": true,
+      "parameter_revision_documented": true,
+      "identity_preservation_specified": true,
+      "implementation_requirements_complete": true,
+      "retry_verdict_explicit": true,
+      "evidence_basis_documented": true,
+      "contract_requirements_met": true
+    },
+    "required_fields_validation": {
+      "workflow_compatibility_assessment": {
+        "present": true,
+        "checkpoint_tested": "dynavision_v10.safetensors",
+        "workflow_load_status": "loads_successfully",
+        "compatibility_verdict": "compatible_with_modifications",
+        "fields_complete": true
+      },
+      "parameter_settings_revision": {
+        "present": true,
+        "revision_required": true,
+        "current_parameters_documented": true,
+        "proposed_parameters_documented": true,
+        "parameter_changes": [
+          "denoising_strength: 0.75 -> 0.65",
+          "guidance_scale: 7.0 -> 8.5",
+          "reference_image_weight: 0.6 -> 0.85",
+          "sampler_name: dpmpp_2m -> dpmpp_2m_sde",
+          "scheduler_name: karras -> exponential",
+          "steps: 30 -> 35"
+        ],
+        "fields_complete": true
+      },
+      "identity_preservation_evaluation": {
+        "present": true,
+        "ip_adapter_evaluation": true,
+        "lora_evaluation": true,
+        "reference_lock_evaluation": true,
+        "combined_identity_strategy": "Dual-lock identity preservation: ReferenceOnlySimple node at 0.85 weight + IP-Adapter FaceID Plus at 0.8 weight",
+        "fields_complete": true
+      },
+      "implementation_requirements": {
+        "present": true,
+        "workflow_revision_summary": true,
+        "checkpoint_implementation": true,
+        "parameter_implementation": true,
+        "identity_preservation_implementation": true,
+        "testing_requirements": true,
+        "risk_assessment": true,
+        "rollback_plan": true,
+        "fields_complete": true
+      },
+      "retry_readiness_verdict": {
+        "present": true,
+        "verdict": "ready_with_conditions",
+        "explicit": true,
+        "conditions_documented": true,
+        "fields_complete": true
+      }
+    },
+    "validation_notes": "Workflow TD submission meets all completion contract requirements. Alternative checkpoint compatibility confirmed (loads_successfully with modifications), all parameter changes documented with rationale (denoising 0.75->0.65, CFG 7.0->8.5, reference 0.6->0.85), IP-Adapter FaceID Plus specified at weight 0.8, complete implementation requirements provided with risk assessment and rollback plan. Verdict READY_WITH_CONDITIONS is explicit and conditions are documented."
+  },
+  "joint_validation_summary": {
+    "both_submissions_present": true,
+    "both_submissions_validated": true,
+    "both_verdicts_ready_with_conditions": true,
+    "character_director_verdict": "ready_with_conditions",
+    "workflow_td_verdict": "ready_with_conditions",
+    "joint_readiness_status": "ready_with_conditions",
+    "blocking_conditions": [
+      "Checkpoint swap to dynavision_v10 must be implemented",
+      "IP-Adapter FaceID Plus must be configured with weight 0.8",
+      "Reference node weighting must be set to 0.85",
+      "Updated reference image must be generated and validated",
+      "Revised character specification must be implemented in prompt pack"
+    ],
+    "validation_authorization": "Both submissions satisfy their completion contracts. Joint validation passed. Proceeding to retry implementation plan creation."
+  },
+  "boundary_conditions_confirmed": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "retry_gate_remains_closed": true,
+    "next_allowed_action": "retry_implementation_plan_review"
+  },
+  "retry_implementation_plan": {
+    "plan_created": true,
+    "plan_file": "output/control/controlled_retry_implementation_plan.json",
+    "target_shot_id": "shot01",
+    "rejected_source": "Retry #2 / operator override / visual quality failure"
+  },
+  "review_outcome": {
+    "corrective_submissions_validated": true,
+    "retry_implementation_plan_created": true,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "next_allowed_action": "retry_implementation_plan_review",
+    "retry_generate_frames_executed": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  }
+}

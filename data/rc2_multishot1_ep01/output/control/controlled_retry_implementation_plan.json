@@ -1,0 +1,286 @@
+{
+  "plan_id": "controlled-retry-impl-plan-001",
+  "plan_type": "controlled_retry_implementation_plan",
+  "task_code": "RC2-PRODCARDS3O",
+  "episode_id": "ep01",
+  "target_shot_id": "shot01",
+  "created_at": "2026-04-30T06:54:00.000000Z",
+  "plan_status": "implementation_plan_only",
+  "execution_status": "not_executed",
+  "explicit_note": "This is an implementation plan only. No generation has been executed. Retry gate remains closed pending implementation plan review and authorization.",
+  "rejected_source": {
+    "source_type": "Retry #2 / operator override / visual quality failure",
+    "retry_attempt": 2,
+    "previous_qa_verdict": "qa_passed",
+    "corrected_qa_verdict": "qa_failed",
+    "operator_override": true,
+    "operator_verdict": "rejected_visual_quality",
+    "failure_reasons": [
+      "identity_drift",
+      "visual_artifacts",
+      "haze",
+      "banding",
+      "texture_collapse",
+      "low_visual_quality",
+      "unacceptable_for_assemble_scene",
+      "qa_false_positive"
+    ],
+    "manual_review_outcome": "frames_rejected_visual_quality",
+    "corrective_plan_reference": "output/control/corrective_plan.json"
+  },
+  "checkpoint_change": {
+    "from": {
+      "checkpoint_name": "realvisxlV50_v50Bakedvae.safetensors",
+      "checkpoint_path": "checkpoints/realvisxlV50_v50Bakedvae.safetensors",
+      "compatibility_verdict": "incompatible",
+      "character_type_match_score": 35,
+      "assessment_source": "character_director_corrective_submission.json"
+    },
+    "to": {
+      "checkpoint_name": "dynavision_v10.safetensors",
+      "checkpoint_path": "checkpoints/dynavision_v10.safetensors",
+      "compatibility_verdict": "compatible_with_modifications",
+      "character_compatibility_rationale": "Dynavision_v10 is specifically designed for consistent character rendering and shows superior identity preservation capabilities. Better facial feature consistency, reduced multi-face generation, stronger adherence to character specifications.",
+      "vae_status": "baked - no separate VAE node required",
+      "assessment_source": "workflow_td_corrective_submission.json"
+    },
+    "change_rationale": "RealvisxlV50 checkpoint produces fundamental incompatibility with Alya character type: inconsistent facial features (1-3 faces per frame), visual artifacts (haze, banding, texture collapse), inability to maintain stable single-character identity. Dynavision checkpoint recommended as alternative with proven character consistency capabilities."
+  },
+  "identity_strategy": {
+    "strategy_name": "dual-lock identity preservation",
+    "strategy_description": "Redundant identity preservation combining reference node and IP-Adapter for maximum identity stability",
+    "components": [
+      {
+        "component": "ReferenceOnlySimple Node",
+        "weight": 0.85,
+        "purpose": "Primary structure preservation - maintains character silhouette and body proportions",
+        "change_from": 0.6,
+        "change_rationale": "Increased from 0.6 to 0.85 for maximum identity lock strength with dynavision checkpoint"
+      },
+      {
+        "component": "IP-Adapter FaceID Plus",
+        "weight": 0.8,
+        "model": "ip-adapter-faceid-plus_sd15.bin or ip-adapter-faceid-plusv2_sd15.bin",
+        "purpose": "Facial feature extraction and preservation - complements reference node with face-specific identity lock",
+        "preprocessor": "insightface (buffalo_l)",
+        "configuration": "IPAdapterAdvanced node with noise 0.0, connect to same reference image as reference node"
+      }
+    ],
+    "combined_effect": "Dual identity lock: reference node preserves overall character structure at 0.85 weight, IP-Adapter preserves facial features at 0.8 weight. Redundant mechanisms ensure identity stability even if one component underperforms.",
+    "reference_requirements": {
+      "existing_reference_valid": false,
+      "existing_reference_path": "data/references/alya_base.png",
+      "updated_reference_required": true,
+      "updated_reference_path": "data/references/alya_revised_dynavision_compat.png",
+      "reference_specifications": [
+        "Higher quality source image with clear facial feature definition",
+        "Neutral expression to reduce variability",
+        "Better lit to provide stable reference signal",
+        "Cropped to emphasize face for stronger identity lock",
+        "512x512 resolution for optimal attention matching",
+        "Tested with dynavision checkpoint before workflow submission"
+      ]
+    },
+    "identity_strength_target": "Maximum - 95%+ facial feature consistency, zero face count variation, stable single-character identity across all frames"
+  },
+  "workflow_parameter_changes": {
+    "revision_required": true,
+    "parameter_summary": "All parameters revised for stronger identity lock and artifact reduction with dynavision checkpoint",
+    "changes": [
+      {
+        "parameter": "denoising_strength",
+        "current_value": 0.75,
+        "proposed_value": 0.65,
+        "rationale": "Reduced to maintain stronger adherence to reference image and reduce identity drift. Lower denoising preserves more reference structure while still allowing sufficient generation flexibility."
+      },
+      {
+        "parameter": "guidance_scale (CFG)",
+        "current_value": 7.0,
+        "proposed_value": 8.5,
+        "rationale": "Increased for stronger prompt adherence and identity control. Higher CFG helps enforce strict character specification and negative constraints against multi-face generation."
+      },
+      {
+        "parameter": "reference_image_weight",
+        "current_value": 0.6,
+        "proposed_value": 0.85,
+        "rationale": "Significantly increased for maximum identity lock strength. Combined with IP-Adapter, creates dual identity preservation mechanism."
+      },
+      {
+        "parameter": "sampler_name",
+        "current_value": "dpmpp_2m",
+        "proposed_value": "dpmpp_2m_sde",
+        "rationale": "Upgraded for improved generation quality and stability. SDE variant shows better performance with character consistency workflows."
+      },
+      {
+        "parameter": "scheduler_name",
+        "current_value": "karras",
+        "proposed_value": "exponential",
+        "rationale": "Changed for better noise schedule distribution with dynavision checkpoint. Exponential scheduler shows improved detail preservation."
+      },
+      {
+        "parameter": "steps",
+        "current_value": 30,
+        "proposed_value": 35,
+        "rationale": "Increased for improved quality and artifact reduction. Additional steps help eliminate haze and banding issues."
+      },
+      {
+        "parameter": "ip_adapter_faceid_plus_weight",
+        "current_value": "not_enabled",
+        "proposed_value": 0.8,
+        "rationale": "New component for dual identity lock. FaceID Plus provides facial feature extraction that complements reference node approach."
+      }
+    ]
+  },
+  "prompt_identity_guidance_update": {
+    "revision_required": true,
+    "revised_positive_prompt_guidance": "Professional photograph of Alya, 25-year-old woman with defined consistent facial features: oval face shape, straight nose, almond-shaped brown eyes, medium-length auburn hair, natural makeup. Wearing simple dark clothing. Maintains exact same facial structure and features across all frames. Single subject only, no additional people.",
+    "revised_negative_prompt_guidance": "multiple people, extra faces, inconsistent facial features, changing face shape, varying hair color, different eye color, model degradation, haze, banding, texture collapse, blurry, low quality, duplicate subjects, background characters",
+    "identity_preservation_requirements": "Strict single-character identity lock required. Must maintain: (1) Consistent facial geometry across all frames, (2) Stable hair color and style, (3) Unchanging eye color and shape, (4) Uniform skin tone, (5) Same body proportions and clothing. Zero tolerance for face count variation or identity drift.",
+    "consistency_targets": {
+      "facial_features": "95%+ similarity across all frames - exact facial geometry preservation",
+      "body_proportions": "90%+ consistency - stable silhouette and proportions",
+      "clothing_style": "95%+ consistency - no wardrobe changes within shot",
+      "overall_appearance": "90%+ composite identity match - recognizable as same character"
+    },
+    "checkpoint_specific_considerations": "Dynavision checkpoint requires stronger negative prompting for multi-subject prevention. Character specification must explicitly exclude variations that this checkpoint might introduce. Reference images should emphasize the stable facial features most resistant to checkpoint-induced variation."
+  },
+  "required_validation_before_retry": {
+    "checkpoint_availability_check": {
+      "description": "Verify dynavision_v10.safetensors exists at checkpoints/dynavision_v10.safetensors",
+      "required": true,
+      "status": "pending"
+    },
+    "workflow_compatibility_check": {
+      "description": "Confirm checkpoint loads successfully in current ComfyUI workflow architecture",
+      "required": true,
+      "status": "pending"
+    },
+    "ip_adapter_model_check": {
+      "description": "Verify IP-Adapter FaceID Plus model files present in models/ipadapter/",
+      "required": true,
+      "status": "pending"
+    },
+    "insightface_model_check": {
+      "description": "Verify insightface models available for IP-Adapter preprocessing (buffalo_l)",
+      "required": true,
+      "status": "pending"
+    },
+    "prompt_identity_guidance_update_check": {
+      "description": "Verify revised character specification implemented in prompt pack",
+      "required": true,
+      "status": "pending"
+    },
+    "reference_image_update_check": {
+      "description": "Verify updated reference image generated and validated compatible with new checkpoint",
+      "required": true,
+      "status": "pending"
+    },
+    "workflow_file_update_check": {
+      "description": "Verify ep01_shot01_submitted_workflow.json updated with all parameter changes and IP-Adapter node",
+      "required": true,
+      "status": "pending"
+    },
+    "retry_authorization_check": {
+      "description": "Joint review approval of retry implementation plan required before retry authorization",
+      "required": true,
+      "status": "pending"
+    },
+    "single_frame_pre_test": {
+      "description": "Single test frame generation recommended before full 3-frame batch to validate implementation",
+      "required": false,
+      "recommended": true,
+      "status": "pending"
+    }
+  },
+  "implementation_checklist": {
+    "checkpoint_swap": {
+      "description": "Change checkpoint from realvisxlV50_v50Bakedvae to dynavision_v10",
+      "completed": false,
+      "blocking": true
+    },
+    "parameter_updates": {
+      "description": "Update all workflow parameters (denoising, CFG, reference weight, sampler, scheduler, steps)",
+      "completed": false,
+      "blocking": true
+    },
+    "ip_adapter_integration": {
+      "description": "Add IPAdapterAdvanced node with FaceID Plus model at weight 0.8",
+      "completed": false,
+      "blocking": true
+    },
+    "reference_image_update": {
+      "description": "Generate and validate updated reference image for dynavision compatibility",
+      "completed": false,
+      "blocking": true
+    },
+    "prompt_pack_update": {
+      "description": "Update prompt pack with revised positive/negative guidance",
+      "completed": false,
+      "blocking": true
+    },
+    "workflow_file_update": {
+      "description": "Update ep01_shot01_submitted_workflow.json with all changes",
+      "completed": false,
+      "blocking": true
+    },
+    "pre_test_validation": {
+      "description": "Single-frame test generation to validate implementation",
+      "completed": false,
+      "blocking": false
+    }
+  },
+  "risk_assessment": {
+    "technical_risk_level": "medium",
+    "primary_risks": [
+      "Checkpoint swap may introduce unexpected quality characteristics",
+      "IP-Adapter integration requires proper model files and configuration",
+      "Updated reference image may not provide expected identity lock"
+    ],
+    "risk_mitigation": [
+      "Single frame test before full 3-frame batch",
+      "Rollback plan documented - revert to original checkpoint and parameters if needed",
+      "Fallback checkpoint identified (realvisxlV50_v50Bakedvae)",
+      "Joint validation before retry authorization provides additional verification"
+    ],
+    "rollback_plan": "If dynavision checkpoint or IP-Adapter implementation fails: (1) Revert to realvisxl checkpoint, (2) Remove IP-Adapter node, (3) Restore original parameters, (4) Re-evaluate with Character Director for alternative approach, (5) Consider model training or workflow redesign if fundamental incompatibility confirmed."
+  },
+  "estimated_implementation_time": "30-45 minutes including single-frame test",
+  "confidence_level": "medium",
+  "boundary_conditions": {
+    "implementation_plan_only": true,
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  },
+  "plan_outcome": {
+    "retry_implementation_plan_created": true,
+    "retry_implementation_plan_reviewed": false,
+    "retry_implementation_plan_authorized": false,
+    "next_allowed_action": "retry_implementation_plan_review",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "retry_generate_frames_executed": false,
+    "comfyui_generation": false,
+    "generation_performed": false,
+    "qa_rerun": false,
+    "downstream_actions_executed": false
+  },
+  "submissions_source": {
+    "character_director_submission": "output/control/corrective_work_order_submissions/character_director_corrective_submission.json",
+    "workflow_td_submission": "output/control/corrective_work_order_submissions/workflow_td_corrective_submission.json",
+    "character_director_verdict": "ready_with_conditions",
+    "workflow_td_verdict": "ready_with_conditions",
+    "joint_validation": "validated"
+  }
+}
