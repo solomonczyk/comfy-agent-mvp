@@ -1,0 +1,156 @@
+{
+  "review_id": "retry-impl-plan-review-001",
+  "task_code": "RC2-PRODCARDS3P",
+  "plan_type": "retry_implementation_plan_review",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "reviewed_at": "2026-04-30T07:02:00.000000Z",
+  "implementation_plan_file": "output/control/controlled_retry_implementation_plan.json",
+  "reviewer": "automated_pre_authorization_system",
+  "review_scope": "non_executing_pre_authorization_review",
+  "target_shot": {
+    "shot_id": "shot01",
+    "verified": true,
+    "proof": "controlled_retry_implementation_plan.json target_shot_id = 'shot01'"
+  },
+  "rejected_source_validation": {
+    "source_type": "Retry #2 / operator override / visual quality failure",
+    "verified": true,
+    "retry_attempt": 2,
+    "previous_qa_verdict": "qa_passed",
+    "corrected_qa_verdict": "qa_failed",
+    "operator_override": true,
+    "operator_verdict": "rejected_visual_quality",
+    "failure_reasons_verified": [
+      "identity_drift",
+      "visual_artifacts",
+      "haze",
+      "banding",
+      "texture_collapse",
+      "low_visual_quality",
+      "unacceptable_for_assemble_scene",
+      "qa_false_positive"
+    ],
+    "proof": "controlled_retry_implementation_plan.json rejected_source block contains all verified fields"
+  },
+  "checkpoint_change_validation": {
+    "change_explicit": true,
+    "from_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "to_checkpoint": "dynavision_v10.safetensors",
+    "checkpoint_change_rationale_verified": true,
+    "rationale_summary": "RealvisxlV50 checkpoint produces fundamental incompatibility with Alya character type: inconsistent facial features, visual artifacts, inability to maintain stable single-character identity. Dynavision checkpoint recommended as alternative with proven character consistency capabilities.",
+    "proof": "controlled_retry_implementation_plan.json checkpoint_change block contains explicit from/to and rationale"
+  },
+  "identity_strategy_validation": {
+    "strategy_name": "dual-lock identity preservation",
+    "verified": true,
+    "components": [
+      {
+        "component": "ReferenceOnlySimple Node",
+        "weight": 0.85,
+        "change_from": 0.6,
+        "verified": true
+      },
+      {
+        "component": "IP-Adapter FaceID Plus",
+        "weight": 0.8,
+        "verified": true
+      }
+    ],
+    "proof": "controlled_retry_implementation_plan.json identity_strategy block contains dual-lock strategy specification"
+  },
+  "parameter_changes_validation": {
+    "changes_verified": true,
+    "parameter_changes": [
+      {
+        "parameter": "denoising_strength",
+        "current_value": 0.75,
+        "proposed_value": 0.65,
+        "rationale": "Reduced to maintain stronger adherence to reference image and reduce identity drift",
+        "verified": true
+      },
+      {
+        "parameter": "guidance_scale (CFG)",
+        "current_value": 7.0,
+        "proposed_value": 8.5,
+        "rationale": "Increased for stronger prompt adherence and identity control",
+        "verified": true
+      },
+      {
+        "parameter": "reference_image_weight",
+        "current_value": 0.6,
+        "proposed_value": 0.85,
+        "rationale": "Significantly increased for maximum identity lock strength",
+        "verified": true
+      },
+      {
+        "parameter": "sampler_name",
+        "current_value": "dpmpp_2m",
+        "proposed_value": "dpmpp_2m_sde",
+        "rationale": "Upgraded for improved generation quality and stability",
+        "verified": true
+      },
+      {
+        "parameter": "scheduler_name",
+        "current_value": "karras",
+        "proposed_value": "exponential",
+        "rationale": "Changed for better noise schedule distribution with dynavision checkpoint",
+        "verified": true
+      },
+      {
+        "parameter": "steps",
+        "current_value": 30,
+        "proposed_value": 35,
+        "rationale": "Increased for improved quality and artifact reduction",
+        "verified": true
+      },
+      {
+        "parameter": "ip_adapter_faceid_plus_weight",
+        "current_value": "not_enabled",
+        "proposed_value": 0.8,
+        "rationale": "New component for dual identity lock - FaceID Plus provides facial feature extraction",
+        "verified": true
+      }
+    ],
+    "consistency_check": "parameter_changes_internally_consistent",
+    "consistency_rationale": "All parameter changes support the same objective: stronger identity lock with dynavision checkpoint. Reduced denoising (0.75->0.65) maintains reference fidelity. Increased CFG (7.0->8.5) enforces stricter prompt adherence. Increased reference weight (0.6->0.85) locks identity. New IP-Adapter (0.8) adds facial feature preservation. Changes are coherent and mutually reinforcing.",
+    "proof": "controlled_retry_implementation_plan.json workflow_parameter_changes block contains all documented changes with rationale"
+  },
+  "prompt_identity_guidance_tracking": {
+    "revision_required": true,
+    "revision_tracked": true,
+    "revised_positive_prompt_guidance": "Professional photograph of Alya, 25-year-old woman with defined consistent facial features: oval face shape, straight nose, almond-shaped brown eyes, medium-length auburn hair, natural makeup. Wearing simple dark clothing. Maintains exact same facial structure and features across all frames. Single subject only, no additional people.",
+    "revised_negative_prompt_guidance": "multiple people, extra faces, inconsistent facial features, changing face shape, varying hair color, different eye color, model degradation, haze, banding, texture collapse, blurry, low quality, duplicate subjects, background characters",
+    "identity_preservation_requirements": "Strict single-character identity lock required with zero tolerance for face count variation",
+    "prompt_update_status": "pending_implementation",
+    "proof": "controlled_retry_implementation_plan.json prompt_identity_guidance_update block specifies required updates"
+  },
+  "review_conclusion": {
+    "retry_implementation_plan_review_completed": true,
+    "all_plan_elements_verified": true,
+    "target_shot_confirmed": "shot01",
+    "rejected_source_linked_correctly": true,
+    "checkpoint_change_explicit": true,
+    "identity_strategy_defined": true,
+    "parameter_changes_internally_consistent": true,
+    "prompt_guidance_update_tracked": true,
+    "pre_authorization_checks_triggered": true,
+    "no_generation_executed": true,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "next_allowed_action": "retry_pre_authorization_checks"
+  },
+  "boundary_conditions_confirmed": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "no_production_acceptance": true
+  }
+}

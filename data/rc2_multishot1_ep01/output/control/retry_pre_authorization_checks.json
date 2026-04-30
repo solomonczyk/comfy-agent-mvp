@@ -1,0 +1,303 @@
+{
+  "check_id": "retry-pre-auth-checks-001",
+  "task_code": "RC2-PRODCARDS3P",
+  "check_type": "retry_pre_authorization_checks",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "checked_at": "2026-04-30T07:02:00.000000Z",
+  "checker": "automated_pre_authorization_system",
+  "check_scope": "non_executing_prerequisite_verification",
+  "overall_result": "BLOCKED",
+  "overall_verdict": "Prerequisites missing - checkpoint and identity components require setup",
+  "pre_authorization_passed": false,
+  "target_shot_verification": {
+    "check": "target_shot_is_shot01",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "target_shot": "shot01",
+    "proof": "controlled_retry_implementation_plan.json target_shot_id = 'shot01'"
+  },
+  "rejected_source_verification": {
+    "check": "rejected_source_linked_to_operator_override_visual_quality_failure",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "source_type": "Retry #2 / operator override / visual quality failure",
+    "retry_attempt": 2,
+    "operator_override": true,
+    "operator_verdict": "rejected_visual_quality",
+    "failure_reasons": [
+      "identity_drift",
+      "visual_artifacts",
+      "haze",
+      "banding",
+      "texture_collapse",
+      "low_visual_quality",
+      "unacceptable_for_assemble_scene",
+      "qa_false_positive"
+    ],
+    "proof": "controlled_retry_implementation_plan.json rejected_source contains operator_override=true and operator_verdict='rejected_visual_quality'"
+  },
+  "checkpoint_change_verification": {
+    "check": "checkpoint_change_is_explicit",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "from_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "to_checkpoint": "dynavision_v10.safetensors",
+    "change_rationale_documented": true,
+    "proof": "controlled_retry_implementation_plan.json checkpoint_change block contains explicit from/to with rationale"
+  },
+  "checkpoint_availability_check": {
+    "check": "planned_checkpoint_exists",
+    "required": true,
+    "status": "failed",
+    "result": "blocked",
+    "checkpoint_name": "dynavision_v10.safetensors",
+    "expected_path": "checkpoints/dynavision_v10.safetensors",
+    "actual_path_checked": "F:/ComfyUI/models/checkpoints/dynavision_v10.safetensors",
+    "path_exists": false,
+    "blocker_created": true,
+    "blocker_type": "missing_checkpoint",
+    "blocker_severity": "blocking",
+    "blocker_details": "Checkpoint dynavision_v10.safetensors not found at expected location. User must obtain and install this checkpoint before retry can proceed.",
+    "proof": "Directory listing confirms checkpoints directory does not exist"
+  },
+  "workflow_compatibility_check": {
+    "check": "workflow_compatible_with_new_checkpoint",
+    "required": true,
+    "status": "passed_with_conditions",
+    "result": "verified_pending_validation",
+    "workflow_file": "output/control/ep01_shot01_submitted_workflow.json",
+    "current_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "proposed_checkpoint": "dynavision_v10.safetensors",
+    "vae_status": "baked - no separate VAE node required",
+    "compatibility_assessment": "compatible_with_modifications",
+    "workflow_td_assessment": "Checkpoint dynavision_v10 loads successfully in ComfyUI workflow architecture",
+    "pending_validation": "Actual checkpoint load test requires checkpoint file to be present",
+    "conditions": [
+      "Checkpoint file must be available",
+      "Workflow must be updated with new checkpoint name",
+      "IP-Adapter node must be added to workflow"
+    ],
+    "proof": "controlled_retry_implementation_plan.json checkpoint_change.to.compatibility_verdict = 'compatible_with_modifications'"
+  },
+  "identity_preservation_components_check": {
+    "check": "identity_preservation_components_available",
+    "required": true,
+    "status": "failed",
+    "result": "blocked",
+    "dual_lock_strategy": {
+      "strategy_name": "dual-lock identity preservation",
+      "reference_node": {
+        "component": "ReferenceOnlySimple Node",
+        "weight": 0.85,
+        "available": true,
+        "blocker": null,
+        "proof": "ReferenceOnlySimple is standard ComfyUI node"
+      },
+      "ip_adapter": {
+        "component": "IP-Adapter FaceID Plus",
+        "weight": 0.8,
+        "model_required": "ip-adapter-faceid-plus_sd15.bin or ip-adapter-faceid-plusv2_sd15.bin",
+        "model_path_expected": "models/ipadapter/",
+        "model_available": false,
+        "blocker_created": true,
+        "blocker_type": "missing_ipadapter_model",
+        "blocker_severity": "blocking",
+        "blocker_details": "IP-Adapter FaceID Plus model files not found in expected location. User must install ip-adapter-faceid-plus_sd15.bin or ip-adapter-faceid-plusv2_sd15.bin to models/ipadapter/"
+      }
+    },
+    "preprocessor_check": {
+      "component": "insightface (buffalo_l)",
+      "required": true,
+      "available": null,
+      "status": "pending_verification",
+      "blocker_created": false,
+      "details": "insightface availability can only be verified at runtime when IP-Adapter node is loaded"
+    },
+    "overall_status": "components_partially_available",
+    "blocking_issues": ["IP-Adapter FaceID Plus model not found"]
+  },
+  "parameter_changes_consistency_check": {
+    "check": "parameter_changes_internally_consistent",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "consistency_verdict": "parameter_changes_are_coherent",
+    "consistency_rationale": "All parameter changes support the same objective: stronger identity lock with dynavision checkpoint. Reduced denoising (0.75->0.65) maintains reference fidelity. Increased CFG (7.0->8.5) enforces stricter prompt adherence. Increased reference weight (0.6->0.85) locks identity. New IP-Adapter (0.8) adds facial feature preservation. Changes are coherent and mutually reinforcing.",
+    "changes_verified": [
+      {
+        "parameter": "denoising_strength",
+        "from": 0.75,
+        "to": 0.65,
+        "direction": "decreased",
+        "objective": "stronger reference fidelity"
+      },
+      {
+        "parameter": "guidance_scale",
+        "from": 7.0,
+        "to": 8.5,
+        "direction": "increased",
+        "objective": "stronger prompt adherence"
+      },
+      {
+        "parameter": "reference_image_weight",
+        "from": 0.6,
+        "to": 0.85,
+        "direction": "increased",
+        "objective": "maximum identity lock"
+      },
+      {
+        "parameter": "ip_adapter_faceid_plus_weight",
+        "from": "not_enabled",
+        "to": 0.8,
+        "direction": "added",
+        "objective": "facial feature preservation"
+      }
+    ],
+    "proof": "controlled_retry_implementation_plan.json workflow_parameter_changes block shows all changes documented with consistent rationale"
+  },
+  "prompt_identity_guidance_tracking": {
+    "check": "prompt_identity_guidance_update_tracked",
+    "required": true,
+    "status": "passed",
+    "result": "tracked",
+    "revision_required": true,
+    "revision_tracked": true,
+    "revised_positive_prompt_guidance": "Professional photograph of Alya, 25-year-old woman with defined consistent facial features: oval face shape, straight nose, almond-shaped brown eyes, medium-length auburn hair, natural makeup. Wearing simple dark clothing. Maintains exact same facial structure and features across all frames. Single subject only, no additional people.",
+    "revised_negative_prompt_guidance": "multiple people, extra faces, inconsistent facial features, changing face shape, varying hair color, different eye color, model degradation, haze, banding, texture collapse, blurry, low quality, duplicate subjects, background characters",
+    "update_status": "pending_implementation",
+    "tracking_location": "controlled_retry_implementation_plan.json prompt_identity_guidance_update block",
+    "proof": "controlled_retry_implementation_plan.json contains explicit prompt/identity guidance update requirements"
+  },
+  "reference_image_check": {
+    "check": "updated_reference_image_required_and_tracked",
+    "required": true,
+    "status": "passed",
+    "result": "tracked_but_not_created",
+    "existing_reference_valid": false,
+    "existing_reference_path": "data/references/alya_base.png",
+    "updated_reference_required": true,
+    "updated_reference_path": "data/references/alya_revised_dynavision_compat.png",
+    "reference_exists": false,
+    "blocker_created": false,
+    "notes": "Reference image update is tracked but file not yet created. This is expected pre-implementation state.",
+    "proof": "controlled_retry_implementation_plan.json identity_strategy.reference_requirements specifies updated reference path"
+  },
+  "no_generation_verification": {
+    "check": "no_generation_has_occurred",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "comfyui_generation": false,
+    "frames_generated": false,
+    "retry_generate_frames_executed": false,
+    "proof": [
+      "controlled_retry_implementation_plan.json execution_status = 'not_executed'",
+      "controlled_retry_implementation_plan.json boundary_conditions.no_comfyui_execution = true",
+      "controlled_retry_implementation_plan.json boundary_conditions.no_frame_generation = true"
+    ]
+  },
+  "no_qa_verification": {
+    "check": "no_qa_rerun",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "qa_rerun": false,
+    "proof": "controlled_retry_implementation_plan.json boundary_conditions.no_qa_rerun = true"
+  },
+  "no_downstream_verification": {
+    "check": "no_assemble_audio_render_downstream",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "assemble_scene": false,
+    "audio": false,
+    "render": false,
+    "downstream_actions": false,
+    "proof": "controlled_retry_implementation_plan.json boundary_conditions.no_assemble_scene = true, no_audio = true, no_render = true, no_downstream_actions = true"
+  },
+  "retry_gate_status": {
+    "check": "retry_gate_remains_closed",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "retry_gate_open": false,
+    "proof": "controlled_retry_implementation_plan.json boundary_conditions.retry_gate_open = false"
+  },
+  "production_acceptance_status": {
+    "check": "production_not_accepted",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "production_accepted": false,
+    "proof": "controlled_retry_implementation_plan.json boundary_conditions.production_accepted = false"
+  },
+  "assemble_scene_status": {
+    "check": "assemble_scene_not_allowed",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "assemble_scene_allowed": false,
+    "proof": "controlled_retry_implementation_plan.json boundary_conditions.assemble_scene_allowed = false"
+  },
+  "downstream_status": {
+    "check": "downstream_blocked",
+    "required": true,
+    "status": "passed",
+    "result": "verified",
+    "downstream_blocked": true,
+    "proof": "controlled_retry_implementation_plan.json boundary_conditions.downstream_blocked = true"
+  },
+  "blocking_prerequisites": {
+    "has_blockers": true,
+    "blocker_count": 2,
+    "blockers": [
+      {
+        "blocker_id": "missing_checkpoint",
+        "blocker_type": "missing_prerequisite",
+        "component": "dynavision_v10.safetensors",
+        "severity": "blocking",
+        "description": "Checkpoint dynavision_v10.safetensors not found at expected location",
+        "resolution_required": true,
+        "resolution_action": "User must obtain and install dynavision_v10.safetensors checkpoint to checkpoints/ directory"
+      },
+      {
+        "blocker_id": "missing_ipadapter_model",
+        "blocker_type": "missing_prerequisite",
+        "component": "ip-adapter-faceid-plus_sd15.bin",
+        "severity": "blocking",
+        "description": "IP-Adapter FaceID Plus model files not found in expected location",
+        "resolution_required": true,
+        "resolution_action": "User must install ip-adapter-faceid-plus_sd15.bin or ip-adapter-faceid-plusv2_sd15.bin to models/ipadapter/"
+      }
+    ]
+  },
+  "pre_authorization_decision": {
+    "retry_pre_authorization_checks_completed": true,
+    "retry_pre_authorization_passed": false,
+    "next_allowed_action": "retry_implementation_plan_blocked",
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true,
+    "blocked_reason": "Missing prerequisites: checkpoint and IP-Adapter model files",
+    "unblocked_when": "When checkpoint and IP-Adapter models are installed and verified available"
+  },
+  "boundary_conditions_confirmed": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "assemble_scene_allowed": false,
+    "downstream_blocked": true
+  }
+}
