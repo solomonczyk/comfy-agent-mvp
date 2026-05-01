@@ -94,6 +94,8 @@ def combine_run_stage(args: argparse.Namespace) -> int:
             output["agent"] = result.metadata["agent"]
         if "next_recommended_stage" in result.metadata:
             output["next_allowed_action"] = result.metadata["next_recommended_stage"]
+        if "retry_aware" in result.metadata:
+            output["retry_aware"] = result.metadata["retry_aware"]
         if "real_image_analysis" in result.metadata:
             output["real_image_analysis"] = result.metadata["real_image_analysis"]
         if "operator_review_required" in result.metadata:

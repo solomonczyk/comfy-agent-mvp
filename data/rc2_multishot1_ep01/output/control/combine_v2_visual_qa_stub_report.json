@@ -1,0 +1,30 @@
+{
+  "stage": "visual_qa_required",
+  "agent": "VisualQAAgent",
+  "status": "stubbed",
+  "retry_aware": true,
+  "real_image_analysis": false,
+  "generation_gate_open": true,
+  "checks_declared": [
+    "artifact_presence_check",
+    "dimensions_check",
+    "blur_softness_check",
+    "composition_check",
+    "route_policy_check"
+  ],
+  "checks_executed": [],
+  "retry_aware_artifacts_loaded": {
+    "combine_v2_generation_execution_plan": true,
+    "combine_v2_generation_execution_stub_result": true,
+    "combine_v2_generation_trace_stub": true,
+    "combine_v2_operator_generation_authorization": true
+  },
+  "operator_review_required": true,
+  "visual_qa_passed": false,
+  "final_verdict": "operator_review_required",
+  "next_allowed_action": "operator_visual_review",
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}

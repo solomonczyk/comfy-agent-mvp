@@ -1,5 +1,5 @@
 {
-  "current_state": "generate_assets",
+  "current_state": "visual_qa_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -1199,6 +1199,372 @@
         }
       },
       "timestamp": "2026-05-01T15:12:33.418516",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "visual_qa_required_stub_pending",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "visual_qa_required",
+        "action": "visual_qa_pending_clear",
+        "message": "Stub pending cleared, ready for visual QA",
+        "visual_qa_stub": true,
+        "real_image_analysis": false
+      },
+      "timestamp": "2026-05-01T15:14:48.259338",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "visual_qa_required",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_qa_stub_report.json",
+        "combine_v2_operator_visual_review_packet.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_visual_review",
+        "action": "visual_quality_assessment",
+        "description": "Performs visual QA review (stub only)",
+        "visual_qa_stub": true,
+        "real_image_analysis": false,
+        "operator_review_required": true,
+        "visual_qa_passed": false,
+        "production_accepted": false,
+        "assembly_allowed": false,
+        "downstream_blocked": true,
+        "combine_v2_visual_qa_stub_report": {
+          "stage": "visual_qa_required",
+          "agent": "VisualQAAgent",
+          "status": "stubbed",
+          "real_image_analysis": false,
+          "checks_declared": [
+            "artifact_presence_check",
+            "dimensions_check",
+            "blur_softness_check",
+            "composition_check",
+            "route_policy_check"
+          ],
+          "checks_executed": [],
+          "operator_review_required": true,
+          "visual_qa_passed": false,
+          "final_verdict": "operator_review_required",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false
+        },
+        "combine_v2_operator_visual_review_packet": {
+          "stage": "operator_visual_review",
+          "source_stage": "visual_qa_required",
+          "operator_review_required": true,
+          "operator_actions": [
+            "accept_visuals",
+            "reject_visuals",
+            "request_retry_correction",
+            "block_manual_review"
+          ],
+          "visual_qa_stub_report": "output/control/combine_v2_visual_qa_stub_report.json",
+          "generated_assets": [],
+          "real_image_analysis": false,
+          "production_accepted": false,
+          "assembly_allowed": false,
+          "downstream_blocked": true
+        }
+      },
+      "timestamp": "2026-05-01T15:14:48.492358",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "visual_qa_required",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_qa_stub_report.json",
+        "combine_v2_operator_visual_review_packet.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_visual_review",
+        "action": "visual_quality_assessment",
+        "description": "Performs visual QA review (stub only)",
+        "retry_aware": true,
+        "visual_qa_stub": true,
+        "real_image_analysis": false,
+        "operator_review_required": true,
+        "visual_qa_passed": false,
+        "next_allowed_action": "operator_visual_review",
+        "production_accepted": false,
+        "assembly_allowed": false,
+        "downstream_blocked": true,
+        "combine_v2_visual_qa_stub_report": {
+          "stage": "visual_qa_required",
+          "agent": "VisualQAAgent",
+          "status": "stubbed",
+          "retry_aware": true,
+          "real_image_analysis": false,
+          "generation_gate_open": true,
+          "checks_declared": [
+            "artifact_presence_check",
+            "dimensions_check",
+            "blur_softness_check",
+            "composition_check",
+            "route_policy_check"
+          ],
+          "checks_executed": [],
+          "retry_aware_artifacts_loaded": {
+            "combine_v2_generation_execution_plan": true,
+            "combine_v2_generation_execution_stub_result": true,
+            "combine_v2_generation_trace_stub": true,
+            "combine_v2_operator_generation_authorization": true
+          },
+          "operator_review_required": true,
+          "visual_qa_passed": false,
+          "final_verdict": "operator_review_required",
+          "next_allowed_action": "operator_visual_review",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false
+        },
+        "combine_v2_operator_visual_review_packet": {
+          "stage": "operator_visual_review",
+          "source_stage": "visual_qa_required",
+          "retry_aware": true,
+          "operator_review_required": true,
+          "operator_actions": [
+            "accept_visuals",
+            "reject_visuals",
+            "request_retry_correction",
+            "block_manual_review"
+          ],
+          "visual_qa_stub_report": "output/control/combine_v2_visual_qa_stub_report.json",
+          "generated_assets": [],
+          "real_image_analysis": false,
+          "production_accepted": false,
+          "assembly_allowed": false,
+          "downstream_blocked": true,
+          "next_allowed_action": "operator_visual_review",
+          "retry_context_sources": {
+            "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+            "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+            "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+            "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+          },
+          "retry_context_snapshot": {
+            "generation_gate_open": true,
+            "operator_generation_authorized": true,
+            "execution_strategy": "stub_only",
+            "generation_stub_status": "stubbed_ready",
+            "trace_id": "trace_20260501T151233416517"
+          }
+        }
+      },
+      "timestamp": "2026-05-01T15:15:44.679890",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "visual_qa_required",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_qa_stub_report.json",
+        "combine_v2_operator_visual_review_packet.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_visual_review",
+        "action": "visual_quality_assessment",
+        "description": "Performs visual QA review (stub only)",
+        "retry_aware": true,
+        "visual_qa_stub": true,
+        "real_image_analysis": false,
+        "operator_review_required": true,
+        "visual_qa_passed": false,
+        "next_allowed_action": "operator_visual_review",
+        "production_accepted": false,
+        "assembly_allowed": false,
+        "downstream_blocked": true,
+        "combine_v2_visual_qa_stub_report": {
+          "stage": "visual_qa_required",
+          "agent": "VisualQAAgent",
+          "status": "stubbed",
+          "retry_aware": true,
+          "real_image_analysis": false,
+          "generation_gate_open": true,
+          "checks_declared": [
+            "artifact_presence_check",
+            "dimensions_check",
+            "blur_softness_check",
+            "composition_check",
+            "route_policy_check"
+          ],
+          "checks_executed": [],
+          "retry_aware_artifacts_loaded": {
+            "combine_v2_generation_execution_plan": true,
+            "combine_v2_generation_execution_stub_result": true,
+            "combine_v2_generation_trace_stub": true,
+            "combine_v2_operator_generation_authorization": true
+          },
+          "operator_review_required": true,
+          "visual_qa_passed": false,
+          "final_verdict": "operator_review_required",
+          "next_allowed_action": "operator_visual_review",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false
+        },
+        "combine_v2_operator_visual_review_packet": {
+          "stage": "operator_visual_review",
+          "source_stage": "visual_qa_required",
+          "retry_aware": true,
+          "operator_review_required": true,
+          "operator_actions": [
+            "accept_visuals",
+            "reject_visuals",
+            "request_retry_correction",
+            "block_manual_review"
+          ],
+          "visual_qa_stub_report": "output/control/combine_v2_visual_qa_stub_report.json",
+          "generated_assets": [],
+          "real_image_analysis": false,
+          "production_accepted": false,
+          "assembly_allowed": false,
+          "downstream_blocked": true,
+          "next_allowed_action": "operator_visual_review",
+          "retry_context_sources": {
+            "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+            "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+            "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+            "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+          },
+          "retry_context_snapshot": {
+            "generation_gate_open": true,
+            "operator_generation_authorized": true,
+            "execution_strategy": "stub_only",
+            "generation_stub_status": "stubbed_ready",
+            "trace_id": "trace_20260501T151233416517"
+          }
+        }
+      },
+      "timestamp": "2026-05-01T15:15:52.486128",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "visual_qa_required",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_qa_stub_report.json",
+        "combine_v2_operator_visual_review_packet.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_visual_review",
+        "action": "visual_quality_assessment",
+        "description": "Performs visual QA review (stub only)",
+        "retry_aware": true,
+        "visual_qa_stub": true,
+        "real_image_analysis": false,
+        "operator_review_required": true,
+        "visual_qa_passed": false,
+        "next_allowed_action": "operator_visual_review",
+        "production_accepted": false,
+        "assembly_allowed": false,
+        "downstream_blocked": true,
+        "combine_v2_visual_qa_stub_report": {
+          "stage": "visual_qa_required",
+          "agent": "VisualQAAgent",
+          "status": "stubbed",
+          "retry_aware": true,
+          "real_image_analysis": false,
+          "generation_gate_open": true,
+          "checks_declared": [
+            "artifact_presence_check",
+            "dimensions_check",
+            "blur_softness_check",
+            "composition_check",
+            "route_policy_check"
+          ],
+          "checks_executed": [],
+          "retry_aware_artifacts_loaded": {
+            "combine_v2_generation_execution_plan": true,
+            "combine_v2_generation_execution_stub_result": true,
+            "combine_v2_generation_trace_stub": true,
+            "combine_v2_operator_generation_authorization": true
+          },
+          "operator_review_required": true,
+          "visual_qa_passed": false,
+          "final_verdict": "operator_review_required",
+          "next_allowed_action": "operator_visual_review",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false
+        },
+        "combine_v2_operator_visual_review_packet": {
+          "stage": "operator_visual_review",
+          "source_stage": "visual_qa_required",
+          "retry_aware": true,
+          "operator_review_required": true,
+          "operator_actions": [
+            "accept_visuals",
+            "reject_visuals",
+            "request_retry_correction",
+            "block_manual_review"
+          ],
+          "visual_qa_stub_report": "output/control/combine_v2_visual_qa_stub_report.json",
+          "generated_assets": [],
+          "real_image_analysis": false,
+          "production_accepted": false,
+          "assembly_allowed": false,
+          "downstream_blocked": true,
+          "next_allowed_action": "operator_visual_review",
+          "retry_context_sources": {
+            "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+            "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+            "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+            "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+          },
+          "retry_context_snapshot": {
+            "generation_gate_open": true,
+            "operator_generation_authorized": true,
+            "execution_strategy": "stub_only",
+            "generation_stub_status": "stubbed_ready",
+            "trace_id": "trace_20260501T151233416517"
+          }
+        }
+      },
+      "timestamp": "2026-05-01T15:16:49.939600",
       "no_generation_performed": true
     }
   ]

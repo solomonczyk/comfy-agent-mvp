@@ -46,13 +46,24 @@ class VisualQAAgent(BaseRoleAgent):
     
     def create_stub_result(self, context: CombineRunContext) -> AgentResult:
         """Create a stub result for the visual_qa_required stage."""
-        
+        generation_plan = self._read_contract(context.project_root, "combine_v2_generation_execution_plan")
+        generation_stub_result = self._read_contract(context.project_root, "combine_v2_generation_execution_stub_result")
+        generation_trace_stub = self._read_contract(context.project_root, "combine_v2_generation_trace_stub")
+        operator_generation_authorization = self._read_contract(
+            context.project_root,
+            "combine_v2_operator_generation_authorization"
+        )
+
+        retry_aware = True
+
         # 1. Create Visual QA Stub Report
         stub_report = {
             "stage": "visual_qa_required",
             "agent": "VisualQAAgent",
             "status": "stubbed",
+            "retry_aware": retry_aware,
             "real_image_analysis": False,
+            "generation_gate_open": bool(operator_generation_authorization.get("generation_gate_open", False)),
             "checks_declared": [
                 "artifact_presence_check",
                 "dimensions_check",
@@ -61,18 +72,27 @@ class VisualQAAgent(BaseRoleAgent):
                 "route_policy_check"
             ],
             "checks_executed": [],
+            "retry_aware_artifacts_loaded": {
+                "combine_v2_generation_execution_plan": bool(generation_plan),
+                "combine_v2_generation_execution_stub_result": bool(generation_stub_result),
+                "combine_v2_generation_trace_stub": bool(generation_trace_stub),
+                "combine_v2_operator_generation_authorization": bool(operator_generation_authorization)
+            },
             "operator_review_required": True,
             "visual_qa_passed": False,
             "final_verdict": "operator_review_required",
+            "next_allowed_action": "operator_visual_review",
             "generation_performed": False,
             "comfyui_execution": False,
-            "downstream_executed": False
+            "downstream_executed": False,
+            "production_accepted": False
         }
         
         # 2. Create Operator Visual Review Packet
         review_packet = {
             "stage": "operator_visual_review",
             "source_stage": "visual_qa_required",
+            "retry_aware": retry_aware,
             "operator_review_required": True,
             "operator_actions": [
                 "accept_visuals",
@@ -85,7 +105,23 @@ class VisualQAAgent(BaseRoleAgent):
             "real_image_analysis": False,
             "production_accepted": False,
             "assembly_allowed": False,
-            "downstream_blocked": True
+            "downstream_blocked": True,
+            "next_allowed_action": "operator_visual_review",
+            "retry_context_sources": {
+                "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+                "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+                "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+                "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+            },
+            "retry_context_snapshot": {
+                "generation_gate_open": bool(operator_generation_authorization.get("generation_gate_open", False)),
+                "operator_generation_authorized": bool(
+                    operator_generation_authorization.get("operator_generation_authorized", False)
+                ),
+                "execution_strategy": generation_plan.get("execution_strategy", "unknown"),
+                "generation_stub_status": generation_stub_result.get("status", "unknown"),
+                "trace_id": generation_trace_stub.get("trace_id", "")
+            }
         }
         
         return AgentResult(
@@ -104,10 +140,12 @@ class VisualQAAgent(BaseRoleAgent):
             metadata={
                 "action": "visual_quality_assessment",
                 "description": "Performs visual QA review (stub only)",
+                "retry_aware": retry_aware,
                 "visual_qa_stub": True,
                 "real_image_analysis": False,
                 "operator_review_required": True,
                 "visual_qa_passed": False,
+                "next_allowed_action": "operator_visual_review",
                 "production_accepted": False,
                 "assembly_allowed": False,
                 "downstream_blocked": True,

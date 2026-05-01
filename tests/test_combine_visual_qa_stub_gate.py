@@ -61,6 +61,17 @@ def test_visual_qa_agent_stub_pending(temp_project):
 def test_visual_qa_agent_required_logic(temp_project):
     """Verify VisualQAAgent creates required artifacts in visual_qa_required stage."""
     orchestrator = CombineOrchestrator(str(temp_project))
+    control_dir = temp_project / "output" / "control"
+
+    # Seed retry-aware generation artifacts consumed by VisualQAAgent
+    with open(control_dir / "combine_v2_generation_execution_plan.json", "w") as f:
+        json.dump({"execution_strategy": "stub_only", "stage": "generate_assets"}, f)
+    with open(control_dir / "combine_v2_generation_execution_stub_result.json", "w") as f:
+        json.dump({"status": "stubbed_ready", "generated_assets": []}, f)
+    with open(control_dir / "combine_v2_generation_trace_stub.json", "w") as f:
+        json.dump({"trace_id": "trace_test_001", "events": []}, f)
+    with open(control_dir / "combine_v2_operator_generation_authorization.json", "w") as f:
+        json.dump({"generation_gate_open": True, "operator_generation_authorized": True}, f)
     
     # Set state to visual_qa_required_stub_pending first to allow transition
     orchestrator.run_stage("visual_qa_required_stub_pending", dry_run=True)
@@ -73,7 +84,6 @@ def test_visual_qa_agent_required_logic(temp_project):
     assert "combine_v2_operator_visual_review_packet.json" in result.artifacts
     
     # Check artifacts on disk
-    control_dir = temp_project / "output" / "control"
     report_path = control_dir / "combine_v2_visual_qa_stub_report.json"
     packet_path = control_dir / "combine_v2_operator_visual_review_packet.json"
     
@@ -84,18 +94,35 @@ def test_visual_qa_agent_required_logic(temp_project):
         report = json.load(f)
         assert report["stage"] == "visual_qa_required"
         assert report["status"] == "stubbed"
+        assert report["retry_aware"] is True
         assert report["real_image_analysis"] is False
+        assert report["generation_gate_open"] is True
+        assert report["retry_aware_artifacts_loaded"]["combine_v2_generation_execution_plan"] is True
+        assert report["retry_aware_artifacts_loaded"]["combine_v2_generation_execution_stub_result"] is True
+        assert report["retry_aware_artifacts_loaded"]["combine_v2_generation_trace_stub"] is True
+        assert report["retry_aware_artifacts_loaded"]["combine_v2_operator_generation_authorization"] is True
         assert report["operator_review_required"] is True
         assert report["visual_qa_passed"] is False
+        assert report["next_allowed_action"] == "operator_visual_review"
         assert report["generation_performed"] is False
         assert report["comfyui_execution"] is False
+        assert report["production_accepted"] is False
         
     with open(packet_path, 'r') as f:
         packet = json.load(f)
         assert packet["stage"] == "operator_visual_review"
+        assert packet["retry_aware"] is True
         assert packet["operator_review_required"] is True
         assert "block_manual_review" in packet["operator_actions"]
         assert packet["real_image_analysis"] is False
+        assert packet["next_allowed_action"] == "operator_visual_review"
+        assert packet["retry_context_sources"]["combine_v2_generation_execution_plan"].endswith(
+            "combine_v2_generation_execution_plan.json"
+        )
+        assert packet["retry_context_snapshot"]["generation_gate_open"] is True
+        assert packet["retry_context_snapshot"]["execution_strategy"] == "stub_only"
+        assert packet["retry_context_snapshot"]["generation_stub_status"] == "stubbed_ready"
+        assert packet["retry_context_snapshot"]["trace_id"] == "trace_test_001"
         assert packet["production_accepted"] is False
         assert packet["assembly_allowed"] is False
         assert packet["downstream_blocked"] is True
@@ -108,6 +135,7 @@ def test_visual_qa_safety_boundaries(temp_project):
     orchestrator.run_stage("visual_qa_required_stub_pending", dry_run=True)
     result = orchestrator.run_stage("visual_qa_required", dry_run=True)
     
+    assert result.metadata["retry_aware"] is True
     assert result.metadata["generation_performed"] is False
     assert result.metadata["comfyui_execution"] is False
     assert result.metadata["downstream_executed"] is False

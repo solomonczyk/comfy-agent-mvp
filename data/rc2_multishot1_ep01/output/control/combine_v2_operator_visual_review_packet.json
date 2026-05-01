@@ -1,0 +1,32 @@
+{
+  "stage": "operator_visual_review",
+  "source_stage": "visual_qa_required",
+  "retry_aware": true,
+  "operator_review_required": true,
+  "operator_actions": [
+    "accept_visuals",
+    "reject_visuals",
+    "request_retry_correction",
+    "block_manual_review"
+  ],
+  "visual_qa_stub_report": "output/control/combine_v2_visual_qa_stub_report.json",
+  "generated_assets": [],
+  "real_image_analysis": false,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_blocked": true,
+  "next_allowed_action": "operator_visual_review",
+  "retry_context_sources": {
+    "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+    "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+    "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+    "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+  },
+  "retry_context_snapshot": {
+    "generation_gate_open": true,
+    "operator_generation_authorized": true,
+    "execution_strategy": "stub_only",
+    "generation_stub_status": "stubbed_ready",
+    "trace_id": "trace_20260501T151233416517"
+  }
+}
