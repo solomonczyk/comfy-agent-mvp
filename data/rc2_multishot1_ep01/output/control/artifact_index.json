@@ -1,5 +1,5 @@
 {
-  "current_state": "generation_authorization_required",
+  "current_state": "operator_generation_authorization_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -990,6 +990,89 @@
         }
       },
       "timestamp": "2026-05-01T14:52:55.516643",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_generation_authorization_required",
+      "success": true,
+      "message": "Agent GenerationAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "GenerationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "generate_assets",
+        "action": "operator_authorization_check",
+        "generation_gate_open": true,
+        "operator_decision": {
+          "agent": "Operator",
+          "action": "authorize_generation",
+          "operator_generation_authorized": true,
+          "generation_gate_open": true,
+          "next_allowed_action": "generate_assets",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "timestamp": "2026-05-01T15:03:22.607442",
+          "preconditions_checked": {
+            "authorization_required": true,
+            "generation_authorized": false,
+            "missing_assets": false
+          },
+          "authorization_request_snapshot": {
+            "agent": "GenerationAgent",
+            "stage": "generation_authorization_required",
+            "generation_authorization_ready": true,
+            "assets_resolved": true,
+            "preflight_ok": true,
+            "authorization_required": true,
+            "blocked_by_assets": false,
+            "missing_assets": [],
+            "retry_requested": true,
+            "operator_retry_authorized": true,
+            "retry_gate_open": false,
+            "retry_corrective_plan_loaded": true,
+            "retry_failure_classification_loaded": true,
+            "retry_authorization_request_loaded": true,
+            "retry_gate_decision_loaded": true,
+            "corrective_plan_applied_to_payload": true,
+            "retry_execution_authorized": false,
+            "generation_performed": false,
+            "comfyui_execution": false,
+            "downstream_executed": false,
+            "timestamp": "2026-05-01T14:52:55.471662"
+          },
+          "authorization_decision_snapshot": {
+            "agent": "GenerationAgent",
+            "stage": "generation_authorization_required",
+            "generation_authorization_ready": true,
+            "generation_authorized": false,
+            "authorization_required": true,
+            "retry_requested": true,
+            "operator_retry_authorized": true,
+            "retry_gate_open": false,
+            "retry_executed": false,
+            "generation_performed": false,
+            "comfyui_execution": false,
+            "downstream_executed": false,
+            "next_allowed_action": "operator_generation_authorization_required",
+            "timestamp": "2026-05-01T14:52:55.471662"
+          },
+          "retry_context": {
+            "retry_requested": true,
+            "operator_retry_authorized": true,
+            "retry_gate_open": false,
+            "corrective_plan_applied_to_payload": true,
+            "retry_execution_authorized": false
+          }
+        },
+        "message": "Operator authorization granted"
+      },
+      "timestamp": "2026-05-01T15:03:22.630403",
       "no_generation_performed": true
     }
   ]

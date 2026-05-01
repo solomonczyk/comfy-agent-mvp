@@ -240,5 +240,16 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-01T14:52:55.516643"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_generation_authorization_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:03:22.630403"
   }
 ]
