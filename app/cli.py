@@ -387,6 +387,122 @@ def combine_operator_visual_decision(args: argparse.Namespace) -> int:
 
 
 
+def combine_authorize_retry(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-11 — Operator Retry Authorization Gate (no execution)."""
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.utcnow().isoformat()
+
+    required_inputs = [
+        "combine_v2_retry_failure_classification.json",
+        "combine_v2_retry_corrective_plan.json",
+        "combine_v2_retry_authorization_request.json",
+    ]
+
+    loaded_input_artifacts = []
+    missing_input_artifacts = []
+    for filename in required_inputs:
+        artifact_path = control_dir / filename
+        if artifact_path.exists():
+            loaded_input_artifacts.append(filename)
+        else:
+            missing_input_artifacts.append(filename)
+
+    if missing_input_artifacts:
+        blocked_reason = (
+            "Missing required preconditions: "
+            + ", ".join(sorted(missing_input_artifacts))
+        )
+        blocked_response = {
+            "operator_retry_authorized": False,
+            "next_allowed_action": "operator_retry_authorization_required",
+            "blocked_reason": blocked_reason,
+            "retry_executed": False,
+        }
+        if json_output:
+            print(json.dumps(blocked_response, indent=2))
+        else:
+            print("Retry Authorization: BLOCKED")
+            print(f"Reason: {blocked_reason}")
+        return 1
+
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    operator_retry_authorization_path = control_dir / "combine_v2_operator_retry_authorization.json"
+    operator_retry_authorization = {
+        "agent": "Operator",
+        "action": "authorize_retry_return_to_generation_authorization",
+        "operator_retry_authorized": True,
+        "retry_gate_open": False,
+        "generation_authorization_required": True,
+        "next_allowed_action": "generation_authorization_required",
+        "retry_executed": False,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+    with open(operator_retry_authorization_path, "w") as f:
+        json.dump(operator_retry_authorization, f, indent=2)
+
+    retry_gate_decision_path = control_dir / "combine_v2_retry_gate_decision.json"
+    retry_gate_decision = {
+        "operator_retry_authorized": True,
+        "retry_gate_open": False,
+        "generation_authorization_required": True,
+        "next_allowed_action": "generation_authorization_required",
+        "retry_executed": False,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+    with open(retry_gate_decision_path, "w") as f:
+        json.dump(retry_gate_decision, f, indent=2)
+
+    orchestrator = CombineOrchestrator(str(project_root))
+    stage_result = orchestrator.run_stage("operator_retry_authorization_required")
+    status = orchestrator.get_status()
+    next_allowed_action = "generation_authorization_required"
+    if stage_result.success and status.next_allowed_action == "generation_authorization_required":
+        next_allowed_action = status.next_allowed_action
+
+    response = {
+        "operator_retry_authorization_created": True,
+        "retry_gate_decision_created": True,
+        "operator_retry_authorized": True,
+        "retry_gate_open": False,
+        "generation_authorization_required": True,
+        "next_allowed_action": next_allowed_action,
+        "retry_executed": False,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "loaded_input_artifacts": sorted(loaded_input_artifacts),
+        "artifacts": [
+            str(operator_retry_authorization_path.relative_to(project_root)),
+            str(retry_gate_decision_path.relative_to(project_root)),
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(response, indent=2))
+    else:
+        print("Retry Authorization: GRANTED")
+        print(f"Next Allowed Action: {next_allowed_action}")
+        print("Retry Gate Open: False")
+    return 0
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -409,6 +525,7 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'apply-role-decisions',
         'authorize-real-role-decision-apply',
         'authorize-controlled-retry-generation',
+        'combine-authorize-retry',
         'decide-controlled-retry',
         'inspect-production-decision-state',
         'repair-production-decision-state',
@@ -802,6 +919,19 @@ def main() -> int:
         help="Reason for the decision",
     )
     combine_operator_visual_decision_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-11 — combine-authorize-retry subcommand
+    combine_authorize_retry_parser = subparsers.add_parser("combine-authorize-retry", help="Authorize retry return to generation authorization without opening retry execution gate")
+    combine_authorize_retry_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_authorize_retry_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -1712,6 +1842,8 @@ def main() -> int:
         return combine_run_stage(args)
     elif args.command == "combine-authorize-generation":
         return combine_authorize_generation(args)
+    elif args.command == "combine-authorize-retry":
+        return combine_authorize_retry(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":
