@@ -24,6 +24,7 @@ class CombineStateMachine:
         "generation_authorization_required",
         "operator_generation_authorization_required",
         "generate_assets",
+        "visual_qa_required_stub_pending",
         "visual_qa_required",
         "operator_visual_review",
         "retry_correction_required",
@@ -82,6 +83,10 @@ class CombineStateMachine:
             "generate_assets"
         },
         "generate_assets": {
+            "visual_qa_required_stub_pending",
+            "operator_generation_authorization_required"
+        },
+        "visual_qa_required_stub_pending": {
             "visual_qa_required"
         },
         "visual_qa_required": {

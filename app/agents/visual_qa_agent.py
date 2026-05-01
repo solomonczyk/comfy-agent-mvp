@@ -18,7 +18,7 @@ class VisualQAAgent(BaseRoleAgent):
     
     @property
     def supported_stages(self) -> List[str]:
-        return ["visual_qa_required"]
+        return ["visual_qa_required_stub_pending", "visual_qa_required"]
     
     @property
     def required_inputs(self) -> List[str]:
@@ -47,3 +47,21 @@ class VisualQAAgent(BaseRoleAgent):
                 "description": "Performs visual QA review (stub only)"
             }
         )
+    def run(self, context: CombineRunContext, dry_run: bool = True) -> AgentResult:
+        if context.stage == "visual_qa_required_stub_pending":
+            return AgentResult(
+                agent=self.role_name,
+                stage=context.stage,
+                status="ok",
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=[],
+                next_recommended_stage="visual_qa_required",
+                metadata={
+                    "action": "visual_qa_pending_clear",
+                    "message": "Stub pending cleared, ready for visual QA"
+                }
+            )
+        return self.create_stub_result(context)

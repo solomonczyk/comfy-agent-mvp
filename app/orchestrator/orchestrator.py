@@ -36,6 +36,7 @@ class CombineOrchestrator:
         "generation_authorization_required": "GenerationAgent",
         "operator_generation_authorization_required": "GenerationAgent",
         "generate_assets": "GenerationAgent",
+        "visual_qa_required_stub_pending": "VisualQAAgent",
         "visual_qa_required": "VisualQAAgent",
         "operator_visual_review": "VisualQAAgent",
         "retry_correction_required": "RetryPolicyAgent",
@@ -114,6 +115,18 @@ class CombineOrchestrator:
     
     def _get_next_allowed_action(self, current_state: str) -> str:
         """Get next allowed action based on current state"""
+        # 1. Try to get recommendation from last stage result
+        artifact_index = self._read_artifact_index()
+        if "stage_results" in artifact_index and artifact_index["stage_results"]:
+            last_result = artifact_index["stage_results"][-1]
+            if last_result.get("stage") == current_state:
+                recommended = last_result.get("metadata", {}).get("next_recommended_stage")
+                if recommended and recommended != "none":
+                    # Validate if it's an allowed transition
+                    if self.state_machine.can_transition(current_state, recommended):
+                        return recommended
+
+        # 2. Fallback to state machine default
         allowed_states = self.state_machine.get_allowed_next_states(current_state)
         if allowed_states:
             return allowed_states[0]

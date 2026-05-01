@@ -167,12 +167,12 @@ class TestGenerationAgent:
         
         result = agent.run(context, dry_run=True)
         
-        # Must refuse generation
+        # Must refuse generation and be blocked by default (missing gate artifact)
         assert result.generation_performed == False
         assert result.comfyui_execution == False
         assert result.downstream_executed == False
         assert result.dry_run == True
-        assert result.status == "stubbed"
+        assert result.status == "blocked"
     
     def test_generation_agent_run_always_dry_run(self):
         """GenerationAgent.run() must always enforce dry_run=True."""
@@ -187,9 +187,10 @@ class TestGenerationAgent:
         
         result = agent.run(context, dry_run=False)
         
-        # Still must be dry run
+        # Still must be dry run and blocked
         assert result.dry_run == True
         assert result.generation_performed == False
+        assert result.status == "blocked"
 
 
 class TestRouteAwareOptionality:

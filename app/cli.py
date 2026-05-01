@@ -85,7 +85,8 @@ def combine_run_stage(args: argparse.Namespace) -> int:
             "generation_performed": not result.no_generation_performed,
             "comfyui_execution": False,
             "downstream_executed": False,
-            "message": result.message
+            "message": result.message,
+            "metadata": result.metadata
         }, indent=2))
     else:
         print(f"Stage: {result.stage}")

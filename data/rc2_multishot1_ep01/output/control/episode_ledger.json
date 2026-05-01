@@ -42,5 +42,38 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-01T09:28:01.643270"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_generation_authorization_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T09:42:58.452437"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_generation_authorization_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T09:43:35.061134"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "generate_assets",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T09:49:03.306549"
   }
 ]

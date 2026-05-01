@@ -222,6 +222,102 @@ class GenerationAgent(BaseRoleAgent):
                 }
             )
 
-        # DEFAULT: generate_assets or other stages
+        if stage == "generate_assets":
+            # 1. Read required contracts
+            op_auth = self._read_contract(project_root, "combine_v2_operator_generation_authorization")
+            auth_decision = self._read_contract(project_root, "combine_v2_generation_authorization_decision")
+            payload_stub = self._read_contract(project_root, "combine_v2_generation_payload_stub")
+            workflow_contract = self._read_contract(project_root, "combine_v2_workflow_contract")
+            prompt_contract = self._read_contract(project_root, "combine_v2_prompt_contract")
+            asset_gate = self._read_contract(project_root, "combine_v2_asset_gate_decision")
+            
+            # 2. Check gate status
+            gate_open = op_auth.get("generation_gate_open", False)
+            
+            if not gate_open:
+                return AgentResult(
+                    agent=self.role_name,
+                    stage=stage,
+                    status="blocked",
+                    dry_run=True,
+                    generation_performed=False,
+                    comfyui_execution=False,
+                    downstream_executed=False,
+                    next_recommended_stage="operator_generation_authorization_required",
+                    metadata={
+                        "action": "generate_assets_blocked",
+                        "generation_gate_open": False,
+                        "message": "Generation gate is closed. Operator authorization required."
+                    }
+                )
+            
+            # 3. Create execution plan
+            execution_plan = {
+                "agent": self.role_name,
+                "stage": stage,
+                "workflow_id": workflow_contract.get("workflow_id"),
+                "prompt_count": len(prompt_contract.get("prompts", [])),
+                "asset_count": len(asset_gate.get("inventory", {})),
+                "execution_strategy": "stub_only",
+                "comfyui_execution_disabled": True,
+                "timestamp": timestamp
+            }
+            
+            # 4. Create stub result
+            execution_stub_result = {
+                "agent": self.role_name,
+                "stage": stage,
+                "status": "stubbed_ready",
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "generated_assets": [],
+                "next_allowed_action": "visual_qa_required_stub_pending",
+                "timestamp": timestamp
+            }
+            
+            # 5. Create trace stub
+            trace_stub = {
+                "agent": self.role_name,
+                "stage": stage,
+                "trace_id": f"trace_{timestamp.replace(':', '').replace('-', '').replace('.', '')}",
+                "events": [
+                    {"event": "gate_check", "status": "open"},
+                    {"event": "payload_intake", "status": "success"},
+                    {"event": "generation_stubbed", "status": "completed"}
+                ],
+                "timestamp": timestamp
+            }
+            
+            artifacts = [
+                "combine_v2_generation_execution_plan.json",
+                "combine_v2_generation_execution_stub_result.json",
+                "combine_v2_generation_trace_stub.json"
+            ]
+            
+            metadata = {
+                "action": "generate_assets_stubbed",
+                "generation_gate_open": True,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "next_recommended_stage": "visual_qa_required_stub_pending",
+                "combine_v2_generation_execution_plan": execution_plan,
+                "combine_v2_generation_execution_stub_result": execution_stub_result,
+                "combine_v2_generation_trace_stub": trace_stub
+            }
+            
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status="stubbed",
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=artifacts,
+                next_recommended_stage="visual_qa_required_stub_pending",
+                metadata=metadata
+            )
+
+        # DEFAULT: other stages
         return self.create_stub_result(context)
 

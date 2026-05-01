@@ -33,7 +33,9 @@ class TestCombineStateMachine:
         assert CombineStateMachine.can_transition("brief_intake_required", "route_classification_required")
         assert CombineStateMachine.can_transition("route_classification_required", "production_plan_required")
         assert CombineStateMachine.can_transition("production_plan_required", "production_plan_review")
-        assert CombineStateMachine.can_transition("generate_assets", "visual_qa_required")
+        assert CombineStateMachine.can_transition("generate_assets", "visual_qa_required_stub_pending")
+        assert CombineStateMachine.can_transition("visual_qa_required_stub_pending", "visual_qa_required")
+        assert not CombineStateMachine.can_transition("generate_assets", "visual_qa_required")
         assert CombineStateMachine.can_transition("final_operator_acceptance", "completed")
     
     def test_forbidden_transitions_fail(self):
@@ -71,7 +73,8 @@ class TestCombineStateMachine:
         assert not CombineStateMachine.can_transition("generation_authorization_required", "visual_qa_required")
         
         # QA can happen after generation
-        assert CombineStateMachine.can_transition("generate_assets", "visual_qa_required")
+        assert CombineStateMachine.can_transition("generate_assets", "visual_qa_required_stub_pending")
+        assert not CombineStateMachine.can_transition("generate_assets", "visual_qa_required")
     
     def test_assembly_cannot_happen_before_accepted_visuals_assets(self):
         """Test that assembly cannot happen before accepted visuals/assets"""
