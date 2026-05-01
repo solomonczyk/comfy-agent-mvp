@@ -1,8 +1,9 @@
 """
-Combine Internal Orchestrator
+Combine Internal Orchestrator with Universal Role Agent Protocol
 
 Thin orchestrator skeleton for the internal multi-agent system.
-This orchestrator manages state, routes, and stage execution.
+This orchestrator manages state, routes, stage execution, and dispatches
+to role agents. No real generation or ComfyUI execution occurs at this layer.
 """
 
 import os
@@ -23,6 +24,24 @@ from .routing import RouteFamilyRegistry
 class CombineOrchestrator:
     """Internal orchestrator for Combine multi-agent system"""
     
+    # Stage-to-role-agent mapping for dispatch
+    _stage_agent_map = {
+        "brief_intake_required": "BriefIntakeAgent",
+        "route_classification_required": "RouteClassifierAgent",
+        "production_plan_required": "StrategyIntentAgent",
+        "production_plan_review": "CreativeDirectorAgent",
+        "asset_resolution_required": "AssetResolverAgent",
+        "workflow_plan_required": "WorkflowTDAgent",
+        "workflow_preflight_required": "CreativeDirectorAgent",
+        "generation_authorization_required": "GenerationAgent",
+        "generate_assets": "GenerationAgent",
+        "visual_qa_required": "VisualQAAgent",
+        "operator_visual_review": "VisualQAAgent",
+        "retry_correction_required": "RetryPolicyAgent",
+        "assembly_required": "AssemblyAgent",
+        "final_qc_required": "FinalQAAgent",
+    }
+    
     def __init__(self, project_root: str):
         """
         Initialize the orchestrator.
@@ -33,6 +52,9 @@ class CombineOrchestrator:
         self.project_root = Path(project_root)
         self.state_machine = CombineStateMachine()
         self.route_registry = RouteFamilyRegistry()
+        
+        # Lazy-loaded agent instances
+        self._agents: Dict[str, Any] = {}
         
         # Artifact index path
         self.artifact_index_path = self.project_root / "artifact_index.json"
@@ -83,6 +105,128 @@ class CombineOrchestrator:
         if allowed_states:
             return allowed_states[0]
         return "none"
+    
+    def _get_route_family(self) -> str:
+        """Get current route family from artifact index"""
+        artifact_index = self._read_artifact_index()
+        return artifact_index.get("route_family", "custom")
+    
+    def _get_route_policy(self, route_family: str) -> Dict[str, Any]:
+        """Get route family policy"""
+        if self.route_registry.is_supported_route_family(route_family):
+            return self.route_registry.get_route_family_policy(route_family)
+        return {}
+    
+    # ------------------------------------------------------------------
+    # Role Agent Registry and Dispatch
+    # ------------------------------------------------------------------
+    
+    def _load_agent(self, agent_name: str) -> Any:
+        """Lazy-load a role agent instance by name.
+        
+        Avoids circular imports by loading agents on demand.
+        """
+        if agent_name in self._agents:
+            return self._agents[agent_name]
+        
+        # Import agent classes (avoid circular imports)
+        try:
+            if agent_name == "BriefIntakeAgent":
+                from app.agents.brief_intake_agent import BriefIntakeAgent
+                agent = BriefIntakeAgent()
+            elif agent_name == "RouteClassifierAgent":
+                from app.agents.route_classifier_agent import RouteClassifierAgent
+                agent = RouteClassifierAgent()
+            elif agent_name == "StrategyIntentAgent":
+                from app.agents.strategy_intent_agent import StrategyIntentAgent
+                agent = StrategyIntentAgent()
+            elif agent_name == "CreativeDirectorAgent":
+                from app.agents.creative_director_agent import CreativeDirectorAgent
+                agent = CreativeDirectorAgent()
+            elif agent_name == "ScriptScenarioAgent":
+                from app.agents.script_scenario_agent import ScriptScenarioAgent
+                agent = ScriptScenarioAgent()
+            elif agent_name == "CharacterDirectorAgent":
+                from app.agents.character_director_agent import CharacterDirectorAgent
+                agent = CharacterDirectorAgent()
+            elif agent_name == "PromptCompositionAgent":
+                from app.agents.prompt_composition_agent import PromptCompositionAgent
+                agent = PromptCompositionAgent()
+            elif agent_name == "WorkflowTDAgent":
+                from app.agents.workflow_td_agent import WorkflowTDAgent
+                agent = WorkflowTDAgent()
+            elif agent_name == "AssetResolverAgent":
+                from app.agents.asset_resolver_agent import AssetResolverAgent
+                agent = AssetResolverAgent()
+            elif agent_name == "GenerationAgent":
+                from app.agents.generation_agent import GenerationAgent
+                agent = GenerationAgent()
+            elif agent_name == "VisualQAAgent":
+                from app.agents.visual_qa_agent import VisualQAAgent
+                agent = VisualQAAgent()
+            elif agent_name == "ArtifactEvidenceAgent":
+                from app.agents.artifact_evidence_agent import ArtifactEvidenceAgent
+                agent = ArtifactEvidenceAgent()
+            elif agent_name == "RetryPolicyAgent":
+                from app.agents.retry_policy_agent import RetryPolicyAgent
+                agent = RetryPolicyAgent()
+            elif agent_name == "AssemblyAgent":
+                from app.agents.assembly_agent import AssemblyAgent
+                agent = AssemblyAgent()
+            elif agent_name == "FinalQAAgent":
+                from app.agents.final_qa_agent import FinalQAAgent
+                agent = FinalQAAgent()
+            else:
+                raise ValueError(f"Unknown agent: {agent_name}")
+            
+            self._agents[agent_name] = agent
+            return agent
+        except ImportError as e:
+            raise ImportError(f"Failed to load agent {agent_name}: {e}")
+    
+    def _dispatch_to_agent(self, stage: str, context: CombineRunContext) -> Dict[str, Any]:
+        """Dispatch stage execution to the appropriate role agent.
+        
+        Args:
+            stage: Stage identifier to execute
+            context: Run context with project information
+            
+        Returns:
+            Agent result dictionary
+        """
+        agent_name = self._stage_agent_map.get(stage)
+        if not agent_name:
+            # No specific agent mapped for this stage - return generic stub
+            return {
+                "agent": "GenericStageAgent",
+                "stage": stage,
+                "status": "stubbed",
+                "dry_run": True,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "downstream_executed": False,
+                "next_recommended_stage": "none",
+                "message": f"Stage {stage} has no dedicated agent (generic stub)"
+            }
+        
+        # Load and run the agent
+        agent = self._load_agent(agent_name)
+        result = agent.run(context, dry_run=context.dry_run)
+        
+        # Convert AgentResult to dict for stage result
+        return {
+            "agent": result.agent,
+            "stage": result.stage,
+            "status": result.status,
+            "dry_run": result.dry_run,
+            "generation_performed": result.generation_performed,
+            "comfyui_execution": result.comfyui_execution,
+            "downstream_executed": result.downstream_executed,
+            "not_required_for_route": result.not_required_for_route,
+            "next_recommended_stage": result.next_recommended_stage,
+            "artifacts": result.artifacts,
+            "metadata": result.metadata
+        }
     
     def get_status(self) -> CombineStatus:
         """
@@ -172,16 +316,15 @@ class CombineOrchestrator:
     
     def run_stage(self, stage: str, dry_run: bool = True) -> CombineStageResult:
         """
-        Run a stage (stub/dry only).
+        Run a stage using the role agent protocol (stub/dry only).
         
-        This method does NOT call ComfyUI.
-        This method does NOT call generation service.
-        This method does NOT run QA/downstream.
+        This method dispatches to the appropriate role agent for the stage.
+        It does NOT call ComfyUI, does NOT perform generation, does NOT run QA/downstream.
         All stage execution in this layer is stub/dry only.
         
         Args:
-            stage: Stage to run
-            dry_run: If True, perform dry run only
+            stage: Stage to run (e.g., "brief_intake_required", "route_classification_required")
+            dry_run: If True, perform dry run only (always enforced in this layer)
             
         Returns:
             CombineStageResult with execution result
@@ -197,23 +340,45 @@ class CombineOrchestrator:
                 no_generation_performed=True
             )
         
-        # Stub execution - no actual work performed
-        if dry_run:
-            result = CombineStageResult(
-                stage=stage,
-                success=True,
-                message=f"Dry run: Stage {stage} validated successfully",
-                no_generation_performed=True
-            )
-        else:
-            # Even in non-dry mode, this is still a stub
-            # Actual implementation will be added in later phases
-            result = CombineStageResult(
-                stage=stage,
-                success=True,
-                message=f"Stub execution: Stage {stage} completed (stub)",
-                no_generation_performed=True
-            )
+        # Build run context
+        route_family = self._get_route_family()
+        route_policy = self._get_route_policy(route_family)
+        
+        context = CombineRunContext(
+            project_root=str(self.project_root),
+            current_state=current_state,
+            stage=stage,
+            route_family=route_family,
+            dry_run=True,  # Always True for this layer
+            metadata={
+                "route_family": route_family,
+                "route_policy": route_policy,
+                "project_root": str(self.project_root)
+            }
+        )
+        
+        # Dispatch to role agent
+        agent_result = self._dispatch_to_agent(stage, context)
+        
+        # Build stage result
+        success = agent_result["status"] == "stubbed"
+        result = CombineStageResult(
+            stage=stage,
+            success=success,
+            message=f"Agent {agent_result['agent']} executed stage (stub)",
+            artifacts=agent_result.get("artifacts", []),
+            metadata={
+                "agent": agent_result["agent"],
+                "dry_run": agent_result["dry_run"],
+                "generation_performed": agent_result["generation_performed"],
+                "comfyui_execution": agent_result["comfyui_execution"],
+                "downstream_executed": agent_result["downstream_executed"],
+                "not_required_for_route": agent_result.get("not_required_for_route", False),
+                "next_recommended_stage": agent_result.get("next_recommended_stage", ""),
+                **agent_result.get("metadata", {})
+            },
+            no_generation_performed=True  # Always True for this layer
+        )
         
         # Write stage result
         self._write_stage_result(result)
@@ -222,9 +387,12 @@ class CombineOrchestrator:
         self._append_ledger_event({
             "event_type": "stage_execution",
             "stage": stage,
+            "agent": agent_result["agent"],
             "success": result.success,
             "message": result.message,
             "dry_run": dry_run,
+            "generation_performed": agent_result["generation_performed"],
+            "comfyui_execution": agent_result["comfyui_execution"],
             "timestamp": result.timestamp
         })
         
