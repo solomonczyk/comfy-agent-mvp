@@ -22,6 +22,7 @@ class CombineStateMachine:
         "workflow_plan_required",
         "workflow_preflight_required",
         "generation_authorization_required",
+        "operator_generation_authorization_required",
         "generate_assets",
         "visual_qa_required",
         "operator_visual_review",
@@ -74,6 +75,10 @@ class CombineStateMachine:
             "generation_authorization_required"
         },
         "generation_authorization_required": {
+            "operator_generation_authorization_required",
+            "controlled_asset_resolution_review_required"
+        },
+        "operator_generation_authorization_required": {
             "generate_assets"
         },
         "generate_assets": {

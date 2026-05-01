@@ -18,7 +18,7 @@ class CreativeDirectorAgent(BaseRoleAgent):
     
     @property
     def supported_stages(self) -> List[str]:
-        return ["production_plan_review", "workflow_preflight_required", "generation_authorization_required"]
+        return ["production_plan_review", "workflow_preflight_required"]
     
     @property
     def required_inputs(self) -> List[str]:
@@ -51,19 +51,6 @@ class CreativeDirectorAgent(BaseRoleAgent):
         
         if stage == "production_plan_review":
             next_stage = "asset_resolution_required"
-        elif stage == "generation_authorization_required":
-            next_stage = "generate_assets"
-            contract_name = "combine_v2_preflight_contract"
-            contract_file = f"{contract_name}.json"
-            artifacts.append(contract_file)
-            metadata[contract_name] = {
-                "agent": self.role_name,
-                "stage": stage,
-                "preflight_passed": True,
-                "generation_authorization_ready": False,
-                "authorization_required": True,
-                "status": "ready_for_auth"
-            }
         elif stage == "workflow_preflight_required":
             next_stage = "generation_authorization_required"
         

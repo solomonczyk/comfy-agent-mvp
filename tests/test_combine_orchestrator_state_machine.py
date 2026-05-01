@@ -54,8 +54,11 @@ class TestCombineStateMachine:
         assert not CombineStateMachine.can_transition("workflow_plan_required", "generate_assets")
         assert not CombineStateMachine.can_transition("workflow_preflight_required", "generate_assets")
         
-        # Generation can only happen after authorization
-        assert CombineStateMachine.can_transition("generation_authorization_required", "generate_assets")
+        # Generation can only happen after operator authorization
+        assert CombineStateMachine.can_transition("generation_authorization_required", "operator_generation_authorization_required")
+        assert CombineStateMachine.can_transition("operator_generation_authorization_required", "generate_assets")
+        # Cannot skip directly
+        assert not CombineStateMachine.can_transition("generation_authorization_required", "generate_assets")
     
     def test_qa_cannot_happen_before_generated_artifacts(self):
         """Test that QA cannot happen before generated artifacts"""

@@ -6,6 +6,10 @@ explicitly refused and stubbed only. No real ComfyUI execution occurs.
 CRITICAL: This agent exists as a role but refuses actual generation.
 """
 
+import os
+import json
+from pathlib import Path
+from datetime import datetime
 from typing import List, Dict, Any
 from app.agents.base import BaseRoleAgent, AgentResult
 from app.orchestrator.contracts import CombineRunContext
@@ -24,7 +28,7 @@ class GenerationAgent(BaseRoleAgent):
     
     @property
     def supported_stages(self) -> List[str]:
-        return ["generate_assets"]
+        return ["generation_authorization_required", "operator_generation_authorization_required", "generate_assets"]
     
     @property
     def required_inputs(self) -> List[str]:
@@ -37,15 +41,27 @@ class GenerationAgent(BaseRoleAgent):
     def validate_inputs(self, context: CombineRunContext) -> bool:
         return bool(context.project_root)
     
+    def _read_contract(self, project_root: str, contract_name: str) -> Dict[str, Any]:
+        """Helper to read contract files from output/control"""
+        contract_path = Path(project_root) / "output" / "control" / f"{contract_name}.json"
+        if contract_path.exists():
+            try:
+                with open(contract_path, 'r') as f:
+                    return json.load(f)
+            except (json.JSONDecodeError, IOError):
+                return {}
+        return {}
+
     def create_stub_result(self, context: CombineRunContext) -> AgentResult:
+        """Create a stub result for dry-run execution."""
         return AgentResult(
             agent=self.role_name,
             stage=context.stage,
             status="stubbed",
-            dry_run=True,  # Always True - generation refused
-            generation_performed=False,  # Always False - generation refused
-            comfyui_execution=False,  # Always False - no ComfyUI
-            downstream_executed=False,  # Always False - no downstream
+            dry_run=True,
+            generation_performed=False,
+            comfyui_execution=False,
+            downstream_executed=False,
             artifacts=[],
             next_recommended_stage="visual_qa_required",
             metadata={
@@ -56,7 +72,7 @@ class GenerationAgent(BaseRoleAgent):
                 "description": "Generation role exists but refuses execution (stub only)"
             }
         )
-    
+
     def run(self, context: CombineRunContext, dry_run: bool = True) -> AgentResult:
         """Execute the generation agent.
         
@@ -80,11 +96,115 @@ class GenerationAgent(BaseRoleAgent):
                 }
             )
         
-        # ALWAYS return stub - generation refused
-        result = self.create_stub_result(context)
-        result.dry_run = True  # Enforce
-        result.generation_performed = False  # Enforce
-        result.comfyui_execution = False  # Enforce
-        result.downstream_executed = False  # Enforce
+        stage = context.stage
+        project_root = context.project_root
+        timestamp = datetime.utcnow().isoformat()
         
-        return result
+        if stage == "generation_authorization_required":
+            # 1. Read required contracts
+            asset_gate = self._read_contract(project_root, "combine_v2_asset_gate_decision")
+            workflow_contract = self._read_contract(project_root, "combine_v2_workflow_contract")
+            prompt_contract = self._read_contract(project_root, "combine_v2_prompt_contract")
+            preflight_contract = self._read_contract(project_root, "combine_v2_preflight_contract")
+            
+            # 2. Evaluate status
+            missing_assets = asset_gate.get("missing_assets", []) or asset_gate.get("missing", [])
+            assets_resolved = not bool(missing_assets)
+            
+            # Preflight status (default to True if not found for stub purposes)
+            preflight_ok = preflight_contract.get("preflight_passed", True)
+            
+            # 3. Determine decision and next action
+            generation_authorized = False
+            authorization_required = False
+            next_allowed_action = "none"
+            status = "stubbed"
+            
+            if not assets_resolved:
+                next_allowed_action = "controlled_asset_resolution_review_required"
+                blocked_by_assets = True
+            else:
+                blocked_by_assets = False
+                if preflight_ok:
+                    authorization_required = True
+                    next_allowed_action = "operator_generation_authorization_required"
+            
+            # 4. Create artifacts
+            auth_request = {
+                "agent": self.role_name,
+                "stage": stage,
+                "assets_resolved": assets_resolved,
+                "preflight_ok": preflight_ok,
+                "authorization_required": authorization_required,
+                "blocked_by_assets": blocked_by_assets,
+                "missing_assets": missing_assets,
+                "timestamp": timestamp
+            }
+            
+            auth_decision = {
+                "agent": self.role_name,
+                "stage": stage,
+                "generation_authorized": generation_authorized,
+                "authorization_required": authorization_required,
+                "next_allowed_action": next_allowed_action,
+                "timestamp": timestamp
+            }
+            
+            payload_stub = {
+                "agent": self.role_name,
+                "stage": stage,
+                "payload_type": "generation_contract_v2",
+                "workflow": workflow_contract.get("workflow_id", "default"),
+                "prompts": prompt_contract.get("prompts", []),
+                "assets": asset_gate.get("inventory", {}),
+                "is_stub": True,
+                "dry_run": True
+            }
+            
+            artifacts = [
+                "combine_v2_generation_authorization_request.json",
+                "combine_v2_generation_authorization_decision.json",
+                "combine_v2_generation_payload_stub.json"
+            ]
+            
+            metadata = {
+                "action": "generation_authorization_request",
+                "generation_authorized": generation_authorized,
+                "authorization_required": authorization_required,
+                "blocked_by_assets": blocked_by_assets,
+                "next_recommended_stage": next_allowed_action,
+                "combine_v2_generation_authorization_request": auth_request,
+                "combine_v2_generation_authorization_decision": auth_decision,
+                "combine_v2_generation_payload_stub": payload_stub
+            }
+            
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status=status,
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=artifacts,
+                next_recommended_stage=next_allowed_action,
+                metadata=metadata
+            )
+
+        if stage == "operator_generation_authorization_required":
+            # Pass-through to generate_assets
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status="stubbed",
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                next_recommended_stage="generate_assets",
+                metadata={"action": "operator_authorization_acknowledged"}
+            )
+
+        # DEFAULT: generate_assets or other stages
+        return self.create_stub_result(context)
+

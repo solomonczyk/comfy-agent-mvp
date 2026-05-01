@@ -1,0 +1,36 @@
+{
+  "report_timestamp": "2026-04-30T08:44:00Z",
+  "report_scope": "RC2-PRODCARDS3S",
+  "discovery_method": "local_filesystem_scan",
+  "scan_directories": [
+    "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\models\\checkpoints",
+    "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\models\\diffusers"
+  ],
+  "discovery_results": {
+    "planned_model": {
+      "name": "dynavision_v10.safetensors",
+      "status": "NOT_FOUND",
+      "reason": "Model not present in local inventory"
+    },
+    "discovered_models": {
+      "sdxl_checkpoints_count": 4,
+      "diffusers_models_count": 1,
+      "total_count": 5
+    },
+    "model_classifications": {
+      "exact_match": 0,
+      "compatible_candidate": 5,
+      "fallback_candidate": 0,
+      "incompatible": 0,
+      "requires_review": 5
+    }
+  },
+  "key_findings": [
+    "Planned model dynavision_v10.safetensors is missing from local inventory",
+    "5 compatible SDXL models are available as candidates (4 checkpoints + 1 diffusers)",
+    "All discovered models share SDXL architecture with planned model",
+    "No incompatible models found in inventory",
+    "Model substitution requires review gate approval"
+  ],
+  "recommendation": "Proceed to model candidate review gate for substitution approval"
+}
