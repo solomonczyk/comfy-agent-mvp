@@ -47,7 +47,7 @@ class CreativeDirectorAgent(BaseRoleAgent):
             comfyui_execution=False,
             downstream_executed=False,
             artifacts=[],
-            next_recommended_stage="generation_authorization_required",
+            next_recommended_stage="asset_resolution_required",
             not_required_for_route=not_required,
             metadata={
                 "action": "set_creative_direction",

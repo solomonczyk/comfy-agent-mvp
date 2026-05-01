@@ -297,6 +297,9 @@ class CombineOrchestrator:
             "no_generation_performed": result.no_generation_performed
         })
         
+        # Update current state
+        artifact_index["current_state"] = result.stage
+        
         # Write artifact index
         with open(self.artifact_index_path, 'w') as f:
             json.dump(artifact_index, f, indent=2)

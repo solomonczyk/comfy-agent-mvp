@@ -43,7 +43,7 @@ class StrategyIntentAgent(BaseRoleAgent):
             comfyui_execution=False,
             downstream_executed=False,
             artifacts=[],
-            next_recommended_stage="workflow_plan_required",
+            next_recommended_stage="production_plan_review",
             metadata={
                 "action": "determine_strategy",
                 "route_family": route_family,

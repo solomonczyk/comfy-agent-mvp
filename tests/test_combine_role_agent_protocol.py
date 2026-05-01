@@ -439,3 +439,51 @@ class TestContractFiles:
         from app.contracts.final_pack_contract import FinalPackContract
         contract = FinalPackContract()
         assert contract.acceptance_status is None
+
+
+class TestAgentStateTransitions:
+    """Test specific agent state transition recommendations."""
+    
+    def test_strategy_intent_recommends_production_plan_review(self):
+        """StrategyIntentAgent must recommend production_plan_review."""
+        agent = StrategyIntentAgent()
+        context = CombineRunContext(
+            project_root="/test/project",
+            current_state="production_plan_required",
+            stage="production_plan_required",
+            route_family="custom",
+            metadata={"project_root": "/test/project", "route_family": "custom"}
+        )
+        result = agent.create_stub_result(context)
+        assert result.next_recommended_stage == "production_plan_review"
+
+    def test_creative_director_recommends_asset_resolution(self):
+        """CreativeDirectorAgent must recommend asset_resolution_required, NOT generation_authorization."""
+        agent = CreativeDirectorAgent()
+        context = CombineRunContext(
+            project_root="/test/project",
+            current_state="production_plan_review",
+            stage="production_plan_review",
+            route_family="custom",
+            metadata={"project_root": "/test/project", "route_family": "custom"}
+        )
+        result = agent.create_stub_result(context)
+        assert result.next_recommended_stage == "asset_resolution_required"
+        assert result.next_recommended_stage != "generation_authorization_required"
+
+    def test_no_generation_performed_by_stubs(self):
+        """Verify no generation is executed by any stub agent."""
+        context = CombineRunContext(
+            project_root="/test/project",
+            current_state="any",
+            stage="any",
+            route_family="custom",
+            metadata={"project_root": "/test/project", "route_family": "custom"}
+        )
+        for name, agent_class in ALL_AGENTS:
+            agent = agent_class()
+            result = agent.create_stub_result(context)
+            assert result.generation_performed == False
+            assert result.comfyui_execution == False
+            assert result.downstream_executed == False
+
