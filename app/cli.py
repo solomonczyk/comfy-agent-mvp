@@ -143,6 +143,141 @@ def combine_run(args: argparse.Namespace) -> int:
     return 0 if success else 1
 
 
+def combine_authorize_generation(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-6 — Operator Generation Authorization Gate.
+    
+    This command transitions the system from operator_generation_authorization_required
+    to generate_assets by creating an authorization artifact.
+    It does NOT trigger real generation.
+    
+    Exit codes:
+    - 0: generation authorized successfully
+    - 1: authorization rejected or error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from app.orchestrator import CombineOrchestrator
+    
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    
+    # 1. Read authorization decision
+    decision_path = control_dir / "combine_v2_generation_authorization_decision.json"
+    if not decision_path.exists():
+        msg = "Error: Missing combine_v2_generation_authorization_decision.json. Run generation_authorization_required first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg, "generation_gate_open": False}))
+        else:
+            print(msg)
+        return 1
+        
+    with open(decision_path, 'r') as f:
+        decision = json.load(f)
+        
+    # 2. Check preconditions
+    auth_required = decision.get("authorization_required", False)
+    already_authorized = decision.get("generation_authorized", False)
+    
+    # Check for missing assets in asset gate decision
+    asset_gate_path = control_dir / "combine_v2_asset_gate_decision.json"
+    missing_assets = True
+    if asset_gate_path.exists():
+        with open(asset_gate_path, 'r') as f:
+            asset_gate = json.load(f)
+            missing = asset_gate.get("missing_assets", []) or asset_gate.get("missing", [])
+            missing_assets = bool(missing)
+            
+    # 3. Evaluate if gate can open
+    gate_open = False
+    rejection_reason = None
+    
+    if missing_assets:
+        rejection_reason = "Blocked by missing assets. Resolve assets first."
+    elif not auth_required:
+        rejection_reason = "Authorization not required in current state."
+    elif already_authorized:
+        rejection_reason = "Generation already authorized."
+    else:
+        gate_open = True
+        
+    timestamp = datetime.utcnow().isoformat()
+    
+    # 4. Create artifact
+    if gate_open:
+        auth_artifact = {
+            "agent": "Operator",
+            "action": "authorize_generation",
+            "generation_gate_open": True,
+            "next_allowed_action": "generate_assets",
+            "timestamp": timestamp,
+            "preconditions_checked": {
+                "authorization_required": auth_required,
+                "generation_authorized": already_authorized,
+                "missing_assets": missing_assets
+            }
+        }
+        
+        artifact_path = control_dir / "combine_v2_operator_generation_authorization.json"
+        control_dir.mkdir(parents=True, exist_ok=True)
+        with open(artifact_path, 'w') as f:
+            json.dump(auth_artifact, f, indent=2)
+            
+        # Update orchestrator state to operator_generation_authorization_required
+        orchestrator = CombineOrchestrator(str(project_root))
+        # We "run" the stage to transition the state properly in artifact_index and ledger
+        orchestrator.run_stage("operator_generation_authorization_required")
+        
+        status = orchestrator.get_status()
+        
+        if json_output:
+            print(json.dumps({
+                "status": "ok",
+                "generation_gate_open": True,
+                "next_allowed_action": status.next_allowed_action,
+                "current_state": status.current_state,
+                "artifact": str(artifact_path.relative_to(project_root))
+            }, indent=2))
+        else:
+            print("Generation Authorization: GRANTED")
+            print(f"Next Allowed Action: {status.next_allowed_action}")
+            print(f"Artifact created: {artifact_path}")
+        return 0
+    else:
+        # Create rejection artifact
+        rejection_artifact = {
+            "agent": "Operator",
+            "action": "authorize_generation",
+            "generation_gate_open": False,
+            "rejection_reason": rejection_reason,
+            "timestamp": timestamp,
+            "preconditions_checked": {
+                "authorization_required": auth_required,
+                "generation_authorized": already_authorized,
+                "missing_assets": missing_assets
+            }
+        }
+        
+        artifact_path = control_dir / "combine_v2_operator_generation_rejection.json"
+        control_dir.mkdir(parents=True, exist_ok=True)
+        with open(artifact_path, 'w') as f:
+            json.dump(rejection_artifact, f, indent=2)
+            
+        if json_output:
+            print(json.dumps({
+                "status": "rejected",
+                "generation_gate_open": False,
+                "message": rejection_reason,
+                "artifact": str(artifact_path.relative_to(project_root))
+            }, indent=2))
+        else:
+            print(f"Generation Authorization: REJECTED")
+            print(f"Reason: {rejection_reason}")
+            print(f"Artifact created: {artifact_path}")
+        return 1
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -540,6 +675,19 @@ def main() -> int:
         action="store_true",
         help="Output in JSON format",
     )
+    # RC-COMBINE-V2-6 — combine-authorize-generation subcommand
+    combine_authorize_generation_parser = subparsers.add_parser("combine-authorize-generation", help="Authorize generation gate (transitions to generate_assets)")
+    combine_authorize_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_authorize_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
 
     # RC2-DIRECTOR1 — Director-lite subcommand
     director_parser = subparsers.add_parser("director", help="Director-lite read-only inspection commands")
@@ -1442,6 +1590,8 @@ def main() -> int:
         return combine_run(args)
     elif args.command == "combine-run-stage":
         return combine_run_stage(args)
+    elif args.command == "combine-authorize-generation":
+        return combine_authorize_generation(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":

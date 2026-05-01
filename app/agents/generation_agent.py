@@ -192,17 +192,34 @@ class GenerationAgent(BaseRoleAgent):
             )
 
         if stage == "operator_generation_authorization_required":
-            # Pass-through to generate_assets
+            # 1. Read operator authorization artifact
+            op_auth = self._read_contract(project_root, "combine_v2_operator_generation_authorization")
+            gate_open = op_auth.get("generation_gate_open", False)
+            
+            if gate_open:
+                next_recommended_stage = "generate_assets"
+                status = "ok"
+                message = "Operator authorization granted"
+            else:
+                next_recommended_stage = "operator_generation_authorization_required"
+                status = "blocked"
+                message = "Operator authorization missing or rejected"
+                
             return AgentResult(
                 agent=self.role_name,
                 stage=stage,
-                status="stubbed",
+                status=status,
                 dry_run=True,
                 generation_performed=False,
                 comfyui_execution=False,
                 downstream_executed=False,
-                next_recommended_stage="generate_assets",
-                metadata={"action": "operator_authorization_acknowledged"}
+                next_recommended_stage=next_recommended_stage,
+                metadata={
+                    "action": "operator_authorization_check",
+                    "generation_gate_open": gate_open,
+                    "operator_decision": op_auth,
+                    "message": message
+                }
             )
 
         # DEFAULT: generate_assets or other stages
