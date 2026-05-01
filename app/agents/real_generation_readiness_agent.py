@@ -24,6 +24,7 @@ class RealGenerationReadinessAgent(BaseRoleAgent):
             "real_generation_readiness_required",
             "real_generation_preflight_required",
             "operator_real_generation_authorization_required",
+            "operator_real_generation_approved",
         ]
 
     @property
@@ -159,6 +160,34 @@ class RealGenerationReadinessAgent(BaseRoleAgent):
                 metadata={
                     "next_allowed_action": "operator_real_generation_authorization_required",
                     "combine_v2_operator_real_generation_authorization_request": request,
+                },
+            )
+
+        if stage == "operator_real_generation_approved":
+            approved = {
+                "stage": stage,
+                "operator_real_generation_authorized": True,
+                "real_generation_gate_open": True,
+                "next_allowed_action": "real_generate_assets",
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "downstream_executed": False,
+                "production_accepted": False,
+                "timestamp": timestamp,
+            }
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status="ok",
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=[],
+                next_recommended_stage="real_generate_assets",
+                metadata={
+                    "next_allowed_action": "real_generate_assets",
+                    "operator_real_generation_approved": approved,
                 },
             )
 

@@ -33,6 +33,8 @@ class GenerationAgent(BaseRoleAgent):
             "operator_generation_authorization_required",
             "generate_assets",
             "real_generation_payload_review",
+            "real_generate_assets",
+            "real_generation_result_collected",
         ]
     
     @property

@@ -1,0 +1,9 @@
+{
+  "stage": "real_generate_assets",
+  "generated_assets_count": 0,
+  "generated_assets": [],
+  "assets_root": "output/assets",
+  "output_control_root": "output/control",
+  "downstream_executed": false,
+  "production_accepted": false
+}

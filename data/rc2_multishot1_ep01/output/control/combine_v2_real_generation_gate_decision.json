@@ -1,0 +1,13 @@
+{
+  "operator_real_generation_authorized": true,
+  "real_generation_gate_open": true,
+  "next_allowed_action": "real_generate_assets",
+  "requires_operator_confirmation": true,
+  "explicit_confirmation_received": true,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "workflow_submitted": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-01T15:57:24.649855"
+}

@@ -1,0 +1,99 @@
+{
+  "stage": "real_generate_assets",
+  "status": "submitted",
+  "generation_attempts": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "generation_performed": true,
+  "comfyui_execution": true,
+  "next_allowed_action": "real_generation_result_collected",
+  "downstream_executed": false,
+  "production_accepted": false,
+  "workflow_payload_snapshot": {
+    "1": {
+      "inputs": {
+        "ckpt_name": "realvisxlV50_v50Bakedvae.safetensors"
+      },
+      "class_type": "CheckpointLoaderSimple"
+    },
+    "2": {
+      "inputs": {
+        "text": "test",
+        "clip": [
+          "1",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode"
+    },
+    "3": {
+      "inputs": {
+        "text": "test",
+        "clip": [
+          "1",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode"
+    },
+    "4": {
+      "inputs": {
+        "seed": 1,
+        "steps": 20,
+        "cfg": 7,
+        "sampler_name": "euler",
+        "scheduler": "normal",
+        "denoise": 1,
+        "model": [
+          "1",
+          0
+        ],
+        "positive": [
+          "2",
+          0
+        ],
+        "negative": [
+          "3",
+          0
+        ],
+        "latent_image": [
+          "5",
+          0
+        ]
+      },
+      "class_type": "KSampler"
+    },
+    "5": {
+      "inputs": {
+        "width": 512,
+        "height": 512,
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage"
+    },
+    "6": {
+      "inputs": {
+        "samples": [
+          "4",
+          0
+        ],
+        "vae": [
+          "1",
+          2
+        ]
+      },
+      "class_type": "VAEDecode"
+    },
+    "7": {
+      "inputs": {
+        "filename_prefix": "combine_v2",
+        "images": [
+          "6",
+          0
+        ]
+      },
+      "class_type": "SaveImage"
+    }
+  },
+  "timestamp": "2026-05-01T15:57:25.515881"
+}

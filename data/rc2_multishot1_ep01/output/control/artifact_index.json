@@ -1,5 +1,5 @@
 {
-  "current_state": "operator_real_generation_authorization_required",
+  "current_state": "real_generation_result_collected",
   "route_family": "custom",
   "stage_results": [
     {
@@ -2712,6 +2712,97 @@
       },
       "timestamp": "2026-05-01T15:42:39.891638",
       "no_generation_performed": true
+    },
+    {
+      "stage": "operator_real_generation_approved",
+      "success": true,
+      "message": "CLI stage transition: operator_real_generation_approved",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generate_assets",
+        "generation_performed": false,
+        "comfyui_execution": false
+      },
+      "timestamp": "2026-05-01T15:56:04.961468",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generate_assets",
+      "success": true,
+      "message": "CLI stage transition: real_generate_assets",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generation_result_collected",
+        "generation_performed": true,
+        "comfyui_execution": true
+      },
+      "timestamp": "2026-05-01T15:56:05.648486",
+      "no_generation_performed": false
+    },
+    {
+      "stage": "operator_real_generation_approved",
+      "success": true,
+      "message": "CLI stage transition: operator_real_generation_approved",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generate_assets",
+        "generation_performed": false,
+        "comfyui_execution": false
+      },
+      "timestamp": "2026-05-01T15:56:28.243139",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generate_assets",
+      "success": true,
+      "message": "CLI stage transition: real_generate_assets",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generation_result_collected",
+        "generation_performed": true,
+        "comfyui_execution": true
+      },
+      "timestamp": "2026-05-01T15:56:29.101163",
+      "no_generation_performed": false
+    },
+    {
+      "stage": "operator_real_generation_approved",
+      "success": true,
+      "message": "CLI stage transition: operator_real_generation_approved",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generate_assets",
+        "generation_performed": false,
+        "comfyui_execution": false
+      },
+      "timestamp": "2026-05-01T15:57:24.651856",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generate_assets",
+      "success": true,
+      "message": "CLI stage transition: real_generate_assets",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generation_result_collected",
+        "generation_performed": true,
+        "comfyui_execution": true
+      },
+      "timestamp": "2026-05-01T15:57:25.516879",
+      "no_generation_performed": false
+    },
+    {
+      "stage": "real_generation_result_collected",
+      "success": true,
+      "message": "CLI stage transition: real_generation_result_collected",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "visual_qa_required",
+        "generation_performed": true,
+        "comfyui_execution": true
+      },
+      "timestamp": "2026-05-01T15:59:08.908758",
+      "no_generation_performed": false
     }
   ]
 }

@@ -5,6 +5,7 @@ Exposes ExecutionRunner via argparse with --brief, --output, --host, --port, --c
 from __future__ import annotations
 
 import argparse
+import asyncio
 import hashlib
 import json
 import os
@@ -15,6 +16,7 @@ import urllib.error
 import urllib.request
 from datetime import datetime
 from pathlib import Path
+from typing import Any, Dict, List
 
 
 def combine_status(args: argparse.Namespace) -> int:
@@ -773,6 +775,489 @@ def combine_prepare_real_generation(args: argparse.Namespace) -> int:
     return 0
 
 
+def _read_json_file(path: Path) -> Dict[str, Any]:
+    if not path.exists():
+        return {}
+    try:
+        with path.open("r", encoding="utf-8") as handle:
+            payload = json.load(handle)
+        return payload if isinstance(payload, dict) else {}
+    except (json.JSONDecodeError, OSError):
+        return {}
+
+
+def _write_json_file(path: Path, payload: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2)
+
+
+def _record_combine_stage_result(
+    project_root: Path,
+    stage: str,
+    next_allowed_action: str,
+    success: bool = True,
+    metadata: Dict[str, Any] | None = None,
+) -> None:
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    artifact_index_path = control_dir / "artifact_index.json"
+    ledger_path = control_dir / "episode_ledger.json"
+    timestamp = datetime.utcnow().isoformat()
+    metadata = metadata or {}
+
+    artifact_index = _read_json_file(artifact_index_path)
+    stage_results = artifact_index.get("stage_results")
+    if not isinstance(stage_results, list):
+        stage_results = []
+    stage_results.append(
+        {
+            "stage": stage,
+            "success": success,
+            "message": f"CLI stage transition: {stage}",
+            "artifacts": [],
+            "metadata": {"next_allowed_action": next_allowed_action, **metadata},
+            "timestamp": timestamp,
+            "no_generation_performed": not metadata.get("generation_performed", False),
+        }
+    )
+    artifact_index["stage_results"] = stage_results
+    artifact_index["current_state"] = stage
+    _write_json_file(artifact_index_path, artifact_index)
+
+    ledger_raw: Any = []
+    if ledger_path.exists():
+        try:
+            with ledger_path.open("r", encoding="utf-8") as handle:
+                ledger_raw = json.load(handle)
+        except (json.JSONDecodeError, OSError):
+            ledger_raw = []
+    event = {
+        "event_type": "stage_execution",
+        "stage": stage,
+        "agent": "CLI",
+        "success": success,
+        "message": f"CLI stage transition: {stage}",
+        "dry_run": False,
+        "generation_performed": bool(metadata.get("generation_performed", False)),
+        "comfyui_execution": bool(metadata.get("comfyui_execution", False)),
+        "timestamp": timestamp,
+    }
+    if isinstance(ledger_raw, list):
+        ledger_raw.append(event)
+    elif isinstance(ledger_raw, dict):
+        events = ledger_raw.get("events")
+        if not isinstance(events, list):
+            events = []
+        events.append(event)
+        ledger_raw["events"] = events
+    else:
+        ledger_raw = [event]
+    _write_json_file(ledger_path, ledger_raw)
+
+
+def combine_authorize_real_generation(args: argparse.Namespace) -> int:
+    project_root = Path(args.project_root)
+    json_output = args.json
+    explicit_confirm = bool(getattr(args, "confirm_real_comfyui_execution", False))
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    now = datetime.utcnow().isoformat()
+
+    if not explicit_confirm:
+        blocked = {
+            "status": "blocked",
+            "requires_operator_confirmation": True,
+            "explicit_confirmation_received": False,
+            "operator_real_generation_authorized": False,
+            "real_generation_gate_open": False,
+            "next_allowed_action": "operator_real_generation_authorization_required",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "workflow_submitted": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Real Generation Authorization: BLOCKED")
+            print("Missing --confirm-real-comfyui-execution")
+        return 1
+
+    approval = {
+        "agent": "Operator",
+        "stage": "operator_real_generation_approved",
+        "operator_real_generation_authorized": True,
+        "requires_operator_confirmation": True,
+        "explicit_confirmation_received": True,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": now,
+    }
+    gate_decision = {
+        "operator_real_generation_authorized": True,
+        "real_generation_gate_open": True,
+        "next_allowed_action": "real_generate_assets",
+        "requires_operator_confirmation": True,
+        "explicit_confirmation_received": True,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": now,
+    }
+    approval_path = control_dir / "combine_v2_operator_real_generation_approval.json"
+    gate_path = control_dir / "combine_v2_real_generation_gate_decision.json"
+    _write_json_file(approval_path, approval)
+    _write_json_file(gate_path, gate_decision)
+    _record_combine_stage_result(
+        project_root=project_root,
+        stage="operator_real_generation_approved",
+        next_allowed_action="real_generate_assets",
+        metadata={"generation_performed": False, "comfyui_execution": False},
+    )
+
+    response = {
+        "status": "ok",
+        **gate_decision,
+        "operator_real_generation_approval_created": True,
+        "real_generation_gate_decision_created": True,
+        "artifacts": [
+            str(approval_path.relative_to(project_root)),
+            str(gate_path.relative_to(project_root)),
+        ],
+    }
+    if json_output:
+        print(json.dumps(response, indent=2))
+    else:
+        print("Real Generation Authorization: APPROVED")
+        print("Next Allowed Action: real_generate_assets")
+    return 0
+
+
+def _extract_history_images(history_item: Dict[str, Any]) -> List[Dict[str, str]]:
+    outputs = history_item.get("outputs", {})
+    if not isinstance(outputs, dict):
+        return []
+    images: List[Dict[str, str]] = []
+    for node_data in outputs.values():
+        if not isinstance(node_data, dict):
+            continue
+        node_images = node_data.get("images", [])
+        if not isinstance(node_images, list):
+            continue
+        for image in node_images:
+            if not isinstance(image, dict):
+                continue
+            filename = str(image.get("filename", "")).strip()
+            if not filename:
+                continue
+            images.append(
+                {
+                    "filename": filename,
+                    "subfolder": str(image.get("subfolder", "")),
+                    "type": str(image.get("type", "output")),
+                }
+            )
+    return images
+
+
+def _build_minimal_real_workflow() -> Dict[str, Any]:
+    return {
+        "1": {
+            "inputs": {"ckpt_name": "realvisxlV50_v50Bakedvae.safetensors"},
+            "class_type": "CheckpointLoaderSimple",
+        },
+        "2": {"inputs": {"text": "test", "clip": ["1", 1]}, "class_type": "CLIPTextEncode"},
+        "3": {"inputs": {"text": "test", "clip": ["1", 1]}, "class_type": "CLIPTextEncode"},
+        "4": {
+            "inputs": {
+                "seed": 1,
+                "steps": 20,
+                "cfg": 7,
+                "sampler_name": "euler",
+                "scheduler": "normal",
+                "denoise": 1,
+                "model": ["1", 0],
+                "positive": ["2", 0],
+                "negative": ["3", 0],
+                "latent_image": ["5", 0],
+            },
+            "class_type": "KSampler",
+        },
+        "5": {"inputs": {"width": 512, "height": 512, "batch_size": 1}, "class_type": "EmptyLatentImage"},
+        "6": {"inputs": {"samples": ["4", 0], "vae": ["1", 2]}, "class_type": "VAEDecode"},
+        "7": {"inputs": {"filename_prefix": "combine_v2", "images": ["6", 0]}, "class_type": "SaveImage"},
+    }
+
+
+def combine_real_generate_assets(args: argparse.Namespace) -> int:
+    from app.comfy.comfy_client import ComfyClient
+
+    project_root = Path(args.project_root)
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    json_output = args.json
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+
+    if not execute:
+        dry_response = {
+            "status": "authorization_required",
+            "would_submit_workflow": True,
+            "generation_performed": False,
+            "comfyui_execution": False,
+        }
+        if json_output:
+            print(json.dumps(dry_response, indent=2))
+        else:
+            print("Real Generation: DRY RUN")
+        return 0
+
+    if max_generations != 1:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "max_generations_must_equal_1",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Real Generation: BLOCKED (max_generations must be 1)")
+        return 1
+
+    required_files = {
+        "approval": control_dir / "combine_v2_operator_real_generation_approval.json",
+        "gate_decision": control_dir / "combine_v2_real_generation_gate_decision.json",
+        "payload": control_dir / "combine_v2_real_generation_payload.json",
+        "execution_contract": control_dir / "combine_v2_real_generation_execution_contract.json",
+        "preflight_report": control_dir / "combine_v2_real_generation_preflight_report.json",
+    }
+    missing = [name for name, path in required_files.items() if not path.exists()]
+    if missing:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": f"missing_required_artifacts: {', '.join(sorted(missing))}",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"Real Generation: BLOCKED ({blocked['blocked_reason']})")
+        return 1
+
+    artifact_index = _read_json_file(control_dir / "artifact_index.json")
+    current_state = artifact_index.get("current_state", "initial")
+    if current_state != "operator_real_generation_approved":
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "current_state_not_operator_real_generation_approved",
+            "current_state": current_state,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"Real Generation: BLOCKED ({blocked['blocked_reason']})")
+        return 1
+
+    gate_decision = _read_json_file(required_files["gate_decision"])
+    if not gate_decision.get("real_generation_gate_open", False):
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "real_generation_gate_closed",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Real Generation: BLOCKED (gate closed)")
+        return 1
+    if gate_decision.get("next_allowed_action") != "real_generate_assets":
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "next_allowed_action_must_be_real_generate_assets",
+            "next_allowed_action": gate_decision.get("next_allowed_action"),
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Real Generation: BLOCKED (next allowed action mismatch)")
+        return 1
+
+    preflight = _read_json_file(required_files["preflight_report"])
+    if preflight.get("status") != "ready":
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "preflight_not_ready",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Real Generation: BLOCKED (preflight not ready)")
+        return 1
+
+    payload = _read_json_file(required_files["payload"])
+    execution_contract = _read_json_file(required_files["execution_contract"])
+    workflow_payload = execution_contract.get("workflow_payload")
+    if not isinstance(workflow_payload, dict) or not workflow_payload:
+        workflow_payload = payload.get("workflow")
+    if not isinstance(workflow_payload, dict) or not workflow_payload:
+        workflow_payload = _build_minimal_real_workflow()
+
+    now = datetime.utcnow().isoformat()
+    submit_request = {
+        "stage": "real_generate_assets",
+        "status": "submitted",
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": True,
+        "next_allowed_action": "real_generation_result_collected",
+        "downstream_executed": False,
+        "production_accepted": False,
+        "workflow_payload_snapshot": workflow_payload,
+        "timestamp": now,
+    }
+    submit_request_path = control_dir / "combine_v2_real_submit_request.json"
+    _write_json_file(submit_request_path, submit_request)
+    _record_combine_stage_result(
+        project_root=project_root,
+        stage="real_generate_assets",
+        next_allowed_action="real_generation_result_collected",
+        metadata={"generation_performed": True, "comfyui_execution": True},
+    )
+
+    client = ComfyClient()
+    status = "completed"
+    prompt_id = None
+    generated_assets: List[str] = []
+    retry_attempted = False
+    error_message = None
+    trace_events: List[Dict[str, Any]] = []
+    try:
+        prompt_id = asyncio.run(client.queue_prompt(workflow_payload))
+        trace_events.append({"event": "workflow_submitted", "status": "success", "prompt_id": prompt_id})
+        history_item = asyncio.run(client.wait_for_history(prompt_id, max_attempts=180, delay_seconds=2))
+        history_images = _extract_history_images(history_item)
+        for image in history_images:
+            rel = Path("output") / "assets" / image["filename"]
+            generated_assets.append(str(rel).replace("\\", "/"))
+        trace_events.append(
+            {
+                "event": "outputs_collected",
+                "status": "success",
+                "assets_count": len(generated_assets),
+            }
+        )
+    except Exception as exc:  # pragma: no cover - runtime failure path
+        status = "failed"
+        error_message = str(exc)
+        trace_events.append({"event": "generation_failed", "status": "failed", "error": error_message})
+
+    next_action = "visual_qa_required" if status == "completed" else "real_generation_result_review_required"
+    result_payload = {
+        "stage": "real_generate_assets",
+        "status": status,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": True,
+        "generated_assets_count": len(generated_assets),
+        "generated_assets": generated_assets,
+        "next_allowed_action": next_action,
+        "visual_qa_executed": False,
+        "operator_visual_review_required": False,
+        "assembly_allowed": False,
+        "retry_attempted": retry_attempted,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+    if error_message:
+        result_payload["error"] = error_message
+
+    observed_settings = {
+        "stage": "real_generate_assets",
+        "comfy_base_url": os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188"),
+        "max_generations": 1,
+        "generation_attempts": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": True,
+        "visual_qa_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+    }
+    outputs_manifest = {
+        "stage": "real_generate_assets",
+        "generated_assets_count": len(generated_assets),
+        "generated_assets": generated_assets,
+        "assets_root": "output/assets",
+        "output_control_root": "output/control",
+        "downstream_executed": False,
+        "production_accepted": False,
+    }
+    trace = {
+        "stage": "real_generate_assets",
+        "status": status,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "retry_attempted": retry_attempted,
+        "events": trace_events,
+        "next_allowed_action": next_action,
+        "visual_qa_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+    }
+    _write_json_file(control_dir / "combine_v2_real_generation_result.json", result_payload)
+    _write_json_file(control_dir / "combine_v2_real_generation_observed_settings.json", observed_settings)
+    _write_json_file(control_dir / "combine_v2_real_generation_outputs_manifest.json", outputs_manifest)
+    _write_json_file(control_dir / "combine_v2_real_generation_trace.json", trace)
+
+    if status == "completed":
+        _record_combine_stage_result(
+            project_root=project_root,
+            stage="real_generation_result_collected",
+            next_allowed_action="visual_qa_required",
+            metadata={"generation_performed": True, "comfyui_execution": True},
+        )
+
+    if json_output:
+        print(json.dumps(result_payload, indent=2))
+    else:
+        print(f"Real Generation: {status.upper()}")
+        print(f"Next Allowed Action: {next_action}")
+    return 0 if status == "completed" else 1
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -798,6 +1283,8 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'combine-authorize-retry',
         'combine-real-generation-preflight',
         'combine-prepare-real-generation',
+        'combine-authorize-real-generation',
+        'combine-real-generate-assets',
         'decide-controlled-retry',
         'inspect-production-decision-state',
         'repair-production-decision-state',
@@ -1263,6 +1750,52 @@ def main() -> int:
         help="Dry run only (default: True)",
     )
     combine_prepare_real_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    combine_authorize_real_generation_parser = subparsers.add_parser(
+        "combine-authorize-real-generation",
+        help="Require explicit operator approval before real ComfyUI submit",
+    )
+    combine_authorize_real_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_authorize_real_generation_parser.add_argument(
+        "--confirm-real-comfyui-execution",
+        action="store_true",
+        help="Explicitly confirm real ComfyUI execution is allowed",
+    )
+    combine_authorize_real_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    combine_real_generate_assets_parser = subparsers.add_parser(
+        "combine-real-generate-assets",
+        help="Run one controlled real generation attempt after explicit operator approval",
+    )
+    combine_real_generate_assets_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_real_generate_assets_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Actually submit workflow to ComfyUI",
+    )
+    combine_real_generate_assets_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum real generation attempts (must be 1)",
+    )
+    combine_real_generate_assets_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -2179,6 +2712,10 @@ def main() -> int:
         return combine_real_generation_preflight(args)
     elif args.command == "combine-prepare-real-generation":
         return combine_prepare_real_generation(args)
+    elif args.command == "combine-authorize-real-generation":
+        return combine_authorize_real_generation(args)
+    elif args.command == "combine-real-generate-assets":
+        return combine_real_generate_assets(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":

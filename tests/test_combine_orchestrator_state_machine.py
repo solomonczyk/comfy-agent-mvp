@@ -45,6 +45,10 @@ class TestCombineStateMachine:
         assert CombineStateMachine.can_transition("real_generation_readiness_required", "real_generation_preflight_required")
         assert CombineStateMachine.can_transition("real_generation_preflight_required", "real_generation_payload_review")
         assert CombineStateMachine.can_transition("real_generation_payload_review", "operator_real_generation_authorization_required")
+        assert CombineStateMachine.can_transition("operator_real_generation_authorization_required", "operator_real_generation_approved")
+        assert CombineStateMachine.can_transition("operator_real_generation_approved", "real_generate_assets")
+        assert CombineStateMachine.can_transition("real_generate_assets", "real_generation_result_collected")
+        assert CombineStateMachine.can_transition("real_generation_result_collected", "visual_qa_required")
         assert CombineStateMachine.can_transition("final_operator_acceptance", "completed")
     
     def test_forbidden_transitions_fail(self):
@@ -55,9 +59,9 @@ class TestCombineStateMachine:
         assert not CombineStateMachine.can_transition("brief_intake_required", "visual_qa_required")
         assert not CombineStateMachine.can_transition("generate_assets", "assembly_required")
         assert not CombineStateMachine.can_transition("visual_qa_required", "completed")
-        assert not CombineStateMachine.can_transition(
-            "operator_real_generation_authorization_required", "real_generate_assets"
-        )
+        assert not CombineStateMachine.can_transition("operator_real_generation_authorization_required", "real_generate_assets")
+        assert not CombineStateMachine.can_transition("real_generate_assets", "assembly_required")
+        assert not CombineStateMachine.can_transition("real_generation_result_collected", "assembly_required")
     
     def test_generation_cannot_happen_before_preflight_authorization(self):
         """Test that generation cannot happen before preflight/authorization"""

@@ -559,5 +559,82 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-01T15:42:39.891638"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_real_generation_approved",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: operator_real_generation_approved",
+    "dry_run": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:56:04.961468"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generate_assets",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_generate_assets",
+    "dry_run": false,
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "timestamp": "2026-05-01T15:56:05.648486"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_real_generation_approved",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: operator_real_generation_approved",
+    "dry_run": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:56:28.243139"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generate_assets",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_generate_assets",
+    "dry_run": false,
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "timestamp": "2026-05-01T15:56:29.101163"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_real_generation_approved",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: operator_real_generation_approved",
+    "dry_run": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:57:24.651856"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generate_assets",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_generate_assets",
+    "dry_run": false,
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "timestamp": "2026-05-01T15:57:25.516879"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generation_result_collected",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_generation_result_collected",
+    "dry_run": false,
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "timestamp": "2026-05-01T15:59:08.908758"
   }
 ]
