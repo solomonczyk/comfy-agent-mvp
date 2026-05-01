@@ -26,6 +26,7 @@ class CombineStateMachine:
         "visual_qa_required",
         "operator_visual_review",
         "retry_correction_required",
+        "controlled_asset_resolution_review_required",
         "assembly_required",
         "final_qc_required",
         "final_operator_acceptance",
@@ -59,7 +60,12 @@ class CombineStateMachine:
             "production_plan_required"  # Revision
         },
         "asset_resolution_required": {
-            "workflow_plan_required"
+            "workflow_plan_required",
+            "controlled_asset_resolution_review_required"
+        },
+        "controlled_asset_resolution_review_required": {
+            "workflow_plan_required",
+            "asset_resolution_required"  # Re-resolve
         },
         "workflow_plan_required": {
             "workflow_preflight_required"

@@ -363,7 +363,8 @@ class TestOrchestratorAgentDispatch:
             
             orchestrator = CombineOrchestrator(str(project_root))
             
-            # Run a stage
+            # Run stages in sequence to satisfy state machine transitions
+            orchestrator.run_stage("brief_intake_required", dry_run=True)
             result = orchestrator.run_stage("route_classification_required", dry_run=True)
             
             # Verify result structure

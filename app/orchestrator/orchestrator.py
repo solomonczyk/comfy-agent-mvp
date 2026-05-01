@@ -38,6 +38,7 @@ class CombineOrchestrator:
         "visual_qa_required": "VisualQAAgent",
         "operator_visual_review": "VisualQAAgent",
         "retry_correction_required": "RetryPolicyAgent",
+        "controlled_asset_resolution_review_required": "AssetResolverAgent",
         "assembly_required": "AssemblyAgent",
         "final_qc_required": "FinalQAAgent",
     }
