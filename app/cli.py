@@ -9,6 +9,7 @@ import asyncio
 import hashlib
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -17,6 +18,8 @@ import urllib.request
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List
+
+from PIL import Image, UnidentifiedImageError
 
 
 def combine_status(args: argparse.Namespace) -> int:
@@ -967,6 +970,117 @@ def _extract_history_images(history_item: Dict[str, Any]) -> List[Dict[str, str]
     return images
 
 
+def _safe_asset_filename(filename: str) -> str:
+    return Path(filename).name
+
+
+def _is_image_readable(image_path: Path) -> Dict[str, Any]:
+    try:
+        with Image.open(image_path) as image:
+            width, height = image.size
+            image.verify()
+        return {"readable": True, "width": int(width), "height": int(height)}
+    except (UnidentifiedImageError, OSError, ValueError):
+        return {"readable": False, "width": None, "height": None}
+
+
+def _file_sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            if not chunk:
+                break
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def _collect_real_generation_outputs(
+    client: Any,
+    project_root: Path,
+    history_images: List[Dict[str, str]],
+) -> tuple[List[Dict[str, Any]], List[Dict[str, Any]]]:
+    assets_dir = project_root / "output" / "assets"
+    assets_dir.mkdir(parents=True, exist_ok=True)
+    collected_assets: List[Dict[str, Any]] = []
+    trace_events: List[Dict[str, Any]] = []
+
+    for image in history_images:
+        filename = _safe_asset_filename(image.get("filename", ""))
+        if not filename:
+            continue
+        subfolder = str(image.get("subfolder", ""))
+        image_type = str(image.get("type", "output"))
+        destination_path = assets_dir / filename
+        source = "fetched"
+        fetch_error = None
+
+        try:
+            fetched = asyncio.run(
+                client.fetch_image(
+                    filename=filename,
+                    subfolder=subfolder,
+                    type=image_type,
+                )
+            )
+            content = fetched.get("content", b"")
+            with destination_path.open("wb") as handle:
+                handle.write(content)
+        except Exception as exc:  # pragma: no cover - depends on Comfy runtime
+            fetch_error = str(exc)
+            fallback_source = None
+            comfy_root = os.getenv("COMFY_OUTPUT_ROOT")
+            if comfy_root:
+                candidate = Path(comfy_root) / subfolder / filename if subfolder else Path(comfy_root) / filename
+                if candidate.exists() and candidate.is_file():
+                    destination_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(candidate, destination_path)
+                    fallback_source = str(candidate)
+            if fallback_source:
+                source = "copied_from_comfy_output_root"
+            else:
+                trace_events.append(
+                    {
+                        "event": "asset_collection_failed",
+                        "status": "failed",
+                        "filename": filename,
+                        "reason": fetch_error,
+                    }
+                )
+                continue
+
+        rel_path = destination_path.relative_to(project_root).as_posix()
+        exists = destination_path.exists()
+        readable_result = _is_image_readable(destination_path) if exists else {
+            "readable": False,
+            "width": None,
+            "height": None,
+        }
+        size_bytes = destination_path.stat().st_size if exists else 0
+        sha256_value = _file_sha256(destination_path) if exists else ""
+        asset_entry = {
+            "path": rel_path,
+            "exists": exists,
+            "readable": bool(readable_result["readable"]),
+            "width": readable_result["width"],
+            "height": readable_result["height"],
+            "size_bytes": int(size_bytes),
+            "sha256": sha256_value,
+        }
+        collected_assets.append(asset_entry)
+        trace_events.append(
+            {
+                "event": "asset_collected",
+                "status": "success" if exists and readable_result["readable"] else "invalid_asset",
+                "filename": filename,
+                "path": rel_path,
+                "source": source,
+                "fetch_error": fetch_error,
+            }
+        )
+
+    return collected_assets, trace_events
+
+
 def _build_minimal_real_workflow() -> Dict[str, Any]:
     return {
         "1": {
@@ -1157,7 +1271,7 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
     client = ComfyClient()
     status = "completed"
     prompt_id = None
-    generated_assets: List[str] = []
+    generated_assets: List[Dict[str, Any]] = []
     retry_attempted = False
     error_message = None
     trace_events: List[Dict[str, Any]] = []
@@ -1166,9 +1280,12 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
         trace_events.append({"event": "workflow_submitted", "status": "success", "prompt_id": prompt_id})
         history_item = asyncio.run(client.wait_for_history(prompt_id, max_attempts=180, delay_seconds=2))
         history_images = _extract_history_images(history_item)
-        for image in history_images:
-            rel = Path("output") / "assets" / image["filename"]
-            generated_assets.append(str(rel).replace("\\", "/"))
+        generated_assets, collection_trace = _collect_real_generation_outputs(
+            client=client,
+            project_root=project_root,
+            history_images=history_images,
+        )
+        trace_events.extend(collection_trace)
         trace_events.append(
             {
                 "event": "outputs_collected",
@@ -1181,6 +1298,17 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
         error_message = str(exc)
         trace_events.append({"event": "generation_failed", "status": "failed", "error": error_message})
 
+    failure_code = None
+    if status == "completed" and len(generated_assets) == 0:
+        status = "failed"
+        failure_code = "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+        trace_events.append(
+            {
+                "event": "zero_assets_guard_triggered",
+                "status": "failed",
+                "failure_code": failure_code,
+            }
+        )
     next_action = "visual_qa_required" if status == "completed" else "real_generation_result_review_required"
     result_payload = {
         "stage": "real_generate_assets",
@@ -1203,6 +1331,8 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
     }
     if error_message:
         result_payload["error"] = error_message
+    if failure_code:
+        result_payload["failure_code"] = failure_code
 
     observed_settings = {
         "stage": "real_generate_assets",
@@ -1212,6 +1342,7 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
         "workflow_submitted": True,
         "generation_performed": True,
         "comfyui_execution": True,
+        "failure_code": failure_code,
         "visual_qa_executed": False,
         "downstream_executed": False,
         "production_accepted": False,
@@ -1222,6 +1353,8 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
         "generated_assets": generated_assets,
         "assets_root": "output/assets",
         "output_control_root": "output/control",
+        "status": status,
+        "failure_code": failure_code,
         "downstream_executed": False,
         "production_accepted": False,
     }

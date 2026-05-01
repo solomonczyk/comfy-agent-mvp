@@ -5,6 +5,17 @@ import subprocess
 import sys
 import threading
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from io import BytesIO
+from urllib.parse import parse_qs, urlparse
+
+from PIL import Image
+
+
+def _png_1x1_bytes():
+    image = Image.new("RGB", (1, 1), color=(255, 0, 0))
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")
+    return buffer.getvalue()
 
 
 def _run_cli(args, env=None):
@@ -62,6 +73,21 @@ def test_combine_real_generation_gate_and_submit(tmp_path):
             self.end_headers()
 
         def do_GET(self):
+            parsed = urlparse(self.path)
+            if parsed.path == "/view":
+                params = parse_qs(parsed.query)
+                filename = params.get("filename", [""])[0]
+                if filename == "mock_frame_001.png":
+                    body = _png_1x1_bytes()
+                    self.send_response(200)
+                    self.send_header("Content-Type", "image/png")
+                    self.send_header("Content-Length", str(len(body)))
+                    self.end_headers()
+                    self.wfile.write(body)
+                    return
+                self.send_response(404)
+                self.end_headers()
+                return
             if self.path == "/history/pid-1":
                 body = json.dumps(
                     {
@@ -238,7 +264,15 @@ def test_combine_real_generation_gate_and_submit(tmp_path):
         assert (control_dir / "combine_v2_real_generation_outputs_manifest.json").exists()
         assert (control_dir / "combine_v2_real_generation_trace.json").exists()
         assert execute_payload["generation_attempts"] == 1
-        assert execute_payload["generated_assets_count"] >= 0
+        assert execute_payload["generated_assets_count"] == 1
+        assert execute_payload["status"] == "completed"
+        assert execute_payload["generated_assets"][0]["path"].startswith("output/assets/")
+        assert execute_payload["generated_assets"][0]["exists"] is True
+        assert execute_payload["generated_assets"][0]["readable"] is True
+        assert execute_payload["generated_assets"][0]["width"] == 1
+        assert execute_payload["generated_assets"][0]["height"] == 1
+        assert execute_payload["generated_assets"][0]["size_bytes"] > 0
+        assert len(execute_payload["generated_assets"][0]["sha256"]) == 64
 
         # 14-18) safety flags and forced QA gate.
         assert execute_payload["downstream_executed"] is False
