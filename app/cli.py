@@ -77,7 +77,7 @@ def combine_run_stage(args: argparse.Namespace) -> int:
     result = orchestrator.run_stage(stage, dry_run=dry_run)
     
     if json_output:
-        print(json.dumps({
+        output = {
             "status": "ok" if result.success else "error",
             "stage": result.stage,
             "dry_run": dry_run,
@@ -87,7 +87,19 @@ def combine_run_stage(args: argparse.Namespace) -> int:
             "downstream_executed": False,
             "message": result.message,
             "metadata": result.metadata
-        }, indent=2))
+        }
+        
+        # Enrich top-level for V2 expectations
+        if "agent" in result.metadata:
+            output["agent"] = result.metadata["agent"]
+        if "next_recommended_stage" in result.metadata:
+            output["next_allowed_action"] = result.metadata["next_recommended_stage"]
+        if "real_image_analysis" in result.metadata:
+            output["real_image_analysis"] = result.metadata["real_image_analysis"]
+        if "operator_review_required" in result.metadata:
+            output["operator_review_required"] = result.metadata["operator_review_required"]
+            
+        print(json.dumps(output, indent=2))
     else:
         print(f"Stage: {result.stage}")
         print(f"Success: {result.success}")

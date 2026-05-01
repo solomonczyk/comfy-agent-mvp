@@ -95,7 +95,8 @@ class CombineStateMachine:
         },
         "operator_visual_review": {
             "assembly_required",
-            "retry_correction_required"
+            "retry_correction_required",
+            "blocked_manual_review"
         },
         "retry_correction_required": {
             "workflow_plan_required",  # Re-plan
