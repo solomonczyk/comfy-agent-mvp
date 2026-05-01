@@ -1309,7 +1309,7 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
                 "failure_code": failure_code,
             }
         )
-    next_action = "visual_qa_required" if status == "completed" else "real_generation_result_review_required"
+    next_action = "real_generation_result_review_required"
     result_payload = {
         "stage": "real_generate_assets",
         "status": status,
@@ -1379,7 +1379,7 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
         _record_combine_stage_result(
             project_root=project_root,
             stage="real_generation_result_collected",
-            next_allowed_action="visual_qa_required",
+            next_allowed_action="real_generation_result_review_required",
             metadata={"generation_performed": True, "comfyui_execution": True},
         )
 
@@ -1389,6 +1389,203 @@ def combine_real_generate_assets(args: argparse.Namespace) -> int:
         print(f"Real Generation: {status.upper()}")
         print(f"Next Allowed Action: {next_action}")
     return 0 if status == "completed" else 1
+
+
+def _validate_real_generation_asset_records(
+    project_root: Path,
+    generated_assets: List[Dict[str, Any]],
+) -> Dict[str, Any]:
+    assets_exist = True
+    assets_readable = True
+    validated_assets: List[Dict[str, Any]] = []
+    has_record_validation_errors = False
+
+    for asset in generated_assets:
+        entry = dict(asset) if isinstance(asset, dict) else {}
+        rel_path = str(entry.get("path", ""))
+        abs_path = project_root / rel_path if rel_path else None
+        fs_exists = bool(abs_path and abs_path.exists() and abs_path.is_file())
+        declared_exists = bool(entry.get("exists", False))
+        exists_ok = declared_exists and fs_exists
+        assets_exist = assets_exist and exists_ok
+
+        readable_result = _is_image_readable(abs_path) if fs_exists and abs_path else {
+            "readable": False,
+            "width": None,
+            "height": None,
+        }
+        declared_readable = bool(entry.get("readable", False))
+        readable_ok = declared_readable and bool(readable_result["readable"])
+        assets_readable = assets_readable and readable_ok
+
+        width = entry.get("width")
+        height = entry.get("height")
+        sha256_value = entry.get("sha256")
+        has_dimensions = isinstance(width, int) and isinstance(height, int) and width > 0 and height > 0
+        has_sha256 = isinstance(sha256_value, str) and len(sha256_value) == 64
+        metadata_ok = has_dimensions and has_sha256
+        if exists_ok and readable_ok:
+            computed_sha = _file_sha256(abs_path) if abs_path else ""
+            if sha256_value != computed_sha:
+                metadata_ok = False
+            if width != readable_result["width"] or height != readable_result["height"]:
+                metadata_ok = False
+        has_record_validation_errors = has_record_validation_errors or not metadata_ok
+
+        validated_assets.append(
+            {
+                **entry,
+                "exists": exists_ok,
+                "readable": readable_ok,
+                "width": width if has_dimensions else None,
+                "height": height if has_dimensions else None,
+                "sha256": sha256_value if has_sha256 else "",
+            }
+        )
+
+    return {
+        "assets_exist": assets_exist,
+        "assets_readable": assets_readable,
+        "validated_assets": validated_assets,
+        "has_record_validation_errors": has_record_validation_errors,
+    }
+
+
+def combine_review_real_generation_result(args: argparse.Namespace) -> int:
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    result_path = control_dir / "combine_v2_real_generation_result.json"
+    manifest_path = control_dir / "combine_v2_real_generation_outputs_manifest.json"
+    observed_settings_path = control_dir / "combine_v2_real_generation_observed_settings.json"
+    trace_path = control_dir / "combine_v2_real_generation_trace.json"
+    review_path = control_dir / "combine_v2_real_generation_result_review.json"
+    decision_path = control_dir / "combine_v2_real_visual_qa_entry_decision.json"
+
+    result_payload = _read_json_file(result_path)
+    manifest_payload = _read_json_file(manifest_path)
+    _ = _read_json_file(observed_settings_path)
+    _ = _read_json_file(trace_path)
+
+    generated_assets = manifest_payload.get("generated_assets", [])
+    if not isinstance(generated_assets, list):
+        generated_assets = []
+    generated_assets_count = int(
+        manifest_payload.get(
+            "generated_assets_count",
+            result_payload.get("generated_assets_count", len(generated_assets)),
+        )
+    )
+    failure_code = (
+        result_payload.get("failure_code")
+        or manifest_payload.get("failure_code")
+        or None
+    )
+
+    validation = _validate_real_generation_asset_records(project_root, generated_assets)
+    valid_assets = (
+        generated_assets_count > 0
+        and validation["assets_exist"]
+        and validation["assets_readable"]
+        and not validation["has_record_validation_errors"]
+        and failure_code != "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+    )
+
+    if valid_assets:
+        review_status = "ready_for_visual_qa"
+        next_allowed_action = "real_visual_qa_preflight_required"
+        operator_review_required = False
+        entry_decision = "allow_real_visual_qa_preflight"
+        decision_reason = "valid_generation_assets_available"
+        target_stage = "real_visual_qa_preflight_required"
+        resolved_failure_code = None
+    else:
+        review_status = "blocked"
+        next_allowed_action = "real_generation_result_review_required"
+        operator_review_required = True
+        entry_decision = "block_visual_qa_entry"
+        resolved_failure_code = failure_code or "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+        decision_reason = resolved_failure_code
+        target_stage = "real_generation_result_review_required"
+
+    review_payload = {
+        "stage": "real_generation_result_review",
+        "source_result": "output/control/combine_v2_real_generation_result.json",
+        "source_manifest": "output/control/combine_v2_real_generation_outputs_manifest.json",
+        "status": review_status,
+        "generated_assets_count": generated_assets_count,
+        "assets_checked": True,
+        "assets_exist": validation["assets_exist"],
+        "assets_readable": validation["assets_readable"],
+        "generated_assets": validation["validated_assets"],
+        "failure_code": resolved_failure_code if not valid_assets else None,
+        "operator_review_required": operator_review_required,
+        "next_allowed_action": next_allowed_action,
+        "visual_qa_executed": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+    decision_payload = {
+        "entry_decision": entry_decision,
+        "next_allowed_action": next_allowed_action,
+        "reason": decision_reason,
+        "visual_qa_executed": False,
+        "real_visual_qa_started": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+
+    _write_json_file(review_path, review_payload)
+    _write_json_file(decision_path, decision_payload)
+    _record_combine_stage_result(
+        project_root=project_root,
+        stage=target_stage,
+        next_allowed_action=next_allowed_action,
+        metadata={
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "visual_qa_executed": False,
+            "retry_attempted": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        },
+    )
+
+    response = {
+        "status": review_status,
+        "generated_assets_count": generated_assets_count,
+        "failure_code": resolved_failure_code if not valid_assets else None,
+        "next_allowed_action": next_allowed_action,
+        "entry_decision": entry_decision,
+        "visual_qa_executed": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "generation_attempted": False,
+        "comfyui_execution": False,
+        "artifacts": [
+            str(review_path.relative_to(project_root)),
+            str(decision_path.relative_to(project_root)),
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(response, indent=2))
+    else:
+        print(f"Real Generation Result Review: {review_status.upper()}")
+        print(f"Entry Decision: {entry_decision}")
+        print(f"Next Allowed Action: {next_allowed_action}")
+    return 0 if review_status == "ready_for_visual_qa" else 1
 
 
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
@@ -1418,6 +1615,7 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'combine-prepare-real-generation',
         'combine-authorize-real-generation',
         'combine-real-generate-assets',
+        'combine-review-real-generation-result',
         'decide-controlled-retry',
         'inspect-production-decision-state',
         'repair-production-decision-state',
@@ -1929,6 +2127,20 @@ def main() -> int:
         help="Maximum real generation attempts (must be 1)",
     )
     combine_real_generate_assets_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_review_real_generation_result_parser = subparsers.add_parser(
+        "combine-review-real-generation-result",
+        help="Review real generation result and gate entry into real visual QA preflight",
+    )
+    combine_review_real_generation_result_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_review_real_generation_result_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -2849,6 +3061,8 @@ def main() -> int:
         return combine_authorize_real_generation(args)
     elif args.command == "combine-real-generate-assets":
         return combine_real_generate_assets(args)
+    elif args.command == "combine-review-real-generation-result":
+        return combine_review_real_generation_result(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":

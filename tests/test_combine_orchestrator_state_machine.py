@@ -48,7 +48,10 @@ class TestCombineStateMachine:
         assert CombineStateMachine.can_transition("operator_real_generation_authorization_required", "operator_real_generation_approved")
         assert CombineStateMachine.can_transition("operator_real_generation_approved", "real_generate_assets")
         assert CombineStateMachine.can_transition("real_generate_assets", "real_generation_result_collected")
-        assert CombineStateMachine.can_transition("real_generation_result_collected", "visual_qa_required")
+        assert CombineStateMachine.can_transition("real_generation_result_collected", "real_generation_result_review_required")
+        assert CombineStateMachine.can_transition("real_generation_result_collected", "real_visual_qa_preflight_required")
+        assert CombineStateMachine.can_transition("real_visual_qa_preflight_required", "real_visual_qa_required")
+        assert CombineStateMachine.can_transition("real_visual_qa_required", "operator_visual_review")
         assert CombineStateMachine.can_transition("final_operator_acceptance", "completed")
     
     def test_forbidden_transitions_fail(self):

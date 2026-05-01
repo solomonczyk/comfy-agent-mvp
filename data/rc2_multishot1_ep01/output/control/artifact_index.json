@@ -1,5 +1,5 @@
 {
-  "current_state": "real_generation_result_collected",
+  "current_state": "real_generation_result_review_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -2803,6 +2803,24 @@
       },
       "timestamp": "2026-05-01T15:59:08.908758",
       "no_generation_performed": false
+    },
+    {
+      "stage": "real_generation_result_review_required",
+      "success": true,
+      "message": "CLI stage transition: real_generation_result_review_required",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generation_result_review_required",
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "visual_qa_executed": false,
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "downstream_executed": false,
+        "production_accepted": false
+      },
+      "timestamp": "2026-05-01T16:38:40.279986",
+      "no_generation_performed": true
     }
   ]
 }

@@ -34,6 +34,9 @@ class CombineStateMachine:
         "operator_real_generation_approved",
         "real_generate_assets",
         "real_generation_result_collected",
+        "real_generation_result_review_required",
+        "real_visual_qa_preflight_required",
+        "real_visual_qa_required",
         "retry_correction_required",
         "retry_plan_review_required",
         "operator_retry_authorization_required",
@@ -128,7 +131,18 @@ class CombineStateMachine:
             "real_generation_result_collected",
         },
         "real_generation_result_collected": {
-            "visual_qa_required",
+            "real_generation_result_review_required",
+            "real_visual_qa_preflight_required",
+        },
+        "real_generation_result_review_required": {
+            "operator_visual_review",
+            "blocked_manual_review",
+        },
+        "real_visual_qa_preflight_required": {
+            "real_visual_qa_required",
+        },
+        "real_visual_qa_required": {
+            "operator_visual_review",
         },
         "retry_correction_required": {
             "retry_plan_review_required",

@@ -35,6 +35,7 @@ class GenerationAgent(BaseRoleAgent):
             "real_generation_payload_review",
             "real_generate_assets",
             "real_generation_result_collected",
+            "real_generation_result_review_required",
         ]
     
     @property

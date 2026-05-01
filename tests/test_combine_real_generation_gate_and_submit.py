@@ -278,7 +278,7 @@ def test_combine_real_generation_gate_and_submit(tmp_path):
         assert execute_payload["downstream_executed"] is False
         assert execute_payload["production_accepted"] is False
         assert execute_payload["visual_qa_executed"] is False
-        assert execute_payload["next_allowed_action"] == "visual_qa_required"
+        assert execute_payload["next_allowed_action"] == "real_generation_result_review_required"
 
         # 19) root-level artifact_index/ledger not created.
         assert not (project_root / "artifact_index.json").exists()
