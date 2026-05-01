@@ -27,6 +27,11 @@ class CombineStateMachine:
         "visual_qa_required_stub_pending",
         "visual_qa_required",
         "operator_visual_review",
+        "real_generation_readiness_required",
+        "real_generation_preflight_required",
+        "real_generation_payload_review",
+        "operator_real_generation_authorization_required",
+        "real_generate_assets",
         "retry_correction_required",
         "retry_plan_review_required",
         "operator_retry_authorization_required",
@@ -93,13 +98,25 @@ class CombineStateMachine:
         },
         "visual_qa_required": {
             "operator_visual_review",
-            "retry_correction_required"
+            "retry_correction_required",
+            "real_generation_readiness_required",
         },
         "operator_visual_review": {
             "assembly_required",
             "retry_correction_required",
+            "real_generation_readiness_required",
             "blocked_manual_review"
         },
+        "real_generation_readiness_required": {
+            "real_generation_preflight_required"
+        },
+        "real_generation_preflight_required": {
+            "real_generation_payload_review"
+        },
+        "real_generation_payload_review": {
+            "operator_real_generation_authorization_required"
+        },
+        "operator_real_generation_authorization_required": set(),
         "retry_correction_required": {
             "retry_plan_review_required",
             "operator_retry_authorization_required"
@@ -158,6 +175,8 @@ class CombineStateMachine:
         ("operator_visual_review", "completed"),
         ("assembly_required", "completed"),
         ("generate_assets", "completed"),
+        # Real generation gate cannot be crossed in readiness layer.
+        ("operator_real_generation_authorization_required", "real_generate_assets"),
     }
     
     @classmethod

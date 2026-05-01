@@ -11,6 +11,8 @@ import os
 import subprocess
 import sys
 import time
+import urllib.error
+import urllib.request
 from datetime import datetime
 from pathlib import Path
 
@@ -581,6 +583,196 @@ def combine_authorize_retry(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_real_generation_preflight(args: argparse.Namespace) -> int:
+    """Read-only ComfyUI preflight for real-generation readiness."""
+    project_root = Path(args.project_root)
+    json_output = args.json
+    silent = bool(getattr(args, "silent", False))
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    report_path = control_dir / "combine_v2_real_generation_preflight_report.json"
+
+    base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188").rstrip("/")
+    object_info_url = f"{base_url}/object_info"
+
+    comfyui_reachable = False
+    object_info_available = False
+    required_nodes_checked = False
+    blocked_reason = None
+
+    try:
+        req = urllib.request.Request(object_info_url, method="GET")
+        with urllib.request.urlopen(req, timeout=5) as response:
+            comfyui_reachable = True
+            payload = json.loads(response.read().decode("utf-8"))
+            object_info_available = isinstance(payload, dict)
+            required_nodes_checked = object_info_available and len(payload) > 0
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError):
+        blocked_reason = "COMFYUI_UNREACHABLE"
+
+    if not comfyui_reachable:
+        report = {
+            "stage": "real_generation_preflight_required",
+            "status": "blocked",
+            "blocked_reason": blocked_reason or "COMFYUI_UNREACHABLE",
+            "comfyui_read_only_check": True,
+            "comfyui_reachable": False,
+            "object_info_available": False,
+            "required_nodes_checked": False,
+            "generation_submitted": False,
+            "comfyui_execution": False,
+            "workflow_mutated": False,
+            "downstream_executed": False,
+            "next_allowed_action": "real_generation_preflight_required",
+        }
+        exit_code = 0
+    else:
+        report = {
+            "stage": "real_generation_preflight_required",
+            "status": "ready",
+            "comfyui_read_only_check": True,
+            "comfyui_reachable": True,
+            "object_info_available": object_info_available,
+            "required_nodes_checked": required_nodes_checked,
+            "generation_submitted": False,
+            "comfyui_execution": False,
+            "workflow_mutated": False,
+            "downstream_executed": False,
+            "next_allowed_action": "real_generation_payload_review",
+        }
+        exit_code = 0
+
+    with report_path.open("w", encoding="utf-8") as f:
+        json.dump(report, f, indent=2)
+
+    if not silent:
+        if json_output:
+            print(json.dumps(report, indent=2))
+        else:
+            print(f"Real Generation Preflight: {report['status'].upper()}")
+            print(f"Next Allowed Action: {report['next_allowed_action']}")
+    return exit_code
+
+
+def combine_prepare_real_generation(args: argparse.Namespace) -> int:
+    """Prepare real-generation readiness chain without executing generation."""
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    orchestrator = CombineOrchestrator(str(project_root))
+    status = orchestrator.get_status()
+    current_state = status.current_state
+
+    if current_state in {"visual_qa_required", "operator_visual_review"}:
+        readiness_result = orchestrator.run_stage(
+            "real_generation_readiness_required", dry_run=True
+        )
+    elif current_state == "real_generation_readiness_required":
+        readiness_result = orchestrator.run_stage(
+            "real_generation_readiness_required", dry_run=True
+        )
+    else:
+        readiness_result = None
+
+    if readiness_result and not readiness_result.success:
+        response = {
+            "status": "blocked",
+            "combine_v2": True,
+            "dry_run": True,
+            "stages_executed": ["real_generation_readiness_required"],
+            "next_allowed_action": "real_generation_readiness_required",
+            "real_generation_authorization_required": True,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "workflow_submitted": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(response, indent=2))
+        else:
+            print("Combine Real Generation Prepare: BLOCKED")
+        return 0
+
+    preflight_args = argparse.Namespace(
+        project_root=str(project_root),
+        dry_run=True,
+        json=True,
+        silent=True,
+    )
+    combine_real_generation_preflight(preflight_args)
+
+    preflight_path = control_dir / "combine_v2_real_generation_preflight_report.json"
+    preflight_report = {}
+    if preflight_path.exists():
+        with preflight_path.open("r", encoding="utf-8") as f:
+            preflight_report = json.load(f)
+
+    preflight_stage_result = orchestrator.run_stage(
+        "real_generation_preflight_required", dry_run=True
+    )
+
+    stages_executed = []
+    if readiness_result:
+        stages_executed.append("real_generation_readiness_required")
+    if preflight_stage_result.success:
+        stages_executed.append("real_generation_preflight_required")
+    else:
+        stages_executed.append("real_generation_preflight_required")
+
+    if preflight_report.get("status") == "blocked" or not preflight_stage_result.success:
+        response = {
+            "status": "blocked",
+            "combine_v2": True,
+            "dry_run": True,
+            "stages_executed": stages_executed,
+            "next_allowed_action": "real_generation_preflight_required",
+            "real_generation_authorization_required": True,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "workflow_submitted": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(response, indent=2))
+        else:
+            print("Combine Real Generation Prepare: BLOCKED")
+        return 0
+
+    payload_result = orchestrator.run_stage("real_generation_payload_review", dry_run=True)
+    auth_result = orchestrator.run_stage(
+        "operator_real_generation_authorization_required", dry_run=True
+    )
+    if payload_result.success:
+        stages_executed.append("real_generation_payload_review")
+
+    response = {
+        "status": "ok" if payload_result.success and auth_result.success else "blocked",
+        "combine_v2": True,
+        "dry_run": True,
+        "stages_executed": stages_executed,
+        "next_allowed_action": "operator_real_generation_authorization_required",
+        "real_generation_authorization_required": True,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+    }
+
+    if json_output:
+        print(json.dumps(response, indent=2))
+    else:
+        print("Combine Real Generation Prepare: OK")
+        print("Next Allowed Action: operator_real_generation_authorization_required")
+    return 0
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -604,6 +796,8 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'authorize-real-role-decision-apply',
         'authorize-controlled-retry-generation',
         'combine-authorize-retry',
+        'combine-real-generation-preflight',
+        'combine-prepare-real-generation',
         'decide-controlled-retry',
         'inspect-production-decision-state',
         'repair-production-decision-state',
@@ -1027,6 +1221,48 @@ def main() -> int:
         help="Project root directory",
     )
     combine_authorize_retry_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    combine_real_generation_preflight_parser = subparsers.add_parser(
+        "combine-real-generation-preflight",
+        help="Run read-only ComfyUI preflight for real generation readiness",
+    )
+    combine_real_generation_preflight_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_real_generation_preflight_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Read-only dry run (default: True)",
+    )
+    combine_real_generation_preflight_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    combine_prepare_real_generation_parser = subparsers.add_parser(
+        "combine-prepare-real-generation",
+        help="Prepare real generation readiness artifacts without execution",
+    )
+    combine_prepare_real_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_prepare_real_generation_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Dry run only (default: True)",
+    )
+    combine_prepare_real_generation_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -1939,6 +2175,10 @@ def main() -> int:
         return combine_authorize_generation(args)
     elif args.command == "combine-authorize-retry":
         return combine_authorize_retry(args)
+    elif args.command == "combine-real-generation-preflight":
+        return combine_real_generation_preflight(args)
+    elif args.command == "combine-prepare-real-generation":
+        return combine_prepare_real_generation(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":

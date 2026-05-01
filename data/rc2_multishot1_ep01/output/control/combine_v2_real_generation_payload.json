@@ -1,0 +1,17 @@
+{
+  "stage": "real_generation_payload_review",
+  "payload_type": "real_generation_candidate",
+  "route_family": "custom",
+  "prompt_contract": "output/control/combine_v2_prompt_contract.json",
+  "workflow_contract": "output/control/combine_v2_workflow_contract.json",
+  "asset_contract": "output/control/combine_v2_asset_requirements_contract.json",
+  "retry_context": {
+    "retry_requested": true,
+    "operator_retry_authorized": true,
+    "corrective_plan_applied_to_payload": true
+  },
+  "execution_ready": false,
+  "requires_operator_real_generation_authorization": true,
+  "generation_performed": false,
+  "comfyui_execution": false
+}

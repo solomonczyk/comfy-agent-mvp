@@ -1,5 +1,5 @@
 {
-  "current_state": "visual_qa_required",
+  "current_state": "operator_real_generation_authorization_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -2544,6 +2544,173 @@
         }
       },
       "timestamp": "2026-05-01T15:30:12.567947",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generation_readiness_required",
+      "success": true,
+      "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_real_generation_readiness_report.json"
+      ],
+      "metadata": {
+        "agent": "RealGenerationReadinessAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "real_generation_preflight_required",
+        "next_allowed_action": "real_generation_preflight_required",
+        "combine_v2_real_generation_readiness_report": {
+          "stage": "real_generation_readiness_required",
+          "status": "ready_for_preflight",
+          "checks": {
+            "canonical_state_available": true,
+            "generation_gate_open": true,
+            "retry_context_available": true,
+            "generation_payload_stub_available": true,
+            "execution_plan_available": true,
+            "project_root_is_absolute": true,
+            "output_control_available": true
+          },
+          "blockers": [],
+          "next_allowed_action": "real_generation_preflight_required",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "timestamp": "2026-05-01T15:42:39.534628"
+        }
+      },
+      "timestamp": "2026-05-01T15:42:39.535629",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generation_preflight_required",
+      "success": true,
+      "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_real_generation_preflight_report.json"
+      ],
+      "metadata": {
+        "agent": "RealGenerationReadinessAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "real_generation_payload_review",
+        "next_allowed_action": "real_generation_payload_review",
+        "combine_v2_real_generation_preflight_report": {
+          "stage": "real_generation_preflight_required",
+          "status": "ready",
+          "comfyui_read_only_check": true,
+          "comfyui_reachable": true,
+          "object_info_available": true,
+          "required_nodes_checked": true,
+          "generation_submitted": false,
+          "comfyui_execution": false,
+          "workflow_mutated": false,
+          "downstream_executed": false,
+          "next_allowed_action": "real_generation_payload_review"
+        }
+      },
+      "timestamp": "2026-05-01T15:42:39.801635",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generation_payload_review",
+      "success": true,
+      "message": "Agent GenerationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_real_generation_payload.json",
+        "combine_v2_real_generation_execution_contract.json"
+      ],
+      "metadata": {
+        "agent": "GenerationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_real_generation_authorization_required",
+        "action": "materialize_real_generation_payload",
+        "next_allowed_action": "operator_real_generation_authorization_required",
+        "combine_v2_real_generation_payload": {
+          "stage": "real_generation_payload_review",
+          "payload_type": "real_generation_candidate",
+          "route_family": "custom",
+          "prompt_contract": "output/control/combine_v2_prompt_contract.json",
+          "workflow_contract": "output/control/combine_v2_workflow_contract.json",
+          "asset_contract": "output/control/combine_v2_asset_requirements_contract.json",
+          "retry_context": {
+            "retry_requested": true,
+            "operator_retry_authorized": true,
+            "corrective_plan_applied_to_payload": true
+          },
+          "execution_ready": false,
+          "requires_operator_real_generation_authorization": true,
+          "generation_performed": false,
+          "comfyui_execution": false
+        },
+        "combine_v2_real_generation_execution_contract": {
+          "stage": "real_generation_payload_review",
+          "contract_type": "real_generation_execution_contract",
+          "dry_run": true,
+          "source_artifacts": {
+            "combine_v2_generation_payload_stub_loaded": true,
+            "combine_v2_generation_execution_plan_loaded": true,
+            "combine_v2_generation_trace_stub_loaded": true,
+            "combine_v2_workflow_contract_loaded": true,
+            "combine_v2_prompt_contract_loaded": true,
+            "combine_v2_asset_requirements_contract_loaded": true,
+            "combine_v2_preflight_contract_loaded": false
+          },
+          "workflow_submitted": false,
+          "generation_submitted": false,
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_real_generation_authorization_required",
+          "timestamp": "2026-05-01T15:42:39.845639"
+        }
+      },
+      "timestamp": "2026-05-01T15:42:39.847639",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_real_generation_authorization_required",
+      "success": true,
+      "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_operator_real_generation_authorization_request.json"
+      ],
+      "metadata": {
+        "agent": "RealGenerationReadinessAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_real_generation_authorization_required",
+        "next_allowed_action": "operator_real_generation_authorization_required",
+        "combine_v2_operator_real_generation_authorization_request": {
+          "stage": "operator_real_generation_authorization_required",
+          "request_type": "real_comfyui_generation_authorization",
+          "requires_operator_confirmation": true,
+          "will_execute_comfyui_if_approved_later": true,
+          "current_layer_executes_comfyui": false,
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_real_generation_authorization_required",
+          "timestamp": "2026-05-01T15:42:39.891638"
+        }
+      },
+      "timestamp": "2026-05-01T15:42:39.891638",
       "no_generation_performed": true
     }
   ]

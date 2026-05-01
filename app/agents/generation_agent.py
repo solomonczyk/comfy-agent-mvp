@@ -28,7 +28,12 @@ class GenerationAgent(BaseRoleAgent):
     
     @property
     def supported_stages(self) -> List[str]:
-        return ["generation_authorization_required", "operator_generation_authorization_required", "generate_assets"]
+        return [
+            "generation_authorization_required",
+            "operator_generation_authorization_required",
+            "generate_assets",
+            "real_generation_payload_review",
+        ]
     
     @property
     def required_inputs(self) -> List[str]:
@@ -381,6 +386,79 @@ class GenerationAgent(BaseRoleAgent):
                 artifacts=artifacts,
                 next_recommended_stage="visual_qa_required_stub_pending",
                 metadata=metadata
+            )
+
+        if stage == "real_generation_payload_review":
+            payload_stub = self._read_contract(project_root, "combine_v2_generation_payload_stub")
+            execution_plan = self._read_contract(project_root, "combine_v2_generation_execution_plan")
+            trace_stub = self._read_contract(project_root, "combine_v2_generation_trace_stub")
+            workflow_contract = self._read_contract(project_root, "combine_v2_workflow_contract")
+            prompt_contract = self._read_contract(project_root, "combine_v2_prompt_contract")
+            asset_contract = self._read_contract(project_root, "combine_v2_asset_requirements_contract")
+            preflight_contract = self._read_contract(project_root, "combine_v2_preflight_contract")
+
+            retry_context = payload_stub.get("retry_context", {}) if isinstance(payload_stub, dict) else {}
+            real_payload = {
+                "stage": stage,
+                "payload_type": "real_generation_candidate",
+                "route_family": context.route_family or context.metadata.get("route_family", "custom"),
+                "prompt_contract": "output/control/combine_v2_prompt_contract.json",
+                "workflow_contract": "output/control/combine_v2_workflow_contract.json",
+                "asset_contract": "output/control/combine_v2_asset_requirements_contract.json",
+                "retry_context": {
+                    "retry_requested": bool(retry_context.get("retry_requested", False)),
+                    "operator_retry_authorized": bool(retry_context.get("operator_retry_authorized", False)),
+                    "corrective_plan_applied_to_payload": bool(
+                        retry_context.get("corrective_plan_applied_to_payload", False)
+                    ),
+                },
+                "execution_ready": False,
+                "requires_operator_real_generation_authorization": True,
+                "generation_performed": False,
+                "comfyui_execution": False,
+            }
+            execution_contract = {
+                "stage": stage,
+                "contract_type": "real_generation_execution_contract",
+                "dry_run": True,
+                "source_artifacts": {
+                    "combine_v2_generation_payload_stub_loaded": bool(payload_stub),
+                    "combine_v2_generation_execution_plan_loaded": bool(execution_plan),
+                    "combine_v2_generation_trace_stub_loaded": bool(trace_stub),
+                    "combine_v2_workflow_contract_loaded": bool(workflow_contract),
+                    "combine_v2_prompt_contract_loaded": bool(prompt_contract),
+                    "combine_v2_asset_requirements_contract_loaded": bool(asset_contract),
+                    "combine_v2_preflight_contract_loaded": bool(preflight_contract),
+                },
+                "workflow_submitted": False,
+                "generation_submitted": False,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "downstream_executed": False,
+                "production_accepted": False,
+                "next_allowed_action": "operator_real_generation_authorization_required",
+                "timestamp": timestamp,
+            }
+
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status="ok",
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=[
+                    "combine_v2_real_generation_payload.json",
+                    "combine_v2_real_generation_execution_contract.json",
+                ],
+                next_recommended_stage="operator_real_generation_authorization_required",
+                metadata={
+                    "action": "materialize_real_generation_payload",
+                    "next_allowed_action": "operator_real_generation_authorization_required",
+                    "combine_v2_real_generation_payload": real_payload,
+                    "combine_v2_real_generation_execution_contract": execution_contract,
+                },
             )
 
         # DEFAULT: other stages

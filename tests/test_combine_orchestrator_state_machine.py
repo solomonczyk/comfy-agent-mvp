@@ -40,6 +40,11 @@ class TestCombineStateMachine:
         assert CombineStateMachine.can_transition("retry_correction_required", "operator_retry_authorization_required")
         assert CombineStateMachine.can_transition("retry_plan_review_required", "operator_retry_authorization_required")
         assert CombineStateMachine.can_transition("operator_retry_authorization_required", "generation_authorization_required")
+        assert CombineStateMachine.can_transition("operator_visual_review", "real_generation_readiness_required")
+        assert CombineStateMachine.can_transition("visual_qa_required", "real_generation_readiness_required")
+        assert CombineStateMachine.can_transition("real_generation_readiness_required", "real_generation_preflight_required")
+        assert CombineStateMachine.can_transition("real_generation_preflight_required", "real_generation_payload_review")
+        assert CombineStateMachine.can_transition("real_generation_payload_review", "operator_real_generation_authorization_required")
         assert CombineStateMachine.can_transition("final_operator_acceptance", "completed")
     
     def test_forbidden_transitions_fail(self):
@@ -50,6 +55,9 @@ class TestCombineStateMachine:
         assert not CombineStateMachine.can_transition("brief_intake_required", "visual_qa_required")
         assert not CombineStateMachine.can_transition("generate_assets", "assembly_required")
         assert not CombineStateMachine.can_transition("visual_qa_required", "completed")
+        assert not CombineStateMachine.can_transition(
+            "operator_real_generation_authorization_required", "real_generate_assets"
+        )
     
     def test_generation_cannot_happen_before_preflight_authorization(self):
         """Test that generation cannot happen before preflight/authorization"""

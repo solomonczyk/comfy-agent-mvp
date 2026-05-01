@@ -1,0 +1,13 @@
+{
+  "stage": "operator_real_generation_authorization_required",
+  "request_type": "real_comfyui_generation_authorization",
+  "requires_operator_confirmation": true,
+  "will_execute_comfyui_if_approved_later": true,
+  "current_layer_executes_comfyui": false,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_real_generation_authorization_required",
+  "timestamp": "2026-05-01T15:42:39.891638"
+}

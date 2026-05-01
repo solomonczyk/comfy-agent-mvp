@@ -1,0 +1,22 @@
+{
+  "stage": "real_generation_payload_review",
+  "contract_type": "real_generation_execution_contract",
+  "dry_run": true,
+  "source_artifacts": {
+    "combine_v2_generation_payload_stub_loaded": true,
+    "combine_v2_generation_execution_plan_loaded": true,
+    "combine_v2_generation_trace_stub_loaded": true,
+    "combine_v2_workflow_contract_loaded": true,
+    "combine_v2_prompt_contract_loaded": true,
+    "combine_v2_asset_requirements_contract_loaded": true,
+    "combine_v2_preflight_contract_loaded": false
+  },
+  "workflow_submitted": false,
+  "generation_submitted": false,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_real_generation_authorization_required",
+  "timestamp": "2026-05-01T15:42:39.845639"
+}

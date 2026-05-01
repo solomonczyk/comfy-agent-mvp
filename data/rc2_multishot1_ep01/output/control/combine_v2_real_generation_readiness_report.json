@@ -1,0 +1,20 @@
+{
+  "stage": "real_generation_readiness_required",
+  "status": "ready_for_preflight",
+  "checks": {
+    "canonical_state_available": true,
+    "generation_gate_open": true,
+    "retry_context_available": true,
+    "generation_payload_stub_available": true,
+    "execution_plan_available": true,
+    "project_root_is_absolute": true,
+    "output_control_available": true
+  },
+  "blockers": [],
+  "next_allowed_action": "real_generation_preflight_required",
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-01T15:42:39.534628"
+}

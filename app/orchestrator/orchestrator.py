@@ -39,6 +39,10 @@ class CombineOrchestrator:
         "visual_qa_required_stub_pending": "VisualQAAgent",
         "visual_qa_required": "VisualQAAgent",
         "operator_visual_review": "VisualQAAgent",
+        "real_generation_readiness_required": "RealGenerationReadinessAgent",
+        "real_generation_preflight_required": "RealGenerationReadinessAgent",
+        "real_generation_payload_review": "GenerationAgent",
+        "operator_real_generation_authorization_required": "RealGenerationReadinessAgent",
         "retry_correction_required": "RetryPolicyAgent",
         "controlled_asset_resolution_review_required": "AssetResolverAgent",
         "assembly_required": "AssemblyAgent",
@@ -201,6 +205,9 @@ class CombineOrchestrator:
             elif agent_name == "RetryPolicyAgent":
                 from app.agents.retry_policy_agent import RetryPolicyAgent
                 agent = RetryPolicyAgent()
+            elif agent_name == "RealGenerationReadinessAgent":
+                from app.agents.real_generation_readiness_agent import RealGenerationReadinessAgent
+                agent = RealGenerationReadinessAgent()
             elif agent_name == "AssemblyAgent":
                 from app.agents.assembly_agent import AssemblyAgent
                 agent = AssemblyAgent()

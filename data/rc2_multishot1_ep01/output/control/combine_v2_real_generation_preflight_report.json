@@ -1,0 +1,13 @@
+{
+  "stage": "real_generation_preflight_required",
+  "status": "ready",
+  "comfyui_read_only_check": true,
+  "comfyui_reachable": true,
+  "object_info_available": true,
+  "required_nodes_checked": true,
+  "generation_submitted": false,
+  "comfyui_execution": false,
+  "workflow_mutated": false,
+  "downstream_executed": false,
+  "next_allowed_action": "real_generation_payload_review"
+}
