@@ -39,6 +39,21 @@ class WorkflowTDAgent(BaseRoleAgent):
         simple_workflow_routes = ["ugc_testimonial", "social_short_vertical", "batch_variations"]
         not_required = route_family in simple_workflow_routes
         
+        contract_name = "combine_v2_workflow_contract"
+        contract_file = f"{contract_name}.json"
+        
+        contract_data = {
+            "agent": self.role_name,
+            "stage": context.stage,
+            "workflow_id": "comfy_v2_standard_flow",
+            "route_family": route_family,
+            "configuration": {
+                "steps": ["load_checkpoint", "clip_text_encode", "sampler", "vae_decode"],
+                "batch_size": 1
+            },
+            "status": "planned"
+        }
+        
         return AgentResult(
             agent=self.role_name,
             stage=context.stage,
@@ -47,13 +62,14 @@ class WorkflowTDAgent(BaseRoleAgent):
             generation_performed=False,
             comfyui_execution=False,
             downstream_executed=False,
-            artifacts=[],
-            next_recommended_stage="generation_authorization_required",
+            artifacts=[contract_file] if not not_required else [],
+            next_recommended_stage="workflow_preflight_required",
             not_required_for_route=not_required,
             metadata={
                 "action": "technical_workflow_direction",
                 "route_family": route_family,
                 "not_required_reason": "simple_workflow" if not_required else None,
-                "description": "Provides workflow TD (optional for simple workflows)"
+                "description": "Provides workflow TD (optional for simple workflows)",
+                contract_name: contract_data if not not_required else None
             }
         )

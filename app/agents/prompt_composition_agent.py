@@ -18,7 +18,7 @@ class PromptCompositionAgent(BaseRoleAgent):
     
     @property
     def supported_stages(self) -> List[str]:
-        return ["workflow_plan_required", "generation_authorization_required"]
+        return ["workflow_plan_required", "workflow_preflight_required", "generation_authorization_required"]
     
     @property
     def required_inputs(self) -> List[str]:
@@ -32,6 +32,19 @@ class PromptCompositionAgent(BaseRoleAgent):
         return bool(context.project_root)
     
     def create_stub_result(self, context: CombineRunContext) -> AgentResult:
+        contract_name = "combine_v2_prompt_contract"
+        contract_file = f"{contract_name}.json"
+        
+        contract_data = {
+            "agent": self.role_name,
+            "stage": context.stage,
+            "prompts": {
+                "positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+                "negative": "low quality, blurry, distorted"
+            },
+            "status": "composed"
+        }
+        
         return AgentResult(
             agent=self.role_name,
             stage=context.stage,
@@ -40,10 +53,11 @@ class PromptCompositionAgent(BaseRoleAgent):
             generation_performed=False,
             comfyui_execution=False,
             downstream_executed=False,
-            artifacts=[],
+            artifacts=[contract_file],
             next_recommended_stage="generation_authorization_required",
             metadata={
                 "action": "compose_prompts",
-                "description": "Composes and optimizes prompts (no execution)"
+                "description": "Composes and optimizes prompts (no execution)",
+                contract_name: contract_data
             }
         )

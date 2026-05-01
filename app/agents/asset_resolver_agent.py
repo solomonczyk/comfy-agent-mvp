@@ -32,6 +32,20 @@ class AssetResolverAgent(BaseRoleAgent):
         return bool(context.project_root)
     
     def create_stub_result(self, context: CombineRunContext) -> AgentResult:
+        contract_name = "combine_v2_asset_requirements_contract"
+        contract_file = f"{contract_name}.json"
+        
+        contract_data = {
+            "agent": self.role_name,
+            "stage": context.stage,
+            "asset_requirements": {
+                "characters": ["hero"],
+                "environments": ["office"],
+                "audio": ["voiceover", "background_music"]
+            },
+            "status": "resolved"
+        }
+        
         return AgentResult(
             agent=self.role_name,
             stage=context.stage,
@@ -40,10 +54,11 @@ class AssetResolverAgent(BaseRoleAgent):
             generation_performed=False,
             comfyui_execution=False,
             downstream_executed=False,
-            artifacts=[],
+            artifacts=[contract_file],
             next_recommended_stage="workflow_plan_required",
             metadata={
                 "action": "resolve_assets",
-                "description": "Resolves required assets (stub only)"
+                "description": "Resolves required assets (stub only)",
+                contract_name: contract_data
             }
         )
