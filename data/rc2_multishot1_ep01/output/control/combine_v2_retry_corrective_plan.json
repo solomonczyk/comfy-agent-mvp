@@ -1,0 +1,10 @@
+{
+  "plan_id": "CP-001",
+  "actions": [
+    "adjust_prompt",
+    "increase_steps"
+  ],
+  "target_quality": "high",
+  "retry_gate_opened": false,
+  "generation_performed": false
+}

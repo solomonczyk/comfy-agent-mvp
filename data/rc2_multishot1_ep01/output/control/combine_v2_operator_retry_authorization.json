@@ -1,0 +1,14 @@
+{
+  "agent": "Operator",
+  "action": "authorize_retry_return_to_generation_authorization",
+  "operator_retry_authorized": true,
+  "retry_gate_open": false,
+  "generation_authorization_required": true,
+  "next_allowed_action": "generation_authorization_required",
+  "retry_executed": false,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-01T17:29:35.204835"
+}

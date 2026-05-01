@@ -1,0 +1,16 @@
+{
+  "agent": "GenerationAgent",
+  "stage": "generation_authorization_required",
+  "generation_authorization_ready": true,
+  "generation_authorized": false,
+  "authorization_required": true,
+  "retry_requested": true,
+  "operator_retry_authorized": true,
+  "retry_gate_open": false,
+  "retry_executed": false,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "next_allowed_action": "operator_generation_authorization_required",
+  "timestamp": "2026-05-01T15:29:41.255179"
+}

@@ -1,0 +1,22 @@
+{
+  "agent": "AssetResolverAgent",
+  "stage": "asset_resolution_required",
+  "inventory": {
+    "local_repository": "f:/Assets/LocalStub",
+    "available_assets": {
+      "characters": [
+        "hero"
+      ],
+      "environments": [
+        "office"
+      ],
+      "audio": [
+        "voiceover"
+      ]
+    },
+    "missing_assets": [
+      "background_music"
+    ],
+    "silent_substitution_allowed": false
+  }
+}

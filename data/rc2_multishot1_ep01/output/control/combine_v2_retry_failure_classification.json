@@ -1,0 +1,7 @@
+{
+  "classification": "visual_quality_failure",
+  "severity": "high",
+  "requires_retry": true,
+  "source": "retry_correction_required",
+  "production_accepted": false
+}

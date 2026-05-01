@@ -1,0 +1,14 @@
+{
+  "route_family": "custom",
+  "route_policy": {
+    "description": "Custom route for user-defined workflows",
+    "requires_custom_config": true,
+    "typical_assets": [
+      "custom_output"
+    ],
+    "supports_video": true
+  },
+  "classified_at": "2026-05-01T08:45:59.344668",
+  "confidence": 1.0,
+  "method": "stub"
+}

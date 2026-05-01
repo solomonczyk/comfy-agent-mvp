@@ -1,0 +1,17 @@
+{
+  "agent": "AssetResolverAgent",
+  "stage": "asset_resolution_required",
+  "resolved": false,
+  "missing": [
+    "background_music"
+  ],
+  "candidates": [
+    "candidate_bgm_01",
+    "candidate_bgm_02"
+  ],
+  "rejected": [
+    "rejected_bgm_01"
+  ],
+  "manual_review_required": true,
+  "no_silent_substitution": true
+}

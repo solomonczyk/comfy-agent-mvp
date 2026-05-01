@@ -1,0 +1,16 @@
+{
+  "agent": "WorkflowTDAgent",
+  "stage": "workflow_plan_required",
+  "workflow_id": "comfy_v2_standard_flow",
+  "route_family": "custom",
+  "configuration": {
+    "steps": [
+      "load_checkpoint",
+      "clip_text_encode",
+      "sampler",
+      "vae_decode"
+    ],
+    "batch_size": 1
+  },
+  "status": "planned"
+}

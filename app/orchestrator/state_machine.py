@@ -101,7 +101,8 @@ class CombineStateMachine:
             "blocked_manual_review"
         },
         "retry_correction_required": {
-            "retry_plan_review_required"
+            "retry_plan_review_required",
+            "operator_retry_authorization_required"
         },
         "retry_plan_review_required": {
             "operator_retry_authorization_required"

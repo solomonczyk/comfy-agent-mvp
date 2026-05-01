@@ -1,0 +1,20 @@
+{
+  "agent": "GenerationAgent",
+  "stage": "generation_authorization_required",
+  "payload_type": "generation_contract_v2",
+  "workflow": "comfy_v2_standard_flow",
+  "prompts": {
+    "positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+    "negative": "low quality, blurry, distorted"
+  },
+  "assets": {},
+  "is_stub": true,
+  "dry_run": true,
+  "retry_context": {
+    "retry_requested": true,
+    "operator_retry_authorized": true,
+    "retry_gate_open": false,
+    "corrective_plan_applied_to_payload": true,
+    "retry_execution_authorized": false
+  }
+}

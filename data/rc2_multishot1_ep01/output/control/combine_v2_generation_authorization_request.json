@@ -1,0 +1,23 @@
+{
+  "agent": "GenerationAgent",
+  "stage": "generation_authorization_required",
+  "generation_authorization_ready": true,
+  "assets_resolved": true,
+  "preflight_ok": true,
+  "authorization_required": true,
+  "blocked_by_assets": false,
+  "missing_assets": [],
+  "retry_requested": true,
+  "operator_retry_authorized": true,
+  "retry_gate_open": false,
+  "retry_corrective_plan_loaded": true,
+  "retry_failure_classification_loaded": true,
+  "retry_authorization_request_loaded": true,
+  "retry_gate_decision_loaded": true,
+  "corrective_plan_applied_to_payload": true,
+  "retry_execution_authorized": false,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "timestamp": "2026-05-01T15:29:41.255179"
+}

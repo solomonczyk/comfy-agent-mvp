@@ -1,0 +1,9 @@
+{
+  "agent": "AssetResolverAgent",
+  "stage": "asset_resolution_required",
+  "pass": false,
+  "download_authorized": false,
+  "install_authorized": false,
+  "generation_authorized": false,
+  "reason": "Missing assets require operator review"
+}

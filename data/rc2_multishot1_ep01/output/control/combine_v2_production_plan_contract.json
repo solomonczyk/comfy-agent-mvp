@@ -1,0 +1,6 @@
+{
+  "route_family": "custom",
+  "strategy": "standard_stub_strategy",
+  "intent": "production_strategy_analysis",
+  "planned_at": "2026-05-01T08:45:59.430252"
+}

@@ -1,0 +1,7 @@
+{
+  "agent": "Operator",
+  "action": "visual_review_decision",
+  "operator_visual_decision": "rejected",
+  "reason": "retry_visual_stub_requires_next_correction",
+  "timestamp": "2026-05-01T17:29:34.977828"
+}

@@ -328,5 +328,192 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-01T15:16:49.939600"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "visual_qa_required",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:17:18.803010"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_visual_review",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:26:47.977102"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "retry_correction_required",
+    "agent": "RetryPolicyAgent",
+    "success": true,
+    "message": "Agent RetryPolicyAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:26:53.995438"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_retry_authorization_required",
+    "agent": "GenericStageAgent",
+    "success": true,
+    "message": "Agent GenericStageAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:01.632943"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "generation_authorization_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:06.283210"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_generation_authorization_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:10.979470"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "generate_assets",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:25.373283"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "visual_qa_required_stub_pending",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:25.433284"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "visual_qa_required",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:25.631298"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_visual_review",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:35.026828"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "retry_correction_required",
+    "agent": "RetryPolicyAgent",
+    "success": true,
+    "message": "Agent RetryPolicyAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:35.095830"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_retry_authorization_required",
+    "agent": "GenericStageAgent",
+    "success": true,
+    "message": "Agent GenericStageAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:35.241838"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "generation_authorization_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:41.294180"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_generation_authorization_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:45.903438"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "generate_assets",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:29:50.543729"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "visual_qa_required_stub_pending",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:30:02.425371"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "visual_qa_required",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-01T15:30:12.567947"
   }
 ]

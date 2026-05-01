@@ -386,7 +386,7 @@ def combine_operator_visual_decision(args: argparse.Namespace) -> int:
     }
     artifact_decision = decision_map[decision]
     
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now().isoformat()
     
     # 2. Create decision artifact
     decision_artifact = {
@@ -416,11 +416,19 @@ def combine_operator_visual_decision(args: argparse.Namespace) -> int:
     
     if result.success:
         status = orchestrator.get_status()
+        gate_result = result.metadata.get("combine_v2_visual_acceptance_gate_result", {})
         if json_output:
             print(json.dumps({
                 "status": "ok",
                 "operator_visual_decision": artifact_decision,
-                "next_allowed_action": status.next_allowed_action,
+                "visuals_accepted": gate_result.get("visuals_accepted", False),
+                "next_allowed_action": gate_result.get("next_allowed_action", status.next_allowed_action),
+                "retry_authorized": gate_result.get("retry_authorized", False),
+                "assembly_allowed": gate_result.get("assembly_allowed", False),
+                "generation_performed": gate_result.get("generation_performed", False),
+                "comfyui_execution": False,
+                "downstream_executed": False,
+                "production_accepted": gate_result.get("production_accepted", False),
                 "current_state": status.current_state,
                 "artifacts": [str(decision_path.relative_to(project_root))] + [str(Path("output/control") / a) for a in result.artifacts]
             }, indent=2))
@@ -451,7 +459,7 @@ def combine_authorize_retry(args: argparse.Namespace) -> int:
     project_root = Path(args.project_root)
     json_output = args.json
     control_dir = project_root / "output" / "control"
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now().isoformat()
 
     required_inputs = [
         "combine_v2_retry_failure_classification.json",
@@ -524,6 +532,22 @@ def combine_authorize_retry(args: argparse.Namespace) -> int:
 
     orchestrator = CombineOrchestrator(str(project_root))
     stage_result = orchestrator.run_stage("operator_retry_authorization_required")
+    if not stage_result.success:
+        blocked_response = {
+            "operator_retry_authorized": False,
+            "next_allowed_action": "operator_retry_authorization_required",
+            "blocked_reason": stage_result.message,
+            "retry_executed": False,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+        }
+        if json_output:
+            print(json.dumps(blocked_response, indent=2))
+        else:
+            print("Retry Authorization: BLOCKED")
+            print(f"Reason: {stage_result.message}")
+        return 1
     status = orchestrator.get_status()
     next_allowed_action = "generation_authorization_required"
     if stage_result.success and status.next_allowed_action == "generation_authorization_required":

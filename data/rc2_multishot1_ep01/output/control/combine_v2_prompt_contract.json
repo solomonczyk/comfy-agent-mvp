@@ -1,0 +1,9 @@
+{
+  "agent": "PromptCompositionAgent",
+  "stage": "workflow_preflight_required",
+  "prompts": {
+    "positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+    "negative": "low quality, blurry, distorted"
+  },
+  "status": "composed"
+}

@@ -1,0 +1,9 @@
+{
+  "operator_visual_decision": "rejected",
+  "visuals_accepted": false,
+  "next_allowed_action": "retry_correction_required",
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "retry_authorized": false,
+  "generation_performed": false
+}

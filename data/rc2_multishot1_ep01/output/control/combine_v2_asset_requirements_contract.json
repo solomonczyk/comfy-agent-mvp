@@ -1,0 +1,10 @@
+{
+  "agent": "CreativeDirectorAgent",
+  "stage": "production_plan_review",
+  "asset_requirements": {
+    "characters": ["hero"],
+    "environments": ["office"],
+    "audio": ["voiceover", "background_music"]
+  },
+  "status": "approved"
+}

@@ -1,0 +1,7 @@
+{
+  "request_id": "REQ-001",
+  "plan_id": "CP-001",
+  "status": "pending_authorization",
+  "next_allowed_action": "operator_retry_authorization_required",
+  "retry_authorized": false
+}
