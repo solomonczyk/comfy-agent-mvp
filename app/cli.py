@@ -176,8 +176,28 @@ def combine_authorize_generation(args: argparse.Namespace) -> int:
     json_output = args.json
     control_dir = project_root / "output" / "control"
     
-    # 1. Read authorization decision
+    # 1. Read required generation authorization artifacts
+    request_path = control_dir / "combine_v2_generation_authorization_request.json"
     decision_path = control_dir / "combine_v2_generation_authorization_decision.json"
+    payload_stub_path = control_dir / "combine_v2_generation_payload_stub.json"
+
+    missing_required = [
+        str(path.name)
+        for path in (request_path, decision_path, payload_stub_path)
+        if not path.exists()
+    ]
+    if missing_required:
+        msg = (
+            "Error: Missing required generation authorization artifacts: "
+            + ", ".join(missing_required)
+            + ". Run generation_authorization_required first."
+        )
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg, "generation_gate_open": False}))
+        else:
+            print(msg)
+        return 1
+
     if not decision_path.exists():
         msg = "Error: Missing combine_v2_generation_authorization_decision.json. Run generation_authorization_required first."
         if json_output:
@@ -185,10 +205,17 @@ def combine_authorize_generation(args: argparse.Namespace) -> int:
         else:
             print(msg)
         return 1
-        
+
+    with open(request_path, 'r') as f:
+        request = json.load(f)
     with open(decision_path, 'r') as f:
         decision = json.load(f)
-        
+    with open(payload_stub_path, 'r') as f:
+        payload_stub = json.load(f)
+
+    retry_context = payload_stub.get("retry_context")
+    has_retry_context = isinstance(retry_context, dict)
+
     # 2. Check preconditions
     auth_required = decision.get("authorization_required", False)
     already_authorized = decision.get("generation_authorized", False)
@@ -222,15 +249,24 @@ def combine_authorize_generation(args: argparse.Namespace) -> int:
         auth_artifact = {
             "agent": "Operator",
             "action": "authorize_generation",
+            "operator_generation_authorized": True,
             "generation_gate_open": True,
             "next_allowed_action": "generate_assets",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
             "timestamp": timestamp,
             "preconditions_checked": {
                 "authorization_required": auth_required,
                 "generation_authorized": already_authorized,
                 "missing_assets": missing_assets
-            }
+            },
+            "authorization_request_snapshot": request,
+            "authorization_decision_snapshot": decision
         }
+        if has_retry_context:
+            auth_artifact["retry_context"] = retry_context
         
         artifact_path = control_dir / "combine_v2_operator_generation_authorization.json"
         control_dir.mkdir(parents=True, exist_ok=True)
@@ -247,9 +283,15 @@ def combine_authorize_generation(args: argparse.Namespace) -> int:
         if json_output:
             print(json.dumps({
                 "status": "ok",
+                "operator_generation_authorized": True,
                 "generation_gate_open": True,
                 "next_allowed_action": status.next_allowed_action,
                 "current_state": status.current_state,
+                "retry_context_preserved": has_retry_context,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "downstream_executed": False,
+                "production_accepted": False,
                 "artifact": str(artifact_path.relative_to(project_root))
             }, indent=2))
         else:
@@ -262,15 +304,25 @@ def combine_authorize_generation(args: argparse.Namespace) -> int:
         rejection_artifact = {
             "agent": "Operator",
             "action": "authorize_generation",
+            "operator_generation_authorized": False,
             "generation_gate_open": False,
+            "next_allowed_action": "operator_generation_authorization_required",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
             "rejection_reason": rejection_reason,
             "timestamp": timestamp,
             "preconditions_checked": {
                 "authorization_required": auth_required,
                 "generation_authorized": already_authorized,
                 "missing_assets": missing_assets
-            }
+            },
+            "authorization_request_snapshot": request,
+            "authorization_decision_snapshot": decision
         }
+        if has_retry_context:
+            rejection_artifact["retry_context"] = retry_context
         
         artifact_path = control_dir / "combine_v2_operator_generation_rejection.json"
         control_dir.mkdir(parents=True, exist_ok=True)
@@ -901,6 +953,23 @@ def main() -> int:
         action="store_true",
         help="Output in JSON format",
     )
+
+    # RC-COMBINE-V2-6 / V2-13 — combine-authorize-generation subcommand
+    combine_authorize_generation_parser = subparsers.add_parser(
+        "combine-authorize-generation",
+        help="Authorize next controlled generate_assets stage without running generation",
+    )
+    combine_authorize_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_authorize_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-9 — combine-operator-visual-decision subcommand
     combine_operator_visual_decision_parser = subparsers.add_parser("combine-operator-visual-decision", help="Record operator visual review decision")
     combine_operator_visual_decision_parser.add_argument(

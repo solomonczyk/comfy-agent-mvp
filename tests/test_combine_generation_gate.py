@@ -25,6 +25,22 @@ class TestCombineOperatorGenerationGate:
                 "authorization_required": True,
                 "generation_authorized": False
             }, f)
+        with open(control_dir / "combine_v2_generation_authorization_request.json", 'w') as f:
+            json.dump({
+                "generation_authorization_ready": True,
+                "authorization_required": True
+            }, f)
+        with open(control_dir / "combine_v2_generation_payload_stub.json", 'w') as f:
+            json.dump({
+                "payload_type": "generation_contract_v2",
+                "retry_context": {
+                    "retry_requested": False,
+                    "operator_retry_authorized": False,
+                    "retry_gate_open": False,
+                    "corrective_plan_applied_to_payload": False,
+                    "retry_execution_authorized": False
+                }
+            }, f)
             
         # 3. Other stubs
         with open(control_dir / "combine_v2_workflow_contract.json", 'w') as f:
@@ -157,6 +173,10 @@ class TestCombineOperatorGenerationGate:
             json.dump({"missing_assets": [], "generation_authorized": False}, f)
         with open(control_dir / "combine_v2_generation_authorization_decision.json", 'w') as f:
             json.dump({"authorization_required": True, "generation_authorized": False}, f)
+        with open(control_dir / "combine_v2_generation_authorization_request.json", 'w') as f:
+            json.dump({"generation_authorization_ready": True, "authorization_required": True}, f)
+        with open(control_dir / "combine_v2_generation_payload_stub.json", 'w') as f:
+            json.dump({"payload_type": "generation_contract_v2", "retry_context": {}}, f)
         with open(control_dir / "combine_v2_workflow_contract.json", 'w') as f:
             json.dump({"workflow_id": "test"}, f)
         with open(control_dir / "combine_v2_prompt_contract.json", 'w') as f:
