@@ -13,6 +13,7 @@ class CombineStateMachine:
     
     # All valid states
     STATES = [
+        "initial",
         "brief_intake_required",
         "route_classification_required",
         "production_plan_required",
@@ -41,6 +42,9 @@ class CombineStateMachine:
     # Allowed transitions
     # Format: from_state -> [to_state, ...]
     ALLOWED_TRANSITIONS: Dict[str, Set[str]] = {
+        "initial": {
+            "brief_intake_required"
+        },
         "brief_intake_required": {
             "route_classification_required"
         },

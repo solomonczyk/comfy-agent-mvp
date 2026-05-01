@@ -4,6 +4,7 @@ Handles initial brief parsing and validation.
 No real generation or ComfyUI execution.
 """
 
+from datetime import datetime
 from typing import List, Dict, Any
 from app.agents.base import BaseRoleAgent, AgentResult
 from app.orchestrator.contracts import CombineRunContext
@@ -32,6 +33,8 @@ class BriefIntakeAgent(BaseRoleAgent):
         return bool(context.project_root)
     
     def create_stub_result(self, context: CombineRunContext) -> AgentResult:
+        brief_file = context.metadata.get("brief_file", "brief.md")
+        
         return AgentResult(
             agent=self.role_name,
             stage=context.stage,
@@ -40,11 +43,18 @@ class BriefIntakeAgent(BaseRoleAgent):
             generation_performed=False,
             comfyui_execution=False,
             downstream_executed=False,
-            artifacts=[],
+            artifacts=["combine_v2_brief_contract.json"],
             next_recommended_stage="route_classification_required",
             metadata={
                 "action": "parse_and_validate_brief",
-                "description": "Would parse brief.md and validate structure",
+                "brief_file": brief_file,
+                "combine_v2_brief_contract": {
+                    "brief_file": brief_file,
+                    "parsed_at": datetime.utcnow().isoformat(),
+                    "status": "valid",
+                    "content_summary": "Stubbed brief content"
+                },
+                "description": "Parses brief.md and validates structure",
                 "route_agnostic": True
             }
         )

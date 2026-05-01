@@ -29,6 +29,7 @@ class TestCombineStateMachine:
     def test_allowed_transitions_work(self):
         """Test that allowed transitions work"""
         # Test some valid transitions
+        assert CombineStateMachine.can_transition("initial", "brief_intake_required")
         assert CombineStateMachine.can_transition("brief_intake_required", "route_classification_required")
         assert CombineStateMachine.can_transition("route_classification_required", "production_plan_required")
         assert CombineStateMachine.can_transition("production_plan_required", "production_plan_review")
@@ -186,23 +187,26 @@ class TestRouteFamilyRegistry:
 class TestCombineOrchestrator:
     """Test the Combine orchestrator"""
     
-    def test_combine_status_can_instantiate_orchestrator_without_comfyui(self):
+    def test_combine_status_can_instantiate_orchestrator_without_comfyui(self, tmp_path):
         """Test that combine-status can instantiate orchestrator without ComfyUI"""
         # This test should pass without requiring ComfyUI to be running
-        orchestrator = CombineOrchestrator("F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01")
+        orchestrator = CombineOrchestrator(str(tmp_path))
         status = orchestrator.get_status()
         
         # Verify status structure
         assert isinstance(status, CombineStatus)
-        assert status.project_root == "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01"
+        assert status.project_root == str(tmp_path)
         assert status.windsurf_runtime_dependency == False
         assert status.generation_performed == False
         assert status.comfyui_execution == False
         assert status.combine_v2 == True
     
-    def test_combine_run_stage_dry_run_does_not_execute_generation(self):
+    def test_combine_run_stage_dry_run_does_not_execute_generation(self, tmp_path):
         """Test that combine-run-stage dry-run does not execute generation"""
-        orchestrator = CombineOrchestrator("F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01")
+        orchestrator = CombineOrchestrator(str(tmp_path))
+        
+        # Run first stage to reach a state where route_classification_required is allowed
+        orchestrator.run_stage("brief_intake_required", dry_run=True)
         
         # Run a stage in dry-run mode
         result = orchestrator.run_stage("route_classification_required", dry_run=True)

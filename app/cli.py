@@ -98,6 +98,51 @@ def combine_run_stage(args: argparse.Namespace) -> int:
     return 0 if result.success else 1
 
 
+def combine_run(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2 — Run the full Brief -> Route -> Production Plan chain.
+    
+    This command runs the orchestrator until the specified stage is reached.
+    It does NOT call ComfyUI, does NOT perform generation, does NOT run QA/downstream.
+    
+    Exit codes:
+    - 0: chain executed successfully
+    - 1: error or invalid args
+    """
+    from app.orchestrator import CombineOrchestrator
+    
+    project_root = args.project_root
+    brief_file = args.brief_file
+    until_stage = args.until
+    route_family = args.route_family
+    dry_run = args.dry_run
+    json_output = args.json
+    
+    orchestrator = CombineOrchestrator(project_root)
+    results = orchestrator.run_until(until_stage, dry_run=dry_run, brief_file=brief_file, route_family=route_family)
+    
+    success = all(r.success for r in results)
+    status = orchestrator.get_status()
+    
+    if json_output:
+        print(json.dumps({
+            "status": "ok" if success else "error",
+            "until": until_stage,
+            "executed_stages": [r.stage for r in results],
+            "current_state": status.current_state,
+            "next_allowed_action": status.next_allowed_action,
+            "artifacts_written": [a for r in results for a in r.artifacts],
+            "message": f"Ran {len(results)} stages until {until_stage}"
+        }, indent=2))
+    else:
+        print(f"Combine V2 Run: {'OK' if success else 'ERROR'}")
+        print(f"Target Stage: {until_stage}")
+        print(f"Current State: {status.current_state}")
+        print(f"Next Allowed Action: {status.next_allowed_action}")
+        print(f"Executed Stages: {', '.join(r.stage for r in results)}")
+        
+    return 0 if success else 1
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -459,6 +504,38 @@ def main() -> int:
         help="Perform dry run only (default: True)",
     )
     combine_run_stage_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-2 — combine-run subcommand
+    combine_run_parser = subparsers.add_parser("combine-run", help="Run the full Brief -> Route -> Production Plan chain")
+    combine_run_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_run_parser.add_argument(
+        "--brief-file",
+        help="Path to the brief markdown file",
+    )
+    combine_run_parser.add_argument(
+        "--until",
+        default="production_plan_review",
+        help="Target stage to stop at (default: production_plan_review)",
+    )
+    combine_run_parser.add_argument(
+        "--route-family",
+        help="Route family override (e.g., portrait_character_identity, product_visual, cinematic_scene, platform_ad_creative)",
+    )
+    combine_run_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Perform dry run only (default: True)",
+    )
+    combine_run_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -1361,6 +1438,8 @@ def main() -> int:
         return init_project(args)
     elif args.command == "combine-status":
         return combine_status(args)
+    elif args.command == "combine-run":
+        return combine_run(args)
     elif args.command == "combine-run-stage":
         return combine_run_stage(args)
     elif args.command == "director":

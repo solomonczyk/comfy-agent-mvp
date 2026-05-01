@@ -4,6 +4,7 @@ Determines production strategy and intent from brief.
 No real generation or ComfyUI execution.
 """
 
+from datetime import datetime
 from typing import List, Dict, Any
 from app.agents.base import BaseRoleAgent, AgentResult
 from app.orchestrator.contracts import CombineRunContext
@@ -42,12 +43,18 @@ class StrategyIntentAgent(BaseRoleAgent):
             generation_performed=False,
             comfyui_execution=False,
             downstream_executed=False,
-            artifacts=[],
+            artifacts=["combine_v2_production_plan_contract.json"],
             next_recommended_stage="production_plan_review",
             metadata={
                 "action": "determine_strategy",
                 "route_family": route_family,
                 "intent": "production_strategy_analysis",
+                "combine_v2_production_plan_contract": {
+                    "route_family": route_family,
+                    "strategy": "standard_stub_strategy",
+                    "intent": "production_strategy_analysis",
+                    "planned_at": datetime.utcnow().isoformat()
+                },
                 "description": "Analyzes production strategy without execution"
             }
         )

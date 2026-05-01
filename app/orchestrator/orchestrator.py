@@ -56,11 +56,14 @@ class CombineOrchestrator:
         # Lazy-loaded agent instances
         self._agents: Dict[str, Any] = {}
         
+        # Ensure output/control directory exists
+        self.control_dir = self.project_root / "output" / "control"
+        
         # Artifact index path
-        self.artifact_index_path = self.project_root / "artifact_index.json"
+        self.artifact_index_path = self.control_dir / "artifact_index.json"
         
         # Ledger path
-        self.ledger_path = self.project_root / "ledger.json"
+        self.ledger_path = self.control_dir / "episode_ledger.json"
     
     def _read_artifact_index(self) -> Dict[str, Any]:
         """Read artifact index if it exists"""
@@ -73,7 +76,15 @@ class CombineOrchestrator:
         """Read ledger if it exists"""
         if self.ledger_path.exists():
             with open(self.ledger_path, 'r') as f:
-                return json.load(f)
+                try:
+                    data = json.load(f)
+                    if isinstance(data, list):
+                        return data
+                    if isinstance(data, dict):
+                        # Canonical format uses 'events' or 'records'
+                        return data.get('events', data.get('records', []))
+                except json.JSONDecodeError:
+                    return []
         return []
     
     def _infer_current_state(self) -> str:
@@ -97,7 +108,7 @@ class CombineOrchestrator:
             return artifact_index["current_state"]
         
         # Default to initial state
-        return "brief_intake_required"
+        return "initial"
     
     def _get_next_allowed_action(self, current_state: str) -> str:
         """Get next allowed action based on current state"""
@@ -301,8 +312,22 @@ class CombineOrchestrator:
         artifact_index["current_state"] = result.stage
         
         # Write artifact index
+        self.control_dir.mkdir(parents=True, exist_ok=True)
         with open(self.artifact_index_path, 'w') as f:
             json.dump(artifact_index, f, indent=2)
+            
+        # Write individual contract files if specified in artifacts
+        # We look for metadata keys ending with '_contract'
+        for artifact_name in result.artifacts:
+            if artifact_name.endswith('.json'):
+                # Try to find matching contract data in metadata
+                contract_key = artifact_name.replace('.json', '')
+                contract_data = result.metadata.get(contract_key)
+                
+                if contract_data:
+                    contract_path = self.control_dir / artifact_name
+                    with open(contract_path, 'w') as f:
+                        json.dump(contract_data, f, indent=2)
     
     def _append_ledger_event(self, event: Dict[str, Any]) -> None:
         """
@@ -311,13 +336,31 @@ class CombineOrchestrator:
         Args:
             event: Event to append
         """
-        ledger = self._read_ledger()
-        ledger.append(event)
+        # Read the raw data to preserve structure
+        data = []
+        if self.ledger_path.exists():
+            with open(self.ledger_path, 'r') as f:
+                try:
+                    data = json.load(f)
+                except json.JSONDecodeError:
+                    data = []
         
+        if isinstance(data, list):
+            data.append(event)
+        elif isinstance(data, dict):
+            # Prefer 'events' for new Combine V2 events
+            if 'events' not in data:
+                data['events'] = []
+            data['events'].append(event)
+        else:
+            # Fallback
+            data = [event]
+        
+        self.control_dir.mkdir(parents=True, exist_ok=True)
         with open(self.ledger_path, 'w') as f:
-            json.dump(ledger, f, indent=2)
+            json.dump(data, f, indent=2)
     
-    def run_stage(self, stage: str, dry_run: bool = True) -> CombineStageResult:
+    def run_stage(self, stage: str, dry_run: bool = True, brief_file: Optional[str] = None, route_family: Optional[str] = None) -> CombineStageResult:
         """
         Run a stage using the role agent protocol (stub/dry only).
         
@@ -328,6 +371,8 @@ class CombineOrchestrator:
         Args:
             stage: Stage to run (e.g., "brief_intake_required", "route_classification_required")
             dry_run: If True, perform dry run only (always enforced in this layer)
+            brief_file: Optional path to the brief file
+            route_family: Optional route family override
             
         Returns:
             CombineStageResult with execution result
@@ -344,19 +389,20 @@ class CombineOrchestrator:
             )
         
         # Build run context
-        route_family = self._get_route_family()
-        route_policy = self._get_route_policy(route_family)
+        current_route_family = route_family or self._get_route_family()
+        route_policy = self._get_route_policy(current_route_family)
         
         context = CombineRunContext(
             project_root=str(self.project_root),
             current_state=current_state,
             stage=stage,
-            route_family=route_family,
+            route_family=current_route_family,
             dry_run=True,  # Always True for this layer
             metadata={
-                "route_family": route_family,
+                "route_family": current_route_family,
                 "route_policy": route_policy,
-                "project_root": str(self.project_root)
+                "project_root": str(self.project_root),
+                "brief_file": brief_file
             }
         )
         
@@ -364,7 +410,7 @@ class CombineOrchestrator:
         agent_result = self._dispatch_to_agent(stage, context)
         
         # Build stage result
-        success = agent_result["status"] == "stubbed"
+        success = agent_result["status"] in ["stubbed", "ok", "success"]
         result = CombineStageResult(
             stage=stage,
             success=success,
@@ -400,3 +446,58 @@ class CombineOrchestrator:
         })
         
         return result
+
+    def run_until(self, target_stage: str, dry_run: bool = True, brief_file: Optional[str] = None, route_family: Optional[str] = None) -> List[CombineStageResult]:
+        """
+        Run stages sequentially until the target stage is reached.
+        
+        Args:
+            target_stage: The stage to stop at (inclusive)
+            dry_run: Whether to perform dry runs
+            brief_file: Path to the brief file
+            route_family: Optional route family override
+            
+        Returns:
+            List of CombineStageResult for each executed stage
+        """
+        results = []
+        
+        # Guard against invalid target stage
+        if not self.state_machine.is_valid_state(target_stage):
+            raise ValueError(f"Invalid target stage: {target_stage}")
+            
+        max_iterations = 20  # Safety break
+        iterations = 0
+        
+        while iterations < max_iterations:
+            status = self.get_status()
+            current_state = status.current_state
+            next_action = status.next_allowed_action
+            
+            # If we reached the target stage (it's the current state or the next action)
+            # Actually, the user wants to run until the target stage is REVEALED as the next action,
+            # or until it has been EXECUTED.
+            # "until production_plan_review" usually means "run everything before it, 
+            # and leave production_plan_review as the next_allowed_action".
+            
+            if current_state == target_stage:
+                break
+                
+            if next_action == "none":
+                break
+                
+            # If next_action is target_stage, and we want to stop BEFORE it:
+            if next_action == target_stage:
+                # We stop here so that target_stage is the next_allowed_action
+                break
+            
+            # Execute next stage
+            result = self.run_stage(next_action, dry_run=dry_run, brief_file=brief_file, route_family=route_family)
+            results.append(result)
+            
+            if not result.success:
+                break
+                
+            iterations += 1
+            
+        return results

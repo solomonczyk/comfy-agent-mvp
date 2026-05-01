@@ -5,6 +5,7 @@ specific route as default. All routes are treated equally.
 No real generation or ComfyUI execution.
 """
 
+from datetime import datetime
 from typing import List, Dict, Any
 from app.agents.base import BaseRoleAgent, AgentResult
 from app.orchestrator.contracts import CombineRunContext
@@ -50,13 +51,20 @@ class RouteClassifierAgent(BaseRoleAgent):
             generation_performed=False,
             comfyui_execution=False,
             downstream_executed=False,
-            artifacts=[],
+            artifacts=["combine_v2_route_contract.json"],
             next_recommended_stage="production_plan_required",
             not_required_for_route=not_required,
             metadata={
                 "action": "classify_route",
                 "route_family": route_family,
                 "route_policy": route_policy,
+                "combine_v2_route_contract": {
+                    "route_family": route_family,
+                    "route_policy": route_policy,
+                    "classified_at": datetime.utcnow().isoformat(),
+                    "confidence": 1.0,
+                    "method": "stub"
+                },
                 "description": "Classifies brief into route family without universal defaults",
                 "anchor_proof": {
                     "no_ugc_default": True,
