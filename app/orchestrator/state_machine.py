@@ -28,6 +28,8 @@ class CombineStateMachine:
         "visual_qa_required",
         "operator_visual_review",
         "retry_correction_required",
+        "retry_plan_review_required",
+        "operator_retry_authorization_required",
         "controlled_asset_resolution_review_required",
         "assembly_required",
         "final_qc_required",
@@ -99,9 +101,13 @@ class CombineStateMachine:
             "blocked_manual_review"
         },
         "retry_correction_required": {
-            "workflow_plan_required",  # Re-plan
-            "generation_authorization_required",  # Re-authorize
-            "generate_assets"  # Re-generate
+            "retry_plan_review_required"
+        },
+        "retry_plan_review_required": {
+            "operator_retry_authorization_required"
+        },
+        "operator_retry_authorization_required": {
+            "generation_authorization_required"
         },
         "assembly_required": {
             "final_qc_required"

@@ -120,7 +120,12 @@ class CombineOrchestrator:
         if "stage_results" in artifact_index and artifact_index["stage_results"]:
             last_result = artifact_index["stage_results"][-1]
             if last_result.get("stage") == current_state:
-                recommended = last_result.get("metadata", {}).get("next_recommended_stage")
+                metadata = last_result.get("metadata", {})
+                explicit_next_action = metadata.get("next_allowed_action")
+                if explicit_next_action and explicit_next_action != "none":
+                    return explicit_next_action
+
+                recommended = metadata.get("next_recommended_stage")
                 if recommended and recommended != "none":
                     # Validate if it's an allowed transition
                     if self.state_machine.can_transition(current_state, recommended):

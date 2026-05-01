@@ -36,6 +36,9 @@ class TestCombineStateMachine:
         assert CombineStateMachine.can_transition("generate_assets", "visual_qa_required_stub_pending")
         assert CombineStateMachine.can_transition("visual_qa_required_stub_pending", "visual_qa_required")
         assert not CombineStateMachine.can_transition("generate_assets", "visual_qa_required")
+        assert CombineStateMachine.can_transition("retry_correction_required", "retry_plan_review_required")
+        assert CombineStateMachine.can_transition("retry_plan_review_required", "operator_retry_authorization_required")
+        assert CombineStateMachine.can_transition("operator_retry_authorization_required", "generation_authorization_required")
         assert CombineStateMachine.can_transition("final_operator_acceptance", "completed")
     
     def test_forbidden_transitions_fail(self):
