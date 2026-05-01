@@ -1,5 +1,5 @@
 {
-  "current_state": "operator_generation_authorization_required",
+  "current_state": "generate_assets",
   "route_family": "custom",
   "stage_results": [
     {
@@ -1073,6 +1073,132 @@
         "message": "Operator authorization granted"
       },
       "timestamp": "2026-05-01T15:03:22.630403",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "generate_assets",
+      "success": true,
+      "message": "Agent GenerationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_generation_execution_plan.json",
+        "combine_v2_generation_execution_stub_result.json",
+        "combine_v2_generation_trace_stub.json"
+      ],
+      "metadata": {
+        "agent": "GenerationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "visual_qa_required_stub_pending",
+        "action": "generate_assets_stubbed",
+        "generation_gate_open": true,
+        "combine_v2_generation_execution_plan": {
+          "agent": "GenerationAgent",
+          "stage": "generate_assets",
+          "workflow_id": "comfy_v2_standard_flow",
+          "prompt_count": 2,
+          "asset_count": 0,
+          "execution_strategy": "stub_only",
+          "comfyui_execution_disabled": true,
+          "timestamp": "2026-05-01T15:12:19.427269"
+        },
+        "combine_v2_generation_execution_stub_result": {
+          "agent": "GenerationAgent",
+          "stage": "generate_assets",
+          "status": "stubbed_ready",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "generated_assets": [],
+          "next_allowed_action": "visual_qa_required_stub_pending",
+          "timestamp": "2026-05-01T15:12:19.427269"
+        },
+        "combine_v2_generation_trace_stub": {
+          "agent": "GenerationAgent",
+          "stage": "generate_assets",
+          "trace_id": "trace_20260501T151219427269",
+          "events": [
+            {
+              "event": "gate_check",
+              "status": "open"
+            },
+            {
+              "event": "payload_intake",
+              "status": "success"
+            },
+            {
+              "event": "generation_stubbed",
+              "status": "completed"
+            }
+          ],
+          "timestamp": "2026-05-01T15:12:19.427269"
+        }
+      },
+      "timestamp": "2026-05-01T15:12:19.429245",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "generate_assets",
+      "success": true,
+      "message": "Agent GenerationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_generation_execution_plan.json",
+        "combine_v2_generation_execution_stub_result.json",
+        "combine_v2_generation_trace_stub.json"
+      ],
+      "metadata": {
+        "agent": "GenerationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "visual_qa_required_stub_pending",
+        "action": "generate_assets_stubbed",
+        "generation_gate_open": true,
+        "combine_v2_generation_execution_plan": {
+          "agent": "GenerationAgent",
+          "stage": "generate_assets",
+          "workflow_id": "comfy_v2_standard_flow",
+          "prompt_count": 2,
+          "asset_count": 0,
+          "execution_strategy": "stub_only",
+          "comfyui_execution_disabled": true,
+          "timestamp": "2026-05-01T15:12:33.416517"
+        },
+        "combine_v2_generation_execution_stub_result": {
+          "agent": "GenerationAgent",
+          "stage": "generate_assets",
+          "status": "stubbed_ready",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "generated_assets": [],
+          "next_allowed_action": "visual_qa_required_stub_pending",
+          "timestamp": "2026-05-01T15:12:33.416517"
+        },
+        "combine_v2_generation_trace_stub": {
+          "agent": "GenerationAgent",
+          "stage": "generate_assets",
+          "trace_id": "trace_20260501T151233416517",
+          "events": [
+            {
+              "event": "gate_check",
+              "status": "open"
+            },
+            {
+              "event": "payload_intake",
+              "status": "success"
+            },
+            {
+              "event": "generation_stubbed",
+              "status": "completed"
+            }
+          ],
+          "timestamp": "2026-05-01T15:12:33.416517"
+        }
+      },
+      "timestamp": "2026-05-01T15:12:33.418516",
       "no_generation_performed": true
     }
   ]

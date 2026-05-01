@@ -1,0 +1,10 @@
+{
+  "agent": "GenerationAgent",
+  "stage": "generate_assets",
+  "workflow_id": "comfy_v2_standard_flow",
+  "prompt_count": 2,
+  "asset_count": 0,
+  "execution_strategy": "stub_only",
+  "comfyui_execution_disabled": true,
+  "timestamp": "2026-05-01T15:12:33.416517"
+}
