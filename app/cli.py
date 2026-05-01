@@ -15,6 +15,89 @@ from datetime import datetime
 from pathlib import Path
 
 
+def combine_status(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-0 — Get Combine V2 orchestrator status.
+    
+    This command returns the current status of the Combine V2 orchestrator
+    without requiring ComfyUI or performing any generation.
+    
+    Exit codes:
+    - 0: status retrieved successfully
+    - 1: error or invalid args
+    """
+    from app.orchestrator import CombineOrchestrator
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    orchestrator = CombineOrchestrator(project_root)
+    status = orchestrator.get_status()
+    
+    if json_output:
+        print(json.dumps({
+            "status": "ok",
+            "combine_v2": status.combine_v2,
+            "project_root": status.project_root,
+            "current_state": status.current_state,
+            "next_allowed_action": status.next_allowed_action,
+            "windsurf_runtime_dependency": status.windsurf_runtime_dependency,
+            "generation_performed": status.generation_performed,
+            "comfyui_execution": status.comfyui_execution
+        }, indent=2))
+    else:
+        print(f"Combine V2 Status: OK")
+        print(f"Project Root: {status.project_root}")
+        print(f"Current State: {status.current_state}")
+        print(f"Next Allowed Action: {status.next_allowed_action}")
+        print(f"Windsurf Runtime Dependency: {status.windsurf_runtime_dependency}")
+        print(f"Generation Performed: {status.generation_performed}")
+        print(f"ComfyUI Execution: {status.comfyui_execution}")
+    
+    return 0
+
+
+def combine_run_stage(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-0 — Run a Combine V2 orchestrator stage.
+    
+    This command runs a stage in dry-run mode only.
+    It does NOT call ComfyUI, does NOT perform generation, does NOT run QA/downstream.
+    
+    Exit codes:
+    - 0: stage executed successfully
+    - 1: error or invalid args
+    """
+    from app.orchestrator import CombineOrchestrator
+    
+    project_root = args.project_root
+    stage = args.stage
+    dry_run = args.dry_run
+    json_output = args.json
+    
+    orchestrator = CombineOrchestrator(project_root)
+    result = orchestrator.run_stage(stage, dry_run=dry_run)
+    
+    if json_output:
+        print(json.dumps({
+            "status": "ok" if result.success else "error",
+            "stage": result.stage,
+            "dry_run": dry_run,
+            "allowed": result.success,
+            "generation_performed": not result.no_generation_performed,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "message": result.message
+        }, indent=2))
+    else:
+        print(f"Stage: {result.stage}")
+        print(f"Success: {result.success}")
+        print(f"Dry Run: {dry_run}")
+        print(f"Allowed: {result.success}")
+        print(f"Generation Performed: {not result.no_generation_performed}")
+        print(f"Message: {result.message}")
+    
+    return 0 if result.success else 1
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -342,6 +425,43 @@ def main() -> int:
         "--project-id",
         required=True,
         help="Project ID (e.g., mir_erdan)",
+    )
+
+    # RC-COMBINE-V2-0 — combine-status subcommand
+    combine_status_parser = subparsers.add_parser("combine-status", help="Get Combine V2 orchestrator status")
+    combine_status_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_status_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-0 — combine-run-stage subcommand
+    combine_run_stage_parser = subparsers.add_parser("combine-run-stage", help="Run a Combine V2 orchestrator stage")
+    combine_run_stage_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_run_stage_parser.add_argument(
+        "--stage",
+        required=True,
+        help="Stage to run (e.g., route_classification_required)",
+    )
+    combine_run_stage_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        default=True,
+        help="Perform dry run only (default: True)",
+    )
+    combine_run_stage_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
     )
 
     # RC2-DIRECTOR1 — Director-lite subcommand
@@ -1239,6 +1359,10 @@ def main() -> int:
         return recipe_check(args)
     elif args.command == "init-project":
         return init_project(args)
+    elif args.command == "combine-status":
+        return combine_status(args)
+    elif args.command == "combine-run-stage":
+        return combine_run_stage(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
