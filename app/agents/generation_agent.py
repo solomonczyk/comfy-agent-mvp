@@ -106,6 +106,25 @@ class GenerationAgent(BaseRoleAgent):
             workflow_contract = self._read_contract(project_root, "combine_v2_workflow_contract")
             prompt_contract = self._read_contract(project_root, "combine_v2_prompt_contract")
             preflight_contract = self._read_contract(project_root, "combine_v2_preflight_contract")
+            retry_failure_classification = self._read_contract(project_root, "combine_v2_retry_failure_classification")
+            retry_corrective_plan = self._read_contract(project_root, "combine_v2_retry_corrective_plan")
+            retry_authorization_request = self._read_contract(project_root, "combine_v2_retry_authorization_request")
+            operator_retry_authorization = self._read_contract(project_root, "combine_v2_operator_retry_authorization")
+            retry_gate_decision = self._read_contract(project_root, "combine_v2_retry_gate_decision")
+
+            retry_artifacts = {
+                "combine_v2_retry_failure_classification.json": retry_failure_classification,
+                "combine_v2_retry_corrective_plan.json": retry_corrective_plan,
+                "combine_v2_retry_authorization_request.json": retry_authorization_request,
+                "combine_v2_operator_retry_authorization.json": operator_retry_authorization,
+                "combine_v2_retry_gate_decision.json": retry_gate_decision,
+            }
+            loaded_retry_artifacts = sorted(
+                artifact_name for artifact_name, payload in retry_artifacts.items() if payload
+            )
+            missing_retry_artifacts = sorted(
+                artifact_name for artifact_name, payload in retry_artifacts.items() if not payload
+            )
             
             # 2. Evaluate status
             missing_assets = asset_gate.get("missing_assets", []) or asset_gate.get("missing", [])
@@ -113,12 +132,17 @@ class GenerationAgent(BaseRoleAgent):
             
             # Preflight status (default to True if not found for stub purposes)
             preflight_ok = preflight_contract.get("preflight_passed", True)
+            operator_retry_authorized = operator_retry_authorization.get("operator_retry_authorized", False)
+            retry_requested = bool(retry_authorization_request) or operator_retry_authorized
+            retry_gate_open = retry_gate_decision.get("retry_gate_open", False)
+            corrective_plan_applied_to_payload = bool(retry_corrective_plan) and retry_requested
             
             # 3. Determine decision and next action
             generation_authorized = False
             authorization_required = False
             next_allowed_action = "none"
             status = "stubbed"
+            generation_authorization_ready = False
             
             if not assets_resolved:
                 next_allowed_action = "controlled_asset_resolution_review_required"
@@ -128,24 +152,46 @@ class GenerationAgent(BaseRoleAgent):
                 if preflight_ok:
                     authorization_required = True
                     next_allowed_action = "operator_generation_authorization_required"
+                    generation_authorization_ready = True
             
             # 4. Create artifacts
             auth_request = {
                 "agent": self.role_name,
                 "stage": stage,
+                "generation_authorization_ready": generation_authorization_ready,
                 "assets_resolved": assets_resolved,
                 "preflight_ok": preflight_ok,
                 "authorization_required": authorization_required,
                 "blocked_by_assets": blocked_by_assets,
                 "missing_assets": missing_assets,
+                "retry_requested": retry_requested,
+                "operator_retry_authorized": operator_retry_authorized,
+                "retry_gate_open": retry_gate_open,
+                "retry_corrective_plan_loaded": bool(retry_corrective_plan),
+                "retry_failure_classification_loaded": bool(retry_failure_classification),
+                "retry_authorization_request_loaded": bool(retry_authorization_request),
+                "retry_gate_decision_loaded": bool(retry_gate_decision),
+                "corrective_plan_applied_to_payload": corrective_plan_applied_to_payload,
+                "retry_execution_authorized": False,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "downstream_executed": False,
                 "timestamp": timestamp
             }
             
             auth_decision = {
                 "agent": self.role_name,
                 "stage": stage,
+                "generation_authorization_ready": generation_authorization_ready,
                 "generation_authorized": generation_authorized,
                 "authorization_required": authorization_required,
+                "retry_requested": retry_requested,
+                "operator_retry_authorized": operator_retry_authorized,
+                "retry_gate_open": retry_gate_open,
+                "retry_executed": False,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "downstream_executed": False,
                 "next_allowed_action": next_allowed_action,
                 "timestamp": timestamp
             }
@@ -158,7 +204,14 @@ class GenerationAgent(BaseRoleAgent):
                 "prompts": prompt_contract.get("prompts", []),
                 "assets": asset_gate.get("inventory", {}),
                 "is_stub": True,
-                "dry_run": True
+                "dry_run": True,
+                "retry_context": {
+                    "retry_requested": retry_requested,
+                    "operator_retry_authorized": operator_retry_authorized,
+                    "retry_gate_open": retry_gate_open,
+                    "corrective_plan_applied_to_payload": corrective_plan_applied_to_payload,
+                    "retry_execution_authorized": False
+                }
             }
             
             artifacts = [
@@ -169,10 +222,22 @@ class GenerationAgent(BaseRoleAgent):
             
             metadata = {
                 "action": "generation_authorization_request",
+                "generation_authorization_ready": generation_authorization_ready,
                 "generation_authorized": generation_authorized,
                 "authorization_required": authorization_required,
                 "blocked_by_assets": blocked_by_assets,
+                "retry_requested": retry_requested,
+                "operator_retry_authorized": operator_retry_authorized,
+                "retry_gate_open": retry_gate_open,
+                "retry_executed": False,
+                "corrective_plan_applied_to_payload": corrective_plan_applied_to_payload,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "downstream_executed": False,
                 "next_recommended_stage": next_allowed_action,
+                "next_allowed_action": next_allowed_action,
+                "loaded_retry_artifacts": loaded_retry_artifacts,
+                "missing_retry_artifacts": missing_retry_artifacts,
                 "combine_v2_generation_authorization_request": auth_request,
                 "combine_v2_generation_authorization_decision": auth_decision,
                 "combine_v2_generation_payload_stub": payload_stub
