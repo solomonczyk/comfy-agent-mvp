@@ -18,7 +18,7 @@ class VisualQAAgent(BaseRoleAgent):
     
     @property
     def supported_stages(self) -> List[str]:
-        return ["visual_qa_required_stub_pending", "visual_qa_required"]
+        return ["visual_qa_required_stub_pending", "visual_qa_required", "operator_visual_review"]
     
     @property
     def required_inputs(self) -> List[str]:
@@ -30,6 +30,19 @@ class VisualQAAgent(BaseRoleAgent):
     
     def validate_inputs(self, context: CombineRunContext) -> bool:
         return bool(context.project_root)
+    
+    def _read_contract(self, project_root: str, contract_name: str) -> Dict[str, Any]:
+        """Helper to read contract files from output/control"""
+        import json
+        from pathlib import Path
+        contract_path = Path(project_root) / "output" / "control" / f"{contract_name}.json"
+        if contract_path.exists():
+            try:
+                with open(contract_path, 'r') as f:
+                    return json.load(f)
+            except (json.JSONDecodeError, IOError):
+                return {}
+        return {}
     
     def create_stub_result(self, context: CombineRunContext) -> AgentResult:
         """Create a stub result for the visual_qa_required stage."""
@@ -126,6 +139,67 @@ class VisualQAAgent(BaseRoleAgent):
         
         if context.stage == "visual_qa_required":
             return self.create_stub_result(context)
+
+        if context.stage == "operator_visual_review":
+            # 1. Read operator decision artifact
+            op_decision = self._read_contract(context.project_root, "combine_v2_operator_visual_decision")
+            decision = op_decision.get("operator_visual_decision", "none")
+            
+            # 2. Determine gate result
+            gate_result = {
+                "operator_visual_decision": decision,
+                "visuals_accepted": False,
+                "next_allowed_action": "none",
+                "production_accepted": False,
+                "downstream_blocked": True
+            }
+            
+            if decision == "accepted":
+                gate_result.update({
+                    "visuals_accepted": True,
+                    "next_allowed_action": "assembly_required",
+                    "assembly_allowed": False,
+                    "assembly_authorization_required": True
+                })
+                next_recommended_stage = "assembly_required"
+                status = "ok"
+            elif decision == "rejected":
+                gate_result.update({
+                    "visuals_accepted": False,
+                    "next_allowed_action": "retry_correction_required",
+                    "retry_authorized": False,
+                    "generation_performed": False
+                })
+                next_recommended_stage = "retry_correction_required"
+                status = "ok"
+            elif decision == "manual_review":
+                gate_result.update({
+                    "next_allowed_action": "blocked_manual_review"
+                })
+                next_recommended_stage = "blocked_manual_review"
+                status = "ok"
+            else:
+                next_recommended_stage = "operator_visual_review"
+                status = "blocked"
+                gate_result["message"] = "Waiting for operator decision"
+                
+            return AgentResult(
+                agent=self.role_name,
+                stage=context.stage,
+                status=status,
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=["combine_v2_visual_acceptance_gate_result.json"],
+                next_recommended_stage=next_recommended_stage,
+                metadata={
+                    "action": "visual_acceptance_decision",
+                    "operator_decision": decision,
+                    "next_recommended_stage": next_recommended_stage,
+                    "combine_v2_visual_acceptance_gate_result": gate_result
+                }
+            )
             
         return AgentResult(
             agent=self.role_name,
@@ -138,3 +212,4 @@ class VisualQAAgent(BaseRoleAgent):
             next_recommended_stage="none",
             metadata={"message": f"VisualQAAgent: No specific logic for stage {context.stage}"}
         )
+

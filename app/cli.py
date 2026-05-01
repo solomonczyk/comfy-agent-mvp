@@ -291,6 +291,102 @@ def combine_authorize_generation(args: argparse.Namespace) -> int:
         return 1
 
 
+
+def combine_operator_visual_decision(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-9 — Operator Visual Review Decision Gate.
+    
+    This command records the operator's visual review decision and
+    transitions the system from operator_visual_review to the next stage.
+    It does NOT trigger real assembly or retry.
+    
+    Exit codes:
+    - 0: decision recorded successfully
+    - 1: error or invalid args
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from app.orchestrator import CombineOrchestrator
+    
+    project_root = Path(args.project_root)
+    decision = args.decision
+    reason = args.reason
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    
+    # 1. Validate decision
+    valid_decisions = ["accept", "reject", "manual_review"]
+    if decision not in valid_decisions:
+        msg = f"Error: Invalid decision '{decision}'. Must be one of {valid_decisions}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+        
+    # Map CLI decision to artifact value
+    decision_map = {
+        "accept": "accepted",
+        "reject": "rejected",
+        "manual_review": "manual_review"
+    }
+    artifact_decision = decision_map[decision]
+    
+    timestamp = datetime.utcnow().isoformat()
+    
+    # 2. Create decision artifact
+    decision_artifact = {
+        "agent": "Operator",
+        "action": "visual_review_decision",
+        "operator_visual_decision": artifact_decision,
+        "reason": reason,
+        "timestamp": timestamp
+    }
+    
+    decision_path = control_dir / "combine_v2_operator_visual_decision.json"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    with open(decision_path, 'w') as f:
+        json.dump(decision_artifact, f, indent=2)
+        
+    # 3. Transition the system
+    orchestrator = CombineOrchestrator(str(project_root))
+    
+    # Check if we are in the correct state
+    status = orchestrator.get_status()
+    if status.current_state != "operator_visual_review":
+        # We allow it for now but warn
+        pass
+        
+    # Run the operator_visual_review stage to process the decision
+    result = orchestrator.run_stage("operator_visual_review")
+    
+    if result.success:
+        status = orchestrator.get_status()
+        if json_output:
+            print(json.dumps({
+                "status": "ok",
+                "operator_visual_decision": artifact_decision,
+                "next_allowed_action": status.next_allowed_action,
+                "current_state": status.current_state,
+                "artifacts": [str(decision_path.relative_to(project_root))] + [str(Path("output/control") / a) for a in result.artifacts]
+            }, indent=2))
+        else:
+            print(f"Visual Review Decision: {artifact_decision.upper()}")
+            print(f"Next Allowed Action: {status.next_allowed_action}")
+            print(f"Current State: {status.current_state}")
+        return 0
+    else:
+        if json_output:
+            print(json.dumps({
+                "status": "error",
+                "message": result.message
+            }, indent=2))
+        else:
+            print(f"Error: {result.message}")
+        return 1
+
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -688,18 +784,29 @@ def main() -> int:
         action="store_true",
         help="Output in JSON format",
     )
-    # RC-COMBINE-V2-6 — combine-authorize-generation subcommand
-    combine_authorize_generation_parser = subparsers.add_parser("combine-authorize-generation", help="Authorize generation gate (transitions to generate_assets)")
-    combine_authorize_generation_parser.add_argument(
+    # RC-COMBINE-V2-9 — combine-operator-visual-decision subcommand
+    combine_operator_visual_decision_parser = subparsers.add_parser("combine-operator-visual-decision", help="Record operator visual review decision")
+    combine_operator_visual_decision_parser.add_argument(
         "--project-root",
         required=True,
         help="Project root directory",
     )
-    combine_authorize_generation_parser.add_argument(
+    combine_operator_visual_decision_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["accept", "reject", "manual_review"],
+        help="Operator decision",
+    )
+    combine_operator_visual_decision_parser.add_argument(
+        "--reason",
+        help="Reason for the decision",
+    )
+    combine_operator_visual_decision_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
     )
+
 
 
     # RC2-DIRECTOR1 — Director-lite subcommand
@@ -1605,6 +1712,8 @@ def main() -> int:
         return combine_run_stage(args)
     elif args.command == "combine-authorize-generation":
         return combine_authorize_generation(args)
+    elif args.command == "combine-operator-visual-decision":
+        sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
