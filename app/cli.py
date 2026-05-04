@@ -1101,6 +1101,10 @@ def _collect_real_generation_outputs(
 
 
 def _build_minimal_real_workflow() -> Dict[str, Any]:
+    return _build_minimal_real_workflow_with_resolution(512, 512)
+
+
+def _build_minimal_real_workflow_with_resolution(width: int, height: int) -> Dict[str, Any]:
     import random
     import time
     # RC-COMBINE-V2-571-620: Use random seed and timestamp to force new file creation
@@ -1130,7 +1134,7 @@ def _build_minimal_real_workflow() -> Dict[str, Any]:
             },
             "class_type": "KSampler",
         },
-        "5": {"inputs": {"width": 512, "height": 512, "batch_size": 1}, "class_type": "EmptyLatentImage"},
+        "5": {"inputs": {"width": width, "height": height, "batch_size": 1}, "class_type": "EmptyLatentImage"},
         "6": {"inputs": {"samples": ["4", 0], "vae": ["1", 2]}, "class_type": "VAEDecode"},
         "7": {"inputs": {"filename_prefix": filename_prefix, "images": ["6", 0]}, "class_type": "SaveImage"},
     }
@@ -1213,8 +1217,27 @@ def combine_diagnostic_generate_one_asset(args: argparse.Namespace) -> int:
             print("Diagnostic Generation: BLOCKED (max_generations must be 1)")
         return 1
 
-    # Build minimal workflow for diagnostic generation
-    workflow_payload = _build_minimal_real_workflow()
+    # RC-COMBINE-V2-621-680: Use rebuilt payload if available, otherwise fallback to minimal workflow
+    rebuilt_payload_path = control_dir / "combine_v2_rebuilt_generation_payload.json"
+    use_rebuilt_recipe = rebuilt_payload_path.exists()
+    
+    if use_rebuilt_recipe and args.use_rebuilt_recipe:
+        # Read rebuilt payload to get resolution
+        with open(rebuilt_payload_path, 'r') as f:
+            rebuilt_payload = json.load(f)
+        
+        # Extract resolution from rebuilt payload
+        new_resolution = rebuilt_payload.get("new_resolution", {})
+        target_width = new_resolution.get("width", 1024)
+        target_height = new_resolution.get("height", 1024)
+        
+        # Build workflow with rebuilt resolution
+        workflow_payload = _build_minimal_real_workflow_with_resolution(target_width, target_height)
+        print(f"[RC-COMBINE-V2-621-680] Using rebuilt recipe resolution: {target_width}x{target_height}")
+    else:
+        # Fallback to hardcoded minimal workflow (512x512)
+        workflow_payload = _build_minimal_real_workflow()
+        print(f"[RC-COMBINE-V2-621-680] Using fallback minimal workflow (512x512)")
     
     now = datetime.utcnow().isoformat()
     submit_request = {
@@ -3171,6 +3194,11 @@ def main() -> int:
         type=int,
         default=1,
         help="Maximum generations (must be 1 for diagnostic mode, default: 1)",
+    )
+    combine_diagnostic_generate_one_asset_parser.add_argument(
+        "--use-rebuilt-recipe",
+        action="store_true",
+        help="Use rebuilt recipe resolution from combine_v2_rebuilt_generation_payload.json",
     )
     combine_diagnostic_generate_one_asset_parser.add_argument(
         "--json",

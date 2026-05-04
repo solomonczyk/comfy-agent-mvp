@@ -1,0 +1,32 @@
+{
+  "stage": "resolution_policy_preflight_report",
+  "report_timestamp": "2026-05-04T17:53:00Z",
+  "preflight_guard_added": true,
+  "preflight_guard_location": "app/comfy/submitter.py",
+  "preflight_guard_line_range": "205-275",
+  "preflight_guard_function": "ComfySubmitter.submit()",
+  "guard_logic": {
+    "checks_rebuilt_payload_exists": true,
+    "reads_resolution_from_rebuilt_payload": true,
+    "extracts_minimum_short_side_requirement": 1024,
+    "validates_empty_latent_image_resolution": true,
+    "blocks_submit_if_resolution_below_minimum": true,
+    "writes_preflight_failure_artifact": true,
+    "raises_ComfySubmitError_on_violation": true
+  },
+  "policy_enforcement": {
+    "minimum_short_side_must_be": 1024,
+    "block_submit_if_actual_workflow_resolution_below_1024": true,
+    "block_submit_if_payload_source_is_legacy": true,
+    "rebuilt_recipe_required": true
+  },
+  "expected_behavior": {
+    "if_rebuilt_recipe_required": true,
+    "if_workflow_resolution_512x512": "submit_blocked_with_REBUILT_RECIPE_RESOLUTION_POLICY_VIOLATION",
+    "if_workflow_resolution_1024x1024": "submit_allowed",
+    "if_rebuilt_payload_missing": "submit_allowed_graceful_degradation"
+  },
+  "failure_code_on_violation": "REBUILT_RECIPE_RESOLUTION_POLICY_VIOLATION",
+  "artifact_on_failure": "combine_v2_resolution_policy_preflight_failure.json",
+  "timestamp": "2026-05-04T17:53:00Z"
+}

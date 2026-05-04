@@ -1,0 +1,24 @@
+{
+  "stage": "generation_workflow_source_audit",
+  "audit_timestamp": "2026-05-04T17:53:00Z",
+  "expected_workflow_source": "combine_v2_rebuilt_generation_payload.json",
+  "actual_workflow_source": "legacy_hardcoded_512_workflow",
+  "workflow_builder_function": "_build_minimal_real_workflow()",
+  "workflow_builder_location": "app/cli.py",
+  "workflow_builder_line": "~1217",
+  "rebuilt_payload_file_exists": true,
+  "rebuilt_payload_file_path": "output/control/combine_v2_rebuilt_generation_payload.json",
+  "rebuilt_payload_read_by_builder": false,
+  "rebuilt_resolution_contract_honored": false,
+  "minimum_short_side_1024_enforced_in_builder": false,
+  "old_512_resolution_blocked_in_builder": false,
+  "hardcoded_resolution_values": {
+    "width": 512,
+    "height": 512
+  },
+  "workflow_template_source": "hardcoded_python_dict",
+  "payload_binding_layer": "none",
+  "resolution_policy_layer": "artifact_only",
+  "submit_time_resolution_check": "none",
+  "timestamp": "2026-05-04T17:53:00Z"
+}

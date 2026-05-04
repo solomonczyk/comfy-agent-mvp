@@ -1,0 +1,39 @@
+{
+  "stage": "rebuilt_recipe_binding_fix",
+  "fix_timestamp": "2026-05-04T17:53:00Z",
+  "root_cause": "diagnostic_generation_used_legacy_512_workflow_instead_of_rebuilt_recipe",
+  "fix_applied": true,
+  "fixes": [
+    {
+      "file": "app/comfy/submitter.py",
+      "change": "Added resolution policy preflight guard before HTTP submit",
+      "line_range": "205-275",
+      "description": "Blocks submit if workflow resolution violates rebuilt recipe minimum short side policy"
+    },
+    {
+      "file": "app/cli.py",
+      "change": "Added _build_minimal_real_workflow_with_resolution() function",
+      "line_range": "1107-1140",
+      "description": "Allows building workflow with custom resolution instead of hardcoded 512x512"
+    },
+    {
+      "file": "app/cli.py",
+      "change": "Modified combine_diagnostic_generate_one_asset() to read and use rebuilt payload",
+      "line_range": "1216-1236",
+      "description": "Reads resolution from combine_v2_rebuilt_generation_payload.json when --use-rebuilt-recipe flag is set"
+    },
+    {
+      "file": "app/cli.py",
+      "change": "Added --use-rebuilt-recipe CLI argument",
+      "line_range": "3198-3201",
+      "description": "Enables diagnostic generation to use rebuilt recipe resolution"
+    }
+  ],
+  "rebuilt_payload_bound_to_submit": true,
+  "old_512_resolution_blocked": true,
+  "minimum_short_side_1024_enforced": true,
+  "one_diagnostic_submit_after_fix": true,
+  "expected_workflow_resolution": "1024x1024",
+  "expected_asset_resolution": "1024x1024",
+  "timestamp": "2026-05-04T17:53:00Z"
+}

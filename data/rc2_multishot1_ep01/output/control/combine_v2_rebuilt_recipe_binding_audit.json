@@ -1,0 +1,28 @@
+{
+  "stage": "rebuilt_recipe_binding_audit",
+  "audit_timestamp": "2026-05-04T17:53:00Z",
+  "rebuilt_payload_resolution": "1024x1024",
+  "rebuilt_payload_file": "output/control/combine_v2_rebuilt_generation_payload.json",
+  "rebuilt_payload_policy": {
+    "width": 1024,
+    "height": 1024,
+    "policy": "minimum_short_side_1024",
+    "old_512_resolution_blocked": true,
+    "minimum_short_side_1024_enforced": true
+  },
+  "diagnostic_submit_resolution": "512x512",
+  "diagnostic_submit_file": "output/control/combine_v2_diagnostic_generation_result.json",
+  "actual_workflow_source": "legacy_hardcoded_512_workflow",
+  "actual_workflow_builder": "_build_minimal_real_workflow() in app/cli.py",
+  "rebuilt_payload_used_by_submit": false,
+  "workflow_payload_snapshot_source": "hardcoded_minimal_workflow",
+  "empty_latent_image_resolution": {
+    "width": 512,
+    "height": 512
+  },
+  "disconnect_root_cause": "diagnostic generation command builds workflow from hardcoded template instead of reading combine_v2_rebuilt_generation_payload.json",
+  "policy_enforcement_gap": "Resolution policy exists in artifacts but is not enforced at workflow construction or submit time",
+  "preflight_guard_exists": false,
+  "payload_binding_exists": false,
+  "timestamp": "2026-05-04T17:53:00Z"
+}

@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import copy
 import time
+from datetime import datetime
 from pathlib import Path
 from typing import Any
 
@@ -202,6 +203,78 @@ class ComfySubmitter:
                 raise ComfySubmitError(error_msg)
             print(f"[GRAPH CONTRACT] reference_locked workflow validation passed")
 
+        # RC-COMBINE-V2-621-680: Resolution policy preflight guard
+        # Block submit if workflow resolution violates rebuilt recipe policy
+        if project_root:
+            try:
+                import json
+                from pathlib import Path
+                
+                # Check if rebuilt recipe is required
+                rebuilt_payload_path = Path(project_root) / "output" / "control" / "combine_v2_rebuilt_generation_payload.json"
+                use_rebuilt_recipe = rebuilt_payload_path.exists()
+                
+                if use_rebuilt_recipe:
+                    with open(rebuilt_payload_path, 'r') as f:
+                        rebuilt_payload = json.load(f)
+                    
+                    # Extract resolution policy from rebuilt payload
+                    minimum_short_side_required = 1024
+                    old_512_resolution_blocked = rebuilt_payload.get("old_512_resolution_blocked", True)
+                    minimum_short_side_enforced = rebuilt_payload.get("minimum_short_side_1024_enforced", True)
+                    
+                    # Find EmptyLatentImage node to check actual resolution
+                    actual_width = 512
+                    actual_height = 512
+                    for node_id, node in workflow.items():
+                        if isinstance(node, dict) and node.get("class_type") == "EmptyLatentImage":
+                            actual_width = node.get("inputs", {}).get("width", 512)
+                            actual_height = node.get("inputs", {}).get("height", 512)
+                            break
+                    
+                    # Check minimum short side
+                    actual_minimum_short_side = min(actual_width, actual_height)
+                    resolution_violates_policy = actual_minimum_short_side < minimum_short_side_required
+                    
+                    # Block submit if policy violation detected
+                    if resolution_violates_policy and minimum_short_side_enforced:
+                        error_msg = f"REBUILT_RECIPE_RESOLUTION_POLICY_VIOLATION: Workflow resolution {actual_width}x{actual_height} violates minimum short side {minimum_short_side_required} policy"
+                        print(f"[RESOLUTION POLICY] {error_msg}")
+                        
+                        # Write preflight failure artifact
+                        control_dir = Path(project_root) / "output" / "control"
+                        control_dir.mkdir(parents=True, exist_ok=True)
+                        preflight_report = {
+                            "stage": "resolution_policy_preflight_check",
+                            "status": "blocked",
+                            "failure_code": "REBUILT_RECIPE_RESOLUTION_POLICY_VIOLATION",
+                            "would_submit": False,
+                            "comfyui_execution": False,
+                            "rebuilt_payload_file": str(rebuilt_payload_path),
+                            "rebuilt_payload_resolution": rebuilt_payload.get("new_resolution", {}),
+                            "actual_workflow_resolution": f"{actual_width}x{actual_height}",
+                            "actual_minimum_short_side": actual_minimum_short_side,
+                            "minimum_short_side_required": minimum_short_side_required,
+                            "old_512_resolution_blocked": old_512_resolution_blocked,
+                            "minimum_short_side_enforced": minimum_short_side_enforced,
+                            "resolution_violates_policy": resolution_violates_policy,
+                            "timestamp": datetime.utcnow().isoformat()
+                        }
+                        preflight_path = control_dir / "combine_v2_resolution_policy_preflight_failure.json"
+                        with open(preflight_path, 'w', encoding='utf-8') as f:
+                            json.dump(preflight_report, f, indent=2)
+                        print(f"[RESOLUTION POLICY] Wrote preflight failure artifact: {preflight_path}")
+                        
+                        raise ComfySubmitError(error_msg)
+                    else:
+                        print(f"[RESOLUTION POLICY] Preflight passed: resolution {actual_width}x{actual_height}, minimum short side {actual_minimum_short_side} >= {minimum_short_side_required}")
+            except ComfySubmitError:
+                # Re-raise resolution policy violations
+                raise
+            except Exception as exc:
+                # Log but don't fail submit if preflight check fails (graceful degradation)
+                print(f"[RESOLUTION POLICY] Preflight check failed (continuing): {exc}")
+        
         # MK-OBS2: Persist final observed settings snapshot before submit
         if episode_id and shot_id and project_root:
             try:
