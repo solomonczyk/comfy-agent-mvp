@@ -68,6 +68,7 @@ class CombineOrchestrator:
         "generation_payload_rebuild_required": "WorkflowRecipeImplementationAgent",
         "workflow_graph_rebuild_required": "WorkflowRecipeImplementationAgent",
         "workflow_rebuild_validation_required": "WorkflowRecipeImplementationAgent",
+        "real_generation_readiness_required": "WorkflowRecipeImplementationAgent",
         "assembly_required": "AssemblyAgent",
         "final_qc_required": "FinalQAAgent",
     }
