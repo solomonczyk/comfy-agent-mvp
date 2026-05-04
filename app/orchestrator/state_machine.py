@@ -42,6 +42,11 @@ class CombineStateMachine:
         "operator_retry_authorization_required",
         "corrective_retry_payload_rebuild_required",
         "controlled_asset_resolution_review_required",
+        "production_brain_audit_required",
+        "visual_failure_audit_required",
+        "generation_recipe_audit_required",
+        "workflow_rebuild_plan_required",
+        "operator_strategy_review",
         "assembly_required",
         "final_qc_required",
         "final_operator_acceptance",
@@ -144,9 +149,29 @@ class CombineStateMachine:
         },
         "real_visual_qa_preflight_required": {
             "real_visual_qa_required",
+            "production_brain_audit_required",
         },
         "real_visual_qa_required": {
             "operator_visual_review",
+        },
+        "production_brain_audit_required": {
+            "visual_failure_audit_required",
+        },
+        "visual_failure_audit_required": {
+            "generation_recipe_audit_required",
+        },
+        "generation_recipe_audit_required": {
+            "workflow_rebuild_plan_required",
+        },
+        "workflow_rebuild_plan_required": {
+            "operator_strategy_review",
+        },
+        "operator_strategy_review": {
+            "brief_intake_required",  # Restart with new workflow
+            "route_classification_required",
+            "production_plan_required",
+            "workflow_plan_required",
+            "blocked_manual_review",
         },
         "retry_correction_required": {
             "retry_plan_review_required",
@@ -218,6 +243,12 @@ class CombineStateMachine:
         ("real_generate_assets", "assembly_required"),
         ("real_generate_assets", "production_accepted"),
         ("real_generation_result_collected", "assembly_required"),
+        
+        # Production brain layer: cannot skip to generation without rebuild
+        ("production_brain_audit_required", "real_generate_assets"),
+        ("workflow_rebuild_plan_required", "real_generate_assets"),
+        ("operator_strategy_review", "real_generate_assets"),
+        ("operator_strategy_review", "assembly_required"),
     }
     
     @classmethod

@@ -1,0 +1,26 @@
+{
+  "stage": "generation_recipe_audit_required",
+  "actual_resolution": {
+    "width": 512,
+    "height": 512
+  },
+  "model_checkpoint": "unknown",
+  "sampler": "unknown",
+  "steps": "unknown",
+  "cfg": "unknown",
+  "seed": "unknown",
+  "positive_prompt_present": false,
+  "negative_prompt_present": false,
+  "upscale_enabled": false,
+  "refiner_enabled": false,
+  "controlnet_or_pose_enabled": false,
+  "face_or_identity_lock_enabled": false,
+  "recipe_quality_status": "insufficient_for_production",
+  "blocking_recipe_issues": [
+    "resolution_too_low_for_production",
+    "no_upscale_or_refiner_detected",
+    "no_pose_or_identity_stabilization_detected"
+  ],
+  "next_allowed_action": "workflow_rebuild_plan_required",
+  "timestamp": "2026-05-04T16:13:05.352979"
+}

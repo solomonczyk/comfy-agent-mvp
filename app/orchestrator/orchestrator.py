@@ -52,6 +52,11 @@ class CombineOrchestrator:
         "retry_correction_required": "RetryPolicyAgent",
         "corrective_retry_payload_rebuild_required": "GenerationAgent",
         "controlled_asset_resolution_review_required": "AssetResolverAgent",
+        "production_brain_audit_required": "ProductionBrainAgent",
+        "visual_failure_audit_required": "ProductionBrainAgent",
+        "generation_recipe_audit_required": "ProductionBrainAgent",
+        "workflow_rebuild_plan_required": "ProductionBrainAgent",
+        "operator_strategy_review": "ProductionBrainAgent",
         "assembly_required": "AssemblyAgent",
         "final_qc_required": "FinalQAAgent",
     }
@@ -215,6 +220,9 @@ class CombineOrchestrator:
             elif agent_name == "RealGenerationReadinessAgent":
                 from app.agents.real_generation_readiness_agent import RealGenerationReadinessAgent
                 agent = RealGenerationReadinessAgent()
+            elif agent_name == "ProductionBrainAgent":
+                from app.agents.production_brain_agent import ProductionBrainAgent
+                agent = ProductionBrainAgent()
             elif agent_name == "AssemblyAgent":
                 from app.agents.assembly_agent import AssemblyAgent
                 agent = AssemblyAgent()

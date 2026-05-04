@@ -1,0 +1,31 @@
+{
+  "stage": "brain_corrective_strategy",
+  "strategy_verdict": "workflow_rebuild_required_before_next_generation",
+  "recommended_changes": {
+    "resolution": {
+      "must_change": true,
+      "recommended_minimum": "1024x1024 or route-specific higher resolution",
+      "reason": "512x512 is insufficient for production visual quality"
+    },
+    "quality_pipeline": {
+      "must_add_upscale_or_refiner": true,
+      "recommended": [
+        "hires_fix_or_latent_upscale",
+        "image_upscale_pass",
+        "optional_refiner_pass"
+      ]
+    },
+    "prompting": {
+      "must_update_positive_prompt": true,
+      "must_update_negative_prompt": true
+    },
+    "control": {
+      "pose_or_composition_control_recommended": true,
+      "identity_lock_recommended_if_character_consistency_required": true
+    },
+    "workflow_td_review_required": true
+  },
+  "generation_allowed": false,
+  "next_allowed_action": "operator_strategy_review",
+  "timestamp": "2026-05-04T16:13:05.417041"
+}

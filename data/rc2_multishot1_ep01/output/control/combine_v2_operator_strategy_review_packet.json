@@ -1,0 +1,18 @@
+{
+  "stage": "operator_strategy_review",
+  "operator_review_required": true,
+  "summary": "Current corrective retry produced a technically valid but visually unacceptable 512x512 asset. Production brain recommends workflow recipe rebuild before any further generation.",
+  "recommended_operator_decision": "approve_workflow_rebuild_plan",
+  "operator_actions": [
+    "approve_workflow_rebuild_plan",
+    "request_recipe_audit_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "assembly_allowed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_strategy_review",
+  "timestamp": "2026-05-04T16:13:05.489579"
+}

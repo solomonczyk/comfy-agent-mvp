@@ -1,0 +1,23 @@
+{
+  "stage": "corrective_retry_delta_audit",
+  "corrective_payload_exists": true,
+  "prompt_patch_exists": true,
+  "resolution_changed": false,
+  "model_changed": false,
+  "sampler_changed": false,
+  "steps_changed": false,
+  "cfg_changed": false,
+  "negative_prompt_changed": false,
+  "upscale_added": false,
+  "refiner_added": false,
+  "control_added": false,
+  "identity_lock_added": false,
+  "delta_quality": "insufficient",
+  "why_retry_failed_likely": [
+    "corrective_retry_did_not_change_core_generation_recipe",
+    "resolution_remained_low",
+    "no_quality_enhancement_stage_added"
+  ],
+  "next_allowed_action": "workflow_rebuild_plan_required",
+  "timestamp": "2026-05-04T16:13:05.417041"
+}

@@ -900,5 +900,60 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-04T13:44:38.573433"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "production_brain_audit_required",
+    "agent": "ProductionBrainAgent",
+    "success": true,
+    "message": "Agent ProductionBrainAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T16:13:05.238567"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "visual_failure_audit_required",
+    "agent": "ProductionBrainAgent",
+    "success": true,
+    "message": "Agent ProductionBrainAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T16:13:05.295723"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "generation_recipe_audit_required",
+    "agent": "ProductionBrainAgent",
+    "success": true,
+    "message": "Agent ProductionBrainAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T16:13:05.363561"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "workflow_rebuild_plan_required",
+    "agent": "ProductionBrainAgent",
+    "success": true,
+    "message": "Agent ProductionBrainAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T16:13:05.425641"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_strategy_review",
+    "agent": "ProductionBrainAgent",
+    "success": true,
+    "message": "Agent ProductionBrainAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T16:13:05.489579"
   }
 ]

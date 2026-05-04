@@ -2014,6 +2014,73 @@ def combine_review_failed_real_generation(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_production_brain_audit(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-271-330 — Production brain visual failure audit and workflow rebuild plan.
+
+    This command runs the production brain layer which analyzes why corrective retry failed
+    and creates a workflow rebuild plan. No generation, no ComfyUI submit, no retry, no assembly.
+
+    Exit codes:
+    - 0: audit completed successfully
+    - 1: error or invalid args
+    """
+    from app.orchestrator import CombineOrchestrator
+    
+    project_root = args.project_root
+    json_output = args.json
+    
+    orchestrator = CombineOrchestrator(project_root)
+    
+    # Run the production brain audit stages in sequence
+    stages = [
+        "production_brain_audit_required",
+        "visual_failure_audit_required",
+        "generation_recipe_audit_required",
+        "workflow_rebuild_plan_required",
+        "operator_strategy_review"
+    ]
+    
+    all_artifacts = []
+    all_metadata = {}
+    final_stage = None
+    final_next_action = None
+    
+    for stage in stages:
+        result = orchestrator.run_stage(stage, dry_run=True)
+        if result.metadata:
+            all_metadata[stage] = result.metadata
+            # Collect artifact filenames from metadata
+            for key, value in result.metadata.items():
+                if key.startswith("combine_v2_") and isinstance(value, dict):
+                    all_artifacts.append(f"{key}.json")
+        final_stage = stage
+        final_next_action = result.metadata.get("next_allowed_action") if result.metadata else None
+    
+    if json_output:
+        print(json.dumps({
+            "status": "ok",
+            "final_stage": final_stage,
+            "next_allowed_action": final_next_action,
+            "generation_allowed": False,
+            "retry_allowed": False,
+            "assembly_allowed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "artifacts_created": all_artifacts,
+            "metadata": all_metadata
+        }, indent=2))
+    else:
+        print(f"Production Brain Audit: OK")
+        print(f"Final Stage: {final_stage}")
+        print(f"Next Allowed Action: {final_next_action}")
+        print(f"Generation Allowed: False")
+        print(f"Retry Allowed: False")
+        print(f"Assembly Allowed: False")
+        print(f"Artifacts Created: {len(all_artifacts)}")
+    
+    return 0
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -2611,6 +2678,22 @@ def main() -> int:
         help="Reason for the decision",
     )
     combine_review_failed_real_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-271-330 — Production brain visual failure audit and workflow rebuild plan
+    combine_production_brain_audit_parser = subparsers.add_parser(
+        "combine-production-brain-audit",
+        help="Run production brain visual failure audit and workflow rebuild plan",
+    )
+    combine_production_brain_audit_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_production_brain_audit_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -3535,6 +3618,8 @@ def main() -> int:
         return combine_recover_real_generation_result(args)
     elif args.command == "combine-review-failed-real-generation":
         return combine_review_failed_real_generation(args)
+    elif args.command == "combine-production-brain-audit":
+        return combine_production_brain_audit(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":

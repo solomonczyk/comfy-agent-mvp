@@ -1,0 +1,15 @@
+{
+  "stage": "workflow_quality_diagnosis",
+  "workflow_quality_status": "not_production_ready",
+  "detected_limitations": [
+    "low_base_resolution",
+    "missing_upscale_stage",
+    "missing_refiner_stage",
+    "missing_pose_control",
+    "missing_identity_or_face_consistency_control",
+    "weak_negative_prompt_or_unknown_negative_prompt"
+  ],
+  "risk_if_retry_without_rebuild": "high_probability_of_repeating_low_quality_output",
+  "generation_allowed_without_rebuild": false,
+  "timestamp": "2026-05-04T16:13:05.417041"
+}

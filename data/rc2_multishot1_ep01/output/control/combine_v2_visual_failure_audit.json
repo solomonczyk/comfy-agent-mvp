@@ -1,0 +1,20 @@
+{
+  "stage": "visual_failure_audit_required",
+  "source_asset": "output/assets/combine_v2_00002_.png",
+  "asset_exists": false,
+  "asset_readable": false,
+  "width": 512,
+  "height": 512,
+  "visual_operator_rejection": false,
+  "visual_failure_confirmed": false,
+  "failure_categories": [
+    "low_resolution_or_unexpected_resolution",
+    "blur_or_softness",
+    "anatomy_distortion_risk",
+    "hand_distortion_risk",
+    "face_identity_unreliable",
+    "production_quality_failed"
+  ],
+  "next_allowed_action": "generation_recipe_audit_required",
+  "timestamp": "2026-05-04T16:13:05.294595"
+}

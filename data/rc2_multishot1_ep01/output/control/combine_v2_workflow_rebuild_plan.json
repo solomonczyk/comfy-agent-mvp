@@ -1,0 +1,30 @@
+{
+  "stage": "workflow_rebuild_plan_required",
+  "plan_type": "production_recipe_rebuild",
+  "required_workflow_changes": [
+    {
+      "change": "raise_base_resolution",
+      "target": ">=1024 on shortest side or route policy",
+      "required": true
+    },
+    {
+      "change": "add_upscale_or_hires_fix_stage",
+      "required": true
+    },
+    {
+      "change": "add_stronger_negative_prompt_contract",
+      "required": true
+    },
+    {
+      "change": "add_pose_or_composition_control_if_human_subject",
+      "required": true
+    },
+    {
+      "change": "add_identity_or_face_stabilization_if_character_route",
+      "required": false
+    }
+  ],
+  "forbidden_next_action": "real_generate_assets",
+  "next_allowed_action": "operator_strategy_review",
+  "timestamp": "2026-05-04T16:13:05.417041"
+}
