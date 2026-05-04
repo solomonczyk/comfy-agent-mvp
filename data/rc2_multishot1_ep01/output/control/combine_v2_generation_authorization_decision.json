@@ -11,6 +11,6 @@
   "generation_performed": false,
   "comfyui_execution": false,
   "downstream_executed": false,
-  "next_allowed_action": "operator_generation_authorization_required",
-  "timestamp": "2026-05-01T15:29:41.255179"
+  "next_allowed_action": "corrective_retry_payload_rebuild_required",
+  "timestamp": "2026-05-04T13:38:06.195530"
 }
