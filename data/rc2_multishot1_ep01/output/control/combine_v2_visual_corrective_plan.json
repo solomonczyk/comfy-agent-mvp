@@ -1,0 +1,22 @@
+{
+  "corrective_plan_created": true,
+  "retry_authorization_required": true,
+  "retry_authorized": false,
+  "next_allowed_action": "operator_retry_authorization_required",
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "plan_id": "CP-001",
+  "actions": [
+    "adjust_prompt",
+    "increase_steps",
+    "review_production_quality"
+  ],
+  "target_quality": "high",
+  "retry_gate_opened": false,
+  "source": "visual_failure_classification",
+  "plan_timestamp": "2026-05-04T15:27:00.000000"
+}

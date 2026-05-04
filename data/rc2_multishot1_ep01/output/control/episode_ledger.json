@@ -702,5 +702,38 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-04T09:55:57.072769"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_visual_qa_required",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:28:04.793644"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_visual_review",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:28:07.980282"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_visual_review",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:28:12.249300"
   }
 ]

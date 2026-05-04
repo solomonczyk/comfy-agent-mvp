@@ -1,5 +1,5 @@
 {
-  "current_state": "real_visual_qa_preflight_required",
+  "current_state": "operator_visual_review",
   "route_family": "custom",
   "stage_results": [
     {
@@ -2898,6 +2898,367 @@
         "production_accepted": false
       },
       "timestamp": "2026-05-04T09:55:57.072769",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_visual_qa_required",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_real_visual_qa_preflight_report.json",
+        "combine_v2_real_visual_qa_report.json",
+        "combine_v2_real_visual_qa_technical_packet.json",
+        "combine_v2_operator_visual_review_packet.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_visual_review",
+        "action": "real_visual_quality_assessment",
+        "description": "Performs real visual QA preflight and technical analysis",
+        "real_image_analysis": true,
+        "technical_asset_valid": true,
+        "visual_quality_passed": false,
+        "operator_review_required": true,
+        "recommended_operator_decision": "reject",
+        "next_allowed_action": "operator_visual_review",
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "production_accepted": false,
+        "combine_v2_real_visual_qa_preflight_report": {
+          "stage": "real_visual_qa_required",
+          "agent": "VisualQAAgent",
+          "status": "real_analysis_required",
+          "real_image_analysis": true,
+          "generation_gate_open": true,
+          "source_asset": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
+          "technical_asset_valid": true,
+          "visual_quality_passed": false,
+          "operator_review_required": true,
+          "recommended_operator_decision": "reject",
+          "checks": {
+            "asset_exists": {
+              "status": "passed",
+              "message": "Asset found: F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png"
+            },
+            "asset_readable": {
+              "status": "passed",
+              "message": "Asset readable"
+            },
+            "width_height_valid": {
+              "status": "passed",
+              "message": "Dimensions: 512x512",
+              "actual_width": 512,
+              "actual_height": 512
+            },
+            "sha256_present": {
+              "status": "passed",
+              "message": "SHA256 computed",
+              "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427"
+            },
+            "size_bytes_valid": {
+              "status": "passed",
+              "message": "Size: 367208 bytes",
+              "size_bytes": 367208
+            },
+            "resolution_policy_check": {
+              "status": "warn",
+              "message": "No expected resolution in manifest",
+              "actual_width": 512,
+              "actual_height": 512,
+              "expected_or_policy": "route_expected_resolution"
+            },
+            "blur_or_softness_basic": {
+              "status": "passed",
+              "message": "No significant blur (variance: 2730.40)",
+              "metric": 2730.4008800422307
+            },
+            "brightness_basic": {
+              "status": "passed",
+              "message": "Brightness within range (mean: 129.00)",
+              "metric": 128.99745178222656
+            },
+            "contrast_basic": {
+              "status": "passed",
+              "message": "Contrast adequate (std: 52.25)",
+              "metric": 52.25323798619786
+            },
+            "anatomy_distortion": {
+              "status": "manual_review_required"
+            },
+            "hand_distortion": {
+              "status": "manual_review_required"
+            },
+            "body_pose_instability": {
+              "status": "manual_review_required"
+            },
+            "clothing_artifacts": {
+              "status": "manual_review_required"
+            },
+            "face_identity_unreliable": {
+              "status": "manual_review_required"
+            },
+            "production_quality_failed": {
+              "status": "manual_review_required"
+            }
+          },
+          "next_allowed_action": "operator_visual_review",
+          "retry_attempted": false,
+          "assembly_executed": false,
+          "downstream_executed": false,
+          "production_accepted": false
+        },
+        "combine_v2_real_visual_qa_report": {
+          "stage": "real_visual_qa_required",
+          "source_asset": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
+          "technical_asset_valid": true,
+          "visual_quality_passed": false,
+          "operator_review_required": true,
+          "recommended_operator_decision": "reject",
+          "checks": {
+            "asset_exists": {
+              "status": "passed",
+              "message": "Asset found: F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png"
+            },
+            "asset_readable": {
+              "status": "passed",
+              "message": "Asset readable"
+            },
+            "width_height_valid": {
+              "status": "passed",
+              "message": "Dimensions: 512x512",
+              "actual_width": 512,
+              "actual_height": 512
+            },
+            "sha256_present": {
+              "status": "passed",
+              "message": "SHA256 computed",
+              "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427"
+            },
+            "size_bytes_valid": {
+              "status": "passed",
+              "message": "Size: 367208 bytes",
+              "size_bytes": 367208
+            },
+            "resolution_policy_check": {
+              "status": "warn",
+              "message": "No expected resolution in manifest",
+              "actual_width": 512,
+              "actual_height": 512,
+              "expected_or_policy": "route_expected_resolution"
+            },
+            "blur_or_softness_basic": {
+              "status": "passed",
+              "message": "No significant blur (variance: 2730.40)",
+              "metric": 2730.4008800422307
+            },
+            "brightness_basic": {
+              "status": "passed",
+              "message": "Brightness within range (mean: 129.00)",
+              "metric": 128.99745178222656
+            },
+            "contrast_basic": {
+              "status": "passed",
+              "message": "Contrast adequate (std: 52.25)",
+              "metric": 52.25323798619786
+            },
+            "anatomy_distortion": {
+              "status": "manual_review_required"
+            },
+            "hand_distortion": {
+              "status": "manual_review_required"
+            },
+            "body_pose_instability": {
+              "status": "manual_review_required"
+            },
+            "clothing_artifacts": {
+              "status": "manual_review_required"
+            },
+            "face_identity_unreliable": {
+              "status": "manual_review_required"
+            },
+            "production_quality_failed": {
+              "status": "manual_review_required"
+            }
+          },
+          "next_allowed_action": "operator_visual_review",
+          "retry_attempted": false,
+          "assembly_executed": false,
+          "downstream_executed": false,
+          "production_accepted": false
+        },
+        "combine_v2_real_visual_qa_technical_packet": {
+          "stage": "real_visual_qa_required",
+          "source_stage": "real_visual_qa_preflight_required",
+          "source_asset": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
+          "technical_asset_valid": true,
+          "visual_quality_passed": false,
+          "operator_review_required": true,
+          "recommended_operator_decision": "reject",
+          "next_allowed_action": "operator_visual_review",
+          "retry_attempted": false,
+          "assembly_executed": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "quality_metrics": {
+            "asset_exists": "passed",
+            "asset_readable": "passed",
+            "width_height_valid": "passed",
+            "sha256_present": "passed",
+            "size_bytes_valid": "passed",
+            "resolution_policy_check": "warn",
+            "blur_or_softness_basic": "passed",
+            "brightness_basic": "passed",
+            "contrast_basic": "passed"
+          },
+          "detected_issues": [],
+          "manual_checks_required": [
+            "anatomy_distortion",
+            "hand_distortion",
+            "body_pose_instability",
+            "clothing_artifacts",
+            "face_identity_unreliable",
+            "production_quality_failed"
+          ],
+          "operator_review_packet": {
+            "operator_actions": [
+              "accept_visuals",
+              "reject_visuals",
+              "request_retry_correction"
+            ],
+            "review_required": true,
+            "real_image_analysis": true
+          },
+          "retry_context_sources": {
+            "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+            "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+            "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+            "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+          }
+        },
+        "combine_v2_operator_visual_review_packet": {
+          "stage": "operator_visual_review",
+          "source_stage": "real_visual_qa_required",
+          "source_asset": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
+          "operator_review_required": true,
+          "operator_actions": [
+            "accept_visuals",
+            "reject_visuals",
+            "request_retry_correction"
+          ],
+          "visual_qa_report": "output/control/combine_v2_real_visual_qa_report.json",
+          "technical_qa_packet": "output/control/combine_v2_real_visual_qa_technical_packet.json",
+          "technical_asset_valid": true,
+          "visual_quality_passed": false,
+          "recommended_operator_decision": "reject",
+          "real_image_analysis": true,
+          "production_accepted": false,
+          "assembly_allowed": false,
+          "downstream_blocked": true,
+          "next_allowed_action": "operator_visual_review",
+          "manual_checks": {
+            "anatomy_distortion": {
+              "status": "manual_review_required"
+            },
+            "hand_distortion": {
+              "status": "manual_review_required"
+            },
+            "body_pose_instability": {
+              "status": "manual_review_required"
+            },
+            "clothing_artifacts": {
+              "status": "manual_review_required"
+            },
+            "face_identity_unreliable": {
+              "status": "manual_review_required"
+            },
+            "production_quality_failed": {
+              "status": "manual_review_required"
+            }
+          },
+          "retry_context_sources": {
+            "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+            "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+            "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+            "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+          }
+        }
+      },
+      "timestamp": "2026-05-04T13:28:04.793644",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_visual_review",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_acceptance_gate_result.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "retry_correction_required",
+        "action": "visual_acceptance_decision",
+        "operator_decision": "rejected",
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "combine_v2_visual_acceptance_gate_result": {
+          "operator_visual_decision": "rejected",
+          "visuals_accepted": false,
+          "next_allowed_action": "retry_correction_required",
+          "production_accepted": false,
+          "downstream_blocked": true,
+          "retry_attempted": false,
+          "assembly_executed": false,
+          "downstream_executed": false,
+          "retry_authorized": false,
+          "generation_performed": false
+        }
+      },
+      "timestamp": "2026-05-04T13:28:07.980282",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_visual_review",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_acceptance_gate_result.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "retry_correction_required",
+        "action": "visual_acceptance_decision",
+        "operator_decision": "rejected",
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "combine_v2_visual_acceptance_gate_result": {
+          "operator_visual_decision": "rejected",
+          "visuals_accepted": false,
+          "next_allowed_action": "retry_correction_required",
+          "production_accepted": false,
+          "downstream_blocked": true,
+          "retry_attempted": false,
+          "assembly_executed": false,
+          "downstream_executed": false,
+          "retry_authorized": false,
+          "generation_performed": false
+        }
+      },
+      "timestamp": "2026-05-04T13:28:12.249300",
       "no_generation_performed": true
     }
   ]

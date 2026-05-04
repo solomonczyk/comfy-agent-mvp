@@ -1,32 +1,47 @@
 {
   "stage": "operator_visual_review",
-  "source_stage": "visual_qa_required",
-  "retry_aware": true,
+  "source_stage": "real_visual_qa_required",
+  "source_asset": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
   "operator_review_required": true,
   "operator_actions": [
     "accept_visuals",
     "reject_visuals",
-    "request_retry_correction",
-    "block_manual_review"
+    "request_retry_correction"
   ],
-  "visual_qa_stub_report": "output/control/combine_v2_visual_qa_stub_report.json",
-  "generated_assets": [],
-  "real_image_analysis": false,
+  "visual_qa_report": "output/control/combine_v2_real_visual_qa_report.json",
+  "technical_qa_packet": "output/control/combine_v2_real_visual_qa_technical_packet.json",
+  "technical_asset_valid": true,
+  "visual_quality_passed": false,
+  "recommended_operator_decision": "reject",
+  "real_image_analysis": true,
   "production_accepted": false,
   "assembly_allowed": false,
   "downstream_blocked": true,
   "next_allowed_action": "operator_visual_review",
+  "manual_checks": {
+    "anatomy_distortion": {
+      "status": "manual_review_required"
+    },
+    "hand_distortion": {
+      "status": "manual_review_required"
+    },
+    "body_pose_instability": {
+      "status": "manual_review_required"
+    },
+    "clothing_artifacts": {
+      "status": "manual_review_required"
+    },
+    "face_identity_unreliable": {
+      "status": "manual_review_required"
+    },
+    "production_quality_failed": {
+      "status": "manual_review_required"
+    }
+  },
   "retry_context_sources": {
     "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
     "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
     "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
     "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
-  },
-  "retry_context_snapshot": {
-    "generation_gate_open": true,
-    "operator_generation_authorized": true,
-    "execution_strategy": "stub_only",
-    "generation_stub_status": "stubbed_ready",
-    "trace_id": "trace_20260501T152950541706"
   }
 }

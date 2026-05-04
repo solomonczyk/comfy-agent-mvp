@@ -4,6 +4,9 @@
   "next_allowed_action": "retry_correction_required",
   "production_accepted": false,
   "downstream_blocked": true,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
   "retry_authorized": false,
   "generation_performed": false
 }

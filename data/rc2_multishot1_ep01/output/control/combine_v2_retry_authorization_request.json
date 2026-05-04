@@ -3,5 +3,12 @@
   "plan_id": "CP-001",
   "status": "pending_authorization",
   "next_allowed_action": "operator_retry_authorization_required",
-  "retry_authorized": false
+  "retry_authorized": false,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "request_timestamp": "2026-05-04T15:27:00.000000"
 }

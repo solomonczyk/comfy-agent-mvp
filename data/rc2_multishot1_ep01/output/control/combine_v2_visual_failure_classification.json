@@ -1,0 +1,16 @@
+{
+  "primary_failure_type": "production_quality_failed",
+  "technical_asset_valid": true,
+  "visual_quality_passed": false,
+  "detected_issues": [
+    "resolution_policy_warn",
+    "manual_anatomy_review_required",
+    "manual_hand_review_required",
+    "manual_face_identity_review_required",
+    "manual_production_quality_review_required"
+  ],
+  "operator_rejected": true,
+  "source": "combine_v2_real_visual_qa_report",
+  "classification_timestamp": "2026-05-04T15:27:00.000000",
+  "next_allowed_action": "corrective_plan_required"
+}
