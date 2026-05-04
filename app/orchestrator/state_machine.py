@@ -27,6 +27,8 @@ class CombineStateMachine:
         "visual_qa_required_stub_pending",
         "visual_qa_required",
         "operator_visual_review",
+        "corrective_retry_plan_required",
+        "controlled_retry_authorization_required",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
         "real_generation_payload_review",
@@ -130,6 +132,7 @@ class CombineStateMachine:
             "assembly_required",
             "retry_correction_required",
             "real_generation_readiness_required",
+            "corrective_retry_plan_required",
             "blocked_manual_review"
         },
         "real_generation_readiness_required": {
@@ -224,6 +227,16 @@ class CombineStateMachine:
         "retry_correction_required": {
             "retry_plan_review_required",
             "operator_retry_authorization_required"
+        },
+        "corrective_retry_plan_required": {
+            "controlled_retry_authorization_required"
+        },
+        "controlled_retry_authorization_required": {
+            "corrective_retry_plan_required",
+            "brief_intake_required",
+            "route_classification_required",
+            "production_plan_required",
+            "blocked_manual_review"
         },
         "retry_plan_review_required": {
             "operator_retry_authorization_required"

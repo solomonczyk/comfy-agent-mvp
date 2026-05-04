@@ -39,6 +39,8 @@ class CombineOrchestrator:
         "visual_qa_required_stub_pending": "VisualQAAgent",
         "visual_qa_required": "VisualQAAgent",
         "operator_visual_review": "VisualQAAgent",
+        "corrective_retry_plan_required": "RetryPolicyAgent",
+        "controlled_retry_authorization_required": "RetryPolicyAgent",
         "real_generation_readiness_required": "RealGenerationReadinessAgent",
         "real_generation_preflight_required": "RealGenerationReadinessAgent",
         "real_generation_payload_review": "GenerationAgent",

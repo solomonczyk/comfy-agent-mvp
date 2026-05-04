@@ -376,7 +376,7 @@ def combine_operator_visual_decision(args: argparse.Namespace) -> int:
     control_dir = project_root / "output" / "control"
     
     # 1. Validate decision
-    valid_decisions = ["accept", "reject", "manual_review"]
+    valid_decisions = ["accept", "reject", "reject_visual_quality", "manual_review"]
     if decision not in valid_decisions:
         msg = f"Error: Invalid decision '{decision}'. Must be one of {valid_decisions}"
         if json_output:
@@ -389,6 +389,7 @@ def combine_operator_visual_decision(args: argparse.Namespace) -> int:
     decision_map = {
         "accept": "accepted",
         "reject": "rejected",
+        "reject_visual_quality": "reject_visual_quality",
         "manual_review": "manual_review"
     }
     artifact_decision = decision_map[decision]
@@ -404,12 +405,71 @@ def combine_operator_visual_decision(args: argparse.Namespace) -> int:
         "timestamp": timestamp
     }
     
+    # If asset is provided and decision is reject_visual_quality, add asset info
+    if decision == "reject_visual_quality" and hasattr(args, 'asset') and args.asset:
+        asset_path = Path(args.asset)
+        if asset_path.exists():
+            try:
+                from PIL import Image
+                with Image.open(asset_path) as img:
+                    width, height = img.size
+                decision_artifact["source_asset"] = str(args.asset)
+                decision_artifact["asset_width"] = width
+                decision_artifact["asset_height"] = height
+            except Exception:
+                decision_artifact["source_asset"] = str(args.asset)
+                decision_artifact["asset_width"] = None
+                decision_artifact["asset_height"] = None
+    
     decision_path = control_dir / "combine_v2_operator_visual_decision.json"
     control_dir.mkdir(parents=True, exist_ok=True)
     with open(decision_path, 'w') as f:
         json.dump(decision_artifact, f, indent=2)
         
-    # 3. Transition the system
+    # 3. For reject_visual_quality, skip orchestrator run to avoid state validation
+    # The corrective retry plan will be created separately
+    if decision == "reject_visual_quality":
+        # Update artifact index to reflect the rejection
+        artifact_index_path = control_dir / "artifact_index.json"
+        artifact_index = {}
+        if artifact_index_path.exists():
+            with open(artifact_index_path, 'r') as f:
+                artifact_index = json.load(f)
+        
+        artifact_index["operator_visual_decision"] = "reject_visual_quality"
+        artifact_index["operator_rejection_confirmed"] = True
+        artifact_index["generation_allowed"] = False
+        artifact_index["retry_allowed"] = False
+        artifact_index["blind_retry_allowed"] = False
+        artifact_index["production_accepted"] = False
+        
+        with open(artifact_index_path, 'w') as f:
+            json.dump(artifact_index, f, indent=2)
+        
+        if json_output:
+            print(json.dumps({
+                "status": "ok",
+                "operator_visual_decision": artifact_decision,
+                "source_asset": decision_artifact.get("source_asset"),
+                "asset_width": decision_artifact.get("asset_width"),
+                "asset_height": decision_artifact.get("asset_height"),
+                "operator_rejection_confirmed": True,
+                "generation_allowed": False,
+                "retry_allowed": False,
+                "blind_retry_allowed": False,
+                "production_accepted": False,
+                "next_allowed_action": "corrective_retry_plan_required",
+                "comfyui_execution": False,
+                "downstream_executed": False,
+                "artifacts": [str(decision_path.relative_to(project_root))]
+            }, indent=2))
+        else:
+            print(f"Visual Review Decision: {artifact_decision.upper()}")
+            print(f"Operator Rejection Confirmed: True")
+            print(f"Next Allowed Action: corrective_retry_plan_required")
+        return 0
+        
+    # 3. Transition the system (for other decisions)
     orchestrator = CombineOrchestrator(str(project_root))
     
     # Check if we are in the correct state
@@ -454,6 +514,310 @@ def combine_operator_visual_decision(args: argparse.Namespace) -> int:
             print(f"Error: {result.message}")
         return 1
 
+
+def combine_create_corrective_retry_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-741-800 — Create Corrective Retry Plan after Operator Visual Rejection.
+
+    This command creates a corrective retry plan without generation.
+    It specifies that blind retry is forbidden and prepares a request for
+    operator approval for controlled retry implementation.
+
+    Exit codes:
+    - 0: plan created successfully
+    - 1: error or invalid args
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from PIL import Image, UnidentifiedImageError
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now().isoformat()
+
+    # Read operator visual decision to get source asset info
+    op_decision_path = control_dir / "combine_v2_operator_visual_decision.json"
+    if not op_decision_path.exists():
+        msg = "Error: combine_v2_operator_visual_decision.json not found. Run combine-operator-visual-decision first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(op_decision_path, 'r') as f:
+        op_decision = json.load(f)
+
+    # Get source asset info
+    source_asset = op_decision.get("source_asset")
+    asset_width = op_decision.get("asset_width")
+    asset_height = op_decision.get("asset_height")
+
+    # Read previous QA verdict if available
+    previous_qa_verdict = "qa_failed"
+    qa_result_path = control_dir / "combine_v2_visual_qa_stub_report.json"
+    if qa_result_path.exists():
+        with open(qa_result_path, 'r') as f:
+            qa_result = json.load(f)
+            previous_qa_verdict = qa_result.get("qa_verdict", "qa_failed")
+
+    # 1. Create operator visual rejection artifact
+    operator_visual_rejection = {
+        "stage": "operator_visual_review",
+        "operator_visual_decision": op_decision.get("operator_visual_decision"),
+        "source_asset": source_asset,
+        "asset_width": asset_width,
+        "asset_height": asset_height,
+        "previous_qa_verdict": previous_qa_verdict,
+        "operator_rejection_confirmed": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "blind_retry_allowed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_plan_required"
+    }
+    rejection_path = control_dir / "combine_v2_operator_visual_rejection.json"
+    with open(rejection_path, 'w') as f:
+        json.dump(operator_visual_rejection, f, indent=2)
+
+    # 2. Create failure classification artifact
+    failure_classification = {
+        "classification": "rebuilt_asset_visual_failure",
+        "source_asset": source_asset,
+        "asset_width": asset_width,
+        "asset_height": asset_height,
+        "previous_qa_verdict": previous_qa_verdict,
+        "failure_basis": [
+            "semantic_content_failed",
+            "subject_not_recognizable",
+            "blur_or_softness",
+            "low_detail_quality",
+            "composition_failed",
+            "production_quality_failed"
+        ],
+        "severity": "high",
+        "requires_corrective_retry": True,
+        "blind_retry_allowed": False,
+        "production_accepted": False
+    }
+    classification_path = control_dir / "combine_v2_rebuilt_asset_failure_classification.json"
+    with open(classification_path, 'w') as f:
+        json.dump(failure_classification, f, indent=2)
+
+    # 3. Create corrective retry plan artifact
+    corrective_retry_plan = {
+        "stage": "corrective_retry_plan_required",
+        "plan_type": "controlled_corrective_retry_plan",
+        "source_asset": source_asset,
+        "failure_basis": failure_classification["failure_basis"],
+        "blind_retry_allowed": False,
+        "retry_requires_operator_authorization": True,
+        "required_corrections": {
+            "prompt_correction_required": True,
+            "workflow_correction_required": True,
+            "quality_pipeline_correction_required": True,
+            "model_or_sampler_review_required": True,
+            "composition_or_subject_definition_required": True
+        },
+        "generation_allowed": False,
+        "retry_attempted": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "controlled_retry_authorization_required"
+    }
+    retry_plan_path = control_dir / "combine_v2_corrective_retry_plan.json"
+    with open(retry_plan_path, 'w') as f:
+        json.dump(corrective_retry_plan, f, indent=2)
+
+    # 4. Create corrective prompt plan artifact
+    prompt_plan = {
+        "plan_type": "corrective_prompt_plan",
+        "source_asset": source_asset,
+        "required_corrections": {
+            "semantic_clarity_improvement": True,
+            "subject_definition_refinement": True,
+            "composition_adjustment": True,
+            "detail_enhancement": True
+        },
+        "prompt_elements_to_review": [
+            "subject_description",
+            "composition_keywords",
+            "style_modifiers",
+            "quality_parameters"
+        ],
+        "generation_allowed": False
+    }
+    prompt_plan_path = control_dir / "combine_v2_corrective_prompt_plan.json"
+    with open(prompt_plan_path, 'w') as f:
+        json.dump(prompt_plan, f, indent=2)
+
+    # 5. Create corrective workflow plan artifact
+    workflow_plan = {
+        "plan_type": "corrective_workflow_plan",
+        "source_asset": source_asset,
+        "required_corrections": {
+            "model_selection_review": True,
+            "sampler_parameter_adjustment": True,
+            "step_count_optimization": True,
+            "cfg_scale_review": True
+        },
+        "workflow_elements_to_review": [
+            "checkpoint_selection",
+            "sampler_name",
+            "scheduler",
+            "steps",
+            "cfg",
+            "denoise_strength"
+        ],
+        "generation_allowed": False
+    }
+    workflow_plan_path = control_dir / "combine_v2_corrective_workflow_plan.json"
+    with open(workflow_plan_path, 'w') as f:
+        json.dump(workflow_plan, f, indent=2)
+
+    # 6. Create corrective quality pipeline plan artifact
+    quality_pipeline_plan = {
+        "plan_type": "corrective_quality_pipeline_plan",
+        "source_asset": source_asset,
+        "required_corrections": {
+            "resolution_validation": True,
+            "quality_threshold_adjustment": True,
+            "output_format_verification": True
+        },
+        "quality_pipeline_elements_to_review": [
+            "target_resolution",
+            "quality_metrics",
+            "output_format",
+            "compression_settings"
+        ],
+        "generation_allowed": False
+    }
+    quality_pipeline_plan_path = control_dir / "combine_v2_corrective_quality_pipeline_plan.json"
+    with open(quality_pipeline_plan_path, 'w') as f:
+        json.dump(quality_pipeline_plan, f, indent=2)
+
+    # 7. Create controlled retry authorization request artifact
+    authorization_request = {
+        "stage": "controlled_retry_authorization_required",
+        "operator_review_required": True,
+        "recommended_operator_decision": "approve_corrective_retry_implementation",
+        "operator_actions": [
+            "approve_corrective_retry_implementation",
+            "request_corrective_plan_changes",
+            "manual_review",
+            "abort_route"
+        ],
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "production_accepted": False,
+        "next_allowed_action": "controlled_retry_authorization_required"
+    }
+    auth_request_path = control_dir / "combine_v2_controlled_retry_authorization_request.json"
+    with open(auth_request_path, 'w') as f:
+        json.dump(authorization_request, f, indent=2)
+
+    # 8. Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_plan_required"
+    artifact_index["next_allowed_action"] = "controlled_retry_authorization_required"
+    artifact_index["operator_visual_rejection_created"] = True
+    artifact_index["failure_classification_created"] = True
+    artifact_index["corrective_retry_plan_created"] = True
+    artifact_index["blind_retry_allowed"] = False
+    artifact_index["retry_requires_operator_authorization"] = True
+    artifact_index["generation_allowed"] = False
+    artifact_index["retry_allowed"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 9. Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    ledger = data
+                elif isinstance(data, dict):
+                    ledger = data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_plan_created",
+        "stage": "corrective_retry_plan_required",
+        "source_asset": source_asset,
+        "blind_retry_allowed": False,
+        "retry_requires_operator_authorization": True,
+        "generation_allowed": False,
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    # Output result
+    result = {
+        "status": "ok",
+        "operator_visual_rejection_created": True,
+        "source_asset": source_asset,
+        "previous_qa_verdict": previous_qa_verdict,
+        "operator_rejection_confirmed": True,
+        "failure_classification_created": True,
+        "corrective_retry_plan_created": True,
+        "blind_retry_allowed": False,
+        "retry_requires_operator_authorization": True,
+        "prompt_correction_plan_created": True,
+        "workflow_correction_plan_created": True,
+        "quality_pipeline_correction_plan_created": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "retry_attempted": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "controlled_retry_authorization_required",
+        "current_state": "corrective_retry_plan_required",
+        "artifacts": [
+            "combine_v2_operator_visual_rejection.json",
+            "combine_v2_rebuilt_asset_failure_classification.json",
+            "combine_v2_corrective_retry_plan.json",
+            "combine_v2_corrective_prompt_plan.json",
+            "combine_v2_corrective_workflow_plan.json",
+            "combine_v2_corrective_quality_pipeline_plan.json",
+            "combine_v2_controlled_retry_authorization_request.json"
+        ]
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry Plan Created")
+        print(f"Source Asset: {source_asset}")
+        print(f"Previous QA Verdict: {previous_qa_verdict}")
+        print(f"Blind Retry Allowed: False")
+        print(f"Retry Requires Operator Authorization: True")
+        print(f"Next Allowed Action: {result['next_allowed_action']}")
+        print(f"Current State: {result['current_state']}")
+
+    return 0
 
 
 def combine_authorize_retry(args: argparse.Namespace) -> int:
@@ -3485,12 +3849,16 @@ def main() -> int:
     combine_operator_visual_decision_parser.add_argument(
         "--decision",
         required=True,
-        choices=["accept", "reject", "manual_review"],
+        choices=["accept", "reject", "reject_visual_quality", "manual_review"],
         help="Operator decision",
     )
     combine_operator_visual_decision_parser.add_argument(
         "--reason",
         help="Reason for the decision",
+    )
+    combine_operator_visual_decision_parser.add_argument(
+        "--asset",
+        help="Path to the asset being reviewed",
     )
     combine_operator_visual_decision_parser.add_argument(
         "--json",
@@ -3506,6 +3874,19 @@ def main() -> int:
         help="Project root directory",
     )
     combine_authorize_retry_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-741-800 — combine-create-corrective-retry-plan subcommand
+    combine_create_corrective_retry_plan_parser = subparsers.add_parser("combine-create-corrective-retry-plan", help="Create corrective retry plan after operator visual rejection")
+    combine_create_corrective_retry_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_create_corrective_retry_plan_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -4697,6 +5078,8 @@ def main() -> int:
         return combine_authorize_generation(args)
     elif args.command == "combine-authorize-retry":
         return combine_authorize_retry(args)
+    elif args.command == "combine-create-corrective-retry-plan":
+        return combine_create_corrective_retry_plan(args)
     elif args.command == "combine-diagnostic-generate-one-asset":
         return combine_diagnostic_generate_one_asset(args)
     elif args.command == "combine-real-generation-preflight":
