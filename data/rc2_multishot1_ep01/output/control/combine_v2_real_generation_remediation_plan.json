@@ -1,0 +1,11 @@
+{
+  "stage": "real_generation_remediation_plan",
+  "remediation_action": "prepare_for_new_generation_attempt",
+  "operator_decision": "request_new_generation_attempt",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+  "reason": "zero_assets_after_real_submit",
+  "next_allowed_action": "operator_real_generation_authorization_required",
+  "new_generation_authorized": false,
+  "requires_new_operator_real_generation_approval": true,
+  "timestamp": "2026-05-04T09:39:29.710239"
+}

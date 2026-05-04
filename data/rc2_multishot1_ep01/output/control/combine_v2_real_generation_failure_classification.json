@@ -1,0 +1,9 @@
+{
+  "stage": "real_generation_failure_classification",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+  "failure_category": "output_collection",
+  "failure_description": "Zero assets collected after real generation submission",
+  "generated_assets_count": 0,
+  "production_accepted": false,
+  "timestamp": "2026-05-04T09:39:29.710239"
+}

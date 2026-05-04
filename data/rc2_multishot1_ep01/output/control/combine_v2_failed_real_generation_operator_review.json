@@ -1,0 +1,8 @@
+{
+  "stage": "failed_real_generation_operator_review",
+  "operator_decision": "request_new_generation_attempt",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+  "generated_assets_count": 0,
+  "reason": "zero_assets_after_real_submit",
+  "timestamp": "2026-05-04T09:39:29.710239"
+}

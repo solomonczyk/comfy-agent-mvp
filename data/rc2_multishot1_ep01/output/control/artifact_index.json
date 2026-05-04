@@ -1,5 +1,5 @@
 {
-  "current_state": "real_generation_result_review_required",
+  "current_state": "failed_real_generation_operator_review",
   "route_family": "custom",
   "stage_results": [
     {
@@ -2820,6 +2820,27 @@
         "production_accepted": false
       },
       "timestamp": "2026-05-01T16:38:40.279986",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "failed_real_generation_operator_review",
+      "success": true,
+      "message": "CLI stage transition: failed_real_generation_operator_review",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "operator_real_generation_authorization_required",
+        "operator_decision": "request_new_generation_attempt",
+        "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+        "new_generation_authorized": false,
+        "requires_new_operator_real_generation_approval": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "visual_qa_executed": false,
+        "retry_attempted": false,
+        "downstream_executed": false,
+        "production_accepted": false
+      },
+      "timestamp": "2026-05-04T09:39:29.712240",
       "no_generation_performed": true
     }
   ]

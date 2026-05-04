@@ -647,5 +647,16 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-01T16:38:40.279986"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "failed_real_generation_operator_review",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: failed_real_generation_operator_review",
+    "dry_run": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T09:39:29.712240"
   }
 ]
