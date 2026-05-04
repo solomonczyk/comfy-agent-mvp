@@ -8,13 +8,13 @@
     {
       "event": "workflow_submitted",
       "status": "success",
-      "prompt_id": "0e92c416-e36d-42ce-9a1a-3cd496765939"
+      "prompt_id": "b41d42e5-d9c6-4c41-8f98-e986b6cbbbd3"
     },
     {
       "event": "asset_collected",
       "status": "success",
-      "filename": "combine_v2_00001_.png",
-      "path": "output/assets/combine_v2_00001_.png",
+      "filename": "combine_v2_00002_.png",
+      "path": "output/assets/combine_v2_00002_.png",
       "source": "fetched",
       "fetch_error": null
     },

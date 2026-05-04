@@ -856,5 +856,49 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-04T13:38:44.794493"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_real_generation_approved",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: operator_real_generation_approved",
+    "dry_run": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:43:14.807448"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generate_assets",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_generate_assets",
+    "dry_run": false,
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "timestamp": "2026-05-04T13:43:18.073997"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generation_result_collected",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_generation_result_collected",
+    "dry_run": false,
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "timestamp": "2026-05-04T13:44:34.720197"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_visual_qa_preflight_required",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_visual_qa_preflight_required",
+    "dry_run": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:44:38.573433"
   }
 ]

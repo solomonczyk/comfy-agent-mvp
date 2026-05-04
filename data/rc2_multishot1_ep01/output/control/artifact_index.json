@@ -1,5 +1,5 @@
 {
-  "current_state": "operator_real_generation_authorization_required",
+  "current_state": "real_visual_qa_preflight_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -3781,6 +3781,63 @@
         }
       },
       "timestamp": "2026-05-04T13:38:44.794493",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_real_generation_approved",
+      "success": true,
+      "message": "CLI stage transition: operator_real_generation_approved",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generate_assets",
+        "generation_performed": false,
+        "comfyui_execution": false
+      },
+      "timestamp": "2026-05-04T13:43:14.807448",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generate_assets",
+      "success": true,
+      "message": "CLI stage transition: real_generate_assets",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generation_result_collected",
+        "generation_performed": true,
+        "comfyui_execution": true
+      },
+      "timestamp": "2026-05-04T13:43:18.073997",
+      "no_generation_performed": false
+    },
+    {
+      "stage": "real_generation_result_collected",
+      "success": true,
+      "message": "CLI stage transition: real_generation_result_collected",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_generation_result_review_required",
+        "generation_performed": true,
+        "comfyui_execution": true
+      },
+      "timestamp": "2026-05-04T13:44:34.720197",
+      "no_generation_performed": false
+    },
+    {
+      "stage": "real_visual_qa_preflight_required",
+      "success": true,
+      "message": "CLI stage transition: real_visual_qa_preflight_required",
+      "artifacts": [],
+      "metadata": {
+        "next_allowed_action": "real_visual_qa_preflight_required",
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "visual_qa_executed": false,
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "downstream_executed": false,
+        "production_accepted": false
+      },
+      "timestamp": "2026-05-04T13:44:38.573433",
       "no_generation_performed": true
     }
   ]
