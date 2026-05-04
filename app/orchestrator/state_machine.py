@@ -53,6 +53,11 @@ class CombineStateMachine:
         "quality_pipeline_contract_required",
         "workflow_rebuild_preflight_required",
         "operator_rebuild_approval_required",
+        "operator_rebuild_approved",
+        "workflow_recipe_implementation_required",
+        "generation_payload_rebuild_required",
+        "workflow_graph_rebuild_required",
+        "workflow_rebuild_validation_required",
         "assembly_required",
         "final_qc_required",
         "final_operator_acceptance",
@@ -196,9 +201,25 @@ class CombineStateMachine:
             "operator_rebuild_approval_required",
         },
         "operator_rebuild_approval_required": {
+            "operator_rebuild_approved",  # New: operator approves rebuild implementation
             "workflow_plan_required",  # Restart with rebuilt workflow
             "brief_intake_required",  # Full restart
             "blocked_manual_review",
+        },
+        "operator_rebuild_approved": {
+            "workflow_recipe_implementation_required",
+        },
+        "workflow_recipe_implementation_required": {
+            "generation_payload_rebuild_required",
+        },
+        "generation_payload_rebuild_required": {
+            "workflow_graph_rebuild_required",
+        },
+        "workflow_graph_rebuild_required": {
+            "workflow_rebuild_validation_required",
+        },
+        "workflow_rebuild_validation_required": {
+            "real_generation_readiness_required",
         },
         "retry_correction_required": {
             "retry_plan_review_required",
@@ -284,6 +305,11 @@ class CombineStateMachine:
         ("quality_pipeline_contract_required", "real_generate_assets"),
         ("workflow_rebuild_preflight_required", "real_generate_assets"),
         ("operator_rebuild_approval_required", "real_generate_assets"),
+        ("operator_rebuild_approved", "real_generate_assets"),
+        ("workflow_recipe_implementation_required", "real_generate_assets"),
+        ("generation_payload_rebuild_required", "real_generate_assets"),
+        ("workflow_graph_rebuild_required", "real_generate_assets"),
+        ("workflow_rebuild_validation_required", "real_generate_assets"),
         
         # Cannot jump to assembly without completing rebuild
         ("workflow_td_rebuild_required", "assembly_required"),
@@ -291,6 +317,12 @@ class CombineStateMachine:
         ("prompt_contract_rebuild_required", "assembly_required"),
         ("quality_pipeline_contract_required", "assembly_required"),
         ("workflow_rebuild_preflight_required", "assembly_required"),
+        ("operator_rebuild_approval_required", "assembly_required"),
+        ("operator_rebuild_approved", "assembly_required"),
+        ("workflow_recipe_implementation_required", "assembly_required"),
+        ("generation_payload_rebuild_required", "assembly_required"),
+        ("workflow_graph_rebuild_required", "assembly_required"),
+        ("workflow_rebuild_validation_required", "assembly_required"),
     }
     
     @classmethod

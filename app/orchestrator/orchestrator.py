@@ -63,6 +63,11 @@ class CombineOrchestrator:
         "quality_pipeline_contract_required": "WorkflowTDRebuildAgent",
         "workflow_rebuild_preflight_required": "WorkflowTDRebuildAgent",
         "operator_rebuild_approval_required": "WorkflowTDRebuildAgent",
+        "operator_rebuild_approved": "WorkflowRecipeImplementationAgent",
+        "workflow_recipe_implementation_required": "WorkflowRecipeImplementationAgent",
+        "generation_payload_rebuild_required": "WorkflowRecipeImplementationAgent",
+        "workflow_graph_rebuild_required": "WorkflowRecipeImplementationAgent",
+        "workflow_rebuild_validation_required": "WorkflowRecipeImplementationAgent",
         "assembly_required": "AssemblyAgent",
         "final_qc_required": "FinalQAAgent",
     }
@@ -232,6 +237,9 @@ class CombineOrchestrator:
             elif agent_name == "WorkflowTDRebuildAgent":
                 from app.agents.workflow_td_rebuild_agent import WorkflowTDRebuildAgent
                 agent = WorkflowTDRebuildAgent()
+            elif agent_name == "WorkflowRecipeImplementationAgent":
+                from app.agents.workflow_recipe_implementation_agent import WorkflowRecipeImplementationAgent
+                agent = WorkflowRecipeImplementationAgent()
             elif agent_name == "AssemblyAgent":
                 from app.agents.assembly_agent import AssemblyAgent
                 agent = AssemblyAgent()
