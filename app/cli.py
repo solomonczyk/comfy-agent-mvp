@@ -2225,11 +2225,46 @@ def combine_operator_strategy_decision(args: argparse.Namespace) -> int:
 
     # Update orchestrator state if decision approves rebuild
     if decision == "approve_workflow_rebuild_plan":
-        orchestrator = CombineOrchestrator(str(project_root))
         try:
-            orchestrator.transition_to("workflow_td_rebuild_required")
+            # Update artifact index current_state manually
+            from app.orchestrator import CombineOrchestrator
+            orchestrator = CombineOrchestrator(str(project_root))
+            # Write a stage result to update state
+            artifact_index_path = control_dir / "artifact_index.json"
+            artifact_index = {}
+            if artifact_index_path.exists():
+                try:
+                    with open(artifact_index_path, 'r') as f:
+                        artifact_index = json.load(f)
+                except (json.JSONDecodeError, IOError):
+                    artifact_index = {}
+            
+            if "stage_results" not in artifact_index:
+                artifact_index["stage_results"] = []
+            
+            artifact_index["stage_results"].append({
+                "stage": "operator_strategy_review",
+                "success": True,
+                "message": "Operator approved workflow rebuild plan",
+                "artifacts": ["combine_v2_operator_strategy_decision.json"],
+                "metadata": {
+                    "next_allowed_action": "workflow_td_rebuild_required",
+                    "next_recommended_stage": "workflow_td_rebuild_required",
+                    "operator_strategy_decision": decision,
+                    "workflow_rebuild_authorized": workflow_rebuild_authorized,
+                    "generation_allowed": False,
+                    "retry_allowed": False,
+                    "production_accepted": False
+                },
+                "timestamp": timestamp,
+                "no_generation_performed": True
+            })
+            artifact_index["current_state"] = "workflow_td_rebuild_required"
+            
+            with open(artifact_index_path, 'w') as f:
+                json.dump(artifact_index, f, indent=2)
         except Exception as e:
-            print(f"ERROR: Failed to transition orchestrator state: {e}", file=sys.stderr)
+            print(f"ERROR: Failed to update orchestrator state: {e}", file=sys.stderr)
             return 1
 
     if json_output:
