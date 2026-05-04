@@ -1,7 +1,8 @@
 {
   "agent": "Operator",
   "action": "visual_review_decision",
-  "operator_visual_decision": "rejected",
-  "reason": "real_visual_qa_recommended_reject_low_production_quality",
-  "timestamp": "2026-05-04T15:37:43.974349"
+  "operator_visual_decision": "reject_visual_quality",
+  "reason": "rebuilt_1024_asset_failed_visual_qa_semantic_and_production_quality",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "timestamp": "2026-05-04T20:38:26.832650"
 }

@@ -1,5 +1,5 @@
 {
-  "current_state": "real_generation_result_review_required",
+  "current_state": "corrective_retry_plan_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5121,6 +5121,89 @@
       },
       "timestamp": "2026-05-04T17:20:20.004413",
       "no_generation_performed": true
+    },
+    {
+      "stage": "operator_visual_review",
+      "success": false,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_acceptance_gate_result.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_visual_review",
+        "action": "visual_acceptance_decision",
+        "operator_decision": "reject_visual_quality",
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "combine_v2_visual_acceptance_gate_result": {
+          "operator_visual_decision": "reject_visual_quality",
+          "visuals_accepted": false,
+          "next_allowed_action": "none",
+          "production_accepted": false,
+          "downstream_blocked": true,
+          "retry_attempted": false,
+          "assembly_executed": false,
+          "downstream_executed": false,
+          "message": "Waiting for operator decision"
+        }
+      },
+      "timestamp": "2026-05-04T18:32:27.239774",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_visual_review",
+      "success": false,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_acceptance_gate_result.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_visual_review",
+        "action": "visual_acceptance_decision",
+        "operator_decision": "reject_visual_quality",
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "combine_v2_visual_acceptance_gate_result": {
+          "operator_visual_decision": "reject_visual_quality",
+          "visuals_accepted": false,
+          "next_allowed_action": "none",
+          "production_accepted": false,
+          "downstream_blocked": true,
+          "retry_attempted": false,
+          "assembly_executed": false,
+          "downstream_executed": false,
+          "message": "Waiting for operator decision"
+        }
+      },
+      "timestamp": "2026-05-04T18:32:42.959652",
+      "no_generation_performed": true
     }
-  ]
+  ],
+  "operator_visual_decision": "reject_visual_quality",
+  "operator_rejection_confirmed": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "next_allowed_action": "controlled_retry_authorization_required",
+  "operator_visual_rejection_created": true,
+  "failure_classification_created": true,
+  "corrective_retry_plan_created": true,
+  "retry_requires_operator_authorization": true,
+  "retry_attempted": false,
+  "comfyui_execution": false,
+  "workflow_submitted": false,
+  "downstream_executed": false
 }

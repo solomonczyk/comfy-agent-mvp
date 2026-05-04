@@ -408,16 +408,17 @@ def combine_operator_visual_decision(args: argparse.Namespace) -> int:
     # If asset is provided and decision is reject_visual_quality, add asset info
     if decision == "reject_visual_quality" and hasattr(args, 'asset') and args.asset:
         asset_path = Path(args.asset)
-        if asset_path.exists():
+        # Add source_asset info if provided
+        if args.asset:
+            asset_full_path = project_root / args.asset
+            decision_artifact["source_asset"] = str(args.asset)
             try:
-                from PIL import Image
-                with Image.open(asset_path) as img:
-                    width, height = img.size
-                decision_artifact["source_asset"] = str(args.asset)
-                decision_artifact["asset_width"] = width
-                decision_artifact["asset_height"] = height
+                img = Image.open(asset_full_path)
+                asset_width, asset_height = img.size
+                img.close()
+                decision_artifact["asset_width"] = asset_width
+                decision_artifact["asset_height"] = asset_height
             except Exception:
-                decision_artifact["source_asset"] = str(args.asset)
                 decision_artifact["asset_width"] = None
                 decision_artifact["asset_height"] = None
     

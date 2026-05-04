@@ -1197,5 +1197,54 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-04T17:20:20.004413"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_visual_review",
+    "agent": "VisualQAAgent",
+    "success": false,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T18:32:27.239774"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_visual_review",
+    "agent": "VisualQAAgent",
+    "success": false,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T18:32:42.959652"
+  },
+  {
+    "event_type": "corrective_retry_plan_created",
+    "stage": "corrective_retry_plan_required",
+    "source_asset": null,
+    "blind_retry_allowed": false,
+    "retry_requires_operator_authorization": true,
+    "generation_allowed": false,
+    "timestamp": "2026-05-04T20:33:53.152631"
+  },
+  {
+    "event_type": "corrective_retry_plan_created",
+    "stage": "corrective_retry_plan_required",
+    "source_asset": null,
+    "blind_retry_allowed": false,
+    "retry_requires_operator_authorization": true,
+    "generation_allowed": false,
+    "timestamp": "2026-05-04T20:37:42.062422"
+  },
+  {
+    "event_type": "corrective_retry_plan_created",
+    "stage": "corrective_retry_plan_required",
+    "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+    "blind_retry_allowed": false,
+    "retry_requires_operator_authorization": true,
+    "generation_allowed": false,
+    "timestamp": "2026-05-04T20:38:54.130418"
   }
 ]
