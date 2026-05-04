@@ -1588,6 +1588,269 @@ def combine_review_real_generation_result(args: argparse.Namespace) -> int:
     return 0 if review_status == "ready_for_visual_qa" else 1
 
 
+def _scan_recoverable_assets(project_root: Path) -> List[Dict[str, Any]]:
+    """Scan for existing image assets in output/assets and COMFY_OUTPUT_ROOT.
+
+    Returns validated asset records with path/exists/readable/width/height/size_bytes/sha256.
+    Does NOT call ComfyUI API.
+    """
+    assets_dir = project_root / "output" / "assets"
+    candidates: List[Path] = []
+
+    if assets_dir.exists():
+        for ext in (".png", ".jpg", ".jpeg", ".webp", ".gif"):
+            candidates.extend(assets_dir.rglob(f"*{ext}"))
+
+    comfy_root = os.getenv("COMFY_OUTPUT_ROOT")
+    if comfy_root:
+        comfy_path = Path(comfy_root)
+        if comfy_path.exists():
+            for ext in (".png", ".jpg", ".jpeg", ".webp", ".gif"):
+                candidates.extend(comfy_path.rglob(f"*{ext}"))
+
+    recovered: List[Dict[str, Any]] = []
+    seen_paths: set[str] = set()
+
+    for candidate in candidates:
+        if not candidate.is_file():
+            continue
+        try:
+            rel_path = candidate.relative_to(project_root).as_posix()
+        except ValueError:
+            rel_path = str(candidate)
+        if rel_path in seen_paths:
+            continue
+        seen_paths.add(rel_path)
+
+        readable_result = _is_image_readable(candidate)
+        if not readable_result["readable"]:
+            continue
+
+        size_bytes = candidate.stat().st_size
+        sha256_value = _file_sha256(candidate)
+
+        recovered.append(
+            {
+                "path": rel_path,
+                "exists": True,
+                "readable": True,
+                "width": readable_result["width"],
+                "height": readable_result["height"],
+                "size_bytes": int(size_bytes),
+                "sha256": sha256_value,
+            }
+        )
+
+    return recovered
+
+
+def combine_recover_real_generation_result(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-51-60 — Real Generation Result Recovery / Canonicalization Gate.
+
+    Attempts to recover outputs from already existing ComfyUI history / output folders
+    without submitting a new generation request. No ComfyUI submit, no QA, no retry,
+    no downstream.
+
+    If assets are found, updates the manifest with object entries and allows
+    real_visual_qa_preflight_required. If not, canonicalizes the result as failed
+    with FAILED_OUTPUT_COLLECTION_ZERO_ASSETS.
+
+    Exit codes:
+    - 0: assets recovered successfully
+    - 1: zero assets, canonicalized as failed
+    """
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    result_path = control_dir / "combine_v2_real_generation_result.json"
+    manifest_path = control_dir / "combine_v2_real_generation_outputs_manifest.json"
+    trace_path = control_dir / "combine_v2_real_generation_trace.json"
+
+    result_payload = _read_json_file(result_path)
+    manifest_payload = _read_json_file(manifest_path)
+    _ = _read_json_file(trace_path)
+
+    recovered_assets = _scan_recoverable_assets(project_root)
+
+    if recovered_assets:
+        updated_manifest = {
+            **manifest_payload,
+            "generated_assets_count": len(recovered_assets),
+            "generated_assets": recovered_assets,
+            "status": "recovered",
+            "failure_code": None,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        _write_json_file(manifest_path, updated_manifest)
+
+        updated_result = {
+            **result_payload,
+            "status": "recovered",
+            "generated_assets_count": len(recovered_assets),
+            "generated_assets": recovered_assets,
+            "failure_code": None,
+            "next_allowed_action": "real_visual_qa_preflight_required",
+        }
+        _write_json_file(result_path, updated_result)
+
+        recovery_attempt = {
+            "stage": "real_generation_result_recovery",
+            "status": "recovered",
+            "recovered_assets_count": len(recovered_assets),
+            "generated_assets_count": len(recovered_assets),
+            "source": "existing_output_scan",
+            "recovered_assets": recovered_assets,
+            "visual_qa_executed": False,
+            "generation_attempted": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
+        canonicalization_report = {
+            "stage": "real_generation_result_canonicalization",
+            "original_status": result_payload.get("status"),
+            "canonical_status": "recovered",
+            "inconsistency_resolved": True,
+            "completed_with_zero_assets": False,
+            "previous_generated_assets_count": manifest_payload.get("generated_assets_count", 0),
+            "current_generated_assets_count": len(recovered_assets),
+            "visual_qa_executed": False,
+            "generation_attempted": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
+        recovery_decision = {
+            "status": "recovered",
+            "recovered_assets_count": len(recovered_assets),
+            "generated_assets_count": len(recovered_assets),
+            "next_allowed_action": "real_visual_qa_preflight_required",
+            "visual_qa_executed": False,
+            "generation_attempted": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
+        status = "recovered"
+        next_allowed_action = "real_visual_qa_preflight_required"
+        failure_code = None
+    else:
+        updated_result = {
+            **result_payload,
+            "status": "failed",
+            "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+            "generated_assets_count": 0,
+            "generated_assets": [],
+            "next_allowed_action": "real_generation_result_review_required",
+        }
+        _write_json_file(result_path, updated_result)
+
+        updated_manifest = {
+            **manifest_payload,
+            "status": "failed",
+            "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+            "generated_assets_count": 0,
+            "generated_assets": [],
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        _write_json_file(manifest_path, updated_manifest)
+
+        recovery_attempt = {
+            "stage": "real_generation_result_recovery",
+            "status": "failed",
+            "recovered_assets_count": 0,
+            "generated_assets_count": 0,
+            "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+            "source": "existing_output_scan",
+            "visual_qa_executed": False,
+            "generation_attempted": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
+        canonicalization_report = {
+            "stage": "real_generation_result_canonicalization",
+            "original_status": result_payload.get("status"),
+            "canonical_status": "failed",
+            "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+            "inconsistency_resolved": True,
+            "completed_with_zero_assets_impossible_in_canonical_state": True,
+            "previous_generated_assets_count": manifest_payload.get("generated_assets_count", 0),
+            "current_generated_assets_count": 0,
+            "visual_qa_executed": False,
+            "generation_attempted": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
+        recovery_decision = {
+            "status": "failed",
+            "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+            "generated_assets_count": 0,
+            "next_allowed_action": "real_generation_result_review_required",
+            "operator_review_required": True,
+            "visual_qa_executed": False,
+            "generation_attempted": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": datetime.utcnow().isoformat(),
+        }
+
+        status = "failed"
+        next_allowed_action = "real_generation_result_review_required"
+        failure_code = "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+
+    recovery_attempt_path = control_dir / "combine_v2_real_generation_result_recovery_attempt.json"
+    canonicalization_report_path = control_dir / "combine_v2_real_generation_canonicalization_report.json"
+    recovery_decision_path = control_dir / "combine_v2_real_generation_recovery_decision.json"
+
+    _write_json_file(recovery_attempt_path, recovery_attempt)
+    _write_json_file(canonicalization_report_path, canonicalization_report)
+    _write_json_file(recovery_decision_path, recovery_decision)
+
+    response = {
+        "status": status,
+        "recovered_assets_count": len(recovered_assets) if recovered_assets else 0,
+        "generated_assets_count": len(recovered_assets) if recovered_assets else 0,
+        "failure_code": failure_code,
+        "next_allowed_action": next_allowed_action,
+        "visual_qa_executed": False,
+        "generation_attempted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "artifacts": [
+            str(recovery_attempt_path.relative_to(project_root)),
+            str(canonicalization_report_path.relative_to(project_root)),
+            str(recovery_decision_path.relative_to(project_root)),
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(response, indent=2))
+    else:
+        print(f"Real Generation Result Recovery: {status.upper()}")
+        print(f"Next Allowed Action: {next_allowed_action}")
+        print(f"Artifacts created: {len(response['artifacts'])}")
+
+    return 0 if status == "recovered" else 1
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -1616,6 +1879,7 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'combine-authorize-real-generation',
         'combine-real-generate-assets',
         'combine-review-real-generation-result',
+        'combine-recover-real-generation-result',
         'decide-controlled-retry',
         'inspect-production-decision-state',
         'repair-production-decision-state',
@@ -2146,7 +2410,21 @@ def main() -> int:
         help="Output in JSON format",
     )
 
-
+    # RC-COMBINE-V2-51-60 — Real Generation Result Recovery / Canonicalization Gate
+    combine_recover_real_generation_result_parser = subparsers.add_parser(
+        "combine-recover-real-generation-result",
+        help="Recover real generation outputs from existing history/output folders without new submit",
+    )
+    combine_recover_real_generation_result_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_recover_real_generation_result_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
 
     # RC2-DIRECTOR1 — Director-lite subcommand
     director_parser = subparsers.add_parser("director", help="Director-lite read-only inspection commands")
@@ -3063,6 +3341,8 @@ def main() -> int:
         return combine_real_generate_assets(args)
     elif args.command == "combine-review-real-generation-result":
         return combine_review_real_generation_result(args)
+    elif args.command == "combine-recover-real-generation-result":
+        return combine_recover_real_generation_result(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":

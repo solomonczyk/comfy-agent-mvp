@@ -5,5 +5,7 @@
   "assets_root": "output/assets",
   "output_control_root": "output/control",
   "downstream_executed": false,
-  "production_accepted": false
+  "production_accepted": false,
+  "status": "failed",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
 }
