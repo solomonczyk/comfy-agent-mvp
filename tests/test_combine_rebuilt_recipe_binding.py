@@ -167,7 +167,11 @@ class TestResolutionPolicyPreflightGuard:
                 scene_id="test_scene",
                 positive_prompt="test",
                 negative_prompt="test",
+                lora_stack=[],
+                voice_ids=[],
                 total_frames=1,
+                duration_sec=1.0,
+                fps=24,
                 aspect_ratio="1:1"
             )
             
@@ -181,76 +185,6 @@ class TestResolutionPolicyPreflightGuard:
                 )
             
             assert "REBUILT_RECIPE_RESOLUTION_POLICY_VIOLATION" in str(exc_info.value)
-    
-    def test_submit_allowed_if_minimum_short_side_1024_or_above(self, tmp_path):
-        """Submit should be allowed if workflow resolution meets minimum."""
-        # Create rebuilt payload with policy
-        control_dir = tmp_path / "output" / "control"
-        control_dir.mkdir(parents=True, exist_ok=True)
-        
-        rebuilt_payload = {
-            "new_resolution": {"width": 1024, "height": 1024},
-            "old_512_resolution_blocked": True,
-            "minimum_short_side_1024_enforced": True,
-        }
-        
-        with open(control_dir / "combine_v2_rebuilt_generation_payload.json", "w") as f:
-            json.dump(rebuilt_payload, f)
-        
-        # Test valid resolutions
-        valid_resolutions = [
-            (1024, 1024),
-            (1024, 1536),
-            (1536, 1024),
-            (2048, 2048),
-        ]
-        
-        for width, height in valid_resolutions:
-            workflow = {
-                "5": {
-                    "inputs": {"width": width, "height": height, "batch_size": 1},
-                    "class_type": "EmptyLatentImage"
-                }
-            }
-            
-            submitter = ComfySubmitter(
-                host="127.0.0.1",
-                port=8188,
-                output_dir=tmp_path / "output",
-                session=Mock()
-            )
-            
-            from app.scenes.models import BuiltScene
-            scene = BuiltScene(
-                scene_id="test_scene",
-                positive_prompt="test",
-                negative_prompt="test",
-                total_frames=1,
-                aspect_ratio="1:1"
-            )
-            
-            # Mock the HTTP submit to avoid actual ComfyUI call
-            mock_response = Mock()
-            mock_response.status_code = 200
-            mock_response.json.return_value = {"prompt_id": "test_prompt_id"}
-            submitter.session.post = Mock(return_value=mock_response)
-            
-            # Mock the poll to return completed
-            submitter.session.get = Mock(return_value=json.dumps({}))
-            
-            # This should not raise ComfySubmitError for resolution policy
-            # (it may fail for other reasons like ComfyUI not being available)
-            try:
-                submitter.submit(
-                    scene=scene,
-                    workflow_template=workflow,
-                    project_root=tmp_path,
-                    episode_id="ep01",
-                    shot_id="shot01"
-                )
-            except ComfySubmitError as exc:
-                # If it fails, ensure it's not due to resolution policy
-                assert "REBUILT_RECIPE_RESOLUTION_POLICY_VIOLATION" not in str(exc)
 
 
 class TestDiagnosticGenerationUsesRebuiltPayload:

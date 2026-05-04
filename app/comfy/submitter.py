@@ -273,6 +273,9 @@ class ComfySubmitter:
                 raise
             except Exception as exc:
                 # Log but don't fail submit if preflight check fails (graceful degradation)
+                # However, if the error is from our own code (like missing import), we should raise it
+                if "datetime" in str(exc) or "json" in str(exc) or "Path" in str(exc):
+                    raise
                 print(f"[RESOLUTION POLICY] Preflight check failed (continuing): {exc}")
         
         # MK-OBS2: Persist final observed settings snapshot before submit
