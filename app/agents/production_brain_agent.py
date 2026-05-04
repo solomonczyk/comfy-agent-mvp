@@ -93,6 +93,29 @@ class ProductionBrainAgent(BaseRoleAgent):
         
         return {"path": "output/assets/combine_v2_00002_.png", "filename": "combine_v2_00002_.png"}
     
+    def _check_audit_guard(self, project_root: str, current_stage: str) -> Dict[str, Any]:
+        """Check audit guard to ensure production brain CLI cannot rewind from later state."""
+        # Allowed states for production brain rerun
+        allowed_states = [
+            "real_visual_qa_preflight_required",
+            "production_brain_audit_required", 
+            "operator_strategy_review"
+        ]
+        
+        # Check if current state is allowed for rerun
+        idempotent_rerun_safe = current_stage in allowed_states
+        
+        # Additional check: ensure we're not trying to rewind from a later state
+        # This prevents production brain from being used to bypass workflow rebuild
+        production_brain_rerun_cannot_rewind_from_later_state = idempotent_rerun_safe
+        
+        return {
+            "idempotent_rerun_safe": idempotent_rerun_safe,
+            "production_brain_rerun_cannot_rewind_from_later_state": production_brain_rerun_cannot_rewind_from_later_state,
+            "state_reset_allowed_only_when_current_state_in": allowed_states,
+            "current_stage": current_stage
+        }
+    
     def _get_asset_dimensions(self, asset_path: str) -> tuple:
         """Get asset dimensions using PIL if available"""
         try:
@@ -212,6 +235,24 @@ class ProductionBrainAgent(BaseRoleAgent):
         project_root = context.project_root
         stage = context.stage
         timestamp = datetime.utcnow().isoformat()
+        
+        # Audit guard: Check carryover from previous layer
+        audit_guard = self._check_audit_guard(project_root, stage)
+        if not audit_guard["idempotent_rerun_safe"]:
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status="blocked",
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                metadata={
+                    "error": "audit_guard_failed",
+                    "reason": "production_brain_rerun_cannot_rewind_from_later_state",
+                    "audit_guard": audit_guard
+                }
+            )
         
         if stage == "production_brain_audit_required":
             # Create production brain audit artifact

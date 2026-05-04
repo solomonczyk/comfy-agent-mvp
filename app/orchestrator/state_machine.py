@@ -47,6 +47,12 @@ class CombineStateMachine:
         "generation_recipe_audit_required",
         "workflow_rebuild_plan_required",
         "operator_strategy_review",
+        "workflow_td_rebuild_required",
+        "recipe_rebuild_contract_required",
+        "prompt_contract_rebuild_required",
+        "quality_pipeline_contract_required",
+        "workflow_rebuild_preflight_required",
+        "operator_rebuild_approval_required",
         "assembly_required",
         "final_qc_required",
         "final_operator_acceptance",
@@ -171,6 +177,27 @@ class CombineStateMachine:
             "route_classification_required",
             "production_plan_required",
             "workflow_plan_required",
+            "workflow_td_rebuild_required",  # New rebuild path
+            "blocked_manual_review",
+        },
+        "workflow_td_rebuild_required": {
+            "recipe_rebuild_contract_required",
+        },
+        "recipe_rebuild_contract_required": {
+            "prompt_contract_rebuild_required",
+        },
+        "prompt_contract_rebuild_required": {
+            "quality_pipeline_contract_required",
+        },
+        "quality_pipeline_contract_required": {
+            "workflow_rebuild_preflight_required",
+        },
+        "workflow_rebuild_preflight_required": {
+            "operator_rebuild_approval_required",
+        },
+        "operator_rebuild_approval_required": {
+            "workflow_plan_required",  # Restart with rebuilt workflow
+            "brief_intake_required",  # Full restart
             "blocked_manual_review",
         },
         "retry_correction_required": {
@@ -249,6 +276,21 @@ class CombineStateMachine:
         ("workflow_rebuild_plan_required", "real_generate_assets"),
         ("operator_strategy_review", "real_generate_assets"),
         ("operator_strategy_review", "assembly_required"),
+        
+        # Workflow TD rebuild layer: cannot skip rebuild steps
+        ("workflow_td_rebuild_required", "real_generate_assets"),
+        ("recipe_rebuild_contract_required", "real_generate_assets"),
+        ("prompt_contract_rebuild_required", "real_generate_assets"),
+        ("quality_pipeline_contract_required", "real_generate_assets"),
+        ("workflow_rebuild_preflight_required", "real_generate_assets"),
+        ("operator_rebuild_approval_required", "real_generate_assets"),
+        
+        # Cannot jump to assembly without completing rebuild
+        ("workflow_td_rebuild_required", "assembly_required"),
+        ("recipe_rebuild_contract_required", "assembly_required"),
+        ("prompt_contract_rebuild_required", "assembly_required"),
+        ("quality_pipeline_contract_required", "assembly_required"),
+        ("workflow_rebuild_preflight_required", "assembly_required"),
     }
     
     @classmethod

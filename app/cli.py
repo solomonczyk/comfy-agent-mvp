@@ -2163,6 +2163,86 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
                 sys.exit(1)
 
 
+def combine_operator_strategy_decision(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-331-420 — Operator Strategy Decision Gate.
+    
+    This command records the operator's strategy decision for workflow rebuild
+    and transitions the system from operator_strategy_review to the next stage.
+    It does NOT trigger generation, ComfyUI submit, retry, assembly, or downstream.
+    
+    Exit codes:
+    - 0: decision recorded successfully
+    - 1: error or invalid args
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    # Create operator strategy decision artifact
+    decision = args.decision
+    reason = getattr(args, "reason", "") or ""
+
+    # Determine next state based on decision
+    if decision == "approve_workflow_rebuild_plan":
+        next_allowed_action = "workflow_td_rebuild_required"
+        workflow_rebuild_authorized = True
+    elif decision == "request_recipe_audit_changes":
+        next_allowed_action = "generation_recipe_audit_required"
+        workflow_rebuild_authorized = False
+    elif decision == "manual_review":
+        next_allowed_action = "operator_strategy_review"
+        workflow_rebuild_authorized = False
+    elif decision == "abort_route":
+        next_allowed_action = "blocked_generation_route_aborted"
+        workflow_rebuild_authorized = False
+    else:
+        print(f"ERROR: Invalid decision: {decision}", file=sys.stderr)
+        return 1
+
+    operator_strategy_decision = {
+        "stage": "operator_strategy_decision",
+        "operator_strategy_decision": decision,
+        "workflow_rebuild_authorized": workflow_rebuild_authorized,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "next_allowed_action": next_allowed_action,
+        "production_accepted": False,
+        "reason": reason,
+        "timestamp": timestamp
+    }
+
+    # Write decision artifact
+    decision_path = control_dir / "combine_v2_operator_strategy_decision.json"
+    with open(decision_path, 'w') as f:
+        json.dump(operator_strategy_decision, f, indent=2)
+
+    # Update orchestrator state if decision approves rebuild
+    if decision == "approve_workflow_rebuild_plan":
+        orchestrator = CombineOrchestrator(str(project_root))
+        try:
+            orchestrator.transition_to("workflow_td_rebuild_required")
+        except Exception as e:
+            print(f"ERROR: Failed to transition orchestrator state: {e}", file=sys.stderr)
+            return 1
+
+    if json_output:
+        print(json.dumps(operator_strategy_decision, indent=2))
+    else:
+        print(f"Operator strategy decision recorded: {decision}")
+        print(f"Next allowed action: {next_allowed_action}")
+        print(f"Workflow rebuild authorized: {workflow_rebuild_authorized}")
+        print(f"Decision artifact: {decision_path}")
+
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -2722,6 +2802,32 @@ def main() -> int:
         help="Project root directory",
     )
     combine_production_brain_audit_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-331-420 — Operator Strategy Decision Gate
+    combine_operator_strategy_decision_parser = subparsers.add_parser(
+        "combine-operator-strategy-decision",
+        help="Record operator strategy decision for workflow rebuild",
+    )
+    combine_operator_strategy_decision_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_operator_strategy_decision_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["approve_workflow_rebuild_plan", "request_recipe_audit_changes", "manual_review", "abort_route"],
+        help="Operator strategy decision",
+    )
+    combine_operator_strategy_decision_parser.add_argument(
+        "--reason",
+        help="Reason for the decision",
+    )
+    combine_operator_strategy_decision_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -3648,6 +3754,8 @@ def main() -> int:
         return combine_review_failed_real_generation(args)
     elif args.command == "combine-production-brain-audit":
         return combine_production_brain_audit(args)
+    elif args.command == "combine-operator-strategy-decision":
+        return combine_operator_strategy_decision(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":

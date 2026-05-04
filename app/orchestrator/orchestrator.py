@@ -57,6 +57,12 @@ class CombineOrchestrator:
         "generation_recipe_audit_required": "ProductionBrainAgent",
         "workflow_rebuild_plan_required": "ProductionBrainAgent",
         "operator_strategy_review": "ProductionBrainAgent",
+        "workflow_td_rebuild_required": "WorkflowTDRebuildAgent",
+        "recipe_rebuild_contract_required": "WorkflowTDRebuildAgent",
+        "prompt_contract_rebuild_required": "WorkflowTDRebuildAgent",
+        "quality_pipeline_contract_required": "WorkflowTDRebuildAgent",
+        "workflow_rebuild_preflight_required": "WorkflowTDRebuildAgent",
+        "operator_rebuild_approval_required": "WorkflowTDRebuildAgent",
         "assembly_required": "AssemblyAgent",
         "final_qc_required": "FinalQAAgent",
     }
@@ -223,6 +229,9 @@ class CombineOrchestrator:
             elif agent_name == "ProductionBrainAgent":
                 from app.agents.production_brain_agent import ProductionBrainAgent
                 agent = ProductionBrainAgent()
+            elif agent_name == "WorkflowTDRebuildAgent":
+                from app.agents.workflow_td_rebuild_agent import WorkflowTDRebuildAgent
+                agent = WorkflowTDRebuildAgent()
             elif agent_name == "AssemblyAgent":
                 from app.agents.assembly_agent import AssemblyAgent
                 agent = AssemblyAgent()
