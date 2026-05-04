@@ -1,6 +1,6 @@
 {
   "stage": "diagnostic_generate_one_asset",
-  "status": "failed",
+  "status": "completed",
   "diagnostic_mode": true,
   "generation_attempts": 1,
   "max_generations": 1,
@@ -8,15 +8,25 @@
   "generation_performed": true,
   "comfyui_execution": true,
   "production_state_mutation_allowed": false,
-  "generated_assets_count": 0,
-  "generated_assets": [],
+  "generated_assets_count": 1,
+  "generated_assets": [
+    {
+      "path": "output/assets/combine_v2_1777917278_00001_.png",
+      "exists": true,
+      "readable": true,
+      "width": 1024,
+      "height": 1024,
+      "size_bytes": 1649652,
+      "sha256": "710be0fd7d1110086fbadae5d7f0a4ba14f9fde9747622e2579ee6526a5c9808"
+    }
+  ],
   "next_allowed_action": "diagnostic_result_collected",
   "visual_qa_executed": false,
   "retry_attempted": false,
   "assembly_executed": false,
   "downstream_executed": false,
   "production_accepted": false,
-  "timestamp": "2026-05-04T17:38:13.237782",
+  "timestamp": "2026-05-04T17:56:34.541837",
   "files_before": [
     {
       "name": "combine_v2_00001_.png",
@@ -26,7 +36,12 @@
     {
       "name": "combine_v2_00002_.png",
       "size_bytes": 367208,
-      "last_write_time": 1777902274.6637356
+      "last_write_time": 1777902273.2383611
+    },
+    {
+      "name": "combine_v2_1777916951_00001_.png",
+      "size_bytes": 321425,
+      "last_write_time": 1777916985.32549
     }
   ],
   "files_after": [
@@ -38,11 +53,22 @@
     {
       "name": "combine_v2_00002_.png",
       "size_bytes": 367208,
-      "last_write_time": 1777902274.6637356
+      "last_write_time": 1777902273.2383611
+    },
+    {
+      "name": "combine_v2_1777916951_00001_.png",
+      "size_bytes": 321425,
+      "last_write_time": 1777916985.32549
+    },
+    {
+      "name": "combine_v2_1777917278_00001_.png",
+      "size_bytes": 1649652,
+      "last_write_time": 1777917394.4974906
     }
   ],
-  "new_files_created": false,
-  "new_files_count": 0,
-  "new_file_paths": [],
-  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+  "new_files_created": true,
+  "new_files_count": 1,
+  "new_file_paths": [
+    "output\\assets\\combine_v2_1777917278_00001_.png"
+  ]
 }

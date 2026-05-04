@@ -1,17 +1,29 @@
 {
   "stage": "diagnostic_generate_one_asset",
   "diagnostic_mode": true,
-  "generated_assets_count": 0,
-  "generated_assets": [],
-  "generated_assets_non_empty": false,
+  "generated_assets_count": 1,
+  "generated_assets": [
+    {
+      "path": "output/assets/combine_v2_1777917278_00001_.png",
+      "exists": true,
+      "readable": true,
+      "width": 1024,
+      "height": 1024,
+      "size_bytes": 1649652,
+      "sha256": "710be0fd7d1110086fbadae5d7f0a4ba14f9fde9747622e2579ee6526a5c9808"
+    }
+  ],
+  "generated_assets_non_empty": true,
   "assets_root": "output/assets",
   "output_control_root": "output/control",
-  "status": "failed",
-  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
-  "filesystem_assets_found": false,
-  "filesystem_new_asset_detected": false,
-  "new_files_count": 0,
-  "new_file_paths": [],
+  "status": "completed",
+  "failure_code": null,
+  "filesystem_assets_found": true,
+  "filesystem_new_asset_detected": true,
+  "new_files_count": 1,
+  "new_file_paths": [
+    "output\\assets\\combine_v2_1777917278_00001_.png"
+  ],
   "downstream_executed": false,
   "production_accepted": false
 }
