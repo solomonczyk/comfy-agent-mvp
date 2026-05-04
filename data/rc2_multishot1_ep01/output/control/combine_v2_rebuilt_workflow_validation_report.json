@@ -1,0 +1,15 @@
+{
+  "stage": "workflow_rebuild_validation_required",
+  "rebuilt_payload_exists": true,
+  "rebuilt_prompt_contract_exists": true,
+  "rebuilt_graph_contract_exists": true,
+  "quality_pipeline_plan_exists": true,
+  "old_512_resolution_blocked": true,
+  "minimum_short_side_1024_enforced": true,
+  "retry_without_recipe_change_blocked": true,
+  "workflow_rebuild_valid_for_operator_generation_review": true,
+  "generation_allowed": false,
+  "workflow_submitted": false,
+  "next_allowed_action": "real_generation_readiness_required",
+  "timestamp": "2026-05-04T17:16:04.459994"
+}

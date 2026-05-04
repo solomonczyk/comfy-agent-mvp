@@ -1,0 +1,17 @@
+{
+  "stage": "generation_payload_rebuild_required",
+  "payload_type": "rebuilt_after_production_brain_audit",
+  "old_resolution": "512x512",
+  "new_resolution": {
+    "width": 1024,
+    "height": 1024,
+    "policy": "minimum_short_side_1024"
+  },
+  "uses_old_512_recipe": false,
+  "old_512_resolution_blocked": true,
+  "minimum_short_side_1024_enforced": true,
+  "generation_allowed": false,
+  "workflow_submitted": false,
+  "next_allowed_action": "workflow_graph_rebuild_required",
+  "timestamp": "2026-05-04T17:15:50.543343"
+}

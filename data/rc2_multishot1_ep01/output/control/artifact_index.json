@@ -1,5 +1,5 @@
 {
-  "current_state": "operator_strategy_review",
+  "current_state": "real_generation_readiness_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -4535,6 +4535,547 @@
         }
       },
       "timestamp": "2026-05-04T16:23:11.799031",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_strategy_review",
+      "success": true,
+      "message": "Operator approved workflow rebuild plan",
+      "artifacts": [
+        "combine_v2_operator_strategy_decision.json"
+      ],
+      "metadata": {
+        "next_allowed_action": "workflow_td_rebuild_required",
+        "next_recommended_stage": "workflow_td_rebuild_required",
+        "operator_strategy_decision": "approve_workflow_rebuild_plan",
+        "workflow_rebuild_authorized": true,
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "production_accepted": false
+      },
+      "timestamp": "2026-05-04T17:15:06.169303",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "workflow_td_rebuild_required",
+      "success": true,
+      "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_workflow_td_rebuild_report.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowTDRebuildAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "recipe_rebuild_contract_required",
+        "action": "workflow_td_rebuild",
+        "next_allowed_action": "recipe_rebuild_contract_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "production_accepted": false,
+        "combine_v2_workflow_td_rebuild_report": {
+          "stage": "workflow_td_rebuild_required",
+          "agent": "WorkflowTDRebuildAgent",
+          "operator_decision": "approve_workflow_rebuild_plan",
+          "workflow_rebuild_authorized": true,
+          "rebuild_package_created": true,
+          "next_allowed_action": "recipe_rebuild_contract_required",
+          "generation_allowed": false,
+          "retry_allowed": false,
+          "production_accepted": false,
+          "timestamp": "2026-05-04T17:15:13.282525"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:13.292852",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "recipe_rebuild_contract_required",
+      "success": true,
+      "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_recipe_rebuild_contract.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowTDRebuildAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "prompt_contract_rebuild_required",
+        "action": "recipe_rebuild_contract",
+        "next_allowed_action": "prompt_contract_rebuild_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "production_accepted": false,
+        "combine_v2_recipe_rebuild_contract": {
+          "stage": "recipe_rebuild_contract_required",
+          "old_resolution": "512x512",
+          "new_resolution_policy": {
+            "minimum_short_side": 1024,
+            "recommended": "1024x1024 or route-specific higher",
+            "512x512_forbidden_for_production": true
+          },
+          "must_add_quality_stage": true,
+          "required_quality_stages": [
+            "hires_fix_or_latent_upscale",
+            "image_upscale_pass",
+            "optional_refiner_pass"
+          ],
+          "generation_allowed": false,
+          "next_allowed_action": "prompt_contract_rebuild_required",
+          "timestamp": "2026-05-04T17:15:17.466376"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:17.467375",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "prompt_contract_rebuild_required",
+      "success": true,
+      "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_prompt_rebuild_contract.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowTDRebuildAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "quality_pipeline_contract_required",
+        "action": "prompt_rebuild_contract",
+        "next_allowed_action": "quality_pipeline_contract_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "production_accepted": false,
+        "combine_v2_prompt_rebuild_contract": {
+          "stage": "prompt_contract_rebuild_required",
+          "must_update_positive_prompt": true,
+          "must_update_negative_prompt": true,
+          "negative_prompt_required": true,
+          "must_include_quality_constraints": true,
+          "must_include_anatomy_and_hand_guards": true,
+          "must_include_face_identity_guards_if_character_route": true,
+          "generation_allowed": false,
+          "next_allowed_action": "quality_pipeline_contract_required",
+          "timestamp": "2026-05-04T17:15:21.419374"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:21.420373",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "quality_pipeline_contract_required",
+      "success": true,
+      "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_quality_pipeline_contract.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowTDRebuildAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "workflow_rebuild_preflight_required",
+        "action": "quality_pipeline_contract",
+        "next_allowed_action": "workflow_rebuild_preflight_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "production_accepted": false,
+        "combine_v2_quality_pipeline_contract": {
+          "stage": "quality_pipeline_contract_required",
+          "upscale_or_hires_fix_required": true,
+          "refiner_recommended": true,
+          "pose_or_composition_control_required_if_human_subject": true,
+          "identity_lock_required_if_character_consistency_required": true,
+          "forbidden": [
+            "single_pass_512x512_production_generation",
+            "retry_without_recipe_change",
+            "retry_without_preflight"
+          ],
+          "generation_allowed": false,
+          "next_allowed_action": "workflow_rebuild_preflight_required",
+          "timestamp": "2026-05-04T17:15:25.649641"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:25.650543",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "workflow_rebuild_preflight_required",
+      "success": true,
+      "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_workflow_rebuild_preflight_report.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowTDRebuildAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_rebuild_approval_required",
+        "action": "workflow_rebuild_preflight",
+        "next_allowed_action": "operator_rebuild_approval_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "production_accepted": false,
+        "combine_v2_workflow_rebuild_preflight_report": {
+          "stage": "workflow_rebuild_preflight_required",
+          "recipe_contract_exists": true,
+          "prompt_contract_exists": true,
+          "quality_pipeline_contract_exists": true,
+          "old_failure_addressed": true,
+          "resolution_512_blocked": true,
+          "workflow_rebuild_ready_for_operator_review": true,
+          "generation_allowed": false,
+          "next_allowed_action": "operator_rebuild_approval_required",
+          "timestamp": "2026-05-04T17:15:29.812471"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:29.840366",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_rebuild_approval_required",
+      "success": true,
+      "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_operator_rebuild_approval_request.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowTDRebuildAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_rebuild_approval_required",
+        "action": "operator_rebuild_approval_request",
+        "next_allowed_action": "operator_rebuild_approval_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "production_accepted": false,
+        "combine_v2_operator_rebuild_approval_request": {
+          "stage": "operator_rebuild_approval_required",
+          "operator_review_required": true,
+          "recommended_operator_decision": "approve_rebuild_implementation",
+          "operator_actions": [
+            "approve_rebuild_implementation",
+            "request_rebuild_changes",
+            "manual_review",
+            "abort_route"
+          ],
+          "generation_allowed": false,
+          "retry_allowed": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_rebuild_approval_required",
+          "timestamp": "2026-05-04T17:15:33.500370"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:33.501409",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_rebuild_approval_required",
+      "success": true,
+      "message": "Operator approved workflow recipe rebuild implementation",
+      "artifacts": [
+        "combine_v2_operator_rebuild_decision.json"
+      ],
+      "metadata": {
+        "next_allowed_action": "workflow_recipe_implementation_required",
+        "next_recommended_stage": "workflow_recipe_implementation_required",
+        "operator_rebuild_decision": "approve_rebuild_implementation",
+        "workflow_rebuild_implementation_authorized": true,
+        "generation_allowed": false,
+        "comfyui_execution": false,
+        "workflow_submitted": false,
+        "production_accepted": false
+      },
+      "timestamp": "2026-05-04T17:15:37.431815",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_rebuild_approved",
+      "success": true,
+      "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_workflow_recipe_implementation_report.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowRecipeImplementationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "workflow_recipe_implementation_required",
+        "action": "operator_rebuild_approved",
+        "next_allowed_action": "workflow_recipe_implementation_required",
+        "generation_allowed": false,
+        "workflow_submitted": false,
+        "production_accepted": false,
+        "combine_v2_workflow_recipe_implementation_report": {
+          "stage": "operator_rebuild_approved",
+          "agent": "WorkflowRecipeImplementationAgent",
+          "operator_rebuild_decision": "approve_rebuild_implementation",
+          "workflow_rebuild_implementation_authorized": true,
+          "implementation_package_created": true,
+          "next_allowed_action": "workflow_recipe_implementation_required",
+          "generation_allowed": false,
+          "comfyui_execution": false,
+          "workflow_submitted": false,
+          "production_accepted": false,
+          "timestamp": "2026-05-04T17:15:44.599764"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:44.620373",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "workflow_recipe_implementation_required",
+      "success": true,
+      "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_rebuilt_generation_payload.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowRecipeImplementationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "generation_payload_rebuild_required",
+        "action": "workflow_recipe_implementation",
+        "next_allowed_action": "workflow_graph_rebuild_required",
+        "generation_allowed": false,
+        "workflow_submitted": false,
+        "production_accepted": false,
+        "combine_v2_rebuilt_generation_payload": {
+          "stage": "generation_payload_rebuild_required",
+          "payload_type": "rebuilt_after_production_brain_audit",
+          "old_resolution": "512x512",
+          "new_resolution": {
+            "width": 1024,
+            "height": 1024,
+            "policy": "minimum_short_side_1024"
+          },
+          "uses_old_512_recipe": false,
+          "old_512_resolution_blocked": true,
+          "minimum_short_side_1024_enforced": true,
+          "generation_allowed": false,
+          "workflow_submitted": false,
+          "next_allowed_action": "workflow_graph_rebuild_required",
+          "timestamp": "2026-05-04T17:15:50.543343"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:50.545342",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "generation_payload_rebuild_required",
+      "success": true,
+      "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_rebuilt_prompt_contract.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowRecipeImplementationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "workflow_graph_rebuild_required",
+        "action": "generation_payload_rebuild",
+        "next_allowed_action": "workflow_graph_rebuild_required",
+        "generation_allowed": false,
+        "workflow_submitted": false,
+        "production_accepted": false,
+        "combine_v2_rebuilt_prompt_contract": {
+          "stage": "prompt_contract_rebuild_required",
+          "positive_prompt_rebuilt": true,
+          "negative_prompt_rebuilt": true,
+          "negative_prompt_required": true,
+          "quality_constraints_included": true,
+          "anatomy_and_hand_guards_included": true,
+          "face_identity_guards_included_if_character_route": true,
+          "route_aware_prompt_contract": true,
+          "generation_allowed": false,
+          "next_allowed_action": "workflow_graph_rebuild_required",
+          "timestamp": "2026-05-04T17:15:54.914277"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:54.916277",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "workflow_graph_rebuild_required",
+      "success": true,
+      "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_rebuilt_workflow_graph_contract.json",
+        "combine_v2_rebuilt_quality_pipeline_plan.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowRecipeImplementationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "workflow_rebuild_validation_required",
+        "action": "workflow_graph_rebuild",
+        "next_allowed_action": "workflow_rebuild_validation_required",
+        "generation_allowed": false,
+        "workflow_submitted": false,
+        "production_accepted": false,
+        "combine_v2_rebuilt_workflow_graph_contract": {
+          "stage": "workflow_graph_rebuild_required",
+          "graph_rebuild_required": true,
+          "graph_rebuild_planned": true,
+          "base_resolution_512_removed": true,
+          "minimum_short_side_1024_enforced": true,
+          "upscale_or_hires_fix_stage_planned": true,
+          "refiner_stage_planned_or_documented_optional": true,
+          "pose_or_composition_control_planned_if_human_subject": true,
+          "identity_lock_planned_if_character_consistency_required": true,
+          "no_single_pass_512_production_path": true,
+          "generation_allowed": false,
+          "workflow_submitted": false,
+          "next_allowed_action": "workflow_rebuild_validation_required",
+          "timestamp": "2026-05-04T17:15:59.960071"
+        },
+        "combine_v2_rebuilt_quality_pipeline_plan": {
+          "stage": "quality_pipeline_plan_required",
+          "quality_pipeline_plan_created": true,
+          "required_quality_stages": [
+            "hires_fix_or_latent_upscale",
+            "image_upscale_pass",
+            "optional_refiner_pass"
+          ],
+          "forbidden": [
+            "single_pass_512x512_production_generation",
+            "retry_without_recipe_change",
+            "retry_without_preflight",
+            "workflow_submit_without_operator_real_generation_authorization"
+          ],
+          "generation_allowed": false,
+          "workflow_submitted": false,
+          "next_allowed_action": "workflow_rebuild_validation_required",
+          "timestamp": "2026-05-04T17:15:59.960071"
+        }
+      },
+      "timestamp": "2026-05-04T17:15:59.962420",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "workflow_rebuild_validation_required",
+      "success": true,
+      "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_rebuilt_workflow_validation_report.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowRecipeImplementationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "real_generation_readiness_required",
+        "action": "workflow_rebuild_validation",
+        "next_allowed_action": "real_generation_readiness_required",
+        "generation_allowed": false,
+        "workflow_submitted": false,
+        "production_accepted": false,
+        "combine_v2_rebuilt_workflow_validation_report": {
+          "stage": "workflow_rebuild_validation_required",
+          "rebuilt_payload_exists": true,
+          "rebuilt_prompt_contract_exists": true,
+          "rebuilt_graph_contract_exists": true,
+          "quality_pipeline_plan_exists": true,
+          "old_512_resolution_blocked": true,
+          "minimum_short_side_1024_enforced": true,
+          "retry_without_recipe_change_blocked": true,
+          "workflow_rebuild_valid_for_operator_generation_review": true,
+          "generation_allowed": false,
+          "workflow_submitted": false,
+          "next_allowed_action": "real_generation_readiness_required",
+          "timestamp": "2026-05-04T17:16:04.459994"
+        }
+      },
+      "timestamp": "2026-05-04T17:16:04.462585",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generation_readiness_required",
+      "success": true,
+      "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_rebuilt_real_generation_readiness_report.json",
+        "combine_v2_operator_real_generation_authorization_request.json"
+      ],
+      "metadata": {
+        "agent": "WorkflowRecipeImplementationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_real_generation_authorization_required",
+        "action": "real_generation_readiness",
+        "next_allowed_action": "operator_real_generation_authorization_required",
+        "generation_allowed": false,
+        "workflow_submitted": false,
+        "production_accepted": false,
+        "combine_v2_rebuilt_real_generation_readiness_report": {
+          "stage": "real_generation_readiness_required",
+          "readiness_type": "rebuilt_workflow_recipe",
+          "rebuilt_payload_ready": true,
+          "rebuilt_workflow_contract_ready": true,
+          "rebuilt_prompt_contract_ready": true,
+          "rebuilt_quality_pipeline_ready": true,
+          "operator_real_generation_authorization_required": true,
+          "generation_allowed": false,
+          "comfyui_execution": false,
+          "workflow_submitted": false,
+          "next_allowed_action": "operator_real_generation_authorization_required",
+          "timestamp": "2026-05-04T17:16:08.513307"
+        },
+        "combine_v2_operator_real_generation_authorization_request": {
+          "stage": "operator_real_generation_authorization_required",
+          "request_type": "rebuilt_workflow_recipe_real_generation_authorization",
+          "operator_review_required": true,
+          "recommended_operator_decision": "approve_real_generation_with_rebuilt_recipe",
+          "operator_actions": [
+            "approve_real_generation_with_rebuilt_recipe",
+            "request_rebuild_changes",
+            "manual_review",
+            "abort_route"
+          ],
+          "old_512_resolution_blocked": true,
+          "minimum_short_side_1024_enforced": true,
+          "generation_allowed": false,
+          "comfyui_execution": false,
+          "workflow_submitted": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_real_generation_authorization_required",
+          "timestamp": "2026-05-04T17:16:08.513307"
+        }
+      },
+      "timestamp": "2026-05-04T17:16:08.515306",
       "no_generation_performed": true
     }
   ]

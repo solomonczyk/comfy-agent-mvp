@@ -1,0 +1,13 @@
+{
+  "stage": "prompt_contract_rebuild_required",
+  "positive_prompt_rebuilt": true,
+  "negative_prompt_rebuilt": true,
+  "negative_prompt_required": true,
+  "quality_constraints_included": true,
+  "anatomy_and_hand_guards_included": true,
+  "face_identity_guards_included_if_character_route": true,
+  "route_aware_prompt_contract": true,
+  "generation_allowed": false,
+  "next_allowed_action": "workflow_graph_rebuild_required",
+  "timestamp": "2026-05-04T17:15:54.914277"
+}

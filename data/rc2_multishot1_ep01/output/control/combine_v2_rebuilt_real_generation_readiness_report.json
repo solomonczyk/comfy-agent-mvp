@@ -1,0 +1,14 @@
+{
+  "stage": "real_generation_readiness_required",
+  "readiness_type": "rebuilt_workflow_recipe",
+  "rebuilt_payload_ready": true,
+  "rebuilt_workflow_contract_ready": true,
+  "rebuilt_prompt_contract_ready": true,
+  "rebuilt_quality_pipeline_ready": true,
+  "operator_real_generation_authorization_required": true,
+  "generation_allowed": false,
+  "comfyui_execution": false,
+  "workflow_submitted": false,
+  "next_allowed_action": "operator_real_generation_authorization_required",
+  "timestamp": "2026-05-04T17:16:08.513307"
+}

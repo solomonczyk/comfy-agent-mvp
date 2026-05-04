@@ -1,0 +1,16 @@
+{
+  "stage": "workflow_graph_rebuild_required",
+  "graph_rebuild_required": true,
+  "graph_rebuild_planned": true,
+  "base_resolution_512_removed": true,
+  "minimum_short_side_1024_enforced": true,
+  "upscale_or_hires_fix_stage_planned": true,
+  "refiner_stage_planned_or_documented_optional": true,
+  "pose_or_composition_control_planned_if_human_subject": true,
+  "identity_lock_planned_if_character_consistency_required": true,
+  "no_single_pass_512_production_path": true,
+  "generation_allowed": false,
+  "workflow_submitted": false,
+  "next_allowed_action": "workflow_rebuild_validation_required",
+  "timestamp": "2026-05-04T17:15:59.960071"
+}

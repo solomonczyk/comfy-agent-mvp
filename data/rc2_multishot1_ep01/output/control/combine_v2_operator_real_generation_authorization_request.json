@@ -1,13 +1,20 @@
 {
   "stage": "operator_real_generation_authorization_required",
-  "request_type": "real_comfyui_generation_authorization",
-  "requires_operator_confirmation": true,
-  "will_execute_comfyui_if_approved_later": true,
-  "current_layer_executes_comfyui": false,
-  "generation_performed": false,
+  "request_type": "rebuilt_workflow_recipe_real_generation_authorization",
+  "operator_review_required": true,
+  "recommended_operator_decision": "approve_real_generation_with_rebuilt_recipe",
+  "operator_actions": [
+    "approve_real_generation_with_rebuilt_recipe",
+    "request_rebuild_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "old_512_resolution_blocked": true,
+  "minimum_short_side_1024_enforced": true,
+  "generation_allowed": false,
   "comfyui_execution": false,
-  "downstream_executed": false,
+  "workflow_submitted": false,
   "production_accepted": false,
   "next_allowed_action": "operator_real_generation_authorization_required",
-  "timestamp": "2026-05-04T13:38:44.794493"
+  "timestamp": "2026-05-04T17:16:08.513307"
 }

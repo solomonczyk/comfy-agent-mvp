@@ -1,0 +1,19 @@
+{
+  "stage": "quality_pipeline_plan_required",
+  "quality_pipeline_plan_created": true,
+  "required_quality_stages": [
+    "hires_fix_or_latent_upscale",
+    "image_upscale_pass",
+    "optional_refiner_pass"
+  ],
+  "forbidden": [
+    "single_pass_512x512_production_generation",
+    "retry_without_recipe_change",
+    "retry_without_preflight",
+    "workflow_submit_without_operator_real_generation_authorization"
+  ],
+  "generation_allowed": false,
+  "workflow_submitted": false,
+  "next_allowed_action": "workflow_rebuild_validation_required",
+  "timestamp": "2026-05-04T17:15:59.960071"
+}

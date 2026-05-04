@@ -1032,5 +1032,137 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-04T16:23:11.799031"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "workflow_td_rebuild_required",
+    "agent": "WorkflowTDRebuildAgent",
+    "success": true,
+    "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:13.292852"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "recipe_rebuild_contract_required",
+    "agent": "WorkflowTDRebuildAgent",
+    "success": true,
+    "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:17.467375"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "prompt_contract_rebuild_required",
+    "agent": "WorkflowTDRebuildAgent",
+    "success": true,
+    "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:21.420373"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "quality_pipeline_contract_required",
+    "agent": "WorkflowTDRebuildAgent",
+    "success": true,
+    "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:25.650543"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "workflow_rebuild_preflight_required",
+    "agent": "WorkflowTDRebuildAgent",
+    "success": true,
+    "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:29.840366"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_rebuild_approval_required",
+    "agent": "WorkflowTDRebuildAgent",
+    "success": true,
+    "message": "Agent WorkflowTDRebuildAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:33.501409"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_rebuild_approved",
+    "agent": "WorkflowRecipeImplementationAgent",
+    "success": true,
+    "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:44.620373"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "workflow_recipe_implementation_required",
+    "agent": "WorkflowRecipeImplementationAgent",
+    "success": true,
+    "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:50.545342"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "generation_payload_rebuild_required",
+    "agent": "WorkflowRecipeImplementationAgent",
+    "success": true,
+    "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:54.916277"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "workflow_graph_rebuild_required",
+    "agent": "WorkflowRecipeImplementationAgent",
+    "success": true,
+    "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:15:59.962420"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "workflow_rebuild_validation_required",
+    "agent": "WorkflowRecipeImplementationAgent",
+    "success": true,
+    "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:16:04.462585"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generation_readiness_required",
+    "agent": "WorkflowRecipeImplementationAgent",
+    "success": true,
+    "message": "Agent WorkflowRecipeImplementationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:16:08.515306"
   }
 ]

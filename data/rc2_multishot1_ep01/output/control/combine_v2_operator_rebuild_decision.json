@@ -1,0 +1,12 @@
+{
+  "stage": "operator_rebuild_decision",
+  "operator_rebuild_decision": "approve_rebuild_implementation",
+  "workflow_rebuild_implementation_authorized": true,
+  "generation_allowed": false,
+  "comfyui_execution": false,
+  "workflow_submitted": false,
+  "next_allowed_action": "workflow_recipe_implementation_required",
+  "production_accepted": false,
+  "reason": "operator_approved_workflow_recipe_rebuild_after_production_brain_audit",
+  "timestamp": "2026-05-04T17:15:37.431815"
+}
