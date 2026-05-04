@@ -6,7 +6,7 @@
   "workflow_submitted": true,
   "generation_performed": true,
   "comfyui_execution": true,
-  "failure_code": null,
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
   "visual_qa_executed": false,
   "downstream_executed": false,
   "production_accepted": false
