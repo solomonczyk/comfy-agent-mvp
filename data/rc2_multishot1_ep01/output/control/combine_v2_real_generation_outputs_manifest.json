@@ -1,11 +1,21 @@
 {
   "stage": "real_generate_assets",
-  "generated_assets_count": 0,
-  "generated_assets": [],
+  "generated_assets_count": 1,
+  "generated_assets": [
+    {
+      "path": "output/assets/combine_v2_00001_.png",
+      "exists": true,
+      "readable": true,
+      "width": 512,
+      "height": 512,
+      "size_bytes": 367208,
+      "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427"
+    }
+  ],
   "assets_root": "output/assets",
   "output_control_root": "output/control",
+  "status": "completed",
+  "failure_code": null,
   "downstream_executed": false,
-  "production_accepted": false,
-  "status": "failed",
-  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+  "production_accepted": false
 }

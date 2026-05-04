@@ -8,15 +8,23 @@
     {
       "event": "workflow_submitted",
       "status": "success",
-      "prompt_id": "e2dab456-4700-403b-b5c1-a3bfe800ccf1"
+      "prompt_id": "0e92c416-e36d-42ce-9a1a-3cd496765939"
+    },
+    {
+      "event": "asset_collected",
+      "status": "success",
+      "filename": "combine_v2_00001_.png",
+      "path": "output/assets/combine_v2_00001_.png",
+      "source": "fetched",
+      "fetch_error": null
     },
     {
       "event": "outputs_collected",
       "status": "success",
-      "assets_count": 0
+      "assets_count": 1
     }
   ],
-  "next_allowed_action": "visual_qa_required",
+  "next_allowed_action": "real_generation_result_review_required",
   "visual_qa_executed": false,
   "downstream_executed": false,
   "production_accepted": false
