@@ -1164,5 +1164,38 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-04T17:16:08.515306"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_real_generation_approved",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: operator_real_generation_approved",
+    "dry_run": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:20:05.202460"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generate_assets",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_generate_assets",
+    "dry_run": false,
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "timestamp": "2026-05-04T17:20:12.744898"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generation_result_review_required",
+    "agent": "CLI",
+    "success": true,
+    "message": "CLI stage transition: real_generation_result_review_required",
+    "dry_run": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T17:20:20.004413"
   }
 ]

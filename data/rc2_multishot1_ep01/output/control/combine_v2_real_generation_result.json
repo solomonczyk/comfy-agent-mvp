@@ -1,23 +1,13 @@
 {
   "stage": "real_generate_assets",
-  "status": "completed",
+  "status": "failed",
   "generation_attempts": 1,
   "max_generations": 1,
   "workflow_submitted": true,
   "generation_performed": true,
   "comfyui_execution": true,
-  "generated_assets_count": 1,
-  "generated_assets": [
-    {
-      "path": "output/assets/combine_v2_00002_.png",
-      "exists": true,
-      "readable": true,
-      "width": 512,
-      "height": 512,
-      "size_bytes": 367208,
-      "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427"
-    }
-  ],
+  "generated_assets_count": 0,
+  "generated_assets": [],
   "next_allowed_action": "real_generation_result_review_required",
   "visual_qa_executed": false,
   "operator_visual_review_required": false,
@@ -25,5 +15,6 @@
   "retry_attempted": false,
   "downstream_executed": false,
   "production_accepted": false,
-  "timestamp": "2026-05-04T13:44:34.718224"
+  "timestamp": "2026-05-04T17:20:14.474498",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
 }

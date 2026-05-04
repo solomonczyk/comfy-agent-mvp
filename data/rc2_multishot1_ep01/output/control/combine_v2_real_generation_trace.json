@@ -1,6 +1,6 @@
 {
   "stage": "real_generate_assets",
-  "status": "completed",
+  "status": "failed",
   "generation_attempts": 1,
   "max_generations": 1,
   "retry_attempted": false,
@@ -8,20 +8,17 @@
     {
       "event": "workflow_submitted",
       "status": "success",
-      "prompt_id": "b41d42e5-d9c6-4c41-8f98-e986b6cbbbd3"
-    },
-    {
-      "event": "asset_collected",
-      "status": "success",
-      "filename": "combine_v2_00002_.png",
-      "path": "output/assets/combine_v2_00002_.png",
-      "source": "fetched",
-      "fetch_error": null
+      "prompt_id": "b589a38f-6f67-4261-a7c3-f58ef36c6148"
     },
     {
       "event": "outputs_collected",
       "status": "success",
-      "assets_count": 1
+      "assets_count": 0
+    },
+    {
+      "event": "zero_assets_guard_triggered",
+      "status": "failed",
+      "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
     }
   ],
   "next_allowed_action": "real_generation_result_review_required",
