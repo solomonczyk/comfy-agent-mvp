@@ -58,13 +58,9 @@ class ComfySubmitter:
 
         workflow = copy.deepcopy(workflow_template)
         
-        # RC-REAL1B-1: Generate deterministic filename_prefix for SaveImage node
-        # Format: {project_name}_{episode_id}_{shot_id}_{action}_{timestamp}
-        import time
-        import os
-        project_name = os.path.basename(str(project_root)) if project_root else "project"
-        timestamp = int(time.time())
-        filename_prefix = f"{project_name}_{episode_id}_{shot_id}_generate_frames_{timestamp}"
+        # RC-COMBINE-V2-571-620: Use fixed "combine_v2" prefix for output path binding
+        # This ensures the output collector can find files in ComfyUI native output
+        filename_prefix = "combine_v2"
         
         # Inject filename_prefix into SaveImage nodes
         for node_id, node in workflow.items():

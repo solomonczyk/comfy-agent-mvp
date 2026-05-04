@@ -1,0 +1,36 @@
+{
+  "stage": "output_path_binding_audit",
+  "audit_timestamp": "2026-05-04T17:42:00Z",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "findings": {
+    "save_image_node_exists": true,
+    "save_image_node_id": "9",
+    "save_image_connected_to_final_image": true,
+    "save_image_connected_to_node": "8 (VAEDecode)",
+    "filename_prefix_in_workflow": "rc2_multishot1_ep01_ep01_shot02_generate_frames_1777357667",
+    "filename_prefix_expected": "combine_v2",
+    "filename_prefix_injected": false,
+    "prefix_mismatch": true,
+    "comfyui_native_output_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output",
+    "comfyui_native_output_has_combine_v2_files": true,
+    "comfyui_native_file_count": 2,
+    "comfyui_native_files": [
+      "combine_v2_00001_.png",
+      "combine_v2_00002_.png"
+    ],
+    "project_output_assets_path": "output/assets",
+    "project_output_assets_has_combine_v2_files": true,
+    "project_output_assets_file_count": 2,
+    "project_output_assets_files": [
+      "combine_v2_00001_.png",
+      "combine_v2_00002_.png"
+    ],
+    "diagnostic_run_prefix": "rc2_multishot1_ep01_ep01_shot02_generate_frames_1777357667",
+    "diagnostic_run_files_created": 0,
+    "collector_search_prefix_mismatch": true
+  },
+  "root_cause": "submitter.py injects timestamp-based filename_prefix instead of required 'combine_v2' prefix, causing output collector to search for files with wrong prefix",
+  "code_location": "app/comfy/submitter.py lines 61-67",
+  "fix_required": true,
+  "fix_description": "Change filename_prefix injection from timestamp-based format to fixed 'combine_v2' prefix"
+}

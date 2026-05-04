@@ -1,0 +1,21 @@
+{
+  "stage": "output_path_fix_report",
+  "fix_timestamp": "2026-05-04T17:42:00Z",
+  "root_cause": "submitter.py injects timestamp-based filename_prefix instead of required 'combine_v2' prefix",
+  "fix_applied": true,
+  "fix_details": {
+    "file_modified": "app/comfy/submitter.py",
+    "lines_changed": "61-67",
+    "change_description": "Changed filename_prefix injection from timestamp-based format to fixed 'combine_v2' prefix",
+    "old_code": "filename_prefix = f\"{project_name}_{episode_id}_{shot_id}_generate_frames_{timestamp}\"",
+    "new_code": "filename_prefix = \"combine_v2\"",
+    "reason": "Ensures output collector can find files in ComfyUI native output directory"
+  },
+  "expected_outcome": {
+    "save_image_will_use_combine_v2_prefix": true,
+    "output_collector_will_find_files": true,
+    "new_assets_will_be_created": true,
+    "manifest_will_update": true
+  },
+  "next_step": "run_diagnostic_generation_after_fix"
+}

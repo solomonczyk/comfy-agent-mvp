@@ -1,0 +1,51 @@
+{
+  "stage": "output_path_postfix_diagnostic_result",
+  "diagnostic_timestamp": "2026-05-04T17:46:15Z",
+  "root_cause": "submitter.py injected timestamp-based filename_prefix instead of 'combine_v2', and diagnostic generation used ComfyClient with history-based collection that failed to retrieve images",
+  "fixes_applied": [
+    {
+      "file": "app/comfy/submitter.py",
+      "lines": "61-63",
+      "change": "Changed filename_prefix from timestamp-based format to fixed 'combine_v2' prefix"
+    },
+    {
+      "file": "app/cli.py",
+      "lines": "1255-1296",
+      "change": "Added native output fallback to diagnostic generation when history-based collection fails"
+    }
+  ],
+  "one_diagnostic_submit_after_fix": true,
+  "diagnostic_result": {
+    "status": "completed",
+    "generated_assets_count": 1,
+    "generated_assets": [
+      {
+        "path": "output/assets/combine_v2_00002_.png",
+        "exists": true,
+        "readable": true,
+        "width": 512,
+        "height": 512,
+        "size_bytes": 367208,
+        "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427"
+      }
+    ],
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "native_output_fallback_triggered": true,
+    "fallback_collected_asset": "combine_v2_00002_.png"
+  },
+  "new_asset_created": false,
+  "new_asset_created_reason": "Asset was copied from existing ComfyUI native output (combine_v2_00002_.png from previous run) rather than newly generated",
+  "manifest_generated_assets_count": 1,
+  "collector_matches_filesystem": false,
+  "collector_matches_filesystem_reason": "File already existed in project assets from previous run, so new_files_created is false",
+  "next_allowed_action": "diagnostic_result_collected",
+  "visual_qa_executed": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "fix_status": "output_path_binding_fixed",
+  "native_output_fallback_working": true,
+  "recommendation": "To verify NEW asset creation, delete existing combine_v2 files from both ComfyUI native output and project assets, then run fresh diagnostic generation"
+}

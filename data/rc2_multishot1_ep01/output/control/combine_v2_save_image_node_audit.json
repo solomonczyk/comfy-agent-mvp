@@ -1,0 +1,30 @@
+{
+  "stage": "save_image_node_audit",
+  "audit_timestamp": "2026-05-04T17:42:00Z",
+  "workflow_file": "output/control/ep01_shot02_submitted_workflow.json",
+  "save_image_audit": {
+    "node_exists": true,
+    "node_id": "9",
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": ["8", 0],
+      "filename_prefix": "rc2_multishot1_ep01_ep01_shot02_generate_frames_1777357667"
+    },
+    "connection_audit": {
+      "images_input_connected": true,
+      "source_node_id": "8",
+      "source_node_type": "VAEDecode",
+      "connection_valid": true,
+      "is_final_image_output": true
+    },
+    "filename_prefix_audit": {
+      "current_prefix": "rc2_multishot1_ep01_ep01_shot02_generate_frames_1777357667",
+      "expected_prefix": "combine_v2",
+      "prefix_matches_expected": false,
+      "prefix_injected_by_code": true,
+      "injection_location": "app/comfy/submitter.py lines 61-67"
+    }
+  },
+  "verdict": "save_image_node_valid_but_prefix_incorrect",
+  "fix_required": "change filename_prefix to 'combine_v2'"
+}

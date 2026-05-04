@@ -1,0 +1,28 @@
+{
+  "stage": "fresh_asset_snapshot_before",
+  "snapshot_timestamp": "2026-05-04T17:47:46.702467Z",
+  "project_assets": [
+    {
+      "name": "combine_v2_00001_.png",
+      "size_bytes": 367208,
+      "last_write_time": 1777888553.8771944
+    },
+    {
+      "name": "combine_v2_00002_.png",
+      "size_bytes": 367208,
+      "last_write_time": 1777902273.2383611
+    }
+  ],
+  "comfy_output": [
+    {
+      "name": "combine_v2_00001_.png",
+      "size_bytes": 367208,
+      "last_write_time": 1777888553.0344777
+    },
+    {
+      "name": "combine_v2_00002_.png",
+      "size_bytes": 367208,
+      "last_write_time": 1777902273.2383611
+    }
+  ]
+}

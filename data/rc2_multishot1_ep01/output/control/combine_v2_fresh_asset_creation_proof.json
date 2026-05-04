@@ -1,0 +1,103 @@
+{
+  "stage": "fresh_asset_creation_proof",
+  "fresh_asset_snapshot_before": {
+    "project_assets": [
+      {
+        "name": "combine_v2_00001_.png",
+        "size_bytes": 367208,
+        "last_write_time": 1777888553.8771944
+      },
+      {
+        "name": "combine_v2_00002_.png",
+        "size_bytes": 367208,
+        "last_write_time": 1777902273.2383611
+      }
+    ],
+    "comfy_output": [
+      {
+        "name": "combine_v2_00001_.png",
+        "size_bytes": 367208,
+        "last_write_time": 1777888553.0344777
+      },
+      {
+        "name": "combine_v2_00002_.png",
+        "size_bytes": 367208,
+        "last_write_time": 1777902273.2383611
+      }
+    ]
+  },
+  "fresh_asset_snapshot_after": {
+    "project_assets": [
+      {
+        "name": "combine_v2_00001_.png",
+        "size_bytes": 367208,
+        "last_write_time": 1777888553.8771944
+      },
+      {
+        "name": "combine_v2_00002_.png",
+        "size_bytes": 367208,
+        "last_write_time": 1777902273.2383611
+      },
+      {
+        "name": "combine_v2_1777916951_00001_.png",
+        "size_bytes": 321425,
+        "last_write_time": 1777916985.32549
+      }
+    ],
+    "comfy_output": [
+      {
+        "name": "combine_v2_00001_.png",
+        "size_bytes": 367208,
+        "last_write_time": 1777888553.0344777
+      },
+      {
+        "name": "combine_v2_00002_.png",
+        "size_bytes": 367208,
+        "last_write_time": 1777902273.2383611
+      },
+      {
+        "name": "combine_v2_1777916951_00001_.png",
+        "size_bytes": 321425,
+        "last_write_time": 1777916985.32549
+      }
+    ]
+  },
+  "diagnostic_submit_after_fix": {
+    "status": "completed",
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "generated_assets_count": 1,
+    "native_output_fallback_triggered": true,
+    "collected_asset": "combine_v2_1777916951_00001_.png",
+    "timestamp": "2026-05-04T17:49:45.376507Z"
+  },
+  "new_project_asset_created": true,
+  "new_native_output_asset_created": true,
+  "new_asset_detected_by_name_or_timestamp": true,
+  "new_asset_path": "output/assets/combine_v2_1777916951_00001_.png",
+  "asset_existed_before": false,
+  "asset_exists_after": true,
+  "collected_asset_path": "output/assets/combine_v2_1777916951_00001_.png",
+  "readable": true,
+  "width": 512,
+  "height": 512,
+  "minimum_short_side_1024_enforced": false,
+  "sha256": "3bb332bdebc55dcfce491fe43c6102d169908ac0bad88bf01690d112558b199a",
+  "size_bytes": 321425,
+  "collector_matches_fresh_filesystem_asset": true,
+  "collector_matches_existing_filesystem_asset": false,
+  "manifest_generated_assets_count": 1,
+  "visual_qa_executed": false,
+  "retry_attempted": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "fresh_asset_created": true,
+  "output_binding_fixed": true,
+  "native_output_fallback_working": true,
+  "resolution_policy_failed": true,
+  "actual_width": 512,
+  "actual_height": 512,
+  "next_blocker": "rebuilt_recipe_not_applied_to_diagnostic_generation",
+  "root_cause_fixed": "Modified _build_minimal_real_workflow() to use random seed and timestamp-based filename to force ComfyUI to create new file on each diagnostic run",
+  "fix_applied": "Added random seed and timestamp to diagnostic workflow in app/cli.py lines 1104-1109"
+}

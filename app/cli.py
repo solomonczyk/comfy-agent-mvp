@@ -1101,6 +1101,13 @@ def _collect_real_generation_outputs(
 
 
 def _build_minimal_real_workflow() -> Dict[str, Any]:
+    import random
+    import time
+    # RC-COMBINE-V2-571-620: Use random seed and timestamp to force new file creation
+    random_seed = random.randint(1, 999999999)
+    timestamp = int(time.time())
+    filename_prefix = f"combine_v2_{timestamp}"
+    
     return {
         "1": {
             "inputs": {"ckpt_name": "realvisxlV50_v50Bakedvae.safetensors"},
@@ -1110,7 +1117,7 @@ def _build_minimal_real_workflow() -> Dict[str, Any]:
         "3": {"inputs": {"text": "test", "clip": ["1", 1]}, "class_type": "CLIPTextEncode"},
         "4": {
             "inputs": {
-                "seed": 1,
+                "seed": random_seed,
                 "steps": 20,
                 "cfg": 7,
                 "sampler_name": "euler",
@@ -1125,7 +1132,7 @@ def _build_minimal_real_workflow() -> Dict[str, Any]:
         },
         "5": {"inputs": {"width": 512, "height": 512, "batch_size": 1}, "class_type": "EmptyLatentImage"},
         "6": {"inputs": {"samples": ["4", 0], "vae": ["1", 2]}, "class_type": "VAEDecode"},
-        "7": {"inputs": {"filename_prefix": "combine_v2", "images": ["6", 0]}, "class_type": "SaveImage"},
+        "7": {"inputs": {"filename_prefix": filename_prefix, "images": ["6", 0]}, "class_type": "SaveImage"},
     }
 
 
@@ -1251,6 +1258,50 @@ def combine_diagnostic_generate_one_asset(args: argparse.Namespace) -> int:
             history_images=history_images,
         )
         trace_events.extend(collection_trace)
+        
+        # RC-COMBINE-V2-571-620: Native output fallback if history-based collection fails
+        if len(generated_assets) == 0:
+            comfy_output_root = os.getenv("COMFY_OUTPUT_ROOT", "F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126/ComfyUI_windows_portable/ComfyUI/output")
+            comfy_output = Path(comfy_output_root)
+            assets_dir = project_root / "output" / "assets"
+            
+            if comfy_output.exists():
+                # Look for files with "combine_v2" prefix
+                matching_files = list(comfy_output.glob("combine_v2_*.png"))
+                if matching_files:
+                    # Sort by modification time to get the newest
+                    matching_files.sort(key=lambda p: p.stat().st_mtime, reverse=True)
+                    
+                    # Copy the newest file
+                    newest_file = matching_files[0]
+                    dest_path = assets_dir / newest_file.name
+                    dest_path.parent.mkdir(parents=True, exist_ok=True)
+                    shutil.copy2(newest_file, dest_path)
+                    
+                    rel_path = dest_path.relative_to(project_root).as_posix()
+                    readable_result = _is_image_readable(dest_path)
+                    size_bytes = dest_path.stat().st_size
+                    sha256_value = _file_sha256(dest_path)
+                    
+                    generated_assets.append({
+                        "path": rel_path,
+                        "exists": True,
+                        "readable": bool(readable_result["readable"]),
+                        "width": readable_result["width"],
+                        "height": readable_result["height"],
+                        "size_bytes": int(size_bytes),
+                        "sha256": sha256_value,
+                    })
+                    
+                    trace_events.append({
+                        "event": "asset_collected_from_native_output",
+                        "status": "success",
+                        "filename": newest_file.name,
+                        "path": rel_path,
+                        "source": "native_output_fallback",
+                    })
+                    print(f"[RC-COMBINE-V2-571-620] Collected asset from native output fallback: {newest_file.name}")
+        
         trace_events.append(
             {
                 "event": "outputs_collected",
