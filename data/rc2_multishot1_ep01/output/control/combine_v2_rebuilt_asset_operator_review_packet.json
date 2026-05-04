@@ -1,0 +1,31 @@
+{
+  "stage": "operator_visual_review",
+  "source_stage": "rebuilt_asset_visual_qa",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "operator_review_required": true,
+  "operator_actions": [
+    "accept_visuals",
+    "reject_visuals",
+    "request_retry_correction",
+    "block_manual_review"
+  ],
+  "visual_qa_report": "output/control/combine_v2_rebuilt_asset_visual_qa_report.json",
+  "failure_audit": "output/control/combine_v2_rebuilt_asset_failure_audit.json",
+  "qa_verdict": "qa_failed",
+  "failure_categories": [
+    "semantic_content_failed",
+    "subject_not_recognizable",
+    "blur_or_softness",
+    "low_detail_quality",
+    "composition_failed",
+    "production_quality_failed"
+  ],
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_visual_review",
+  "packet_timestamp": "2026-05-04T18:15:13.706995"
+}

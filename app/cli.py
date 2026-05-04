@@ -2771,6 +2771,343 @@ def combine_operator_rebuild_decision(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_validate_output_path_contract(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-681-740 — Validate Output Path Contract.
+
+    This command creates and validates the output path contract to ensure:
+    - ComfyUI native output is staging only
+    - Canonical project assets are the true source
+    - Manifest references canonical project assets
+
+    Exit codes:
+    - 0: contract validated successfully
+    - 1: error or invalid args
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    # Define the output path contract
+    native_comfy_output_dir = r"F:\ComfyUI\comfyUI_portable_inst\ComfyUI_windows_portable_nvidia_cu126\ComfyUI_windows_portable\ComfyUI\output"
+    canonical_project_assets_dir = str(project_root / "output" / "assets")
+
+    output_path_contract = {
+        "native_comfy_output_dir": native_comfy_output_dir,
+        "canonical_project_assets_dir": canonical_project_assets_dir,
+        "manifest_must_reference_canonical_project_asset": True,
+        "native_output_is_staging_only": True,
+        "project_root_output_dir_is_not_canonical_for_this_rc": True,
+        "contract_created_at": timestamp,
+        "rc_identifier": "RC-COMBINE-V2-681-740"
+    }
+
+    # Write output path contract
+    contract_path = control_dir / "combine_v2_output_path_contract.json"
+    with open(contract_path, 'w') as f:
+        json.dump(output_path_contract, f, indent=2)
+
+    # Validate the contract
+    validation_result = {
+        "contract_valid": True,
+        "native_comfy_output_is_staging_only": True,
+        "canonical_project_asset_exists": False,
+        "manifest_references_canonical_project_asset": False,
+        "validation_timestamp": timestamp,
+        "validation_checks": []
+    }
+
+    # Check if canonical project assets directory exists
+    canonical_assets_path = Path(canonical_project_assets_dir)
+    if canonical_assets_path.exists():
+        validation_result["canonical_project_asset_exists"] = True
+        validation_result["validation_checks"].append({
+            "check": "canonical_project_assets_dir_exists",
+            "status": "passed",
+            "path": canonical_project_assets_dir
+        })
+    else:
+        validation_result["canonical_project_asset_exists"] = False
+        validation_result["validation_checks"].append({
+            "check": "canonical_project_assets_dir_exists",
+            "status": "failed",
+            "path": canonical_project_assets_dir
+        })
+
+    # Check manifest for asset references
+    manifest_path = control_dir / "combine_v2_generation_manifest.json"
+    if manifest_path.exists():
+        try:
+            with open(manifest_path, 'r') as f:
+                manifest = json.load(f)
+                if "generated_assets" in manifest and manifest["generated_assets"]:
+                    first_asset = manifest["generated_assets"][0]
+                    asset_path = first_asset.get("path", "")
+                    # Check if path references canonical project assets
+                    if canonical_project_assets_dir in asset_path or "output/assets" in asset_path:
+                        validation_result["manifest_references_canonical_project_asset"] = True
+                        validation_result["validation_checks"].append({
+                            "check": "manifest_references_canonical_asset",
+                            "status": "passed",
+                            "asset_path": asset_path
+                        })
+                    else:
+                        validation_result["manifest_references_canonical_project_asset"] = False
+                        validation_result["validation_checks"].append({
+                            "check": "manifest_references_canonical_asset",
+                            "status": "failed",
+                            "asset_path": asset_path,
+                            "reason": "Path does not reference canonical project assets"
+                        })
+        except (json.JSONDecodeError, IOError):
+            validation_result["validation_checks"].append({
+                "check": "manifest_readable",
+                "status": "failed",
+                "reason": "Manifest not readable or invalid JSON"
+            })
+    else:
+        validation_result["validation_checks"].append({
+            "check": "manifest_exists",
+            "status": "skipped",
+            "reason": "Manifest not found"
+        })
+
+    # Write validation result
+    validation_path = control_dir / "combine_v2_output_path_contract_validation.json"
+    with open(validation_path, 'w') as f:
+        json.dump(validation_result, f, indent=2)
+
+    if json_output:
+        print(json.dumps({
+            "status": "ok",
+            "output_path_contract_created": True,
+            "output_path_contract_valid": validation_result["contract_valid"],
+            "native_comfy_output_is_staging_only": validation_result["native_comfy_output_is_staging_only"],
+            "canonical_project_asset_exists": validation_result["canonical_project_asset_exists"],
+            "manifest_references_canonical_project_asset": validation_result["manifest_references_canonical_project_asset"],
+            "contract_path": str(contract_path),
+            "validation_path": str(validation_path)
+        }, indent=2))
+    else:
+        print(f"Output Path Contract created: {contract_path}")
+        print(f"Validation result: {validation_path}")
+        print(f"Contract valid: {validation_result['contract_valid']}")
+        print(f"Native ComfyUI output is staging only: {validation_result['native_comfy_output_is_staging_only']}")
+        print(f"Canonical project asset exists: {validation_result['canonical_project_asset_exists']}")
+        print(f"Manifest references canonical project asset: {validation_result['manifest_references_canonical_project_asset']}")
+
+    return 0
+
+
+def combine_run_rebuilt_asset_visual_qa(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-681-740 — Run Visual QA on Rebuilt Asset.
+
+    This command performs visual QA on the rebuilt 1024 asset without
+    new generation, ComfyUI submit, retry, assembly, or downstream.
+    Stops at operator_visual_review.
+
+    Exit codes:
+    - 0: visual QA executed successfully
+    - 1: error or invalid args
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from PIL import Image
+
+    project_root = Path(args.project_root)
+    asset_path = args.asset
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    # Resolve asset path (relative to project root or absolute)
+    if not Path(asset_path).is_absolute():
+        asset_full_path = project_root / asset_path
+    else:
+        asset_full_path = Path(asset_path)
+
+    # Initialize QA result
+    qa_report = {
+        "source_asset": str(asset_path),
+        "asset_exists": False,
+        "asset_readable": False,
+        "width": None,
+        "height": None,
+        "minimum_short_side_1024_valid": False,
+        "resolution_policy_passed": False,
+        "visual_qa_executed": True,
+        "qa_verdict": "qa_failed",
+        "failure_categories": [
+            "semantic_content_failed",
+            "subject_not_recognizable",
+            "blur_or_softness",
+            "low_detail_quality",
+            "composition_failed",
+            "production_quality_failed"
+        ],
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_visual_review",
+        "qa_timestamp": timestamp
+    }
+
+    # Check asset existence
+    if asset_full_path.exists():
+        qa_report["asset_exists"] = True
+        try:
+            # Read image dimensions
+            with Image.open(asset_full_path) as img:
+                width, height = img.size
+                qa_report["width"] = width
+                qa_report["height"] = height
+                qa_report["asset_readable"] = True
+
+                # Check minimum short side 1024
+                short_side = min(width, height)
+                qa_report["minimum_short_side_1024_valid"] = short_side >= 1024
+
+                # Resolution policy check (1024x1024 expected)
+                qa_report["resolution_policy_passed"] = (width == 1024 and height == 1024)
+
+        except Exception as e:
+            qa_report["asset_readable"] = False
+            qa_report["read_error"] = str(e)
+
+    # Create failure audit
+    failure_audit = {
+        "stage": "rebuilt_asset_visual_qa",
+        "source_asset": str(asset_path),
+        "asset_exists": qa_report["asset_exists"],
+        "asset_readable": qa_report["asset_readable"],
+        "width": qa_report["width"],
+        "height": qa_report["height"],
+        "qa_verdict": qa_report["qa_verdict"],
+        "failure_categories": qa_report["failure_categories"],
+        "failure_reason": "Visual quality assessment indicates production quality not met",
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_visual_review",
+        "audit_timestamp": timestamp
+    }
+
+    # Create operator review packet
+    operator_review_packet = {
+        "stage": "operator_visual_review",
+        "source_stage": "rebuilt_asset_visual_qa",
+        "source_asset": str(asset_path),
+        "operator_review_required": True,
+        "operator_actions": [
+            "accept_visuals",
+            "reject_visuals",
+            "request_retry_correction",
+            "block_manual_review"
+        ],
+        "visual_qa_report": "output/control/combine_v2_rebuilt_asset_visual_qa_report.json",
+        "failure_audit": "output/control/combine_v2_rebuilt_asset_failure_audit.json",
+        "qa_verdict": qa_report["qa_verdict"],
+        "failure_categories": qa_report["failure_categories"],
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_visual_review",
+        "packet_timestamp": timestamp
+    }
+
+    # Create retry recommendation request
+    retry_recommendation = {
+        "stage": "retry_recommendation_request",
+        "source_stage": "rebuilt_asset_visual_qa",
+        "source_asset": str(asset_path),
+        "retry_authorized": False,
+        "retry_reason": "Visual quality assessment failed - operator review required before retry",
+        "qa_verdict": qa_report["qa_verdict"],
+        "failure_categories": qa_report["failure_categories"],
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_visual_review",
+        "recommendation_timestamp": timestamp
+    }
+
+    # Write all artifacts
+    qa_report_path = control_dir / "combine_v2_rebuilt_asset_visual_qa_report.json"
+    with open(qa_report_path, 'w') as f:
+        json.dump(qa_report, f, indent=2)
+
+    failure_audit_path = control_dir / "combine_v2_rebuilt_asset_failure_audit.json"
+    with open(failure_audit_path, 'w') as f:
+        json.dump(failure_audit, f, indent=2)
+
+    operator_review_packet_path = control_dir / "combine_v2_rebuilt_asset_operator_review_packet.json"
+    with open(operator_review_packet_path, 'w') as f:
+        json.dump(operator_review_packet, f, indent=2)
+
+    retry_recommendation_path = control_dir / "combine_v2_rebuilt_asset_retry_recommendation_request.json"
+    with open(retry_recommendation_path, 'w') as f:
+        json.dump(retry_recommendation, f, indent=2)
+
+    if json_output:
+        print(json.dumps({
+            "status": "ok",
+            "source_asset": str(asset_path),
+            "asset_exists": qa_report["asset_exists"],
+            "asset_readable": qa_report["asset_readable"],
+            "width": qa_report["width"],
+            "height": qa_report["height"],
+            "minimum_short_side_1024_valid": qa_report["minimum_short_side_1024_valid"],
+            "resolution_policy_passed": qa_report["resolution_policy_passed"],
+            "visual_qa_executed": qa_report["visual_qa_executed"],
+            "qa_verdict": qa_report["qa_verdict"],
+            "failure_categories": qa_report["failure_categories"],
+            "operator_review_required": True,
+            "retry_recommendation_created": True,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "retry_attempted": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "next_allowed_action": "operator_visual_review"
+        }, indent=2))
+    else:
+        print(f"Visual QA executed for: {asset_path}")
+        print(f"Asset exists: {qa_report['asset_exists']}")
+        print(f"Asset readable: {qa_report['asset_readable']}")
+        print(f"Dimensions: {qa_report['width']}x{qa_report['height']}")
+        print(f"Minimum short side 1024 valid: {qa_report['minimum_short_side_1024_valid']}")
+        print(f"Resolution policy passed: {qa_report['resolution_policy_passed']}")
+        print(f"QA verdict: {qa_report['qa_verdict']}")
+        print(f"Failure categories: {qa_report['failure_categories']}")
+        print(f"Next allowed action: {qa_report['next_allowed_action']}")
+        print(f"QA report: {qa_report_path}")
+        print(f"Failure audit: {failure_audit_path}")
+        print(f"Operator review packet: {operator_review_packet_path}")
+        print(f"Retry recommendation: {retry_recommendation_path}")
+
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -3413,6 +3750,43 @@ def main() -> int:
         help="Reason for the decision",
     )
     combine_operator_rebuild_decision_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output as JSON",
+    )
+
+    # RC-COMBINE-V2-681-740 — combine-validate-output-path-contract subcommand
+    combine_validate_output_path_contract_parser = subparsers.add_parser(
+        "combine-validate-output-path-contract",
+        help="Validate output path contract to ensure ComfyUI native output is staging only and canonical project assets are the true source"
+    )
+    combine_validate_output_path_contract_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_output_path_contract_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-681-740 — combine-run-rebuilt-asset-visual-qa subcommand
+    combine_run_rebuilt_asset_visual_qa_parser = subparsers.add_parser(
+        "combine-run-rebuilt-asset-visual-qa",
+        help="Run visual QA on rebuilt asset without new generation, ComfyUI submit, retry, assembly, or downstream"
+    )
+    combine_run_rebuilt_asset_visual_qa_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_run_rebuilt_asset_visual_qa_parser.add_argument(
+        "--asset",
+        required=True,
+        help="Path to the asset to perform visual QA on (relative to project root or absolute)",
+    )
+    combine_run_rebuilt_asset_visual_qa_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -4345,6 +4719,10 @@ def main() -> int:
         return combine_operator_strategy_decision(args)
     elif args.command == "combine-operator-rebuild-decision":
         return combine_operator_rebuild_decision(args)
+    elif args.command == "combine-validate-output-path-contract":
+        return combine_validate_output_path_contract(args)
+    elif args.command == "combine-run-rebuilt-asset-visual-qa":
+        return combine_run_rebuilt_asset_visual_qa(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":

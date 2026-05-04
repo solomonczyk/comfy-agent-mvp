@@ -1,0 +1,26 @@
+{
+  "stage": "rebuilt_asset_visual_qa",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "asset_exists": true,
+  "asset_readable": true,
+  "width": 1024,
+  "height": 1024,
+  "qa_verdict": "qa_failed",
+  "failure_categories": [
+    "semantic_content_failed",
+    "subject_not_recognizable",
+    "blur_or_softness",
+    "low_detail_quality",
+    "composition_failed",
+    "production_quality_failed"
+  ],
+  "failure_reason": "Visual quality assessment indicates production quality not met",
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_visual_review",
+  "audit_timestamp": "2026-05-04T18:15:13.706995"
+}

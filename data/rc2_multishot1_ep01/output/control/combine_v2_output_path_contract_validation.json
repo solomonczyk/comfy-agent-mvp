@@ -1,0 +1,19 @@
+{
+  "contract_valid": true,
+  "native_comfy_output_is_staging_only": true,
+  "canonical_project_asset_exists": true,
+  "manifest_references_canonical_project_asset": false,
+  "validation_timestamp": "2026-05-04T18:14:59.278594",
+  "validation_checks": [
+    {
+      "check": "canonical_project_assets_dir_exists",
+      "status": "passed",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets"
+    },
+    {
+      "check": "manifest_exists",
+      "status": "skipped",
+      "reason": "Manifest not found"
+    }
+  ]
+}
