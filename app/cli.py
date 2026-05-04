@@ -1851,6 +1851,169 @@ def combine_recover_real_generation_result(args: argparse.Namespace) -> int:
     return 0 if status == "recovered" else 1
 
 
+def combine_review_failed_real_generation(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-61-70 — Failed Real Generation Result Operator Review + Remediation Planning Gate.
+
+    After a canonical failed result with FAILED_OUTPUT_COLLECTION_ZERO_ASSETS, the operator
+    must decide what to do with the failed real generation result. The system does NOT
+    automatically launch a new generation - this is a review/remediation gate only.
+
+    Exit codes:
+    - 0: review completed successfully
+    - 1: error or invalid args
+    """
+    project_root = Path(args.project_root)
+    json_output = args.json
+    decision = args.decision
+    reason = args.reason
+    
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Read current state to get failure_code
+    result_path = control_dir / "combine_v2_real_generation_result.json"
+    result_payload = _read_json_file(result_path)
+    failure_code = result_payload.get("failure_code", "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS")
+    generated_assets_count = result_payload.get("generated_assets_count", 0)
+    
+    timestamp = datetime.utcnow().isoformat()
+    
+    # Determine behavior based on decision
+    if decision == "request_new_generation_attempt":
+        next_allowed_action = "operator_real_generation_authorization_required"
+        new_generation_authorized = False
+        requires_new_operator_real_generation_approval = True
+        target_stage = "failed_real_generation_operator_review"
+        remediation_action = "prepare_for_new_generation_attempt"
+    elif decision == "manual_review":
+        next_allowed_action = "blocked_manual_review"
+        new_generation_authorized = False
+        requires_new_operator_real_generation_approval = False
+        target_stage = "failed_real_generation_operator_review"
+        remediation_action = "manual_intervention_required"
+    elif decision == "abort_generation_route":
+        next_allowed_action = "blocked_generation_route_aborted"
+        new_generation_authorized = False
+        requires_new_operator_real_generation_approval = False
+        target_stage = "failed_real_generation_operator_review"
+        remediation_action = "generation_route_aborted"
+    else:
+        print(f"Error: Invalid decision '{decision}'. Must be one of: request_new_generation_attempt, manual_review, abort_generation_route")
+        return 1
+    
+    # Create artifact 1: Operator review
+    operator_review = {
+        "stage": "failed_real_generation_operator_review",
+        "operator_decision": decision,
+        "failure_code": failure_code,
+        "generated_assets_count": generated_assets_count,
+        "reason": reason,
+        "timestamp": timestamp,
+    }
+    
+    # Create artifact 2: Failure classification
+    failure_classification = {
+        "stage": "real_generation_failure_classification",
+        "failure_code": failure_code,
+        "failure_category": "output_collection",
+        "failure_description": "Zero assets collected after real generation submission",
+        "generated_assets_count": generated_assets_count,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+    
+    # Create artifact 3: Remediation plan
+    remediation_plan = {
+        "stage": "real_generation_remediation_plan",
+        "remediation_action": remediation_action,
+        "operator_decision": decision,
+        "failure_code": failure_code,
+        "reason": reason,
+        "next_allowed_action": next_allowed_action,
+        "new_generation_authorized": new_generation_authorized,
+        "requires_new_operator_real_generation_approval": requires_new_operator_real_generation_approval,
+        "timestamp": timestamp,
+    }
+    
+    # Create artifact 4: Remediation gate decision
+    gate_decision = {
+        "stage": "real_generation_remediation_gate_decision",
+        "operator_decision": decision,
+        "failure_code": failure_code,
+        "new_generation_authorized": new_generation_authorized,
+        "next_allowed_action": next_allowed_action,
+        "requires_new_operator_real_generation_approval": requires_new_operator_real_generation_approval,
+        "generation_attempted": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "retry_attempted": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+    
+    # Write artifacts
+    operator_review_path = control_dir / "combine_v2_failed_real_generation_operator_review.json"
+    failure_classification_path = control_dir / "combine_v2_real_generation_failure_classification.json"
+    remediation_plan_path = control_dir / "combine_v2_real_generation_remediation_plan.json"
+    gate_decision_path = control_dir / "combine_v2_real_generation_remediation_gate_decision.json"
+    
+    _write_json_file(operator_review_path, operator_review)
+    _write_json_file(failure_classification_path, failure_classification)
+    _write_json_file(remediation_plan_path, remediation_plan)
+    _write_json_file(gate_decision_path, gate_decision)
+    
+    # Record stage result
+    _record_combine_stage_result(
+        project_root=project_root,
+        stage=target_stage,
+        next_allowed_action=next_allowed_action,
+        metadata={
+            "operator_decision": decision,
+            "failure_code": failure_code,
+            "new_generation_authorized": new_generation_authorized,
+            "requires_new_operator_real_generation_approval": requires_new_operator_real_generation_approval,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "visual_qa_executed": False,
+            "retry_attempted": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+    )
+    
+    response = {
+        "status": "ok",
+        "operator_decision": decision,
+        "failure_code": failure_code,
+        "next_allowed_action": next_allowed_action,
+        "new_generation_authorized": new_generation_authorized,
+        "requires_new_operator_real_generation_approval": requires_new_operator_real_generation_approval,
+        "generation_attempted": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "retry_attempted": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "artifacts": [
+            str(operator_review_path.relative_to(project_root)),
+            str(failure_classification_path.relative_to(project_root)),
+            str(remediation_plan_path.relative_to(project_root)),
+            str(gate_decision_path.relative_to(project_root)),
+        ],
+    }
+    
+    if json_output:
+        print(json.dumps(response, indent=2))
+    else:
+        print(f"Failed Real Generation Operator Review: {decision.upper()}")
+        print(f"Next Allowed Action: {next_allowed_action}")
+        print(f"New Generation Authorized: {new_generation_authorized}")
+        print(f"Artifacts created: {len(response['artifacts'])}")
+    
+    return 0
+
+
 def _require_absolute_project_root(args: argparse.Namespace, command: str) -> None:
     """
     RC2-PRODCARDS3G-BLOCKER1R hard prevention layer - Option A.
@@ -2421,6 +2584,33 @@ def main() -> int:
         help="Project root directory",
     )
     combine_recover_real_generation_result_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-61-70 — Failed Real Generation Result Operator Review + Remediation Planning Gate
+    combine_review_failed_real_generation_parser = subparsers.add_parser(
+        "combine-review-failed-real-generation",
+        help="Review failed real generation result and decide on remediation path",
+    )
+    combine_review_failed_real_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_review_failed_real_generation_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["request_new_generation_attempt", "manual_review", "abort_generation_route"],
+        help="Operator decision on how to handle failed generation",
+    )
+    combine_review_failed_real_generation_parser.add_argument(
+        "--reason",
+        required=True,
+        help="Reason for the decision",
+    )
+    combine_review_failed_real_generation_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -3343,6 +3533,8 @@ def main() -> int:
         return combine_review_real_generation_result(args)
     elif args.command == "combine-recover-real-generation-result":
         return combine_recover_real_generation_result(args)
+    elif args.command == "combine-review-failed-real-generation":
+        return combine_review_failed_real_generation(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "director":

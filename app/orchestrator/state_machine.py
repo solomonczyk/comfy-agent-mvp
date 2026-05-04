@@ -45,13 +45,15 @@ class CombineStateMachine:
         "final_qc_required",
         "final_operator_acceptance",
         "completed",
-        "blocked_manual_review"
+        "blocked_manual_review",
+        "blocked_generation_route_aborted"
     ]
     
     # Terminal states
     TERMINAL_STATES = {
         "completed",
-        "blocked_manual_review"
+        "blocked_manual_review",
+        "blocked_generation_route_aborted"
     }
     
     # Allowed transitions
@@ -166,6 +168,11 @@ class CombineStateMachine:
         },
         "completed": set(),  # No transitions from terminal
         "blocked_manual_review": {
+            "brief_intake_required",  # Restart
+            "route_classification_required",
+            "production_plan_required"
+        },
+        "blocked_generation_route_aborted": {
             "brief_intake_required",  # Restart
             "route_classification_required",
             "production_plan_required"
