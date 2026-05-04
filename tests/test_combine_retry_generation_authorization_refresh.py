@@ -62,7 +62,8 @@ class TestCombineRetryGenerationAuthorizationRefresh:
         assert retry_context["retry_gate_open"] is False
         assert decision["generation_authorized"] is False
         assert decision["authorization_required"] is True
-        assert decision["next_allowed_action"] == "operator_generation_authorization_required"
+        # When retry is authorized and corrective plan is available, transition to corrective_retry_payload_rebuild_required
+        assert decision["next_allowed_action"] == "corrective_retry_payload_rebuild_required"
         assert decision["retry_executed"] is False
         assert decision["generation_performed"] is False
         assert decision["comfyui_execution"] is False

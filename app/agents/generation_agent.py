@@ -32,6 +32,7 @@ class GenerationAgent(BaseRoleAgent):
             "generation_authorization_required",
             "operator_generation_authorization_required",
             "generate_assets",
+            "corrective_retry_payload_rebuild_required",
             "real_generation_payload_review",
             "real_generate_assets",
             "real_generation_result_collected",
@@ -151,7 +152,7 @@ class GenerationAgent(BaseRoleAgent):
             next_allowed_action = "none"
             status = "stubbed"
             generation_authorization_ready = False
-            
+
             if not assets_resolved:
                 next_allowed_action = "controlled_asset_resolution_review_required"
                 blocked_by_assets = True
@@ -159,8 +160,13 @@ class GenerationAgent(BaseRoleAgent):
                 blocked_by_assets = False
                 if preflight_ok:
                     authorization_required = True
-                    next_allowed_action = "operator_generation_authorization_required"
-                    generation_authorization_ready = True
+                    # If retry is authorized and corrective plan is available, transition to corrective_retry_payload_rebuild_required
+                    if retry_requested and operator_retry_authorized and retry_corrective_plan:
+                        next_allowed_action = "corrective_retry_payload_rebuild_required"
+                        generation_authorization_ready = True
+                    else:
+                        next_allowed_action = "operator_generation_authorization_required"
+                        generation_authorization_ready = True
             
             # 4. Create artifacts
             auth_request = {
@@ -462,6 +468,135 @@ class GenerationAgent(BaseRoleAgent):
                     "combine_v2_real_generation_payload": real_payload,
                     "combine_v2_real_generation_execution_contract": execution_contract,
                 },
+            )
+
+        if stage == "corrective_retry_payload_rebuild_required":
+            # Read required artifacts for corrective payload rebuild
+            visual_failure_classification = self._read_contract(project_root, "combine_v2_visual_failure_classification")
+            corrective_plan = self._read_contract(project_root, "combine_v2_retry_corrective_plan")
+            retry_authorization = self._read_contract(project_root, "combine_v2_retry_authorization_request")
+            operator_retry_authorization = self._read_contract(project_root, "combine_v2_operator_retry_authorization")
+            generation_payload_stub = self._read_contract(project_root, "combine_v2_generation_payload_stub")
+            real_generation_payload = self._read_contract(project_root, "combine_v2_real_generation_payload")
+            real_generation_execution_contract = self._read_contract(project_root, "combine_v2_real_generation_execution_contract")
+
+            # Determine source failure
+            source_failure = visual_failure_classification.get("classification", "unknown") if visual_failure_classification else "unknown"
+
+            # Create corrective prompt patch
+            prompt_patch = {
+                "agent": self.role_name,
+                "stage": stage,
+                "patch_type": "corrective_retry_prompt_patch",
+                "source_failure": source_failure,
+                "corrective_actions": corrective_plan.get("actions", []) if corrective_plan else [],
+                "patch_created": True,
+                "timestamp": timestamp
+            }
+
+            # Refresh generation payload with corrective context
+            corrected_payload = {
+                "agent": self.role_name,
+                "stage": stage,
+                "payload_type": "corrective_retry_generation_payload",
+                "source_failure": source_failure,
+                "corrective_plan_applied": True,
+                "base_payload": generation_payload_stub if generation_payload_stub else {},
+                "corrective_context": {
+                    "corrective_plan_id": corrective_plan.get("plan_id") if corrective_plan else None,
+                    "corrective_actions": corrective_plan.get("actions", []) if corrective_plan else [],
+                },
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "timestamp": timestamp
+            }
+
+            # Refresh execution contract
+            corrected_execution_contract = {
+                "agent": self.role_name,
+                "stage": stage,
+                "contract_type": "corrective_retry_execution_contract",
+                "source_failure": source_failure,
+                "corrective_plan_applied": True,
+                "base_contract": real_generation_execution_contract if real_generation_execution_contract else {},
+                "retry_execution_authorized": False,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "workflow_submitted": False,
+                "downstream_executed": False,
+                "production_accepted": False,
+                "timestamp": timestamp
+            }
+
+            # Create rebuild report
+            rebuild_report = {
+                "stage": stage,
+                "corrective_plan_applied_to_payload": True,
+                "source_failure": source_failure,
+                "prompt_patch_created": True,
+                "generation_payload_refreshed": True,
+                "execution_contract_refreshed": True,
+                "retry_execution_authorized": False,
+                "next_allowed_action": "real_generation_readiness_required",
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "workflow_submitted": False,
+                "downstream_executed": False,
+                "production_accepted": False,
+                "timestamp": timestamp
+            }
+
+            # Write artifacts to disk
+            control_dir = Path(project_root) / "output" / "control"
+            control_dir.mkdir(parents=True, exist_ok=True)
+
+            with open(control_dir / "combine_v2_corrective_retry_payload_rebuild_report.json", "w") as f:
+                json.dump(rebuild_report, f, indent=2)
+            with open(control_dir / "combine_v2_corrective_retry_prompt_patch.json", "w") as f:
+                json.dump(prompt_patch, f, indent=2)
+            with open(control_dir / "combine_v2_corrective_retry_generation_payload.json", "w") as f:
+                json.dump(corrected_payload, f, indent=2)
+            with open(control_dir / "combine_v2_corrective_retry_execution_contract.json", "w") as f:
+                json.dump(corrected_execution_contract, f, indent=2)
+
+            artifacts = [
+                "combine_v2_corrective_retry_payload_rebuild_report.json",
+                "combine_v2_corrective_retry_prompt_patch.json",
+                "combine_v2_corrective_retry_generation_payload.json",
+                "combine_v2_corrective_retry_execution_contract.json"
+            ]
+
+            metadata = {
+                "action": "corrective_retry_payload_rebuild",
+                "corrective_plan_applied_to_payload": True,
+                "source_failure": source_failure,
+                "prompt_patch_created": True,
+                "generation_payload_refreshed": True,
+                "execution_contract_refreshed": True,
+                "retry_execution_authorized": False,
+                "generation_performed": False,
+                "comfyui_execution": False,
+                "workflow_submitted": False,
+                "downstream_executed": False,
+                "production_accepted": False,
+                "next_allowed_action": "real_generation_readiness_required",
+                "combine_v2_corrective_retry_payload_rebuild_report": rebuild_report,
+                "combine_v2_corrective_retry_prompt_patch": prompt_patch,
+                "combine_v2_corrective_retry_generation_payload": corrected_payload,
+                "combine_v2_corrective_retry_execution_contract": corrected_execution_contract
+            }
+
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status="ok",
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=artifacts,
+                next_recommended_stage="real_generation_readiness_required",
+                metadata=metadata
             )
 
         # DEFAULT: other stages

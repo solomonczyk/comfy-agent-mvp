@@ -117,6 +117,11 @@ class RealGenerationReadinessAgent(BaseRoleAgent):
                 "production_accepted": False,
                 "timestamp": timestamp,
             }
+
+            # Write report to disk
+            with open(control_dir / "combine_v2_real_generation_readiness_report.json", "w") as f:
+                json.dump(report, f, indent=2)
+
             return AgentResult(
                 agent=self.role_name,
                 stage=stage,
@@ -147,6 +152,11 @@ class RealGenerationReadinessAgent(BaseRoleAgent):
                 "next_allowed_action": "operator_real_generation_authorization_required",
                 "timestamp": timestamp,
             }
+
+            # Write request to disk
+            with open(control_dir / "combine_v2_operator_real_generation_authorization_request.json", "w") as f:
+                json.dump(request, f, indent=2)
+
             return AgentResult(
                 agent=self.role_name,
                 stage=stage,

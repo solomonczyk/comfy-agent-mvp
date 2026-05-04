@@ -40,6 +40,7 @@ class CombineStateMachine:
         "retry_correction_required",
         "retry_plan_review_required",
         "operator_retry_authorization_required",
+        "corrective_retry_payload_rebuild_required",
         "controlled_asset_resolution_review_required",
         "assembly_required",
         "final_qc_required",
@@ -91,7 +92,8 @@ class CombineStateMachine:
         },
         "generation_authorization_required": {
             "operator_generation_authorization_required",
-            "controlled_asset_resolution_review_required"
+            "controlled_asset_resolution_review_required",
+            "corrective_retry_payload_rebuild_required"
         },
         "operator_generation_authorization_required": {
             "generate_assets"
@@ -155,6 +157,9 @@ class CombineStateMachine:
         },
         "operator_retry_authorization_required": {
             "generation_authorization_required"
+        },
+        "corrective_retry_payload_rebuild_required": {
+            "real_generation_readiness_required"
         },
         "assembly_required": {
             "final_qc_required"
