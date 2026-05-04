@@ -795,6 +795,25 @@ def _write_json_file(path: Path, payload: Any) -> None:
         json.dump(payload, handle, indent=2)
 
 
+def _force_combine_current_state(project_root: str, state: str) -> None:
+    """Force the artifact_index current_state to a specific value.
+    
+    Used to reset the state machine entry point for re-runnable audit chains.
+    """
+    artifact_index_path = Path(project_root) / "output" / "control" / "artifact_index.json"
+    data: dict = {}
+    if artifact_index_path.exists():
+        try:
+            with artifact_index_path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+        except (json.JSONDecodeError, IOError):
+            data = {}
+    data["current_state"] = state
+    artifact_index_path.parent.mkdir(parents=True, exist_ok=True)
+    with artifact_index_path.open("w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2)
+
+
 def _record_combine_stage_result(
     project_root: Path,
     stage: str,
@@ -2045,14 +2064,23 @@ def combine_production_brain_audit(args: argparse.Namespace) -> int:
     final_stage = None
     final_next_action = None
     
+    control_dir = Path(project_root) / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    
+    # Force entry state so re-runs of the audit chain always work
+    _force_combine_current_state(project_root, "real_visual_qa_preflight_required")
+    
     for stage in stages:
         result = orchestrator.run_stage(stage, dry_run=True)
         if result.metadata:
             all_metadata[stage] = result.metadata
-            # Collect artifact filenames from metadata
+            # Write artifact files to disk and collect names
             for key, value in result.metadata.items():
                 if key.startswith("combine_v2_") and isinstance(value, dict):
-                    all_artifacts.append(f"{key}.json")
+                    artifact_filename = f"{key}.json"
+                    artifact_path = control_dir / artifact_filename
+                    _write_json_file(artifact_path, value)
+                    all_artifacts.append(artifact_filename)
         final_stage = stage
         final_next_action = result.metadata.get("next_allowed_action") if result.metadata else None
     

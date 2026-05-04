@@ -198,11 +198,14 @@ class TestProductionBrainAgent:
         )
         result = agent.run(context, dry_run=True)
         
-        # Check that low resolution is flagged
+        # Check that low resolution is flagged and visual failure is confirmed
         audit = result.metadata.get("combine_v2_visual_failure_audit", {})
         assert audit.get("width") == 512
         assert audit.get("height") == 512
         assert "low_resolution_or_unexpected_resolution" in audit.get("failure_categories", [])
+        assert audit.get("visual_failure_confirmed") == True
+        assert "low_resolution_or_unexpected_resolution" in audit.get("confirmation_basis", [])
+        assert "failure_categories_present" in audit.get("confirmation_basis", [])
     
     def test_production_brain_analyzes_corrective_retry_delta(self, tmp_path):
         """Test that production brain analyzes corrective retry delta"""

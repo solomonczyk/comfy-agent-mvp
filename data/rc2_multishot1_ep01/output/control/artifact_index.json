@@ -4142,6 +4142,400 @@
       },
       "timestamp": "2026-05-04T16:13:05.489579",
       "no_generation_performed": true
+    },
+    {
+      "stage": "operator_strategy_review",
+      "success": true,
+      "message": "Agent ProductionBrainAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_operator_strategy_review_packet.json"
+      ],
+      "metadata": {
+        "agent": "ProductionBrainAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_strategy_review",
+        "action": "operator_strategy_review",
+        "next_allowed_action": "operator_strategy_review",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "assembly_allowed": false,
+        "production_accepted": false,
+        "combine_v2_operator_strategy_review_packet": {
+          "stage": "operator_strategy_review",
+          "operator_review_required": true,
+          "summary": "Current corrective retry produced a technically valid but visually unacceptable 512x512 asset. Production brain recommends workflow recipe rebuild before any further generation.",
+          "recommended_operator_decision": "approve_workflow_rebuild_plan",
+          "operator_actions": [
+            "approve_workflow_rebuild_plan",
+            "request_recipe_audit_changes",
+            "manual_review",
+            "abort_route"
+          ],
+          "generation_allowed": false,
+          "retry_allowed": false,
+          "assembly_allowed": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_strategy_review",
+          "timestamp": "2026-05-04T16:20:54.301279"
+        }
+      },
+      "timestamp": "2026-05-04T16:20:54.301279",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_strategy_review",
+      "success": true,
+      "message": "Agent ProductionBrainAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_operator_strategy_review_packet.json"
+      ],
+      "metadata": {
+        "agent": "ProductionBrainAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_strategy_review",
+        "action": "operator_strategy_review",
+        "next_allowed_action": "operator_strategy_review",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "assembly_allowed": false,
+        "production_accepted": false,
+        "combine_v2_operator_strategy_review_packet": {
+          "stage": "operator_strategy_review",
+          "operator_review_required": true,
+          "summary": "Current corrective retry produced a technically valid but visually unacceptable 512x512 asset. Production brain recommends workflow recipe rebuild before any further generation.",
+          "recommended_operator_decision": "approve_workflow_rebuild_plan",
+          "operator_actions": [
+            "approve_workflow_rebuild_plan",
+            "request_recipe_audit_changes",
+            "manual_review",
+            "abort_route"
+          ],
+          "generation_allowed": false,
+          "retry_allowed": false,
+          "assembly_allowed": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_strategy_review",
+          "timestamp": "2026-05-04T16:21:49.859855"
+        }
+      },
+      "timestamp": "2026-05-04T16:21:49.859855",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "production_brain_audit_required",
+      "success": true,
+      "message": "Agent ProductionBrainAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_production_brain_audit.json"
+      ],
+      "metadata": {
+        "agent": "ProductionBrainAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "visual_failure_audit_required",
+        "action": "production_brain_audit",
+        "next_allowed_action": "visual_failure_audit_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "assembly_allowed": false,
+        "production_accepted": false,
+        "combine_v2_production_brain_audit": {
+          "stage": "production_brain_audit_required",
+          "agent": "ProductionBrainAgent",
+          "audit_type": "production_brain_audit",
+          "next_allowed_action": "visual_failure_audit_required",
+          "generation_allowed": false,
+          "retry_allowed": false,
+          "assembly_allowed": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "timestamp": "2026-05-04T16:23:11.547344"
+        }
+      },
+      "timestamp": "2026-05-04T16:23:11.547344",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "visual_failure_audit_required",
+      "success": true,
+      "message": "Agent ProductionBrainAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_failure_audit.json"
+      ],
+      "metadata": {
+        "agent": "ProductionBrainAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "generation_recipe_audit_required",
+        "action": "visual_failure_audit",
+        "next_allowed_action": "generation_recipe_audit_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "assembly_allowed": false,
+        "production_accepted": false,
+        "combine_v2_visual_failure_audit": {
+          "stage": "visual_failure_audit_required",
+          "source_asset": "output/assets/combine_v2_00002_.png",
+          "asset_exists": false,
+          "asset_readable": false,
+          "width": 512,
+          "height": 512,
+          "visual_operator_rejection": false,
+          "visual_failure_confirmed": true,
+          "confirmation_basis": [
+            "low_resolution_or_unexpected_resolution",
+            "failure_categories_present",
+            "recipe_quality_status_insufficient_for_production"
+          ],
+          "failure_categories": [
+            "low_resolution_or_unexpected_resolution",
+            "blur_or_softness",
+            "anatomy_distortion_risk",
+            "hand_distortion_risk",
+            "face_identity_unreliable",
+            "production_quality_failed"
+          ],
+          "next_allowed_action": "generation_recipe_audit_required",
+          "timestamp": "2026-05-04T16:23:11.599891"
+        }
+      },
+      "timestamp": "2026-05-04T16:23:11.600891",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "generation_recipe_audit_required",
+      "success": true,
+      "message": "Agent ProductionBrainAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_generation_recipe_audit.json"
+      ],
+      "metadata": {
+        "agent": "ProductionBrainAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "workflow_rebuild_plan_required",
+        "action": "generation_recipe_audit",
+        "next_allowed_action": "workflow_rebuild_plan_required",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "assembly_allowed": false,
+        "production_accepted": false,
+        "combine_v2_generation_recipe_audit": {
+          "stage": "generation_recipe_audit_required",
+          "actual_resolution": {
+            "width": 512,
+            "height": 512
+          },
+          "model_checkpoint": "unknown",
+          "sampler": "unknown",
+          "steps": "unknown",
+          "cfg": "unknown",
+          "seed": "unknown",
+          "positive_prompt_present": false,
+          "negative_prompt_present": false,
+          "upscale_enabled": false,
+          "refiner_enabled": false,
+          "controlnet_or_pose_enabled": false,
+          "face_or_identity_lock_enabled": false,
+          "recipe_quality_status": "insufficient_for_production",
+          "blocking_recipe_issues": [
+            "resolution_too_low_for_production",
+            "no_upscale_or_refiner_detected",
+            "no_pose_or_identity_stabilization_detected"
+          ],
+          "next_allowed_action": "workflow_rebuild_plan_required",
+          "timestamp": "2026-05-04T16:23:11.668965"
+        }
+      },
+      "timestamp": "2026-05-04T16:23:11.669935",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "workflow_rebuild_plan_required",
+      "success": true,
+      "message": "Agent ProductionBrainAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_corrective_retry_delta_audit.json",
+        "combine_v2_workflow_quality_diagnosis.json",
+        "combine_v2_brain_corrective_strategy.json",
+        "combine_v2_workflow_rebuild_plan.json"
+      ],
+      "metadata": {
+        "agent": "ProductionBrainAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_strategy_review",
+        "action": "workflow_rebuild_plan",
+        "next_allowed_action": "operator_strategy_review",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "assembly_allowed": false,
+        "production_accepted": false,
+        "combine_v2_corrective_retry_delta_audit": {
+          "stage": "corrective_retry_delta_audit",
+          "corrective_payload_exists": true,
+          "prompt_patch_exists": true,
+          "resolution_changed": false,
+          "model_changed": false,
+          "sampler_changed": false,
+          "steps_changed": false,
+          "cfg_changed": false,
+          "negative_prompt_changed": false,
+          "upscale_added": false,
+          "refiner_added": false,
+          "control_added": false,
+          "identity_lock_added": false,
+          "delta_quality": "insufficient",
+          "why_retry_failed_likely": [
+            "corrective_retry_did_not_change_core_generation_recipe",
+            "resolution_remained_low",
+            "no_quality_enhancement_stage_added"
+          ],
+          "next_allowed_action": "workflow_rebuild_plan_required",
+          "timestamp": "2026-05-04T16:23:11.729725"
+        },
+        "combine_v2_workflow_quality_diagnosis": {
+          "stage": "workflow_quality_diagnosis",
+          "workflow_quality_status": "not_production_ready",
+          "detected_limitations": [
+            "low_base_resolution",
+            "missing_upscale_stage",
+            "missing_refiner_stage",
+            "missing_pose_control",
+            "missing_identity_or_face_consistency_control",
+            "weak_negative_prompt_or_unknown_negative_prompt"
+          ],
+          "risk_if_retry_without_rebuild": "high_probability_of_repeating_low_quality_output",
+          "generation_allowed_without_rebuild": false,
+          "timestamp": "2026-05-04T16:23:11.729725"
+        },
+        "combine_v2_brain_corrective_strategy": {
+          "stage": "brain_corrective_strategy",
+          "strategy_verdict": "workflow_rebuild_required_before_next_generation",
+          "recommended_changes": {
+            "resolution": {
+              "must_change": true,
+              "recommended_minimum": "1024x1024 or route-specific higher resolution",
+              "reason": "512x512 is insufficient for production visual quality"
+            },
+            "quality_pipeline": {
+              "must_add_upscale_or_refiner": true,
+              "recommended": [
+                "hires_fix_or_latent_upscale",
+                "image_upscale_pass",
+                "optional_refiner_pass"
+              ]
+            },
+            "prompting": {
+              "must_update_positive_prompt": true,
+              "must_update_negative_prompt": true
+            },
+            "control": {
+              "pose_or_composition_control_recommended": true,
+              "identity_lock_recommended_if_character_consistency_required": true
+            },
+            "workflow_td_review_required": true
+          },
+          "generation_allowed": false,
+          "next_allowed_action": "operator_strategy_review",
+          "timestamp": "2026-05-04T16:23:11.729725"
+        },
+        "combine_v2_workflow_rebuild_plan": {
+          "stage": "workflow_rebuild_plan_required",
+          "plan_type": "production_recipe_rebuild",
+          "required_workflow_changes": [
+            {
+              "change": "raise_base_resolution",
+              "target": ">=1024 on shortest side or route policy",
+              "required": true
+            },
+            {
+              "change": "add_upscale_or_hires_fix_stage",
+              "required": true
+            },
+            {
+              "change": "add_stronger_negative_prompt_contract",
+              "required": true
+            },
+            {
+              "change": "add_pose_or_composition_control_if_human_subject",
+              "required": true
+            },
+            {
+              "change": "add_identity_or_face_stabilization_if_character_route",
+              "required": false
+            }
+          ],
+          "forbidden_next_action": "real_generate_assets",
+          "next_allowed_action": "operator_strategy_review",
+          "timestamp": "2026-05-04T16:23:11.729725"
+        }
+      },
+      "timestamp": "2026-05-04T16:23:11.730725",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_strategy_review",
+      "success": true,
+      "message": "Agent ProductionBrainAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_operator_strategy_review_packet.json"
+      ],
+      "metadata": {
+        "agent": "ProductionBrainAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_strategy_review",
+        "action": "operator_strategy_review",
+        "next_allowed_action": "operator_strategy_review",
+        "generation_allowed": false,
+        "retry_allowed": false,
+        "assembly_allowed": false,
+        "production_accepted": false,
+        "combine_v2_operator_strategy_review_packet": {
+          "stage": "operator_strategy_review",
+          "operator_review_required": true,
+          "summary": "Current corrective retry produced a technically valid but visually unacceptable 512x512 asset. Production brain recommends workflow recipe rebuild before any further generation.",
+          "recommended_operator_decision": "approve_workflow_rebuild_plan",
+          "operator_actions": [
+            "approve_workflow_rebuild_plan",
+            "request_recipe_audit_changes",
+            "manual_review",
+            "abort_route"
+          ],
+          "generation_allowed": false,
+          "retry_allowed": false,
+          "assembly_allowed": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_strategy_review",
+          "timestamp": "2026-05-04T16:23:11.799031"
+        }
+      },
+      "timestamp": "2026-05-04T16:23:11.799031",
+      "no_generation_performed": true
     }
   ]
 }

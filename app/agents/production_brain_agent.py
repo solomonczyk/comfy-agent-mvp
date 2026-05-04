@@ -272,6 +272,23 @@ class ProductionBrainAgent(BaseRoleAgent):
                     "production_quality_failed"
                 ])
             
+            # Determine confirmation basis and confirm visual failure
+            confirmation_basis = []
+            if visual_operator_rejection:
+                confirmation_basis.append("operator_visual_rejection_or_operator_observed_failure")
+            if "low_resolution_or_unexpected_resolution" in failure_categories:
+                confirmation_basis.append("low_resolution_or_unexpected_resolution")
+            if failure_categories:
+                confirmation_basis.append("failure_categories_present")
+            
+            # Read recipe audit if available to add additional confirmation basis
+            recipe_audit = self._read_contract(project_root, "combine_v2_generation_recipe_audit")
+            if recipe_audit.get("recipe_quality_status") == "insufficient_for_production":
+                confirmation_basis.append("recipe_quality_status_insufficient_for_production")
+            
+            # Visual failure is confirmed if operator rejected OR failure categories are present
+            visual_failure_confirmed = visual_operator_rejection or bool(failure_categories)
+            
             audit = {
                 "stage": stage,
                 "source_asset": asset_path,
@@ -280,7 +297,8 @@ class ProductionBrainAgent(BaseRoleAgent):
                 "width": width,
                 "height": height,
                 "visual_operator_rejection": visual_operator_rejection,
-                "visual_failure_confirmed": visual_operator_rejection,
+                "visual_failure_confirmed": visual_failure_confirmed,
+                "confirmation_basis": confirmation_basis,
                 "failure_categories": failure_categories,
                 "next_allowed_action": "generation_recipe_audit_required",
                 "timestamp": timestamp

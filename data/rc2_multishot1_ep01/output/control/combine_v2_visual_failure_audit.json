@@ -6,7 +6,12 @@
   "width": 512,
   "height": 512,
   "visual_operator_rejection": false,
-  "visual_failure_confirmed": false,
+  "visual_failure_confirmed": true,
+  "confirmation_basis": [
+    "low_resolution_or_unexpected_resolution",
+    "failure_categories_present",
+    "recipe_quality_status_insufficient_for_production"
+  ],
   "failure_categories": [
     "low_resolution_or_unexpected_resolution",
     "blur_or_softness",
@@ -16,5 +21,5 @@
     "production_quality_failed"
   ],
   "next_allowed_action": "generation_recipe_audit_required",
-  "timestamp": "2026-05-04T16:13:05.294595"
+  "timestamp": "2026-05-04T16:23:11.599891"
 }
