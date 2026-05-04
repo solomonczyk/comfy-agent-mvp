@@ -1,0 +1,17 @@
+{
+  "stage": "diagnostic_generate_one_asset",
+  "diagnostic_mode": true,
+  "generated_assets_count": 0,
+  "generated_assets": [],
+  "generated_assets_non_empty": false,
+  "assets_root": "output/assets",
+  "output_control_root": "output/control",
+  "status": "failed",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+  "filesystem_assets_found": false,
+  "filesystem_new_asset_detected": false,
+  "new_files_count": 0,
+  "new_file_paths": [],
+  "downstream_executed": false,
+  "production_accepted": false
+}

@@ -1,0 +1,48 @@
+{
+  "stage": "diagnostic_generate_one_asset",
+  "status": "failed",
+  "diagnostic_mode": true,
+  "generation_attempts": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "generation_performed": true,
+  "comfyui_execution": true,
+  "production_state_mutation_allowed": false,
+  "generated_assets_count": 0,
+  "generated_assets": [],
+  "next_allowed_action": "diagnostic_result_collected",
+  "visual_qa_executed": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-04T17:38:13.237782",
+  "files_before": [
+    {
+      "name": "combine_v2_00001_.png",
+      "size_bytes": 367208,
+      "last_write_time": 1777888553.8771944
+    },
+    {
+      "name": "combine_v2_00002_.png",
+      "size_bytes": 367208,
+      "last_write_time": 1777902274.6637356
+    }
+  ],
+  "files_after": [
+    {
+      "name": "combine_v2_00001_.png",
+      "size_bytes": 367208,
+      "last_write_time": 1777888553.8771944
+    },
+    {
+      "name": "combine_v2_00002_.png",
+      "size_bytes": 367208,
+      "last_write_time": 1777902274.6637356
+    }
+  ],
+  "new_files_created": false,
+  "new_files_count": 0,
+  "new_file_paths": [],
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+}

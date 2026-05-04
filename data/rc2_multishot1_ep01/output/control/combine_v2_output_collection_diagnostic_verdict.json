@@ -1,0 +1,17 @@
+{
+  "stage": "output_collection_diagnostic",
+  "diagnostic_generation_performed": true,
+  "generation_attempts": 1,
+  "max_generations": 1,
+  "filesystem_new_asset_detected": false,
+  "manifest_new_asset_detected": false,
+  "collector_matches_filesystem": false,
+  "verdict": "output_path_bug",
+  "case": "asset_missing",
+  "visual_qa_executed": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-04T17:38:13.238363"
+}

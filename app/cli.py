@@ -1129,6 +1129,308 @@ def _build_minimal_real_workflow() -> Dict[str, Any]:
     }
 
 
+def combine_diagnostic_generate_one_asset(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-521-570-DIAG — Diagnostic generation for output collection verification.
+    
+    Runs exactly ONE generation in diagnostic mode to verify:
+    - Asset creation on filesystem
+    - Asset visibility in output assets
+    - Asset recording in manifest
+    - Collector matches filesystem
+    
+    Diagnostic mode constraints:
+    - max_generations: 1 (enforced)
+    - production_state_mutation_allowed: false
+    - visual_qa_executed: false
+    - retry_attempted: false
+    - assembly_executed: false
+    - downstream_executed: false
+    - production_accepted: false
+    
+    Exit codes:
+    - 0: diagnostic generation completed (check verdict for collector status)
+    - 1: error or invalid args
+    """
+    from app.comfy.comfy_client import ComfyClient
+
+    project_root = Path(args.project_root)
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    json_output = args.json
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+
+    # Capture filesystem state before generation
+    assets_dir = project_root / "output" / "assets"
+    assets_dir.mkdir(parents=True, exist_ok=True)
+    
+    # List existing files before generation
+    files_before = []
+    if assets_dir.exists():
+        for f in assets_dir.iterdir():
+            if f.is_file():
+                files_before.append({
+                    "name": f.name,
+                    "size_bytes": f.stat().st_size,
+                    "last_write_time": f.stat().st_mtime
+                })
+
+    if not execute:
+        dry_response = {
+            "status": "authorization_required",
+            "diagnostic_mode": True,
+            "would_submit_workflow": True,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "files_before": files_before,
+        }
+        if json_output:
+            print(json.dumps(dry_response, indent=2))
+        else:
+            print("Diagnostic Generation: DRY RUN")
+        return 0
+
+    if max_generations != 1:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "max_generations_must_equal_1",
+            "diagnostic_mode": True,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Diagnostic Generation: BLOCKED (max_generations must be 1)")
+        return 1
+
+    # Build minimal workflow for diagnostic generation
+    workflow_payload = _build_minimal_real_workflow()
+    
+    now = datetime.utcnow().isoformat()
+    submit_request = {
+        "stage": "diagnostic_generate_one_asset",
+        "status": "submitted",
+        "diagnostic_mode": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": True,
+        "production_state_mutation_allowed": False,
+        "next_allowed_action": "diagnostic_result_collected",
+        "visual_qa_executed": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "workflow_payload_snapshot": workflow_payload,
+        "timestamp": now,
+    }
+    submit_request_path = control_dir / "combine_v2_diagnostic_generation_result.json"
+    _write_json_file(submit_request_path, submit_request)
+
+    client = ComfyClient()
+    status = "completed"
+    prompt_id = None
+    generated_assets: List[Dict[str, Any]] = []
+    retry_attempted = False
+    error_message = None
+    trace_events: List[Dict[str, Any]] = []
+    
+    try:
+        prompt_id = asyncio.run(client.queue_prompt(workflow_payload))
+        trace_events.append({"event": "workflow_submitted", "status": "success", "prompt_id": prompt_id})
+        history_item = asyncio.run(client.wait_for_history(prompt_id, max_attempts=180, delay_seconds=2))
+        history_images = _extract_history_images(history_item)
+        generated_assets, collection_trace = _collect_real_generation_outputs(
+            client=client,
+            project_root=project_root,
+            history_images=history_images,
+        )
+        trace_events.extend(collection_trace)
+        trace_events.append(
+            {
+                "event": "outputs_collected",
+                "status": "success",
+                "assets_count": len(generated_assets),
+            }
+        )
+    except Exception as exc:
+        status = "failed"
+        error_message = str(exc)
+        trace_events.append({"event": "generation_failed", "status": "failed", "error": error_message})
+
+    failure_code = None
+    if status == "completed" and len(generated_assets) == 0:
+        status = "failed"
+        failure_code = "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+        trace_events.append(
+            {
+                "event": "zero_assets_guard_triggered",
+                "status": "failed",
+                "failure_code": failure_code,
+            }
+        )
+
+    # Capture filesystem state after generation
+    files_after = []
+    new_files_created = False
+    new_files_count = 0
+    new_file_paths = []
+    
+    if assets_dir.exists():
+        for f in assets_dir.iterdir():
+            if f.is_file():
+                file_info = {
+                    "name": f.name,
+                    "size_bytes": f.stat().st_size,
+                    "last_write_time": f.stat().st_mtime
+                }
+                files_after.append(file_info)
+                
+                # Check if this is a new file
+                is_new = True
+                for before_file in files_before:
+                    if before_file["name"] == f.name:
+                        is_new = False
+                        break
+                
+                if is_new:
+                    new_files_created = True
+                    new_files_count += 1
+                    new_file_paths.append(str(f.relative_to(project_root)))
+
+    # Create diagnostic generation result
+    result_payload = {
+        "stage": "diagnostic_generate_one_asset",
+        "status": status,
+        "diagnostic_mode": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": True,
+        "production_state_mutation_allowed": False,
+        "generated_assets_count": len(generated_assets),
+        "generated_assets": generated_assets,
+        "next_allowed_action": "diagnostic_result_collected",
+        "visual_qa_executed": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.utcnow().isoformat(),
+        "files_before": files_before,
+        "files_after": files_after,
+        "new_files_created": new_files_created,
+        "new_files_count": new_files_count,
+        "new_file_paths": new_file_paths,
+    }
+    if error_message:
+        result_payload["error"] = error_message
+    if failure_code:
+        result_payload["failure_code"] = failure_code
+
+    # Create diagnostic outputs manifest
+    outputs_manifest = {
+        "stage": "diagnostic_generate_one_asset",
+        "diagnostic_mode": True,
+        "generated_assets_count": len(generated_assets),
+        "generated_assets": generated_assets,
+        "generated_assets_non_empty": len(generated_assets) > 0,
+        "assets_root": "output/assets",
+        "output_control_root": "output/control",
+        "status": status,
+        "failure_code": failure_code,
+        "filesystem_assets_found": new_files_created,
+        "filesystem_new_asset_detected": new_files_created,
+        "new_files_count": new_files_count,
+        "new_file_paths": new_file_paths,
+        "downstream_executed": False,
+        "production_accepted": False,
+    }
+
+    # Create diagnostic output path verification
+    output_path_verification = {
+        "stage": "diagnostic_generate_one_asset",
+        "diagnostic_mode": True,
+        "assets_dir_exists": assets_dir.exists(),
+        "assets_dir_path": str(assets_dir.relative_to(project_root)),
+        "files_before_count": len(files_before),
+        "files_after_count": len(files_after),
+        "new_files_created": new_files_created,
+        "new_files_count": new_files_count,
+        "new_file_paths": new_file_paths,
+        "comfyui_execution": True,
+        "generation_attempted": True,
+    }
+
+    # Determine diagnostic verdict
+    collector_matches_filesystem = False
+    if new_files_created and len(generated_assets) > 0:
+        # Check if manifest records match filesystem
+        manifest_paths = set(asset.get("path", "") for asset in generated_assets)
+        filesystem_paths = set(new_file_paths)
+        collector_matches_filesystem = manifest_paths == filesystem_paths
+    
+    if new_files_created and len(generated_assets) > 0 and collector_matches_filesystem:
+        verdict = "collector_ok"
+        case = "asset_exists_and_manifest_ok"
+    elif new_files_created and len(generated_assets) == 0:
+        verdict = "collector_bug"
+        case = "asset_exists_manifest_empty"
+    elif not new_files_created:
+        verdict = "output_path_bug"
+        case = "asset_missing"
+    else:
+        verdict = "unknown"
+        case = "unknown_case"
+
+    diagnostic_verdict = {
+        "stage": "output_collection_diagnostic",
+        "diagnostic_generation_performed": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "filesystem_new_asset_detected": new_files_created,
+        "manifest_new_asset_detected": len(generated_assets) > 0,
+        "collector_matches_filesystem": collector_matches_filesystem,
+        "verdict": verdict,
+        "case": case,
+        "visual_qa_executed": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+
+    # Write diagnostic files
+    _write_json_file(control_dir / "combine_v2_diagnostic_generation_result.json", result_payload)
+    _write_json_file(control_dir / "combine_v2_diagnostic_outputs_manifest.json", outputs_manifest)
+    _write_json_file(control_dir / "combine_v2_diagnostic_output_path_verification.json", output_path_verification)
+    _write_json_file(control_dir / "combine_v2_output_collection_diagnostic_verdict.json", diagnostic_verdict)
+
+    if json_output:
+        print(json.dumps({
+            "result": result_payload,
+            "manifest": outputs_manifest,
+            "verification": output_path_verification,
+            "verdict": diagnostic_verdict,
+        }, indent=2))
+    else:
+        print(f"Diagnostic Generation: {status.upper()}")
+        print(f"Verdict: {verdict}")
+        print(f"Case: {case}")
+        print(f"New files created: {new_files_created}")
+        print(f"New files count: {new_files_count}")
+        print(f"Collector matches filesystem: {collector_matches_filesystem}")
+    
+    return 0 if status == "completed" else 1
+
+
 def combine_real_generate_assets(args: argparse.Namespace) -> int:
     from app.comfy.comfy_client import ComfyClient
 
@@ -2798,6 +3100,33 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-521-570-DIAG — combine-diagnostic-generate-one-asset subcommand
+    combine_diagnostic_generate_one_asset_parser = subparsers.add_parser(
+        "combine-diagnostic-generate-one-asset",
+        help="Run one diagnostic generation to verify output collection"
+    )
+    combine_diagnostic_generate_one_asset_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_diagnostic_generate_one_asset_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute the diagnostic generation (default: dry run only)",
+    )
+    combine_diagnostic_generate_one_asset_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum generations (must be 1 for diagnostic mode, default: 1)",
+    )
+    combine_diagnostic_generate_one_asset_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     combine_real_generation_preflight_parser = subparsers.add_parser(
         "combine-real-generation-preflight",
         help="Run read-only ComfyUI preflight for real generation readiness",
@@ -3915,6 +4244,8 @@ def main() -> int:
         return combine_authorize_generation(args)
     elif args.command == "combine-authorize-retry":
         return combine_authorize_retry(args)
+    elif args.command == "combine-diagnostic-generate-one-asset":
+        return combine_diagnostic_generate_one_asset(args)
     elif args.command == "combine-real-generation-preflight":
         return combine_real_generation_preflight(args)
     elif args.command == "combine-prepare-real-generation":

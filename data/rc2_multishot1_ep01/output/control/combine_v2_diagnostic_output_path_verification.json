@@ -1,0 +1,13 @@
+{
+  "stage": "diagnostic_generate_one_asset",
+  "diagnostic_mode": true,
+  "assets_dir_exists": true,
+  "assets_dir_path": "output\\assets",
+  "files_before_count": 2,
+  "files_after_count": 2,
+  "new_files_created": false,
+  "new_files_count": 0,
+  "new_file_paths": [],
+  "comfyui_execution": true,
+  "generation_attempted": true
+}
