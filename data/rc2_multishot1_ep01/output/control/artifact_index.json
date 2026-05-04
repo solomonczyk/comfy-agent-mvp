@@ -1,5 +1,5 @@
 {
-  "current_state": "real_generation_readiness_required",
+  "current_state": "operator_real_generation_authorization_required",
   "route_family": "custom",
   "stage_results": [
     {
