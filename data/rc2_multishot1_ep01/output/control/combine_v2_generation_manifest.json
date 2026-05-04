@@ -1,0 +1,13 @@
+{
+  "generated_assets": [
+    {
+      "path": "output/assets/combine_v2_1777917278_00001_.png",
+      "width": 1024,
+      "height": 1024,
+      "resolution": "1024x1024"
+    }
+  ],
+  "canonical_assets_dir": "output/assets",
+  "native_comfy_output_dir": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output",
+  "manifest_type": "canonical_project_assets"
+}
