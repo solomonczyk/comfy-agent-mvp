@@ -1,5 +1,5 @@
 {
-  "current_state": "operator_visual_review",
+  "current_state": "operator_real_generation_authorization_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -3259,6 +3259,528 @@
         }
       },
       "timestamp": "2026-05-04T13:28:12.249300",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_visual_review",
+      "success": true,
+      "message": "Agent VisualQAAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_visual_acceptance_gate_result.json"
+      ],
+      "metadata": {
+        "agent": "VisualQAAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "retry_correction_required",
+        "action": "visual_acceptance_decision",
+        "operator_decision": "rejected",
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "combine_v2_visual_acceptance_gate_result": {
+          "operator_visual_decision": "rejected",
+          "visuals_accepted": false,
+          "next_allowed_action": "retry_correction_required",
+          "production_accepted": false,
+          "downstream_blocked": true,
+          "retry_attempted": false,
+          "assembly_executed": false,
+          "downstream_executed": false,
+          "retry_authorized": false,
+          "generation_performed": false
+        }
+      },
+      "timestamp": "2026-05-04T13:37:44.008469",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "retry_correction_required",
+      "success": true,
+      "message": "Agent RetryPolicyAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_retry_failure_classification.json",
+        "combine_v2_retry_corrective_plan.json",
+        "combine_v2_retry_authorization_request.json"
+      ],
+      "metadata": {
+        "agent": "RetryPolicyAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_retry_authorization_required",
+        "action": "determine_retry_policy",
+        "retry_policy_stage": "retry_correction_required",
+        "failure_classification_created": true,
+        "corrective_plan_created": true,
+        "retry_authorization_request_created": true,
+        "retry_authorization_required": true,
+        "retry_authorized": false,
+        "production_accepted": false,
+        "next_allowed_action": "operator_retry_authorization_required",
+        "loaded_input_artifacts": [
+          "combine_v2_operator_visual_decision.json",
+          "combine_v2_operator_visual_review_packet.json",
+          "combine_v2_visual_acceptance_gate_result.json",
+          "combine_v2_visual_qa_stub_report.json"
+        ],
+        "missing_input_artifacts": []
+      },
+      "timestamp": "2026-05-04T13:37:47.738280",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_retry_authorization_required",
+      "success": true,
+      "message": "Agent GenericStageAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "GenericStageAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "none"
+      },
+      "timestamp": "2026-05-04T13:37:55.867663",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_retry_authorization_required",
+      "success": true,
+      "message": "Agent GenericStageAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "GenericStageAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "none"
+      },
+      "timestamp": "2026-05-04T13:38:03.491114",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "generation_authorization_required",
+      "success": true,
+      "message": "Agent GenerationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_generation_authorization_request.json",
+        "combine_v2_generation_authorization_decision.json",
+        "combine_v2_generation_payload_stub.json"
+      ],
+      "metadata": {
+        "agent": "GenerationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "corrective_retry_payload_rebuild_required",
+        "action": "generation_authorization_request",
+        "generation_authorization_ready": true,
+        "generation_authorized": false,
+        "authorization_required": true,
+        "blocked_by_assets": false,
+        "retry_requested": true,
+        "operator_retry_authorized": true,
+        "retry_gate_open": false,
+        "retry_executed": false,
+        "corrective_plan_applied_to_payload": true,
+        "next_allowed_action": "corrective_retry_payload_rebuild_required",
+        "loaded_retry_artifacts": [
+          "combine_v2_operator_retry_authorization.json",
+          "combine_v2_retry_authorization_request.json",
+          "combine_v2_retry_corrective_plan.json",
+          "combine_v2_retry_failure_classification.json",
+          "combine_v2_retry_gate_decision.json"
+        ],
+        "missing_retry_artifacts": [],
+        "combine_v2_generation_authorization_request": {
+          "agent": "GenerationAgent",
+          "stage": "generation_authorization_required",
+          "generation_authorization_ready": true,
+          "assets_resolved": true,
+          "preflight_ok": true,
+          "authorization_required": true,
+          "blocked_by_assets": false,
+          "missing_assets": [],
+          "retry_requested": true,
+          "operator_retry_authorized": true,
+          "retry_gate_open": false,
+          "retry_corrective_plan_loaded": true,
+          "retry_failure_classification_loaded": true,
+          "retry_authorization_request_loaded": true,
+          "retry_gate_decision_loaded": true,
+          "corrective_plan_applied_to_payload": true,
+          "retry_execution_authorized": false,
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "timestamp": "2026-05-04T13:38:06.195530"
+        },
+        "combine_v2_generation_authorization_decision": {
+          "agent": "GenerationAgent",
+          "stage": "generation_authorization_required",
+          "generation_authorization_ready": true,
+          "generation_authorized": false,
+          "authorization_required": true,
+          "retry_requested": true,
+          "operator_retry_authorized": true,
+          "retry_gate_open": false,
+          "retry_executed": false,
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "next_allowed_action": "corrective_retry_payload_rebuild_required",
+          "timestamp": "2026-05-04T13:38:06.195530"
+        },
+        "combine_v2_generation_payload_stub": {
+          "agent": "GenerationAgent",
+          "stage": "generation_authorization_required",
+          "payload_type": "generation_contract_v2",
+          "workflow": "comfy_v2_standard_flow",
+          "prompts": {
+            "positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+            "negative": "low quality, blurry, distorted"
+          },
+          "assets": {},
+          "is_stub": true,
+          "dry_run": true,
+          "retry_context": {
+            "retry_requested": true,
+            "operator_retry_authorized": true,
+            "retry_gate_open": false,
+            "corrective_plan_applied_to_payload": true,
+            "retry_execution_authorized": false
+          }
+        }
+      },
+      "timestamp": "2026-05-04T13:38:06.274917",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "corrective_retry_payload_rebuild_required",
+      "success": true,
+      "message": "Agent GenericStageAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "GenericStageAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "none"
+      },
+      "timestamp": "2026-05-04T13:38:09.149887",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "corrective_retry_payload_rebuild_required",
+      "success": true,
+      "message": "Agent GenerationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_corrective_retry_payload_rebuild_report.json",
+        "combine_v2_corrective_retry_prompt_patch.json",
+        "combine_v2_corrective_retry_generation_payload.json",
+        "combine_v2_corrective_retry_execution_contract.json"
+      ],
+      "metadata": {
+        "agent": "GenerationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "real_generation_readiness_required",
+        "action": "corrective_retry_payload_rebuild",
+        "corrective_plan_applied_to_payload": true,
+        "source_failure": "unknown",
+        "prompt_patch_created": true,
+        "generation_payload_refreshed": true,
+        "execution_contract_refreshed": true,
+        "retry_execution_authorized": false,
+        "workflow_submitted": false,
+        "production_accepted": false,
+        "next_allowed_action": "real_generation_readiness_required",
+        "combine_v2_corrective_retry_payload_rebuild_report": {
+          "stage": "corrective_retry_payload_rebuild_required",
+          "corrective_plan_applied_to_payload": true,
+          "source_failure": "unknown",
+          "prompt_patch_created": true,
+          "generation_payload_refreshed": true,
+          "execution_contract_refreshed": true,
+          "retry_execution_authorized": false,
+          "next_allowed_action": "real_generation_readiness_required",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "workflow_submitted": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "timestamp": "2026-05-04T13:38:25.868309"
+        },
+        "combine_v2_corrective_retry_prompt_patch": {
+          "agent": "GenerationAgent",
+          "stage": "corrective_retry_payload_rebuild_required",
+          "patch_type": "corrective_retry_prompt_patch",
+          "source_failure": "unknown",
+          "corrective_actions": [
+            "adjust_prompt",
+            "increase_steps"
+          ],
+          "patch_created": true,
+          "timestamp": "2026-05-04T13:38:25.868309"
+        },
+        "combine_v2_corrective_retry_generation_payload": {
+          "agent": "GenerationAgent",
+          "stage": "corrective_retry_payload_rebuild_required",
+          "payload_type": "corrective_retry_generation_payload",
+          "source_failure": "unknown",
+          "corrective_plan_applied": true,
+          "base_payload": {
+            "agent": "GenerationAgent",
+            "stage": "generation_authorization_required",
+            "payload_type": "generation_contract_v2",
+            "workflow": "comfy_v2_standard_flow",
+            "prompts": {
+              "positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+              "negative": "low quality, blurry, distorted"
+            },
+            "assets": {},
+            "is_stub": true,
+            "dry_run": true,
+            "retry_context": {
+              "retry_requested": true,
+              "operator_retry_authorized": true,
+              "retry_gate_open": false,
+              "corrective_plan_applied_to_payload": true,
+              "retry_execution_authorized": false
+            }
+          },
+          "corrective_context": {
+            "corrective_plan_id": "CP-001",
+            "corrective_actions": [
+              "adjust_prompt",
+              "increase_steps"
+            ]
+          },
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "timestamp": "2026-05-04T13:38:25.868309"
+        },
+        "combine_v2_corrective_retry_execution_contract": {
+          "agent": "GenerationAgent",
+          "stage": "corrective_retry_payload_rebuild_required",
+          "contract_type": "corrective_retry_execution_contract",
+          "source_failure": "unknown",
+          "corrective_plan_applied": true,
+          "base_contract": {
+            "stage": "real_generation_payload_review",
+            "contract_type": "real_generation_execution_contract",
+            "dry_run": true,
+            "source_artifacts": {
+              "combine_v2_generation_payload_stub_loaded": true,
+              "combine_v2_generation_execution_plan_loaded": true,
+              "combine_v2_generation_trace_stub_loaded": true,
+              "combine_v2_workflow_contract_loaded": true,
+              "combine_v2_prompt_contract_loaded": true,
+              "combine_v2_asset_requirements_contract_loaded": true,
+              "combine_v2_preflight_contract_loaded": false
+            },
+            "workflow_submitted": false,
+            "generation_submitted": false,
+            "generation_performed": false,
+            "comfyui_execution": false,
+            "downstream_executed": false,
+            "production_accepted": false,
+            "next_allowed_action": "operator_real_generation_authorization_required",
+            "timestamp": "2026-05-01T15:42:39.845639"
+          },
+          "retry_execution_authorized": false,
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "workflow_submitted": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "timestamp": "2026-05-04T13:38:25.868309"
+        }
+      },
+      "timestamp": "2026-05-04T13:38:25.911664",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generation_readiness_required",
+      "success": true,
+      "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_real_generation_readiness_report.json"
+      ],
+      "metadata": {
+        "agent": "RealGenerationReadinessAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "real_generation_preflight_required",
+        "next_allowed_action": "real_generation_preflight_required",
+        "combine_v2_real_generation_readiness_report": {
+          "stage": "real_generation_readiness_required",
+          "status": "ready_for_preflight",
+          "checks": {
+            "canonical_state_available": true,
+            "generation_gate_open": true,
+            "retry_context_available": true,
+            "generation_payload_stub_available": true,
+            "execution_plan_available": true,
+            "project_root_is_absolute": true,
+            "output_control_available": true
+          },
+          "blockers": [],
+          "next_allowed_action": "real_generation_preflight_required",
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "timestamp": "2026-05-04T13:38:36.286239"
+        }
+      },
+      "timestamp": "2026-05-04T13:38:36.287468",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generation_preflight_required",
+      "success": true,
+      "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_real_generation_preflight_report.json"
+      ],
+      "metadata": {
+        "agent": "RealGenerationReadinessAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "real_generation_payload_review",
+        "next_allowed_action": "real_generation_payload_review",
+        "combine_v2_real_generation_preflight_report": {
+          "stage": "real_generation_preflight_required",
+          "status": "ready",
+          "comfyui_read_only_check": true,
+          "comfyui_reachable": true,
+          "object_info_available": true,
+          "required_nodes_checked": true,
+          "generation_submitted": false,
+          "comfyui_execution": false,
+          "workflow_mutated": false,
+          "downstream_executed": false,
+          "next_allowed_action": "real_generation_payload_review"
+        }
+      },
+      "timestamp": "2026-05-04T13:38:39.123984",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "real_generation_payload_review",
+      "success": true,
+      "message": "Agent GenerationAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_real_generation_payload.json",
+        "combine_v2_real_generation_execution_contract.json"
+      ],
+      "metadata": {
+        "agent": "GenerationAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_real_generation_authorization_required",
+        "action": "materialize_real_generation_payload",
+        "next_allowed_action": "operator_real_generation_authorization_required",
+        "combine_v2_real_generation_payload": {
+          "stage": "real_generation_payload_review",
+          "payload_type": "real_generation_candidate",
+          "route_family": "custom",
+          "prompt_contract": "output/control/combine_v2_prompt_contract.json",
+          "workflow_contract": "output/control/combine_v2_workflow_contract.json",
+          "asset_contract": "output/control/combine_v2_asset_requirements_contract.json",
+          "retry_context": {
+            "retry_requested": true,
+            "operator_retry_authorized": true,
+            "corrective_plan_applied_to_payload": true
+          },
+          "execution_ready": false,
+          "requires_operator_real_generation_authorization": true,
+          "generation_performed": false,
+          "comfyui_execution": false
+        },
+        "combine_v2_real_generation_execution_contract": {
+          "stage": "real_generation_payload_review",
+          "contract_type": "real_generation_execution_contract",
+          "dry_run": true,
+          "source_artifacts": {
+            "combine_v2_generation_payload_stub_loaded": true,
+            "combine_v2_generation_execution_plan_loaded": true,
+            "combine_v2_generation_trace_stub_loaded": true,
+            "combine_v2_workflow_contract_loaded": true,
+            "combine_v2_prompt_contract_loaded": true,
+            "combine_v2_asset_requirements_contract_loaded": true,
+            "combine_v2_preflight_contract_loaded": false
+          },
+          "workflow_submitted": false,
+          "generation_submitted": false,
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_real_generation_authorization_required",
+          "timestamp": "2026-05-04T13:38:41.925293"
+        }
+      },
+      "timestamp": "2026-05-04T13:38:41.937379",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_real_generation_authorization_required",
+      "success": true,
+      "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+      "artifacts": [
+        "combine_v2_operator_real_generation_authorization_request.json"
+      ],
+      "metadata": {
+        "agent": "RealGenerationReadinessAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "operator_real_generation_authorization_required",
+        "next_allowed_action": "operator_real_generation_authorization_required",
+        "combine_v2_operator_real_generation_authorization_request": {
+          "stage": "operator_real_generation_authorization_required",
+          "request_type": "real_comfyui_generation_authorization",
+          "requires_operator_confirmation": true,
+          "will_execute_comfyui_if_approved_later": true,
+          "current_layer_executes_comfyui": false,
+          "generation_performed": false,
+          "comfyui_execution": false,
+          "downstream_executed": false,
+          "production_accepted": false,
+          "next_allowed_action": "operator_real_generation_authorization_required",
+          "timestamp": "2026-05-04T13:38:44.794493"
+        }
+      },
+      "timestamp": "2026-05-04T13:38:44.794493",
       "no_generation_performed": true
     }
   ]

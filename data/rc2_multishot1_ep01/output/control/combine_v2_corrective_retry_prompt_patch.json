@@ -1,0 +1,12 @@
+{
+  "agent": "GenerationAgent",
+  "stage": "corrective_retry_payload_rebuild_required",
+  "patch_type": "corrective_retry_prompt_patch",
+  "source_failure": "unknown",
+  "corrective_actions": [
+    "adjust_prompt",
+    "increase_steps"
+  ],
+  "patch_created": true,
+  "timestamp": "2026-05-04T13:38:25.868309"
+}

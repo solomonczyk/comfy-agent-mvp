@@ -1,0 +1,13 @@
+{
+  "status": "failed",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+  "generated_assets_count": 0,
+  "next_allowed_action": "real_generation_result_review_required",
+  "operator_review_required": true,
+  "visual_qa_executed": false,
+  "generation_attempted": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-04T09:20:43.088242"
+}

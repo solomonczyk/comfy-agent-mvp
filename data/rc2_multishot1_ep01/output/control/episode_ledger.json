@@ -735,5 +735,126 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-04T13:28:12.249300"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_visual_review",
+    "agent": "VisualQAAgent",
+    "success": true,
+    "message": "Agent VisualQAAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:37:44.008469"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "retry_correction_required",
+    "agent": "RetryPolicyAgent",
+    "success": true,
+    "message": "Agent RetryPolicyAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:37:47.738280"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_retry_authorization_required",
+    "agent": "GenericStageAgent",
+    "success": true,
+    "message": "Agent GenericStageAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:37:55.867663"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_retry_authorization_required",
+    "agent": "GenericStageAgent",
+    "success": true,
+    "message": "Agent GenericStageAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:38:03.491114"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "generation_authorization_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:38:06.274917"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "corrective_retry_payload_rebuild_required",
+    "agent": "GenericStageAgent",
+    "success": true,
+    "message": "Agent GenericStageAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:38:09.149887"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "corrective_retry_payload_rebuild_required",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:38:25.911664"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generation_readiness_required",
+    "agent": "RealGenerationReadinessAgent",
+    "success": true,
+    "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:38:36.287468"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generation_preflight_required",
+    "agent": "RealGenerationReadinessAgent",
+    "success": true,
+    "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:38:39.123984"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "real_generation_payload_review",
+    "agent": "GenerationAgent",
+    "success": true,
+    "message": "Agent GenerationAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:38:41.937379"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "operator_real_generation_authorization_required",
+    "agent": "RealGenerationReadinessAgent",
+    "success": true,
+    "message": "Agent RealGenerationReadinessAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-04T13:38:44.794493"
   }
 ]

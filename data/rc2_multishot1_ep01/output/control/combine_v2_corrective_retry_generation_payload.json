@@ -1,0 +1,37 @@
+{
+  "agent": "GenerationAgent",
+  "stage": "corrective_retry_payload_rebuild_required",
+  "payload_type": "corrective_retry_generation_payload",
+  "source_failure": "unknown",
+  "corrective_plan_applied": true,
+  "base_payload": {
+    "agent": "GenerationAgent",
+    "stage": "generation_authorization_required",
+    "payload_type": "generation_contract_v2",
+    "workflow": "comfy_v2_standard_flow",
+    "prompts": {
+      "positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+      "negative": "low quality, blurry, distorted"
+    },
+    "assets": {},
+    "is_stub": true,
+    "dry_run": true,
+    "retry_context": {
+      "retry_requested": true,
+      "operator_retry_authorized": true,
+      "retry_gate_open": false,
+      "corrective_plan_applied_to_payload": true,
+      "retry_execution_authorized": false
+    }
+  },
+  "corrective_context": {
+    "corrective_plan_id": "CP-001",
+    "corrective_actions": [
+      "adjust_prompt",
+      "increase_steps"
+    ]
+  },
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "timestamp": "2026-05-04T13:38:25.868309"
+}

@@ -1,0 +1,16 @@
+{
+  "stage": "corrective_retry_payload_rebuild_required",
+  "corrective_plan_applied_to_payload": true,
+  "source_failure": "unknown",
+  "prompt_patch_created": true,
+  "generation_payload_refreshed": true,
+  "execution_contract_refreshed": true,
+  "retry_execution_authorized": false,
+  "next_allowed_action": "real_generation_readiness_required",
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "workflow_submitted": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-04T13:38:25.868309"
+}

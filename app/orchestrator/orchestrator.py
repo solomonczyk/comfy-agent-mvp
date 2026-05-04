@@ -50,6 +50,7 @@ class CombineOrchestrator:
         "real_visual_qa_preflight_required": "VisualQAAgent",
         "real_visual_qa_required": "VisualQAAgent",
         "retry_correction_required": "RetryPolicyAgent",
+        "corrective_retry_payload_rebuild_required": "GenerationAgent",
         "controlled_asset_resolution_review_required": "AssetResolverAgent",
         "assembly_required": "AssemblyAgent",
         "final_qc_required": "FinalQAAgent",

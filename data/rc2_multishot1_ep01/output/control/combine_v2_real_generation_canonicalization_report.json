@@ -1,0 +1,16 @@
+{
+  "stage": "real_generation_result_canonicalization",
+  "original_status": "completed",
+  "canonical_status": "failed",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+  "inconsistency_resolved": true,
+  "completed_with_zero_assets_impossible_in_canonical_state": true,
+  "previous_generated_assets_count": 0,
+  "current_generated_assets_count": 0,
+  "visual_qa_executed": false,
+  "generation_attempted": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-04T09:20:43.088242"
+}
