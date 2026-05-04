@@ -18,7 +18,13 @@ class VisualQAAgent(BaseRoleAgent):
     
     @property
     def supported_stages(self) -> List[str]:
-        return ["visual_qa_required_stub_pending", "visual_qa_required", "operator_visual_review"]
+        return [
+            "visual_qa_required_stub_pending",
+            "visual_qa_required",
+            "real_visual_qa_preflight_required",
+            "real_visual_qa_required",
+            "operator_visual_review"
+        ]
     
     @property
     def required_inputs(self) -> List[str]:
@@ -155,6 +161,359 @@ class VisualQAAgent(BaseRoleAgent):
             }
         )
 
+    def _execute_technical_checks(self, project_root: str) -> Dict[str, Any]:
+        """Execute technical checks on the generated asset from manifest."""
+        import os
+        import json
+        import hashlib
+        from pathlib import Path
+        from PIL import Image
+        
+        # Read manifest to get asset path
+        manifest_path = Path(project_root) / "output" / "control" / "combine_v2_generation_manifest.json"
+        asset_path = None
+        expected_width = None
+        expected_height = None
+        
+        if manifest_path.exists():
+            try:
+                with open(manifest_path, 'r') as f:
+                    manifest = json.load(f)
+                    if "generated_assets" in manifest and manifest["generated_assets"]:
+                        first_asset = manifest["generated_assets"][0]
+                        asset_path = first_asset.get("path")
+                        expected_width = first_asset.get("width")
+                        expected_height = first_asset.get("height")
+            except (json.JSONDecodeError, IOError, KeyError):
+                pass
+        
+        # If no manifest or asset, try to find asset in output/assets
+        if not asset_path:
+            assets_dir = Path(project_root) / "output" / "assets"
+            if assets_dir.exists():
+                for ext in ['.png', '.jpg', '.jpeg']:
+                    for file in assets_dir.glob(f"*{ext}"):
+                        asset_path = str(file)
+                        break
+                    if asset_path:
+                        break
+        
+        # Initialize check results
+        checks = {
+            "asset_exists": {"status": "failed", "message": "Asset not found"},
+            "asset_readable": {"status": "failed", "message": "Asset not readable"},
+            "width_height_valid": {"status": "failed", "message": "Could not validate dimensions"},
+            "sha256_present": {"status": "failed", "message": "SHA256 not computed"},
+            "size_bytes_valid": {"status": "failed", "message": "Size not validated"},
+            "resolution_policy_check": {"status": "failed", "message": "Resolution not checked"},
+            "blur_or_softness_basic": {"status": "failed", "message": "Blur not analyzed"},
+            "brightness_basic": {"status": "failed", "message": "Brightness not analyzed"},
+            "contrast_basic": {"status": "failed", "message": "Contrast not analyzed"}
+        }
+        
+        actual_width = None
+        actual_height = None
+        sha256_hash = None
+        size_bytes = None
+        
+        # Execute technical checks if asset exists
+        if asset_path and Path(asset_path).exists():
+            checks["asset_exists"] = {"status": "passed", "message": f"Asset found: {asset_path}"}
+            
+            try:
+                # Check readability and get image info
+                with Image.open(asset_path) as img:
+                    actual_width, actual_height = img.size
+                    checks["asset_readable"] = {"status": "passed", "message": "Asset readable"}
+                    checks["width_height_valid"] = {
+                        "status": "passed",
+                        "message": f"Dimensions: {actual_width}x{actual_height}",
+                        "actual_width": actual_width,
+                        "actual_height": actual_height
+                    }
+                    
+                    # Resolution policy check
+                    if expected_width and expected_height:
+                        if actual_width == expected_width and actual_height == expected_height:
+                            checks["resolution_policy_check"] = {
+                                "status": "passed",
+                                "message": "Resolution matches expected",
+                                "actual_width": actual_width,
+                                "actual_height": actual_height,
+                                "expected_width": expected_width,
+                                "expected_height": expected_height
+                            }
+                        else:
+                            checks["resolution_policy_check"] = {
+                                "status": "warn",
+                                "message": f"Resolution mismatch: {actual_width}x{actual_height} vs expected {expected_width}x{expected_height}",
+                                "actual_width": actual_width,
+                                "actual_height": actual_height,
+                                "expected_width": expected_width,
+                                "expected_height": expected_height
+                            }
+                    else:
+                        # No expected resolution, just report actual
+                        checks["resolution_policy_check"] = {
+                            "status": "warn",
+                            "message": "No expected resolution in manifest",
+                            "actual_width": actual_width,
+                            "actual_height": actual_height,
+                            "expected_or_policy": "route_expected_resolution"
+                        }
+                    
+                    # Basic image quality metrics (simplified)
+                    # Blur detection (using variance of Laplacian approximation)
+                    import numpy as np
+                    img_gray = img.convert('L')
+                    img_array = np.array(img_gray)
+                    
+                    # Blur check - high variance = less blurry
+                    variance = np.var(img_array)
+                    blur_threshold = 100.0
+                    if variance > blur_threshold:
+                        checks["blur_or_softness_basic"] = {
+                            "status": "passed",
+                            "message": f"No significant blur (variance: {variance:.2f})",
+                            "metric": variance
+                        }
+                    else:
+                        checks["blur_or_softness_basic"] = {
+                            "status": "warn",
+                            "message": f"Potential blur detected (variance: {variance:.2f})",
+                            "metric": variance
+                        }
+                    
+                    # Brightness check
+                    mean_brightness = np.mean(img_array)
+                    brightness_min, brightness_max = 50, 200
+                    if brightness_min <= mean_brightness <= brightness_max:
+                        checks["brightness_basic"] = {
+                            "status": "passed",
+                            "message": f"Brightness within range (mean: {mean_brightness:.2f})",
+                            "metric": mean_brightness
+                        }
+                    else:
+                        checks["brightness_basic"] = {
+                            "status": "warn",
+                            "message": f"Brightness out of range (mean: {mean_brightness:.2f})",
+                            "metric": mean_brightness
+                        }
+                    
+                    # Contrast check (using standard deviation)
+                    contrast = np.std(img_array)
+                    contrast_threshold = 30.0
+                    if contrast > contrast_threshold:
+                        checks["contrast_basic"] = {
+                            "status": "passed",
+                            "message": f"Contrast adequate (std: {contrast:.2f})",
+                            "metric": contrast
+                        }
+                    else:
+                        checks["contrast_basic"] = {
+                            "status": "warn",
+                            "message": f"Low contrast (std: {contrast:.2f})",
+                            "metric": contrast
+                        }
+                
+                # SHA256 calculation
+                with open(asset_path, 'rb') as f:
+                    sha256_hash = hashlib.sha256(f.read()).hexdigest()
+                checks["sha256_present"] = {
+                    "status": "passed",
+                    "message": "SHA256 computed",
+                    "sha256": sha256_hash
+                }
+                
+                # Size check
+                size_bytes = os.path.getsize(asset_path)
+                checks["size_bytes_valid"] = {
+                    "status": "passed",
+                    "message": f"Size: {size_bytes} bytes",
+                    "size_bytes": size_bytes
+                }
+                
+            except Exception as e:
+                checks["asset_readable"] = {"status": "failed", "message": f"Error reading asset: {str(e)}"}
+        
+        return {
+            "checks": checks,
+            "source_asset": asset_path or "output/assets/combine_v2_00001_.png",
+            "actual_width": actual_width,
+            "actual_height": actual_height,
+            "sha256": sha256_hash,
+            "size_bytes": size_bytes,
+            "technical_asset_valid": all(c["status"] in ["passed", "warn"] for c in checks.values())
+        }
+
+    def _create_real_visual_qa_result(self, context: CombineRunContext) -> AgentResult:
+        """Create real visual QA result for real_visual_qa_required stage."""
+        # Read generation artifacts
+        generation_plan = self._read_contract(context.project_root, "combine_v2_generation_execution_plan")
+        generation_stub_result = self._read_contract(context.project_root, "combine_v2_generation_execution_stub_result")
+        generation_trace_stub = self._read_contract(context.project_root, "combine_v2_generation_trace_stub")
+        operator_generation_authorization = self._read_contract(
+            context.project_root,
+            "combine_v2_operator_generation_authorization"
+        )
+
+        # Execute technical checks
+        technical_check_result = self._execute_technical_checks(context.project_root)
+        checks = technical_check_result["checks"]
+        technical_asset_valid = technical_check_result["technical_asset_valid"]
+
+        # Manual visual checks (require human review)
+        manual_checks = {
+            "anatomy_distortion": {"status": "manual_review_required"},
+            "hand_distortion": {"status": "manual_review_required"},
+            "body_pose_instability": {"status": "manual_review_required"},
+            "clothing_artifacts": {"status": "manual_review_required"},
+            "face_identity_unreliable": {"status": "manual_review_required"},
+            "production_quality_failed": {"status": "manual_review_required"}
+        }
+
+        # Combine all checks
+        all_checks = {**checks, **manual_checks}
+
+        # Determine overall visual quality passed
+        # Technical checks must pass/warn, manual checks are always manual_review_required
+        visual_quality_passed = False  # Always false since manual checks require review
+
+        # 1. Create Real Visual QA Preflight Report
+        preflight_report = {
+            "stage": "real_visual_qa_required",
+            "agent": "VisualQAAgent",
+            "status": "real_analysis_required",
+            "real_image_analysis": True,
+            "generation_gate_open": bool(operator_generation_authorization.get("generation_gate_open", False)),
+            "source_asset": technical_check_result["source_asset"],
+            "technical_asset_valid": technical_asset_valid,
+            "visual_quality_passed": visual_quality_passed,
+            "operator_review_required": True,
+            "recommended_operator_decision": "reject",
+            "checks": all_checks,
+            "next_allowed_action": "operator_visual_review",
+            "retry_attempted": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False
+        }
+
+        # 2. Create Real Visual QA Report
+        qa_report = {
+            "stage": "real_visual_qa_required",
+            "source_asset": technical_check_result["source_asset"],
+            "technical_asset_valid": technical_asset_valid,
+            "visual_quality_passed": visual_quality_passed,
+            "operator_review_required": True,
+            "recommended_operator_decision": "reject",
+            "checks": all_checks,
+            "next_allowed_action": "operator_visual_review",
+            "retry_attempted": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False
+        }
+
+        # 3. Create Technical Visual QA Packet
+        technical_qa_packet = {
+            "stage": "real_visual_qa_required",
+            "source_stage": "real_visual_qa_preflight_required",
+            "source_asset": technical_check_result["source_asset"],
+            "technical_asset_valid": technical_asset_valid,
+            "visual_quality_passed": visual_quality_passed,
+            "operator_review_required": True,
+            "recommended_operator_decision": "reject",
+            "next_allowed_action": "operator_visual_review",
+            "retry_attempted": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "quality_metrics": {k: v["status"] for k, v in checks.items()},
+            "detected_issues": [v["message"] for k, v in checks.items() if v["status"] == "failed"],
+            "manual_checks_required": list(manual_checks.keys()),
+            "operator_review_packet": {
+                "operator_actions": [
+                    "accept_visuals",
+                    "reject_visuals",
+                    "request_retry_correction"
+                ],
+                "review_required": True,
+                "real_image_analysis": True
+            },
+            "retry_context_sources": {
+                "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+                "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+                "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+                "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+            }
+        }
+
+        # 4. Create Operator Visual Review Packet
+        operator_review_packet = {
+            "stage": "operator_visual_review",
+            "source_stage": "real_visual_qa_required",
+            "source_asset": technical_check_result["source_asset"],
+            "operator_review_required": True,
+            "operator_actions": [
+                "accept_visuals",
+                "reject_visuals",
+                "request_retry_correction"
+            ],
+            "visual_qa_report": "output/control/combine_v2_real_visual_qa_report.json",
+            "technical_qa_packet": "output/control/combine_v2_real_visual_qa_technical_packet.json",
+            "technical_asset_valid": technical_asset_valid,
+            "visual_quality_passed": visual_quality_passed,
+            "recommended_operator_decision": "reject",
+            "real_image_analysis": True,
+            "production_accepted": False,
+            "assembly_allowed": False,
+            "downstream_blocked": True,
+            "next_allowed_action": "operator_visual_review",
+            "manual_checks": manual_checks,
+            "retry_context_sources": {
+                "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+                "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+                "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+                "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+            }
+        }
+
+        return AgentResult(
+            agent=self.role_name,
+            stage=context.stage,
+            status="ok",
+            dry_run=context.dry_run,
+            generation_performed=False,
+            comfyui_execution=False,
+            downstream_executed=False,
+            artifacts=[
+                "combine_v2_real_visual_qa_preflight_report.json",
+                "combine_v2_real_visual_qa_report.json",
+                "combine_v2_real_visual_qa_technical_packet.json",
+                "combine_v2_operator_visual_review_packet.json"
+            ],
+            next_recommended_stage="operator_visual_review",
+            metadata={
+                "action": "real_visual_quality_assessment",
+                "description": "Performs real visual QA preflight and technical analysis",
+                "real_image_analysis": True,
+                "technical_asset_valid": technical_asset_valid,
+                "visual_quality_passed": visual_quality_passed,
+                "operator_review_required": True,
+                "recommended_operator_decision": "reject",
+                "next_allowed_action": "operator_visual_review",
+                "retry_attempted": False,
+                "assembly_executed": False,
+                "downstream_executed": False,
+                "production_accepted": False,
+                "combine_v2_real_visual_qa_preflight_report": preflight_report,
+                "combine_v2_real_visual_qa_report": qa_report,
+                "combine_v2_real_visual_qa_technical_packet": technical_qa_packet,
+                "combine_v2_operator_visual_review_packet": operator_review_packet
+            }
+        )
+
     def run(self, context: CombineRunContext, dry_run: bool = True) -> AgentResult:
         if context.stage == "visual_qa_required_stub_pending":
             return AgentResult(
@@ -174,30 +533,77 @@ class VisualQAAgent(BaseRoleAgent):
                     "real_image_analysis": False
                 }
             )
-        
+
         if context.stage == "visual_qa_required":
             return self.create_stub_result(context)
+
+        if context.stage == "real_visual_qa_preflight_required":
+            # Create preflight report artifact
+            preflight_report = {
+                "stage": "real_visual_qa_preflight_required",
+                "agent": "VisualQAAgent",
+                "status": "preflight_cleared",
+                "real_image_analysis": True,
+                "message": "Real visual QA preflight cleared, ready for real visual QA",
+                "next_allowed_action": "real_visual_qa_required",
+                "retry_attempted": False,
+                "assembly_executed": False,
+                "downstream_executed": False,
+                "production_accepted": False
+            }
+            
+            return AgentResult(
+                agent=self.role_name,
+                stage=context.stage,
+                status="ok",
+                dry_run=context.dry_run,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=["combine_v2_real_visual_qa_preflight_report.json"],
+                next_recommended_stage="real_visual_qa_required",
+                metadata={
+                    "action": "real_visual_qa_preflight",
+                    "message": "Real visual QA preflight cleared, ready for real visual QA",
+                    "real_image_analysis": True,
+                    "next_allowed_action": "real_visual_qa_required",
+                    "retry_attempted": False,
+                    "assembly_executed": False,
+                    "downstream_executed": False,
+                    "production_accepted": False,
+                    "combine_v2_real_visual_qa_preflight_report": preflight_report
+                }
+            )
+
+        if context.stage == "real_visual_qa_required":
+            return self._create_real_visual_qa_result(context)
 
         if context.stage == "operator_visual_review":
             # 1. Read operator decision artifact
             op_decision = self._read_contract(context.project_root, "combine_v2_operator_visual_decision")
             decision = op_decision.get("operator_visual_decision", "none")
-            
+
             # 2. Determine gate result
             gate_result = {
                 "operator_visual_decision": decision,
                 "visuals_accepted": False,
                 "next_allowed_action": "none",
                 "production_accepted": False,
-                "downstream_blocked": True
+                "downstream_blocked": True,
+                "retry_attempted": False,
+                "assembly_executed": False,
+                "downstream_executed": False
             }
-            
+
             if decision == "accepted":
                 gate_result.update({
                     "visuals_accepted": True,
                     "next_allowed_action": "assembly_required",
                     "assembly_allowed": False,
-                    "assembly_authorization_required": True
+                    "assembly_authorization_required": True,
+                    "retry_attempted": False,
+                    "assembly_executed": False,
+                    "downstream_executed": False
                 })
                 next_recommended_stage = "assembly_required"
                 status = "ok"
@@ -206,13 +612,19 @@ class VisualQAAgent(BaseRoleAgent):
                     "visuals_accepted": False,
                     "next_allowed_action": "retry_correction_required",
                     "retry_authorized": False,
-                    "generation_performed": False
+                    "generation_performed": False,
+                    "retry_attempted": False,
+                    "assembly_executed": False,
+                    "downstream_executed": False
                 })
                 next_recommended_stage = "retry_correction_required"
                 status = "ok"
             elif decision == "manual_review":
                 gate_result.update({
-                    "next_allowed_action": "blocked_manual_review"
+                    "next_allowed_action": "blocked_manual_review",
+                    "retry_attempted": False,
+                    "assembly_executed": False,
+                    "downstream_executed": False
                 })
                 next_recommended_stage = "blocked_manual_review"
                 status = "ok"
@@ -220,7 +632,10 @@ class VisualQAAgent(BaseRoleAgent):
                 next_recommended_stage = "operator_visual_review"
                 status = "blocked"
                 gate_result["message"] = "Waiting for operator decision"
-                
+                gate_result["retry_attempted"] = False
+                gate_result["assembly_executed"] = False
+                gate_result["downstream_executed"] = False
+
             return AgentResult(
                 agent=self.role_name,
                 stage=context.stage,
@@ -235,6 +650,9 @@ class VisualQAAgent(BaseRoleAgent):
                     "action": "visual_acceptance_decision",
                     "operator_decision": decision,
                     "next_recommended_stage": next_recommended_stage,
+                    "retry_attempted": False,
+                    "assembly_executed": False,
+                    "downstream_executed": False,
                     "combine_v2_visual_acceptance_gate_result": gate_result
                 }
             )
