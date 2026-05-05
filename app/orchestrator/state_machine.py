@@ -119,7 +119,7 @@ class CombineStateMachine:
             "generate_assets"
         },
         "operator_retry_generation_authorization_required": {
-            "generate_assets"
+            "operator_retry_generation_authorization_required"
         },
         "generate_assets": {
             "visual_qa_required_stub_pending",

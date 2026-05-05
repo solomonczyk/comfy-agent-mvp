@@ -1276,5 +1276,26 @@
     "generation_allowed": false,
     "retry_allowed": false,
     "timestamp": "2026-05-05T10:08:00.325421"
+  },
+  {
+    "event_type": "corrective_retry_implementation_package_created",
+    "stage": "corrective_retry_implementation_required",
+    "source_failed_asset": "output/assets/combine_v2_1777917278_00001_.png",
+    "failure_basis": [
+      "semantic_content_failed",
+      "subject_not_recognizable",
+      "blur_or_softness",
+      "low_detail_quality",
+      "composition_failed",
+      "production_quality_failed"
+    ],
+    "prompt_patch_created": true,
+    "workflow_patch_created": true,
+    "quality_pipeline_patch_created": true,
+    "preflight_report_created": true,
+    "operator_retry_generation_authorization_request_created": true,
+    "generation_allowed": false,
+    "retry_allowed": false,
+    "timestamp": "2026-05-05T10:11:11.386655"
   }
 ]

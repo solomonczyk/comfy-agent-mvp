@@ -162,7 +162,13 @@ class CombineOrchestrator:
                     if self.state_machine.can_transition(current_state, recommended):
                         return recommended
 
-        # 2. Fallback to state machine default
+        # 2. Check artifact_index explicit next_allowed_action
+        explicit_next = artifact_index.get("next_allowed_action")
+        if explicit_next and explicit_next != "none":
+            if explicit_next == current_state or self.state_machine.can_transition(current_state, explicit_next):
+                return explicit_next
+
+        # 3. Fallback to state machine default
         allowed_states = self.state_machine.get_allowed_next_states(current_state)
         if allowed_states:
             return allowed_states[0]

@@ -246,3 +246,11 @@ class TestCombineCorrectiveRetryAuthorization:
         assert not CombineStateMachine.can_transition("corrective_retry_implementation_required", "real_generate_assets")
         assert not CombineStateMachine.can_transition("corrective_retry_implementation_required", "assembly_required")
         assert not CombineStateMachine.can_transition("corrective_retry_implementation_required", "completed")
+
+    def test_state_machine_blocks_generate_assets_from_retry_authorization(self):
+        """Test that state machine does NOT allow generate_assets from operator_retry_generation_authorization_required."""
+        from app.orchestrator.state_machine import CombineStateMachine
+
+        assert not CombineStateMachine.can_transition("operator_retry_generation_authorization_required", "generate_assets")
+        assert "generate_assets" not in CombineStateMachine.get_allowed_next_states("operator_retry_generation_authorization_required")
+        assert CombineStateMachine.can_transition("operator_retry_generation_authorization_required", "operator_retry_generation_authorization_required")

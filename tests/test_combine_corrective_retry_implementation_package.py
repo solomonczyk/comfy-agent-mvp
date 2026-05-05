@@ -500,6 +500,7 @@ class TestCombineCorrectiveRetryImplementationPackage:
             artifact_index = json.load(f)
 
         assert artifact_index["current_state"] == "operator_retry_generation_authorization_required"
+        assert artifact_index["next_allowed_action"] == "operator_retry_generation_authorization_required"
         assert artifact_index["corrective_retry_implementation_authorized"] is True
         assert artifact_index["corrective_retry_package_created"] is True
         assert artifact_index["prompt_patch_created"] is True
@@ -517,3 +518,32 @@ class TestCombineCorrectiveRetryImplementationPackage:
         assert artifact_index["workflow_submitted"] is False
         assert artifact_index["downstream_executed"] is False
         assert artifact_index["production_accepted"] is False
+
+    def test_next_allowed_action_is_not_generate_assets(self, tmp_path):
+        """Test that next_allowed_action is NOT generate_assets after package build."""
+        control_dir = self.setup_control_dir(tmp_path)
+        self.create_preconditions_for_build(control_dir)
+
+        args = argparse.Namespace(
+            project_root=str(tmp_path),
+            json=True
+        )
+
+        combine_build_corrective_retry_package(args)
+
+        with open(control_dir / "artifact_index.json", 'r') as f:
+            artifact_index = json.load(f)
+
+        assert artifact_index["current_state"] == "operator_retry_generation_authorization_required"
+        assert artifact_index["next_allowed_action"] == "operator_retry_generation_authorization_required"
+        assert artifact_index["next_allowed_action"] != "generate_assets"
+        assert artifact_index["next_allowed_action"] != "real_generate_assets"
+
+        # Verify orchestrator status also reflects unambiguous gate
+        from app.orchestrator import CombineOrchestrator
+        orchestrator = CombineOrchestrator(str(tmp_path))
+        status = orchestrator.get_status()
+        assert status.current_state == "operator_retry_generation_authorization_required"
+        assert status.next_allowed_action == "operator_retry_generation_authorization_required"
+        assert status.next_allowed_action != "generate_assets"
+        assert status.next_allowed_action != "real_generate_assets"
