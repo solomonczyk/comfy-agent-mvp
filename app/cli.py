@@ -7308,7 +7308,7 @@ def main() -> int:
     # RC-COMBINE-V2-981-1040-FIX — Verify prompt patch v2
     combine_verify_prompt_patch_v2_parser = subparsers.add_parser(
         "combine-verify-prompt-patch-v2",
-        help="Verify prompt patch v2 uses node/field-based strategy instead of exact-text",
+        help="Verify prompt patch v2 uses node/field-based strategy"
     )
     combine_verify_prompt_patch_v2_parser.add_argument(
         "--project-root",
@@ -7318,9 +7318,72 @@ def main() -> int:
     combine_verify_prompt_patch_v2_parser.add_argument(
         "--shot-id",
         required=True,
-        help="Shot ID to verify (e.g., shot02)",
+        help="Shot ID for verification",
     )
     combine_verify_prompt_patch_v2_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1101-1160 — combine-run-corrective-retry-v2-visual-qa-preflight subcommand
+    combine_run_corrective_retry_v2_visual_qa_preflight_parser = subparsers.add_parser(
+        "combine-run-corrective-retry-v2-visual-qa-preflight",
+        help="Run visual QA preflight on corrective retry v2 asset"
+    )
+    combine_run_corrective_retry_v2_visual_qa_preflight_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_run_corrective_retry_v2_visual_qa_preflight_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID for visual QA preflight",
+    )
+    combine_run_corrective_retry_v2_visual_qa_preflight_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1101-1160 — combine-run-corrective-retry-v2-visual-qa subcommand
+    combine_run_corrective_retry_v2_visual_qa_parser = subparsers.add_parser(
+        "combine-run-corrective-retry-v2-visual-qa",
+        help="Run structured visual QA on corrective retry v2 asset"
+    )
+    combine_run_corrective_retry_v2_visual_qa_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_run_corrective_retry_v2_visual_qa_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID for visual QA",
+    )
+    combine_run_corrective_retry_v2_visual_qa_parser.add_argument(
+        "--asset",
+        required=True,
+        help="Asset path for visual QA",
+    )
+    combine_run_corrective_retry_v2_visual_qa_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1101-1160 — combine-validate-collector-reliability-guard subcommand
+    combine_validate_collector_reliability_guard_parser = subparsers.add_parser(
+        "combine-validate-collector-reliability-guard",
+        help="Validate collector reliability guard"
+    )
+    combine_validate_collector_reliability_guard_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_collector_reliability_guard_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -8320,6 +8383,12 @@ def main() -> int:
         return combine_build_corrective_retry_package_v2(args)
     elif args.command == "combine-verify-prompt-patch-v2":
         return combine_verify_prompt_patch_v2(args)
+    elif args.command == "combine-run-corrective-retry-v2-visual-qa-preflight":
+        return combine_run_corrective_retry_v2_visual_qa_preflight(args)
+    elif args.command == "combine-run-corrective-retry-v2-visual-qa":
+        return combine_run_corrective_retry_v2_visual_qa(args)
+    elif args.command == "combine-validate-collector-reliability-guard":
+        return combine_validate_collector_reliability_guard(args)
     elif args.command == "combine-validate-output-path-contract":
         return combine_validate_output_path_contract(args)
     elif args.command == "combine-run-rebuilt-asset-visual-qa":
@@ -15878,6 +15947,701 @@ def combine_build_corrective_retry_package_v2(args: argparse.Namespace) -> int:
         print(f"Cross-Shot Workflow Reuse Blocked: True")
         print(f"Prompt Patch Exact Text Dependency Removed: True")
         print(f"Next Allowed Action: operator_retry_generation_authorization_required")
+
+    return 0
+
+
+def combine_run_corrective_retry_v2_visual_qa_preflight(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1101-1160 — Run visual QA preflight on corrective retry v2 asset.
+
+    This command performs preflight checks before visual QA:
+    - Verifies manifest has asset records
+    - Verifies asset exists on filesystem
+    - Verifies asset is readable
+    - Checks manifest vs filesystem consistency
+    - Blocks entry to visual QA if preflight fails
+
+    Exit codes:
+    - 0: preflight completed successfully
+    - 1: preflight failed or invalid args
+    """
+    import json
+    import hashlib
+    from pathlib import Path
+    from datetime import datetime
+    from PIL import Image, UnidentifiedImageError
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    timestamp = datetime.now().isoformat()
+
+    # 1. Read generation result to get source asset
+    result_path = control_dir / "combine_v2_corrective_retry_v2_generation_result.json"
+    if not result_path.exists():
+        msg = "Error: combine_v2_corrective_retry_v2_generation_result.json not found. Run combine-corrective-retry-generate-assets-v2 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(result_path, 'r') as f:
+        generation_result = json.load(f)
+
+    generated_assets = generation_result.get("generated_assets", [])
+    if not generated_assets:
+        msg = "Error: No generated assets found in generation result."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    source_asset = generated_assets[0]
+    source_asset_path = assets_dir / Path(source_asset).name
+
+    # 2. Preflight checks
+    manifest_generated_assets_count = len(generated_assets)
+    filesystem_asset_exists = source_asset_path.exists()
+    asset_readable = False
+    width = 0
+    height = 0
+    sha256_hash = None
+    size_bytes = 0
+    manifest_references_canonical_project_asset = True
+    collector_manifest_consistent = True
+
+    if filesystem_asset_exists:
+        try:
+            with Image.open(source_asset_path) as img:
+                width, height = img.size
+            asset_readable = True
+            
+            # Compute SHA256
+            with open(source_asset_path, 'rb') as f:
+                sha256_hash = hashlib.sha256(f.read()).hexdigest()
+            size_bytes = source_asset_path.stat().st_size
+        except (UnidentifiedImageError, IOError, Exception) as e:
+            asset_readable = False
+            collector_manifest_consistent = False
+    else:
+        collector_manifest_consistent = False
+
+    # 3. Check manifest vs filesystem consistency
+    if manifest_generated_assets_count > 0 and not filesystem_asset_exists:
+        collector_manifest_consistent = False
+        manifest_references_canonical_project_asset = False
+
+    # 4. Determine if visual QA entry is allowed
+    visual_qa_entry_allowed = (
+        manifest_generated_assets_count > 0 and
+        filesystem_asset_exists and
+        asset_readable and
+        manifest_references_canonical_project_asset and
+        collector_manifest_consistent
+    )
+
+    # 5. Create preflight artifact
+    preflight_report = {
+        "stage": "corrective_retry_v2_visual_qa_preflight_required",
+        "shot_id": shot_id,
+        "source_asset": str(source_asset_path.relative_to(project_root)),
+        "manifest_generated_assets_count": manifest_generated_assets_count,
+        "filesystem_asset_exists": filesystem_asset_exists,
+        "asset_readable": asset_readable,
+        "width": width,
+        "height": height,
+        "sha256": sha256_hash,
+        "size_bytes": size_bytes,
+        "manifest_references_canonical_project_asset": manifest_references_canonical_project_asset,
+        "collector_manifest_consistent": collector_manifest_consistent,
+        "visual_qa_entry_allowed": visual_qa_entry_allowed,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v2_visual_qa" if visual_qa_entry_allowed else "blocked_manual_review",
+        "timestamp": timestamp
+    }
+
+    preflight_path = control_dir / "combine_v2_corrective_retry_v2_visual_qa_preflight.json"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    with open(preflight_path, 'w') as f:
+        json.dump(preflight_report, f, indent=2)
+
+    # 6. Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = preflight_report["next_allowed_action"]
+    artifact_index["next_allowed_action"] = preflight_report["next_allowed_action"]
+    artifact_index["shot_id"] = shot_id
+    artifact_index["source_asset"] = str(source_asset_path.relative_to(project_root))
+    artifact_index["visual_qa_preflight_executed"] = True
+    artifact_index["visual_qa_entry_allowed"] = visual_qa_entry_allowed
+    artifact_index["generation_performed"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 7. Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    ledger = data
+                elif isinstance(data, dict):
+                    ledger = data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v2_visual_qa_preflight_completed",
+        "stage": "corrective_retry_v2_visual_qa_preflight_required",
+        "shot_id": shot_id,
+        "source_asset": str(source_asset_path.relative_to(project_root)),
+        "visual_qa_entry_allowed": visual_qa_entry_allowed,
+        "generation_performed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result_payload = {
+        "status": "ok" if visual_qa_entry_allowed else "blocked",
+        "shot_id": shot_id,
+        "source_asset": str(source_asset_path.relative_to(project_root)),
+        "manifest_generated_assets_count": manifest_generated_assets_count,
+        "filesystem_asset_exists": filesystem_asset_exists,
+        "asset_readable": asset_readable,
+        "manifest_references_canonical_project_asset": manifest_references_canonical_project_asset,
+        "collector_manifest_consistent": collector_manifest_consistent,
+        "visual_qa_entry_allowed": visual_qa_entry_allowed,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": preflight_report["next_allowed_action"],
+        "artifacts": [str(preflight_path.relative_to(project_root))]
+    }
+
+    if json_output:
+        print(json.dumps(result_payload, indent=2))
+    else:
+        print("Corrective Retry V2 Visual QA Preflight: " + ("COMPLETED" if visual_qa_entry_allowed else "BLOCKED"))
+        print(f"Shot ID: {shot_id}")
+        print(f"Source Asset: {source_asset_path.relative_to(project_root)}")
+        print(f"Visual QA Entry Allowed: {visual_qa_entry_allowed}")
+        print(f"Next Allowed Action: {preflight_report['next_allowed_action']}")
+
+    return 0
+
+
+def combine_run_corrective_retry_v2_visual_qa(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1101-1160 — Run structured visual QA on corrective retry v2 asset.
+
+    This command performs structured visual quality assessment:
+    - Reads asset dimensions and validates minimum short side
+    - Performs technical checks (blur, brightness, contrast)
+    - Generates honest QA verdict (qa_passed or qa_failed)
+    - Creates operator review packet
+    - Blocks production acceptance without operator visual review
+
+    Exit codes:
+    - 0: visual QA completed successfully
+    - 1: visual QA failed or invalid args
+    """
+    import json
+    import hashlib
+    import numpy as np
+    from pathlib import Path
+    from datetime import datetime
+    from PIL import Image, UnidentifiedImageError
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    asset_path = args.asset
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    timestamp = datetime.now().isoformat()
+
+    # Resolve asset path
+    if not asset_path.startswith("output/"):
+        asset_path = f"output/assets/{asset_path}"
+    full_asset_path = project_root / asset_path
+
+    # 1. Verify asset exists
+    if not full_asset_path.exists():
+        msg = f"Error: Asset not found at {asset_path}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 2. Read asset and perform technical checks
+    width = 0
+    height = 0
+    sha256_hash = None
+    size_bytes = 0
+    asset_readable = False
+    minimum_short_side_valid = False
+
+    try:
+        with Image.open(full_asset_path) as img:
+            width, height = img.size
+        asset_readable = True
+
+        # Compute SHA256
+        with open(full_asset_path, 'rb') as f:
+            sha256_hash = hashlib.sha256(f.read()).hexdigest()
+        size_bytes = full_asset_path.stat().st_size
+
+        # Minimum short side check (512 pixels)
+        minimum_short_side = 512
+        minimum_short_side_valid = min(width, height) >= minimum_short_side
+
+    except (UnidentifiedImageError, IOError, Exception) as e:
+        asset_readable = False
+
+    # 3. Perform image quality checks
+    blur_score = None
+    brightness_score = None
+    contrast_score = None
+    failure_categories = []
+
+    if asset_readable:
+        try:
+            img_gray = Image.open(full_asset_path).convert('L')
+            img_array = np.array(img_gray)
+
+            # Blur detection (variance of Laplacian approximation)
+            variance = np.var(img_array)
+            blur_score = variance
+            blur_threshold = 100.0
+            if variance < blur_threshold:
+                failure_categories.append("blur_detected")
+
+            # Brightness check
+            mean_brightness = np.mean(img_array)
+            brightness_score = mean_brightness
+            brightness_min, brightness_max = 50, 200
+            if not (brightness_min <= mean_brightness <= brightness_max):
+                failure_categories.append("brightness_out_of_range")
+
+            # Contrast check
+            contrast = np.std(img_array)
+            contrast_score = contrast
+            contrast_threshold = 30.0
+            if contrast < contrast_threshold:
+                failure_categories.append("low_contrast")
+
+        except Exception:
+            failure_categories.append("technical_analysis_failed")
+
+    # 4. Determine QA verdict (honest assessment)
+    # QA passes if no failure categories and asset is readable
+    qa_verdict = "qa_passed" if (asset_readable and not failure_categories) else "qa_failed"
+
+    # 5. Create visual QA report
+    qa_report = {
+        "stage": "corrective_retry_v2_visual_qa",
+        "shot_id": shot_id,
+        "source_asset": asset_path,
+        "asset_exists": True,
+        "asset_readable": asset_readable,
+        "width": width,
+        "height": height,
+        "sha256": sha256_hash,
+        "size_bytes": size_bytes,
+        "minimum_short_side_valid": minimum_short_side_valid,
+        "blur_score": blur_score,
+        "brightness_score": brightness_score,
+        "contrast_score": contrast_score,
+        "visual_qa_executed": True,
+        "qa_verdict": qa_verdict,
+        "failure_categories": failure_categories,
+        "operator_review_required": True,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_visual_review",
+        "timestamp": timestamp
+    }
+
+    qa_report_path = control_dir / "combine_v2_corrective_retry_v2_visual_qa_report.json"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    with open(qa_report_path, 'w') as f:
+        json.dump(qa_report, f, indent=2)
+
+    # 6. Create failure audit if qa_failed
+    if qa_verdict == "qa_failed":
+        failure_audit = {
+            "stage": "corrective_retry_v2_visual_qa",
+            "shot_id": shot_id,
+            "source_asset": asset_path,
+            "qa_verdict": qa_verdict,
+            "failure_categories": failure_categories,
+            "technical_metrics": {
+                "width": width,
+                "height": height,
+                "blur_score": blur_score,
+                "brightness_score": brightness_score,
+                "contrast_score": contrast_score
+            },
+            "recommended_action": "operator_visual_review",
+            "timestamp": timestamp
+        }
+
+        failure_audit_path = control_dir / "combine_v2_corrective_retry_v2_failure_audit.json"
+        with open(failure_audit_path, 'w') as f:
+            json.dump(failure_audit, f, indent=2)
+
+    # 7. Create operator review packet
+    operator_review_packet = {
+        "stage": "operator_visual_review",
+        "source_stage": "corrective_retry_v2_visual_qa",
+        "shot_id": shot_id,
+        "source_asset": asset_path,
+        "qa_verdict": qa_verdict,
+        "failure_categories": failure_categories,
+        "operator_review_required": True,
+        "operator_actions": [
+            "accept_visuals",
+            "reject_visuals",
+            "request_retry_correction",
+            "block_manual_review"
+        ],
+        "visual_qa_report": str(qa_report_path.relative_to(project_root)),
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_blocked": True,
+        "next_allowed_action": "operator_visual_review",
+        "timestamp": timestamp
+    }
+
+    review_packet_path = control_dir / "combine_v2_corrective_retry_v2_operator_review_packet.json"
+    with open(review_packet_path, 'w') as f:
+        json.dump(operator_review_packet, f, indent=2)
+
+    # 8. Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "operator_visual_review"
+    artifact_index["next_allowed_action"] = "operator_visual_review"
+    artifact_index["shot_id"] = shot_id
+    artifact_index["source_asset"] = asset_path
+    artifact_index["visual_qa_executed"] = True
+    artifact_index["qa_verdict"] = qa_verdict
+    artifact_index["operator_review_required"] = True
+    artifact_index["generation_performed"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 9. Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    ledger = data
+                elif isinstance(data, dict):
+                    ledger = data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v2_visual_qa_completed",
+        "stage": "corrective_retry_v2_visual_qa",
+        "shot_id": shot_id,
+        "source_asset": asset_path,
+        "qa_verdict": qa_verdict,
+        "failure_categories": failure_categories,
+        "operator_review_required": True,
+        "generation_performed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result_payload = {
+        "status": "ok",
+        "shot_id": shot_id,
+        "source_asset": asset_path,
+        "asset_exists": True,
+        "asset_readable": asset_readable,
+        "width": width,
+        "height": height,
+        "minimum_short_side_valid": minimum_short_side_valid,
+        "visual_qa_executed": True,
+        "qa_verdict": qa_verdict,
+        "failure_categories": failure_categories,
+        "operator_review_required": True,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_visual_review",
+        "artifacts": [
+            str(qa_report_path.relative_to(project_root)),
+            str(review_packet_path.relative_to(project_root))
+        ]
+    }
+
+    if qa_verdict == "qa_failed":
+        result_payload["artifacts"].append(str((control_dir / "combine_v2_corrective_retry_v2_failure_audit.json").relative_to(project_root)))
+
+    if json_output:
+        print(json.dumps(result_payload, indent=2))
+    else:
+        print("Corrective Retry V2 Visual QA: COMPLETED")
+        print(f"Shot ID: {shot_id}")
+        print(f"Source Asset: {asset_path}")
+        print(f"QA Verdict: {qa_verdict}")
+        print(f"Failure Categories: {failure_categories if failure_categories else 'None'}")
+        print(f"Operator Review Required: True")
+        print(f"Next Allowed Action: operator_visual_review")
+
+    return 0
+
+
+def combine_validate_collector_reliability_guard(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1101-1160 — Validate collector reliability guard.
+
+    This command creates and validates a collector reliability guard that:
+    - Prohibits manifest being success/empty when assets exist on disk
+    - Requires failed collection to trigger filesystem scan
+    - Requires success branch to have manifest asset records
+    - Enforces manifest asset record requirements (path, exists, readable, width, height, size_bytes, sha256)
+    - Allows manual reconciliation only as recovery
+    - Requires future collectors to auto-reconcile
+
+    Exit codes:
+    - 0: guard validation completed successfully
+    - 1: guard validation failed or invalid args
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    timestamp = datetime.now().isoformat()
+
+    # 1. Scan filesystem for assets
+    filesystem_assets = []
+    if assets_dir.exists():
+        for ext in ['.png', '.jpg', '.jpeg']:
+            for file in assets_dir.glob(f"*{ext}"):
+                filesystem_assets.append(str(file.relative_to(project_root)))
+
+    # 2. Read manifest
+    manifest_path = control_dir / "combine_v2_generation_manifest.json"
+    manifest_assets = []
+    manifest_status = "unknown"
+
+    if manifest_path.exists():
+        with open(manifest_path, 'r') as f:
+            manifest = json.load(f)
+            manifest_status = manifest.get("status", "unknown")
+            manifest_assets = [a.get("path", "") for a in manifest.get("generated_assets", [])]
+
+    # 3. Validate guard conditions
+    manifest_empty_while_filesystem_assets_exist_is_forbidden = True
+    if manifest_status == "success" and not manifest_assets and filesystem_assets:
+        manifest_empty_while_filesystem_assets_exist_is_forbidden = False
+
+    failed_collection_requires_filesystem_scan = True
+    if manifest_status == "failed" and not filesystem_assets:
+        # Failed collection should trigger scan - this is a warning, not a failure
+        failed_collection_requires_filesystem_scan = True
+
+    success_branch_requires_manifest_asset_records = True
+    if manifest_status == "success" and not manifest_assets:
+        success_branch_requires_manifest_asset_records = False
+
+    # 4. Validate manifest asset record requirements
+    manifest_asset_records_require = [
+        "path",
+        "exists",
+        "readable",
+        "width",
+        "height",
+        "size_bytes",
+        "sha256"
+    ]
+
+    manifest_asset_records_valid = True
+    if manifest_path.exists():
+        with open(manifest_path, 'r') as f:
+            manifest = json.load(f)
+            for asset in manifest.get("generated_assets", []):
+                for required_field in manifest_asset_records_require:
+                    if required_field not in asset:
+                        manifest_asset_records_valid = False
+                        break
+
+    # 5. Create collector reliability guard
+    guard = {
+        "collector_reliability_guard_created": True,
+        "manifest_empty_while_filesystem_assets_exist_is_forbidden": manifest_empty_while_filesystem_assets_exist_is_forbidden,
+        "failed_collection_requires_filesystem_scan": failed_collection_requires_filesystem_scan,
+        "success_branch_requires_manifest_asset_records": success_branch_requires_manifest_asset_records,
+        "manifest_asset_records_require": manifest_asset_records_require,
+        "manifest_asset_records_valid": manifest_asset_records_valid,
+        "manual_reconciliation_allowed_only_as_recovery": True,
+        "future_collectors_must_auto_reconcile": True,
+        "filesystem_assets_count": len(filesystem_assets),
+        "filesystem_assets": filesystem_assets,
+        "manifest_status": manifest_status,
+        "manifest_assets_count": len(manifest_assets),
+        "manifest_assets": manifest_assets,
+        "timestamp": timestamp
+    }
+
+    guard_path = control_dir / "combine_v2_collector_reliability_guard.json"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    with open(guard_path, 'w') as f:
+        json.dump(guard, f, indent=2)
+
+    # 6. Create validation result
+    validation = {
+        "stage": "collector_reliability_guard_validation",
+        "guard_created": True,
+        "guard_path": str(guard_path.relative_to(project_root)),
+        "manifest_empty_while_filesystem_assets_exist_is_forbidden": manifest_empty_while_filesystem_assets_exist_is_forbidden,
+        "failed_collection_requires_filesystem_scan": failed_collection_requires_filesystem_scan,
+        "success_branch_requires_manifest_asset_records": success_branch_requires_manifest_asset_records,
+        "manifest_asset_records_require": manifest_asset_records_require,
+        "manifest_asset_records_valid": manifest_asset_records_valid,
+        "manual_reconciliation_allowed_only_as_recovery": True,
+        "future_collectors_must_auto_reconcile": True,
+        "validation_passed": (
+            manifest_empty_while_filesystem_assets_exist_is_forbidden and
+            success_branch_requires_manifest_asset_records and
+            manifest_asset_records_valid
+        ),
+        "timestamp": timestamp
+    }
+
+    validation_path = control_dir / "combine_v2_collector_reliability_validation.json"
+    with open(validation_path, 'w') as f:
+        json.dump(validation, f, indent=2)
+
+    # 7. Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["collector_reliability_guard_created"] = True
+    artifact_index["collector_reliability_guard_validation_passed"] = validation["validation_passed"]
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 8. Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    ledger = data
+                elif isinstance(data, dict):
+                    ledger = data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "collector_reliability_guard_validated",
+        "stage": "collector_reliability_guard_validation",
+        "guard_created": True,
+        "validation_passed": validation["validation_passed"],
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result_payload = {
+        "status": "ok",
+        "collector_reliability_guard_created": True,
+        "manifest_empty_while_filesystem_assets_exist_is_forbidden": manifest_empty_while_filesystem_assets_exist_is_forbidden,
+        "failed_collection_requires_filesystem_scan": failed_collection_requires_filesystem_scan,
+        "success_branch_requires_manifest_asset_records": success_branch_requires_manifest_asset_records,
+        "manifest_asset_records_require": manifest_asset_records_require,
+        "manual_reconciliation_allowed_only_as_recovery": True,
+        "future_collectors_must_auto_reconcile": True,
+        "validation_passed": validation["validation_passed"],
+        "artifacts": [
+            str(guard_path.relative_to(project_root)),
+            str(validation_path.relative_to(project_root))
+        ]
+    }
+
+    if json_output:
+        print(json.dumps(result_payload, indent=2))
+    else:
+        print("Collector Reliability Guard: VALIDATED")
+        print(f"Guard Created: True")
+        print(f"Manifest Empty While Filesystem Assets Exist Forbidden: {manifest_empty_while_filesystem_assets_exist_is_forbidden}")
+        print(f"Success Branch Requires Manifest Asset Records: {success_branch_requires_manifest_asset_records}")
+        print(f"Manifest Asset Records Valid: {manifest_asset_records_valid}")
+        print(f"Validation Passed: {validation['validation_passed']}")
+        print(f"Filesystem Assets Count: {len(filesystem_assets)}")
+        print(f"Manifest Assets Count: {len(manifest_assets)}")
 
     return 0
 

@@ -37,6 +37,7 @@ class CombineStateMachine:
         "corrective_retry_generate_assets_v2",
         "corrective_retry_v2_result_review_required",
         "corrective_retry_v2_visual_qa_preflight_required",
+        "corrective_retry_v2_visual_qa",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
         "real_generation_payload_review",
@@ -146,7 +147,10 @@ class CombineStateMachine:
             "blocked_manual_review"
         },
         "corrective_retry_v2_visual_qa_preflight_required": {
-            "visual_qa_required"
+            "corrective_retry_v2_visual_qa"
+        },
+        "corrective_retry_v2_visual_qa": {
+            "operator_visual_review"
         },
         "generate_assets": {
             "visual_qa_required_stub_pending",
