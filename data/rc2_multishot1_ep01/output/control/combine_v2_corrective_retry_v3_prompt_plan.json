@@ -1,0 +1,23 @@
+{
+  "plan_type": "corrective_retry_v3_prompt_plan",
+  "shot_id": "shot02",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "required_corrections": {
+    "prompt_quality_review_required": true,
+    "reduce_haze_or_low_contrast_prompt_terms": true,
+    "increase_detail_clarity": true
+  },
+  "prompt_elements_to_review": [
+    "positive_prompt",
+    "negative_prompt",
+    "style_modifiers",
+    "quality_parameters",
+    "contrast_and_sharpness_terms"
+  ],
+  "generation_allowed": false,
+  "timestamp": "2026-05-05T11:59:45.033911+00:00"
+}

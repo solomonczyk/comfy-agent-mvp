@@ -189,5 +189,97 @@
     "assembly_executed": false,
     "downstream_executed": false,
     "timestamp": "2026-05-05T13:33:08.762770"
+  },
+  {
+    "event_type": "operator_visual_rejection_v2",
+    "stage": "operator_visual_review",
+    "shot_id": "shot02",
+    "operator_visual_decision": "reject_visual_quality",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "previous_qa_verdict": "qa_failed",
+    "failure_categories": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "operator_rejection_confirmed": true,
+    "generation_allowed": false,
+    "next_allowed_action": "corrective_retry_v3_plan_required",
+    "timestamp": "2026-05-05T11:55:06.678860"
+  },
+  {
+    "event_type": "corrective_retry_v3_plan_created",
+    "stage": "corrective_retry_v3_plan_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_categories": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "blind_retry_allowed": false,
+    "retry_requires_operator_authorization": true,
+    "generation_allowed": false,
+    "next_allowed_action": "operator_retry_v3_plan_review_required",
+    "timestamp": "2026-05-05T11:55:15.108351"
+  },
+  {
+    "event_type": "operator_retry_v3_plan_review_packet_created",
+    "stage": "operator_retry_v3_plan_review_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_basis": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "blind_retry_allowed": false,
+    "retry_requires_operator_authorization": true,
+    "generation_allowed": false,
+    "next_allowed_action": "operator_retry_v3_plan_review_required",
+    "timestamp": "2026-05-05T11:55:23.843746"
+  },
+  {
+    "event_type": "operator_visual_rejection_v2",
+    "stage": "operator_visual_review",
+    "shot_id": "shot02",
+    "operator_visual_decision": "reject_visual_quality",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "previous_qa_verdict": "qa_failed",
+    "failure_categories": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "operator_rejection_confirmed": true,
+    "generation_allowed": false,
+    "next_allowed_action": "corrective_retry_v3_plan_required",
+    "timestamp": "2026-05-05T11:59:34.652729+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_plan_created",
+    "stage": "corrective_retry_v3_plan_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_categories": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "blind_retry_allowed": false,
+    "retry_requires_operator_authorization": true,
+    "generation_allowed": false,
+    "next_allowed_action": "operator_retry_v3_plan_review_required",
+    "timestamp": "2026-05-05T11:59:45.033911+00:00"
+  },
+  {
+    "event_type": "operator_retry_v3_plan_review_packet_created",
+    "stage": "operator_retry_v3_plan_review_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_basis": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "blind_retry_allowed": false,
+    "retry_requires_operator_authorization": true,
+    "generation_allowed": false,
+    "next_allowed_action": "operator_retry_v3_plan_review_required",
+    "timestamp": "2026-05-05T11:59:57.909842+00:00"
   }
 ]

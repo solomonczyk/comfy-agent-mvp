@@ -1,0 +1,77 @@
+{
+  "stage": "operator_retry_v3_plan_review_required",
+  "shot_id": "shot02",
+  "plan_type": "operator_retry_v3_plan_review_packet",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "previous_qa_verdict": "qa_failed",
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "operator_rejection_confirmed": true,
+  "blind_retry_allowed": false,
+  "retry_requires_operator_authorization": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "visual_qa_rerun": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "plan_components": {
+    "operator_visual_rejection_v2": "output/control/combine_v2_operator_visual_rejection_v2.json",
+    "failure_classification": "output/control/combine_v2_corrective_retry_v3_failure_classification.json",
+    "corrective_retry_v3_plan": "output/control/combine_v2_corrective_retry_v3_plan.json",
+    "sampler_recipe_plan": "output/control/combine_v2_corrective_retry_v3_sampler_recipe_plan.json",
+    "prompt_plan": "output/control/combine_v2_corrective_retry_v3_prompt_plan.json",
+    "workflow_quality_plan": "output/control/combine_v2_corrective_retry_v3_workflow_quality_plan.json"
+  },
+  "plan_snapshots": {
+    "required_corrections": {
+      "sampler_recipe_review_required": true,
+      "contrast_correction_required": true,
+      "blur_reduction_required": true,
+      "prompt_quality_review_required": true,
+      "workflow_quality_review_required": true,
+      "conditioning_chain_review_required": true
+    },
+    "recommended_changes": {
+      "increase_detail_clarity": true,
+      "reduce_haze_or_low_contrast_prompt_terms": true,
+      "review_cfg_steps_scheduler": true,
+      "verify_vae_decode_quality": true,
+      "verify_saveimage_output_quality": true,
+      "preserve_collector_reliability_guard": true
+    },
+    "sampler_elements_to_review": [
+      "sampler_name",
+      "scheduler",
+      "steps",
+      "cfg",
+      "denoise_strength"
+    ],
+    "prompt_elements_to_review": [
+      "positive_prompt",
+      "negative_prompt",
+      "style_modifiers",
+      "quality_parameters",
+      "contrast_and_sharpness_terms"
+    ],
+    "workflow_elements_to_review": [
+      "checkpoint_selection",
+      "conditioning_chain",
+      "vae_decode_node",
+      "saveimage_node",
+      "upscale_chain"
+    ]
+  },
+  "operator_actions_allowed": [
+    "approve_retry_v3_plan",
+    "request_plan_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "next_allowed_action": "operator_retry_v3_plan_review_required",
+  "timestamp": "2026-05-05T11:59:57.909842+00:00"
+}

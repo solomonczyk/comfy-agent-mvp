@@ -1,0 +1,22 @@
+{
+  "stage": "operator_visual_review",
+  "shot_id": "shot02",
+  "operator_visual_decision": "reject_visual_quality",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "previous_qa_verdict": "qa_failed",
+  "failure_categories": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "reason": "corrective_retry_v2_failed_visual_qa_blur_and_low_contrast",
+  "operator_rejection_confirmed": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "blind_retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "corrective_retry_v3_plan_required",
+  "timestamp": "2026-05-05T11:59:34.652729+00:00"
+}

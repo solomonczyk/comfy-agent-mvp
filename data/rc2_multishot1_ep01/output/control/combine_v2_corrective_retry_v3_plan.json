@@ -1,0 +1,37 @@
+{
+  "stage": "corrective_retry_v3_plan_required",
+  "shot_id": "shot02",
+  "plan_type": "controlled_corrective_retry_v3_plan",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "blind_retry_allowed": false,
+  "retry_requires_operator_authorization": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false,
+  "required_corrections": {
+    "sampler_recipe_review_required": true,
+    "contrast_correction_required": true,
+    "blur_reduction_required": true,
+    "prompt_quality_review_required": true,
+    "workflow_quality_review_required": true,
+    "conditioning_chain_review_required": true
+  },
+  "recommended_changes": {
+    "increase_detail_clarity": true,
+    "reduce_haze_or_low_contrast_prompt_terms": true,
+    "review_cfg_steps_scheduler": true,
+    "verify_vae_decode_quality": true,
+    "verify_saveimage_output_quality": true,
+    "preserve_collector_reliability_guard": true
+  },
+  "collector_manifest_consistent": true,
+  "collector_reliability_guard_created": true,
+  "next_allowed_action": "operator_retry_v3_plan_review_required",
+  "timestamp": "2026-05-05T11:59:45.033911+00:00"
+}

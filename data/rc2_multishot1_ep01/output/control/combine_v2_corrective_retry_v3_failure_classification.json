@@ -1,0 +1,22 @@
+{
+  "stage": "corrective_retry_v3_plan_required",
+  "shot_id": "shot02",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "previous_qa_verdict": "qa_failed",
+  "failure_categories": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "classification": "corrective_retry_v2_visual_qa_failure",
+  "severity": "high",
+  "blur_detected": true,
+  "low_contrast": true,
+  "requires_corrective_retry_v3": true,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-05T11:59:45.033911+00:00"
+}

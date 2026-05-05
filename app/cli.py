@@ -16803,7 +16803,7 @@ def combine_operator_visual_decision_v2(args: argparse.Namespace) -> int:
     """
     import json
     from pathlib import Path
-    from datetime import datetime
+    from datetime import datetime, timezone
 
     project_root = Path(args.project_root)
     shot_id = args.shot_id
@@ -16813,7 +16813,7 @@ def combine_operator_visual_decision_v2(args: argparse.Namespace) -> int:
     json_output = args.json
     control_dir = project_root / "output" / "control"
     control_dir.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now(timezone.utc).isoformat()
 
     # Only reject_visual_quality is allowed here
     if decision != "reject_visual_quality":
@@ -16961,14 +16961,14 @@ def combine_create_corrective_retry_v3_plan(args: argparse.Namespace) -> int:
     """
     import json
     from pathlib import Path
-    from datetime import datetime
+    from datetime import datetime, timezone
 
     project_root = Path(args.project_root)
     shot_id = args.shot_id
     json_output = args.json
     control_dir = project_root / "output" / "control"
     control_dir.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now(timezone.utc).isoformat()
 
     # Require operator visual rejection v2 to exist
     rejection_v2_path = control_dir / "combine_v2_operator_visual_rejection_v2.json"
@@ -17248,14 +17248,14 @@ def combine_build_retry_v3_plan_review_packet(args: argparse.Namespace) -> int:
     """
     import json
     from pathlib import Path
-    from datetime import datetime
+    from datetime import datetime, timezone
 
     project_root = Path(args.project_root)
     shot_id = args.shot_id
     json_output = args.json
     control_dir = project_root / "output" / "control"
     control_dir.mkdir(parents=True, exist_ok=True)
-    timestamp = datetime.utcnow().isoformat()
+    timestamp = datetime.now(timezone.utc).isoformat()
 
     # Require corrective retry v3 plan to exist
     v3_plan_path = control_dir / "combine_v2_corrective_retry_v3_plan.json"
