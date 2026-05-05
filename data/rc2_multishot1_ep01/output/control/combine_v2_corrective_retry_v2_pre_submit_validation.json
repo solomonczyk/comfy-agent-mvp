@@ -1,0 +1,15 @@
+{
+  "stage": "corrective_retry_generate_assets_v2",
+  "corrective_retry_package_v2_exists": true,
+  "operator_retry_generation_authorized_v2": true,
+  "requested_shot_id": "shot02",
+  "workflow_shot_id_matches_requested_shot": true,
+  "cross_shot_workflow_reuse_blocked": true,
+  "prompt_patch_v2_verified": true,
+  "fallback_minimal_workflow_forbidden": true,
+  "legacy_512_workflow_blocked": true,
+  "minimum_short_side_1024_enforced": true,
+  "output_path_contract_preserved": true,
+  "validation_passed": true,
+  "timestamp": "2026-05-05T13:14:46.209418"
+}

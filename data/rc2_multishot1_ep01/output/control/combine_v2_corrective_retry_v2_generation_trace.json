@@ -1,0 +1,74 @@
+{
+  "stage": "corrective_retry_generate_assets_v2",
+  "trace_id": "corrective_retry_v2_trace_20260505T131446209418",
+  "requested_shot_id": "shot02",
+  "events": [
+    {
+      "event": "operator_authorization_check",
+      "status": "authorized_v2"
+    },
+    {
+      "event": "corrective_retry_package_v2_loaded",
+      "status": "success"
+    },
+    {
+      "event": "shot_specific_workflow_binding_checked",
+      "shot_id": "shot02",
+      "status": "matched"
+    },
+    {
+      "event": "cross_shot_workflow_reuse_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "prompt_patch_v2_verified",
+      "status": "success"
+    },
+    {
+      "event": "fallback_minimal_workflow_forbidden",
+      "status": "enforced"
+    },
+    {
+      "event": "max_generations_enforced",
+      "max_generations": 1
+    },
+    {
+      "event": "workflow_submitted",
+      "status": "submitted"
+    },
+    {
+      "event": "generation_attempt",
+      "attempt": 1,
+      "status": "executed"
+    },
+    {
+      "event": "second_generation_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "blind_retry_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "legacy_512_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "minimum_short_side_1024",
+      "status": "enforced"
+    },
+    {
+      "event": "visual_qa_skipped",
+      "status": "stopped_before_visual_qa"
+    },
+    {
+      "event": "assembly_skipped",
+      "status": "stopped_before_assembly"
+    },
+    {
+      "event": "downstream_skipped",
+      "status": "stopped_before_downstream"
+    }
+  ],
+  "timestamp": "2026-05-05T13:14:46.209418"
+}

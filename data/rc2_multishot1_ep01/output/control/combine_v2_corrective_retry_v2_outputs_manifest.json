@@ -1,0 +1,21 @@
+{
+  "stage": "corrective_retry_generate_assets_v2",
+  "manifest_type": "corrective_retry_v2_outputs_manifest",
+  "requested_shot_id": "shot02",
+  "generation_attempts": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "generated_assets": [
+    {
+      "filename": "combine_v2_corrective_retry_1777971208_00001_.png",
+      "path": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+      "shot_id": "shot02",
+      "timestamp": "2026-05-05T10:59:00"
+    }
+  ],
+  "asset_paths": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_1777971208_00001_.png"
+  ],
+  "collection_status": "executed",
+  "timestamp": "2026-05-05T13:14:46.209418"
+}

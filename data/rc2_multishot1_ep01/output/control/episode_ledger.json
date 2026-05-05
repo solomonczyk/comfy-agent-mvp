@@ -1,36 +1,125 @@
-{
-  "events": [
-    {
-      "event_type": "corrective_retry_workflow_audit",
-      "used_existing_submitted_workflow": true,
-      "used_fallback_minimal_workflow": false,
-      "timestamp": "2026-05-05T09:34:06.026599"
-    },
-    {
-      "event_type": "corrective_retry_recipe_diagnosis",
-      "root_cause_count": 4,
-      "timestamp": "2026-05-05T09:34:28.527538"
-    },
-    {
-      "event_type": "corrective_retry_recipe_v2_recommendation",
-      "recommended_actions_count": 4,
-      "timestamp": "2026-05-05T09:34:50.651152"
-    },
-    {
-      "event_type": "corrective_retry_workflow_audit",
-      "used_existing_submitted_workflow": true,
-      "used_fallback_minimal_workflow": false,
-      "timestamp": "2026-05-05T09:45:17.576291"
-    },
-    {
-      "event_type": "corrective_retry_recipe_diagnosis",
-      "root_cause_count": 4,
-      "timestamp": "2026-05-05T09:51:06.342542"
-    },
-    {
-      "event_type": "corrective_retry_recipe_v2_recommendation",
-      "recommended_actions_count": 4,
-      "timestamp": "2026-05-05T09:51:08.661987"
-    }
-  ]
-}
+[
+  {
+    "event_type": "corrective_retry_workflow_audit",
+    "used_existing_submitted_workflow": true,
+    "used_fallback_minimal_workflow": false,
+    "timestamp": "2026-05-05T09:34:06.026599"
+  },
+  {
+    "event_type": "corrective_retry_recipe_diagnosis",
+    "root_cause_count": 4,
+    "timestamp": "2026-05-05T09:34:28.527538"
+  },
+  {
+    "event_type": "corrective_retry_recipe_v2_recommendation",
+    "recommended_actions_count": 4,
+    "timestamp": "2026-05-05T09:34:50.651152"
+  },
+  {
+    "event_type": "corrective_retry_workflow_audit",
+    "used_existing_submitted_workflow": true,
+    "used_fallback_minimal_workflow": false,
+    "timestamp": "2026-05-05T09:45:17.576291"
+  },
+  {
+    "event_type": "corrective_retry_recipe_diagnosis",
+    "root_cause_count": 4,
+    "timestamp": "2026-05-05T09:51:06.342542"
+  },
+  {
+    "event_type": "corrective_retry_recipe_v2_recommendation",
+    "recommended_actions_count": 4,
+    "timestamp": "2026-05-05T09:51:08.661987"
+  },
+  {
+    "event_type": "corrective_retry_package_v2_created",
+    "shot_id": "shot02",
+    "package_type": "corrective_retry_package_v2",
+    "shot_specific_workflow_binding_required": true,
+    "cross_shot_workflow_reuse_blocked": true,
+    "prompt_patch_exact_text_dependency_removed": true,
+    "generation_allowed": false,
+    "retry_allowed": false,
+    "timestamp": "2026-05-05T11:03:36.894928"
+  },
+  {
+    "event_type": "operator_retry_generation_authorized_v2",
+    "stage": "operator_retry_generation_authorization_required",
+    "operator_decision": "approve_one_corrective_retry_generation_v2",
+    "operator_retry_generation_authorized_v2": true,
+    "corrective_retry_package_v2_used": true,
+    "shot_id": "shot02",
+    "max_generations": 1,
+    "generation_allowed": true,
+    "retry_allowed": true,
+    "workflow_submitted": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-05T13:11:41.759505"
+  },
+  {
+    "event_type": "corrective_retry_v2_generation_completed",
+    "stage": "corrective_retry_generate_assets_v2",
+    "corrective_retry_package_v2_used": true,
+    "requested_shot_id": "shot02",
+    "generation_attempts": 1,
+    "max_generations": 1,
+    "workflow_submitted": true,
+    "generation_performed": true,
+    "comfyui_execution": false,
+    "second_generation_attempted": false,
+    "blind_retry_allowed": false,
+    "timestamp": "2026-05-05T13:11:47.295677"
+  },
+  {
+    "event_type": "corrective_retry_v2_result_review_completed",
+    "stage": "corrective_retry_v2_result_review_required",
+    "shot_id": "shot02",
+    "branch_selected": "failed_collection",
+    "generated_assets_count": 0,
+    "result_review_executed": true,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-05T13:11:54.022944"
+  },
+  {
+    "event_type": "operator_retry_generation_authorized_v2",
+    "stage": "operator_retry_generation_authorization_required",
+    "operator_decision": "approve_one_corrective_retry_generation_v2",
+    "operator_retry_generation_authorized_v2": true,
+    "corrective_retry_package_v2_used": true,
+    "shot_id": "shot02",
+    "max_generations": 1,
+    "generation_allowed": true,
+    "retry_allowed": true,
+    "workflow_submitted": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-05T13:14:40.599691"
+  },
+  {
+    "event_type": "corrective_retry_v2_generation_completed",
+    "stage": "corrective_retry_generate_assets_v2",
+    "corrective_retry_package_v2_used": true,
+    "requested_shot_id": "shot02",
+    "generation_attempts": 1,
+    "max_generations": 1,
+    "workflow_submitted": true,
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "second_generation_attempted": false,
+    "blind_retry_allowed": false,
+    "timestamp": "2026-05-05T13:14:46.209418"
+  },
+  {
+    "event_type": "corrective_retry_v2_result_review_completed",
+    "stage": "corrective_retry_v2_result_review_required",
+    "shot_id": "shot02",
+    "branch_selected": "failed_collection",
+    "generated_assets_count": 0,
+    "result_review_executed": true,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-05T13:14:51.866114"
+  }
+]

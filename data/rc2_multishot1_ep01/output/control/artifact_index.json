@@ -1,5 +1,5 @@
 {
-  "current_state": "corrective_retry_visual_qa_preflight_required",
+  "current_state": "corrective_retry_v2_result_review_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5214,7 +5214,7 @@
   "retry_allowed": true,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "corrective_retry_visual_qa_preflight_required",
+  "next_allowed_action": "corrective_retry_v2_result_review_required",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
@@ -5244,11 +5244,27 @@
   "generation_attempts": 1,
   "generation_performed": true,
   "second_generation_attempted": false,
-  "branch_selected": "success",
-  "generated_assets_count": 1,
+  "branch_selected": "failed_collection",
+  "generated_assets_count": 0,
   "result_review_executed": true,
   "real_visual_qa_started": false,
   "corrective_retry_workflow_audit_completed": true,
   "corrective_retry_recipe_diagnosis_completed": true,
-  "corrective_retry_recipe_v2_recommendation_completed": true
+  "corrective_retry_recipe_v2_recommendation_completed": true,
+  "corrective_retry_package_v2_created": true,
+  "shot_workflow_binding_policy_created": true,
+  "prompt_patch_strategy_v2_created": true,
+  "operator_retry_generation_authorized_v2": true,
+  "corrective_retry_package_v2_required": true,
+  "corrective_retry_package_v2_available": true,
+  "shot_specific_workflow_binding_required": true,
+  "cross_shot_workflow_reuse_blocked": true,
+  "prompt_patch_v2_required": true,
+  "prompt_patch_v2_verified": true,
+  "fallback_minimal_workflow_forbidden": true,
+  "shot_id": "shot02",
+  "corrective_retry_package_v2_used": true,
+  "requested_shot_id": "shot02",
+  "workflow_shot_id_matches_requested_shot": true,
+  "prompt_patch_v2_applied": true
 }

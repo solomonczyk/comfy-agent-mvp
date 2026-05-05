@@ -1,0 +1,18 @@
+{
+  "stage": "corrective_retry_v2_result_review_required",
+  "shot_id": "shot02",
+  "branch_selected": "success",
+  "generated_assets_count": 1,
+  "asset_paths": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_1777971208_00001_.png"
+  ],
+  "result_review_executed": true,
+  "next_allowed_action": "corrective_retry_v2_visual_qa_preflight_required",
+  "visual_qa_executed": false,
+  "real_visual_qa_started": false,
+  "operator_visual_decision_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-05T13:14:51.866114"
+}
