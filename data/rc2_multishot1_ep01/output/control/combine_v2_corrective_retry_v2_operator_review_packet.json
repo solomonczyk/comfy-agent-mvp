@@ -1,0 +1,29 @@
+{
+  "stage": "operator_visual_review",
+  "source_stage": "corrective_retry_v2_visual_qa",
+  "shot_id": "shot02",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "qa_verdict": "qa_failed",
+  "failure_categories": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "operator_review_required": true,
+  "operator_actions": [
+    "accept_visuals",
+    "reject_visuals",
+    "request_retry_correction",
+    "block_manual_review"
+  ],
+  "visual_qa_report": "output\\control\\combine_v2_corrective_retry_v2_visual_qa_report.json",
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_blocked": true,
+  "next_allowed_action": "operator_visual_review",
+  "timestamp": "2026-05-05T13:33:08.762770"
+}

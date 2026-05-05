@@ -1,0 +1,32 @@
+{
+  "collector_reliability_guard_created": true,
+  "manifest_empty_while_filesystem_assets_exist_is_forbidden": true,
+  "failed_collection_requires_filesystem_scan": true,
+  "success_branch_requires_manifest_asset_records": true,
+  "manifest_asset_records_require": [
+    "path",
+    "exists",
+    "readable",
+    "width",
+    "height",
+    "size_bytes",
+    "sha256"
+  ],
+  "manifest_asset_records_valid": false,
+  "manual_reconciliation_allowed_only_as_recovery": true,
+  "future_collectors_must_auto_reconcile": true,
+  "filesystem_assets_count": 5,
+  "filesystem_assets": [
+    "output\\assets\\combine_v2_00001_.png",
+    "output\\assets\\combine_v2_00002_.png",
+    "output\\assets\\combine_v2_1777916951_00001_.png",
+    "output\\assets\\combine_v2_1777917278_00001_.png",
+    "output\\assets\\combine_v2_corrective_retry_1777971208_00001_.png"
+  ],
+  "manifest_status": "unknown",
+  "manifest_assets_count": 1,
+  "manifest_assets": [
+    "output/assets/combine_v2_1777917278_00001_.png"
+  ],
+  "timestamp": "2026-05-05T13:33:08.450649"
+}

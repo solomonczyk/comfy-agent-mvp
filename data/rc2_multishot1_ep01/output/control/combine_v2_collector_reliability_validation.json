@@ -1,0 +1,22 @@
+{
+  "stage": "collector_reliability_guard_validation",
+  "guard_created": true,
+  "guard_path": "output\\control\\combine_v2_collector_reliability_guard.json",
+  "manifest_empty_while_filesystem_assets_exist_is_forbidden": true,
+  "failed_collection_requires_filesystem_scan": true,
+  "success_branch_requires_manifest_asset_records": true,
+  "manifest_asset_records_require": [
+    "path",
+    "exists",
+    "readable",
+    "width",
+    "height",
+    "size_bytes",
+    "sha256"
+  ],
+  "manifest_asset_records_valid": false,
+  "manual_reconciliation_allowed_only_as_recovery": true,
+  "future_collectors_must_auto_reconcile": true,
+  "validation_passed": false,
+  "timestamp": "2026-05-05T13:33:08.450649"
+}

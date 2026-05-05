@@ -1,0 +1,19 @@
+{
+  "stage": "corrective_retry_v2_visual_qa",
+  "shot_id": "shot02",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "qa_verdict": "qa_failed",
+  "failure_categories": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "technical_metrics": {
+    "width": 1344,
+    "height": 1024,
+    "blur_score": 63.89145810191218,
+    "brightness_score": 139.17711021786644,
+    "contrast_score": 7.9932132526232635
+  },
+  "recommended_action": "operator_visual_review",
+  "timestamp": "2026-05-05T13:33:08.762770"
+}

@@ -1,0 +1,30 @@
+{
+  "stage": "corrective_retry_v2_visual_qa",
+  "shot_id": "shot02",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "asset_exists": true,
+  "asset_readable": true,
+  "width": 1344,
+  "height": 1024,
+  "sha256": "63b8184f6fd80cec7c1d3851b150eae9f6520c9a32b00d8b7b4b4c56a532fad4",
+  "size_bytes": 1567937,
+  "minimum_short_side_valid": true,
+  "blur_score": 63.89145810191218,
+  "brightness_score": 139.17711021786644,
+  "contrast_score": 7.9932132526232635,
+  "visual_qa_executed": true,
+  "qa_verdict": "qa_failed",
+  "failure_categories": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "operator_review_required": true,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_visual_review",
+  "timestamp": "2026-05-05T13:33:08.762770"
+}

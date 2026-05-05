@@ -121,5 +121,73 @@
     "assembly_executed": false,
     "downstream_executed": false,
     "timestamp": "2026-05-05T13:14:51.866114"
+  },
+  {
+    "event_type": "corrective_retry_v2_visual_qa_preflight_completed",
+    "stage": "corrective_retry_v2_visual_qa_preflight_required",
+    "shot_id": "shot02",
+    "source_asset": "output\\assets\\combine_v2_corrective_retry_1777971208_00001_.png",
+    "visual_qa_entry_allowed": true,
+    "generation_performed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-05T13:25:24.945784"
+  },
+  {
+    "event_type": "corrective_retry_v2_visual_qa_completed",
+    "stage": "corrective_retry_v2_visual_qa",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "qa_verdict": "qa_failed",
+    "failure_categories": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "operator_review_required": true,
+    "generation_performed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-05T13:25:33.388922"
+  },
+  {
+    "event_type": "collector_reliability_guard_validated",
+    "stage": "collector_reliability_guard_validation",
+    "guard_created": true,
+    "validation_passed": false,
+    "timestamp": "2026-05-05T13:25:42.358107"
+  },
+  {
+    "event_type": "corrective_retry_v2_visual_qa_preflight_completed",
+    "stage": "corrective_retry_v2_visual_qa_preflight_required",
+    "shot_id": "shot02",
+    "source_asset": "output\\assets\\combine_v2_corrective_retry_1777971208_00001_.png",
+    "visual_qa_entry_allowed": true,
+    "generation_performed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-05T13:33:08.376283"
+  },
+  {
+    "event_type": "collector_reliability_guard_validated",
+    "stage": "collector_reliability_guard_validation",
+    "guard_created": true,
+    "validation_passed": false,
+    "timestamp": "2026-05-05T13:33:08.450649"
+  },
+  {
+    "event_type": "corrective_retry_v2_visual_qa_completed",
+    "stage": "corrective_retry_v2_visual_qa",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "qa_verdict": "qa_failed",
+    "failure_categories": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "operator_review_required": true,
+    "generation_performed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-05T13:33:08.762770"
   }
 ]
