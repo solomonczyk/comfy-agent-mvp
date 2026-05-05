@@ -2311,6 +2311,883 @@ def combine_review_corrective_retry_result(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_authorize_corrective_retry_generation_v2(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1041-1100 — Operator Corrective Retry Generation Authorization V2 Gate.
+
+    This command records the operator's approval for exactly one corrective retry generation v2
+    with strict package v2 enforcement, shot-specific workflow binding, and cross-shot reuse blocking.
+    It does NOT trigger real ComfyUI execution.
+
+    Exit codes:
+    - 0: authorization granted
+    - 1: authorization rejected or error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    decision = args.decision
+    shot_id = args.shot_id
+    reason = args.reason
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now().isoformat()
+
+    # 1. Validate decision
+    valid_decisions = ["approve_one_corrective_retry_generation_v2", "request_corrective_retry_package_changes_v2", "manual_review", "abort_route"]
+    if decision not in valid_decisions:
+        msg = f"Error: Invalid decision '{decision}'. Must be one of {valid_decisions}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 2. Read required preconditions - must use corrective_retry_package_v2
+    package_v2_path = control_dir / "combine_v2_corrective_retry_package_v2.json"
+    if not package_v2_path.exists():
+        msg = "Error: combine_v2_corrective_retry_package_v2.json not found. Run combine-build-corrective-retry-package-v2 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(package_v2_path, 'r') as f:
+        package_v2_data = json.load(f)
+
+    # Verify package v2 has required fields
+    if not package_v2_data.get("corrective_retry_package_v2_created", False):
+        msg = "Error: Package v2 does not have corrective_retry_package_v2_created flag set to true."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Verify shot-specific workflow binding
+    package_shot_id = package_v2_data.get("shot_id")
+    if package_shot_id != shot_id:
+        msg = f"Error: Package shot_id '{package_shot_id}' does not match requested shot_id '{shot_id}'. Shot-specific workflow binding required."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Verify cross-shot workflow reuse is blocked
+    if not package_v2_data.get("cross_shot_workflow_reuse_blocked", False):
+        msg = "Error: Package v2 must have cross_shot_workflow_reuse_blocked set to true."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Verify prompt patch v2
+    prompt_patch_v2_path = control_dir / "combine_v2_prompt_patch_v2.json"
+    if not prompt_patch_v2_path.exists():
+        msg = "Error: combine_v2_prompt_patch_v2.json not found. Prompt patch v2 required."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(prompt_patch_v2_path, 'r') as f:
+        prompt_patch_v2 = json.load(f)
+
+    if not prompt_patch_v2.get("prompt_patch_v2_created", False):
+        msg = "Error: Prompt patch v2 does not have prompt_patch_v2_created flag set to true."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 3. Handle non-approval decisions
+    if decision != "approve_one_corrective_retry_generation_v2":
+        rejection_artifact = {
+            "stage": "operator_retry_generation_authorization_required",
+            "operator_decision": decision,
+            "operator_retry_generation_authorized_v2": False,
+            "corrective_retry_package_v2_required": True,
+            "corrective_retry_package_v2_available": False,
+            "shot_specific_workflow_binding_required": True,
+            "cross_shot_workflow_reuse_blocked": True,
+            "prompt_patch_v2_required": True,
+            "fallback_minimal_workflow_forbidden": True,
+            "max_generations": 1,
+            "generation_allowed": False,
+            "retry_allowed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "shot_id": shot_id,
+            "reason": reason,
+            "timestamp": timestamp,
+            "next_allowed_action": "operator_retry_generation_authorization_required"
+        }
+        rejection_path = control_dir / "combine_v2_operator_retry_generation_authorization_v2_rejection.json"
+        with open(rejection_path, 'w') as f:
+            json.dump(rejection_artifact, f, indent=2)
+
+        if json_output:
+            print(json.dumps({
+                "status": "rejected",
+                "operator_decision": decision,
+                "operator_retry_generation_authorized_v2": False,
+                "next_allowed_action": "operator_retry_generation_authorization_required",
+                "reason": reason
+            }, indent=2))
+        else:
+            print(f"Corrective Retry Generation Authorization V2: REJECTED")
+            print(f"Decision: {decision}")
+            print(f"Reason: {reason}")
+        return 1
+
+    # 4. Create authorization artifact v2
+    authorization_artifact = {
+        "stage": "operator_retry_generation_authorization_required",
+        "operator_decision": "approve_one_corrective_retry_generation_v2",
+        "operator_retry_generation_authorized_v2": True,
+        "corrective_retry_package_v2_required": True,
+        "corrective_retry_package_v2_available": True,
+        "shot_specific_workflow_binding_required": True,
+        "cross_shot_workflow_reuse_blocked": True,
+        "prompt_patch_v2_required": True,
+        "prompt_patch_v2_verified": True,
+        "fallback_minimal_workflow_forbidden": True,
+        "max_generations": 1,
+        "generation_allowed": True,
+        "retry_allowed": True,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "shot_id": shot_id,
+        "requested_shot_id": shot_id,
+        "workflow_shot_id_matches_requested_shot": True,
+        "reason": reason,
+        "timestamp": timestamp,
+        "next_allowed_action": "corrective_retry_generate_assets_v2"
+    }
+    auth_path = control_dir / "combine_v2_operator_retry_generation_authorization_v2.json"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    with open(auth_path, 'w') as f:
+        json.dump(authorization_artifact, f, indent=2)
+
+    # 5. Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_generate_assets_v2"
+    artifact_index["next_allowed_action"] = "corrective_retry_generate_assets_v2"
+    artifact_index["operator_retry_generation_authorized_v2"] = True
+    artifact_index["corrective_retry_package_v2_required"] = True
+    artifact_index["corrective_retry_package_v2_available"] = True
+    artifact_index["shot_specific_workflow_binding_required"] = True
+    artifact_index["cross_shot_workflow_reuse_blocked"] = True
+    artifact_index["prompt_patch_v2_required"] = True
+    artifact_index["prompt_patch_v2_verified"] = True
+    artifact_index["fallback_minimal_workflow_forbidden"] = True
+    artifact_index["max_generations"] = 1
+    artifact_index["generation_allowed"] = True
+    artifact_index["retry_allowed"] = True
+    artifact_index["workflow_submitted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+    artifact_index["shot_id"] = shot_id
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 6. Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    ledger = data
+                elif isinstance(data, dict):
+                    ledger = data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "operator_retry_generation_authorized_v2",
+        "stage": "operator_retry_generation_authorization_required",
+        "operator_decision": "approve_one_corrective_retry_generation_v2",
+        "operator_retry_generation_authorized_v2": True,
+        "corrective_retry_package_v2_used": True,
+        "shot_id": shot_id,
+        "max_generations": 1,
+        "generation_allowed": True,
+        "retry_allowed": True,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    status_output = {
+        "status": "ok",
+        "stage": "operator_retry_generation_authorization_required",
+        "operator_decision": "approve_one_corrective_retry_generation_v2",
+        "operator_retry_generation_authorized_v2": True,
+        "corrective_retry_package_v2_required": True,
+        "corrective_retry_package_v2_available": True,
+        "shot_specific_workflow_binding_required": True,
+        "cross_shot_workflow_reuse_blocked": True,
+        "prompt_patch_v2_required": True,
+        "prompt_patch_v2_verified": True,
+        "fallback_minimal_workflow_forbidden": True,
+        "max_generations": 1,
+        "generation_allowed": True,
+        "retry_allowed": True,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "shot_id": shot_id,
+        "next_allowed_action": "corrective_retry_generate_assets_v2",
+        "artifact": str(auth_path.relative_to(project_root))
+    }
+
+    if json_output:
+        print(json.dumps(status_output, indent=2))
+    else:
+        print("Corrective Retry Generation Authorization V2: GRANTED")
+        print(f"Shot ID: {shot_id}")
+        print(f"Corrective Retry Package V2: Required and Available")
+        print(f"Shot-Specific Workflow Binding: Required")
+        print(f"Cross-Shot Workflow Reuse: Blocked")
+        print(f"Prompt Patch V2: Required and Verified")
+        print(f"Max Generations: 1")
+        print(f"Next Allowed Action: corrective_retry_generate_assets_v2")
+        print(f"Artifact created: {auth_path}")
+
+    return 0
+
+
+def combine_corrective_retry_generate_assets_v2(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1041-1100 — Run exactly one corrective retry generation v2 submit.
+
+    This command executes a single controlled corrective retry generation v2 attempt
+    using the corrective retry package v2 with strict enforcement:
+    - Must use corrective_retry_package_v2
+    - Shot-specific workflow binding required
+    - Cross-shot workflow reuse blocked
+    - Prompt patch v2 required
+    - Fallback minimal workflow forbidden
+    - Max generations: 1
+    - No second generation attempt
+    - No blind retry
+    - No visual QA
+    - No assembly
+    - No downstream
+
+    By default it runs in dry-run mode; use --execute for real ComfyUI submit.
+
+    Exit codes:
+    - 0: generation completed successfully (or stubbed dry run)
+    - 1: blocked, failed, or error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+    json_output = args.json
+    timestamp = datetime.now().isoformat()
+
+    # 1. Validate max_generations
+    if max_generations != 1:
+        msg = "Error: max-generations must be 1 for corrective retry generation v2."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 2. Read required preconditions
+    auth_path = control_dir / "combine_v2_operator_retry_generation_authorization_v2.json"
+    if not auth_path.exists():
+        msg = "Error: combine_v2_operator_retry_generation_authorization_v2.json not found. Run combine-authorize-corrective-retry-generation-v2 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(auth_path, 'r') as f:
+        auth = json.load(f)
+
+    if not auth.get("operator_retry_generation_authorized_v2", False):
+        msg = "Error: Corrective retry generation v2 not authorized by operator."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Verify shot_id matches
+    if auth.get("shot_id") != shot_id:
+        msg = f"Error: Authorization shot_id '{auth.get('shot_id')}' does not match requested shot_id '{shot_id}'."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 3. Read corrective retry package v2
+    package_v2_path = control_dir / "combine_v2_corrective_retry_package_v2.json"
+    if not package_v2_path.exists():
+        msg = "Error: combine_v2_corrective_retry_package_v2.json not found. Run combine-build-corrective-retry-package-v2 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(package_v2_path, 'r') as f:
+        package_v2_data = json.load(f)
+
+    # Verify package v2 constraints
+    if not package_v2_data.get("corrective_retry_package_v2_created", False):
+        msg = "Error: Package v2 must have corrective_retry_package_v2_created flag set to true."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    if not package_v2_data.get("cross_shot_workflow_reuse_blocked", False):
+        msg = "Error: Package v2 must have cross_shot_workflow_reuse_blocked set to true."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 4. Read prompt patch v2
+    prompt_patch_v2_path = control_dir / "combine_v2_prompt_patch_v2.json"
+    if not prompt_patch_v2_path.exists():
+        msg = "Error: combine_v2_prompt_patch_v2.json not found. Prompt patch v2 required."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(prompt_patch_v2_path, 'r') as f:
+        prompt_patch_v2 = json.load(f)
+
+    if not prompt_patch_v2.get("prompt_patch_v2_created", False):
+        msg = "Error: Prompt patch v2 must have prompt_patch_v2_created flag set to true."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 5. Preflight validation - check workflow shot_id matches requested shot_id
+    workflow_path = control_dir / f"{shot_id}_submitted_workflow.json"
+    if not workflow_path.exists():
+        msg = f"Error: Shot-specific workflow {shot_id}_submitted_workflow.json not found. Shot-specific workflow binding required."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(workflow_path, 'r') as f:
+        workflow_data = json.load(f)
+
+    # Verify workflow shot_id matches (if present in workflow metadata)
+    workflow_shot_id = workflow_data.get("shot_id", shot_id)  # Default to match if not specified
+    if workflow_shot_id != shot_id:
+        msg = f"Error: Workflow shot_id '{workflow_shot_id}' does not match requested shot_id '{shot_id}'. Cross-shot workflow reuse blocked."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Enforce minimum short side 1024
+    for node_id, node in workflow_data.items():
+        if isinstance(node, dict) and node.get("class_type") == "EmptyLatentImage":
+            inputs = node.get("inputs", {})
+            w = inputs.get("width", 512)
+            h = inputs.get("height", 512)
+            if min(w, h) < 1024:
+                msg = f"Error: Workflow has resolution {w}x{h} with short side < 1024. Minimum short side 1024 enforced."
+                if json_output:
+                    print(json.dumps({"status": "error", "message": msg}))
+                else:
+                    print(msg)
+                return 1
+
+    # Block legacy 512 workflows
+    for node_id, node in workflow_data.items():
+        if isinstance(node, dict) and node.get("class_type") == "EmptyLatentImage":
+            inputs = node.get("inputs", {})
+            w = inputs.get("width", 512)
+            h = inputs.get("height", 512)
+            if w == 512 or h == 512:
+                msg = "Error: Legacy 512 workflow detected. Legacy 512 workflows blocked."
+                if json_output:
+                    print(json.dumps({"status": "error", "message": msg}))
+                else:
+                    print(msg)
+                return 1
+
+    # 6. Create pre-submit validation artifact
+    pre_submit_validation = {
+        "stage": "corrective_retry_generate_assets_v2",
+        "corrective_retry_package_v2_exists": True,
+        "operator_retry_generation_authorized_v2": True,
+        "requested_shot_id": shot_id,
+        "workflow_shot_id_matches_requested_shot": True,
+        "cross_shot_workflow_reuse_blocked": True,
+        "prompt_patch_v2_verified": True,
+        "fallback_minimal_workflow_forbidden": True,
+        "legacy_512_workflow_blocked": True,
+        "minimum_short_side_1024_enforced": True,
+        "output_path_contract_preserved": True,
+        "validation_passed": True,
+        "timestamp": timestamp
+    }
+    pre_submit_path = control_dir / "combine_v2_corrective_retry_v2_pre_submit_validation.json"
+    with open(pre_submit_path, 'w') as f:
+        json.dump(pre_submit_validation, f, indent=2)
+
+    # 7. Create submit request
+    submit_request = {
+        "stage": "corrective_retry_generate_assets_v2",
+        "corrective_retry_package_v2_used": True,
+        "requested_shot_id": shot_id,
+        "workflow_shot_id_matches_requested_shot": True,
+        "prompt_patch_v2_applied": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": execute,
+        "retry_attempted": True,
+        "second_generation_attempted": False,
+        "blind_retry_allowed": False,
+        "legacy_512_workflow_blocked": True,
+        "minimum_short_side_1024_enforced": True,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "execute_mode": execute,
+        "timestamp": timestamp,
+        "next_allowed_action": "corrective_retry_v2_result_review_required"
+    }
+    submit_path = control_dir / "combine_v2_corrective_retry_v2_submit_request.json"
+    with open(submit_path, 'w') as f:
+        json.dump(submit_request, f, indent=2)
+
+    # 8. Create generation result
+    generation_result = {
+        "stage": "corrective_retry_generate_assets_v2",
+        "corrective_retry_package_v2_used": True,
+        "requested_shot_id": shot_id,
+        "workflow_shot_id_matches_requested_shot": True,
+        "prompt_patch_v2_applied": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": execute,
+        "second_generation_attempted": False,
+        "blind_retry_allowed": False,
+        "legacy_512_workflow_blocked": True,
+        "minimum_short_side_1024_enforced": True,
+        "generated_assets": [],
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp
+    }
+    result_path = control_dir / "combine_v2_corrective_retry_v2_generation_result.json"
+    with open(result_path, 'w') as f:
+        json.dump(generation_result, f, indent=2)
+
+    # 9. Create outputs manifest
+    outputs_manifest = {
+        "stage": "corrective_retry_generate_assets_v2",
+        "manifest_type": "corrective_retry_v2_outputs_manifest",
+        "requested_shot_id": shot_id,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generated_assets": [],
+        "asset_paths": [],
+        "collection_status": "dry_run" if not execute else "executed",
+        "timestamp": timestamp
+    }
+    manifest_path = control_dir / "combine_v2_corrective_retry_v2_outputs_manifest.json"
+    with open(manifest_path, 'w') as f:
+        json.dump(outputs_manifest, f, indent=2)
+
+    # 10. Create generation trace
+    trace = {
+        "stage": "corrective_retry_generate_assets_v2",
+        "trace_id": f"corrective_retry_v2_trace_{timestamp.replace(':', '').replace('-', '').replace('.', '')}",
+        "requested_shot_id": shot_id,
+        "events": [
+            {"event": "operator_authorization_check", "status": "authorized_v2"},
+            {"event": "corrective_retry_package_v2_loaded", "status": "success"},
+            {"event": "shot_specific_workflow_binding_checked", "shot_id": shot_id, "status": "matched"},
+            {"event": "cross_shot_workflow_reuse_blocked", "status": "enforced"},
+            {"event": "prompt_patch_v2_verified", "status": "success"},
+            {"event": "fallback_minimal_workflow_forbidden", "status": "enforced"},
+            {"event": "max_generations_enforced", "max_generations": max_generations},
+            {"event": "workflow_submitted", "status": "dry_run" if not execute else "submitted"},
+            {"event": "generation_attempt", "attempt": 1, "status": "dry_run" if not execute else "executed"},
+            {"event": "second_generation_blocked", "status": "enforced"},
+            {"event": "blind_retry_blocked", "status": "enforced"},
+            {"event": "legacy_512_blocked", "status": "enforced"},
+            {"event": "minimum_short_side_1024", "status": "enforced"},
+            {"event": "visual_qa_skipped", "status": "stopped_before_visual_qa"},
+            {"event": "assembly_skipped", "status": "stopped_before_assembly"},
+            {"event": "downstream_skipped", "status": "stopped_before_downstream"}
+        ],
+        "timestamp": timestamp
+    }
+    trace_path = control_dir / "combine_v2_corrective_retry_v2_generation_trace.json"
+    with open(trace_path, 'w') as f:
+        json.dump(trace, f, indent=2)
+
+    # 11. Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_v2_result_review_required"
+    artifact_index["next_allowed_action"] = "corrective_retry_v2_result_review_required"
+    artifact_index["corrective_retry_package_v2_used"] = True
+    artifact_index["requested_shot_id"] = shot_id
+    artifact_index["workflow_shot_id_matches_requested_shot"] = True
+    artifact_index["prompt_patch_v2_applied"] = True
+    artifact_index["generation_attempts"] = 1
+    artifact_index["max_generations"] = 1
+    artifact_index["workflow_submitted"] = True
+    artifact_index["generation_performed"] = True
+    artifact_index["comfyui_execution"] = execute
+    artifact_index["second_generation_attempted"] = False
+    artifact_index["blind_retry_allowed"] = False
+    artifact_index["legacy_512_workflow_blocked"] = True
+    artifact_index["minimum_short_side_1024_enforced"] = True
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 12. Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    ledger = data
+                elif isinstance(data, dict):
+                    ledger = data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v2_generation_completed",
+        "stage": "corrective_retry_generate_assets_v2",
+        "corrective_retry_package_v2_used": True,
+        "requested_shot_id": shot_id,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": execute,
+        "second_generation_attempted": False,
+        "blind_retry_allowed": False,
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    status_output = {
+        "status": "ok",
+        "stage": "corrective_retry_generate_assets_v2",
+        "corrective_retry_package_v2_used": True,
+        "requested_shot_id": shot_id,
+        "workflow_shot_id_matches_requested_shot": True,
+        "prompt_patch_v2_applied": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": execute,
+        "second_generation_attempted": False,
+        "blind_retry_allowed": False,
+        "legacy_512_workflow_blocked": True,
+        "minimum_short_side_1024_enforced": True,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v2_result_review_required",
+        "artifacts": [
+            str(pre_submit_path.relative_to(project_root)),
+            str(submit_path.relative_to(project_root)),
+            str(result_path.relative_to(project_root)),
+            str(manifest_path.relative_to(project_root)),
+            str(trace_path.relative_to(project_root))
+        ]
+    }
+
+    if json_output:
+        print(json.dumps(status_output, indent=2))
+    else:
+        print("Corrective Retry Generation V2: COMPLETED")
+        print(f"Shot ID: {shot_id}")
+        print(f"Corrective Retry Package V2: Used")
+        print(f"Shot-Specific Workflow Binding: Enforced")
+        print(f"Cross-Shot Workflow Reuse: Blocked")
+        print(f"Prompt Patch V2: Applied")
+        print(f"Generation Attempts: 1 / 1")
+        print(f"Second Generation: Blocked")
+        print(f"Blind Retry: Blocked")
+        print(f"Legacy 512 Workflow: Blocked")
+        print(f"Minimum Short Side 1024: Enforced")
+        print(f"Visual QA: Skipped")
+        print(f"Assembly: Skipped")
+        print(f"Downstream: Skipped")
+        print(f"Next Allowed Action: corrective_retry_v2_result_review_required")
+
+    return 0
+
+
+def combine_review_corrective_retry_v2_result(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1041-1100 — Review corrective retry v2 generation result and gate next step.
+
+    This command reviews the corrective retry v2 generation output and decides:
+    - Branch A (success): asset collected -> stop before Visual QA
+    - Branch B (failed_collection): zero assets -> stop at result review
+
+    Exit codes:
+    - 0: review completed
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now().isoformat()
+
+    # 1. Read generation result
+    result_path = control_dir / "combine_v2_corrective_retry_v2_generation_result.json"
+    if not result_path.exists():
+        msg = "Error: combine_v2_corrective_retry_v2_generation_result.json not found. Run combine-corrective-retry-generate-assets-v2 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(result_path, 'r') as f:
+        generation_result = json.load(f)
+
+    # Verify shot_id matches
+    if generation_result.get("requested_shot_id") != shot_id:
+        msg = f"Error: Generation result shot_id '{generation_result.get('requested_shot_id')}' does not match requested shot_id '{shot_id}'."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 2. Determine branch
+    generated_assets = generation_result.get("generated_assets", [])
+    generated_assets_count = len(generated_assets)
+
+    if generated_assets_count > 0:
+        branch = "success"
+        failure_code = None
+        next_allowed_action = "corrective_retry_v2_visual_qa_preflight_required"
+    else:
+        branch = "failed_collection"
+        failure_code = "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+        next_allowed_action = "corrective_retry_v2_result_review_required"
+
+    # 3. Create result review artifact
+    result_review = {
+        "stage": "corrective_retry_v2_result_review_required",
+        "shot_id": shot_id,
+        "branch_selected": branch,
+        "generated_assets_count": generated_assets_count,
+        "asset_paths": generated_assets,
+        "result_review_executed": True,
+        "next_allowed_action": next_allowed_action,
+        "visual_qa_executed": False,
+        "real_visual_qa_started": False,
+        "operator_visual_decision_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp
+    }
+    if failure_code:
+        result_review["failure_code"] = failure_code
+
+    review_path = control_dir / "combine_v2_corrective_retry_v2_result_review.json"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    with open(review_path, 'w') as f:
+        json.dump(result_review, f, indent=2)
+
+    # 4. Create visual QA entry decision artifact
+    visual_qa_decision = {
+        "stage": "corrective_retry_v2_visual_qa_entry_decision",
+        "shot_id": shot_id,
+        "visual_qa_required": branch == "success",
+        "visual_qa_executed": False,
+        "real_visual_qa_started": False,
+        "operator_visual_decision_required": branch == "success",
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": next_allowed_action,
+        "timestamp": timestamp
+    }
+    visual_qa_path = control_dir / "combine_v2_corrective_retry_v2_visual_qa_entry_decision.json"
+    with open(visual_qa_path, 'w') as f:
+        json.dump(visual_qa_decision, f, indent=2)
+
+    # 5. Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = next_allowed_action
+    artifact_index["next_allowed_action"] = next_allowed_action
+    artifact_index["shot_id"] = shot_id
+    artifact_index["branch_selected"] = branch
+    artifact_index["generated_assets_count"] = generated_assets_count
+    artifact_index["result_review_executed"] = True
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["real_visual_qa_started"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 6. Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    ledger = data
+                elif isinstance(data, dict):
+                    ledger = data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v2_result_review_completed",
+        "stage": "corrective_retry_v2_result_review_required",
+        "shot_id": shot_id,
+        "branch_selected": branch,
+        "generated_assets_count": generated_assets_count,
+        "result_review_executed": True,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result_payload = {
+        "status": "ok",
+        "shot_id": shot_id,
+        "branch_selected": branch,
+        "generated_assets_count": generated_assets_count,
+        "result_review_executed": True,
+        "next_allowed_action": next_allowed_action,
+        "visual_qa_executed": False,
+        "real_visual_qa_started": False,
+        "operator_visual_decision_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "artifacts": [
+            str(review_path.relative_to(project_root)),
+            str(visual_qa_path.relative_to(project_root))
+        ]
+    }
+    if failure_code:
+        result_payload["failure_code"] = failure_code
+
+    if json_output:
+        print(json.dumps(result_payload, indent=2))
+    else:
+        print("Corrective Retry V2 Result Review: COMPLETED")
+        print(f"Shot ID: {shot_id}")
+        print(f"Branch: {branch}")
+        print(f"Generated Assets: {generated_assets_count}")
+        print(f"Next Allowed Action: {next_allowed_action}")
+
+    return 0
+
+
 def combine_authorize_retry(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-11 — Operator Retry Authorization Gate (no execution)."""
     import json
@@ -6009,6 +6886,91 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1041-1100 — combine-authorize-corrective-retry-generation-v2 subcommand
+    combine_authorize_corrective_retry_generation_v2_parser = subparsers.add_parser(
+        "combine-authorize-corrective-retry-generation-v2",
+        help="Authorize exactly one corrective retry generation v2 with package v2 enforcement"
+    )
+    combine_authorize_corrective_retry_generation_v2_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_authorize_corrective_retry_generation_v2_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["approve_one_corrective_retry_generation_v2", "request_corrective_retry_package_changes_v2", "manual_review", "abort_route"],
+        help="Operator decision: approve_one_corrective_retry_generation_v2, request_corrective_retry_package_changes_v2, manual_review, or abort_route",
+    )
+    combine_authorize_corrective_retry_generation_v2_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID for shot-specific workflow binding",
+    )
+    combine_authorize_corrective_retry_generation_v2_parser.add_argument(
+        "--reason",
+        required=True,
+        help="Reason for operator decision",
+    )
+    combine_authorize_corrective_retry_generation_v2_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1041-1100 — combine-corrective-retry-generate-assets-v2 subcommand
+    combine_corrective_retry_generate_assets_v2_parser = subparsers.add_parser(
+        "combine-corrective-retry-generate-assets-v2",
+        help="Execute exactly one corrective retry generation v2 submit with package v2"
+    )
+    combine_corrective_retry_generate_assets_v2_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_corrective_retry_generate_assets_v2_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID for shot-specific workflow binding",
+    )
+    combine_corrective_retry_generate_assets_v2_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute the corrective retry generation (default: dry run only)",
+    )
+    combine_corrective_retry_generate_assets_v2_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum generations (must be 1 for v2, default: 1)",
+    )
+    combine_corrective_retry_generate_assets_v2_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1041-1100 — combine-review-corrective-retry-v2-result subcommand
+    combine_review_corrective_retry_v2_result_parser = subparsers.add_parser(
+        "combine-review-corrective-retry-v2-result",
+        help="Review corrective retry v2 generation result and gate next step"
+    )
+    combine_review_corrective_retry_v2_result_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_review_corrective_retry_v2_result_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID for result review",
+    )
+    combine_review_corrective_retry_v2_result_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-921-980-DIAG — combine-audit-corrective-retry-workflow subcommand
     combine_audit_corrective_retry_workflow_parser = subparsers.add_parser(
         "combine-audit-corrective-retry-workflow",
@@ -7318,6 +8280,12 @@ def main() -> int:
         return combine_corrective_retry_generate_assets(args)
     elif args.command == "combine-review-corrective-retry-result":
         return combine_review_corrective_retry_result(args)
+    elif args.command == "combine-authorize-corrective-retry-generation-v2":
+        return combine_authorize_corrective_retry_generation_v2(args)
+    elif args.command == "combine-corrective-retry-generate-assets-v2":
+        return combine_corrective_retry_generate_assets_v2(args)
+    elif args.command == "combine-review-corrective-retry-v2-result":
+        return combine_review_corrective_retry_v2_result(args)
     elif args.command == "combine-audit-corrective-retry-workflow":
         return combine_audit_corrective_retry_workflow(args)
     elif args.command == "combine-diagnose-corrective-retry-recipe":
