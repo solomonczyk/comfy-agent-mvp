@@ -1,12 +1,12 @@
 {
   "stage": "corrective_retry_visual_qa_entry_decision",
-  "visual_qa_required": false,
+  "visual_qa_required": true,
   "visual_qa_executed": false,
   "real_visual_qa_started": false,
-  "operator_visual_decision_required": false,
+  "operator_visual_decision_required": true,
   "assembly_executed": false,
   "downstream_executed": false,
   "production_accepted": false,
-  "next_allowed_action": "corrective_retry_result_review_required",
-  "timestamp": "2026-05-05T10:41:17.617151"
+  "next_allowed_action": "corrective_retry_visual_qa_preflight_required",
+  "timestamp": "2026-05-05T10:59:21.526136"
 }

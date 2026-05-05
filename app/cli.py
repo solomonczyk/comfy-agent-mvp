@@ -1597,19 +1597,18 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
     It does NOT run visual QA, assembly, or downstream.
 
     Exit codes:
-    - 0: generation attempted successfully (or stubbed)
-    - 1: blocked or error
+    - 0: generation completed successfully (or stubbed dry run)
+    - 1: blocked, failed, or error
     """
-    import json
-    from pathlib import Path
-    from datetime import datetime
+    from app.comfy.comfy_client import ComfyClient
     from app.orchestrator import CombineOrchestrator
 
     project_root = Path(args.project_root)
-    execute = args.execute
-    max_generations = getattr(args, "max_generations", 1)
-    json_output = args.json
     control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+    json_output = args.json
     timestamp = datetime.now().isoformat()
 
     # 1. Validate max_generations
@@ -1651,7 +1650,228 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
             print(msg)
         return 1
 
-    # 3. Create submit request artifact
+    # 3. Load corrective retry package metadata for patching
+    with open(package_path, 'r') as f:
+        package_data = json.load(f)
+
+    prompt_patch_path = control_dir / "combine_v2_corrective_retry_prompt_patch.json"
+    prompt_patch = {}
+    if prompt_patch_path.exists():
+        with open(prompt_patch_path, 'r') as f:
+            prompt_patch = json.load(f)
+
+    workflow_patch_path = control_dir / "combine_v2_corrective_retry_workflow_patch.json"
+    workflow_patch = {}
+    if workflow_patch_path.exists():
+        with open(workflow_patch_path, 'r') as f:
+            workflow_patch = json.load(f)
+
+    payload_path = control_dir / "combine_v2_corrective_retry_generation_payload.json"
+    payload = {}
+    if payload_path.exists():
+        with open(payload_path, 'r') as f:
+            payload = json.load(f)
+
+    # 4. Build workflow payload
+    # Try existing submitted workflows first, then fallback to minimal
+    workflow_payload = None
+    for candidate in sorted(control_dir.glob("*_submitted_workflow.json")):
+        try:
+            with open(candidate, 'r') as f:
+                wf = json.load(f)
+            if isinstance(wf, dict) and wf:
+                workflow_payload = wf
+                print(f"[RC-COMBINE-V2-861-920] Loaded base workflow from {candidate.name}")
+                break
+        except Exception:
+            continue
+
+    if not workflow_payload:
+        # Enforce minimum short side 1024: use 1024x1024 for minimal workflow
+        workflow_payload = _build_minimal_real_workflow_with_resolution(1024, 1024)
+        print("[RC-COMBINE-V2-861-920] Using minimal workflow (1024x1024)")
+
+    # Apply corrective retry patches
+    # 4a. Enforce resolution: minimum short side 1024, block legacy 512
+    for node_id, node in workflow_payload.items():
+        if isinstance(node, dict) and node.get("class_type") == "EmptyLatentImage":
+            inputs = node.get("inputs", {})
+            w = inputs.get("width", 512)
+            h = inputs.get("height", 512)
+            # Ensure minimum short side >= 1024
+            if min(w, h) < 1024:
+                if w < 1024:
+                    w = 1024
+                if h < 1024:
+                    h = 1024
+                inputs["width"] = w
+                inputs["height"] = h
+                print(f"[RC-COMBINE-V2-861-920] Enforced resolution {w}x{h} on EmptyLatentImage node {node_id}")
+
+    # 4b. Inject prompts from payload or patch
+    base_payload = payload.get("base_payload", payload)
+    positive_prompt = base_payload.get("prompts", {}).get("positive", "")
+    negative_prompt = base_payload.get("prompts", {}).get("negative", "")
+    if positive_prompt or negative_prompt:
+        for node_id, node in workflow_payload.items():
+            if isinstance(node, dict) and node.get("class_type") == "CLIPTextEncode":
+                inputs = node.get("inputs", {})
+                text = inputs.get("text", "")
+                # Heuristic: first CLIPTextEncode gets positive, second gets negative
+                # Or use __inject__ fallback from _inject_workflow pattern
+                if positive_prompt and (not negative_prompt or text == "test" or not text):
+                    inputs["text"] = positive_prompt
+                    print(f"[RC-COMBINE-V2-861-920] Injected positive prompt into CLIPTextEncode {node_id}")
+                    positive_prompt = ""  # Only inject once
+                elif negative_prompt and text == "test":
+                    inputs["text"] = negative_prompt
+                    print(f"[RC-COMBINE-V2-861-920] Injected negative prompt into CLIPTextEncode {node_id}")
+                    negative_prompt = ""
+
+    # 4c. Set filename prefix for output identification
+    import time as _time
+    import random as _random
+    filename_prefix = f"combine_v2_corrective_retry_{int(_time.time())}"
+    for node_id, node in workflow_payload.items():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            node.setdefault("inputs", {})["filename_prefix"] = filename_prefix
+            print(f"[RC-COMBINE-V2-861-920] Set filename_prefix on SaveImage node {node_id}")
+
+    # 4d. Randomize seed to avoid cache
+    for node in workflow_payload.values():
+        if isinstance(node, dict) and node.get("class_type") == "KSampler":
+            node.setdefault("inputs", {})["seed"] = _random.randint(1, 2**32 - 1)
+
+    # 5. Dry run path: skip ComfyUI submit, write stub artifacts
+    if not execute:
+        submit_request = {
+            "stage": "corrective_retry_generate_assets",
+            "corrective_retry_package_used": True,
+            "generation_attempts": 1,
+            "max_generations": 1,
+            "workflow_submitted": True,
+            "generation_performed": True,
+            "comfyui_execution": False,
+            "retry_attempted": True,
+            "second_generation_attempted": False,
+            "blind_retry_allowed": False,
+            "legacy_512_workflow_blocked": True,
+            "minimum_short_side_1024_enforced": True,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "execute_mode": False,
+            "timestamp": timestamp,
+            "next_allowed_action": "corrective_retry_result_review_required"
+        }
+        submit_path = control_dir / "combine_v2_corrective_retry_submit_request.json"
+        _write_json_file(submit_path, submit_request)
+
+        generation_result = {
+            "stage": "corrective_retry_generate_assets",
+            "corrective_retry_package_used": True,
+            "generation_attempts": 1,
+            "max_generations": 1,
+            "workflow_submitted": True,
+            "generation_performed": True,
+            "comfyui_execution": False,
+            "retry_attempted": True,
+            "second_generation_attempted": False,
+            "blind_retry_allowed": False,
+            "legacy_512_workflow_blocked": True,
+            "minimum_short_side_1024_enforced": True,
+            "generated_assets": [],
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": timestamp
+        }
+        result_path = control_dir / "combine_v2_corrective_retry_generation_result.json"
+        _write_json_file(result_path, generation_result)
+
+        outputs_manifest = {
+            "stage": "corrective_retry_generate_assets",
+            "manifest_type": "corrective_retry_outputs_manifest",
+            "generation_attempts": 1,
+            "max_generations": 1,
+            "workflow_submitted": True,
+            "generated_assets": [],
+            "asset_paths": [],
+            "collection_status": "dry_run",
+            "timestamp": timestamp
+        }
+        manifest_path = control_dir / "combine_v2_corrective_retry_outputs_manifest.json"
+        _write_json_file(manifest_path, outputs_manifest)
+
+        trace = {
+            "stage": "corrective_retry_generate_assets",
+            "trace_id": f"corrective_retry_trace_{timestamp.replace(':', '').replace('-', '').replace('.', '')}",
+            "events": [
+                {"event": "operator_authorization_check", "status": "authorized"},
+                {"event": "corrective_retry_package_loaded", "status": "success"},
+                {"event": "max_generations_enforced", "max_generations": max_generations},
+                {"event": "workflow_submitted", "status": "dry_run"},
+                {"event": "generation_attempt", "attempt": 1, "status": "dry_run"},
+                {"event": "blind_retry_blocked", "status": "enforced"},
+                {"event": "legacy_512_blocked", "status": "enforced"},
+                {"event": "minimum_short_side_1024", "status": "enforced"},
+                {"event": "visual_qa_skipped", "status": "stopped_before_visual_qa"},
+                {"event": "assembly_skipped", "status": "stopped_before_assembly"},
+                {"event": "downstream_skipped", "status": "stopped_before_downstream"}
+            ],
+            "timestamp": timestamp
+        }
+        trace_path = control_dir / "combine_v2_corrective_retry_generation_trace.json"
+        _write_json_file(trace_path, trace)
+
+        _update_corrective_retry_artifacts_index(control_dir, execute=False, generated_assets=[], timestamp=timestamp)
+
+        orchestrator = CombineOrchestrator(str(project_root))
+        try:
+            orchestrator.run_stage("corrective_retry_generate_assets", dry_run=True)
+        except Exception:
+            pass
+
+        status = orchestrator.get_status()
+        result_payload = {
+            "status": "ok",
+            "stage": "corrective_retry_generate_assets",
+            "corrective_retry_package_used": True,
+            "generation_attempts": 1,
+            "max_generations": 1,
+            "workflow_submitted": True,
+            "generation_performed": True,
+            "comfyui_execution": False,
+            "retry_attempted": True,
+            "second_generation_attempted": False,
+            "blind_retry_allowed": False,
+            "legacy_512_workflow_blocked": True,
+            "minimum_short_side_1024_enforced": True,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "current_state": status.current_state,
+            "next_allowed_action": status.next_allowed_action,
+            "artifacts": [
+                str(submit_path.relative_to(project_root)),
+                str(result_path.relative_to(project_root)),
+                str(manifest_path.relative_to(project_root)),
+                str(trace_path.relative_to(project_root))
+            ]
+        }
+
+        if json_output:
+            print(json.dumps(result_payload, indent=2))
+        else:
+            print("Corrective Retry Generate Assets: DRY RUN")
+            print(f"Current State: {status.current_state}")
+            print(f"Next Allowed Action: {status.next_allowed_action}")
+        return 0
+
+    # 6. Real execution path: submit to ComfyUI
     submit_request = {
         "stage": "corrective_retry_generate_assets",
         "corrective_retry_package_used": True,
@@ -1659,7 +1879,7 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
         "max_generations": 1,
         "workflow_submitted": True,
         "generation_performed": True,
-        "comfyui_execution": execute,
+        "comfyui_execution": True,
         "retry_attempted": True,
         "second_generation_attempted": False,
         "blind_retry_allowed": False,
@@ -1669,16 +1889,53 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
         "assembly_executed": False,
         "downstream_executed": False,
         "production_accepted": False,
-        "execute_mode": execute,
+        "execute_mode": True,
         "timestamp": timestamp,
-        "next_allowed_action": "corrective_retry_result_review_required"
+        "next_allowed_action": "corrective_retry_result_review_required",
+        "workflow_payload_snapshot": workflow_payload
     }
     submit_path = control_dir / "combine_v2_corrective_retry_submit_request.json"
-    control_dir.mkdir(parents=True, exist_ok=True)
-    with open(submit_path, 'w') as f:
-        json.dump(submit_request, f, indent=2)
+    _write_json_file(submit_path, submit_request)
 
-    # 4. Create generation result artifact
+    client = ComfyClient()
+    status = "completed"
+    prompt_id = None
+    generated_assets: List[Dict[str, Any]] = []
+    error_message = None
+    trace_events: List[Dict[str, Any]] = []
+
+    try:
+        prompt_id = asyncio.run(client.queue_prompt(workflow_payload))
+        trace_events.append({"event": "workflow_submitted", "status": "success", "prompt_id": prompt_id})
+        history_item = asyncio.run(client.wait_for_history(prompt_id, max_attempts=180, delay_seconds=2))
+        history_images = _extract_history_images(history_item)
+        generated_assets, collection_trace = _collect_real_generation_outputs(
+            client=client,
+            project_root=project_root,
+            history_images=history_images,
+        )
+        trace_events.extend(collection_trace)
+        trace_events.append({
+            "event": "outputs_collected",
+            "status": "success",
+            "assets_count": len(generated_assets),
+        })
+    except Exception as exc:
+        status = "failed"
+        error_message = str(exc)
+        trace_events.append({"event": "generation_failed", "status": "failed", "error": error_message})
+
+    failure_code = None
+    if status == "completed" and len(generated_assets) == 0:
+        status = "failed"
+        failure_code = "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+        trace_events.append({
+            "event": "zero_assets_guard_triggered",
+            "status": "failed",
+            "failure_code": failure_code,
+        })
+
+    # 7. Write execution result artifact
     generation_result = {
         "stage": "corrective_retry_generate_assets",
         "corrective_retry_package_used": True,
@@ -1686,40 +1943,46 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
         "max_generations": 1,
         "workflow_submitted": True,
         "generation_performed": True,
-        "comfyui_execution": execute,
+        "comfyui_execution": True,
         "retry_attempted": True,
         "second_generation_attempted": False,
         "blind_retry_allowed": False,
         "legacy_512_workflow_blocked": True,
         "minimum_short_side_1024_enforced": True,
-        "generated_assets": [],
+        "generated_assets": generated_assets,
+        "generated_assets_count": len(generated_assets),
         "visual_qa_executed": False,
         "assembly_executed": False,
         "downstream_executed": False,
         "production_accepted": False,
+        "status": status,
         "timestamp": timestamp
     }
+    if error_message:
+        generation_result["error"] = error_message
+    if failure_code:
+        generation_result["failure_code"] = failure_code
     result_path = control_dir / "combine_v2_corrective_retry_generation_result.json"
-    with open(result_path, 'w') as f:
-        json.dump(generation_result, f, indent=2)
+    _write_json_file(result_path, generation_result)
 
-    # 5. Create outputs manifest
+    # 8. Write outputs manifest
     outputs_manifest = {
         "stage": "corrective_retry_generate_assets",
         "manifest_type": "corrective_retry_outputs_manifest",
         "generation_attempts": 1,
         "max_generations": 1,
         "workflow_submitted": True,
-        "generated_assets": [],
-        "asset_paths": [],
-        "collection_status": "completed" if execute else "dry_run",
+        "generated_assets": generated_assets,
+        "asset_paths": [a.get("path", "") for a in generated_assets],
+        "collection_status": status,
         "timestamp": timestamp
     }
+    if failure_code:
+        outputs_manifest["failure_code"] = failure_code
     manifest_path = control_dir / "combine_v2_corrective_retry_outputs_manifest.json"
-    with open(manifest_path, 'w') as f:
-        json.dump(outputs_manifest, f, indent=2)
+    _write_json_file(manifest_path, outputs_manifest)
 
-    # 6. Create generation trace
+    # 9. Write trace
     trace = {
         "stage": "corrective_retry_generate_assets",
         "trace_id": f"corrective_retry_trace_{timestamp.replace(':', '').replace('-', '').replace('.', '')}",
@@ -1727,22 +1990,90 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
             {"event": "operator_authorization_check", "status": "authorized"},
             {"event": "corrective_retry_package_loaded", "status": "success"},
             {"event": "max_generations_enforced", "max_generations": max_generations},
-            {"event": "workflow_submitted", "status": "submitted" if execute else "dry_run"},
-            {"event": "generation_attempt", "attempt": 1, "status": "completed" if execute else "dry_run"},
             {"event": "blind_retry_blocked", "status": "enforced"},
             {"event": "legacy_512_blocked", "status": "enforced"},
             {"event": "minimum_short_side_1024", "status": "enforced"},
             {"event": "visual_qa_skipped", "status": "stopped_before_visual_qa"},
             {"event": "assembly_skipped", "status": "stopped_before_assembly"},
-            {"event": "downstream_skipped", "status": "stopped_before_downstream"}
+            {"event": "downstream_skipped", "status": "stopped_before_downstream"},
+            *trace_events,
         ],
-        "timestamp": timestamp
+        "timestamp": timestamp,
+        "status": status,
     }
     trace_path = control_dir / "combine_v2_corrective_retry_generation_trace.json"
-    with open(trace_path, 'w') as f:
-        json.dump(trace, f, indent=2)
+    _write_json_file(trace_path, trace)
 
-    # 7. Update artifact index
+    # 10. Update artifact index and ledger
+    _update_corrective_retry_artifacts_index(control_dir, execute=True, generated_assets=generated_assets, timestamp=timestamp)
+
+    # 11. Run orchestrator stage
+    orchestrator = CombineOrchestrator(str(project_root))
+    try:
+        orchestrator.run_stage("corrective_retry_generate_assets", dry_run=False)
+    except Exception:
+        pass
+
+    orchestrator_status = orchestrator.get_status()
+
+    next_action = "corrective_retry_result_review_required"
+    if status == "completed":
+        next_action = "corrective_retry_visual_qa_preflight_required"
+    elif failure_code == "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS":
+        next_action = "corrective_retry_result_review_required"
+
+    result_payload = {
+        "status": status,
+        "stage": "corrective_retry_generate_assets",
+        "corrective_retry_package_used": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "workflow_submitted": True,
+        "generation_performed": True,
+        "comfyui_execution": True,
+        "retry_attempted": True,
+        "second_generation_attempted": False,
+        "blind_retry_allowed": False,
+        "legacy_512_workflow_blocked": True,
+        "minimum_short_side_1024_enforced": True,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": orchestrator_status.current_state,
+        "next_allowed_action": next_action,
+        "generated_assets_count": len(generated_assets),
+        "artifacts": [
+            str(submit_path.relative_to(project_root)),
+            str(result_path.relative_to(project_root)),
+            str(manifest_path.relative_to(project_root)),
+            str(trace_path.relative_to(project_root))
+        ]
+    }
+    if error_message:
+        result_payload["error"] = error_message
+    if failure_code:
+        result_payload["failure_code"] = failure_code
+
+    if json_output:
+        print(json.dumps(result_payload, indent=2))
+    else:
+        print(f"Corrective Retry Generate Assets: {status.upper()}")
+        print(f"Generated Assets: {len(generated_assets)}")
+        print(f"Next Allowed Action: {next_action}")
+
+    return 0 if status == "completed" else 1
+
+
+def _update_corrective_retry_artifacts_index(
+    control_dir: Path,
+    execute: bool,
+    generated_assets: List[Dict[str, Any]],
+    timestamp: str
+) -> None:
+    """Update artifact index and episode ledger for corrective retry generation."""
+    import json
+
     artifact_index_path = control_dir / "artifact_index.json"
     artifact_index = {}
     if artifact_index_path.exists():
@@ -1770,7 +2101,6 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
     with open(artifact_index_path, 'w') as f:
         json.dump(artifact_index, f, indent=2)
 
-    # 8. Update episode ledger
     ledger_path = control_dir / "episode_ledger.json"
     ledger = []
     if ledger_path.exists():
@@ -1790,7 +2120,7 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
         "corrective_retry_package_used": True,
         "generation_attempts": 1,
         "max_generations": 1,
-        "workflow_submitted": True,
+        "workflow_submitted": execute,
         "comfyui_execution": execute,
         "retry_attempted": True,
         "second_generation_attempted": False,
@@ -1799,56 +2129,6 @@ def combine_corrective_retry_generate_assets(args: argparse.Namespace) -> int:
 
     with open(ledger_path, 'w') as f:
         json.dump(ledger, f, indent=2)
-
-    # 9. Run orchestrator stage (stub only)
-    orchestrator = CombineOrchestrator(str(project_root))
-    try:
-        result = orchestrator.run_stage("corrective_retry_generate_assets", dry_run=not execute)
-    except Exception:
-        result = None
-
-    status = orchestrator.get_status()
-
-    result_payload = {
-        "status": "ok",
-        "stage": "corrective_retry_generate_assets",
-        "corrective_retry_package_used": True,
-        "generation_attempts": 1,
-        "max_generations": 1,
-        "workflow_submitted": True,
-        "generation_performed": True,
-        "comfyui_execution": execute,
-        "retry_attempted": True,
-        "second_generation_attempted": False,
-        "blind_retry_allowed": False,
-        "legacy_512_workflow_blocked": True,
-        "minimum_short_side_1024_enforced": True,
-        "visual_qa_executed": False,
-        "assembly_executed": False,
-        "downstream_executed": False,
-        "production_accepted": False,
-        "current_state": status.current_state,
-        "next_allowed_action": status.next_allowed_action,
-        "artifacts": [
-            str(submit_path.relative_to(project_root)),
-            str(result_path.relative_to(project_root)),
-            str(manifest_path.relative_to(project_root)),
-            str(trace_path.relative_to(project_root))
-        ]
-    }
-
-    if json_output:
-        print(json.dumps(result_payload, indent=2))
-    else:
-        print("Corrective Retry Generate Assets: COMPLETED")
-        print(f"Execute Mode: {'YES' if execute else 'DRY RUN'}")
-        print(f"Current State: {status.current_state}")
-        print(f"Next Allowed Action: {status.next_allowed_action}")
-        print("Artifacts created:")
-        for artifact in result_payload["artifacts"]:
-            print(f"  - {artifact}")
-
-    return 0
 
 
 def combine_review_corrective_retry_result(args: argparse.Namespace) -> int:

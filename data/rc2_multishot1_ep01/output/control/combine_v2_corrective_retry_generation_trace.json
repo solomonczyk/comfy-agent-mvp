@@ -1,6 +1,6 @@
 {
   "stage": "corrective_retry_generate_assets",
-  "trace_id": "corrective_retry_trace_20260505T104106857192",
+  "trace_id": "corrective_retry_trace_20260505T105328314912",
   "events": [
     {
       "event": "operator_authorization_check",
@@ -13,15 +13,6 @@
     {
       "event": "max_generations_enforced",
       "max_generations": 1
-    },
-    {
-      "event": "workflow_submitted",
-      "status": "submitted"
-    },
-    {
-      "event": "generation_attempt",
-      "attempt": 1,
-      "status": "completed"
     },
     {
       "event": "blind_retry_blocked",
@@ -46,7 +37,26 @@
     {
       "event": "downstream_skipped",
       "status": "stopped_before_downstream"
+    },
+    {
+      "event": "workflow_submitted",
+      "status": "success",
+      "prompt_id": "91e656a6-dbb8-4851-8c6e-a4e05b462987"
+    },
+    {
+      "event": "asset_collected",
+      "status": "success",
+      "filename": "combine_v2_corrective_retry_1777971208_00001_.png",
+      "path": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+      "source": "fetched",
+      "fetch_error": null
+    },
+    {
+      "event": "outputs_collected",
+      "status": "success",
+      "assets_count": 1
     }
   ],
-  "timestamp": "2026-05-05T10:41:06.857192"
+  "timestamp": "2026-05-05T10:53:28.314912",
+  "status": "completed"
 }

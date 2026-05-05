@@ -1343,5 +1343,40 @@
     "generation_performed": false,
     "comfyui_execution": false,
     "timestamp": "2026-05-05T08:41:17.704660"
+  },
+  {
+    "event_type": "operator_retry_generation_authorized",
+    "stage": "operator_retry_generation_authorization_required",
+    "operator_decision": "approve_one_corrective_retry_generation",
+    "operator_retry_generation_authorized": true,
+    "max_generations": 1,
+    "generation_allowed": true,
+    "retry_allowed": true,
+    "workflow_submitted": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-05T10:53:02.074068"
+  },
+  {
+    "event_type": "corrective_retry_generation_attempted",
+    "stage": "corrective_retry_generate_assets",
+    "corrective_retry_package_used": true,
+    "generation_attempts": 1,
+    "max_generations": 1,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "retry_attempted": true,
+    "second_generation_attempted": false,
+    "timestamp": "2026-05-05T10:53:28.314912"
+  },
+  {
+    "event_type": "corrective_retry_result_review_completed",
+    "stage": "corrective_retry_result_review_required",
+    "branch_selected": "success",
+    "generated_assets_count": 1,
+    "result_review_executed": true,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-05T10:59:21.526136"
   }
 ]

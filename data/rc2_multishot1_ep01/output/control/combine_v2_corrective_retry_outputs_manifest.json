@@ -4,8 +4,20 @@
   "generation_attempts": 1,
   "max_generations": 1,
   "workflow_submitted": true,
-  "generated_assets": [],
-  "asset_paths": [],
+  "generated_assets": [
+    {
+      "path": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+      "exists": true,
+      "readable": true,
+      "width": 1344,
+      "height": 1024,
+      "size_bytes": 1567937,
+      "sha256": "63b8184f6fd80cec7c1d3851b150eae9f6520c9a32b00d8b7b4b4c56a532fad4"
+    }
+  ],
+  "asset_paths": [
+    "output/assets/combine_v2_corrective_retry_1777971208_00001_.png"
+  ],
   "collection_status": "completed",
-  "timestamp": "2026-05-05T10:41:06.857192"
+  "timestamp": "2026-05-05T10:53:28.314912"
 }

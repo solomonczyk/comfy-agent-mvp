@@ -147,8 +147,11 @@ class TestCorrectiveRetryOneSubmit:
 
         assert data["comfyui_execution"] is False
 
-    def test_execute_mode_sets_comfyui_execution_true(self, tmp_path):
-        """Execute mode must set comfyui_execution True."""
+    def test_execute_mode_sets_comfyui_execution_true(self, tmp_path, monkeypatch):
+        """Execute mode must set comfyui_execution True and attempt real ComfyUI submit."""
+        from unittest.mock import AsyncMock, MagicMock
+        import asyncio
+
         control_dir = tmp_path / "output" / "control"
         control_dir.mkdir(parents=True, exist_ok=True)
 
@@ -163,6 +166,20 @@ class TestCorrectiveRetryOneSubmit:
         with open(control_dir / "combine_v2_corrective_retry_implementation_report.json", 'w') as f:
             json.dump(package, f)
 
+        # Create a mock ComfyClient that simulates successful execution with zero outputs
+        mock_client = MagicMock()
+        mock_client.queue_prompt = AsyncMock(return_value="mock_prompt_id")
+        mock_client.wait_for_history = AsyncMock(return_value={
+            "outputs": {},
+            "status": {"completed": True, "status_str": "success"}
+        })
+        mock_client.fetch_image = AsyncMock(return_value={"content": b"", "content_length": 0})
+
+        def mock_comfy_client_init(*args, **kwargs):
+            return mock_client
+
+        monkeypatch.setattr("app.comfy.comfy_client.ComfyClient", mock_comfy_client_init)
+
         args = Namespace(
             project_root=str(tmp_path),
             execute=True,
@@ -171,13 +188,17 @@ class TestCorrectiveRetryOneSubmit:
         )
 
         result = combine_corrective_retry_generate_assets(args)
-        assert result == 0
+        # With zero outputs, status is "failed" and returns 1 per the real generation pattern
+        assert result == 1
 
         result_path = control_dir / "combine_v2_corrective_retry_generation_result.json"
         with open(result_path) as f:
             data = json.load(f)
 
         assert data["comfyui_execution"] is True
+        assert data["workflow_submitted"] is True
+        assert data["generation_performed"] is True
+        assert data["failure_code"] == "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
 
     def test_generation_trace_blocks_blind_retry(self, tmp_path):
         """Generation trace must record blind_retry_blocked event."""

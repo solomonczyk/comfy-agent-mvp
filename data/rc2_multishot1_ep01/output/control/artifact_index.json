@@ -1,5 +1,5 @@
 {
-  "current_state": "corrective_retry_result_review_required",
+  "current_state": "corrective_retry_visual_qa_preflight_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5214,7 +5214,7 @@
   "retry_allowed": true,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "corrective_retry_result_review_required",
+  "next_allowed_action": "corrective_retry_visual_qa_preflight_required",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
@@ -5244,8 +5244,8 @@
   "generation_attempts": 1,
   "generation_performed": true,
   "second_generation_attempted": false,
-  "branch_selected": "failed_collection",
-  "generated_assets_count": 0,
+  "branch_selected": "success",
+  "generated_assets_count": 1,
   "result_review_executed": true,
   "real_visual_qa_started": false
 }

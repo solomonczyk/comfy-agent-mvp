@@ -16,6 +16,98 @@
   "downstream_executed": false,
   "production_accepted": false,
   "execute_mode": true,
-  "timestamp": "2026-05-05T10:41:06.857192",
-  "next_allowed_action": "corrective_retry_result_review_required"
+  "timestamp": "2026-05-05T10:53:28.314912",
+  "next_allowed_action": "corrective_retry_result_review_required",
+  "workflow_payload_snapshot": {
+    "3": {
+      "inputs": {
+        "seed": 391676172,
+        "steps": 20,
+        "cfg": 7.5,
+        "sampler_name": "dpmpp_sde",
+        "scheduler": "karras",
+        "denoise": 0.5,
+        "model": [
+          "4",
+          0
+        ],
+        "positive": [
+          "6",
+          0
+        ],
+        "negative": [
+          "7",
+          0
+        ],
+        "latent_image": [
+          "5",
+          0
+        ]
+      },
+      "class_type": "KSampler"
+    },
+    "4": {
+      "inputs": {
+        "ckpt_name": "juggernautXL_version2.safetensors"
+      },
+      "class_type": "CheckpointLoaderSimple"
+    },
+    "5": {
+      "inputs": {
+        "width": 1344,
+        "height": 1024,
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage"
+    },
+    "6": {
+      "inputs": {
+        "text": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+        "clip": [
+          "4",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode"
+    },
+    "7": {
+      "inputs": {
+        "text": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence",
+        "clip": [
+          "4",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode"
+    },
+    "8": {
+      "inputs": {
+        "samples": [
+          "3",
+          0
+        ],
+        "vae": [
+          "4",
+          2
+        ]
+      },
+      "class_type": "VAEDecode"
+    },
+    "9": {
+      "inputs": {
+        "images": [
+          "8",
+          0
+        ],
+        "filename_prefix": "combine_v2_corrective_retry_1777971208"
+      },
+      "class_type": "SaveImage"
+    },
+    "10": {
+      "inputs": {
+        "lora_stack": []
+      },
+      "class_type": "LoraLoader"
+    }
+  }
 }
