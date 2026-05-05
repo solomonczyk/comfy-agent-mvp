@@ -1,0 +1,22 @@
+{
+  "stage": "corrective_retry_conditioning_audit",
+  "timestamp": "2026-05-05T09:34:28.527538",
+  "conditioning_chain": {
+    "ksampler_present": true,
+    "emptylatentimage_present": true,
+    "vae_decode_present": true,
+    "saveimage_present": true,
+    "ip_adapter_present": false,
+    "controlnet_present": false,
+    "lora_present": false,
+    "reference_image_inputs_present": false,
+    "custom_conditioning_present": false
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "comfyui_execution": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}

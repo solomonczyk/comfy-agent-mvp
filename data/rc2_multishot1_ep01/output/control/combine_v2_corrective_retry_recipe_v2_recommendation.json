@@ -1,0 +1,63 @@
+{
+  "stage": "corrective_retry_recipe_v2_recommendation",
+  "timestamp": "2026-05-05T09:34:50.651152",
+  "recommended_actions": [
+    {
+      "action": "fix_prompt_injection_logic",
+      "priority": "critical",
+      "description": "Replace exact-match prompt patching with unconditional overwrite or shot-aware mapping.",
+      "file": "app/cli.py",
+      "function": "combine_corrective_retry_generate_assets"
+    },
+    {
+      "action": "fix_workflow_source_selection",
+      "priority": "critical",
+      "description": "Load the target shot's submitted workflow, not the first available submitted workflow.",
+      "file": "app/cli.py",
+      "function": "combine_corrective_retry_generate_assets"
+    },
+    {
+      "action": "remove_or_populate_lora_loader",
+      "priority": "medium",
+      "description": "Either remove unused LoraLoader node or populate lora_stack with intended LoRAs."
+    },
+    {
+      "action": "add_composition_control",
+      "priority": "medium",
+      "description": "Add IPAdapter or ControlNet nodes if the recipe requires pose/style control."
+    }
+  ],
+  "recommended_parameters": {
+    "prompt_injection_mode": "unconditional_overwrite",
+    "workflow_source_policy": "target_shot_only",
+    "lora_policy": "remove_if_empty",
+    "composition_control": "ip_adapter_or_controlnet"
+  },
+  "recommended_policies": [
+    "Always overwrite CLIPTextEncode nodes when applying corrective retry payload, never compare existing text.",
+    "Workflow source must match the current shot_id from the generation payload.",
+    "No generation without explicit operator authorization.",
+    "No blind retry without root cause analysis.",
+    "All prompt changes must be traceable in artifact diff.",
+    "Workflow source must be verified before submission."
+  ],
+  "forbidden_actions": [
+    "new_generation",
+    "retry_submit",
+    "comfyui_submit",
+    "visual_qa",
+    "operator_visual_decision",
+    "assembly",
+    "audio",
+    "render",
+    "downstream",
+    "production_acceptance"
+  ],
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "comfyui_execution": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}

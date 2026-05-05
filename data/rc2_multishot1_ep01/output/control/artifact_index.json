@@ -5247,5 +5247,8 @@
   "branch_selected": "success",
   "generated_assets_count": 1,
   "result_review_executed": true,
-  "real_visual_qa_started": false
+  "real_visual_qa_started": false,
+  "corrective_retry_workflow_audit_completed": true,
+  "corrective_retry_recipe_diagnosis_completed": true,
+  "corrective_retry_recipe_v2_recommendation_completed": true
 }

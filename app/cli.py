@@ -4378,6 +4378,9 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'validate-multishot-preflight',
         'validate-multishot-generation',
         'director',
+        'combine-audit-corrective-retry-workflow',
+        'combine-diagnose-corrective-retry-recipe',
+        'combine-build-corrective-recipe-v2',
     }
     
     if command not in strict_commands:
@@ -4963,6 +4966,516 @@ def combine_run_rebuilt_asset_visual_qa(args: argparse.Namespace) -> int:
     return 0
 
 
+def _workflows_match_structure(wf1: Dict[str, Any], wf2: Dict[str, Any]) -> bool:
+    if not isinstance(wf1, dict) or not isinstance(wf2, dict):
+        return False
+    types1 = {node_id: node.get("class_type") for node_id, node in wf1.items() if isinstance(node, dict)}
+    types2 = {node_id: node.get("class_type") for node_id, node in wf2.items() if isinstance(node, dict)}
+    return types1 == types2
+
+
+def _extract_ksampler_settings(workflow: Dict[str, Any]) -> Dict[str, Any]:
+    result = {
+        "checkpoint": "", "vae": "", "sampler_name": "", "scheduler": "",
+        "steps": 0, "cfg": 0.0, "denoise": 0.0, "seed": 0,
+        "width": 0, "height": 0,
+        "positive_prompt_present": False, "negative_prompt_present": False,
+        "saveimage_filename_prefix": "",
+    }
+    if not isinstance(workflow, dict):
+        return result
+    for node in workflow.values():
+        if not isinstance(node, dict):
+            continue
+        ct = node.get("class_type", "")
+        inp = node.get("inputs", {})
+        if ct == "CheckpointLoaderSimple" and not result["checkpoint"]:
+            result["checkpoint"] = inp.get("ckpt_name", "")
+        elif ct == "EmptyLatentImage":
+            result["width"] = inp.get("width", 0)
+            result["height"] = inp.get("height", 0)
+        elif ct == "SaveImage":
+            result["saveimage_filename_prefix"] = inp.get("filename_prefix", "")
+    for node in workflow.values():
+        if not isinstance(node, dict):
+            continue
+        ct = node.get("class_type", "")
+        inp = node.get("inputs", {})
+        if ct == "KSampler":
+            result["sampler_name"] = inp.get("sampler_name", "")
+            result["scheduler"] = inp.get("scheduler", "")
+            result["steps"] = inp.get("steps", 0)
+            result["cfg"] = inp.get("cfg", 0.0)
+            result["denoise"] = inp.get("denoise", 0.0)
+            result["seed"] = inp.get("seed", 0)
+            mlink = inp.get("model")
+            if isinstance(mlink, list) and len(mlink) >= 1:
+                mnode = workflow.get(str(mlink[0]))
+                if isinstance(mnode, dict) and mnode.get("class_type") == "CheckpointLoaderSimple":
+                    result["checkpoint"] = mnode.get("inputs", {}).get("ckpt_name", result["checkpoint"])
+        elif ct == "VAEDecode":
+            vlink = inp.get("vae")
+            if isinstance(vlink, list) and len(vlink) >= 1:
+                vnode = workflow.get(str(vlink[0]))
+                if isinstance(vnode, dict) and vnode.get("class_type") == "CheckpointLoaderSimple":
+                    result["vae"] = "embedded_in_checkpoint"
+        elif ct == "CLIPTextEncode":
+            text = inp.get("text", "")
+            if text and not result["positive_prompt_present"]:
+                result["positive_prompt_present"] = True
+            elif text and result["positive_prompt_present"] and not result["negative_prompt_present"]:
+                result["negative_prompt_present"] = True
+    return result
+
+
+def _extract_conditioning_chain(workflow: Dict[str, Any]) -> Dict[str, Any]:
+    result = {
+        "ksampler_present": False, "emptylatentimage_present": False,
+        "vae_decode_present": False, "saveimage_present": False,
+        "ip_adapter_present": False, "controlnet_present": False,
+        "lora_present": False, "reference_image_inputs_present": False,
+        "custom_conditioning_present": False,
+    }
+    if not isinstance(workflow, dict):
+        return result
+    for node in workflow.values():
+        if not isinstance(node, dict):
+            continue
+        ct = node.get("class_type", "")
+        if ct == "KSampler":
+            result["ksampler_present"] = True
+        elif ct == "EmptyLatentImage":
+            result["emptylatentimage_present"] = True
+        elif ct == "VAEDecode":
+            result["vae_decode_present"] = True
+        elif ct == "SaveImage":
+            result["saveimage_present"] = True
+        elif "IPAdapter" in ct:
+            result["ip_adapter_present"] = True
+        elif "ControlNet" in ct:
+            result["controlnet_present"] = True
+        elif ct == "LoraLoader":
+            lora_stack = node.get("inputs", {}).get("lora_stack", [])
+            if isinstance(lora_stack, list) and len(lora_stack) > 0:
+                result["lora_present"] = True
+        elif ct in ("LoadImage", "ImageScale", "ImageBlend"):
+            result["reference_image_inputs_present"] = True
+        elif ct in ("ConditioningCombine", "ConditioningAverage", "ConditioningConcat", "CLIPSetLastLayer"):
+            result["custom_conditioning_present"] = True
+    return result
+
+
+def combine_audit_corrective_retry_workflow(args: argparse.Namespace) -> int:
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    ts = datetime.utcnow().isoformat()
+
+    submit_request = _read_json_file(control_dir / "combine_v2_corrective_retry_submit_request.json")
+    wf = submit_request.get("workflow_payload_snapshot", {})
+
+    used_existing = False
+    used_fallback = False
+    source_path = None
+    prompt_id = submit_request.get("prompt_id", "")
+
+    minimal_wf = _build_minimal_real_workflow_with_resolution(1024, 1024)
+    if _workflows_match_structure(minimal_wf, wf):
+        for node in wf.values():
+            if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
+                if node.get("inputs", {}).get("ckpt_name") == "realvisxlV50_v50Bakedvae.safetensors":
+                    used_fallback = True
+                    source_path = "fallback_minimal_workflow"
+                break
+
+    if not used_fallback:
+        for candidate in sorted(control_dir.glob("*_submitted_workflow.json")):
+            try:
+                with open(candidate, "r", encoding="utf-8") as f:
+                    existing = json.load(f)
+                if isinstance(existing, dict) and existing and _workflows_match_structure(existing, wf):
+                    used_existing = True
+                    source_path = str(candidate.relative_to(project_root))
+                    break
+            except Exception:
+                continue
+
+    if not used_existing and not used_fallback:
+        source_path = "unknown"
+
+    ks = _extract_ksampler_settings(wf)
+    cond = _extract_conditioning_chain(wf)
+
+    audit = {
+        "stage": "corrective_retry_workflow_audit",
+        "audit_type": "actual_submitted_workflow_identification",
+        "actual_submitted_workflow_path": source_path or "",
+        "workflow_source_decision": "existing_submitted_workflow" if used_existing else ("fallback_minimal_workflow" if used_fallback else "unknown"),
+        "used_existing_submitted_workflow": used_existing,
+        "used_fallback_minimal_workflow": used_fallback,
+        "submitted_prompt_id_if_available": prompt_id or "",
+        "ksampler_settings": ks,
+        "conditioning_chain": cond,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": ts,
+    }
+    _write_json_file(control_dir / "combine_v2_corrective_retry_workflow_audit.json", audit)
+
+    idx = _read_json_file(control_dir / "artifact_index.json")
+    idx["corrective_retry_workflow_audit_completed"] = True
+    _write_json_file(control_dir / "artifact_index.json", idx)
+
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = _read_json_file(ledger_path)
+    event = {"event_type": "corrective_retry_workflow_audit", "used_existing_submitted_workflow": used_existing, "used_fallback_minimal_workflow": used_fallback, "timestamp": ts}
+    if isinstance(ledger, dict):
+        ev = ledger.get("events", [])
+        if not isinstance(ev, list):
+            ev = []
+        ev.append(event)
+        ledger["events"] = ev
+    elif isinstance(ledger, list):
+        ledger.append(event)
+    else:
+        ledger = [event]
+    _write_json_file(ledger_path, ledger)
+
+    if json_output:
+        print(json.dumps(audit, indent=2))
+    else:
+        print(f"Workflow Audit: {audit['workflow_source_decision']}")
+    return 0
+
+
+def combine_diagnose_corrective_retry_recipe(args: argparse.Namespace) -> int:
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    ts = datetime.utcnow().isoformat()
+
+    payload = _read_json_file(control_dir / "combine_v2_corrective_retry_generation_payload.json")
+    impl = _read_json_file(control_dir / "combine_v2_corrective_retry_implementation_report.json")
+    prompt_patch = _read_json_file(control_dir / "combine_v2_corrective_retry_prompt_patch.json")
+    workflow_patch = _read_json_file(control_dir / "combine_v2_corrective_retry_workflow_patch.json")
+    quality_patch = _read_json_file(control_dir / "combine_v2_corrective_retry_quality_pipeline_patch.json")
+    preflight = _read_json_file(control_dir / "combine_v2_corrective_retry_preflight_report.json")
+
+    submit_request = _read_json_file(control_dir / "combine_v2_corrective_retry_submit_request.json")
+    gen_result = _read_json_file(control_dir / "combine_v2_corrective_retry_generation_result.json")
+    gen_trace = _read_json_file(control_dir / "combine_v2_corrective_retry_generation_trace.json")
+    outputs_manifest = _read_json_file(control_dir / "combine_v2_corrective_retry_outputs_manifest.json")
+
+    wf = submit_request.get("workflow_payload_snapshot", {})
+
+    # Determine source path inline (independent of audit artifact)
+    source_path = None
+    minimal_wf = _build_minimal_real_workflow_with_resolution(1024, 1024)
+    if _workflows_match_structure(minimal_wf, wf):
+        for node in wf.values():
+            if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
+                if node.get("inputs", {}).get("ckpt_name") == "realvisxlV50_v50Bakedvae.safetensors":
+                    source_path = "fallback_minimal_workflow"
+                break
+    if not source_path:
+        for candidate in sorted(control_dir.glob("*_submitted_workflow.json")):
+            try:
+                with open(candidate, "r", encoding="utf-8") as f:
+                    existing = json.load(f)
+                if isinstance(existing, dict) and existing and _workflows_match_structure(existing, wf):
+                    source_path = str(candidate.relative_to(project_root))
+                    break
+            except Exception:
+                continue
+    if not source_path:
+        source_path = "unknown"
+
+    exp_pos = payload.get("base_payload", {}).get("prompts", {}).get("positive", "")
+    exp_neg = payload.get("base_payload", {}).get("prompts", {}).get("negative", "")
+    act_pos = ""
+    act_neg = ""
+    for node in wf.values():
+        if isinstance(node, dict) and node.get("class_type") == "CLIPTextEncode":
+            text = node.get("inputs", {}).get("text", "")
+            if not act_pos:
+                act_pos = text
+            elif not act_neg:
+                act_neg = text
+
+    prompt_diff = {
+        "expected_positive": exp_pos, "actual_positive": act_pos,
+        "positive_match": exp_pos == act_pos,
+        "expected_negative": exp_neg, "actual_negative": act_neg,
+        "negative_match": exp_neg == act_neg,
+    }
+
+    exp_res = workflow_patch.get("corrective_actions", {}).get("workflow", {}).get("enforced_resolution", {})
+    if not exp_res:
+        exp_res = {"width": 1024, "height": 1024}
+    act_w = 0
+    act_h = 0
+    for node in wf.values():
+        if isinstance(node, dict) and node.get("class_type") == "EmptyLatentImage":
+            act_w = node.get("inputs", {}).get("width", 0)
+            act_h = node.get("inputs", {}).get("height", 0)
+            break
+    resolution_diff = {
+        "expected_width": exp_res.get("width", 0), "expected_height": exp_res.get("height", 0),
+        "actual_width": act_w, "actual_height": act_h,
+        "resolution_match": exp_res.get("width", 0) == act_w and exp_res.get("height", 0) == act_h,
+    }
+
+    ks = _extract_ksampler_settings(wf)
+    exp_steps = prompt_patch.get("corrective_actions", {}).get("prompt", {}).get("increase_steps", 0)
+    if not exp_steps:
+        exp_steps = 20
+    ksampler_diff = {
+        "expected_steps": exp_steps, "actual_steps": ks.get("steps", 0),
+        "steps_match": exp_steps == ks.get("steps", 0),
+        "actual_sampler": ks.get("sampler_name", ""),
+        "actual_scheduler": ks.get("scheduler", ""),
+        "actual_cfg": ks.get("cfg", 0.0),
+    }
+
+    act_assets = outputs_manifest.get("generated_assets_count", gen_result.get("generated_assets_count", 0))
+    asset_diff = {
+        "expected_assets": 1, "actual_assets": act_assets,
+        "asset_count_match": 1 == act_assets,
+    }
+
+    expected_artifacts = {
+        "combine_v2_corrective_retry_generation_payload.json": payload,
+        "combine_v2_corrective_retry_implementation_report.json": impl,
+        "combine_v2_corrective_retry_prompt_patch.json": prompt_patch,
+        "combine_v2_corrective_retry_workflow_patch.json": workflow_patch,
+        "combine_v2_corrective_retry_quality_pipeline_patch.json": quality_patch,
+        "combine_v2_corrective_retry_preflight_report.json": preflight,
+        "combine_v2_corrective_retry_submit_request.json": submit_request,
+        "combine_v2_corrective_retry_generation_result.json": gen_result,
+        "combine_v2_corrective_retry_generation_trace.json": gen_trace,
+        "combine_v2_corrective_retry_outputs_manifest.json": outputs_manifest,
+    }
+    missing = [n for n, d in expected_artifacts.items() if not d]
+
+    cond = _extract_conditioning_chain(wf)
+
+    root_causes = []
+    if not prompt_diff["positive_match"]:
+        root_causes.append({
+            "cause_id": "RC1", "name": "prompt_patch_mismatch_bug", "likelihood": "high",
+            "description": "Prompt patching uses exact-match comparison. When an existing submitted workflow is loaded, its text differs from the payload stub, so comparison fails and prompts remain unchanged.",
+            "evidence": {"expected_positive": exp_pos, "actual_positive": act_pos, "expected_negative": exp_neg, "actual_negative": act_neg},
+            "recommendation": "Replace exact-match prompt patching with unconditional overwrite or add a force-inject flag.",
+        })
+    if source_path and "shot01" in source_path:
+        root_causes.append({
+            "cause_id": "RC2", "name": "cross_shot_workflow_reuse", "likelihood": "high",
+            "description": "The corrective retry loaded an existing submitted workflow from a different shot (shot01) instead of the target shot's workflow, causing wrong prompts and context.",
+            "evidence": {"loaded_workflow_path": source_path, "workflow_node_ids": list(wf.keys())},
+            "recommendation": "Ensure corrective retry loads the target shot's submitted workflow, not the first available submitted workflow.",
+        })
+    if not cond.get("lora_present", False):
+        root_causes.append({
+            "cause_id": "RC3", "name": "empty_lora_stack", "likelihood": "medium",
+            "description": "LoraLoader node exists but lora_stack is empty, so no LoRA adjustments are applied.",
+            "evidence": {"lora_node_present": any(node.get("class_type") == "LoraLoader" for node in wf.values() if isinstance(node, dict)), "lora_stack_empty": True},
+            "recommendation": "Remove unused LoraLoader node or populate lora_stack with intended LoRAs.",
+        })
+    if not cond.get("ip_adapter_present") and not cond.get("controlnet_present"):
+        root_causes.append({
+            "cause_id": "RC4", "name": "missing_ip_adapter_and_controlnet", "likelihood": "medium",
+            "description": "No IPAdapter or ControlNet nodes present, limiting pose, style, and composition control.",
+            "evidence": {"ip_adapter_present": cond.get("ip_adapter_present", False), "controlnet_present": cond.get("controlnet_present", False)},
+            "recommendation": "Add IPAdapter or ControlNet nodes if the recipe requires composition control.",
+        })
+    if not ksampler_diff["steps_match"]:
+        root_causes.append({
+            "cause_id": "RC5", "name": "ksampler_recipe_mismatch", "likelihood": "low",
+            "description": "KSampler step count does not match corrective retry patch recommendation.",
+            "evidence": {"expected_steps": exp_steps, "actual_steps": ksampler_diff["actual_steps"]},
+            "recommendation": "Align KSampler steps to the corrective retry patch.",
+        })
+
+    diff_report = {
+        "stage": "corrective_retry_expected_vs_actual_diff", "timestamp": ts,
+        "prompt_diff": prompt_diff, "resolution_diff": resolution_diff,
+        "ksampler_diff": ksampler_diff, "asset_diff": asset_diff,
+        "missing_artifacts": missing,
+        "generation_allowed": False, "retry_allowed": False,
+        "comfyui_execution": False, "visual_qa_executed": False,
+        "assembly_executed": False, "downstream_executed": False,
+        "production_accepted": False,
+    }
+    recipe_diagnosis = {
+        "stage": "corrective_retry_recipe_diagnosis", "timestamp": ts,
+        "expected_vs_actual": diff_report, "root_causes": root_causes,
+        "root_cause_count": len(root_causes), "missing_artifacts": missing,
+        "generation_allowed": False, "retry_allowed": False,
+        "comfyui_execution": False, "visual_qa_executed": False,
+        "assembly_executed": False, "downstream_executed": False,
+        "production_accepted": False,
+    }
+    conditioning_audit = {
+        "stage": "corrective_retry_conditioning_audit", "timestamp": ts,
+        "conditioning_chain": cond,
+        "generation_allowed": False, "retry_allowed": False,
+        "comfyui_execution": False, "visual_qa_executed": False,
+        "assembly_executed": False, "downstream_executed": False,
+        "production_accepted": False,
+    }
+    root_cause_report = {
+        "stage": "corrective_retry_root_cause_report", "timestamp": ts,
+        "root_causes": root_causes,
+        "ranked_by_likelihood": [c["likelihood"] for c in root_causes],
+        "total_causes": len(root_causes),
+        "generation_allowed": False, "retry_allowed": False,
+        "comfyui_execution": False, "visual_qa_executed": False,
+        "assembly_executed": False, "downstream_executed": False,
+        "production_accepted": False,
+    }
+
+    _write_json_file(control_dir / "combine_v2_corrective_retry_expected_vs_actual_diff.json", diff_report)
+    _write_json_file(control_dir / "combine_v2_corrective_retry_recipe_diagnosis.json", recipe_diagnosis)
+    _write_json_file(control_dir / "combine_v2_corrective_retry_conditioning_audit.json", conditioning_audit)
+    _write_json_file(control_dir / "combine_v2_corrective_retry_root_cause_report.json", root_cause_report)
+
+    idx = _read_json_file(control_dir / "artifact_index.json")
+    idx["corrective_retry_recipe_diagnosis_completed"] = True
+    _write_json_file(control_dir / "artifact_index.json", idx)
+
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = _read_json_file(ledger_path)
+    event = {"event_type": "corrective_retry_recipe_diagnosis", "root_cause_count": len(root_causes), "timestamp": ts}
+    if isinstance(ledger, dict):
+        ev = ledger.get("events", [])
+        if not isinstance(ev, list):
+            ev = []
+        ev.append(event)
+        ledger["events"] = ev
+    elif isinstance(ledger, list):
+        ledger.append(event)
+    else:
+        ledger = [event]
+    _write_json_file(ledger_path, ledger)
+
+    if json_output:
+        print(json.dumps(recipe_diagnosis, indent=2))
+    else:
+        print(f"Recipe Diagnosis: {len(root_causes)} root causes found")
+    return 0
+
+
+def combine_build_corrective_recipe_v2(args: argparse.Namespace) -> int:
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    ts = datetime.utcnow().isoformat()
+
+    workflow_audit = _read_json_file(control_dir / "combine_v2_corrective_retry_workflow_audit.json")
+    recipe_diagnosis = _read_json_file(control_dir / "combine_v2_corrective_retry_recipe_diagnosis.json")
+    root_cause_report = _read_json_file(control_dir / "combine_v2_corrective_retry_root_cause_report.json")
+
+    root_causes = root_cause_report.get("root_causes", recipe_diagnosis.get("root_causes", []))
+
+    recipe_v2 = {
+        "stage": "corrective_retry_recipe_v2_recommendation",
+        "timestamp": ts,
+        "recommended_actions": [],
+        "recommended_parameters": {},
+        "recommended_policies": [],
+        "forbidden_actions": [
+            "new_generation", "retry_submit", "comfyui_submit", "visual_qa",
+            "operator_visual_decision", "assembly", "audio", "render",
+            "downstream", "production_acceptance"
+        ],
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+    }
+
+    for cause in root_causes:
+        name = cause.get("name", "")
+        if name == "prompt_patch_mismatch_bug":
+            recipe_v2["recommended_actions"].append({
+                "action": "fix_prompt_injection_logic", "priority": "critical",
+                "description": "Replace exact-match prompt patching with unconditional overwrite or shot-aware mapping.",
+                "file": "app/cli.py", "function": "combine_corrective_retry_generate_assets",
+            })
+            recipe_v2["recommended_parameters"]["prompt_injection_mode"] = "unconditional_overwrite"
+            recipe_v2["recommended_policies"].append("Always overwrite CLIPTextEncode nodes when applying corrective retry payload, never compare existing text.")
+        elif name == "cross_shot_workflow_reuse":
+            recipe_v2["recommended_actions"].append({
+                "action": "fix_workflow_source_selection", "priority": "critical",
+                "description": "Load the target shot's submitted workflow, not the first available submitted workflow.",
+                "file": "app/cli.py", "function": "combine_corrective_retry_generate_assets",
+            })
+            recipe_v2["recommended_parameters"]["workflow_source_policy"] = "target_shot_only"
+            recipe_v2["recommended_policies"].append("Workflow source must match the current shot_id from the generation payload.")
+        elif name == "empty_lora_stack":
+            recipe_v2["recommended_actions"].append({
+                "action": "remove_or_populate_lora_loader", "priority": "medium",
+                "description": "Either remove unused LoraLoader node or populate lora_stack with intended LoRAs.",
+            })
+            recipe_v2["recommended_parameters"]["lora_policy"] = "remove_if_empty"
+        elif name == "missing_ip_adapter_and_controlnet":
+            recipe_v2["recommended_actions"].append({
+                "action": "add_composition_control", "priority": "medium",
+                "description": "Add IPAdapter or ControlNet nodes if the recipe requires pose/style control.",
+            })
+            recipe_v2["recommended_parameters"]["composition_control"] = "ip_adapter_or_controlnet"
+        elif name == "ksampler_recipe_mismatch":
+            recipe_v2["recommended_actions"].append({
+                "action": "align_ksampler_to_recipe", "priority": "low",
+                "description": "Ensure KSampler steps and sampler match the corrective retry patch recommendation.",
+            })
+
+    recipe_v2["recommended_policies"].extend([
+        "No generation without explicit operator authorization.",
+        "No blind retry without root cause analysis.",
+        "All prompt changes must be traceable in artifact diff.",
+        "Workflow source must be verified before submission.",
+    ])
+
+    _write_json_file(control_dir / "combine_v2_corrective_retry_recipe_v2_recommendation.json", recipe_v2)
+
+    idx = _read_json_file(control_dir / "artifact_index.json")
+    idx["corrective_retry_recipe_v2_recommendation_completed"] = True
+    _write_json_file(control_dir / "artifact_index.json", idx)
+
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = _read_json_file(ledger_path)
+    event = {"event_type": "corrective_retry_recipe_v2_recommendation", "recommended_actions_count": len(recipe_v2["recommended_actions"]), "timestamp": ts}
+    if isinstance(ledger, dict):
+        ev = ledger.get("events", [])
+        if not isinstance(ev, list):
+            ev = []
+        ev.append(event)
+        ledger["events"] = ev
+    elif isinstance(ledger, list):
+        ledger.append(event)
+    else:
+        ledger = [event]
+    _write_json_file(ledger_path, ledger)
+
+    if json_output:
+        print(json.dumps(recipe_v2, indent=2))
+    else:
+        print(f"Recipe V2: {len(recipe_v2['recommended_actions'])} actions recommended")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -5491,6 +6004,54 @@ def main() -> int:
         help="Project root directory",
     )
     combine_review_corrective_retry_result_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-921-980-DIAG — combine-audit-corrective-retry-workflow subcommand
+    combine_audit_corrective_retry_workflow_parser = subparsers.add_parser(
+        "combine-audit-corrective-retry-workflow",
+        help="Audit actual submitted corrective retry workflow source and settings"
+    )
+    combine_audit_corrective_retry_workflow_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_audit_corrective_retry_workflow_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-921-980-DIAG — combine-diagnose-corrective-retry-recipe subcommand
+    combine_diagnose_corrective_retry_recipe_parser = subparsers.add_parser(
+        "combine-diagnose-corrective-retry-recipe",
+        help="Diagnose corrective retry recipe expected vs actual and root causes"
+    )
+    combine_diagnose_corrective_retry_recipe_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_diagnose_corrective_retry_recipe_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-921-980-DIAG — combine-build-corrective-recipe-v2 subcommand
+    combine_build_corrective_recipe_v2_parser = subparsers.add_parser(
+        "combine-build-corrective-recipe-v2",
+        help="Build corrective recipe v2 recommendation from audit and diagnosis"
+    )
+    combine_build_corrective_recipe_v2_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_corrective_recipe_v2_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -6694,6 +7255,12 @@ def main() -> int:
         return combine_corrective_retry_generate_assets(args)
     elif args.command == "combine-review-corrective-retry-result":
         return combine_review_corrective_retry_result(args)
+    elif args.command == "combine-audit-corrective-retry-workflow":
+        return combine_audit_corrective_retry_workflow(args)
+    elif args.command == "combine-diagnose-corrective-retry-recipe":
+        return combine_diagnose_corrective_retry_recipe(args)
+    elif args.command == "combine-build-corrective-recipe-v2":
+        return combine_build_corrective_recipe_v2(args)
     elif args.command == "combine-diagnostic-generate-one-asset":
         return combine_diagnostic_generate_one_asset(args)
     elif args.command == "combine-real-generation-preflight":

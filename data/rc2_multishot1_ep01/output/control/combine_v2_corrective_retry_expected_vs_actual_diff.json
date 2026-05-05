@@ -1,0 +1,40 @@
+{
+  "stage": "corrective_retry_expected_vs_actual_diff",
+  "timestamp": "2026-05-05T09:34:28.527538",
+  "prompt_diff": {
+    "expected_positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+    "actual_positive": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+    "positive_match": false,
+    "expected_negative": "low quality, blurry, distorted",
+    "actual_negative": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence",
+    "negative_match": false
+  },
+  "resolution_diff": {
+    "expected_width": 1024,
+    "expected_height": 1024,
+    "actual_width": 1344,
+    "actual_height": 1024,
+    "resolution_match": false
+  },
+  "ksampler_diff": {
+    "expected_steps": 20,
+    "actual_steps": 20,
+    "steps_match": true,
+    "actual_sampler": "dpmpp_sde",
+    "actual_scheduler": "karras",
+    "actual_cfg": 7.5
+  },
+  "asset_diff": {
+    "expected_assets": 1,
+    "actual_assets": 1,
+    "asset_count_match": true
+  },
+  "missing_artifacts": [],
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "comfyui_execution": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}

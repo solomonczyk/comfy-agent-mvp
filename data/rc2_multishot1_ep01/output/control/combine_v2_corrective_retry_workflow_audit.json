@@ -1,0 +1,43 @@
+{
+  "stage": "corrective_retry_workflow_audit",
+  "audit_type": "actual_submitted_workflow_identification",
+  "actual_submitted_workflow_path": "output\\control\\ep01_shot01_submitted_workflow.json",
+  "workflow_source_decision": "existing_submitted_workflow",
+  "used_existing_submitted_workflow": true,
+  "used_fallback_minimal_workflow": false,
+  "submitted_prompt_id_if_available": "",
+  "ksampler_settings": {
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "vae": "embedded_in_checkpoint",
+    "sampler_name": "dpmpp_sde",
+    "scheduler": "karras",
+    "steps": 20,
+    "cfg": 7.5,
+    "denoise": 0.5,
+    "seed": 391676172,
+    "width": 1344,
+    "height": 1024,
+    "positive_prompt_present": true,
+    "negative_prompt_present": true,
+    "saveimage_filename_prefix": "combine_v2_corrective_retry_1777971208"
+  },
+  "conditioning_chain": {
+    "ksampler_present": true,
+    "emptylatentimage_present": true,
+    "vae_decode_present": true,
+    "saveimage_present": true,
+    "ip_adapter_present": false,
+    "controlnet_present": false,
+    "lora_present": false,
+    "reference_image_inputs_present": false,
+    "custom_conditioning_present": false
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "comfyui_execution": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-05T09:34:06.026599"
+}

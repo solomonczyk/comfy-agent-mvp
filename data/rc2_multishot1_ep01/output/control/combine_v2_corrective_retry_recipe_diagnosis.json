@@ -1,0 +1,110 @@
+{
+  "stage": "corrective_retry_recipe_diagnosis",
+  "timestamp": "2026-05-05T09:34:28.527538",
+  "expected_vs_actual": {
+    "stage": "corrective_retry_expected_vs_actual_diff",
+    "timestamp": "2026-05-05T09:34:28.527538",
+    "prompt_diff": {
+      "expected_positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+      "actual_positive": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+      "positive_match": false,
+      "expected_negative": "low quality, blurry, distorted",
+      "actual_negative": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence",
+      "negative_match": false
+    },
+    "resolution_diff": {
+      "expected_width": 1024,
+      "expected_height": 1024,
+      "actual_width": 1344,
+      "actual_height": 1024,
+      "resolution_match": false
+    },
+    "ksampler_diff": {
+      "expected_steps": 20,
+      "actual_steps": 20,
+      "steps_match": true,
+      "actual_sampler": "dpmpp_sde",
+      "actual_scheduler": "karras",
+      "actual_cfg": 7.5
+    },
+    "asset_diff": {
+      "expected_assets": 1,
+      "actual_assets": 1,
+      "asset_count_match": true
+    },
+    "missing_artifacts": [],
+    "generation_allowed": false,
+    "retry_allowed": false,
+    "comfyui_execution": false,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  },
+  "root_causes": [
+    {
+      "cause_id": "RC1",
+      "name": "prompt_patch_mismatch_bug",
+      "likelihood": "high",
+      "description": "Prompt patching uses exact-match comparison. When an existing submitted workflow is loaded, its text differs from the payload stub, so comparison fails and prompts remain unchanged.",
+      "evidence": {
+        "expected_positive": "A professional cinematic shot of a person in an office, high quality, 8k",
+        "actual_positive": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+        "expected_negative": "low quality, blurry, distorted",
+        "actual_negative": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence"
+      },
+      "recommendation": "Replace exact-match prompt patching with unconditional overwrite or add a force-inject flag."
+    },
+    {
+      "cause_id": "RC2",
+      "name": "cross_shot_workflow_reuse",
+      "likelihood": "high",
+      "description": "The corrective retry loaded an existing submitted workflow from a different shot (shot01) instead of the target shot's workflow, causing wrong prompts and context.",
+      "evidence": {
+        "loaded_workflow_path": "output\\control\\ep01_shot01_submitted_workflow.json",
+        "workflow_node_ids": [
+          "3",
+          "4",
+          "5",
+          "6",
+          "7",
+          "8",
+          "9",
+          "10"
+        ]
+      },
+      "recommendation": "Ensure corrective retry loads the target shot's submitted workflow, not the first available submitted workflow."
+    },
+    {
+      "cause_id": "RC3",
+      "name": "empty_lora_stack",
+      "likelihood": "medium",
+      "description": "LoraLoader node exists but lora_stack is empty, so no LoRA adjustments are applied.",
+      "evidence": {
+        "lora_node_present": true,
+        "lora_stack_empty": true
+      },
+      "recommendation": "Remove unused LoraLoader node or populate lora_stack with intended LoRAs."
+    },
+    {
+      "cause_id": "RC4",
+      "name": "missing_ip_adapter_and_controlnet",
+      "likelihood": "medium",
+      "description": "No IPAdapter or ControlNet nodes present, limiting pose, style, and composition control.",
+      "evidence": {
+        "ip_adapter_present": false,
+        "controlnet_present": false
+      },
+      "recommendation": "Add IPAdapter or ControlNet nodes if the recipe requires composition control."
+    }
+  ],
+  "root_cause_count": 4,
+  "missing_artifacts": [],
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "comfyui_execution": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}
