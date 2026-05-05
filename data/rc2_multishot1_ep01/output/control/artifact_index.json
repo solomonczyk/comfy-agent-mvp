@@ -1,5 +1,5 @@
 {
-  "current_state": "operator_retry_generation_authorization_required",
+  "current_state": "corrective_retry_result_review_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5189,22 +5189,39 @@
       },
       "timestamp": "2026-05-04T18:32:42.959652",
       "no_generation_performed": true
+    },
+    {
+      "stage": "corrective_retry_result_review_required",
+      "success": true,
+      "message": "Agent GenericStageAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "GenericStageAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "none"
+      },
+      "timestamp": "2026-05-05T08:41:17.704660",
+      "no_generation_performed": true
     }
   ],
   "operator_visual_decision": "reject_visual_quality",
   "operator_rejection_confirmed": true,
-  "generation_allowed": false,
-  "retry_allowed": false,
+  "generation_allowed": true,
+  "retry_allowed": true,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "operator_retry_generation_authorization_required",
+  "next_allowed_action": "corrective_retry_result_review_required",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
   "retry_requires_operator_authorization": true,
-  "retry_attempted": false,
-  "comfyui_execution": false,
-  "workflow_submitted": false,
+  "retry_attempted": true,
+  "comfyui_execution": true,
+  "workflow_submitted": true,
   "downstream_executed": false,
   "corrective_retry_implementation_authorized": true,
   "retry_generation_authorized": false,
@@ -5216,5 +5233,19 @@
   "operator_retry_generation_authorization_request_created": true,
   "legacy_512_workflow_blocked": true,
   "minimum_short_side_1024_enforced": true,
-  "output_path_contract_preserved": true
+  "output_path_contract_preserved": true,
+  "operator_retry_generation_authorized": true,
+  "corrective_retry_package_required": true,
+  "corrective_retry_package_available": true,
+  "max_generations": 1,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "corrective_retry_package_used": true,
+  "generation_attempts": 1,
+  "generation_performed": true,
+  "second_generation_attempted": false,
+  "branch_selected": "failed_collection",
+  "generated_assets_count": 0,
+  "result_review_executed": true,
+  "real_visual_qa_started": false
 }

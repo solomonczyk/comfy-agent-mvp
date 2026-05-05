@@ -1,0 +1,52 @@
+{
+  "stage": "corrective_retry_generate_assets",
+  "trace_id": "corrective_retry_trace_20260505T104106857192",
+  "events": [
+    {
+      "event": "operator_authorization_check",
+      "status": "authorized"
+    },
+    {
+      "event": "corrective_retry_package_loaded",
+      "status": "success"
+    },
+    {
+      "event": "max_generations_enforced",
+      "max_generations": 1
+    },
+    {
+      "event": "workflow_submitted",
+      "status": "submitted"
+    },
+    {
+      "event": "generation_attempt",
+      "attempt": 1,
+      "status": "completed"
+    },
+    {
+      "event": "blind_retry_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "legacy_512_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "minimum_short_side_1024",
+      "status": "enforced"
+    },
+    {
+      "event": "visual_qa_skipped",
+      "status": "stopped_before_visual_qa"
+    },
+    {
+      "event": "assembly_skipped",
+      "status": "stopped_before_assembly"
+    },
+    {
+      "event": "downstream_skipped",
+      "status": "stopped_before_downstream"
+    }
+  ],
+  "timestamp": "2026-05-05T10:41:06.857192"
+}

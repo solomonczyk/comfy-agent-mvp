@@ -47,6 +47,7 @@ class CombineOrchestrator:
         "real_generation_payload_review": "GenerationAgent",
         "operator_real_generation_authorization_required": "RealGenerationReadinessAgent",
         "operator_real_generation_approved": "RealGenerationReadinessAgent",
+        "corrective_retry_generate_assets": "GenerationAgent",
         "real_generate_assets": "GenerationAgent",
         "real_generation_result_collected": "GenerationAgent",
         "real_generation_result_review_required": "GenerationAgent",

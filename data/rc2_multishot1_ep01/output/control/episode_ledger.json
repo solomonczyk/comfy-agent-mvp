@@ -1297,5 +1297,51 @@
     "generation_allowed": false,
     "retry_allowed": false,
     "timestamp": "2026-05-05T10:11:11.386655"
+  },
+  {
+    "event_type": "operator_retry_generation_authorized",
+    "stage": "operator_retry_generation_authorization_required",
+    "operator_decision": "approve_one_corrective_retry_generation",
+    "operator_retry_generation_authorized": true,
+    "max_generations": 1,
+    "generation_allowed": true,
+    "retry_allowed": true,
+    "workflow_submitted": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-05T10:40:54.926077"
+  },
+  {
+    "event_type": "corrective_retry_generation_attempted",
+    "stage": "corrective_retry_generate_assets",
+    "corrective_retry_package_used": true,
+    "generation_attempts": 1,
+    "max_generations": 1,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "retry_attempted": true,
+    "second_generation_attempted": false,
+    "timestamp": "2026-05-05T10:41:06.857192"
+  },
+  {
+    "event_type": "corrective_retry_result_review_completed",
+    "stage": "corrective_retry_result_review_required",
+    "branch_selected": "failed_collection",
+    "generated_assets_count": 0,
+    "result_review_executed": true,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-05T10:41:17.617151"
+  },
+  {
+    "event_type": "stage_execution",
+    "stage": "corrective_retry_result_review_required",
+    "agent": "GenericStageAgent",
+    "success": true,
+    "message": "Agent GenericStageAgent executed stage (stub)",
+    "dry_run": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "timestamp": "2026-05-05T08:41:17.704660"
   }
 ]

@@ -31,6 +31,9 @@ class CombineStateMachine:
         "controlled_retry_authorization_required",
         "corrective_retry_implementation_required",
         "operator_retry_generation_authorization_required",
+        "corrective_retry_generate_assets",
+        "corrective_retry_result_review_required",
+        "corrective_retry_visual_qa_preflight_required",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
         "real_generation_payload_review",
@@ -119,7 +122,19 @@ class CombineStateMachine:
             "generate_assets"
         },
         "operator_retry_generation_authorization_required": {
-            "operator_retry_generation_authorization_required"
+            "corrective_retry_generate_assets"
+        },
+        "corrective_retry_generate_assets": {
+            "corrective_retry_visual_qa_preflight_required",
+            "corrective_retry_result_review_required"
+        },
+        "corrective_retry_result_review_required": {
+            "corrective_retry_result_review_required",
+            "blocked_manual_review"
+        },
+        "corrective_retry_visual_qa_preflight_required": {
+            "real_visual_qa_required",
+            "blocked_manual_review"
         },
         "generate_assets": {
             "visual_qa_required_stub_pending",
@@ -343,6 +358,25 @@ class CombineStateMachine:
         ("corrective_retry_implementation_required", "completed"),
         ("corrective_retry_implementation_required", "production_accepted"),
         
+        # Corrective retry generation layer: cannot skip to downstream or second generation
+        ("operator_retry_generation_authorization_required", "generate_assets"),
+        ("operator_retry_generation_authorization_required", "real_generate_assets"),
+        ("operator_retry_generation_authorization_required", "assembly_required"),
+        ("operator_retry_generation_authorization_required", "completed"),
+        ("corrective_retry_generate_assets", "generate_assets"),
+        ("corrective_retry_generate_assets", "real_generate_assets"),
+        ("corrective_retry_generate_assets", "assembly_required"),
+        ("corrective_retry_generate_assets", "completed"),
+        ("corrective_retry_generate_assets", "production_accepted"),
+        ("corrective_retry_generate_assets", "visual_qa_required"),
+        ("corrective_retry_generate_assets", "real_visual_qa_required"),
+        ("corrective_retry_result_review_required", "assembly_required"),
+        ("corrective_retry_result_review_required", "completed"),
+        ("corrective_retry_result_review_required", "production_accepted"),
+        ("corrective_retry_visual_qa_preflight_required", "assembly_required"),
+        ("corrective_retry_visual_qa_preflight_required", "completed"),
+        ("corrective_retry_visual_qa_preflight_required", "production_accepted"),
+
         # Cannot jump to assembly without completing rebuild
         ("workflow_td_rebuild_required", "assembly_required"),
         ("recipe_rebuild_contract_required", "assembly_required"),

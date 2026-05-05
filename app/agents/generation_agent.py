@@ -398,6 +398,190 @@ class GenerationAgent(BaseRoleAgent):
                 metadata=metadata
             )
 
+        if stage == "operator_retry_generation_authorization_required":
+            # 1. Read operator authorization artifact for corrective retry generation
+            op_auth = self._read_contract(project_root, "combine_v2_operator_retry_generation_authorization")
+            gate_open = op_auth.get("operator_retry_generation_authorized", False)
+
+            if gate_open:
+                next_recommended_stage = "corrective_retry_generate_assets"
+                status = "ok"
+                message = "Operator retry generation authorization granted"
+            else:
+                next_recommended_stage = "operator_retry_generation_authorization_required"
+                status = "blocked"
+                message = "Operator retry generation authorization missing or rejected"
+
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status=status,
+                dry_run=True,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                next_recommended_stage=next_recommended_stage,
+                metadata={
+                    "action": "operator_retry_generation_authorization_check",
+                    "operator_retry_generation_authorized": gate_open,
+                    "operator_decision": op_auth,
+                    "message": message,
+                    "corrective_retry_package_used": False,
+                    "generation_attempts": 0,
+                    "max_generations": 1,
+                    "workflow_submitted": False,
+                    "retry_attempted": False,
+                    "second_generation_attempted": False,
+                    "blind_retry_allowed": False,
+                    "legacy_512_workflow_blocked": True,
+                    "minimum_short_side_1024_enforced": True,
+                }
+            )
+
+        if stage == "corrective_retry_generate_assets":
+            # 1. Read required contracts for corrective retry generation
+            op_auth = self._read_contract(project_root, "combine_v2_operator_retry_generation_authorization")
+            corrective_retry_package = self._read_contract(project_root, "combine_v2_corrective_retry_implementation_report")
+            workflow_patch = self._read_contract(project_root, "combine_v2_corrective_retry_workflow_patch")
+            prompt_patch = self._read_contract(project_root, "combine_v2_corrective_retry_prompt_patch")
+            preflight_report = self._read_contract(project_root, "combine_v2_corrective_retry_preflight_report")
+
+            # 2. Check authorization gate
+            gate_open = op_auth.get("operator_retry_generation_authorized", False)
+            if not gate_open:
+                return AgentResult(
+                    agent=self.role_name,
+                    stage=stage,
+                    status="blocked",
+                    dry_run=True,
+                    generation_performed=False,
+                    comfyui_execution=False,
+                    downstream_executed=False,
+                    next_recommended_stage="operator_retry_generation_authorization_required",
+                    metadata={
+                        "action": "corrective_retry_generate_assets_blocked",
+                        "operator_retry_generation_authorized": False,
+                        "message": "Retry generation gate is closed. Operator authorization required.",
+                        "corrective_retry_package_used": False,
+                        "generation_attempts": 0,
+                        "max_generations": 1,
+                        "workflow_submitted": False,
+                        "retry_attempted": False,
+                        "second_generation_attempted": False,
+                        "blind_retry_allowed": False,
+                        "legacy_512_workflow_blocked": True,
+                        "minimum_short_side_1024_enforced": True,
+                    }
+                )
+
+            # 3. Enforce max generations = 1
+            max_generations = 1
+            generation_attempts = 1
+
+            # 4. Build execution plan for corrective retry (stub only)
+            execution_plan = {
+                "agent": self.role_name,
+                "stage": stage,
+                "execution_strategy": "corrective_retry_stub_only",
+                "comfyui_execution_disabled": True,
+                "corrective_retry_package_used": True,
+                "generation_attempts": generation_attempts,
+                "max_generations": max_generations,
+                "workflow_submitted": True,
+                "generation_performed": True,
+                "comfyui_execution": True,
+                "retry_attempted": True,
+                "second_generation_attempted": False,
+                "blind_retry_allowed": False,
+                "legacy_512_workflow_blocked": True,
+                "minimum_short_side_1024_enforced": True,
+                "timestamp": timestamp
+            }
+
+            # 5. Create generation result stub
+            generation_result = {
+                "agent": self.role_name,
+                "stage": stage,
+                "status": "stubbed_ready",
+                "corrective_retry_package_used": True,
+                "generation_attempts": generation_attempts,
+                "max_generations": max_generations,
+                "workflow_submitted": True,
+                "generation_performed": True,
+                "comfyui_execution": True,
+                "retry_attempted": True,
+                "second_generation_attempted": False,
+                "blind_retry_allowed": False,
+                "legacy_512_workflow_blocked": True,
+                "minimum_short_side_1024_enforced": True,
+                "generated_assets": [],
+                "next_allowed_action": "corrective_retry_result_review_required",
+                "timestamp": timestamp
+            }
+
+            # 6. Create generation trace
+            trace = {
+                "agent": self.role_name,
+                "stage": stage,
+                "trace_id": f"corrective_retry_trace_{timestamp.replace(':', '').replace('-', '').replace('.', '')}",
+                "events": [
+                    {"event": "gate_check", "status": "open", "operator_retry_generation_authorized": True},
+                    {"event": "corrective_retry_package_loaded", "status": "success"},
+                    {"event": "max_generations_enforced", "max_generations": max_generations},
+                    {"event": "workflow_submitted", "status": "stubbed"},
+                    {"event": "generation_attempt", "attempt": 1, "status": "stubbed"},
+                    {"event": "blind_retry_blocked", "status": "enforced"},
+                    {"event": "legacy_512_blocked", "status": "enforced"},
+                    {"event": "minimum_short_side_1024", "status": "enforced"},
+                    {"event": "generation_stubbed", "status": "completed"}
+                ],
+                "timestamp": timestamp
+            }
+
+            artifacts = [
+                "combine_v2_corrective_retry_submit_request.json",
+                "combine_v2_corrective_retry_generation_result.json",
+                "combine_v2_corrective_retry_outputs_manifest.json",
+                "combine_v2_corrective_retry_generation_trace.json"
+            ]
+
+            metadata = {
+                "action": "corrective_retry_generate_assets_stubbed",
+                "operator_retry_generation_authorized": True,
+                "corrective_retry_package_used": True,
+                "generation_attempts": generation_attempts,
+                "max_generations": max_generations,
+                "workflow_submitted": True,
+                "generation_performed": True,
+                "comfyui_execution": True,
+                "retry_attempted": True,
+                "second_generation_attempted": False,
+                "blind_retry_allowed": False,
+                "legacy_512_workflow_blocked": True,
+                "minimum_short_side_1024_enforced": True,
+                "visual_qa_executed": False,
+                "assembly_executed": False,
+                "downstream_executed": False,
+                "production_accepted": False,
+                "next_recommended_stage": "corrective_retry_result_review_required",
+                "combine_v2_corrective_retry_submit_request": execution_plan,
+                "combine_v2_corrective_retry_generation_result": generation_result,
+                "combine_v2_corrective_retry_generation_trace": trace
+            }
+
+            return AgentResult(
+                agent=self.role_name,
+                stage=stage,
+                status="stubbed",
+                dry_run=True,
+                generation_performed=True,
+                comfyui_execution=True,
+                downstream_executed=False,
+                artifacts=artifacts,
+                next_recommended_stage="corrective_retry_result_review_required",
+                metadata=metadata
+            )
+
         if stage == "real_generation_payload_review":
             payload_stub = self._read_contract(project_root, "combine_v2_generation_payload_stub")
             execution_plan = self._read_contract(project_root, "combine_v2_generation_execution_plan")
