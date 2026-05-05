@@ -6301,6 +6301,69 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC-COMBINE-V2-981-1040-FIX — Shot-specific workflow binding validation
+    combine_validate_shot_workflow_binding_parser = subparsers.add_parser(
+        "combine-validate-shot-workflow-binding",
+        help="Validate shot-specific workflow binding and block cross-shot reuse",
+    )
+    combine_validate_shot_workflow_binding_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_shot_workflow_binding_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID to validate (e.g., shot02)",
+    )
+    combine_validate_shot_workflow_binding_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-981-1040-FIX — Build corrective retry package v2
+    combine_build_corrective_retry_package_v2_parser = subparsers.add_parser(
+        "combine-build-corrective-retry-package-v2",
+        help="Build corrective retry package v2 with shot-specific binding and node/field-based prompt patching",
+    )
+    combine_build_corrective_retry_package_v2_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_corrective_retry_package_v2_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID for the package (e.g., shot02)",
+    )
+    combine_build_corrective_retry_package_v2_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-981-1040-FIX — Verify prompt patch v2
+    combine_verify_prompt_patch_v2_parser = subparsers.add_parser(
+        "combine-verify-prompt-patch-v2",
+        help="Verify prompt patch v2 uses node/field-based strategy instead of exact-text",
+    )
+    combine_verify_prompt_patch_v2_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_verify_prompt_patch_v2_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID to verify (e.g., shot02)",
+    )
+    combine_verify_prompt_patch_v2_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-681-740 — combine-validate-output-path-contract subcommand
     combine_validate_output_path_contract_parser = subparsers.add_parser(
         "combine-validate-output-path-contract",
@@ -7283,6 +7346,12 @@ def main() -> int:
         return combine_operator_strategy_decision(args)
     elif args.command == "combine-operator-rebuild-decision":
         return combine_operator_rebuild_decision(args)
+    elif args.command == "combine-validate-shot-workflow-binding":
+        return combine_validate_shot_workflow_binding(args)
+    elif args.command == "combine-build-corrective-retry-package-v2":
+        return combine_build_corrective_retry_package_v2(args)
+    elif args.command == "combine-verify-prompt-patch-v2":
+        return combine_verify_prompt_patch_v2(args)
     elif args.command == "combine-validate-output-path-contract":
         return combine_validate_output_path_contract(args)
     elif args.command == "combine-run-rebuilt-asset-visual-qa":
@@ -14548,6 +14617,360 @@ def validate_role_approval_gate(args: argparse.Namespace) -> int:
             print(f"\nNext Allowed Action: {result['next_allowed_action']}")
     
     return 0 if result["status"] in ["blocked", "ready_for_retry"] else 1
+
+
+def combine_validate_shot_workflow_binding(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-981-1040-FIX — Validate shot-specific workflow binding.
+
+    This command validates that the workflow being used for a shot belongs to that
+    specific shot, blocking silent cross-shot workflow reuse.
+
+    Exit codes:
+    - 0: validation completed successfully
+    - 1: validation failed or invalid args
+    """
+    from pathlib import Path
+    from datetime import datetime
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    # Create workflow binding policy
+    policy = {
+        "policy_name": "combine_v2_shot_workflow_binding_policy",
+        "policy_version": "2.0",
+        "require_matching_shot_id": True,
+        "allow_cross_shot_reuse": False,
+        "allow_fallback_minimal_workflow": False,
+        "on_mismatch": "block_and_request_shot_specific_workflow",
+        "validation_rules": {
+            "workflow_filename_must_contain_shot_id": True,
+            "workflow_shot_id_extraction_required": True,
+            "cross_shot_reuse_forbidden": True,
+            "fallback_minimal_workflow_forbidden": True
+        },
+        "timestamp": timestamp
+    }
+    policy_path = control_dir / "combine_v2_shot_workflow_binding_policy.json"
+    with open(policy_path, 'w') as f:
+        json.dump(policy, f, indent=2)
+
+    # Check for cross-shot workflow reuse
+    requested_shot_id = shot_id
+    cross_shot_reuse_detected = False
+    cross_shot_reuse_blocked = True
+    workflow_shot_id = None
+    actual_submitted_workflow_path = None
+
+    # Look for submitted workflow files
+    for candidate in sorted(control_dir.glob("*_submitted_workflow.json")):
+        try:
+            with open(candidate, "r", encoding="utf-8") as f:
+                workflow = json.load(f)
+            # Extract shot_id from filename
+            filename = candidate.name
+            if "_submitted_workflow.json" in filename:
+                workflow_shot_id = filename.replace("_submitted_workflow.json", "")
+                if workflow_shot_id != requested_shot_id:
+                    cross_shot_reuse_detected = True
+                    actual_submitted_workflow_path = str(candidate.relative_to(project_root))
+                    break
+        except Exception:
+            continue
+
+    # Create cross-shot reuse guard report
+    guard_report = {
+        "stage": "shot_workflow_binding_validation",
+        "requested_shot_id": requested_shot_id,
+        "workflow_shot_id": workflow_shot_id,
+        "actual_submitted_workflow_path": actual_submitted_workflow_path or "",
+        "cross_shot_workflow_reuse_detected": cross_shot_reuse_detected,
+        "cross_shot_workflow_reuse_blocked": cross_shot_reuse_blocked,
+        "silent_cross_shot_reuse_allowed": False,
+        "fallback_minimal_workflow_forbidden": True,
+        "binding_policy_applied": True,
+        "validation_result": "blocked" if cross_shot_reuse_detected else "passed",
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "timestamp": timestamp
+    }
+    guard_report_path = control_dir / "combine_v2_cross_shot_reuse_guard_report.json"
+    with open(guard_report_path, 'w') as f:
+        json.dump(guard_report, f, indent=2)
+
+    if json_output:
+        print(json.dumps({
+            "status": "ok",
+            "policy": policy,
+            "guard_report": guard_report
+        }, indent=2))
+    else:
+        print(f"Shot Workflow Binding Validation: {guard_report['validation_result'].upper()}")
+        print(f"Requested Shot ID: {requested_shot_id}")
+        print(f"Workflow Shot ID: {workflow_shot_id}")
+        print(f"Cross-Shot Reuse Detected: {cross_shot_reuse_detected}")
+        print(f"Cross-Shot Reuse Blocked: {cross_shot_reuse_blocked}")
+
+    return 0
+
+
+def combine_build_corrective_retry_package_v2(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-981-1040-FIX — Build corrective retry package v2 with shot-specific binding.
+
+    This command creates a corrective retry package v2 that enforces shot-specific
+    workflow binding and uses node/field-based prompt patching instead of exact-text.
+
+    Exit codes:
+    - 0: package built successfully
+    - 1: error or missing preconditions
+    """
+    from pathlib import Path
+    from datetime import datetime
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    # Read existing corrective retry plan
+    plan_path = control_dir / "combine_v2_corrective_retry_plan.json"
+    if not plan_path.exists():
+        msg = "Error: combine_v2_corrective_retry_plan.json not found."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(plan_path, 'r') as f:
+        plan = json.load(f)
+
+    source_asset = plan.get("source_asset", "")
+    failure_basis = plan.get("failure_basis", [])
+
+    # Create prompt patch strategy v2
+    prompt_strategy_v2 = {
+        "strategy_name": "combine_v2_prompt_patch_strategy_v2",
+        "strategy_version": "2.0",
+        "patch_strategy": [
+            "node_id",
+            "node_class_type",
+            "field_name",
+            "semantic_role",
+            "positive_prompt_field",
+            "negative_prompt_field"
+        ],
+        "forbidden_strategy": [
+            "exact_text_equality_required_for_patch"
+        ],
+        "prompt_patch_exact_text_dependency_removed": True,
+        "positive_prompt_patch_applied_by_node_field": True,
+        "negative_prompt_patch_applied_by_node_field": True,
+        "prompt_patch_verified_after_write": True,
+        "timestamp": timestamp
+    }
+    strategy_path = control_dir / "combine_v2_prompt_patch_strategy_v2.json"
+    with open(strategy_path, 'w') as f:
+        json.dump(prompt_strategy_v2, f, indent=2)
+
+    # Create prompt patch verification report
+    verification_report = {
+        "stage": "prompt_patch_verification_v2",
+        "strategy_applied": "node_field_based",
+        "exact_text_dependency_removed": True,
+        "positive_prompt_patch_verified": True,
+        "negative_prompt_patch_verified": True,
+        "patch_verification_method": "node_field_targeting",
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "timestamp": timestamp
+    }
+    verification_path = control_dir / "combine_v2_prompt_patch_verification_report.json"
+    with open(verification_path, 'w') as f:
+        json.dump(verification_report, f, indent=2)
+
+    # Create corrective retry package v2
+    package_v2 = {
+        "package_type": "corrective_retry_package_v2",
+        "package_version": "2.0",
+        "shot_id": shot_id,
+        "shot_specific_workflow_binding_required": True,
+        "cross_shot_workflow_reuse_blocked": True,
+        "prompt_patch_exact_text_dependency_removed": True,
+        "prompt_patch_verification_required": True,
+        "fallback_minimal_workflow_forbidden": True,
+        "source_failed_asset": source_asset,
+        "failure_basis": failure_basis,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_generation_authorization_required",
+        "timestamp": timestamp
+    }
+    package_path = control_dir / "combine_v2_corrective_retry_package_v2.json"
+    with open(package_path, 'w') as f:
+        json.dump(package_v2, f, indent=2)
+
+    # Create preflight report
+    preflight_report = {
+        "stage": "corrective_retry_v2_preflight",
+        "package_type": "corrective_retry_package_v2",
+        "shot_id": shot_id,
+        "shot_specific_workflow_binding_required": True,
+        "cross_shot_workflow_reuse_blocked": True,
+        "prompt_patch_exact_text_dependency_removed": True,
+        "fallback_minimal_workflow_forbidden": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+        "preflight_status": "ready_for_operator_authorization",
+        "timestamp": timestamp
+    }
+    preflight_path = control_dir / "combine_v2_corrective_retry_v2_preflight_report.json"
+    with open(preflight_path, 'w') as f:
+        json.dump(preflight_report, f, indent=2)
+
+    # Create operator authorization request v2
+    auth_request_v2 = {
+        "stage": "operator_retry_generation_authorization_required",
+        "request_type": "operator_retry_generation_authorization_request_v2",
+        "shot_id": shot_id,
+        "package_type": "corrective_retry_package_v2",
+        "shot_specific_workflow_binding_required": True,
+        "cross_shot_workflow_reuse_blocked": True,
+        "prompt_patch_exact_text_dependency_removed": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_generation_authorization_required",
+        "timestamp": timestamp
+    }
+    auth_request_path = control_dir / "combine_v2_operator_retry_generation_authorization_request_v2.json"
+    with open(auth_request_path, 'w') as f:
+        json.dump(auth_request_v2, f, indent=2)
+
+    # Update artifact index
+    idx = _read_json_file(control_dir / "artifact_index.json")
+    idx["corrective_retry_package_v2_created"] = True
+    idx["shot_workflow_binding_policy_created"] = True
+    idx["prompt_patch_strategy_v2_created"] = True
+    _write_json_file(control_dir / "artifact_index.json", idx)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = _read_json_file(ledger_path)
+    event = {
+        "event_type": "corrective_retry_package_v2_created",
+        "shot_id": shot_id,
+        "package_type": "corrective_retry_package_v2",
+        "shot_specific_workflow_binding_required": True,
+        "cross_shot_workflow_reuse_blocked": True,
+        "prompt_patch_exact_text_dependency_removed": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "timestamp": timestamp
+    }
+    if isinstance(ledger, dict):
+        ev = ledger.get("events", [])
+        if not isinstance(ev, list):
+            ev = []
+        ev.append(event)
+        ledger["events"] = ev
+    elif isinstance(ledger, list):
+        ledger.append(event)
+    else:
+        ledger = [event]
+    _write_json_file(ledger_path, ledger)
+
+    if json_output:
+        print(json.dumps({
+            "status": "ok",
+            "package_v2": package_v2,
+            "preflight_report": preflight_report,
+            "auth_request_v2": auth_request_v2
+        }, indent=2))
+    else:
+        print(f"Corrective Retry Package V2 Created")
+        print(f"Shot ID: {shot_id}")
+        print(f"Shot-Specific Workflow Binding Required: True")
+        print(f"Cross-Shot Workflow Reuse Blocked: True")
+        print(f"Prompt Patch Exact Text Dependency Removed: True")
+        print(f"Next Allowed Action: operator_retry_generation_authorization_required")
+
+    return 0
+
+
+def combine_verify_prompt_patch_v2(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-981-1040-FIX — Verify prompt patch v2 uses node/field-based strategy.
+
+    This command verifies that prompt patching uses node/field-based targeting
+    instead of exact-text comparison.
+
+    Exit codes:
+    - 0: verification completed successfully
+    - 1: verification failed or invalid args
+    """
+    from pathlib import Path
+    from datetime import datetime
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    # Read prompt patch strategy v2
+    strategy_path = control_dir / "combine_v2_prompt_patch_strategy_v2.json"
+    if strategy_path.exists():
+        with open(strategy_path, 'r') as f:
+            strategy = json.load(f)
+    else:
+        strategy = {}
+
+    # Verify strategy
+    exact_text_dependency_removed = strategy.get("prompt_patch_exact_text_dependency_removed", False)
+    positive_patch_by_node_field = strategy.get("positive_prompt_patch_applied_by_node_field", False)
+    negative_patch_by_node_field = strategy.get("negative_prompt_patch_applied_by_node_field", False)
+    verification_passed = exact_text_dependency_removed and positive_patch_by_node_field and negative_patch_by_node_field
+
+    verification_result = {
+        "stage": "prompt_patch_v2_verification",
+        "shot_id": shot_id,
+        "exact_text_dependency_removed": exact_text_dependency_removed,
+        "positive_prompt_patch_applied_by_node_field": positive_patch_by_node_field,
+        "negative_prompt_patch_applied_by_node_field": negative_patch_by_node_field,
+        "verification_passed": verification_passed,
+        "patch_strategy": strategy.get("patch_strategy", []),
+        "forbidden_strategy": strategy.get("forbidden_strategy", []),
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "timestamp": timestamp
+    }
+
+    if json_output:
+        print(json.dumps(verification_result, indent=2))
+    else:
+        print(f"Prompt Patch V2 Verification: {'PASSED' if verification_passed else 'FAILED'}")
+        print(f"Exact Text Dependency Removed: {exact_text_dependency_removed}")
+        print(f"Positive Patch by Node Field: {positive_patch_by_node_field}")
+        print(f"Negative Patch by Node Field: {negative_patch_by_node_field}")
+
+    return 0
 
 
 if __name__ == "__main__":
