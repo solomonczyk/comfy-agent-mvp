@@ -1,12 +1,48 @@
 {
-  "agent": "GenerationAgent",
-  "stage": "corrective_retry_payload_rebuild_required",
+  "stage": "corrective_retry_implementation_required",
   "patch_type": "corrective_retry_prompt_patch",
-  "source_failure": "unknown",
-  "corrective_actions": [
-    "adjust_prompt",
-    "increase_steps"
+  "source_failed_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [
+    "semantic_content_failed",
+    "subject_not_recognizable",
+    "blur_or_softness",
+    "low_detail_quality",
+    "composition_failed",
+    "production_quality_failed"
   ],
-  "patch_created": true,
-  "timestamp": "2026-05-04T13:38:25.868309"
+  "prompt_corrections": {
+    "unclear_subject": {
+      "action": "enhance_subject_description",
+      "add_explicit_subject_keywords": true,
+      "add_subject_identity_anchor": true
+    },
+    "semantic_content_failure": {
+      "action": "restructure_semantic_prompt_layers",
+      "separate_subject_from_style": true,
+      "add_compositional_anchor": true
+    },
+    "subject_not_recognizable": {
+      "action": "add_recognizability_guards",
+      "enforce_facial_structure_keywords": true,
+      "add_distinctive_feature_markers": true
+    },
+    "weak_composition": {
+      "action": "inject_compositional_directives",
+      "add_rule_of_thirds_hint": true,
+      "enforce_focal_point_definition": true
+    },
+    "low_detail_quality": {
+      "action": "boost_detail_directives",
+      "add_texture_and_surface_keywords": true,
+      "increase_precision_language": true
+    },
+    "production_quality_failure": {
+      "action": "add_production_quality_modifiers",
+      "enforce_hyperrealism_guard": true,
+      "add_resolution_aware_directives": true
+    }
+  },
+  "generation_allowed": false,
+  "retry_attempted": false,
+  "timestamp": "2026-05-05T10:08:00.325421"
 }

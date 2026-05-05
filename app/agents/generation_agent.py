@@ -31,6 +31,7 @@ class GenerationAgent(BaseRoleAgent):
         return [
             "generation_authorization_required",
             "operator_generation_authorization_required",
+            "operator_retry_generation_authorization_required",
             "generate_assets",
             "corrective_retry_payload_rebuild_required",
             "real_generation_payload_review",

@@ -1,5 +1,5 @@
 {
-  "current_state": "corrective_retry_plan_required",
+  "current_state": "operator_retry_generation_authorization_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5197,7 +5197,7 @@
   "retry_allowed": false,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "controlled_retry_authorization_required",
+  "next_allowed_action": "operator_retry_generation_authorization_required",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
@@ -5205,5 +5205,16 @@
   "retry_attempted": false,
   "comfyui_execution": false,
   "workflow_submitted": false,
-  "downstream_executed": false
+  "downstream_executed": false,
+  "corrective_retry_implementation_authorized": true,
+  "retry_generation_authorized": false,
+  "corrective_retry_package_created": true,
+  "prompt_patch_created": true,
+  "workflow_patch_created": true,
+  "quality_pipeline_patch_created": true,
+  "preflight_report_created": true,
+  "operator_retry_generation_authorization_request_created": true,
+  "legacy_512_workflow_blocked": true,
+  "minimum_short_side_1024_enforced": true,
+  "output_path_contract_preserved": true
 }

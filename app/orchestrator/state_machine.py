@@ -29,6 +29,8 @@ class CombineStateMachine:
         "operator_visual_review",
         "corrective_retry_plan_required",
         "controlled_retry_authorization_required",
+        "corrective_retry_implementation_required",
+        "operator_retry_generation_authorization_required",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
         "real_generation_payload_review",
@@ -114,6 +116,9 @@ class CombineStateMachine:
             "corrective_retry_payload_rebuild_required"
         },
         "operator_generation_authorization_required": {
+            "generate_assets"
+        },
+        "operator_retry_generation_authorization_required": {
             "generate_assets"
         },
         "generate_assets": {
@@ -233,9 +238,14 @@ class CombineStateMachine:
         },
         "controlled_retry_authorization_required": {
             "corrective_retry_plan_required",
+            "corrective_retry_implementation_required",
             "brief_intake_required",
             "route_classification_required",
             "production_plan_required",
+            "blocked_manual_review"
+        },
+        "corrective_retry_implementation_required": {
+            "operator_retry_generation_authorization_required",
             "blocked_manual_review"
         },
         "retry_plan_review_required": {
@@ -323,6 +333,15 @@ class CombineStateMachine:
         ("generation_payload_rebuild_required", "real_generate_assets"),
         ("workflow_graph_rebuild_required", "real_generate_assets"),
         ("workflow_rebuild_validation_required", "real_generate_assets"),
+        
+        # Corrective retry implementation layer: cannot skip to generation or downstream
+        ("corrective_retry_implementation_required", "generate_assets"),
+        ("corrective_retry_implementation_required", "real_generate_assets"),
+        ("corrective_retry_implementation_required", "assembly_required"),
+        ("corrective_retry_implementation_required", "visual_qa_required"),
+        ("corrective_retry_implementation_required", "real_visual_qa_required"),
+        ("corrective_retry_implementation_required", "completed"),
+        ("corrective_retry_implementation_required", "production_accepted"),
         
         # Cannot jump to assembly without completing rebuild
         ("workflow_td_rebuild_required", "assembly_required"),

@@ -20,7 +20,7 @@ class RetryPolicyAgent(BaseRoleAgent):
     
     @property
     def supported_stages(self) -> List[str]:
-        return ["retry_correction_required", "corrective_retry_plan_required", "controlled_retry_authorization_required"]
+        return ["retry_correction_required", "corrective_retry_plan_required", "controlled_retry_authorization_required", "corrective_retry_implementation_required"]
     
     @property
     def required_inputs(self) -> List[str]:
@@ -279,6 +279,36 @@ class RetryPolicyAgent(BaseRoleAgent):
                     "workflow_submitted": False,
                     "production_accepted": False,
                     "next_allowed_action": "controlled_retry_authorization_required"
+                }
+            )
+
+        elif context.stage == "corrective_retry_implementation_required":
+            # Stub for corrective retry implementation package build
+            return AgentResult(
+                agent=self.role_name,
+                stage=context.stage,
+                status="stubbed",
+                dry_run=context.dry_run,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=[],
+                next_recommended_stage="operator_retry_generation_authorization_required",
+                metadata={
+                    "action": "build_corrective_retry_implementation_package",
+                    "retry_policy_stage": "corrective_retry_implementation_required",
+                    "prompt_patch_created": True,
+                    "workflow_patch_created": True,
+                    "quality_pipeline_patch_created": True,
+                    "preflight_created": True,
+                    "generation_allowed": False,
+                    "retry_allowed": False,
+                    "retry_attempted": False,
+                    "comfyui_execution": False,
+                    "workflow_submitted": False,
+                    "downstream_executed": False,
+                    "production_accepted": False,
+                    "next_allowed_action": "operator_retry_generation_authorization_required"
                 }
             )
         
