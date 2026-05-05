@@ -15,6 +15,22 @@
       "event_type": "corrective_retry_recipe_v2_recommendation",
       "recommended_actions_count": 4,
       "timestamp": "2026-05-05T09:34:50.651152"
+    },
+    {
+      "event_type": "corrective_retry_workflow_audit",
+      "used_existing_submitted_workflow": true,
+      "used_fallback_minimal_workflow": false,
+      "timestamp": "2026-05-05T09:45:17.576291"
+    },
+    {
+      "event_type": "corrective_retry_recipe_diagnosis",
+      "root_cause_count": 4,
+      "timestamp": "2026-05-05T09:51:06.342542"
+    },
+    {
+      "event_type": "corrective_retry_recipe_v2_recommendation",
+      "recommended_actions_count": 4,
+      "timestamp": "2026-05-05T09:51:08.661987"
     }
   ]
 }

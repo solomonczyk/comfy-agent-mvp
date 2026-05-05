@@ -1,6 +1,6 @@
 {
   "stage": "corrective_retry_conditioning_audit",
-  "timestamp": "2026-05-05T09:34:28.527538",
+  "timestamp": "2026-05-05T09:51:06.342542",
   "conditioning_chain": {
     "ksampler_present": true,
     "emptylatentimage_present": true,
