@@ -1,0 +1,36 @@
+{
+  "stage": "corrective_retry_v3_implementation_package_required",
+  "package_type": "corrective_retry_v3_implementation_package",
+  "shot_id": "shot02",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "operator_retry_v3_plan_approved": true,
+  "blind_retry_allowed": false,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "patches": {
+    "sampler_recipe_patch_created": true,
+    "prompt_quality_patch_created": true,
+    "workflow_quality_patch_created": true,
+    "contrast_blur_correction_patch_created": true,
+    "conditioning_chain_review_patch_created": true
+  },
+  "patch_files": {
+    "sampler_recipe_patch": "output/control/combine_v2_corrective_retry_v3_sampler_recipe_patch.json",
+    "prompt_quality_patch": "output/control/combine_v2_corrective_retry_v3_prompt_quality_patch.json",
+    "workflow_quality_patch": "output/control/combine_v2_corrective_retry_v3_workflow_quality_patch.json",
+    "contrast_blur_patch": "output/control/combine_v2_corrective_retry_v3_contrast_blur_patch.json",
+    "conditioning_chain_patch": "output/control/combine_v2_corrective_retry_v3_conditioning_chain_patch.json"
+  },
+  "pre_submit_validation_required": true,
+  "operator_generation_authorization_required": true,
+  "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+  "timestamp": "2026-05-06T04:31:03.956082+00:00"
+}

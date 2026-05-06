@@ -281,5 +281,105 @@
     "generation_allowed": false,
     "next_allowed_action": "operator_retry_v3_plan_review_required",
     "timestamp": "2026-05-05T11:59:57.909842+00:00"
+  },
+  {
+    "event_type": "operator_retry_v3_plan_reviewed",
+    "stage": "operator_retry_v3_plan_review_required",
+    "shot_id": "shot02",
+    "operator_decision": "approve_corrective_retry_v3_plan",
+    "operator_retry_v3_plan_approved": true,
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_basis": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "operator_reason": "operator_approved_retry_v3_plan_after_blur_and_low_contrast_failure",
+    "generation_allowed": false,
+    "next_allowed_action": "corrective_retry_v3_implementation_package_required",
+    "timestamp": "2026-05-06T04:26:06.349936+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_implementation_package_created",
+    "stage": "corrective_retry_v3_implementation_package_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_basis": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "patches_created": [
+      "sampler_recipe_patch_created",
+      "prompt_quality_patch_created",
+      "workflow_quality_patch_created",
+      "contrast_blur_correction_patch_created",
+      "conditioning_chain_review_patch_created"
+    ],
+    "generation_allowed": false,
+    "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+    "timestamp": "2026-05-06T04:26:10.704961+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_implementation_package_validated",
+    "stage": "operator_retry_v3_generation_authorization_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_basis": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "validation_passed": true,
+    "generation_allowed": false,
+    "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+    "timestamp": "2026-05-06T04:26:15.228243+00:00"
+  },
+  {
+    "event_type": "operator_retry_v3_plan_reviewed",
+    "stage": "operator_retry_v3_plan_review_required",
+    "shot_id": "shot02",
+    "operator_decision": "approve_corrective_retry_v3_plan",
+    "operator_retry_v3_plan_approved": true,
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_basis": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "operator_reason": "operator_approved_retry_v3_plan_after_blur_and_low_contrast_failure",
+    "generation_allowed": false,
+    "next_allowed_action": "corrective_retry_v3_implementation_package_required",
+    "timestamp": "2026-05-06T04:30:59.292002+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_implementation_package_created",
+    "stage": "corrective_retry_v3_implementation_package_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_basis": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "patches_created": [
+      "sampler_recipe_patch_created",
+      "prompt_quality_patch_created",
+      "workflow_quality_patch_created",
+      "contrast_blur_correction_patch_created",
+      "conditioning_chain_review_patch_created"
+    ],
+    "generation_allowed": false,
+    "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+    "timestamp": "2026-05-06T04:31:03.956082+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_implementation_package_validated",
+    "stage": "operator_retry_v3_generation_authorization_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "failure_basis": [
+      "blur_detected",
+      "low_contrast"
+    ],
+    "validation_passed": true,
+    "generation_allowed": false,
+    "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+    "timestamp": "2026-05-06T04:31:08.259222+00:00"
   }
 ]

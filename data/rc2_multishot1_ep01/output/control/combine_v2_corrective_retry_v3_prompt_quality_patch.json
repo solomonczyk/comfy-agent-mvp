@@ -1,0 +1,20 @@
+{
+  "stage": "corrective_retry_v3_implementation_package_required",
+  "patch_type": "corrective_retry_v3_prompt_quality_patch",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "patch_created": true,
+  "recommended_changes": {},
+  "prompt_elements_to_review": [
+    "positive_prompt",
+    "negative_prompt",
+    "style_modifiers",
+    "quality_parameters",
+    "contrast_and_sharpness_terms"
+  ],
+  "generation_allowed": false,
+  "timestamp": "2026-05-06T04:31:03.956082+00:00"
+}

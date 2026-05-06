@@ -1,0 +1,30 @@
+{
+  "stage": "operator_retry_v3_generation_authorization_required",
+  "request_type": "operator_retry_v3_generation_authorization_request",
+  "shot_id": "shot02",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "operator_review_required": true,
+  "recommended_operator_decision": "approve_one_corrective_retry_v3_generation",
+  "operator_actions_allowed": [
+    "approve_one_corrective_retry_v3_generation",
+    "request_implementation_package_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "implementation_package_validated": true,
+  "pre_submit_validation_passed": true,
+  "blind_retry_allowed": false,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "max_generations_allowed": 1,
+  "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+  "timestamp": "2026-05-06T04:31:08.259222+00:00"
+}

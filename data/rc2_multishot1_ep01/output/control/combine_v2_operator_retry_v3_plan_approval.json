@@ -1,0 +1,20 @@
+{
+  "stage": "operator_retry_v3_plan_review_required",
+  "operator_decision": "approve_corrective_retry_v3_plan",
+  "operator_retry_v3_plan_approved": true,
+  "corrective_retry_v3_plan_available": true,
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "operator_reason": "operator_approved_retry_v3_plan_after_blur_and_low_contrast_failure",
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "corrective_retry_v3_implementation_package_required",
+  "timestamp": "2026-05-06T04:30:59.292002+00:00"
+}

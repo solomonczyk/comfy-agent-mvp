@@ -1,0 +1,31 @@
+{
+  "stage": "corrective_retry_v3_implementation_package_required",
+  "validation_type": "pre_submit_validation_v3",
+  "shot_id": "shot02",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "failure_basis": [
+    "blur_detected",
+    "low_contrast"
+  ],
+  "validation_passed": true,
+  "patches_validated": {
+    "sampler_recipe_patch": true,
+    "prompt_quality_patch": true,
+    "workflow_quality_patch": true,
+    "contrast_blur_patch": true,
+    "conditioning_chain_patch": true
+  },
+  "validation_checks": {
+    "all_patches_present": true,
+    "generation_allowed": false,
+    "retry_allowed": false,
+    "workflow_submitted": false,
+    "comfyui_execution": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+  "timestamp": "2026-05-06T04:31:08.259222+00:00"
+}
