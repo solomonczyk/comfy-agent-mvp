@@ -23195,3 +23195,8 @@ def combine_validate_corrective_retry_v4_implementation_package(args: argparse.N
             print(f"  {key}: {value}")
 
     return 0 if all_valid else 1
+
+
+if __name__ == "__main__":
+    import sys
+    sys.exit(main())
