@@ -1,5 +1,5 @@
 {
-  "current_state": "corrective_retry_v4_implementation_package_required",
+  "current_state": "operator_retry_v4_generation_authorization_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5210,11 +5210,11 @@
   ],
   "operator_visual_decision": "reject_visual_quality",
   "operator_rejection_confirmed": true,
-  "generation_allowed": false,
-  "retry_allowed": false,
+  "generation_allowed": true,
+  "retry_allowed": true,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "operator_retry_v4_generation_authorization_required",
+  "next_allowed_action": "corrective_retry_v4_generate_assets",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
@@ -5238,7 +5238,7 @@
   "corrective_retry_package_required": true,
   "corrective_retry_package_available": true,
   "max_generations": 1,
-  "visual_qa_executed": true,
+  "visual_qa_executed": false,
   "assembly_executed": false,
   "corrective_retry_package_used": true,
   "generation_attempts": 1,
@@ -5328,5 +5328,6 @@
   "operator_plan_review_packet_created": true,
   "operator_retry_v4_plan_approval_created": true,
   "operator_retry_v4_plan_approved": true,
-  "corrective_retry_v4_implementation_package_created": true
+  "corrective_retry_v4_implementation_package_created": true,
+  "operator_retry_v4_generation_authorized": true
 }

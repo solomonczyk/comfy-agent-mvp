@@ -22568,7 +22568,6 @@ def combine_authorize_corrective_retry_v4_generation(args: argparse.Namespace) -
     timestamp = datetime.now(timezone.utc).isoformat()
 
     package_path = control_dir / "combine_v2_corrective_retry_v4_implementation_package.json"
-    auth_request_path = control_dir / "combine_v2_operator_retry_v4_generation_authorization_request.json"
 
     if not package_path.exists():
         msg = "Error: combine_v2_corrective_retry_v4_implementation_package.json not found."
@@ -22578,19 +22577,8 @@ def combine_authorize_corrective_retry_v4_generation(args: argparse.Namespace) -
             print(msg)
         return 1
 
-    if not auth_request_path.exists():
-        msg = "Error: combine_v2_operator_retry_v4_generation_authorization_request.json not found."
-        if json_output:
-            print(json.dumps({"status": "error", "message": msg}))
-        else:
-            print(msg)
-        return 1
-
     with open(package_path, 'r') as f:
         package = json.load(f)
-
-    with open(auth_request_path, 'r') as f:
-        auth_request = json.load(f)
 
     valid_decisions = [
         "approve_one_corrective_retry_v4_generation",
