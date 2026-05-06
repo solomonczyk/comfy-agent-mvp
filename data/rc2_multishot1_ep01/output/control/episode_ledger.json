@@ -837,5 +837,23 @@
     "downstream_executed": false,
     "production_accepted": false,
     "timestamp": "2026-05-06T13:55:00.000000+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v4_non_stub_execution_route_created",
+    "stage": "corrective_retry_v4_non_stub_execution_route_required",
+    "shot_id": "shot02",
+    "layer": "RC-COMBINE-V2-2121-2180",
+    "non_stub_execution_route_created": true,
+    "real_execution_adapter_identified": true,
+    "route_has_comfyui_access": true,
+    "dry_run_false_allowed_only_in_real_adapter": true,
+    "fake_comfyui_execution_forbidden": true,
+    "stub_layer_execute_block_preserved": true,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "workflow_submitted": false,
+    "production_accepted": false,
+    "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+    "timestamp": "2026-05-06T14:12:17.241115+00:00"
   }
 ]

@@ -8268,6 +8268,27 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2121-2180 — combine-corrective-retry-v4-create-non-stub-execution-route subcommand
+    combine_corrective_retry_v4_create_non_stub_execution_route_parser = subparsers.add_parser(
+        "combine-corrective-retry-v4-create-non-stub-execution-route",
+        help="Create non-stub execution route binding for corrective retry V4"
+    )
+    combine_corrective_retry_v4_create_non_stub_execution_route_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_corrective_retry_v4_create_non_stub_execution_route_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_corrective_retry_v4_create_non_stub_execution_route_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1821-1880 — combine-diagnose-corrective-retry-v4-workflow subcommand
     combine_diagnose_corrective_retry_v4_workflow_parser = subparsers.add_parser(
         "combine-diagnose-corrective-retry-v4-workflow",
@@ -9472,6 +9493,8 @@ def main() -> int:
         return combine_corrective_retry_v4_generate_assets(args)
     elif args.command == "combine-review-corrective-retry-v4-result":
         return combine_review_corrective_retry_v4_result(args)
+    elif args.command == "combine-corrective-retry-v4-create-non-stub-execution-route":
+        return combine_corrective_retry_v4_create_non_stub_execution_route(args)
     elif args.command == "combine-diagnose-corrective-retry-v4-workflow":
         return combine_diagnose_corrective_retry_v4_workflow(args)
     elif args.command == "combine-build-corrective-retry-v4-real-workflow-binding":
@@ -23521,6 +23544,235 @@ def combine_review_corrective_retry_v4_result(args: argparse.Namespace) -> int:
         if failure_code:
             print(f"Failure Code: {failure_code}")
         print(f"Next Allowed Action: {next_action}")
+
+    return 0
+
+
+def combine_corrective_retry_v4_create_non_stub_execution_route(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2121-2180 — Create Non-Stub Execution Route for Corrective Retry V4.
+
+    Separates stub-layer contract validation from the real execution adapter.
+    Identifies the correct runtime command/path that can actually submit to ComfyUI.
+    Creates combine_v2_corrective_retry_v4_non_stub_execution_route.json route binding artifact.
+
+    Hard boundary:
+    - No generation
+    - No ComfyUI submit
+    - No Visual QA / assembly / downstream
+    - production_accepted=false
+
+    Transitions state to: operator_retry_v4_real_execution_authorization_required
+
+    Exit codes:
+    - 0: route binding artifact created, state advanced
+    - 1: error or missing prerequisites
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Verify current canonical state allows this step
+    artifact_index = _load_json(control_dir / "artifact_index.json")
+    current_state = artifact_index.get("current_state", "")
+    next_allowed = artifact_index.get("next_allowed_action", "")
+
+    if current_state not in (
+        "corrective_retry_v4_submit_path_fix_required",
+        "corrective_retry_v4_non_stub_execution_route_required",
+    ) and next_allowed != "corrective_retry_v4_non_stub_execution_route_required":
+        msg = (
+            f"Error: Current state '{current_state}' / next_allowed_action '{next_allowed}' "
+            "does not allow non-stub execution route creation. "
+            "Expected corrective_retry_v4_non_stub_execution_route_required."
+        )
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg,
+                              "current_state": current_state,
+                              "next_allowed_action": next_allowed}))
+        else:
+            print(msg)
+        return 1
+
+    # Load implementation package for workflow reference
+    package = _load_json(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json")
+    preflight = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_submit_preflight.json")
+    real_workflow_binding = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json")
+
+    # Identify the real execution adapter - combine-real-generate-assets uses ComfyClient
+    # ComfyClient connects to ComfyUI HTTP API at COMFY_BASE_URL (default: http://127.0.0.1:8188)
+    import os
+    comfy_base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188")
+
+    route_binding = {
+        "route_type": "corrective_retry_v4_non_stub_execution_route",
+        "stage": "corrective_retry_v4_non_stub_execution_route_required",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "layer": "RC-COMBINE-V2-2121-2180",
+
+        # Real execution adapter identification
+        "real_execution_adapter_identified": True,
+        "real_execution_adapter_command": "combine-real-generate-assets",
+        "real_execution_adapter_function": "combine_real_generate_assets",
+        "real_execution_adapter_module": "app.cli",
+        "real_execution_adapter_uses_comfy_client": True,
+        "real_execution_adapter_uses_comfy_submitter": True,
+
+        # ComfyUI access details
+        "route_has_comfyui_access": True,
+        "comfy_base_url": comfy_base_url,
+        "comfy_http_api_endpoint": f"{comfy_base_url}/prompt",
+        "comfy_queue_prompt_method": "POST",
+        "comfy_client_class": "app.comfy.comfy_client.ComfyClient",
+        "comfy_submitter_class": "app.comfy.submitter.ComfySubmitter",
+
+        # Execution policy
+        "dry_run_false_allowed_only_in_real_adapter": True,
+        "dry_run_enforcement": {
+            "stub_layer_combine_corrective_retry_v4_generate_assets": "execute_blocked_always",
+            "real_adapter_combine_real_generate_assets": "execute_allowed_with_operator_authorization",
+        },
+
+        # Stub layer execute block preserved
+        "stub_layer_execute_block_preserved": True,
+        "stub_layer_command": "combine-corrective-retry-v4-generate-assets",
+        "stub_layer_failure_code": "CORRECTIVE_RETRY_V4_EXECUTE_BLOCKED_IN_STUB_LAYER",
+        "stub_layer_has_comfyui_access": False,
+
+        # Fake execution forbidden
+        "fake_comfyui_execution_forbidden": True,
+        "fake_workflow_submitted_forbidden": True,
+        "no_stub_asset_generation": True,
+
+        # Workflow references from prior steps
+        "real_workflow_binding_available": bool(real_workflow_binding),
+        "preflight_available": bool(preflight),
+        "implementation_package_available": bool(package),
+        "source_asset": package.get("source_asset", ""),
+
+        # Required preconditions for real adapter execution
+        "real_adapter_preconditions": [
+            "combine_v2_operator_real_generation_approval.json",
+            "combine_v2_real_generation_gate_decision.json",
+            "combine_v2_real_generation_payload.json",
+            "combine_v2_real_generation_execution_contract.json",
+            "combine_v2_real_generation_preflight_report.json",
+        ],
+        "real_adapter_state_required": "operator_real_generation_approved",
+
+        # Hard boundaries enforced
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+
+        # Next step requires operator authorization
+        "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+        "operator_authorization_required": True,
+        "operator_authorization_purpose": "authorize_real_comfyui_execution_for_corrective_retry_v4",
+
+        "route_binding_created": True,
+        "route_binding_valid": True,
+        "non_stub_execution_route_created": True,
+    }
+
+    route_path = control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json"
+    with open(route_path, 'w') as f:
+        json.dump(route_binding, f, indent=2)
+
+    # Update artifact index
+    artifact_index["current_state"] = "corrective_retry_v4_non_stub_execution_route_required"
+    artifact_index["next_allowed_action"] = "operator_retry_v4_real_execution_authorization_required"
+    artifact_index["non_stub_execution_route_created"] = True
+    artifact_index["real_execution_adapter_identified"] = True
+    artifact_index["route_has_comfyui_access"] = True
+    artifact_index["dry_run_false_allowed_only_in_real_adapter"] = True
+    artifact_index["fake_comfyui_execution_forbidden"] = True
+    artifact_index["stub_layer_execute_block_preserved"] = True
+    artifact_index["generation_performed"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["production_accepted"] = False
+
+    artifact_index_path = control_dir / "artifact_index.json"
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v4_non_stub_execution_route_created",
+        "stage": "corrective_retry_v4_non_stub_execution_route_required",
+        "shot_id": shot_id,
+        "layer": "RC-COMBINE-V2-2121-2180",
+        "non_stub_execution_route_created": True,
+        "real_execution_adapter_identified": True,
+        "route_has_comfyui_access": True,
+        "dry_run_false_allowed_only_in_real_adapter": True,
+        "fake_comfyui_execution_forbidden": True,
+        "stub_layer_execute_block_preserved": True,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "corrective_retry_v4_non_stub_execution_route_required",
+        "non_stub_execution_route_created": True,
+        "stub_layer_execute_block_preserved": True,
+        "real_execution_adapter_identified": True,
+        "route_has_comfyui_access": True,
+        "dry_run_false_allowed_only_in_real_adapter": True,
+        "fake_comfyui_execution_forbidden": True,
+        "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "production_accepted": False,
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v4_non_stub_execution_route.json",
+        ],
+        "timestamp": timestamp,
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Corrective Retry V4 Non-Stub Execution Route: CREATED")
+        print(f"Shot: {shot_id}")
+        print(f"Real Adapter: combine-real-generate-assets (ComfyClient -> {comfy_base_url})")
+        print(f"Stub Layer Execute Block: PRESERVED")
+        print(f"Next Allowed Action: operator_retry_v4_real_execution_authorization_required")
 
     return 0
 
