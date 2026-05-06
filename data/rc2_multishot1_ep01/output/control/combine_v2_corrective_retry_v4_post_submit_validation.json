@@ -2,7 +2,7 @@
   "stage": "corrective_retry_v4_generate_assets",
   "validation_type": "post_submit_validation_v4",
   "shot_id": "shot02",
-  "timestamp": "2026-05-06T12:02:50.452430+00:00",
+  "timestamp": "2026-05-06T12:54:41.981095+00:00",
   "asset_exists": true,
   "asset_readable": false,
   "asset_size_bytes_gt_1024": false,

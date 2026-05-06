@@ -7,7 +7,7 @@
   "source_asset": "",
   "failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION",
   "max_generations": 1,
-  "operator_reason": "operator_approved_one_retry_v4_generation_after_guarded_implementation_package_review",
+  "operator_reason": "operator_approved_one_retry_v4_generation_after_real_workflow_binding_fix",
   "generation_allowed": true,
   "retry_allowed": true,
   "workflow_submitted": false,
@@ -17,5 +17,5 @@
   "downstream_executed": false,
   "production_accepted": false,
   "next_allowed_action": "corrective_retry_v4_generate_assets",
-  "timestamp": "2026-05-06T11:11:55.526339+00:00"
+  "timestamp": "2026-05-06T12:53:25.990102+00:00"
 }

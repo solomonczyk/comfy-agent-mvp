@@ -1,12 +1,12 @@
 {
   "real_workflow_binding_validated": true,
-  "binding_valid": false,
+  "binding_valid": true,
   "shot_id": "shot02",
   "validation_criteria": {
     "binding_created": true,
-    "real_workflow_available": false,
-    "workflow_node_count_sufficient": false,
-    "saveimage_configured": false
+    "real_workflow_available": true,
+    "workflow_node_count_sufficient": true,
+    "saveimage_configured": true
   },
   "fallback_workflow_blocked": true,
   "real_workflow_required_before_submit": true,
@@ -15,5 +15,5 @@
   "visual_qa_not_executed": true,
   "assembly_not_executed": true,
   "production_accepted_false": true,
-  "timestamp": "2026-05-06T12:33:50.894746+00:00"
+  "timestamp": "2026-05-06T12:54:18.288503+00:00"
 }
