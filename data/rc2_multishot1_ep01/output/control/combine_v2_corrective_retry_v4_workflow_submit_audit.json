@@ -1,0 +1,17 @@
+{
+  "audit_type": "corrective_retry_v4_workflow_submit_audit",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T12:26:55.223656+00:00",
+  "workflow_stubbed": true,
+  "real_workflow_in_package": false,
+  "workflow_node_count": 0,
+  "workflow_is_minimal": false,
+  "saveimage_configured": false,
+  "saveimage_output_prefix": "unknown",
+  "audit_findings": [
+    "Workflow submission was stubbed - no real workflow sent to ComfyUI",
+    "Implementation package does not contain real workflow",
+    "SaveImage node not configured in workflow"
+  ],
+  "stub_or_fallback_workflow_detected": true
+}

@@ -6982,6 +6982,90 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1761-1820 — combine-reconcile-corrective-retry-v4-result subcommand
+    combine_reconcile_corrective_retry_v4_result_parser = subparsers.add_parser(
+        "combine-reconcile-corrective-retry-v4-result",
+        help="Reconcile corrupted corrective retry V4 result and determine recovery path"
+    )
+    combine_reconcile_corrective_retry_v4_result_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_reconcile_corrective_retry_v4_result_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_reconcile_corrective_retry_v4_result_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1761-1820 — combine-audit-corrective-retry-v4-output-collector subcommand
+    combine_audit_corrective_retry_v4_output_collector_parser = subparsers.add_parser(
+        "combine-audit-corrective-retry-v4-output-collector",
+        help="Audit corrective retry V4 output collector behavior and failure"
+    )
+    combine_audit_corrective_retry_v4_output_collector_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_audit_corrective_retry_v4_output_collector_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_audit_corrective_retry_v4_output_collector_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1761-1820 — combine-audit-corrective-retry-v4-workflow-submit subcommand
+    combine_audit_corrective_retry_v4_workflow_submit_parser = subparsers.add_parser(
+        "combine-audit-corrective-retry-v4-workflow-submit",
+        help="Audit corrective retry V4 workflow submit for stub/fallback detection"
+    )
+    combine_audit_corrective_retry_v4_workflow_submit_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_audit_corrective_retry_v4_workflow_submit_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_audit_corrective_retry_v4_workflow_submit_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1761-1820 — combine-build-corrective-retry-v4-result-reconciliation-report subcommand
+    combine_build_corrective_retry_v4_result_reconciliation_report_parser = subparsers.add_parser(
+        "combine-build-corrective-retry-v4-result-reconciliation-report",
+        help="Build comprehensive reconciliation report for corrupted V4 result"
+    )
+    combine_build_corrective_retry_v4_result_reconciliation_report_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_corrective_retry_v4_result_reconciliation_report_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_corrective_retry_v4_result_reconciliation_report_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1581-1640 — combine-create-corrective-retry-v4-plan subcommand
     combine_create_corrective_retry_v4_plan_parser = subparsers.add_parser(
         "combine-create-corrective-retry-v4-plan",
@@ -9209,6 +9293,14 @@ def main() -> int:
         return combine_audit_corrective_retry_v3_output_collector(args)
     elif args.command == "combine-build-corrective-retry-v3-result-reconciliation-report":
         return combine_build_corrective_retry_v3_result_reconciliation_report(args)
+    elif args.command == "combine-reconcile-corrective-retry-v4-result":
+        return combine_reconcile_corrective_retry_v4_result(args)
+    elif args.command == "combine-audit-corrective-retry-v4-output-collector":
+        return combine_audit_corrective_retry_v4_output_collector(args)
+    elif args.command == "combine-audit-corrective-retry-v4-workflow-submit":
+        return combine_audit_corrective_retry_v4_workflow_submit(args)
+    elif args.command == "combine-build-corrective-retry-v4-result-reconciliation-report":
+        return combine_build_corrective_retry_v4_result_reconciliation_report(args)
     elif args.command == "combine-create-corrective-retry-v4-plan":
         return combine_create_corrective_retry_v4_plan(args)
     elif args.command == "combine-build-retry-v4-stub-generation-fix-plan":
@@ -23198,6 +23290,606 @@ def combine_validate_corrective_retry_v4_implementation_package(args: argparse.N
             print(f"  {key}: {value}")
 
     return 0 if all_valid else 1
+
+
+def combine_reconcile_corrective_retry_v4_result(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1761-1820 — Reconcile Corrupted Corrective Retry V4 Result.
+
+    Investigates why corrective retry V4 result gave a corrupted/stub asset despite guarded generation.
+    Checks V4 generation result, trace, manifest, and physical assets to determine if valid V4 asset can be recovered.
+
+    Exit codes:
+    - 0: reconciliation completed successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v4_generation_result = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_result.json")
+    v4_outputs_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json")
+    v4_generation_trace = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_trace.json")
+    v4_post_submit_validation = _load_json(control_dir / "combine_v2_corrective_retry_v4_post_submit_validation.json")
+
+    # Determine V4 asset path from manifest
+    v4_asset_path = None
+    if v4_outputs_manifest and "generated_assets" in v4_outputs_manifest and len(v4_outputs_manifest["generated_assets"]) > 0:
+        v4_asset_path = v4_outputs_manifest["generated_assets"][0]
+
+    # Check physical V4 asset
+    v4_asset_exists = False
+    v4_asset_readable = False
+    v4_asset_size_bytes = 0
+    v4_asset_corrupted = False
+    v4_asset_full_path = None
+
+    if v4_asset_path:
+        v4_asset_full_path = project_root / v4_asset_path
+        v4_asset_exists = v4_asset_full_path.exists()
+        if v4_asset_exists:
+            try:
+                v4_asset_size_bytes = v4_asset_full_path.stat().st_size
+                # Check if file is too small to be a valid image (stub threshold: < 1024 bytes per V4 guard)
+                if v4_asset_size_bytes < 1024:
+                    v4_asset_corrupted = True
+                    v4_asset_readable = False
+                else:
+                    # Try to read and validate as image
+                    with open(v4_asset_full_path, 'rb') as f:
+                        header = f.read(8)
+                        # Check PNG header
+                        if len(header) >= 8 and header[:8] == b'\x89PNG\r\n\x1a\n':
+                            v4_asset_readable = True
+                        else:
+                            v4_asset_corrupted = True
+                            v4_asset_readable = False
+            except Exception:
+                v4_asset_corrupted = True
+                v4_asset_readable = False
+        else:
+            v4_asset_corrupted = True
+
+    # Check if generation was stubbed
+    stub_generation = False
+    if v4_generation_result and v4_generation_result.get("stub_generation", False):
+        stub_generation = True
+
+    # Check output collection status from trace
+    output_collection_status = "unknown"
+    if v4_generation_trace and "events" in v4_generation_trace:
+        for event in v4_generation_trace["events"]:
+            if event.get("event") == "output_collection":
+                output_collection_status = event.get("status", "unknown")
+
+    # Check post-submit validation
+    post_submit_validation_passed = False
+    if v4_post_submit_validation:
+        post_submit_validation_passed = v4_post_submit_validation.get("validation_passed", False)
+
+    # Determine if valid V4 asset can be recovered
+    valid_v4_asset_recovered = False
+    recovered_asset_path = None
+    recovered_asset_exists = False
+    recovered_asset_readable = False
+    recovered_asset_size_bytes = 0
+
+    # Search for potential valid V4 asset in assets directory
+    if v4_asset_corrupted and not stub_generation:
+        # Try to find a valid asset with similar timestamp pattern
+        timestamp_pattern = v4_asset_path.split("_")[-2] if v4_asset_path else None
+        if timestamp_pattern:
+            for asset_file in assets_dir.glob(f"*{timestamp_pattern}*.png"):
+                if asset_file.name != Path(v4_asset_path).name:
+                    try:
+                        size = asset_file.stat().st_size
+                        if size > 1024:  # V4 threshold
+                            with open(asset_file, 'rb') as f:
+                                header = f.read(8)
+                                if len(header) >= 8 and header[:8] == b'\x89PNG\r\n\x1a\n':
+                                    valid_v4_asset_recovered = True
+                                    recovered_asset_path = str(asset_file.relative_to(project_root))
+                                    recovered_asset_exists = True
+                                    recovered_asset_readable = True
+                                    recovered_asset_size_bytes = size
+                                    break
+                    except Exception:
+                        continue
+
+    # Determine reconciliation outcome
+    corrupted_manifest_asset_detected = v4_asset_corrupted
+    collector_failure_confirmed = (output_collection_status == "pending") or (stub_generation and v4_asset_corrupted)
+
+    # Determine next allowed action
+    if valid_v4_asset_recovered and recovered_asset_readable:
+        next_allowed_action = "corrective_retry_v4_visual_qa_preflight_required"
+        failure_code = None
+    elif stub_generation:
+        next_allowed_action = "corrective_retry_v4_workflow_diagnosis_required"
+        failure_code = "CORRECTIVE_RETRY_V4_WORKFLOW_SUBMIT_INVALID"
+    elif not post_submit_validation_passed:
+        next_allowed_action = "corrective_retry_v4_workflow_diagnosis_required"
+        failure_code = "CORRECTIVE_RETRY_V4_NO_VALID_COMFYUI_OUTPUT"
+    else:
+        next_allowed_action = "corrective_retry_v4_workflow_diagnosis_required"
+        failure_code = "CORRECTIVE_RETRY_V4_NO_VALID_COMFYUI_OUTPUT"
+
+    # Create reconciliation decision
+    reconciliation_decision = {
+        "decision_type": "corrective_retry_v4_result_reconciliation_decision",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "v4_result_reconciliation_executed": True,
+        "previous_generation_attempts": v4_generation_result.get("generation_attempts", 1) if v4_generation_result else 1,
+        "previous_workflow_submitted": v4_generation_result.get("workflow_submitted", True) if v4_generation_result else True,
+        "previous_comfyui_execution": v4_generation_result.get("comfyui_execution", True) if v4_generation_result else True,
+        "corrupted_v4_asset_path": v4_asset_path or "unknown",
+        "corrupted_v4_asset_size_bytes": v4_asset_size_bytes,
+        "corrupted_manifest_asset_detected": corrupted_manifest_asset_detected,
+        "valid_v4_asset_recovered": valid_v4_asset_recovered,
+        "recovered_asset_path": recovered_asset_path or "none",
+        "recovered_asset_exists": recovered_asset_exists,
+        "recovered_asset_readable": recovered_asset_readable,
+        "recovered_asset_size_bytes": recovered_asset_size_bytes,
+        "collector_failure_confirmed": collector_failure_confirmed,
+        "failure_code": failure_code or "none",
+        "stub_generation_detected": stub_generation,
+        "output_collection_status": output_collection_status,
+        "post_submit_validation_passed": post_submit_validation_passed,
+        "manifest_repaired": valid_v4_asset_recovered and recovered_asset_readable,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": next_allowed_action,
+    }
+
+    reconciliation_decision_path = control_dir / "combine_v2_corrective_retry_v4_result_reconciliation_decision.json"
+    with open(reconciliation_decision_path, 'w') as f:
+        json.dump(reconciliation_decision, f, indent=2)
+
+    # Create main reconciliation report
+    reconciliation_report = {
+        "report_type": "corrective_retry_v4_result_reconciliation",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "v4_result_reconciliation_executed": True,
+        "corrupted_v4_asset_path": v4_asset_path or "unknown",
+        "corrupted_v4_asset_size_bytes": v4_asset_size_bytes,
+        "corrupted_manifest_asset_detected": corrupted_manifest_asset_detected,
+        "valid_v4_asset_recovered": valid_v4_asset_recovered,
+        "recovered_asset_path": recovered_asset_path or "none",
+        "recovered_asset_exists": recovered_asset_exists,
+        "recovered_asset_readable": recovered_asset_readable,
+        "recovered_asset_size_bytes": recovered_asset_size_bytes,
+        "collector_failure_confirmed": collector_failure_confirmed,
+        "failure_code": failure_code or "none",
+        "stub_generation_detected": stub_generation,
+        "output_collection_status": output_collection_status,
+        "post_submit_validation_passed": post_submit_validation_passed,
+        "manifest_repaired": valid_v4_asset_recovered and recovered_asset_readable,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": next_allowed_action,
+    }
+
+    report_path = control_dir / "combine_v2_corrective_retry_v4_result_reconciliation.json"
+    with open(report_path, 'w') as f:
+        json.dump(reconciliation_report, f, indent=2)
+
+    result = reconciliation_report.copy()
+    result["artifacts"] = ["output/control/combine_v2_corrective_retry_v4_result_reconciliation.json"]
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V4 Result Reconciliation")
+        print(f"Shot: {shot_id}")
+        print(f"Corrupted Asset Detected: {corrupted_manifest_asset_detected}")
+        print(f"Valid V4 Asset Recovered: {valid_v4_asset_recovered}")
+        print(f"Collector Failure Confirmed: {collector_failure_confirmed}")
+        print(f"Failure Code: {failure_code or 'none'}")
+        print(f"Next Allowed Action: {next_allowed_action}")
+
+    return 0
+
+
+def combine_audit_corrective_retry_v4_output_collector(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1761-1820 — Audit Corrective Retry V4 Output Collector.
+
+    Audits the output collector behavior for corrective retry V4 to determine why asset collection failed despite guards.
+
+    Exit codes:
+    - 0: audit completed successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v4_generation_result = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_result.json")
+    v4_outputs_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json")
+    v4_generation_trace = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_trace.json")
+    v4_post_submit_validation = _load_json(control_dir / "combine_v2_corrective_retry_v4_post_submit_validation.json")
+
+    # Determine V4 asset path from manifest
+    v4_asset_path = None
+    if v4_outputs_manifest and "generated_assets" in v4_outputs_manifest and len(v4_outputs_manifest["generated_assets"]) > 0:
+        v4_asset_path = v4_outputs_manifest["generated_assets"][0]
+
+    # Check physical V4 asset
+    v4_asset_exists = False
+    v4_asset_size_bytes = 0
+    v4_asset_corrupted = False
+    v4_asset_full_path = None
+
+    if v4_asset_path:
+        v4_asset_full_path = project_root / v4_asset_path
+        v4_asset_exists = v4_asset_full_path.exists()
+        if v4_asset_exists:
+            v4_asset_size_bytes = v4_asset_full_path.stat().st_size
+            v4_asset_corrupted = v4_asset_size_bytes < 1024  # V4 threshold
+
+    # Check if generation was stubbed
+    stub_generation = False
+    stub_asset = False
+    if v4_generation_result and v4_generation_result.get("stub_generation", False):
+        stub_generation = True
+    if v4_outputs_manifest and v4_outputs_manifest.get("stub_asset", False):
+        stub_asset = True
+
+    # Check output collection status from trace
+    output_collection_status = "unknown"
+    output_collection_executed = False
+    comfyui_execution_stubbed = False
+
+    if v4_generation_trace and "events" in v4_generation_trace:
+        for event in v4_generation_trace["events"]:
+            if event.get("event") == "output_collection":
+                output_collection_status = event.get("status", "unknown")
+                output_collection_executed = output_collection_status == "completed"
+            if event.get("event") == "comfyui_execution":
+                comfyui_execution_stubbed = event.get("stub", False)
+
+    # Check collector reliability guard
+    collector_reliability_guard_preserved = False
+    if v4_generation_result:
+        collector_reliability_guard_preserved = v4_generation_result.get("collector_reliability_guard_preserved", False)
+
+    # Check output path contract
+    output_path_contract_preserved = False
+    if v4_generation_result:
+        output_path_contract_preserved = v4_generation_result.get("output_path_contract_preserved", False)
+
+    # Check post-submit validation
+    post_submit_validation_passed = False
+    if v4_post_submit_validation:
+        post_submit_validation_passed = v4_post_submit_validation.get("validation_passed", False)
+
+    # Determine audit findings
+    audit_findings = []
+    if stub_generation:
+        audit_findings.append("Generation was stubbed - no real ComfyUI execution occurred")
+    if stub_asset:
+        audit_findings.append("Manifest marks asset as stub - collector wrote stub instead of real image")
+    if output_collection_status == "pending":
+        audit_findings.append("Output collection never completed - status remains pending")
+    if not output_collection_executed:
+        audit_findings.append("Output collection was not executed")
+    if comfyui_execution_stubbed:
+        audit_findings.append("ComfyUI execution was stubbed - no real generation to collect")
+    if v4_asset_corrupted:
+        audit_findings.append(f"Physical asset is corrupted/stub: {v4_asset_size_bytes} bytes (below V4 threshold of 1024)")
+    if not post_submit_validation_passed:
+        audit_findings.append("Post-submit validation failed - asset did not meet V4 guard requirements")
+
+    # Determine failure mode
+    failure_mode = "unknown"
+    if stub_generation and stub_asset:
+        failure_mode = "stub_generation_layer"
+    elif output_collection_status == "pending":
+        failure_mode = "output_collection_not_executed"
+    elif v4_asset_corrupted and not stub_generation:
+        failure_mode = "collector_wrote_stub_instead_of_real_image"
+    elif not post_submit_validation_passed:
+        failure_mode = "post_submit_validation_failed"
+    else:
+        failure_mode = "unknown"
+
+    # Create audit report
+    audit_report = {
+        "audit_type": "corrective_retry_v4_output_collector_audit",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "v4_asset_path": v4_asset_path or "unknown",
+        "v4_asset_exists": v4_asset_exists,
+        "v4_asset_size_bytes": v4_asset_size_bytes,
+        "v4_asset_corrupted": v4_asset_corrupted,
+        "stub_generation_detected": stub_generation,
+        "stub_asset_detected": stub_asset,
+        "output_collection_status": output_collection_status,
+        "output_collection_executed": output_collection_executed,
+        "comfyui_execution_stubbed": comfyui_execution_stubbed,
+        "collector_reliability_guard_preserved": collector_reliability_guard_preserved,
+        "output_path_contract_preserved": output_path_contract_preserved,
+        "post_submit_validation_passed": post_submit_validation_passed,
+        "audit_findings": audit_findings,
+        "failure_mode": failure_mode,
+        "collector_failure_confirmed": failure_mode != "unknown",
+    }
+
+    audit_report_path = control_dir / "combine_v2_corrective_retry_v4_output_collector_audit.json"
+    with open(audit_report_path, 'w') as f:
+        json.dump(audit_report, f, indent=2)
+
+    result = audit_report.copy()
+    result["artifacts"] = ["output/control/combine_v2_corrective_retry_v4_output_collector_audit.json"]
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V4 Output Collector Audit")
+        print(f"Shot: {shot_id}")
+        print(f"Failure Mode: {failure_mode}")
+        print(f"Collector Failure Confirmed: {failure_mode != 'unknown'}")
+        print(f"Audit Findings: {len(audit_findings)}")
+        for finding in audit_findings:
+            print(f"  - {finding}")
+
+    return 0
+
+
+def combine_audit_corrective_retry_v4_workflow_submit(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1761-1820 — Audit Corrective Retry V4 Workflow Submit.
+
+    Audits the workflow submission for corrective retry V4 to determine if a stub/fallback workflow was used.
+
+    Exit codes:
+    - 0: audit completed successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v4_generation_result = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_result.json")
+    v4_implementation_package = _load_json(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json")
+    v4_generation_trace = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_trace.json")
+
+    # Check if workflow was stubbed
+    workflow_stubbed = False
+    if v4_generation_result:
+        workflow_stubbed = v4_generation_result.get("stub_generation", False)
+
+    # Check if implementation package has real workflow
+    real_workflow_in_package = False
+    if v4_implementation_package:
+        real_workflow_in_package = v4_implementation_package.get("real_workflow_included", False)
+
+    # Check workflow node count from trace
+    workflow_node_count = 0
+    workflow_is_minimal = False
+    if v4_generation_trace and "workflow" in v4_generation_trace:
+        workflow = v4_generation_trace["workflow"]
+        workflow_node_count = len(workflow.get("nodes", []))
+        workflow_is_minimal = workflow_node_count < 5  # Minimal fallback threshold
+
+    # Check SaveImage node configuration
+    saveimage_configured = False
+    saveimage_output_prefix = None
+    if v4_generation_trace and "workflow" in v4_generation_trace:
+        workflow = v4_generation_trace["workflow"]
+        for node in workflow.get("nodes", []):
+            if node.get("class_type") == "SaveImage":
+                saveimage_configured = True
+                saveimage_output_prefix = node.get("inputs", {}).get("filename_prefix", "unknown")
+
+    # Determine audit findings
+    audit_findings = []
+    if workflow_stubbed:
+        audit_findings.append("Workflow submission was stubbed - no real workflow sent to ComfyUI")
+    if not real_workflow_in_package:
+        audit_findings.append("Implementation package does not contain real workflow")
+    if workflow_is_minimal:
+        audit_findings.append(f"Workflow has minimal node count ({workflow_node_count}) - likely fallback stub")
+    if not saveimage_configured:
+        audit_findings.append("SaveImage node not configured in workflow")
+    if saveimage_output_prefix and saveimage_output_prefix == "ComfyUI":
+        audit_findings.append("SaveImage uses default prefix - likely not configured for project")
+
+    # Determine if stub or fallback workflow detected
+    stub_or_fallback_workflow_detected = workflow_stubbed or not real_workflow_in_package or workflow_is_minimal
+
+    # Create audit report
+    audit_report = {
+        "audit_type": "corrective_retry_v4_workflow_submit_audit",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "workflow_stubbed": workflow_stubbed,
+        "real_workflow_in_package": real_workflow_in_package,
+        "workflow_node_count": workflow_node_count,
+        "workflow_is_minimal": workflow_is_minimal,
+        "saveimage_configured": saveimage_configured,
+        "saveimage_output_prefix": saveimage_output_prefix or "unknown",
+        "audit_findings": audit_findings,
+        "stub_or_fallback_workflow_detected": stub_or_fallback_workflow_detected,
+    }
+
+    audit_report_path = control_dir / "combine_v2_corrective_retry_v4_workflow_submit_audit.json"
+    with open(audit_report_path, 'w') as f:
+        json.dump(audit_report, f, indent=2)
+
+    result = audit_report.copy()
+    result["artifacts"] = ["output/control/combine_v2_corrective_retry_v4_workflow_submit_audit.json"]
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V4 Workflow Submit Audit")
+        print(f"Shot: {shot_id}")
+        print(f"Stub or Fallback Workflow Detected: {stub_or_fallback_workflow_detected}")
+        print(f"Workflow Node Count: {workflow_node_count}")
+        print(f"Audit Findings: {len(audit_findings)}")
+        for finding in audit_findings:
+            print(f"  - {finding}")
+
+    return 0
+
+
+def combine_build_corrective_retry_v4_result_reconciliation_report(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1761-1820 — Build Corrective Retry V4 Result Reconciliation Report.
+
+    Builds a comprehensive reconciliation report combining audit findings and reconciliation decision.
+
+    Exit codes:
+    - 0: report built successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    reconciliation_decision = _load_json(control_dir / "combine_v2_corrective_retry_v4_result_reconciliation_decision.json")
+    collector_audit = _load_json(control_dir / "combine_v2_corrective_retry_v4_output_collector_audit.json")
+    workflow_audit = _load_json(control_dir / "combine_v2_corrective_retry_v4_workflow_submit_audit.json")
+    v4_generation_result = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_result.json")
+    v4_outputs_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json")
+
+    # Determine root cause
+    root_cause = "unknown"
+    if workflow_audit and workflow_audit.get("stub_or_fallback_workflow_detected", False):
+        root_cause = "stub_or_fallback_workflow"
+    elif collector_audit and collector_audit.get("failure_mode") == "output_collection_not_executed":
+        root_cause = "output_collection_failure"
+    elif collector_audit and collector_audit.get("failure_mode") == "collector_wrote_stub_instead_of_real_image":
+        root_cause = "collector_failure"
+    elif reconciliation_decision and reconciliation_decision.get("stub_generation_detected", False):
+        root_cause = "stub_generation"
+    else:
+        root_cause = "unknown"
+
+    # Build comprehensive report
+    comprehensive_report = {
+        "report_type": "corrective_retry_v4_corruption_root_cause_report",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "corrupted_v4_asset_path": reconciliation_decision.get("corrupted_v4_asset_path", "unknown"),
+        "corrupted_v4_asset_size_bytes": reconciliation_decision.get("corrupted_v4_asset_size_bytes", 0),
+        "root_cause_analysis": {
+            "root_cause": root_cause,
+            "failure_mode": collector_audit.get("failure_mode", "unknown") if collector_audit else "unknown",
+            "stub_generation_detected": reconciliation_decision.get("stub_generation_detected", False),
+            "stub_or_fallback_workflow_detected": workflow_audit.get("stub_or_fallback_workflow_detected", False) if workflow_audit else False,
+            "output_collection_status": collector_audit.get("output_collection_status", "unknown") if collector_audit else "unknown",
+            "collector_failure_confirmed": reconciliation_decision.get("collector_failure_confirmed", False),
+            "workflow_or_comfy_output_failure_confirmed": root_cause in ["stub_or_fallback_workflow", "output_collection_failure", "unknown"],
+            "failure_code": reconciliation_decision.get("failure_code", "none"),
+        },
+        "collector_audit_findings": collector_audit.get("audit_findings", []) if collector_audit else [],
+        "workflow_audit_findings": workflow_audit.get("audit_findings", []) if workflow_audit else [],
+        "reconciliation_outcome": {
+            "valid_v4_asset_recovered": reconciliation_decision.get("valid_v4_asset_recovered", False),
+            "recovered_asset_path": reconciliation_decision.get("recovered_asset_path", "none"),
+            "manifest_repaired": reconciliation_decision.get("manifest_repaired", False),
+        },
+        "hard_boundary": {
+            "new_generation_performed": False,
+            "new_comfyui_submit_executed": False,
+            "retry_attempted": False,
+            "visual_qa_executed": False,
+            "operator_visual_decision_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        },
+        "next_steps": {
+            "next_allowed_action": reconciliation_decision.get("next_allowed_action", "unknown"),
+        },
+    }
+
+    report_path = control_dir / "combine_v2_corrective_retry_v4_corruption_root_cause_report.json"
+    with open(report_path, 'w') as f:
+        json.dump(comprehensive_report, f, indent=2)
+
+    result = comprehensive_report.copy()
+    result["artifacts"] = ["output/control/combine_v2_corrective_retry_v4_corruption_root_cause_report.json"]
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V4 Corruption Root Cause Report")
+        print(f"Shot: {shot_id}")
+        print(f"Root Cause: {root_cause}")
+        print(f"Failure Code: {comprehensive_report['root_cause_analysis']['failure_code']}")
+        print(f"Valid V4 Asset Recovered: {comprehensive_report['reconciliation_outcome']['valid_v4_asset_recovered']}")
+        print(f"Next Allowed Action: {comprehensive_report['next_steps']['next_allowed_action']}")
+
+    return 0
 
 
 if __name__ == "__main__":

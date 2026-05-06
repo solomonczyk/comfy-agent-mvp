@@ -1,0 +1,27 @@
+{
+  "audit_type": "corrective_retry_v4_output_collector_audit",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T12:26:49.760667+00:00",
+  "v4_asset_path": "output/assets/combine_v2_corrective_retry_v4_generated_1778068970_00001_.png",
+  "v4_asset_exists": false,
+  "v4_asset_size_bytes": 0,
+  "v4_asset_corrupted": false,
+  "stub_generation_detected": true,
+  "stub_asset_detected": true,
+  "output_collection_status": "pending",
+  "output_collection_executed": false,
+  "comfyui_execution_stubbed": true,
+  "collector_reliability_guard_preserved": true,
+  "output_path_contract_preserved": true,
+  "post_submit_validation_passed": false,
+  "audit_findings": [
+    "Generation was stubbed - no real ComfyUI execution occurred",
+    "Manifest marks asset as stub - collector wrote stub instead of real image",
+    "Output collection never completed - status remains pending",
+    "Output collection was not executed",
+    "ComfyUI execution was stubbed - no real generation to collect",
+    "Post-submit validation failed - asset did not meet V4 guard requirements"
+  ],
+  "failure_mode": "stub_generation_layer",
+  "collector_failure_confirmed": true
+}
