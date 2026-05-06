@@ -1,0 +1,18 @@
+{
+  "operator_retry_v4_plan_approval_created": true,
+  "operator_retry_v4_plan_approved": true,
+  "decision": "approve_corrective_retry_v4_plan",
+  "reason": "operator_approved_v4_plan_for_stub_generation_failure",
+  "failure_code": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+  "corrupted_v3_asset_size_bytes": 8,
+  "corrective_retry_v4_plan_available": true,
+  "blind_retry_allowed": false,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-06T10:04:56.799583+00:00",
+  "shot_id": "shot02",
+  "next_allowed_action": "corrective_retry_v4_implementation_package_required"
+}

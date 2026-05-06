@@ -1,0 +1,13 @@
+{
+  "contract_type": "retry_v4_pre_submit_validation_contract",
+  "validation_rules": {
+    "stub_asset_guard": {
+      "enabled": true,
+      "min_asset_size_bytes": 1024,
+      "reject_below_threshold": true
+    },
+    "sha256_required": true
+  },
+  "timestamp": "2026-05-06T10:05:11.455211+00:00",
+  "shot_id": "shot02"
+}

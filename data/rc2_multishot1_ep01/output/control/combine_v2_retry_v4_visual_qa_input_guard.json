@@ -1,0 +1,10 @@
+{
+  "guard_type": "retry_v4_visual_qa_input_guard",
+  "guard_rules": {
+    "requires_readable_image": true,
+    "reject_corrupted_asset": true,
+    "reject_stub_asset": true
+  },
+  "timestamp": "2026-05-06T10:05:11.455211+00:00",
+  "shot_id": "shot02"
+}

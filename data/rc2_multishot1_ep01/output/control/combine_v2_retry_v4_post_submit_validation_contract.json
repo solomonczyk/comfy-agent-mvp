@@ -1,0 +1,16 @@
+{
+  "contract_type": "retry_v4_post_submit_validation_contract",
+  "validation_rules": {
+    "image_readability_validation": {
+      "enabled": true,
+      "validate_image_can_be_opened": true,
+      "validate_image_dimensions": true
+    },
+    "asset_size_validation": {
+      "min_bytes": 1024,
+      "reject_below_threshold": true
+    }
+  },
+  "timestamp": "2026-05-06T10:05:11.455211+00:00",
+  "shot_id": "shot02"
+}

@@ -1,0 +1,24 @@
+{
+  "operator_retry_v4_generation_authorization_request_created": true,
+  "request_type": "operator_retry_v4_generation_authorization",
+  "failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+  "implementation_package_created": true,
+  "guards_enabled": {
+    "stub_asset_guard_enabled": true,
+    "min_asset_size_bytes": 1024,
+    "post_submit_image_readability_validation_enabled": true,
+    "manifest_requires_real_readable_image": true,
+    "sha256_required": true,
+    "visual_qa_requires_readable_image": true,
+    "assembly_requires_same_accepted_asset": true,
+    "silent_asset_substitution_forbidden": true
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_retry_v4_generation_authorization_required",
+  "timestamp": "2026-05-06T10:05:11.455211+00:00",
+  "shot_id": "shot02"
+}
