@@ -2,12 +2,13 @@
   "stage": "corrective_retry_v4_generate_assets",
   "validation_type": "post_submit_validation_v4",
   "shot_id": "shot02",
-  "timestamp": "2026-05-06T13:27:21.317041+00:00",
+  "timestamp": "2026-05-06T15:50:12.539147+00:00",
   "asset_exists": true,
-  "asset_readable": false,
-  "asset_size_bytes_gt_1024": false,
-  "sha256_present": false,
-  "stub_asset_detected": true,
+  "asset_readable": true,
+  "asset_size_bytes_gt_1024": true,
+  "sha256_present": true,
+  "stub_asset_detected": false,
   "post_submit_validation_executed": true,
-  "stub_asset_guard_enforced": true
+  "stub_asset_guard_enforced": true,
+  "real_output_reconciliation": true
 }

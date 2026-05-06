@@ -865,5 +865,31 @@
     "real_execution_allowed": true,
     "next_allowed_action": "corrective_retry_v4_real_execute_assets",
     "timestamp": "2026-05-06T15:27:18.380629+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v4_result_review_executed",
+    "stage": "corrective_retry_v4_generate_assets",
+    "shot_id": "shot02",
+    "branch_selected": "failed",
+    "generated_assets_count": 1,
+    "manifest_success_policy_passed": false,
+    "failure_code": "CORRECTIVE_RETRY_V4_OUTPUT_VALIDATION_FAILED",
+    "next_allowed_action": "corrective_retry_v4_result_reconciliation_required",
+    "timestamp": "2026-05-06T15:40:56.781406+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v4_real_output_reconciliation",
+    "stage": "corrective_retry_v4_generate_assets",
+    "shot_id": "shot02",
+    "prompt_id": "5baac10c-a4f7-46ca-885a-019ce01de28b",
+    "native_output_filename": "combine_v2_corrective_retry_v4_shot02_00001_.png",
+    "canonical_asset_created": true,
+    "manifest_repaired": true,
+    "branch_selected": "success",
+    "manifest_success_policy_passed": true,
+    "next_allowed_action": "corrective_retry_v4_visual_qa_preflight_required",
+    "new_generation_performed": false,
+    "new_comfyui_submit_executed": false,
+    "timestamp": "2026-05-06T15:50:12.539147+00:00"
   }
 ]

@@ -3,10 +3,13 @@
   "manifest_type": "corrective_retry_v4_outputs_manifest",
   "shot_id": "shot02",
   "generated_assets": [
-    "output/assets/combine_v2_corrective_retry_v4_generated_1778074041_00001_.png"
+    "output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png"
   ],
   "asset_count": 1,
   "generation_performed": true,
-  "timestamp": "2026-05-06T13:27:21.317041+00:00",
-  "stub_asset": true
+  "timestamp": "2026-05-06T15:50:12.539147+00:00",
+  "stub_asset": false,
+  "real_output_reconciliation": true,
+  "source_native_file": "F:\\comfyui\\comfyui_portable_inst\\comfyui_windows_portable_nvidia_cu126\\comfyui_windows_portable\\comfyui\\output\\combine_v2_corrective_retry_v4_shot02_00001_.png",
+  "sha256": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd"
 }
