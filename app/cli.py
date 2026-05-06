@@ -22935,7 +22935,7 @@ def combine_authorize_corrective_retry_v4_generation(args: argparse.Namespace) -
         with open(artifact_index_path, 'r') as f:
             artifact_index = json.load(f)
 
-    artifact_index["current_state"] = "operator_retry_v4_generation_authorization_required"
+    artifact_index["current_state"] = "corrective_retry_v4_generate_assets" if authorized else "operator_retry_v4_generation_authorization_required"
     artifact_index["next_allowed_action"] = authorization["next_allowed_action"]
     artifact_index["operator_retry_v4_generation_authorized"] = authorized
     artifact_index["max_generations"] = 1
@@ -24968,7 +24968,7 @@ def combine_preflight_corrective_retry_v4_real_workflow_submit(args: argparse.Na
         "assembly_executed": False,
         "downstream_executed": False,
         "production_accepted": False,
-        "next_allowed_action": "operator_retry_v4_generation_authorization_required" if workflow_valid_for_submit else "corrective_retry_v4_generator_loader_fix_required",
+        "next_allowed_action": "corrective_retry_v4_generate_assets" if workflow_valid_for_submit else "corrective_retry_v4_generator_loader_fix_required",
         "timestamp": timestamp
     }
 
@@ -24976,6 +24976,16 @@ def combine_preflight_corrective_retry_v4_real_workflow_submit(args: argparse.Na
     preflight_path = control_dir / "combine_v2_corrective_retry_v4_real_workflow_submit_preflight.json"
     with open(preflight_path, 'w') as f:
         json.dump(preflight, f, indent=2)
+
+    # Update artifact index to preserve generation gate state
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = _load_json(artifact_index_path)
+    artifact_index["current_state"] = "corrective_retry_v4_generate_assets" if workflow_valid_for_submit else "corrective_retry_v4_generator_loader_fix_required"
+    artifact_index["next_allowed_action"] = preflight["next_allowed_action"]
+    artifact_index["real_workflow_preflight_executed"] = True
+    artifact_index["preflight_passed"] = preflight["preflight_passed"]
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
 
     if json_output:
         print(json.dumps(preflight, indent=2))

@@ -83,7 +83,7 @@ def test_preflight_real_workflow_submit_executed(temp_project_root):
     assert preflight["workflow_valid_for_submit"] == True
     assert preflight["dry_run_mode"] == True
     assert preflight["comfyui_submit_not_executed"] == True
-    assert preflight["next_allowed_action"] == "operator_retry_v4_generation_authorization_required"
+    assert preflight["next_allowed_action"] == "corrective_retry_v4_generate_assets"
 
 
 def test_preflight_real_workflow_submit_requires_validation(temp_project_root):
@@ -236,3 +236,4 @@ def test_preflight_real_workflow_submit_max_generations_preserved(temp_project_r
     preflight = json.loads((control_dir / "combine_v2_corrective_retry_v4_real_workflow_submit_preflight.json").read_text())
     assert preflight["max_generations"] == 1
     assert preflight["max_generations_one_preserved"] == True
+
