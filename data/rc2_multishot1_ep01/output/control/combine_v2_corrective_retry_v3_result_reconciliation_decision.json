@@ -1,7 +1,7 @@
 {
   "decision_type": "corrective_retry_v3_result_reconciliation_decision",
   "shot_id": "shot02",
-  "timestamp": "2026-05-06T08:30:36.079469+00:00",
+  "timestamp": "2026-05-06T08:45:40.049332+00:00",
   "result_reconciliation_executed": true,
   "corrupted_v3_asset_path": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
   "corrupted_v3_asset_size_bytes": 8,

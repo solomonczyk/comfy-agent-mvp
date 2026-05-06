@@ -1,7 +1,7 @@
 {
   "report_type": "corrective_retry_v3_corruption_root_cause_report",
   "shot_id": "shot02",
-  "timestamp": "2026-05-06T08:30:36.891768+00:00",
+  "timestamp": "2026-05-06T08:45:41.852026+00:00",
   "corrupted_v3_asset_path": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
   "corrupted_v3_asset_size_bytes": 8,
   "root_cause_analysis": {
