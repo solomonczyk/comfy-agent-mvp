@@ -855,5 +855,15 @@
     "production_accepted": false,
     "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
     "timestamp": "2026-05-06T14:12:17.241115+00:00"
+  },
+  {
+    "event_type": "operator_retry_v4_real_execution_authorized",
+    "stage": "operator_retry_v4_real_execution_authorization_required",
+    "shot_id": "shot02",
+    "operator_decision": "approve_one_corrective_retry_v4_real_execution",
+    "operator_retry_v4_real_execution_authorized": true,
+    "real_execution_allowed": true,
+    "next_allowed_action": "corrective_retry_v4_real_execute_assets",
+    "timestamp": "2026-05-06T15:27:18.380629+00:00"
   }
 ]

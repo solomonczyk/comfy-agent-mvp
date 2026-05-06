@@ -1,0 +1,20 @@
+{
+  "stage": "operator_retry_v4_real_execution_authorization_required",
+  "operator_decision": "approve_one_corrective_retry_v4_real_execution",
+  "operator_retry_v4_real_execution_authorized": true,
+  "corrective_retry_v4_non_stub_execution_route_available": true,
+  "shot_id": "shot02",
+  "max_generations": 1,
+  "operator_reason": "operator_approved_one_real_non_stub_retry_v4_execution",
+  "real_execution_allowed": true,
+  "generation_performed": false,
+  "new_comfyui_submit_executed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "corrective_retry_v4_real_execute_assets",
+  "timestamp": "2026-05-06T15:27:18.380629+00:00"
+}

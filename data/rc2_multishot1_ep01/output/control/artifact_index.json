@@ -1,6 +1,6 @@
 {
-  "current_state": "corrective_retry_v4_non_stub_execution_route_required",
-  "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+  "current_state": "corrective_retry_v4_real_execute_assets",
+  "next_allowed_action": "corrective_retry_v4_real_execute_assets",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5341,5 +5341,7 @@
   "route_has_comfyui_access": true,
   "dry_run_false_allowed_only_in_real_adapter": true,
   "fake_comfyui_execution_forbidden": true,
-  "stub_layer_execute_block_preserved": true
+  "stub_layer_execute_block_preserved": true,
+  "operator_retry_v4_real_execution_authorized": true,
+  "real_execution_allowed": true
 }

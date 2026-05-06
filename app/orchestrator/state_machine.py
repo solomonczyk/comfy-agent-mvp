@@ -44,8 +44,10 @@ class CombineStateMachine:
         "operator_retry_v4_plan_review_required",
         "corrective_retry_v4_generate_assets",
         "corrective_retry_v4_submit_path_fix_required",
+        "corrective_retry_v4_result_review_required",
         "corrective_retry_v4_non_stub_execution_route_required",
         "operator_retry_v4_real_execution_authorization_required",
+        "corrective_retry_v4_real_execute_assets",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
         "real_generation_payload_review",
@@ -208,7 +210,11 @@ class CombineStateMachine:
         },
         "operator_retry_v4_real_execution_authorization_required": {
             "operator_retry_v4_real_execution_authorization_required",  # Self-loop: halted pending operator
+            "corrective_retry_v4_real_execute_assets",  # Transition to real execution after authorization
             "blocked_manual_review"
+        },
+        "corrective_retry_v4_real_execute_assets": {
+            "corrective_retry_v4_result_review_required"
         },
         "real_generation_readiness_required": {
             "real_generation_preflight_required"
