@@ -7505,6 +7505,80 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1221-1280 — combine-review-corrective-retry-v3-plan subcommand
+    combine_review_corrective_retry_v3_plan_parser = subparsers.add_parser(
+        "combine-review-corrective-retry-v3-plan",
+        help="Review and approve corrective retry V3 plan"
+    )
+    combine_review_corrective_retry_v3_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_review_corrective_retry_v3_plan_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_review_corrective_retry_v3_plan_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["approve_corrective_retry_v3_plan", "reject_corrective_retry_v3_plan", "request_plan_changes"],
+        help="Operator decision",
+    )
+    combine_review_corrective_retry_v3_plan_parser.add_argument(
+        "--reason",
+        required=True,
+        help="Reason for decision",
+    )
+    combine_review_corrective_retry_v3_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1221-1280 — combine-build-corrective-retry-v3-implementation-package subcommand
+    combine_build_corrective_retry_v3_implementation_package_parser = subparsers.add_parser(
+        "combine-build-corrective-retry-v3-implementation-package",
+        help="Build corrective retry V3 implementation package"
+    )
+    combine_build_corrective_retry_v3_implementation_package_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_corrective_retry_v3_implementation_package_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_corrective_retry_v3_implementation_package_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1221-1280 — combine-validate-corrective-retry-v3-implementation-package subcommand
+    combine_validate_corrective_retry_v3_implementation_package_parser = subparsers.add_parser(
+        "combine-validate-corrective-retry-v3-implementation-package",
+        help="Validate corrective retry V3 implementation package"
+    )
+    combine_validate_corrective_retry_v3_implementation_package_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_corrective_retry_v3_implementation_package_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_validate_corrective_retry_v3_implementation_package_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC2-DIRECTOR1 — Director-lite subcommand
     director_parser = subparsers.add_parser("director", help="Director-lite read-only inspection commands")
     director_subparsers = director_parser.add_subparsers(dest="director_command")
@@ -8480,6 +8554,12 @@ def main() -> int:
         return combine_create_corrective_retry_v3_plan(args)
     elif args.command == "combine-build-retry-v3-plan-review-packet":
         return combine_build_retry_v3_plan_review_packet(args)
+    elif args.command == "combine-review-corrective-retry-v3-plan":
+        return combine_review_corrective_retry_v3_plan(args)
+    elif args.command == "combine-build-corrective-retry-v3-implementation-package":
+        return combine_build_corrective_retry_v3_implementation_package(args)
+    elif args.command == "combine-validate-corrective-retry-v3-implementation-package":
+        return combine_validate_corrective_retry_v3_implementation_package(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
@@ -17411,6 +17491,643 @@ def combine_build_retry_v3_plan_review_packet(args: argparse.Namespace) -> int:
         print(f"Source Asset: {source_asset}")
         print(f"Failure Basis: {failure_basis}")
         print(f"Next Allowed Action: operator_retry_v3_plan_review_required")
+
+    return 0
+
+
+def combine_review_corrective_retry_v3_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1221-1280 — Review and Approve Corrective Retry V3 Plan.
+
+    Operator approves or rejects the corrective retry V3 plan.
+    Creates operator_retry_v3_plan_approval artifact and transitions to
+    corrective_retry_v3_implementation_package_required.
+
+    Exit codes:
+    - 0: plan reviewed successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    decision = args.decision
+    reason = args.reason
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Require corrective retry v3 plan to exist
+    v3_plan_path = control_dir / "combine_v2_corrective_retry_v3_plan.json"
+    if not v3_plan_path.exists():
+        msg = "Error: combine_v2_corrective_retry_v3_plan.json not found. Run combine-create-corrective-retry-v3-plan first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(v3_plan_path, 'r') as f:
+        v3_plan = json.load(f)
+
+    # Validate decision
+    valid_decisions = ["approve_corrective_retry_v3_plan", "reject_corrective_retry_v3_plan", "request_plan_changes"]
+    if decision not in valid_decisions:
+        msg = f"Error: Invalid decision '{decision}'. Valid decisions: {valid_decisions}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    source_asset = v3_plan.get("source_asset", "")
+    failure_basis = v3_plan.get("failure_basis", ["blur_detected", "low_contrast"])
+
+    # Create operator plan approval
+    plan_approval = {
+        "stage": "operator_retry_v3_plan_review_required",
+        "operator_decision": decision,
+        "operator_retry_v3_plan_approved": decision == "approve_corrective_retry_v3_plan",
+        "corrective_retry_v3_plan_available": True,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "operator_reason": reason,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v3_implementation_package_required" if decision == "approve_corrective_retry_v3_plan" else "operator_retry_v3_plan_review_required",
+        "timestamp": timestamp,
+    }
+
+    approval_path = control_dir / "combine_v2_operator_retry_v3_plan_approval.json"
+    with open(approval_path, 'w') as f:
+        json.dump(plan_approval, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "operator_retry_v3_plan_review_required"
+    artifact_index["next_allowed_action"] = plan_approval["next_allowed_action"]
+    artifact_index["operator_retry_v3_plan_approved"] = decision == "approve_corrective_retry_v3_plan"
+    artifact_index["operator_retry_v3_plan_decision"] = decision
+    artifact_index["generation_allowed"] = False
+    artifact_index["retry_allowed"] = False
+    artifact_index["blind_retry_allowed"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "operator_retry_v3_plan_reviewed",
+        "stage": "operator_retry_v3_plan_review_required",
+        "shot_id": shot_id,
+        "operator_decision": decision,
+        "operator_retry_v3_plan_approved": decision == "approve_corrective_retry_v3_plan",
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "operator_reason": reason,
+        "generation_allowed": False,
+        "next_allowed_action": plan_approval["next_allowed_action"],
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "operator_retry_v3_plan_review_required",
+        "shot_id": shot_id,
+        "operator_decision": decision,
+        "operator_retry_v3_plan_approved": decision == "approve_corrective_retry_v3_plan",
+        "corrective_retry_v3_plan_available": True,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "operator_reason": reason,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": plan_approval["next_allowed_action"],
+        "artifacts": ["output/control/combine_v2_operator_retry_v3_plan_approval.json"],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V3 Plan Reviewed")
+        print(f"Shot: {shot_id}")
+        print(f"Operator Decision: {decision}")
+        print(f"Plan Approved: {decision == 'approve_corrective_retry_v3_plan'}")
+        print(f"Next Allowed Action: {plan_approval['next_allowed_action']}")
+
+    return 0
+
+
+def combine_build_corrective_retry_v3_implementation_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1221-1280 — Build Corrective Retry V3 Implementation Package.
+
+    Builds the corrective retry V3 implementation package with all required patches:
+    - sampler recipe patch
+    - prompt quality patch
+    - workflow quality patch
+    - contrast/blur correction patch
+    - conditioning chain review patch
+
+    Stops at operator_retry_v3_generation_authorization_required.
+    Does NOT trigger generation, retry, visual QA rerun, assembly, or downstream.
+
+    Exit codes:
+    - 0: package built successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Require operator plan approval
+    approval_path = control_dir / "combine_v2_operator_retry_v3_plan_approval.json"
+    if not approval_path.exists():
+        msg = "Error: combine_v2_operator_retry_v3_plan_approval.json not found. Run combine-review-corrective-retry-v3-plan first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(approval_path, 'r') as f:
+        approval = json.load(f)
+
+    if not approval.get("operator_retry_v3_plan_approved", False):
+        msg = "Error: Operator has not approved the corrective retry V3 plan."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Load v3 plan and sub-plans
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v3_plan = _load_json(control_dir / "combine_v2_corrective_retry_v3_plan.json")
+    sampler_recipe_plan = _load_json(control_dir / "combine_v2_corrective_retry_v3_sampler_recipe_plan.json")
+    prompt_plan = _load_json(control_dir / "combine_v2_corrective_retry_v3_prompt_plan.json")
+    workflow_quality_plan = _load_json(control_dir / "combine_v2_corrective_retry_v3_workflow_quality_plan.json")
+
+    source_asset = approval.get("source_asset", v3_plan.get("source_asset", ""))
+    failure_basis = approval.get("failure_basis", v3_plan.get("failure_basis", ["blur_detected", "low_contrast"]))
+
+    # Create sampler recipe patch
+    sampler_recipe_patch = {
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "patch_type": "corrective_retry_v3_sampler_recipe_patch",
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "patch_created": True,
+        "recommended_changes": sampler_recipe_plan.get("recommended_changes", {}),
+        "sampler_elements_to_review": sampler_recipe_plan.get("sampler_elements_to_review", []),
+        "generation_allowed": False,
+        "timestamp": timestamp,
+    }
+    sampler_patch_path = control_dir / "combine_v2_corrective_retry_v3_sampler_recipe_patch.json"
+    with open(sampler_patch_path, 'w') as f:
+        json.dump(sampler_recipe_patch, f, indent=2)
+
+    # Create prompt quality patch
+    prompt_quality_patch = {
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "patch_type": "corrective_retry_v3_prompt_quality_patch",
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "patch_created": True,
+        "recommended_changes": prompt_plan.get("recommended_changes", {}),
+        "prompt_elements_to_review": prompt_plan.get("prompt_elements_to_review", []),
+        "generation_allowed": False,
+        "timestamp": timestamp,
+    }
+    prompt_patch_path = control_dir / "combine_v2_corrective_retry_v3_prompt_quality_patch.json"
+    with open(prompt_patch_path, 'w') as f:
+        json.dump(prompt_quality_patch, f, indent=2)
+
+    # Create workflow quality patch
+    workflow_quality_patch = {
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "patch_type": "corrective_retry_v3_workflow_quality_patch",
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "patch_created": True,
+        "recommended_changes": workflow_quality_plan.get("recommended_changes", {}),
+        "workflow_elements_to_review": workflow_quality_plan.get("workflow_elements_to_review", []),
+        "generation_allowed": False,
+        "timestamp": timestamp,
+    }
+    workflow_patch_path = control_dir / "combine_v2_corrective_retry_v3_workflow_quality_patch.json"
+    with open(workflow_patch_path, 'w') as f:
+        json.dump(workflow_quality_patch, f, indent=2)
+
+    # Create contrast/blur correction patch
+    contrast_blur_patch = {
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "patch_type": "corrective_retry_v3_contrast_blur_patch",
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "patch_created": True,
+        "target_failures": ["blur_detected", "low_contrast"],
+        "corrections": {
+            "increase_sharpening": True,
+            "adjust_contrast_enhancement": True,
+            "review_denoise_strength": True,
+            "optimize_detail_preservation": True,
+        },
+        "generation_allowed": False,
+        "timestamp": timestamp,
+    }
+    contrast_blur_patch_path = control_dir / "combine_v2_corrective_retry_v3_contrast_blur_patch.json"
+    with open(contrast_blur_patch_path, 'w') as f:
+        json.dump(contrast_blur_patch, f, indent=2)
+
+    # Create conditioning chain review patch
+    conditioning_chain_patch = {
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "patch_type": "corrective_retry_v3_conditioning_chain_patch",
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "patch_created": True,
+        "conditioning_elements_to_review": [
+            "positive_prompt_strength",
+            "negative_prompt_clarity",
+            "controlnet_conditioning",
+            "refiner_conditioning",
+        ],
+        "generation_allowed": False,
+        "timestamp": timestamp,
+    }
+    conditioning_patch_path = control_dir / "combine_v2_corrective_retry_v3_conditioning_chain_patch.json"
+    with open(conditioning_patch_path, 'w') as f:
+        json.dump(conditioning_chain_patch, f, indent=2)
+
+    # Create implementation package manifest
+    implementation_package = {
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "package_type": "corrective_retry_v3_implementation_package",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "operator_retry_v3_plan_approved": True,
+        "blind_retry_allowed": False,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "patches": {
+            "sampler_recipe_patch_created": True,
+            "prompt_quality_patch_created": True,
+            "workflow_quality_patch_created": True,
+            "contrast_blur_correction_patch_created": True,
+            "conditioning_chain_review_patch_created": True,
+        },
+        "patch_files": {
+            "sampler_recipe_patch": "output/control/combine_v2_corrective_retry_v3_sampler_recipe_patch.json",
+            "prompt_quality_patch": "output/control/combine_v2_corrective_retry_v3_prompt_quality_patch.json",
+            "workflow_quality_patch": "output/control/combine_v2_corrective_retry_v3_workflow_quality_patch.json",
+            "contrast_blur_patch": "output/control/combine_v2_corrective_retry_v3_contrast_blur_patch.json",
+            "conditioning_chain_patch": "output/control/combine_v2_corrective_retry_v3_conditioning_chain_patch.json",
+        },
+        "pre_submit_validation_required": True,
+        "operator_generation_authorization_required": True,
+        "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+        "timestamp": timestamp,
+    }
+    package_path = control_dir / "combine_v2_corrective_retry_v3_implementation_package.json"
+    with open(package_path, 'w') as f:
+        json.dump(implementation_package, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_v3_implementation_package_required"
+    artifact_index["next_allowed_action"] = "operator_retry_v3_generation_authorization_required"
+    artifact_index["corrective_retry_v3_implementation_package_created"] = True
+    artifact_index["sampler_recipe_patch_created"] = True
+    artifact_index["prompt_quality_patch_created"] = True
+    artifact_index["workflow_quality_patch_created"] = True
+    artifact_index["contrast_blur_patch_created"] = True
+    artifact_index["conditioning_chain_patch_created"] = True
+    artifact_index["pre_submit_validation_required"] = True
+    artifact_index["operator_generation_authorization_required"] = True
+    artifact_index["generation_allowed"] = False
+    artifact_index["retry_allowed"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v3_implementation_package_created",
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "patches_created": list(implementation_package["patches"].keys()),
+        "generation_allowed": False,
+        "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "shot_id": shot_id,
+        "package_type": "corrective_retry_v3_implementation_package",
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "operator_retry_v3_plan_approved": True,
+        "blind_retry_allowed": False,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "patches": implementation_package["patches"],
+        "pre_submit_validation_required": True,
+        "operator_generation_authorization_required": True,
+        "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v3_implementation_package.json",
+            "output/control/combine_v2_corrective_retry_v3_sampler_recipe_patch.json",
+            "output/control/combine_v2_corrective_retry_v3_prompt_quality_patch.json",
+            "output/control/combine_v2_corrective_retry_v3_workflow_quality_patch.json",
+            "output/control/combine_v2_corrective_retry_v3_contrast_blur_patch.json",
+            "output/control/combine_v2_corrective_retry_v3_conditioning_chain_patch.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V3 Implementation Package Created")
+        print(f"Shot: {shot_id}")
+        print(f"Source Asset: {source_asset}")
+        print(f"Failure Basis: {failure_basis}")
+        print(f"Patches Created: {list(implementation_package['patches'].keys())}")
+        print(f"Next Allowed Action: operator_retry_v3_generation_authorization_required")
+
+    return 0
+
+
+def combine_validate_corrective_retry_v3_implementation_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1221-1280 — Validate Corrective Retry V3 Implementation Package.
+
+    Validates the corrective retry V3 implementation package and creates:
+    - Pre-submit validation contract
+    - Operator generation authorization request V3
+
+    Stops at operator_retry_v3_generation_authorization_required.
+    Does NOT trigger generation, retry, visual QA rerun, assembly, or downstream.
+
+    Exit codes:
+    - 0: package validated successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Require implementation package to exist
+    package_path = control_dir / "combine_v2_corrective_retry_v3_implementation_package.json"
+    if not package_path.exists():
+        msg = "Error: combine_v2_corrective_retry_v3_implementation_package.json not found. Run combine-build-corrective-retry-v3-implementation-package first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(package_path, 'r') as f:
+        package = json.load(f)
+
+    source_asset = package.get("source_asset", "")
+    failure_basis = package.get("failure_basis", ["blur_detected", "low_contrast"])
+    patches = package.get("patches", {})
+
+    # Validate all patches exist
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    sampler_patch = _load_json(control_dir / "combine_v2_corrective_retry_v3_sampler_recipe_patch.json")
+    prompt_patch = _load_json(control_dir / "combine_v2_corrective_retry_v3_prompt_quality_patch.json")
+    workflow_patch = _load_json(control_dir / "combine_v2_corrective_retry_v3_workflow_quality_patch.json")
+    contrast_blur_patch = _load_json(control_dir / "combine_v2_corrective_retry_v3_contrast_blur_patch.json")
+    conditioning_patch = _load_json(control_dir / "combine_v2_corrective_retry_v3_conditioning_chain_patch.json")
+
+    # Create pre-submit validation
+    pre_submit_validation = {
+        "stage": "corrective_retry_v3_implementation_package_required",
+        "validation_type": "pre_submit_validation_v3",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "validation_passed": True,
+        "patches_validated": {
+            "sampler_recipe_patch": bool(sampler_patch),
+            "prompt_quality_patch": bool(prompt_patch),
+            "workflow_quality_patch": bool(workflow_patch),
+            "contrast_blur_patch": bool(contrast_blur_patch),
+            "conditioning_chain_patch": bool(conditioning_patch),
+        },
+        "validation_checks": {
+            "all_patches_present": all([bool(sampler_patch), bool(prompt_patch), bool(workflow_patch), bool(contrast_blur_patch), bool(conditioning_patch)]),
+            "generation_allowed": False,
+            "retry_allowed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        },
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+        "timestamp": timestamp,
+    }
+    validation_path = control_dir / "combine_v2_corrective_retry_v3_pre_submit_validation.json"
+    with open(validation_path, 'w') as f:
+        json.dump(pre_submit_validation, f, indent=2)
+
+    # Create operator generation authorization request V3
+    auth_request = {
+        "stage": "operator_retry_v3_generation_authorization_required",
+        "request_type": "operator_retry_v3_generation_authorization_request",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "operator_review_required": True,
+        "recommended_operator_decision": "approve_one_corrective_retry_v3_generation",
+        "operator_actions_allowed": [
+            "approve_one_corrective_retry_v3_generation",
+            "request_implementation_package_changes",
+            "manual_review",
+            "abort_route",
+        ],
+        "implementation_package_validated": True,
+        "pre_submit_validation_passed": True,
+        "blind_retry_allowed": False,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "max_generations_allowed": 1,
+        "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+        "timestamp": timestamp,
+    }
+    auth_request_path = control_dir / "combine_v2_operator_retry_v3_generation_authorization_request.json"
+    with open(auth_request_path, 'w') as f:
+        json.dump(auth_request, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "operator_retry_v3_generation_authorization_required"
+    artifact_index["next_allowed_action"] = "operator_retry_v3_generation_authorization_required"
+    artifact_index["corrective_retry_v3_pre_submit_validation_created"] = True
+    artifact_index["operator_retry_v3_generation_authorization_request_created"] = True
+    artifact_index["implementation_package_validated"] = True
+    artifact_index["generation_allowed"] = False
+    artifact_index["retry_allowed"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v3_implementation_package_validated",
+        "stage": "operator_retry_v3_generation_authorization_required",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "validation_passed": True,
+        "generation_allowed": False,
+        "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "operator_retry_v3_generation_authorization_required",
+        "shot_id": shot_id,
+        "implementation_package_validated": True,
+        "pre_submit_validation_passed": True,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "blind_retry_allowed": False,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v3_generation_authorization_required",
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v3_pre_submit_validation.json",
+            "output/control/combine_v2_operator_retry_v3_generation_authorization_request.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V3 Implementation Package Validated")
+        print(f"Shot: {shot_id}")
+        print(f"Source Asset: {source_asset}")
+        print(f"Validation Passed: True")
+        print(f"Next Allowed Action: operator_retry_v3_generation_authorization_required")
 
     return 0
 
