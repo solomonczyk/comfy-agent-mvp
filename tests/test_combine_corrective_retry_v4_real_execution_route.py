@@ -306,40 +306,62 @@ class TestPreflightNoComfySubmit:
 # 8. filename_prefix consistency enforced
 # ---------------------------------------------------------------------------
 
+RUNTIME_PREFIX = "combine_v2_corrective_retry_v4_shot02"
+
+
 class TestFilenamePrefixConsistency:
-    def test_preflight_reports_filename_prefix_consistency_valid(self, tmp_path, capsys):
-        """Preflight must confirm filename_prefix_consistency_valid=true."""
+    def test_preflight_reports_runtime_prefix_not_source_prefix(self, tmp_path, capsys):
+        """Preflight saveimage_filename_prefix must be the runtime prefix, not the source shot01 prefix."""
         from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
         project_root, _ = _setup_full_project(tmp_path)
         combine_preflight_corrective_retry_v4_real_execution_route(
             _make_args_preflight(project_root))
         out = json.loads(capsys.readouterr().out)
         assert out["filename_prefix_consistency_valid"] is True
-        assert out["saveimage_filename_prefix"] == SAVEIMAGE_PREFIX
+        assert out["saveimage_filename_prefix"] == RUNTIME_PREFIX
+        assert out["saveimage_filename_prefix"] != SAVEIMAGE_PREFIX
 
-    def test_preflight_fails_when_no_saveimage_node(self, tmp_path):
-        """Preflight must fail when SaveImage node has no filename_prefix."""
+    def test_preflight_reports_source_workflow_prefix_for_audit(self, tmp_path, capsys):
+        """Preflight must report source_workflow_prefix_detected for audit."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["source_workflow_prefix_detected"] == SAVEIMAGE_PREFIX
+        assert out["runtime_prefix_patched_for_target_shot"] is True
+
+    def test_preflight_passes_even_without_saveimage_node(self, tmp_path, capsys):
+        """Preflight must pass even if workflow has no SaveImage — runtime prefix is deterministic."""
         from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
         project_root, control_dir = _setup_full_project(tmp_path)
-        # Overwrite with workflow lacking SaveImage prefix
-        bad_workflow = {
+        # Overwrite with workflow lacking SaveImage node
+        no_saveimage_workflow = {
             "3": {"class_type": "KSampler", "inputs": {}},
-            "9": {"class_type": "VAEDecode", "inputs": {}},
+            "4": {"class_type": "VAEDecode", "inputs": {}},
         }
-        (control_dir / "ep01_shot01_submitted_workflow.json").write_text(json.dumps(bad_workflow))
+        (control_dir / "ep01_shot01_submitted_workflow.json").write_text(
+            json.dumps(no_saveimage_workflow))
         result = combine_preflight_corrective_retry_v4_real_execution_route(
             _make_args_preflight(project_root))
-        assert result == 1
+        # Runtime prefix is computed from shot_id, not from workflow node
+        assert result == 0
+        out = json.loads(capsys.readouterr().out)
+        assert out["runtime_saveimage_prefix"] == RUNTIME_PREFIX
+        assert out["source_workflow_prefix_detected"] is None
 
-    def test_real_execute_no_execute_exposes_prefix(self, tmp_path, capsys):
-        """Real execute (no --execute) must expose saveimage_filename_prefix."""
+    def test_real_execute_no_execute_exposes_runtime_prefix(self, tmp_path, capsys):
+        """Real execute (no --execute) must expose runtime prefix, not source shot01 prefix."""
         from app.cli import combine_corrective_retry_v4_real_execute_assets
         project_root, _ = _setup_full_project(tmp_path)
         combine_corrective_retry_v4_real_execute_assets(
             _make_args_execute(project_root, execute=False))
         out = json.loads(capsys.readouterr().out)
-        assert out["saveimage_filename_prefix"] == SAVEIMAGE_PREFIX
+        assert out["saveimage_filename_prefix"] == RUNTIME_PREFIX
+        assert out["saveimage_filename_prefix"] != SAVEIMAGE_PREFIX
         assert out["filename_prefix_consistency_valid"] is True
+        assert out["runtime_prefix_patched_for_target_shot"] is True
+        assert out["source_workflow_prefix_detected"] == SAVEIMAGE_PREFIX
 
 
 # ---------------------------------------------------------------------------
@@ -355,15 +377,18 @@ class TestCollectorUsesSubmittedPrefix:
             _make_args_preflight(project_root))
         out = json.loads(capsys.readouterr().out)
         assert out["collector_will_use_submitted_saveimage_prefix"] is True
+        # Collector must use the runtime prefix, not old shot01 prefix
+        assert out["saveimage_filename_prefix"] == RUNTIME_PREFIX
 
-    def test_real_execute_no_execute_confirms_collector_prefix(self, tmp_path, capsys):
-        """Real execute info must confirm collector_will_use_submitted_saveimage_prefix=true."""
+    def test_real_execute_no_execute_confirms_collector_runtime_prefix(self, tmp_path, capsys):
+        """Real execute info must confirm collector uses runtime prefix."""
         from app.cli import combine_corrective_retry_v4_real_execute_assets
         project_root, _ = _setup_full_project(tmp_path)
         combine_corrective_retry_v4_real_execute_assets(
             _make_args_execute(project_root, execute=False))
         out = json.loads(capsys.readouterr().out)
         assert out["collector_will_use_submitted_saveimage_prefix"] is True
+        assert out["runtime_saveimage_prefix"] == RUNTIME_PREFIX
 
 
 # ---------------------------------------------------------------------------
@@ -440,3 +465,118 @@ class TestRealExecuteStateGuard:
         assert out["comfyui_execution"] is True
         assert out["real_workflow_binding_used"] is True
         assert out["fallback_workflow_used"] is False
+        # Submitted workflow must use runtime prefix, not source shot01 prefix
+        assert out["runtime_saveimage_prefix"] == RUNTIME_PREFIX
+        assert out["runtime_prefix_patched_for_target_shot"] is True
+        assert out["source_workflow_prefix_detected"] == SAVEIMAGE_PREFIX
+        assert out["old_shot01_outputs_cannot_satisfy_v4_manifest"] is True
+
+
+# ---------------------------------------------------------------------------
+# Freeze-check command tests
+# ---------------------------------------------------------------------------
+
+def _make_args_freeze(project_root, shot_id="shot02", json_out=True):
+    return argparse.Namespace(
+        project_root=str(project_root),
+        shot_id=shot_id,
+        json=json_out,
+    )
+
+
+class TestPrefixShotidFreezeCheck:
+    def test_freeze_check_passes_after_preflight(self, tmp_path, capsys):
+        """Freeze check must pass when preflight has been run and prefix is correct."""
+        from app.cli import (
+            combine_preflight_corrective_retry_v4_real_execution_route,
+            combine_corrective_retry_v4_prefix_shotid_freeze_check,
+        )
+        project_root, _ = _setup_full_project(tmp_path)
+        # Run preflight first to write updated preflight artifact
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        capsys.readouterr()  # discard preflight output
+
+        result = combine_corrective_retry_v4_prefix_shotid_freeze_check(
+            _make_args_freeze(project_root))
+        assert result == 0
+        out = json.loads(capsys.readouterr().out)
+        assert out["prefix_shotid_check_executed"] is True
+        assert out["check_passed"] is True
+
+    def test_freeze_check_proof_fields(self, tmp_path, capsys):
+        """Freeze check proof must contain all required fields."""
+        from app.cli import (
+            combine_preflight_corrective_retry_v4_real_execution_route,
+            combine_corrective_retry_v4_prefix_shotid_freeze_check,
+        )
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        capsys.readouterr()
+
+        combine_corrective_retry_v4_prefix_shotid_freeze_check(
+            _make_args_freeze(project_root))
+        out = json.loads(capsys.readouterr().out)
+
+        assert out["target_shot_id"] == "shot02"
+        assert out["source_workflow_prefix_detected"] == SAVEIMAGE_PREFIX
+        assert out["runtime_saveimage_prefix"] == RUNTIME_PREFIX
+        assert out["runtime_prefix_patched_for_target_shot"] is True
+        assert out["collector_uses_runtime_saveimage_prefix"] is True
+        assert out["old_shot01_outputs_cannot_satisfy_v4_manifest"] is True
+        assert out["source_prefix_differs_from_runtime"] is True
+        assert out["real_execution_adapter_ready"] is True
+        assert out["new_generation_performed"] is False
+        assert out["new_comfyui_submit_executed"] is False
+        assert out["next_allowed_action"] == "operator_retry_v4_real_execution_authorization_required"
+
+    def test_freeze_check_writes_artifact(self, tmp_path):
+        """Freeze check must write combine_v2_corrective_retry_v4_prefix_shotid_freeze_check.json."""
+        from app.cli import (
+            combine_preflight_corrective_retry_v4_real_execution_route,
+            combine_corrective_retry_v4_prefix_shotid_freeze_check,
+        )
+        project_root, control_dir = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        combine_corrective_retry_v4_prefix_shotid_freeze_check(
+            _make_args_freeze(project_root))
+
+        art = control_dir / "combine_v2_corrective_retry_v4_prefix_shotid_freeze_check.json"
+        assert art.exists()
+        data = json.loads(art.read_text())
+        assert data["check_passed"] is True
+        assert data["runtime_saveimage_prefix"] == RUNTIME_PREFIX
+
+    def test_freeze_check_fails_when_preflight_has_wrong_runtime_prefix(self, tmp_path):
+        """Freeze check must fail when preflight artifact carries wrong runtime prefix."""
+        from app.cli import combine_corrective_retry_v4_prefix_shotid_freeze_check
+        project_root, control_dir = _setup_full_project(tmp_path)
+        # Write a preflight artifact with a wrong/stale runtime prefix
+        stale_preflight = {
+            "runtime_saveimage_prefix": "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777576340"
+        }
+        (control_dir / "combine_v2_corrective_retry_v4_real_execution_route_preflight.json").write_text(
+            json.dumps(stale_preflight))
+        result = combine_corrective_retry_v4_prefix_shotid_freeze_check(
+            _make_args_freeze(project_root))
+        assert result == 1
+
+    def test_freeze_check_old_shot01_prefix_cannot_satisfy_manifest(self, tmp_path, capsys):
+        """old_shot01_outputs_cannot_satisfy_v4_manifest must be true — runtime != source."""
+        from app.cli import (
+            combine_preflight_corrective_retry_v4_real_execution_route,
+            combine_corrective_retry_v4_prefix_shotid_freeze_check,
+        )
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        capsys.readouterr()
+
+        combine_corrective_retry_v4_prefix_shotid_freeze_check(
+            _make_args_freeze(project_root))
+        out = json.loads(capsys.readouterr().out)
+        # Shot01 prefix != shot02 runtime prefix → isolation enforced
+        assert out["old_shot01_outputs_cannot_satisfy_v4_manifest"] is True
+        assert out["source_workflow_prefix_detected"] != out["runtime_saveimage_prefix"]

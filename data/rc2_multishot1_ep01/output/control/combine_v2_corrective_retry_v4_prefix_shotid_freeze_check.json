@@ -1,0 +1,22 @@
+{
+  "prefix_shotid_check_executed": true,
+  "target_shot_id": "shot02",
+  "source_workflow_prefix_detected": "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777576340",
+  "runtime_prefix_patched_for_target_shot": true,
+  "runtime_saveimage_prefix": "combine_v2_corrective_retry_v4_shot02",
+  "preflight_runtime_prefix": "combine_v2_corrective_retry_v4_shot02",
+  "preflight_prefix_matches_expected": true,
+  "source_prefix_differs_from_runtime": true,
+  "collector_uses_runtime_saveimage_prefix": true,
+  "old_shot01_outputs_cannot_satisfy_v4_manifest": true,
+  "real_execution_adapter_ready": true,
+  "new_generation_performed": false,
+  "new_comfyui_submit_executed": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+  "check_passed": true,
+  "timestamp": "2026-05-06T14:34:53.828025+00:00"
+}

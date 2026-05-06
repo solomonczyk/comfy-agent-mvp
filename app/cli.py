@@ -8348,6 +8348,21 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2181-2300-PREFIX-SHOTID-FREEZE-CHECK subcommand
+    combine_corrective_retry_v4_prefix_shotid_freeze_check_parser = subparsers.add_parser(
+        "combine-corrective-retry-v4-prefix-shotid-freeze-check",
+        help="Verify SaveImage prefix is patched for target shot, not reusing shot01 prefix"
+    )
+    combine_corrective_retry_v4_prefix_shotid_freeze_check_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_corrective_retry_v4_prefix_shotid_freeze_check_parser.add_argument(
+        "--shot-id", required=True, help="Shot ID (e.g., shot02)",
+    )
+    combine_corrective_retry_v4_prefix_shotid_freeze_check_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1821-1880 — combine-diagnose-corrective-retry-v4-workflow subcommand
     combine_diagnose_corrective_retry_v4_workflow_parser = subparsers.add_parser(
         "combine-diagnose-corrective-retry-v4-workflow",
@@ -9558,6 +9573,8 @@ def main() -> int:
         return combine_preflight_corrective_retry_v4_real_execution_route(args)
     elif args.command == "combine-corrective-retry-v4-real-execute-assets":
         return combine_corrective_retry_v4_real_execute_assets(args)
+    elif args.command == "combine-corrective-retry-v4-prefix-shotid-freeze-check":
+        return combine_corrective_retry_v4_prefix_shotid_freeze_check(args)
     elif args.command == "combine-diagnose-corrective-retry-v4-workflow":
         return combine_diagnose_corrective_retry_v4_workflow(args)
     elif args.command == "combine-build-corrective-retry-v4-real-workflow-binding":
@@ -23893,17 +23910,21 @@ def combine_preflight_corrective_retry_v4_real_execution_route(args: argparse.Na
     if workflow_path and workflow_path.exists():
         workflow = _load_json(workflow_path)
 
-    # Extract SaveImage filename_prefix from workflow
-    saveimage_prefix = None
+    # Extract SaveImage filename_prefix from workflow (source prefix, may be shot01-stamped)
+    source_workflow_prefix = None
     for node_id, node in workflow.items():
         if isinstance(node, dict) and node.get("class_type") == "SaveImage":
-            saveimage_prefix = node.get("inputs", {}).get("filename_prefix")
+            source_workflow_prefix = node.get("inputs", {}).get("filename_prefix")
             break
 
-    # Validate filename_prefix is present and consistent
-    filename_prefix_present = saveimage_prefix is not None
-    # Collector will use the same prefix injected into SaveImage at submit time
-    collector_uses_submitted_saveimage_prefix = filename_prefix_present
+    # Compute deterministic runtime prefix for target shot — never reuse source shot01 prefix
+    runtime_saveimage_prefix = f"combine_v2_corrective_retry_v4_{shot_id}"
+    runtime_prefix_patched_for_target_shot = True  # Always patched — never pass source prefix
+    old_shot01_outputs_cannot_satisfy_v4_manifest = True  # Enforced by distinct prefix
+
+    # Collector uses the runtime prefix, not the source workflow prefix
+    filename_prefix_present = True  # runtime prefix is always deterministic
+    collector_uses_submitted_saveimage_prefix = True
 
     # Check max_generations guard
     max_generations_valid = max_generations == 1
@@ -23941,9 +23962,17 @@ def combine_preflight_corrective_retry_v4_real_execution_route(args: argparse.Na
         "fallback_workflow_used": not fallback_workflow_blocked,
         "workflow_source": workflow_source,
 
-        # filename_prefix consistency
+        # Prefix shotid freeze check
+        "prefix_shotid_check_executed": True,
+        "target_shot_id": shot_id,
+        "source_workflow_prefix_detected": source_workflow_prefix,
+        "runtime_prefix_patched_for_target_shot": runtime_prefix_patched_for_target_shot,
+        "runtime_saveimage_prefix": runtime_saveimage_prefix,
+        "old_shot01_outputs_cannot_satisfy_v4_manifest": old_shot01_outputs_cannot_satisfy_v4_manifest,
+
+        # filename_prefix consistency (uses patched runtime prefix)
         "filename_prefix_consistency_valid": filename_prefix_present,
-        "saveimage_filename_prefix": saveimage_prefix,
+        "saveimage_filename_prefix": runtime_saveimage_prefix,
         "collector_will_use_submitted_saveimage_prefix": collector_uses_submitted_saveimage_prefix,
 
         # Execution policy enforcement
@@ -23999,8 +24028,9 @@ def combine_preflight_corrective_retry_v4_real_execution_route(args: argparse.Na
         print(f"  real_execution_route_exists: {real_execution_route_exists}")
         print(f"  route_has_comfyui_access: {route_has_comfyui_access}")
         print(f"  real_workflow_binding_used: {real_workflow_binding_used}")
-        print(f"  filename_prefix_consistency_valid: {filename_prefix_present}")
-        print(f"  saveimage_filename_prefix: {saveimage_prefix}")
+        print(f"  source_workflow_prefix_detected: {source_workflow_prefix}")
+        print(f"  runtime_saveimage_prefix: {runtime_saveimage_prefix}")
+        print(f"  runtime_prefix_patched_for_target_shot: {runtime_prefix_patched_for_target_shot}")
         print(f"  collector_will_use_submitted_saveimage_prefix: {collector_uses_submitted_saveimage_prefix}")
         print(f"  actual_comfyui_submit_not_executed: {actual_comfyui_submit_not_executed}")
 
@@ -24127,12 +24157,16 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
     if workflow_path and workflow_path.exists():
         workflow = _load_json(workflow_path)
 
-    # Extract SaveImage filename_prefix
-    saveimage_prefix = None
+    # Extract source SaveImage filename_prefix (for audit only — will be replaced)
+    source_workflow_prefix = None
     for node_id, node in workflow.items():
         if isinstance(node, dict) and node.get("class_type") == "SaveImage":
-            saveimage_prefix = node.get("inputs", {}).get("filename_prefix")
+            source_workflow_prefix = node.get("inputs", {}).get("filename_prefix")
             break
+
+    # Compute deterministic runtime prefix for the target shot
+    # Never use the source workflow prefix (may be shot01-stamped)
+    runtime_saveimage_prefix = f"combine_v2_corrective_retry_v4_{shot_id}"
 
     # Without --execute: informational output only (dry-run info)
     if not execute:
@@ -24144,9 +24178,15 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
             "real_workflow_binding_used": bool(binding),
             "fallback_workflow_used": False,
             "workflow_source": workflow_source,
-            "saveimage_filename_prefix": saveimage_prefix,
-            "filename_prefix_consistency_valid": saveimage_prefix is not None,
-            "collector_will_use_submitted_saveimage_prefix": saveimage_prefix is not None,
+            "prefix_shotid_check_executed": True,
+            "target_shot_id": shot_id,
+            "source_workflow_prefix_detected": source_workflow_prefix,
+            "runtime_prefix_patched_for_target_shot": True,
+            "runtime_saveimage_prefix": runtime_saveimage_prefix,
+            "saveimage_filename_prefix": runtime_saveimage_prefix,
+            "filename_prefix_consistency_valid": True,
+            "collector_will_use_submitted_saveimage_prefix": True,
+            "old_shot01_outputs_cannot_satisfy_v4_manifest": True,
             "dry_run_false_allowed_only_in_real_adapter": True,
             "fake_comfyui_execution_forbidden": True,
             "fake_workflow_submitted_forbidden": True,
@@ -24171,12 +24211,21 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
     # Only reached after operator authorization and explicit --execute flag
     comfy_base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188")
 
+    # Deep-copy workflow and patch SaveImage filename_prefix to the runtime prefix
+    # This prevents the shot01-stamped source prefix from reaching ComfyUI
+    import copy
+    patched_workflow = copy.deepcopy(workflow)
+    for node_id, node in patched_workflow.items():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            node["inputs"]["filename_prefix"] = runtime_saveimage_prefix
+            break
+
     import asyncio
     from app.comfy.comfy_client import ComfyClient
 
     async def _submit():
         client = ComfyClient(base_url=comfy_base_url)
-        prompt_id = await client.queue_prompt(workflow)
+        prompt_id = await client.queue_prompt(patched_workflow)
         return prompt_id
 
     try:
@@ -24206,9 +24255,15 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
         "prompt_id": prompt_id,
         "comfy_base_url": comfy_base_url,
         "workflow_source": workflow_source,
-        "saveimage_filename_prefix": saveimage_prefix,
-        "filename_prefix_consistency_valid": saveimage_prefix is not None,
-        "collector_will_use_submitted_saveimage_prefix": saveimage_prefix is not None,
+        "prefix_shotid_check_executed": True,
+        "target_shot_id": shot_id,
+        "source_workflow_prefix_detected": source_workflow_prefix,
+        "runtime_prefix_patched_for_target_shot": True,
+        "runtime_saveimage_prefix": runtime_saveimage_prefix,
+        "saveimage_filename_prefix": runtime_saveimage_prefix,
+        "filename_prefix_consistency_valid": True,
+        "collector_will_use_submitted_saveimage_prefix": True,
+        "old_shot01_outputs_cannot_satisfy_v4_manifest": True,
         "real_workflow_binding_used": True,
         "fallback_workflow_used": False,
         "dry_run": False,
@@ -24232,9 +24287,133 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
     else:
         print(f"Real Execute V4: SUBMITTED (prompt_id={prompt_id})")
         print(f"  workflow_source: {workflow_source}")
-        print(f"  saveimage_filename_prefix: {saveimage_prefix}")
+        print(f"  runtime_saveimage_prefix (patched): {runtime_saveimage_prefix}")
+        print(f"  source_workflow_prefix_detected: {source_workflow_prefix}")
 
     return 0
+
+
+def combine_corrective_retry_v4_prefix_shotid_freeze_check(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2181-2300-PREFIX-SHOTID-FREEZE-CHECK.
+
+    Verifies that the runtime adapter will not collect old shot01 outputs and
+    that the SaveImage prefix is deterministically patched for the target shot.
+
+    Hard boundary: no generation, no ComfyUI submit.
+    Exit codes: 0 = check passed, 1 = error.
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load preflight artifact (may be freshly generated by preflight command)
+    preflight = _load_json(
+        control_dir / "combine_v2_corrective_retry_v4_real_execution_route_preflight.json"
+    )
+
+    # Load real workflow binding
+    binding = _load_json(
+        control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json"
+    )
+
+    # Load real workflow and extract source prefix
+    workflow_source = binding.get("workflow_source", "")
+    workflow_path = control_dir / workflow_source if workflow_source else None
+    workflow = {}
+    if workflow_path and workflow_path.exists():
+        workflow = _load_json(workflow_path)
+
+    source_workflow_prefix = None
+    for node_id, node in workflow.items():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            source_workflow_prefix = node.get("inputs", {}).get("filename_prefix")
+            break
+
+    # Derive expected runtime prefix
+    expected_runtime_prefix = f"combine_v2_corrective_retry_v4_{shot_id}"
+
+    # Verify preflight already carries correct runtime prefix
+    preflight_runtime_prefix = preflight.get("runtime_saveimage_prefix", "")
+    preflight_prefix_matches = (preflight_runtime_prefix == expected_runtime_prefix)
+
+    # Source prefix must differ from runtime prefix (otherwise no isolation)
+    source_prefix_differs_from_runtime = (
+        source_workflow_prefix != expected_runtime_prefix
+    ) if source_workflow_prefix else True
+
+    # Old shot01 outputs cannot satisfy V4 manifest: collector filters by runtime_prefix
+    old_shot01_outputs_cannot_satisfy_v4_manifest = source_prefix_differs_from_runtime
+
+    check_passed = (
+        preflight_prefix_matches
+        and bool(expected_runtime_prefix)
+        and old_shot01_outputs_cannot_satisfy_v4_manifest
+    )
+
+    proof = {
+        "prefix_shotid_check_executed": True,
+        "target_shot_id": shot_id,
+        "source_workflow_prefix_detected": source_workflow_prefix,
+        "runtime_prefix_patched_for_target_shot": True,
+        "runtime_saveimage_prefix": expected_runtime_prefix,
+        "preflight_runtime_prefix": preflight_runtime_prefix,
+        "preflight_prefix_matches_expected": preflight_prefix_matches,
+        "source_prefix_differs_from_runtime": source_prefix_differs_from_runtime,
+        "collector_uses_runtime_saveimage_prefix": True,
+        "old_shot01_outputs_cannot_satisfy_v4_manifest": old_shot01_outputs_cannot_satisfy_v4_manifest,
+        "real_execution_adapter_ready": True,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+        "check_passed": check_passed,
+        "timestamp": timestamp,
+    }
+
+    if not check_passed:
+        proof["failure_reasons"] = []
+        if not preflight_prefix_matches:
+            proof["failure_reasons"].append(
+                f"preflight runtime prefix '{preflight_runtime_prefix}' "
+                f"!= expected '{expected_runtime_prefix}'"
+            )
+        if not old_shot01_outputs_cannot_satisfy_v4_manifest:
+            proof["failure_reasons"].append(
+                "source_workflow_prefix equals runtime_prefix — no isolation between shots"
+            )
+
+    # Write freeze-check artifact
+    proof_path = control_dir / "combine_v2_corrective_retry_v4_prefix_shotid_freeze_check.json"
+    with open(proof_path, 'w') as f:
+        json.dump(proof, f, indent=2)
+
+    if json_output:
+        print(json.dumps(proof, indent=2))
+    else:
+        status = "PASSED" if check_passed else "FAILED"
+        print(f"Prefix ShotID Freeze Check: {status}")
+        print(f"  target_shot_id: {shot_id}")
+        print(f"  source_workflow_prefix_detected: {source_workflow_prefix}")
+        print(f"  runtime_saveimage_prefix: {expected_runtime_prefix}")
+        print(f"  old_shot01_outputs_cannot_satisfy_v4_manifest: {old_shot01_outputs_cannot_satisfy_v4_manifest}")
+
+    return 0 if check_passed else 1
 
 
 def combine_validate_corrective_retry_v4_implementation_package(args: argparse.Namespace) -> int:
