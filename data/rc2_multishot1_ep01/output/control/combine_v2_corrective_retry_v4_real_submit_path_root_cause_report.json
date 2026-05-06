@@ -1,0 +1,71 @@
+{
+  "report_type": "corrective_retry_v4_real_submit_path_root_cause_report",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T13:35:00.000000+00:00",
+  "layer": "RC-COMBINE-V2-2061-2120",
+  "root_cause_analysis_frozen": true,
+  "branch_selected": "C",
+  "branch_description": "workflow submit still used invalid/stub/dry execution path",
+  "investigation_findings": {
+    "dry_run_path_detected": true,
+    "comfyui_submit_not_executed_detected": true,
+    "comfyui_execution_stubbed_detected": true,
+    "collector_wrote_stub_detected": true,
+    "filename_prefix_mismatch_detected": true,
+    "real_workflow_mechanically_valid": true,
+    "real_workflow_actually_executed": false
+  },
+  "evidence_artifacts": {
+    "observed_settings_dry_run": "ep01_shot02_observed_settings.json line 17",
+    "preflight_dry_run": "ep01_shot02_preflight.json line 44",
+    "real_workflow_submit_preflight_dry_run": "combine_v2_corrective_retry_v4_real_workflow_submit_preflight.json line 19",
+    "real_workflow_submit_preflight_comfyui_not_executed": "combine_v2_corrective_retry_v4_real_workflow_submit_preflight.json line 20",
+    "output_collector_stubbed": "combine_v2_corrective_retry_v4_output_collector_audit.json line 13",
+    "comfyui_history_prefix_mismatch": "combine_v2_comfyui_history_output_audit.json root_cause field"
+  },
+  "submitted_workflow_analysis": {
+    "workflow_source": "shot02_submitted_workflow.json",
+    "workflow_mechanically_real": true,
+    "has_ksampler": true,
+    "has_saveimage": true,
+    "saveimage_filename_prefix": "rc2_multishot1_ep01_ep01_shot02_corrective_retry_v4",
+    "checkpoint": "juggernautXL_version2.safetensors"
+  },
+  "observed_settings_analysis": {
+    "filename_prefix": "rc2_multishot1_ep01_ep01_shot02_generate_frames_1777357667",
+    "dry_run": true,
+    "reference_path_placeholder": "output/control/references/ep01_shot02_clean_reference.png"
+  },
+  "execution_path_analysis": {
+    "dry_run_mode_active": true,
+    "comfyui_submit_not_executed": true,
+    "comfyui_execution_stubbed": true,
+    "no_real_comfyui_execution_occurred": true,
+    "output_collection_status": "pending",
+    "output_collection_executed": false
+  },
+  "collector_analysis": {
+    "collector_searched_for_diagnostic_prefix": true,
+    "comfyui_saved_with_combine_v2_prefix": true,
+    "prefix_mismatch_causes_zero_assets_collected": true,
+    "collector_wrote_stub_instead_of_real_image": true,
+    "stub_generation_detected": true
+  },
+  "root_cause_summary": "The approved real workflow binding was mechanically correct, but the submission path included dry_run=true flags in multiple layers (observed_settings, preflight, real_workflow_submit_preflight). This caused ComfyUI execution to be stubbed (no real generation occurred). Additionally, a filename_prefix mismatch between observed settings and submitted workflow prevented the output collector from finding any generated files even if they existed. The collector wrote a stub asset instead of collecting real output.",
+  "next_allowed_action": "corrective_retry_v4_submit_path_fix_required",
+  "required_fixes": [
+    "Remove dry_run=true flags from submission chain",
+    "Ensure consistent filename_prefix between observed settings and submitted workflow",
+    "Verify ComfyUI actually executes (not stubbed)",
+    "Ensure output collector can locate generated files with correct prefix"
+  ],
+  "hard_boundaries_respected": {
+    "new_generation_performed": false,
+    "new_comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  }
+}
