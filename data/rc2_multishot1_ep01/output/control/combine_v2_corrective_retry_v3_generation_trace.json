@@ -1,0 +1,29 @@
+{
+  "stage": "corrective_retry_v3_generate_assets",
+  "trace_type": "corrective_retry_v3_generation_trace",
+  "shot_id": "shot02",
+  "events": [
+    {
+      "event": "pre_submit_validation",
+      "passed": true,
+      "timestamp": "2026-05-06T04:54:07.757068+00:00"
+    },
+    {
+      "event": "workflow_submitted",
+      "executed": true,
+      "timestamp": "2026-05-06T04:54:07.757068+00:00"
+    },
+    {
+      "event": "comfyui_execution",
+      "executed": true,
+      "stub": true,
+      "timestamp": "2026-05-06T04:54:07.757068+00:00"
+    },
+    {
+      "event": "output_collection",
+      "status": "pending",
+      "timestamp": "2026-05-06T04:54:07.757068+00:00"
+    }
+  ],
+  "timestamp": "2026-05-06T04:54:07.757068+00:00"
+}

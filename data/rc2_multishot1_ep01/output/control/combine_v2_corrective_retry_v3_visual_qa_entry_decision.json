@@ -1,0 +1,10 @@
+{
+  "stage": "corrective_retry_v3_generate_assets",
+  "decision_type": "visual_qa_entry_decision",
+  "shot_id": "shot02",
+  "visual_qa_allowed": false,
+  "generation_completed": true,
+  "next_allowed_action": "corrective_retry_v3_visual_qa_preflight_required",
+  "note": "Visual QA preflight required before visual QA execution.",
+  "timestamp": "2026-05-06T04:54:07.757068+00:00"
+}

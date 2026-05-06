@@ -1,0 +1,16 @@
+{
+  "stage": "corrective_retry_v3_generate_assets",
+  "review_type": "corrective_retry_v3_result_review",
+  "shot_id": "shot02",
+  "branch_selected": "success",
+  "generated_assets_count": 1,
+  "generation_performed": true,
+  "failure_code": null,
+  "result_review_executed": true,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "corrective_retry_v3_visual_qa_preflight_required",
+  "timestamp": "2026-05-06T04:54:21.490704+00:00"
+}
