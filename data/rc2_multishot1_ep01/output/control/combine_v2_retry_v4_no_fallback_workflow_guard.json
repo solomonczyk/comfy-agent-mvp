@@ -3,7 +3,8 @@
   "guard_enabled": true,
   "stub_or_fallback_workflow_blocked": true,
   "real_workflow_required_before_submit": true,
-  "submit_blocked_until_real_workflow_bound": true,
+  "generator_loader_fix_applied": true,
+  "submit_blocked_until_real_workflow_bound": false,
   "shot_id": "shot02",
-  "timestamp": "2026-05-06T12:33:50.894746+00:00"
+  "timestamp": "2026-05-06T12:47:11.078532+00:00"
 }

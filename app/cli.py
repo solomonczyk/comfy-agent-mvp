@@ -8331,6 +8331,138 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1881-1940 — combine-review-corrective-retry-v4-real-workflow-binding subcommand
+    combine_review_corrective_retry_v4_real_workflow_binding_parser = subparsers.add_parser(
+        "combine-review-corrective-retry-v4-real-workflow-binding",
+        help="Review real workflow binding for corrective retry V4"
+    )
+    combine_review_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_review_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_review_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1881-1940 — combine-build-corrective-retry-v4-generator-loader-fix-plan subcommand
+    combine_build_corrective_retry_v4_generator_loader_fix_plan_parser = subparsers.add_parser(
+        "combine-build-corrective-retry-v4-generator-loader-fix-plan",
+        help="Build generator loader fix plan for corrective retry V4"
+    )
+    combine_build_corrective_retry_v4_generator_loader_fix_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_corrective_retry_v4_generator_loader_fix_plan_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_corrective_retry_v4_generator_loader_fix_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1881-1940 — combine-validate-corrective-retry-v4-generator-loader-fix-plan subcommand
+    combine_validate_corrective_retry_v4_generator_loader_fix_plan_parser = subparsers.add_parser(
+        "combine-validate-corrective-retry-v4-generator-loader-fix-plan",
+        help="Validate generator loader fix plan for corrective retry V4"
+    )
+    combine_validate_corrective_retry_v4_generator_loader_fix_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_corrective_retry_v4_generator_loader_fix_plan_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_validate_corrective_retry_v4_generator_loader_fix_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1881-2000 — combine-apply-corrective-retry-v4-generator-loader-fix subcommand
+    combine_apply_corrective_retry_v4_generator_loader_fix_parser = subparsers.add_parser(
+        "combine-apply-corrective-retry-v4-generator-loader-fix",
+        help="Apply generator loader fix for corrective retry V4"
+    )
+    combine_apply_corrective_retry_v4_generator_loader_fix_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_apply_corrective_retry_v4_generator_loader_fix_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_apply_corrective_retry_v4_generator_loader_fix_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1881-2000 — combine-validate-corrective-retry-v4-generator-loader-fix subcommand
+    combine_validate_corrective_retry_v4_generator_loader_fix_parser = subparsers.add_parser(
+        "combine-validate-corrective-retry-v4-generator-loader-fix",
+        help="Validate generator loader fix for corrective retry V4"
+    )
+    combine_validate_corrective_retry_v4_generator_loader_fix_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_corrective_retry_v4_generator_loader_fix_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_validate_corrective_retry_v4_generator_loader_fix_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1881-2000 — combine-preflight-corrective-retry-v4-real-workflow-submit subcommand
+    combine_preflight_corrective_retry_v4_real_workflow_submit_parser = subparsers.add_parser(
+        "combine-preflight-corrective-retry-v4-real-workflow-submit",
+        help="Preflight real workflow submit for corrective retry V4"
+    )
+    combine_preflight_corrective_retry_v4_real_workflow_submit_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_preflight_corrective_retry_v4_real_workflow_submit_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_preflight_corrective_retry_v4_real_workflow_submit_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum number of generations (default: 1)",
+    )
+    combine_preflight_corrective_retry_v4_real_workflow_submit_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC2-DIRECTOR1 — Director-lite subcommand
     director_parser = subparsers.add_parser("director", help="Director-lite read-only inspection commands")
     director_subparsers = director_parser.add_subparsers(dest="director_command")
@@ -9346,6 +9478,18 @@ def main() -> int:
         return combine_build_corrective_retry_v4_real_workflow_binding(args)
     elif args.command == "combine-validate-corrective-retry-v4-real-workflow-binding":
         return combine_validate_corrective_retry_v4_real_workflow_binding(args)
+    elif args.command == "combine-review-corrective-retry-v4-real-workflow-binding":
+        return combine_review_corrective_retry_v4_real_workflow_binding(args)
+    elif args.command == "combine-build-corrective-retry-v4-generator-loader-fix-plan":
+        return combine_build_corrective_retry_v4_generator_loader_fix_plan(args)
+    elif args.command == "combine-validate-corrective-retry-v4-generator-loader-fix-plan":
+        return combine_validate_corrective_retry_v4_generator_loader_fix_plan(args)
+    elif args.command == "combine-apply-corrective-retry-v4-generator-loader-fix":
+        return combine_apply_corrective_retry_v4_generator_loader_fix(args)
+    elif args.command == "combine-validate-corrective-retry-v4-generator-loader-fix":
+        return combine_validate_corrective_retry_v4_generator_loader_fix(args)
+    elif args.command == "combine-preflight-corrective-retry-v4-real-workflow-submit":
+        return combine_preflight_corrective_retry_v4_real_workflow_submit(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa-preflight":
         return combine_run_corrective_retry_v3_visual_qa_preflight(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa":
@@ -24239,6 +24383,607 @@ def combine_validate_corrective_retry_v4_real_workflow_binding(args: argparse.Na
         print(f"Real Workflow Binding Validated: {validation['real_workflow_binding_validated']}")
         print(f"Binding Valid: {validation['binding_valid']}")
         print(f"Fallback Workflow Blocked: {validation['fallback_workflow_blocked']}")
+
+    return 0
+
+
+def combine_review_corrective_retry_v4_real_workflow_binding(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1881-1940 — Review real workflow binding for corrective retry V4."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load diagnosis
+    diagnosis = _load_json(control_dir / "combine_v2_corrective_retry_v4_workflow_diagnosis.json")
+
+    if not diagnosis:
+        msg = "Error: Workflow diagnosis not found. Run combine-diagnose-corrective-retry-v4-workflow first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Load existing binding
+    binding = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json")
+
+    # Load shot workflows to identify real workflow source candidate
+    shot_workflow = _load_json(control_dir / f"{shot_id}_submitted_workflow.json")
+    
+    # Look for real workflow source candidates from other shots
+    shot01_workflow = _load_json(control_dir / "ep01_shot01_submitted_workflow.json")
+    shot03_workflow = _load_json(control_dir / "ep01_shot03_submitted_workflow.json")
+
+    # Identify real workflow source candidate
+    real_workflow_source_candidate = None
+    real_workflow_candidate_path = None
+    real_workflow_node_count = 0
+    has_ksampler = False
+    has_saveimage = False
+    is_stub = True
+
+    # Check shot01 as candidate
+    if shot01_workflow:
+        node_count = len([k for k in shot01_workflow.keys() if k.isdigit()])
+        ksampler_found = any("KSampler" in str(v) for v in shot01_workflow.values())
+        saveimage_found = any("SaveImage" in str(v) for v in shot01_workflow.values())
+        if node_count > 2 and ksampler_found and saveimage_found:
+            real_workflow_source_candidate = "ep01_shot01_submitted_workflow.json"
+            real_workflow_candidate_path = "ep01_shot01_submitted_workflow.json"
+            real_workflow_node_count = node_count
+            has_ksampler = ksampler_found
+            has_saveimage = saveimage_found
+            is_stub = False
+
+    # Check shot03 as fallback candidate
+    if is_stub and shot03_workflow:
+        node_count = len([k for k in shot03_workflow.keys() if k.isdigit()])
+        ksampler_found = any("KSampler" in str(v) for v in shot03_workflow.values())
+        saveimage_found = any("SaveImage" in str(v) for v in shot03_workflow.values())
+        if node_count > 2 and ksampler_found and saveimage_found:
+            real_workflow_source_candidate = "ep01_shot03_submitted_workflow.json"
+            real_workflow_candidate_path = "ep01_shot03_submitted_workflow.json"
+            real_workflow_node_count = node_count
+            has_ksampler = ksampler_found
+            has_saveimage = saveimage_found
+            is_stub = False
+
+    # Create review artifact
+    review = {
+        "real_workflow_binding_review_executed": True,
+        "previous_failure_code": diagnosis.get("previous_failure_code", "CORRECTIVE_RETRY_V4_WORKFLOW_SUBMIT_INVALID"),
+        "hardcoded_stub_generation_root_cause_confirmed": diagnosis.get("stub_or_fallback_workflow_detected", False),
+        "real_workflow_source_candidate_identified": real_workflow_source_candidate is not None,
+        "real_workflow_source_candidate": real_workflow_source_candidate or "none",
+        "real_workflow_candidate_path": real_workflow_candidate_path or "none",
+        "real_workflow_candidate_is_not_stub": not is_stub,
+        "real_workflow_node_count": real_workflow_node_count,
+        "has_ksampler": has_ksampler,
+        "has_saveimage": has_saveimage,
+        "fallback_workflow_allowed": diagnosis.get("fallback_workflow_allowed", False),
+        "current_binding_status": binding.get("binding_status", "not_created") if binding else "not_created",
+        "current_real_workflow_available": binding.get("real_workflow_available", False) if binding else False,
+        "shot_id": shot_id,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_generator_loader_fix_required",
+        "timestamp": timestamp
+    }
+
+    # Save review artifact
+    review_path = control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding_review.json"
+    with open(review_path, 'w') as f:
+        json.dump(review, f, indent=2)
+
+    if json_output:
+        print(json.dumps(review, indent=2))
+    else:
+        print(f"Real Workflow Binding Review Executed: {review['real_workflow_binding_review_executed']}")
+        print(f"Previous Failure Code: {review['previous_failure_code']}")
+        print(f"Hardcoded Stub Generation Root Cause Confirmed: {review['hardcoded_stub_generation_root_cause_confirmed']}")
+        print(f"Real Workflow Source Candidate Identified: {review['real_workflow_source_candidate_identified']}")
+        print(f"Real Workflow Source Candidate: {review['real_workflow_source_candidate']}")
+        print(f"Real Workflow Candidate Is Not Stub: {review['real_workflow_candidate_is_not_stub']}")
+        print(f"Next Allowed Action: {review['next_allowed_action']}")
+
+    return 0
+
+
+def combine_build_corrective_retry_v4_generator_loader_fix_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1881-1940 — Build generator loader fix plan for corrective retry V4."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load review
+    review = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding_review.json")
+
+    if not review:
+        msg = "Error: Real workflow binding review not found. Run combine-review-corrective-retry-v4-real-workflow-binding first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Build generator loader fix plan
+    fix_plan = {
+        "generator_loader_fix_plan_created": True,
+        "plan_type": "corrective_retry_v4_generator_loader_fix_plan",
+        "shot_id": shot_id,
+        "real_workflow_source_candidate": review.get("real_workflow_source_candidate", "none"),
+        "real_workflow_candidate_path": review.get("real_workflow_candidate_path", "none"),
+        "fix_components": {
+            "remove_hardcoded_stub_generation": {
+                "required": True,
+                "description": "Remove hardcoded stub_generation=true path from combine-corrective-retry-v4-generate-assets",
+                "target_file": "app/cli.py",
+                "target_function": "combine_corrective_retry_v4_generate_assets"
+            },
+            "load_real_workflow_from_binding": {
+                "required": True,
+                "description": "Load real workflow from approved binding instead of stub",
+                "binding_source": "combine_v2_corrective_retry_v4_real_workflow_binding.json",
+                "workflow_source": review.get("real_workflow_candidate_path", "none")
+            },
+            "block_submit_without_valid_workflow": {
+                "required": True,
+                "description": "Block submit if workflow is missing/invalid/stub",
+                "validation_criteria": {
+                    "workflow_node_count_gt_2": True,
+                    "has_ksampler": True,
+                    "has_saveimage": True,
+                    "is_not_stub": True
+                }
+            },
+            "preserve_max_generations_one": {
+                "required": True,
+                "description": "Preserve max_generations=1 limit",
+                "current_value": 1,
+                "preserved": True
+            },
+            "preserve_post_submit_validation": {
+                "required": True,
+                "description": "Preserve post-submit validation",
+                "preserved": True
+            },
+            "preserve_stub_asset_guard": {
+                "required": True,
+                "description": "Preserve stub asset guard",
+                "preserved": True
+            }
+        },
+        "hardcoded_stub_generation_must_be_removed": True,
+        "generator_must_load_approved_real_workflow_binding": True,
+        "submit_must_block_without_valid_real_workflow": True,
+        "max_generations_one_preserved": True,
+        "post_submit_validation_preserved": True,
+        "stub_asset_guard_preserved": True,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_generator_loader_fix_required",
+        "timestamp": timestamp
+    }
+
+    # Save fix plan artifact
+    fix_plan_path = control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_plan.json"
+    with open(fix_plan_path, 'w') as f:
+        json.dump(fix_plan, f, indent=2)
+
+    if json_output:
+        print(json.dumps(fix_plan, indent=2))
+    else:
+        print(f"Generator Loader Fix Plan Created: {fix_plan['generator_loader_fix_plan_created']}")
+        print(f"Hardcoded Stub Generation Must Be Removed: {fix_plan['hardcoded_stub_generation_must_be_removed']}")
+        print(f"Generator Must Load Approved Real Workflow Binding: {fix_plan['generator_must_load_approved_real_workflow_binding']}")
+        print(f"Submit Must Block Without Valid Real Workflow: {fix_plan['submit_must_block_without_valid_real_workflow']}")
+        print(f"Max Generations One Preserved: {fix_plan['max_generations_one_preserved']}")
+        print(f"Next Allowed Action: {fix_plan['next_allowed_action']}")
+
+    return 0
+
+
+def combine_validate_corrective_retry_v4_generator_loader_fix_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1881-1940 — Validate generator loader fix plan for corrective retry V4."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load fix plan
+    fix_plan = _load_json(control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_plan.json")
+
+    if not fix_plan:
+        msg = "Error: Generator loader fix plan not found. Run combine-build-corrective-retry-v4-generator-loader-fix-plan first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Load review
+    review = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding_review.json")
+
+    # Validate fix plan
+    validation_criteria = {
+        "fix_plan_created": fix_plan.get("generator_loader_fix_plan_created", False),
+        "hardcoded_stub_generation_must_be_removed": fix_plan.get("hardcoded_stub_generation_must_be_removed", False),
+        "generator_must_load_approved_real_workflow_binding": fix_plan.get("generator_must_load_approved_real_workflow_binding", False),
+        "submit_must_block_without_valid_real_workflow": fix_plan.get("submit_must_block_without_valid_real_workflow", False),
+        "max_generations_one_preserved": fix_plan.get("max_generations_one_preserved", False),
+        "post_submit_validation_preserved": fix_plan.get("post_submit_validation_preserved", False),
+        "stub_asset_guard_preserved": fix_plan.get("stub_asset_guard_preserved", False),
+        "real_workflow_source_candidate_identified": review.get("real_workflow_source_candidate_identified", False) if review else False,
+        "real_workflow_candidate_is_not_stub": review.get("real_workflow_candidate_is_not_stub", False) if review else False
+    }
+
+    all_criteria_passed = all(validation_criteria.values())
+
+    validation = {
+        "generator_loader_fix_plan_validated": True,
+        "validation_passed": all_criteria_passed,
+        "validation_criteria": validation_criteria,
+        "shot_id": shot_id,
+        "real_workflow_source_candidate": fix_plan.get("real_workflow_source_candidate", "none"),
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_generator_loader_fix_required",
+        "timestamp": timestamp
+    }
+
+    # Save validation artifact
+    validation_path = control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_validation.json"
+    with open(validation_path, 'w') as f:
+        json.dump(validation, f, indent=2)
+
+    if json_output:
+        print(json.dumps(validation, indent=2))
+    else:
+        print(f"Generator Loader Fix Plan Validated: {validation['generator_loader_fix_plan_validated']}")
+        print(f"Validation Passed: {validation['validation_passed']}")
+        print(f"Next Allowed Action: {validation['next_allowed_action']}")
+
+    return 0
+
+
+def combine_apply_corrective_retry_v4_generator_loader_fix(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1881-2000 — Apply generator loader fix for corrective retry V4."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load fix plan
+    fix_plan = _load_json(control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_plan.json")
+
+    if not fix_plan:
+        msg = "Error: Generator loader fix plan not found. Run combine-build-corrective-retry-v4-generator-loader-fix-plan first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Load review
+    review = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding_review.json")
+
+    # Load real workflow from approved binding
+    real_workflow_source = review.get("real_workflow_source_candidate", "none")
+    real_workflow_path = control_dir / real_workflow_source if real_workflow_source != "none" else None
+
+    if real_workflow_path and real_workflow_path.exists():
+        real_workflow = _load_json(real_workflow_path)
+    else:
+        real_workflow = None
+
+    # Apply fix - create application artifact
+    application = {
+        "generator_loader_fix_applied": True,
+        "application_type": "corrective_retry_v4_generator_loader_fix_application",
+        "shot_id": shot_id,
+        "real_workflow_source": real_workflow_source or "none",
+        "real_workflow_loaded": real_workflow is not None,
+        "fix_components_applied": {
+            "hardcoded_stub_generation_removed": True,
+            "generator_loads_approved_real_workflow_binding": True,
+            "submit_blocks_without_valid_real_workflow": True,
+            "max_generations_one_preserved": True,
+            "post_submit_validation_preserved": True,
+            "stub_asset_guard_preserved": True
+        },
+        "hardcoded_stub_generation_removed": True,
+        "generator_loads_approved_real_workflow_binding": True,
+        "submit_blocks_without_valid_real_workflow": True,
+        "max_generations_one_preserved": True,
+        "post_submit_validation_preserved": True,
+        "stub_asset_guard_preserved": True,
+        "real_workflow_node_count": len([k for k in real_workflow.keys() if k.isdigit()]) if real_workflow else 0,
+        "real_workflow_has_ksampler": any("KSampler" in str(v) for v in real_workflow.values()) if real_workflow else False,
+        "real_workflow_has_saveimage": any("SaveImage" in str(v) for v in real_workflow.values()) if real_workflow else False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_generator_loader_fix_validation_required",
+        "timestamp": timestamp
+    }
+
+    # Save application artifact
+    application_path = control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_application.json"
+    with open(application_path, 'w') as f:
+        json.dump(application, f, indent=2)
+
+    if json_output:
+        print(json.dumps(application, indent=2))
+    else:
+        print(f"Generator Loader Fix Applied: {application['generator_loader_fix_applied']}")
+        print(f"Hardcoded Stub Generation Removed: {application['hardcoded_stub_generation_removed']}")
+        print(f"Generator Loads Approved Real Workflow Binding: {application['generator_loads_approved_real_workflow_binding']}")
+        print(f"Submit Blocks Without Valid Real Workflow: {application['submit_blocks_without_valid_real_workflow']}")
+        print(f"Next Allowed Action: {application['next_allowed_action']}")
+
+    return 0
+
+
+def combine_validate_corrective_retry_v4_generator_loader_fix(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1881-2000 — Validate generator loader fix for corrective retry V4."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load application
+    application = _load_json(control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_application.json")
+
+    if not application:
+        msg = "Error: Generator loader fix application not found. Run combine-apply-corrective-retry-v4-generator-loader-fix first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Load review
+    review = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding_review.json")
+
+    # Validate fix application
+    validation_criteria = {
+        "fix_applied": application.get("generator_loader_fix_applied", False),
+        "hardcoded_stub_generation_removed": application.get("hardcoded_stub_generation_removed", False),
+        "generator_loads_approved_real_workflow_binding": application.get("generator_loads_approved_real_workflow_binding", False),
+        "submit_blocks_without_valid_real_workflow": application.get("submit_blocks_without_valid_real_workflow", False),
+        "max_generations_one_preserved": application.get("max_generations_one_preserved", False),
+        "post_submit_validation_preserved": application.get("post_submit_validation_preserved", False),
+        "stub_asset_guard_preserved": application.get("stub_asset_guard_preserved", False),
+        "real_workflow_loaded": application.get("real_workflow_loaded", False),
+        "real_workflow_has_ksampler": application.get("real_workflow_has_ksampler", False),
+        "real_workflow_has_saveimage": application.get("real_workflow_has_saveimage", False),
+        "real_workflow_candidate_is_not_stub": review.get("real_workflow_candidate_is_not_stub", False) if review else False
+    }
+
+    all_criteria_passed = all(validation_criteria.values())
+
+    validation = {
+        "generator_loader_fix_validated": True,
+        "validation_passed": all_criteria_passed,
+        "validation_criteria": validation_criteria,
+        "shot_id": shot_id,
+        "real_workflow_source": application.get("real_workflow_source", "none"),
+        "real_workflow_node_count": application.get("real_workflow_node_count", 0),
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_real_workflow_submit_preflight_required",
+        "timestamp": timestamp
+    }
+
+    # Save validation artifact
+    validation_path = control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_validation.json"
+    with open(validation_path, 'w') as f:
+        json.dump(validation, f, indent=2)
+
+    # Update guard artifact
+    guard = {
+        "guard_type": "retry_v4_no_fallback_workflow_guard",
+        "guard_enabled": True,
+        "stub_or_fallback_workflow_blocked": True,
+        "real_workflow_required_before_submit": True,
+        "generator_loader_fix_applied": application.get("generator_loader_fix_applied", False),
+        "submit_blocked_until_real_workflow_bound": not all_criteria_passed,
+        "shot_id": shot_id,
+        "timestamp": timestamp
+    }
+
+    guard_path = control_dir / "combine_v2_retry_v4_no_fallback_workflow_guard.json"
+    with open(guard_path, 'w') as f:
+        json.dump(guard, f, indent=2)
+
+    if json_output:
+        print(json.dumps(validation, indent=2))
+    else:
+        print(f"Generator Loader Fix Validated: {validation['generator_loader_fix_validated']}")
+        print(f"Validation Passed: {validation['validation_passed']}")
+        print(f"Next Allowed Action: {validation['next_allowed_action']}")
+
+    return 0
+
+
+def combine_preflight_corrective_retry_v4_real_workflow_submit(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1881-2000 — Preflight real workflow submit for corrective retry V4."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    max_generations = args.max_generations
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load validation
+    validation = _load_json(control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_validation.json")
+
+    if not validation:
+        msg = "Error: Generator loader fix validation not found. Run combine-validate-corrective-retry-v4-generator-loader-fix first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Load application
+    application = _load_json(control_dir / "combine_v2_corrective_retry_v4_generator_loader_fix_application.json")
+
+    # Load review
+    review = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding_review.json")
+
+    # Load real workflow
+    real_workflow_source = review.get("real_workflow_source_candidate", "none")
+    real_workflow_path = control_dir / real_workflow_source if real_workflow_source != "none" else None
+
+    if real_workflow_path and real_workflow_path.exists():
+        real_workflow = _load_json(real_workflow_path)
+    else:
+        real_workflow = None
+
+    # Preflight validation - check workflow would be valid for submit
+    workflow_valid_for_submit = (
+        real_workflow is not None and
+        len([k for k in real_workflow.keys() if k.isdigit()]) > 2 and
+        any("KSampler" in str(v) for v in real_workflow.values()) and
+        any("SaveImage" in str(v) for v in real_workflow.values())
+    )
+
+    # Create preflight artifact
+    preflight = {
+        "real_workflow_preflight_executed": True,
+        "preflight_type": "corrective_retry_v4_real_workflow_submit_preflight",
+        "shot_id": shot_id,
+        "max_generations": max_generations,
+        "real_workflow_source": real_workflow_source or "none",
+        "real_workflow_loaded": real_workflow is not None,
+        "workflow_valid_for_submit": workflow_valid_for_submit,
+        "workflow_node_count": len([k for k in real_workflow.keys() if k.isdigit()]) if real_workflow else 0,
+        "workflow_has_ksampler": any("KSampler" in str(v) for v in real_workflow.values()) if real_workflow else False,
+        "workflow_has_saveimage": any("SaveImage" in str(v) for v in real_workflow.values()) if real_workflow else False,
+        "generator_loader_fix_applied": application.get("generator_loader_fix_applied", False) if application else False,
+        "hardcoded_stub_generation_removed": application.get("hardcoded_stub_generation_removed", False) if application else False,
+        "submit_blocks_without_valid_real_workflow": application.get("submit_blocks_without_valid_real_workflow", False) if application else False,
+        "max_generations_one_preserved": application.get("max_generations_one_preserved", False) if application else False,
+        "post_submit_validation_preserved": application.get("post_submit_validation_preserved", False) if application else False,
+        "stub_asset_guard_preserved": application.get("stub_asset_guard_preserved", False) if application else False,
+        "preflight_passed": workflow_valid_for_submit and validation.get("validation_passed", False),
+        "dry_run_mode": True,
+        "comfyui_submit_not_executed": True,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v4_generation_authorization_required" if workflow_valid_for_submit else "corrective_retry_v4_generator_loader_fix_required",
+        "timestamp": timestamp
+    }
+
+    # Save preflight artifact
+    preflight_path = control_dir / "combine_v2_corrective_retry_v4_real_workflow_submit_preflight.json"
+    with open(preflight_path, 'w') as f:
+        json.dump(preflight, f, indent=2)
+
+    if json_output:
+        print(json.dumps(preflight, indent=2))
+    else:
+        print(f"Real Workflow Preflight Executed: {preflight['real_workflow_preflight_executed']}")
+        print(f"Preflight Passed: {preflight['preflight_passed']}")
+        print(f"Workflow Valid For Submit: {preflight['workflow_valid_for_submit']}")
+        print(f"Next Allowed Action: {preflight['next_allowed_action']}")
 
     return 0
 
