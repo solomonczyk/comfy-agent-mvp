@@ -1,0 +1,45 @@
+{
+  "plan_type": "retry_v4_stub_generation_fix_plan",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T08:56:27.050752+00:00",
+  "failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+  "corrupted_v3_asset_size_bytes": 8,
+  "fix_strategy": "prevent_stub_asset_acceptance",
+  "fix_components": {
+    "stub_asset_guard": {
+      "required": true,
+      "description": "Reject assets < 1024 bytes as stub files",
+      "implementation": "size_threshold_check_before_manifest_entry",
+      "threshold_bytes": 1024
+    },
+    "post_submit_validation": {
+      "required": true,
+      "description": "Validate image readability after ComfyUI submit",
+      "implementation": "image_readability_check_with PIL",
+      "validate_headers": true
+    },
+    "manifest_integrity": {
+      "required": true,
+      "description": "Manifest must reference real readable images only",
+      "implementation": "manifest_validation_before_qa",
+      "validate_each_entry": true
+    },
+    "sha256_verification": {
+      "required": true,
+      "description": "Compute and verify SHA256 for all assets",
+      "implementation": "sha256_computation_on_collection",
+      "store_in_manifest": true
+    }
+  },
+  "validation_policy": {
+    "asset_size_minimum_bytes": 1024,
+    "image_readability_required": true,
+    "png_header_validation": true,
+    "sha256_required": true
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false
+}

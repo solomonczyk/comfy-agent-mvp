@@ -1,0 +1,29 @@
+{
+  "guard_type": "retry_v4_no_stub_asset_guard",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T08:56:27.050752+00:00",
+  "guard_rules": {
+    "size_threshold": 1024,
+    "reject_below_threshold": true,
+    "validate_png_header": true,
+    "validate_image_readability": true,
+    "block_manifest_entry": true,
+    "block_qa_submission": true,
+    "block_assembly": true
+  },
+  "detection_criteria": {
+    "stub_file_size_bytes": 8,
+    "stub_pattern_match": true,
+    "png_header_check": true
+  },
+  "enforcement_actions": {
+    "on_stub_detected": "reject_and_log_error",
+    "error_message": "Stub asset detected - file size {size} bytes below threshold {threshold}",
+    "prevent_downstream": true
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false
+}

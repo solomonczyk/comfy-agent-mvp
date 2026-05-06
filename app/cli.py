@@ -6982,6 +6982,69 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1581-1640 — combine-create-corrective-retry-v4-plan subcommand
+    combine_create_corrective_retry_v4_plan_parser = subparsers.add_parser(
+        "combine-create-corrective-retry-v4-plan",
+        help="Create corrective retry V4 plan for stub generation failure"
+    )
+    combine_create_corrective_retry_v4_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_create_corrective_retry_v4_plan_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_create_corrective_retry_v4_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1581-1640 — combine-build-retry-v4-stub-generation-fix-plan subcommand
+    combine_build_retry_v4_stub_generation_fix_plan_parser = subparsers.add_parser(
+        "combine-build-retry-v4-stub-generation-fix-plan",
+        help="Build retry V4 stub generation fix plan"
+    )
+    combine_build_retry_v4_stub_generation_fix_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_retry_v4_stub_generation_fix_plan_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_retry_v4_stub_generation_fix_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1581-1640 — combine-build-retry-v4-plan-review-packet subcommand
+    combine_build_retry_v4_plan_review_packet_parser = subparsers.add_parser(
+        "combine-build-retry-v4-plan-review-packet",
+        help="Build retry V4 operator plan review packet"
+    )
+    combine_build_retry_v4_plan_review_packet_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_retry_v4_plan_review_packet_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_retry_v4_plan_review_packet_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-11 — combine-authorize-retry subcommand
     combine_authorize_retry_parser = subparsers.add_parser("combine-authorize-retry", help="Authorize retry return to generation authorization without opening retry execution gate")
     combine_authorize_retry_parser.add_argument(
@@ -8975,6 +9038,12 @@ def main() -> int:
         return combine_audit_corrective_retry_v3_output_collector(args)
     elif args.command == "combine-build-corrective-retry-v3-result-reconciliation-report":
         return combine_build_corrective_retry_v3_result_reconciliation_report(args)
+    elif args.command == "combine-create-corrective-retry-v4-plan":
+        return combine_create_corrective_retry_v4_plan(args)
+    elif args.command == "combine-build-retry-v4-stub-generation-fix-plan":
+        return combine_build_retry_v4_stub_generation_fix_plan(args)
+    elif args.command == "combine-build-retry-v4-plan-review-packet":
+        return combine_build_retry_v4_plan_review_packet(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
@@ -21434,6 +21503,583 @@ def combine_build_corrective_retry_v3_result_reconciliation_report(args: argpars
         print(f"Failure Code: {comprehensive_report['root_cause_analysis']['failure_code']}")
         print(f"Valid V3 Asset Recovered: {comprehensive_report['reconciliation_outcome']['valid_v3_asset_recovered']}")
         print(f"Next Allowed Action: {comprehensive_report['next_steps']['next_allowed_action']}")
+
+    return 0
+
+
+def combine_create_corrective_retry_v4_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1581-1640 — Create Corrective Retry V4 Plan.
+
+    Creates the V4 plan for stub generation failure without running retry.
+    The goal is to fix pipeline failure, not improve the image.
+
+    Exit codes:
+    - 0: plan created successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load reconciliation report to get failure details
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    reconciliation_report = _load_json(control_dir / "combine_v2_corrective_retry_v3_corruption_root_cause_report.json")
+
+    # Extract failure details
+    corrupted_v3_asset_path = reconciliation_report.get("corrupted_v3_asset_path", "unknown")
+    corrupted_v3_asset_size_bytes = reconciliation_report.get("corrupted_v3_asset_size_bytes", 0)
+    failure_code = reconciliation_report.get("root_cause_analysis", {}).get("failure_code", "CORRUPTED_V3_ASSET_STUB_GENERATION")
+    valid_v3_asset_recovered = reconciliation_report.get("reconciliation_outcome", {}).get("valid_v3_asset_recovered", False)
+
+    # Create failure classification
+    failure_classification = {
+        "classification": "corrective_retry_v4_required",
+        "failure_code": failure_code,
+        "corrupted_v3_asset_path": corrupted_v3_asset_path,
+        "corrupted_v3_asset_size_bytes": corrupted_v3_asset_size_bytes,
+        "valid_v3_asset_recovered": valid_v3_asset_recovered,
+        "stub_asset_detected": corrupted_v3_asset_size_bytes == 8,
+        "timestamp": timestamp,
+        "shot_id": shot_id,
+    }
+    failure_classification_path = control_dir / "combine_v2_corrective_retry_v4_failure_classification.json"
+    with open(failure_classification_path, 'w') as f:
+        json.dump(failure_classification, f, indent=2)
+
+    # Create V4 plan
+    v4_plan = {
+        "corrective_retry_v4_plan_created": True,
+        "failure_basis": failure_code,
+        "corrupted_v3_asset_size_bytes": corrupted_v3_asset_size_bytes,
+        "valid_v3_asset_recovered": valid_v3_asset_recovered,
+        "retry_v4_requires_operator_plan_review": True,
+        "blind_retry_allowed": False,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+        "required_corrections": {
+            "stub_asset_guard_required": True,
+            "post_submit_image_readability_validation_required": True,
+            "manifest_requires_real_readable_image": True,
+            "visual_qa_requires_readable_image": True,
+            "assembly_requires_same_accepted_asset": True,
+            "silent_asset_substitution_forbidden": True,
+            "result_review_success_requires_asset_size_gt_1024": True,
+            "sha256_required": True,
+        },
+        "next_allowed_action": "operator_retry_v4_plan_review_required",
+        "timestamp": timestamp,
+        "shot_id": shot_id,
+    }
+    v4_plan_path = control_dir / "combine_v2_corrective_retry_v4_plan.json"
+    with open(v4_plan_path, 'w') as f:
+        json.dump(v4_plan, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_v4_plan_required"
+    artifact_index["next_allowed_action"] = "operator_retry_v4_plan_review_required"
+    artifact_index["corrective_retry_v4_plan_created"] = True
+    artifact_index["failure_code"] = failure_code
+    artifact_index["corrupted_v3_asset_size_bytes"] = corrupted_v3_asset_size_bytes
+    artifact_index["valid_v3_asset_recovered"] = valid_v3_asset_recovered
+    artifact_index["generation_allowed"] = False
+    artifact_index["retry_allowed"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v4_plan_created",
+        "stage": "corrective_retry_v4_plan_required",
+        "shot_id": shot_id,
+        "failure_code": failure_code,
+        "corrupted_v3_asset_size_bytes": corrupted_v3_asset_size_bytes,
+        "valid_v3_asset_recovered": valid_v3_asset_recovered,
+        "next_allowed_action": "operator_retry_v4_plan_review_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "corrective_retry_v4_failure_classification_created": True,
+        "failure_code": failure_code,
+        "corrupted_v3_asset_size_bytes": corrupted_v3_asset_size_bytes,
+        "corrective_retry_v4_plan_created": True,
+        "blind_retry_allowed": False,
+        "retry_v4_requires_operator_plan_review": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v4_plan_review_required",
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v4_failure_classification.json",
+            "output/control/combine_v2_corrective_retry_v4_plan.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V4 Plan Created")
+        print(f"Shot: {shot_id}")
+        print(f"Failure Code: {failure_code}")
+        print(f"Corrupted V3 Asset Size: {corrupted_v3_asset_size_bytes} bytes")
+        print(f"Valid V3 Asset Recovered: {valid_v3_asset_recovered}")
+        print(f"Blind Retry Allowed: False")
+        print(f"Retry V4 Requires Operator Plan Review: True")
+        print(f"Generation Allowed: False")
+        print(f"Retry Allowed: False")
+        print(f"Next Allowed Action: operator_retry_v4_plan_review_required")
+
+    return 0
+
+
+def combine_build_retry_v4_stub_generation_fix_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1581-1640 — Build Retry V4 Stub Generation Fix Plan.
+
+    Builds the fix plan for stub generation failure.
+
+    Exit codes:
+    - 0: fix plan built successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load V4 plan
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v4_plan = _load_json(control_dir / "combine_v2_corrective_retry_v4_plan.json")
+    failure_classification = _load_json(control_dir / "combine_v2_corrective_retry_v4_failure_classification.json")
+
+    corrupted_v3_asset_size_bytes = failure_classification.get("corrupted_v3_asset_size_bytes", 0)
+    failure_code = failure_classification.get("failure_code", "CORRUPTED_V3_ASSET_STUB_GENERATION")
+
+    # Create stub generation fix plan
+    stub_generation_fix_plan = {
+        "plan_type": "retry_v4_stub_generation_fix_plan",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "failure_basis": failure_code,
+        "corrupted_v3_asset_size_bytes": corrupted_v3_asset_size_bytes,
+        "fix_strategy": "prevent_stub_asset_acceptance",
+        "fix_components": {
+            "stub_asset_guard": {
+                "required": True,
+                "description": "Reject assets < 1024 bytes as stub files",
+                "implementation": "size_threshold_check_before_manifest_entry",
+                "threshold_bytes": 1024,
+            },
+            "post_submit_validation": {
+                "required": True,
+                "description": "Validate image readability after ComfyUI submit",
+                "implementation": "image_readability_check_with PIL",
+                "validate_headers": True,
+            },
+            "manifest_integrity": {
+                "required": True,
+                "description": "Manifest must reference real readable images only",
+                "implementation": "manifest_validation_before_qa",
+                "validate_each_entry": True,
+            },
+            "sha256_verification": {
+                "required": True,
+                "description": "Compute and verify SHA256 for all assets",
+                "implementation": "sha256_computation_on_collection",
+                "store_in_manifest": True,
+            },
+        },
+        "validation_policy": {
+            "asset_size_minimum_bytes": 1024,
+            "image_readability_required": True,
+            "png_header_validation": True,
+            "sha256_required": True,
+        },
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+    }
+    stub_generation_fix_plan_path = control_dir / "combine_v2_retry_v4_stub_generation_fix_plan.json"
+    with open(stub_generation_fix_plan_path, 'w') as f:
+        json.dump(stub_generation_fix_plan, f, indent=2)
+
+    # Create output validation policy
+    output_validation_policy = {
+        "policy_type": "retry_v4_output_validation_policy",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "validation_rules": {
+            "asset_size_validation": {
+                "enabled": True,
+                "minimum_bytes": 1024,
+                "reject_below_threshold": True,
+                "error_message": "Asset size below minimum threshold - likely stub file",
+            },
+            "image_readability_validation": {
+                "enabled": True,
+                "use_pil": True,
+                "validate_headers": True,
+                "reject_unreadable": True,
+                "error_message": "Asset is not a valid readable image",
+            },
+            "sha256_validation": {
+                "enabled": True,
+                "compute_on_collection": True,
+                "store_in_manifest": True,
+                "verify_on_read": True,
+                "error_message": "SHA256 verification failed",
+            },
+            "manifest_integrity_validation": {
+                "enabled": True,
+                "validate_each_entry": True,
+                "ensure_real_images": True,
+                "reject_stubs": True,
+                "error_message": "Manifest contains invalid or stub assets",
+            },
+        },
+        "enforcement": {
+            "block_qa_on_validation_failure": True,
+            "block_assembly_on_validation_failure": True,
+            "block_production_acceptance_on_validation_failure": True,
+        },
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+    }
+    output_validation_policy_path = control_dir / "combine_v2_retry_v4_output_validation_policy.json"
+    with open(output_validation_policy_path, 'w') as f:
+        json.dump(output_validation_policy, f, indent=2)
+
+    # Create no-stub-asset guard
+    no_stub_asset_guard = {
+        "guard_type": "retry_v4_no_stub_asset_guard",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "guard_rules": {
+            "size_threshold": 1024,
+            "reject_below_threshold": True,
+            "validate_png_header": True,
+            "validate_image_readability": True,
+            "block_manifest_entry": True,
+            "block_qa_submission": True,
+            "block_assembly": True,
+        },
+        "detection_criteria": {
+            "stub_file_size_bytes": 8,
+            "stub_pattern_match": True,
+            "png_header_check": True,
+        },
+        "enforcement_actions": {
+            "on_stub_detected": "reject_and_log_error",
+            "error_message": "Stub asset detected - file size {size} bytes below threshold {threshold}",
+            "prevent_downstream": True,
+        },
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+    }
+    no_stub_asset_guard_path = control_dir / "combine_v2_retry_v4_no_stub_asset_guard.json"
+    with open(no_stub_asset_guard_path, 'w') as f:
+        json.dump(no_stub_asset_guard, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["stub_generation_fix_plan_created"] = True
+    artifact_index["output_validation_policy_created"] = True
+    artifact_index["no_stub_asset_guard_created"] = True
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "retry_v4_stub_generation_fix_plan_created",
+        "stage": "corrective_retry_v4_plan_required",
+        "shot_id": shot_id,
+        "stub_generation_fix_plan_created": True,
+        "output_validation_policy_created": True,
+        "no_stub_asset_guard_created": True,
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stub_generation_fix_plan_created": True,
+        "output_validation_policy_created": True,
+        "no_stub_asset_guard_created": True,
+        "corrupted_v3_asset_size_bytes": corrupted_v3_asset_size_bytes,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "production_accepted": False,
+        "artifacts": [
+            "output/control/combine_v2_retry_v4_stub_generation_fix_plan.json",
+            "output/control/combine_v2_retry_v4_output_validation_policy.json",
+            "output/control/combine_v2_retry_v4_no_stub_asset_guard.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Retry V4 Stub Generation Fix Plan Created")
+        print(f"Shot: {shot_id}")
+        print(f"Stub Generation Fix Plan: Created")
+        print(f"Output Validation Policy: Created")
+        print(f"No Stub Asset Guard: Created")
+        print(f"Asset Size Threshold: 1024 bytes")
+        print(f"Generation Allowed: False")
+
+    return 0
+
+
+def combine_build_retry_v4_plan_review_packet(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1581-1640 — Build Retry V4 Plan Review Packet.
+
+    Builds the operator review packet for V4 plan approval.
+
+    Exit codes:
+    - 0: review packet built successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load V4 plan artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v4_plan = _load_json(control_dir / "combine_v2_corrective_retry_v4_plan.json")
+    failure_classification = _load_json(control_dir / "combine_v2_corrective_retry_v4_failure_classification.json")
+    stub_fix_plan = _load_json(control_dir / "combine_v2_retry_v4_stub_generation_fix_plan.json")
+    validation_policy = _load_json(control_dir / "combine_v2_retry_v4_output_validation_policy.json")
+    no_stub_guard = _load_json(control_dir / "combine_v2_retry_v4_no_stub_asset_guard.json")
+
+    failure_code = failure_classification.get("failure_code", "CORRUPTED_V3_ASSET_STUB_GENERATION")
+    corrupted_v3_asset_size_bytes = failure_classification.get("corrupted_v3_asset_size_bytes", 0)
+
+    # Create operator plan review packet
+    review_packet = {
+        "packet_type": "retry_v4_operator_plan_review_packet",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "failure_summary": {
+            "failure_code": failure_code,
+            "corrupted_v3_asset_size_bytes": corrupted_v3_asset_size_bytes,
+            "stub_asset_detected": corrupted_v3_asset_size_bytes == 8,
+        },
+        "v4_plan_summary": {
+            "corrective_retry_v4_plan_created": v4_plan.get("corrective_retry_v4_plan_created", True),
+            "failure_basis": v4_plan.get("failure_basis", failure_code),
+            "retry_v4_requires_operator_plan_review": v4_plan.get("retry_v4_requires_operator_plan_review", True),
+            "blind_retry_allowed": v4_plan.get("blind_retry_allowed", False),
+        },
+        "required_corrections": v4_plan.get("required_corrections", {}),
+        "fix_plan_components": {
+            "stub_generation_fix_plan": {
+                "created": True,
+                "fix_strategy": stub_fix_plan.get("fix_strategy", "prevent_stub_asset_acceptance"),
+                "asset_size_threshold": stub_fix_plan.get("fix_components", {}).get("stub_asset_guard", {}).get("threshold_bytes", 1024),
+            },
+            "output_validation_policy": {
+                "created": True,
+                "asset_size_minimum": validation_policy.get("validation_rules", {}).get("asset_size_validation", {}).get("minimum_bytes", 1024),
+                "image_readability_required": validation_policy.get("validation_rules", {}).get("image_readability_validation", {}).get("enabled", True),
+            },
+            "no_stub_asset_guard": {
+                "created": True,
+                "size_threshold": no_stub_guard.get("guard_rules", {}).get("size_threshold", 1024),
+                "reject_below_threshold": no_stub_guard.get("guard_rules", {}).get("reject_below_threshold", True),
+            },
+        },
+        "operator_actions": [
+            "approve_retry_v4_plan",
+            "request_plan_modifications",
+            "reject_retry_v4_plan",
+            "manual_intervention",
+        ],
+        "hard_boundary": {
+            "new_generation": False,
+            "new_comfyui_submit": False,
+            "retry_submit": False,
+            "visual_qa": False,
+            "operator_visual_decision": False,
+            "assembly": False,
+            "audio": False,
+            "render": False,
+            "downstream": False,
+            "production_accepted": False,
+        },
+        "current_state": "corrective_retry_v4_plan_required",
+        "next_allowed_action": "operator_retry_v4_plan_review_required",
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+    }
+    review_packet_path = control_dir / "combine_v2_retry_v4_operator_plan_review_packet.json"
+    with open(review_packet_path, 'w') as f:
+        json.dump(review_packet, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["operator_plan_review_packet_created"] = True
+    artifact_index["current_state"] = "operator_retry_v4_plan_review_required"
+    artifact_index["next_allowed_action"] = "operator_retry_v4_plan_review_required"
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "retry_v4_operator_plan_review_packet_created",
+        "stage": "operator_retry_v4_plan_review_required",
+        "shot_id": shot_id,
+        "operator_plan_review_packet_created": True,
+        "next_allowed_action": "operator_retry_v4_plan_review_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "operator_retry_v4_plan_review_packet_created": True,
+        "failure_code": failure_code,
+        "corrupted_v3_asset_size_bytes": corrupted_v3_asset_size_bytes,
+        "blind_retry_allowed": False,
+        "retry_v4_requires_operator_plan_review": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v4_plan_review_required",
+        "artifacts": [
+            "output/control/combine_v2_retry_v4_operator_plan_review_packet.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Retry V4 Operator Plan Review Packet Created")
+        print(f"Shot: {shot_id}")
+        print(f"Failure Code: {failure_code}")
+        print(f"Corrupted V3 Asset Size: {corrupted_v3_asset_size_bytes} bytes")
+        print(f"Blind Retry Allowed: False")
+        print(f"Retry V4 Requires Operator Plan Review: True")
+        print(f"Generation Allowed: False")
+        print(f"Retry Allowed: False")
+        print(f"Visual QA Executed: False")
+        print(f"Assembly Executed: False")
+        print(f"Downstream Executed: False")
+        print(f"Production Accepted: False")
+        print(f"Next Allowed Action: operator_retry_v4_plan_review_required")
 
     return 0
 

@@ -1,0 +1,26 @@
+{
+  "corrective_retry_v4_plan_created": true,
+  "failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+  "corrupted_v3_asset_size_bytes": 8,
+  "valid_v3_asset_recovered": false,
+  "retry_v4_requires_operator_plan_review": true,
+  "blind_retry_allowed": false,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false,
+  "required_corrections": {
+    "stub_asset_guard_required": true,
+    "post_submit_image_readability_validation_required": true,
+    "manifest_requires_real_readable_image": true,
+    "visual_qa_requires_readable_image": true,
+    "assembly_requires_same_accepted_asset": true,
+    "silent_asset_substitution_forbidden": true,
+    "result_review_success_requires_asset_size_gt_1024": true,
+    "sha256_required": true
+  },
+  "next_allowed_action": "operator_retry_v4_plan_review_required",
+  "timestamp": "2026-05-06T08:56:20.547571+00:00",
+  "shot_id": "shot02"
+}

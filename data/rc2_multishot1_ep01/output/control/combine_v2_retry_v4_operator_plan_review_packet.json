@@ -1,0 +1,71 @@
+{
+  "packet_type": "retry_v4_operator_plan_review_packet",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T08:56:33.515465+00:00",
+  "failure_summary": {
+    "failure_code": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+    "corrupted_v3_asset_size_bytes": 8,
+    "stub_asset_detected": true
+  },
+  "v4_plan_summary": {
+    "corrective_retry_v4_plan_created": true,
+    "failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+    "retry_v4_requires_operator_plan_review": true,
+    "blind_retry_allowed": false
+  },
+  "required_corrections": {
+    "stub_asset_guard_required": true,
+    "post_submit_image_readability_validation_required": true,
+    "manifest_requires_real_readable_image": true,
+    "visual_qa_requires_readable_image": true,
+    "assembly_requires_same_accepted_asset": true,
+    "silent_asset_substitution_forbidden": true,
+    "result_review_success_requires_asset_size_gt_1024": true,
+    "sha256_required": true
+  },
+  "fix_plan_components": {
+    "stub_generation_fix_plan": {
+      "created": true,
+      "fix_strategy": "prevent_stub_asset_acceptance",
+      "asset_size_threshold": 1024
+    },
+    "output_validation_policy": {
+      "created": true,
+      "asset_size_minimum": 1024,
+      "image_readability_required": true
+    },
+    "no_stub_asset_guard": {
+      "created": true,
+      "size_threshold": 1024,
+      "reject_below_threshold": true
+    }
+  },
+  "operator_actions": [
+    "approve_retry_v4_plan",
+    "request_plan_modifications",
+    "reject_retry_v4_plan",
+    "manual_intervention"
+  ],
+  "hard_boundary": {
+    "new_generation": false,
+    "new_comfyui_submit": false,
+    "retry_submit": false,
+    "visual_qa": false,
+    "operator_visual_decision": false,
+    "assembly": false,
+    "audio": false,
+    "render": false,
+    "downstream": false,
+    "production_accepted": false
+  },
+  "current_state": "corrective_retry_v4_plan_required",
+  "next_allowed_action": "operator_retry_v4_plan_review_required",
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}

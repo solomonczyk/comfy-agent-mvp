@@ -1,5 +1,5 @@
 {
-  "current_state": "corrective_retry_v4_plan_required",
+  "current_state": "operator_retry_v4_plan_review_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5214,7 +5214,7 @@
   "retry_allowed": false,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "corrective_retry_v3_result_reconciliation_required",
+  "next_allowed_action": "operator_retry_v4_plan_review_required",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
@@ -5317,5 +5317,13 @@
   "authorization_status": "pending",
   "accepted_v3_asset_integrity_reconciliation_completed": true,
   "silent_asset_substitution_guard_enforced": true,
-  "assembly_blocked": true
+  "assembly_blocked": true,
+  "corrective_retry_v4_plan_created": true,
+  "failure_code": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+  "corrupted_v3_asset_size_bytes": 8,
+  "valid_v3_asset_recovered": false,
+  "stub_generation_fix_plan_created": true,
+  "output_validation_policy_created": true,
+  "no_stub_asset_guard_created": true,
+  "operator_plan_review_packet_created": true
 }

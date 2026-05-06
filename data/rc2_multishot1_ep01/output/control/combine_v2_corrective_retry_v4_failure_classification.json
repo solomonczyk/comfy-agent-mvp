@@ -1,0 +1,10 @@
+{
+  "classification": "corrective_retry_v4_required",
+  "failure_code": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+  "corrupted_v3_asset_path": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+  "corrupted_v3_asset_size_bytes": 8,
+  "valid_v3_asset_recovered": false,
+  "stub_asset_detected": true,
+  "timestamp": "2026-05-06T08:56:20.547571+00:00",
+  "shot_id": "shot02"
+}

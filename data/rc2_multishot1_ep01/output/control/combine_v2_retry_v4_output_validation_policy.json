@@ -1,0 +1,44 @@
+{
+  "policy_type": "retry_v4_output_validation_policy",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T08:56:27.050752+00:00",
+  "validation_rules": {
+    "asset_size_validation": {
+      "enabled": true,
+      "minimum_bytes": 1024,
+      "reject_below_threshold": true,
+      "error_message": "Asset size below minimum threshold - likely stub file"
+    },
+    "image_readability_validation": {
+      "enabled": true,
+      "use_pil": true,
+      "validate_headers": true,
+      "reject_unreadable": true,
+      "error_message": "Asset is not a valid readable image"
+    },
+    "sha256_validation": {
+      "enabled": true,
+      "compute_on_collection": true,
+      "store_in_manifest": true,
+      "verify_on_read": true,
+      "error_message": "SHA256 verification failed"
+    },
+    "manifest_integrity_validation": {
+      "enabled": true,
+      "validate_each_entry": true,
+      "ensure_real_images": true,
+      "reject_stubs": true,
+      "error_message": "Manifest contains invalid or stub assets"
+    }
+  },
+  "enforcement": {
+    "block_qa_on_validation_failure": true,
+    "block_assembly_on_validation_failure": true,
+    "block_production_acceptance_on_validation_failure": true
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false
+}
