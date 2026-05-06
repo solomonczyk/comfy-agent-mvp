@@ -891,5 +891,28 @@
     "new_generation_performed": false,
     "new_comfyui_submit_executed": false,
     "timestamp": "2026-05-06T15:50:12.539147+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v4_canonical_state_fix",
+    "stage": "corrective_retry_v4_generate_assets",
+    "shot_id": "shot02",
+    "previous_state": "corrective_retry_v4_generate_assets",
+    "current_state": "corrective_retry_v4_visual_qa_preflight_required",
+    "next_allowed_action": "corrective_retry_v4_visual_qa_preflight_required",
+    "state_fix_reason": "real_output_reconciliation_success",
+    "real_output_reconciliation_preserved": true,
+    "canonical_asset_preserved": true,
+    "result_review_branch": "success",
+    "manifest_success_policy_passed": true,
+    "asset_readable": true,
+    "sha256_present": true,
+    "stub_asset_detected": false,
+    "new_generation_performed": false,
+    "new_comfyui_submit_executed": false,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "timestamp": "2026-05-06T15:55:00.000000+00:00"
   }
 ]
