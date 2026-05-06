@@ -415,5 +415,72 @@
     "failure_code": null,
     "next_allowed_action": "corrective_retry_v3_visual_qa_preflight_required",
     "timestamp": "2026-05-06T04:54:21.490704+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_visual_qa_preflight_executed",
+    "stage": "corrective_retry_v3_visual_qa_preflight_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "visual_qa_entry_allowed": false,
+    "next_allowed_action": "corrective_retry_v3_result_review_required",
+    "timestamp": "2026-05-06T05:14:07.988551+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_visual_qa_preflight_executed",
+    "stage": "corrective_retry_v3_visual_qa_preflight_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "visual_qa_entry_allowed": true,
+    "next_allowed_action": "corrective_retry_v3_visual_qa",
+    "timestamp": "2026-05-06T05:14:46.701302+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_visual_qa_executed",
+    "stage": "corrective_retry_v3_visual_qa",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "qa_verdict": "qa_passed",
+    "operator_review_required": true,
+    "next_allowed_action": "operator_visual_review",
+    "timestamp": "2026-05-06T05:15:00.610990+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_operator_review_packet_created",
+    "stage": "operator_visual_review",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "qa_verdict": "qa_passed",
+    "operator_review_required": true,
+    "next_allowed_action": "operator_visual_review",
+    "timestamp": "2026-05-06T05:15:10.251293+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_visual_qa_preflight_executed",
+    "stage": "corrective_retry_v3_visual_qa_preflight_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "visual_qa_entry_allowed": true,
+    "next_allowed_action": "corrective_retry_v3_visual_qa",
+    "timestamp": "2026-05-06T05:19:39.509383+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_visual_qa_executed",
+    "stage": "corrective_retry_v3_visual_qa",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "qa_verdict": "qa_passed",
+    "operator_review_required": true,
+    "next_allowed_action": "operator_visual_review",
+    "timestamp": "2026-05-06T05:19:51.311327+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v3_operator_review_packet_created",
+    "stage": "operator_visual_review",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "qa_verdict": "qa_passed",
+    "operator_review_required": true,
+    "next_allowed_action": "operator_visual_review",
+    "timestamp": "2026-05-06T05:20:03.338134+00:00"
   }
 ]

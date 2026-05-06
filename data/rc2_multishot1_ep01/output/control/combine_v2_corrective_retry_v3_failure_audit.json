@@ -1,0 +1,10 @@
+{
+  "stage": "corrective_retry_v3_visual_qa",
+  "audit_type": "corrective_retry_v3_failure_audit",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T05:19:51.311327+00:00",
+  "qa_verdict": "qa_passed",
+  "failure_categories": [],
+  "failures_detected": false,
+  "failure_details": []
+}

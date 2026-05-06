@@ -1,0 +1,57 @@
+{
+  "stage": "operator_visual_review",
+  "packet_type": "corrective_retry_v3_operator_review_packet",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T05:20:03.338134+00:00",
+  "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+  "qa_verdict": "qa_passed",
+  "failure_categories": [],
+  "operator_review_required": true,
+  "operator_review_packet_created": true,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "operator_actions_allowed": [
+    "accept_visual_qa_result",
+    "reject_visual_qa_result",
+    "request_visual_qa_rerun",
+    "manual_review",
+    "abort_route"
+  ],
+  "packet_components": {
+    "visual_qa_preflight": "output/control/combine_v2_corrective_retry_v3_visual_qa_preflight.json",
+    "visual_qa_report": "output/control/combine_v2_corrective_retry_v3_visual_qa_report.json",
+    "failure_audit": "output/control/combine_v2_corrective_retry_v3_failure_audit.json",
+    "generation_result": "output/control/combine_v2_corrective_retry_v3_generation_result.json"
+  },
+  "qa_summary": {
+    "asset_exists": true,
+    "asset_readable": true,
+    "width": 1024,
+    "height": 1024,
+    "sha256_present": true
+  },
+  "generation_summary": {
+    "generation_performed": true,
+    "retry_attempted": true,
+    "second_generation_attempted": false,
+    "max_generations": 1
+  },
+  "boundary_enforcement": {
+    "new_generation": false,
+    "new_comfyui_submit": false,
+    "retry_submit": false,
+    "second_generation_attempt": false,
+    "visual_qa_only": true,
+    "operator_visual_acceptance": false,
+    "assembly": false,
+    "audio": false,
+    "render": false,
+    "downstream": false,
+    "production_accepted": false
+  },
+  "next_allowed_action": "operator_visual_review"
+}
