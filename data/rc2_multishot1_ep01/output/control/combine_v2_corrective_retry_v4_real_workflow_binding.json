@@ -1,0 +1,13 @@
+{
+  "real_workflow_binding_created": true,
+  "binding_type": "corrective_retry_v4_real_workflow_binding",
+  "shot_id": "shot02",
+  "workflow_source": "prompt_pack_or_existing",
+  "real_workflow_available": false,
+  "workflow_node_count": 1,
+  "saveimage_configured": false,
+  "binding_status": "created",
+  "fallback_workflow_blocked": true,
+  "real_workflow_required_before_submit": true,
+  "timestamp": "2026-05-06T12:33:42.507603+00:00"
+}

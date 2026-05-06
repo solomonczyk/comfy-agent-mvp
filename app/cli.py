@@ -8268,6 +8268,69 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1821-1880 — combine-diagnose-corrective-retry-v4-workflow subcommand
+    combine_diagnose_corrective_retry_v4_workflow_parser = subparsers.add_parser(
+        "combine-diagnose-corrective-retry-v4-workflow",
+        help="Diagnose corrective retry V4 workflow for stub/fallback detection"
+    )
+    combine_diagnose_corrective_retry_v4_workflow_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_diagnose_corrective_retry_v4_workflow_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_diagnose_corrective_retry_v4_workflow_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1821-1880 — combine-build-corrective-retry-v4-real-workflow-binding subcommand
+    combine_build_corrective_retry_v4_real_workflow_binding_parser = subparsers.add_parser(
+        "combine-build-corrective-retry-v4-real-workflow-binding",
+        help="Build real workflow binding for corrective retry V4"
+    )
+    combine_build_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1821-1880 — combine-validate-corrective-retry-v4-real-workflow-binding subcommand
+    combine_validate_corrective_retry_v4_real_workflow_binding_parser = subparsers.add_parser(
+        "combine-validate-corrective-retry-v4-real-workflow-binding",
+        help="Validate real workflow binding for corrective retry V4"
+    )
+    combine_validate_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_validate_corrective_retry_v4_real_workflow_binding_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC2-DIRECTOR1 — Director-lite subcommand
     director_parser = subparsers.add_parser("director", help="Director-lite read-only inspection commands")
     director_subparsers = director_parser.add_subparsers(dest="director_command")
@@ -9277,6 +9340,12 @@ def main() -> int:
         return combine_corrective_retry_v4_generate_assets(args)
     elif args.command == "combine-review-corrective-retry-v4-result":
         return combine_review_corrective_retry_v4_result(args)
+    elif args.command == "combine-diagnose-corrective-retry-v4-workflow":
+        return combine_diagnose_corrective_retry_v4_workflow(args)
+    elif args.command == "combine-build-corrective-retry-v4-real-workflow-binding":
+        return combine_build_corrective_retry_v4_real_workflow_binding(args)
+    elif args.command == "combine-validate-corrective-retry-v4-real-workflow-binding":
+        return combine_validate_corrective_retry_v4_real_workflow_binding(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa-preflight":
         return combine_run_corrective_retry_v3_visual_qa_preflight(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa":
@@ -22871,6 +22940,36 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
             print(msg)
         return 1
 
+    # RC-COMBINE-V2-1821-1880 — Guard: Block submit if only stub/fallback workflow is available
+    guard_path = control_dir / "combine_v2_retry_v4_no_fallback_workflow_guard.json"
+    if guard_path.exists():
+        guard = _load_json(guard_path)
+        if guard.get("guard_enabled", False) and guard.get("stub_or_fallback_workflow_blocked", True):
+            # Check if real workflow binding exists and is valid
+            binding_path = control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json"
+            validation_path = control_dir / "combine_v2_corrective_retry_v4_real_workflow_validation.json"
+            
+            binding = _load_json(binding_path)
+            validation = _load_json(validation_path)
+            
+            binding_valid = binding.get("real_workflow_available", False) and binding.get("workflow_node_count", 0) > 2
+            validation_passed = validation.get("binding_valid", False) if validation else False
+            
+            if not binding_valid or not validation_passed:
+                msg = "Error: Submit blocked - stub/fallback workflow detected and real workflow binding not validated. Run combine-diagnose-corrective-retry-v4-workflow, combine-build-corrective-retry-v4-real-workflow-binding, and combine-validate-corrective-retry-v4-real-workflow-binding first."
+                if json_output:
+                    print(json.dumps({
+                        "status": "error",
+                        "message": msg,
+                        "guard_enabled": guard.get("guard_enabled", False),
+                        "stub_or_fallback_workflow_blocked": guard.get("stub_or_fallback_workflow_blocked", True),
+                        "real_workflow_binding_valid": binding_valid,
+                        "real_workflow_validation_passed": validation_passed
+                    }))
+                else:
+                    print(msg)
+                return 1
+
     source_asset = package.get("source_asset", "")
     failure_basis = package.get("failure_basis", ["blur_detected", "low_contrast"])
 
@@ -23888,6 +23987,258 @@ def combine_build_corrective_retry_v4_result_reconciliation_report(args: argpars
         print(f"Failure Code: {comprehensive_report['root_cause_analysis']['failure_code']}")
         print(f"Valid V4 Asset Recovered: {comprehensive_report['reconciliation_outcome']['valid_v4_asset_recovered']}")
         print(f"Next Allowed Action: {comprehensive_report['next_steps']['next_allowed_action']}")
+
+    return 0
+
+
+def combine_diagnose_corrective_retry_v4_workflow(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1821-1880 — Diagnose corrective retry V4 workflow for stub/fallback detection."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load V4 artifacts
+    implementation_package = _load_json(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json")
+    generation_trace = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_trace.json")
+    workflow_audit = _load_json(control_dir / "combine_v2_corrective_retry_v4_workflow_submit_audit.json")
+    submitted_workflow = _load_json(control_dir / f"{shot_id}_submitted_workflow.json")
+
+    # Detect stub/fallback workflow
+    stub_or_fallback_detected = False
+    real_workflow_in_package = False
+    workflow_node_count = 0
+    saveimage_configured = False
+
+    if workflow_audit:
+        stub_or_fallback_detected = workflow_audit.get("stub_or_fallback_workflow_detected", False)
+        real_workflow_in_package = workflow_audit.get("real_workflow_in_package", False)
+        workflow_node_count = workflow_audit.get("workflow_node_count", 0)
+        saveimage_configured = workflow_audit.get("saveimage_configured", False)
+
+    # Check if submitted workflow is minimal/stub
+    is_minimal_stub = False
+    if submitted_workflow:
+        node_count = len([k for k in submitted_workflow.keys() if k.isdigit()])
+        if node_count <= 2:  # Only EmptyLatentImage or similar minimal nodes
+            is_minimal_stub = True
+            stub_or_fallback_detected = True
+
+    # Check generation trace for stub flag
+    if generation_trace:
+        events = generation_trace.get("events", [])
+        for event in events:
+            if event.get("event") == "comfyui_execution" and event.get("stub"):
+                stub_or_fallback_detected = True
+                break
+
+    # Create diagnosis report
+    diagnosis = {
+        "v4_workflow_diagnosis_executed": True,
+        "previous_failure_code": "CORRECTIVE_RETRY_V4_WORKFLOW_SUBMIT_INVALID",
+        "stub_or_fallback_workflow_detected": stub_or_fallback_detected,
+        "fallback_workflow_allowed": False,
+        "real_workflow_required": True,
+        "real_workflow_binding_created": False,
+        "real_workflow_binding_validated": False,
+        "submit_blocked_until_real_workflow_bound": True,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_real_workflow_binding_review_required",
+        "shot_id": shot_id,
+        "diagnosis_details": {
+            "implementation_package_exists": bool(implementation_package),
+            "generation_trace_exists": bool(generation_trace),
+            "workflow_audit_exists": bool(workflow_audit),
+            "submitted_workflow_exists": bool(submitted_workflow),
+            "real_workflow_in_package": real_workflow_in_package,
+            "workflow_node_count": workflow_node_count,
+            "saveimage_configured": saveimage_configured,
+            "is_minimal_stub": is_minimal_stub,
+            "stub_generation_flagged": generation_trace.get("events", [{}])[0].get("stub", False) if generation_trace else False
+        },
+        "timestamp": timestamp
+    }
+
+    # Save diagnosis artifact
+    diagnosis_path = control_dir / "combine_v2_corrective_retry_v4_workflow_diagnosis.json"
+    with open(diagnosis_path, 'w') as f:
+        json.dump(diagnosis, f, indent=2)
+
+    if json_output:
+        print(json.dumps(diagnosis, indent=2))
+    else:
+        print(f"V4 Workflow Diagnosis Executed: {diagnosis['v4_workflow_diagnosis_executed']}")
+        print(f"Stub or Fallback Workflow Detected: {diagnosis['stub_or_fallback_workflow_detected']}")
+        print(f"Real Workflow Required: {diagnosis['real_workflow_required']}")
+        print(f"Submit Blocked Until Real Workflow Bound: {diagnosis['submit_blocked_until_real_workflow_bound']}")
+        print(f"Next Allowed Action: {diagnosis['next_allowed_action']}")
+
+    return 0
+
+
+def combine_build_corrective_retry_v4_real_workflow_binding(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1821-1880 — Build real workflow binding for corrective retry V4."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load diagnosis
+    diagnosis = _load_json(control_dir / "combine_v2_corrective_retry_v4_workflow_diagnosis.json")
+
+    if not diagnosis:
+        msg = "Error: Workflow diagnosis not found. Run combine-diagnose-corrective-retry-v4-workflow first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Look for real workflow in shot prompt pack or other sources
+    prompt_pack = _load_json(control_dir / f"{shot_id}_prompt_pack.json")
+    shot_workflow = _load_json(control_dir / f"{shot_id}_submitted_workflow.json")
+
+    # Build real workflow binding
+    real_workflow_binding = {
+        "real_workflow_binding_created": True,
+        "binding_type": "corrective_retry_v4_real_workflow_binding",
+        "shot_id": shot_id,
+        "workflow_source": "prompt_pack_or_existing",
+        "real_workflow_available": bool(shot_workflow and len(shot_workflow) > 2),
+        "workflow_node_count": len([k for k in shot_workflow.keys() if k.isdigit()]) if shot_workflow else 0,
+        "saveimage_configured": any("SaveImage" in str(v) for v in shot_workflow.values()) if shot_workflow else False,
+        "binding_status": "created",
+        "fallback_workflow_blocked": True,
+        "real_workflow_required_before_submit": True,
+        "timestamp": timestamp
+    }
+
+    # Save binding artifact
+    binding_path = control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json"
+    with open(binding_path, 'w') as f:
+        json.dump(real_workflow_binding, f, indent=2)
+
+    if json_output:
+        print(json.dumps(real_workflow_binding, indent=2))
+    else:
+        print(f"Real Workflow Binding Created: {real_workflow_binding['real_workflow_binding_created']}")
+        print(f"Real Workflow Available: {real_workflow_binding['real_workflow_available']}")
+        print(f"Fallback Workflow Blocked: {real_workflow_binding['fallback_workflow_blocked']}")
+
+    return 0
+
+
+def combine_validate_corrective_retry_v4_real_workflow_binding(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1821-1880 — Validate real workflow binding for corrective retry V4."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Load binding
+    binding = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json")
+
+    if not binding:
+        msg = "Error: Real workflow binding not found. Run combine-build-corrective-retry-v4-real-workflow-binding first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Validate binding
+    is_valid = (
+        binding.get("real_workflow_binding_created", False) and
+        binding.get("real_workflow_available", False) and
+        binding.get("workflow_node_count", 0) > 2 and
+        binding.get("saveimage_configured", False)
+    )
+
+    validation = {
+        "real_workflow_binding_validated": True,
+        "binding_valid": is_valid,
+        "shot_id": shot_id,
+        "validation_criteria": {
+            "binding_created": binding.get("real_workflow_binding_created", False),
+            "real_workflow_available": binding.get("real_workflow_available", False),
+            "workflow_node_count_sufficient": binding.get("workflow_node_count", 0) > 2,
+            "saveimage_configured": binding.get("saveimage_configured", False)
+        },
+        "fallback_workflow_blocked": binding.get("fallback_workflow_blocked", True),
+        "real_workflow_required_before_submit": binding.get("real_workflow_required_before_submit", True),
+        "generation_not_performed": True,
+        "comfyui_submit_not_executed": True,
+        "visual_qa_not_executed": True,
+        "assembly_not_executed": True,
+        "production_accepted_false": True,
+        "timestamp": timestamp
+    }
+
+    # Save validation artifact
+    validation_path = control_dir / "combine_v2_corrective_retry_v4_real_workflow_validation.json"
+    with open(validation_path, 'w') as f:
+        json.dump(validation, f, indent=2)
+
+    # Create guard artifact
+    guard = {
+        "guard_type": "retry_v4_no_fallback_workflow_guard",
+        "guard_enabled": True,
+        "stub_or_fallback_workflow_blocked": True,
+        "real_workflow_required_before_submit": True,
+        "submit_blocked_until_real_workflow_bound": not is_valid,
+        "shot_id": shot_id,
+        "timestamp": timestamp
+    }
+
+    guard_path = control_dir / "combine_v2_retry_v4_no_fallback_workflow_guard.json"
+    with open(guard_path, 'w') as f:
+        json.dump(guard, f, indent=2)
+
+    if json_output:
+        print(json.dumps(validation, indent=2))
+    else:
+        print(f"Real Workflow Binding Validated: {validation['real_workflow_binding_validated']}")
+        print(f"Binding Valid: {validation['binding_valid']}")
+        print(f"Fallback Workflow Blocked: {validation['fallback_workflow_blocked']}")
 
     return 0
 

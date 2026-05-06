@@ -1,0 +1,19 @@
+{
+  "real_workflow_binding_validated": true,
+  "binding_valid": false,
+  "shot_id": "shot02",
+  "validation_criteria": {
+    "binding_created": true,
+    "real_workflow_available": false,
+    "workflow_node_count_sufficient": false,
+    "saveimage_configured": false
+  },
+  "fallback_workflow_blocked": true,
+  "real_workflow_required_before_submit": true,
+  "generation_not_performed": true,
+  "comfyui_submit_not_executed": true,
+  "visual_qa_not_executed": true,
+  "assembly_not_executed": true,
+  "production_accepted_false": true,
+  "timestamp": "2026-05-06T12:33:50.894746+00:00"
+}
