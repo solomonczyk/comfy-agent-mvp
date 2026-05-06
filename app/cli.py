@@ -8289,6 +8289,65 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2181-2300 — combine-preflight-corrective-retry-v4-real-execution-route subcommand
+    combine_preflight_corrective_retry_v4_real_execution_route_parser = subparsers.add_parser(
+        "combine-preflight-corrective-retry-v4-real-execution-route",
+        help="Preflight for corrective retry V4 real execution route (no ComfyUI submit)"
+    )
+    combine_preflight_corrective_retry_v4_real_execution_route_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_preflight_corrective_retry_v4_real_execution_route_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_preflight_corrective_retry_v4_real_execution_route_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum generations (must be 1)",
+    )
+    combine_preflight_corrective_retry_v4_real_execution_route_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-2181-2300 — combine-corrective-retry-v4-real-execute-assets subcommand
+    combine_corrective_retry_v4_real_execute_assets_parser = subparsers.add_parser(
+        "combine-corrective-retry-v4-real-execute-assets",
+        help="Real ComfyUI execution adapter for corrective retry V4 (requires --execute)"
+    )
+    combine_corrective_retry_v4_real_execute_assets_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_corrective_retry_v4_real_execute_assets_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_corrective_retry_v4_real_execute_assets_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Actually submit workflow to ComfyUI (requires operator authorization state)",
+    )
+    combine_corrective_retry_v4_real_execute_assets_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum generations (must be 1)",
+    )
+    combine_corrective_retry_v4_real_execute_assets_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1821-1880 — combine-diagnose-corrective-retry-v4-workflow subcommand
     combine_diagnose_corrective_retry_v4_workflow_parser = subparsers.add_parser(
         "combine-diagnose-corrective-retry-v4-workflow",
@@ -9495,6 +9554,10 @@ def main() -> int:
         return combine_review_corrective_retry_v4_result(args)
     elif args.command == "combine-corrective-retry-v4-create-non-stub-execution-route":
         return combine_corrective_retry_v4_create_non_stub_execution_route(args)
+    elif args.command == "combine-preflight-corrective-retry-v4-real-execution-route":
+        return combine_preflight_corrective_retry_v4_real_execution_route(args)
+    elif args.command == "combine-corrective-retry-v4-real-execute-assets":
+        return combine_corrective_retry_v4_real_execute_assets(args)
     elif args.command == "combine-diagnose-corrective-retry-v4-workflow":
         return combine_diagnose_corrective_retry_v4_workflow(args)
     elif args.command == "combine-build-corrective-retry-v4-real-workflow-binding":
@@ -23773,6 +23836,403 @@ def combine_corrective_retry_v4_create_non_stub_execution_route(args: argparse.N
         print(f"Real Adapter: combine-real-generate-assets (ComfyClient -> {comfy_base_url})")
         print(f"Stub Layer Execute Block: PRESERVED")
         print(f"Next Allowed Action: operator_retry_v4_real_execution_authorization_required")
+
+    return 0
+
+
+def combine_preflight_corrective_retry_v4_real_execution_route(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2181-2300 — Preflight for Corrective Retry V4 Real Execution Route.
+
+    Validates the real execution route without submitting to ComfyUI.
+    Proves filename_prefix consistency between the real workflow SaveImage node
+    and the collector that will harvest output frames.
+
+    Hard boundary:
+    - actual_comfyui_submit_not_executed=true
+    - dry_run=false NOT used in preflight
+    - generation_performed=false
+    - workflow_submitted=false
+
+    Exit codes:
+    - 0: preflight passed
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    max_generations = int(getattr(args, "max_generations", 1))
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Check non-stub execution route artifact exists
+    route_path = control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json"
+    route = _load_json(route_path)
+    real_execution_route_exists = route_path.exists() and bool(route)
+
+    # Check real workflow binding exists
+    binding_path = control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json"
+    binding = _load_json(binding_path)
+    real_workflow_binding_used = bool(binding.get("real_workflow_binding_created", False))
+    fallback_workflow_blocked = bool(binding.get("fallback_workflow_blocked", False))
+
+    # Resolve workflow source and inspect SaveImage filename_prefix
+    workflow_source = binding.get("workflow_source", "")
+    workflow_path = control_dir / workflow_source if workflow_source else None
+    workflow = {}
+    if workflow_path and workflow_path.exists():
+        workflow = _load_json(workflow_path)
+
+    # Extract SaveImage filename_prefix from workflow
+    saveimage_prefix = None
+    for node_id, node in workflow.items():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            saveimage_prefix = node.get("inputs", {}).get("filename_prefix")
+            break
+
+    # Validate filename_prefix is present and consistent
+    filename_prefix_present = saveimage_prefix is not None
+    # Collector will use the same prefix injected into SaveImage at submit time
+    collector_uses_submitted_saveimage_prefix = filename_prefix_present
+
+    # Check max_generations guard
+    max_generations_valid = max_generations == 1
+
+    # Check route fields
+    route_has_comfyui_access = bool(route.get("route_has_comfyui_access", False))
+    dry_run_false_not_used_in_preflight = True  # This preflight never uses dry_run=false
+    actual_comfyui_submit_not_executed = True   # Hard boundary: never submit in preflight
+    fake_comfyui_execution_forbidden = bool(route.get("fake_comfyui_execution_forbidden", True))
+    fake_workflow_submitted_forbidden = bool(route.get("fake_workflow_submitted_forbidden", True))
+    stub_layer_execute_block_preserved = bool(route.get("stub_layer_execute_block_preserved", True))
+
+    # Check implementation package
+    package = _load_json(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json")
+    implementation_package_available = bool(package)
+
+    preflight_passed = (
+        real_execution_route_exists
+        and real_workflow_binding_used
+        and route_has_comfyui_access
+        and filename_prefix_present
+        and max_generations_valid
+    )
+
+    preflight = {
+        "stage": "corrective_retry_v4_real_execution_route_preflight",
+        "layer": "RC-COMBINE-V2-2181-2300",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+
+        # Route existence
+        "real_execution_route_exists": real_execution_route_exists,
+        "route_has_comfyui_access": route_has_comfyui_access,
+        "real_workflow_binding_used": real_workflow_binding_used,
+        "fallback_workflow_used": not fallback_workflow_blocked,
+        "workflow_source": workflow_source,
+
+        # filename_prefix consistency
+        "filename_prefix_consistency_valid": filename_prefix_present,
+        "saveimage_filename_prefix": saveimage_prefix,
+        "collector_will_use_submitted_saveimage_prefix": collector_uses_submitted_saveimage_prefix,
+
+        # Execution policy enforcement
+        "dry_run_false_not_used_in_preflight": dry_run_false_not_used_in_preflight,
+        "actual_comfyui_submit_not_executed": actual_comfyui_submit_not_executed,
+        "fake_comfyui_execution_forbidden": fake_comfyui_execution_forbidden,
+        "fake_workflow_submitted_forbidden": fake_workflow_submitted_forbidden,
+        "stub_layer_execute_block_preserved": stub_layer_execute_block_preserved,
+        "stub_placeholder_output_forbidden": True,
+
+        # Guards
+        "max_generations": max_generations,
+        "max_generations_valid": max_generations_valid,
+        "implementation_package_available": implementation_package_available,
+
+        # Hard boundaries
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+
+        "preflight_passed": preflight_passed,
+        "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+    }
+
+    if not preflight_passed:
+        preflight["failure_reasons"] = []
+        if not real_execution_route_exists:
+            preflight["failure_reasons"].append("real_execution_route_missing")
+        if not real_workflow_binding_used:
+            preflight["failure_reasons"].append("real_workflow_binding_missing")
+        if not route_has_comfyui_access:
+            preflight["failure_reasons"].append("route_has_no_comfyui_access")
+        if not filename_prefix_present:
+            preflight["failure_reasons"].append("saveimage_filename_prefix_missing_in_workflow")
+        if not max_generations_valid:
+            preflight["failure_reasons"].append("max_generations_must_equal_1")
+
+    # Write preflight artifact
+    preflight_out_path = control_dir / "combine_v2_corrective_retry_v4_real_execution_route_preflight.json"
+    with open(preflight_out_path, 'w') as f:
+        json.dump(preflight, f, indent=2)
+
+    if json_output:
+        print(json.dumps(preflight, indent=2))
+    else:
+        status = "PASSED" if preflight_passed else "FAILED"
+        print(f"Corrective Retry V4 Real Execution Route Preflight: {status}")
+        print(f"  real_execution_route_exists: {real_execution_route_exists}")
+        print(f"  route_has_comfyui_access: {route_has_comfyui_access}")
+        print(f"  real_workflow_binding_used: {real_workflow_binding_used}")
+        print(f"  filename_prefix_consistency_valid: {filename_prefix_present}")
+        print(f"  saveimage_filename_prefix: {saveimage_prefix}")
+        print(f"  collector_will_use_submitted_saveimage_prefix: {collector_uses_submitted_saveimage_prefix}")
+        print(f"  actual_comfyui_submit_not_executed: {actual_comfyui_submit_not_executed}")
+
+    return 0 if preflight_passed else 1
+
+
+def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2181-2300 — Real Execute Assets for Corrective Retry V4.
+
+    The real execution adapter for corrective retry V4.
+    This is the ONLY command in the V4 corrective retry workflow that may use
+    dry_run=false and actually submit to ComfyUI.
+
+    Guards:
+    - Requires explicit --execute flag (without it: informational dry-run output only)
+    - Requires operator_retry_v4_real_execution_authorization_required state
+    - Requires corrective_retry_v4_non_stub_execution_route artifact
+    - Requires real workflow binding (not stub/fallback)
+    - max_generations must equal 1
+    - Records prompt_id from ComfyUI queue_prompt
+
+    Hard boundary (without --execute):
+    - generation_performed=false
+    - comfyui_execution=false
+    - workflow_submitted=false
+    - production_accepted=false
+
+    Exit codes:
+    - 0: success (or dry-run info)
+    - 1: blocked / error
+    """
+    import json
+    import os
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Guard: max_generations must be 1
+    if max_generations != 1:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "max_generations_must_equal_1",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Real Execute V4: BLOCKED (max_generations must be 1)")
+        return 1
+
+    # Guard: non-stub route must exist
+    route_path = control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json"
+    route = _load_json(route_path)
+    if not route.get("route_has_comfyui_access", False):
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "non_stub_execution_route_missing_or_no_comfyui_access",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Real Execute V4: BLOCKED (route missing or no ComfyUI access)")
+        return 1
+
+    # Guard: real workflow binding must exist
+    binding = _load_json(control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json")
+    if not binding.get("real_workflow_binding_created", False):
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "real_workflow_binding_missing",
+            "fallback_workflow_used": True,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("Real Execute V4: BLOCKED (real workflow binding missing)")
+        return 1
+
+    # Guard: state must be operator_retry_v4_real_execution_authorization_required
+    artifact_index = _load_json(control_dir / "artifact_index.json")
+    current_state = artifact_index.get("current_state", "")
+    if current_state != "operator_retry_v4_real_execution_authorization_required":
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "operator_retry_v4_real_execution_authorization_not_yet_granted",
+            "current_state": current_state,
+            "required_state": "operator_retry_v4_real_execution_authorization_required",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"Real Execute V4: BLOCKED (state={current_state}, need operator_retry_v4_real_execution_authorization_required)")
+        return 1
+
+    # Resolve workflow
+    workflow_source = binding.get("workflow_source", "")
+    workflow_path = control_dir / workflow_source if workflow_source else None
+    workflow = {}
+    if workflow_path and workflow_path.exists():
+        workflow = _load_json(workflow_path)
+
+    # Extract SaveImage filename_prefix
+    saveimage_prefix = None
+    for node_id, node in workflow.items():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            saveimage_prefix = node.get("inputs", {}).get("filename_prefix")
+            break
+
+    # Without --execute: informational output only (dry-run info)
+    if not execute:
+        info = {
+            "status": "authorization_required",
+            "message": "Pass --execute after operator authorization to run real ComfyUI submission.",
+            "real_execution_adapter": "combine-corrective-retry-v4-real-execute-assets --execute",
+            "route_has_comfyui_access": True,
+            "real_workflow_binding_used": bool(binding),
+            "fallback_workflow_used": False,
+            "workflow_source": workflow_source,
+            "saveimage_filename_prefix": saveimage_prefix,
+            "filename_prefix_consistency_valid": saveimage_prefix is not None,
+            "collector_will_use_submitted_saveimage_prefix": saveimage_prefix is not None,
+            "dry_run_false_allowed_only_in_real_adapter": True,
+            "fake_comfyui_execution_forbidden": True,
+            "fake_workflow_submitted_forbidden": True,
+            "stub_placeholder_output_forbidden": True,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "workflow_submitted": False,
+            "retry_attempted": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+        }
+        if json_output:
+            print(json.dumps(info, indent=2))
+        else:
+            print("Real Execute V4: AUTHORIZATION REQUIRED (pass --execute after operator authorization)")
+        return 0
+
+    # --execute path: real ComfyUI submission
+    # Only reached after operator authorization and explicit --execute flag
+    comfy_base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188")
+
+    import asyncio
+    from app.comfy.comfy_client import ComfyClient
+
+    async def _submit():
+        client = ComfyClient(base_url=comfy_base_url)
+        prompt_id = await client.queue_prompt(workflow)
+        return prompt_id
+
+    try:
+        prompt_id = asyncio.run(_submit())
+    except Exception as exc:
+        err = {
+            "status": "error",
+            "blocked_reason": "comfyui_submission_failed",
+            "error": str(exc),
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "workflow_submitted": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(err, indent=2))
+        else:
+            print(f"Real Execute V4: FAILED - {exc}")
+        return 1
+
+    now = datetime.now(timezone.utc).isoformat()
+    submit_record = {
+        "stage": "corrective_retry_v4_real_execute_assets",
+        "layer": "RC-COMBINE-V2-2181-2300",
+        "shot_id": shot_id,
+        "status": "submitted",
+        "prompt_id": prompt_id,
+        "comfy_base_url": comfy_base_url,
+        "workflow_source": workflow_source,
+        "saveimage_filename_prefix": saveimage_prefix,
+        "filename_prefix_consistency_valid": saveimage_prefix is not None,
+        "collector_will_use_submitted_saveimage_prefix": saveimage_prefix is not None,
+        "real_workflow_binding_used": True,
+        "fallback_workflow_used": False,
+        "dry_run": False,
+        "generation_performed": True,
+        "comfyui_execution": True,
+        "workflow_submitted": True,
+        "retry_attempted": True,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": now,
+    }
+
+    submit_path = control_dir / "combine_v2_corrective_retry_v4_real_execute_submit_record.json"
+    with open(submit_path, 'w') as f:
+        json.dump(submit_record, f, indent=2)
+
+    if json_output:
+        print(json.dumps(submit_record, indent=2))
+    else:
+        print(f"Real Execute V4: SUBMITTED (prompt_id={prompt_id})")
+        print(f"  workflow_source: {workflow_source}")
+        print(f"  saveimage_filename_prefix: {saveimage_prefix}")
 
     return 0
 

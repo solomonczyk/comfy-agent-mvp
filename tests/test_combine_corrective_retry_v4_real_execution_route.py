@@ -1,0 +1,442 @@
+"""Tests for corrective retry V4 real execution route.
+
+RC-COMBINE-V2-2181-2300 — real execution adapter + preflight.
+"""
+
+import json
+import argparse
+import pytest
+from pathlib import Path
+from unittest.mock import patch, AsyncMock, MagicMock
+
+
+# ---------------------------------------------------------------------------
+# Helpers
+# ---------------------------------------------------------------------------
+
+def _make_args_preflight(project_root, shot_id="shot02", max_gen=1, json_out=True):
+    return argparse.Namespace(
+        project_root=str(project_root),
+        shot_id=shot_id,
+        max_generations=max_gen,
+        json=json_out,
+    )
+
+
+def _make_args_execute(project_root, shot_id="shot02", execute=False, max_gen=1, json_out=True):
+    return argparse.Namespace(
+        project_root=str(project_root),
+        shot_id=shot_id,
+        execute=execute,
+        max_generations=max_gen,
+        json=json_out,
+    )
+
+
+SAVEIMAGE_PREFIX = "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777576340"
+
+REAL_WORKFLOW = {
+    "3": {"class_type": "KSampler", "inputs": {}},
+    "4": {"class_type": "CheckpointLoaderSimple", "inputs": {"ckpt_name": "model.safetensors"}},
+    "5": {"class_type": "EmptyLatentImage", "inputs": {"width": 1344, "height": 768, "batch_size": 1}},
+    "9": {"class_type": "SaveImage", "inputs": {"filename_prefix": SAVEIMAGE_PREFIX, "images": ["8", 0]}},
+}
+
+
+def _setup_full_project(tmp_path, current_state="operator_retry_v4_real_execution_authorization_required"):
+    """Set up a complete project structure for execution route tests."""
+    project_root = tmp_path / "project"
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    # artifact_index
+    (control_dir / "artifact_index.json").write_text(json.dumps({
+        "current_state": current_state,
+        "next_allowed_action": "operator_retry_v4_real_execution_authorization_required",
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "workflow_submitted": False,
+        "production_accepted": False,
+    }))
+
+    # episode_ledger
+    (control_dir / "episode_ledger.json").write_text(json.dumps([]))
+
+    # non-stub execution route
+    (control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json").write_text(json.dumps({
+        "route_has_comfyui_access": True,
+        "real_execution_adapter_identified": True,
+        "stub_layer_execute_block_preserved": True,
+        "fake_comfyui_execution_forbidden": True,
+        "fake_workflow_submitted_forbidden": True,
+        "non_stub_execution_route_created": True,
+        "dry_run_false_allowed_only_in_real_adapter": True,
+    }))
+
+    # real workflow binding
+    (control_dir / "combine_v2_corrective_retry_v4_real_workflow_binding.json").write_text(json.dumps({
+        "real_workflow_binding_created": True,
+        "workflow_source": "ep01_shot01_submitted_workflow.json",
+        "fallback_workflow_blocked": True,
+    }))
+
+    # real workflow file
+    (control_dir / "ep01_shot01_submitted_workflow.json").write_text(json.dumps(REAL_WORKFLOW))
+
+    # implementation package
+    (control_dir / "combine_v2_corrective_retry_v4_implementation_package.json").write_text(json.dumps({
+        "failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+    }))
+
+    return project_root, control_dir
+
+
+# ---------------------------------------------------------------------------
+# 1. Stub layer execute remains blocked
+# ---------------------------------------------------------------------------
+
+class TestStubLayerExecuteBlocked:
+    def test_stub_execute_returns_error(self, tmp_path):
+        """combine-corrective-retry-v4-generate-assets --execute must return exit 1."""
+        from app.cli import combine_corrective_retry_v4_generate_assets
+        project_root = tmp_path / "proj"
+        control_dir = project_root / "output" / "control"
+        control_dir.mkdir(parents=True, exist_ok=True)
+
+        (control_dir / "combine_v2_operator_retry_v4_generation_authorization.json").write_text(
+            json.dumps({"operator_retry_v4_generation_authorized": True}))
+        (control_dir / "combine_v2_corrective_retry_v4_implementation_package.json").write_text(
+            json.dumps({"failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION"}))
+        for contract in [
+            "combine_v2_retry_v4_pre_submit_validation_contract.json",
+            "combine_v2_retry_v4_post_submit_validation_contract.json",
+            "combine_v2_retry_v4_manifest_success_policy.json",
+            "combine_v2_retry_v4_visual_qa_input_guard.json",
+            "combine_v2_retry_v4_assembly_asset_guard.json",
+        ]:
+            (control_dir / contract).write_text(json.dumps({"created": True}))
+
+        args = argparse.Namespace(
+            project_root=str(project_root), shot_id="shot02",
+            execute=True, max_generations=1, json=True)
+        result = combine_corrective_retry_v4_generate_assets(args)
+        assert result == 1
+
+    def test_stub_execute_failure_code(self, tmp_path, capsys):
+        """Stub layer must emit CORRECTIVE_RETRY_V4_EXECUTE_BLOCKED_IN_STUB_LAYER."""
+        from app.cli import combine_corrective_retry_v4_generate_assets
+        project_root = tmp_path / "proj"
+        control_dir = project_root / "output" / "control"
+        control_dir.mkdir(parents=True, exist_ok=True)
+
+        (control_dir / "combine_v2_operator_retry_v4_generation_authorization.json").write_text(
+            json.dumps({"operator_retry_v4_generation_authorized": True}))
+        (control_dir / "combine_v2_corrective_retry_v4_implementation_package.json").write_text(
+            json.dumps({"failure_basis": "x"}))
+
+        args = argparse.Namespace(
+            project_root=str(project_root), shot_id="shot02",
+            execute=True, max_generations=1, json=True)
+        combine_corrective_retry_v4_generate_assets(args)
+        out = capsys.readouterr().out
+        data = json.loads(out)
+        assert data["failure_code"] == "CORRECTIVE_RETRY_V4_EXECUTE_BLOCKED_IN_STUB_LAYER"
+        assert data["stub_layer_no_comfyui_access"] is True
+
+
+# ---------------------------------------------------------------------------
+# 2. Real execution route exists
+# ---------------------------------------------------------------------------
+
+class TestRealExecutionRouteExists:
+    def test_preflight_passes_when_route_exists(self, tmp_path):
+        """Preflight must pass when route artifact is present."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        result = combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        assert result == 0
+
+    def test_preflight_fails_when_route_missing(self, tmp_path):
+        """Preflight must fail when route artifact is absent."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, control_dir = _setup_full_project(tmp_path)
+        (control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json").unlink()
+        result = combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        assert result == 1
+
+    def test_preflight_artifact_has_real_execution_route_exists_true(self, tmp_path, capsys):
+        """Preflight output must have real_execution_route_exists=true."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, control_dir = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["real_execution_route_exists"] is True
+
+
+# ---------------------------------------------------------------------------
+# 3. Real adapter can be selected
+# ---------------------------------------------------------------------------
+
+class TestRealAdapterSelectable:
+    def test_real_adapter_identified_in_route_artifact(self, tmp_path):
+        """Route artifact must have real_execution_adapter_identified=true."""
+        project_root, control_dir = _setup_full_project(tmp_path)
+        route = json.loads(
+            (control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json").read_text())
+        assert route["real_execution_adapter_identified"] is True
+
+    def test_real_execute_command_exists_and_runs_without_execute(self, tmp_path, capsys):
+        """combine-corrective-retry-v4-real-execute-assets without --execute returns 0."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, _ = _setup_full_project(tmp_path)
+        result = combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=False))
+        assert result == 0
+        out = json.loads(capsys.readouterr().out)
+        assert out["status"] == "authorization_required"
+        assert out["generation_performed"] is False
+        assert out["comfyui_execution"] is False
+
+
+# ---------------------------------------------------------------------------
+# 4. dry_run=false forbidden outside real adapter
+# ---------------------------------------------------------------------------
+
+class TestDryRunFalseForbiddenOutsideRealAdapter:
+    def test_preflight_never_uses_dry_run_false(self, tmp_path, capsys):
+        """Preflight must report dry_run_false_not_used_in_preflight=true."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["dry_run_false_not_used_in_preflight"] is True
+
+    def test_route_artifact_enforces_dry_run_policy(self, tmp_path):
+        """Route artifact must state dry_run_false_allowed_only_in_real_adapter=true."""
+        project_root, control_dir = _setup_full_project(tmp_path)
+        route = json.loads(
+            (control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json").read_text())
+        assert route["dry_run_false_allowed_only_in_real_adapter"] is True
+
+
+# ---------------------------------------------------------------------------
+# 5. Fake comfyui_execution forbidden
+# ---------------------------------------------------------------------------
+
+class TestFakeComfyuiExecutionForbidden:
+    def test_preflight_reports_fake_comfyui_forbidden(self, tmp_path, capsys):
+        """Preflight must report fake_comfyui_execution_forbidden=true."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["fake_comfyui_execution_forbidden"] is True
+        assert out["comfyui_execution"] is False
+
+    def test_real_execute_no_execute_flag_keeps_comfyui_false(self, tmp_path, capsys):
+        """Without --execute, comfyui_execution must be false."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=False))
+        out = json.loads(capsys.readouterr().out)
+        assert out["comfyui_execution"] is False
+        assert out["fake_comfyui_execution_forbidden"] is True
+
+
+# ---------------------------------------------------------------------------
+# 6. Fake workflow_submitted forbidden
+# ---------------------------------------------------------------------------
+
+class TestFakeWorkflowSubmittedForbidden:
+    def test_preflight_reports_fake_workflow_submitted_forbidden(self, tmp_path, capsys):
+        """Preflight must report fake_workflow_submitted_forbidden=true."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["fake_workflow_submitted_forbidden"] is True
+        assert out["workflow_submitted"] is False
+
+    def test_real_execute_no_execute_flag_keeps_workflow_submitted_false(self, tmp_path, capsys):
+        """Without --execute, workflow_submitted must be false."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=False))
+        out = json.loads(capsys.readouterr().out)
+        assert out["workflow_submitted"] is False
+        assert out["fake_workflow_submitted_forbidden"] is True
+
+
+# ---------------------------------------------------------------------------
+# 7. Preflight does not submit to ComfyUI
+# ---------------------------------------------------------------------------
+
+class TestPreflightNoComfySubmit:
+    def test_actual_comfyui_submit_not_executed(self, tmp_path, capsys):
+        """Preflight must confirm actual_comfyui_submit_not_executed=true."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["actual_comfyui_submit_not_executed"] is True
+
+    def test_preflight_writes_artifact_file(self, tmp_path):
+        """Preflight must write combine_v2_corrective_retry_v4_real_execution_route_preflight.json."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, control_dir = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        art = control_dir / "combine_v2_corrective_retry_v4_real_execution_route_preflight.json"
+        assert art.exists()
+        data = json.loads(art.read_text())
+        assert data["preflight_passed"] is True
+        assert data["actual_comfyui_submit_not_executed"] is True
+
+
+# ---------------------------------------------------------------------------
+# 8. filename_prefix consistency enforced
+# ---------------------------------------------------------------------------
+
+class TestFilenamePrefixConsistency:
+    def test_preflight_reports_filename_prefix_consistency_valid(self, tmp_path, capsys):
+        """Preflight must confirm filename_prefix_consistency_valid=true."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["filename_prefix_consistency_valid"] is True
+        assert out["saveimage_filename_prefix"] == SAVEIMAGE_PREFIX
+
+    def test_preflight_fails_when_no_saveimage_node(self, tmp_path):
+        """Preflight must fail when SaveImage node has no filename_prefix."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, control_dir = _setup_full_project(tmp_path)
+        # Overwrite with workflow lacking SaveImage prefix
+        bad_workflow = {
+            "3": {"class_type": "KSampler", "inputs": {}},
+            "9": {"class_type": "VAEDecode", "inputs": {}},
+        }
+        (control_dir / "ep01_shot01_submitted_workflow.json").write_text(json.dumps(bad_workflow))
+        result = combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        assert result == 1
+
+    def test_real_execute_no_execute_exposes_prefix(self, tmp_path, capsys):
+        """Real execute (no --execute) must expose saveimage_filename_prefix."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=False))
+        out = json.loads(capsys.readouterr().out)
+        assert out["saveimage_filename_prefix"] == SAVEIMAGE_PREFIX
+        assert out["filename_prefix_consistency_valid"] is True
+
+
+# ---------------------------------------------------------------------------
+# 9. Collector uses submitted SaveImage prefix
+# ---------------------------------------------------------------------------
+
+class TestCollectorUsesSubmittedPrefix:
+    def test_preflight_confirms_collector_will_use_prefix(self, tmp_path, capsys):
+        """Preflight must confirm collector_will_use_submitted_saveimage_prefix=true."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["collector_will_use_submitted_saveimage_prefix"] is True
+
+    def test_real_execute_no_execute_confirms_collector_prefix(self, tmp_path, capsys):
+        """Real execute info must confirm collector_will_use_submitted_saveimage_prefix=true."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=False))
+        out = json.loads(capsys.readouterr().out)
+        assert out["collector_will_use_submitted_saveimage_prefix"] is True
+
+
+# ---------------------------------------------------------------------------
+# 10. next_allowed_action == operator_retry_v4_real_execution_authorization_required
+# ---------------------------------------------------------------------------
+
+class TestNextAllowedAction:
+    def test_preflight_next_allowed_action(self, tmp_path, capsys):
+        """Preflight next_allowed_action must be operator_retry_v4_real_execution_authorization_required."""
+        from app.cli import combine_preflight_corrective_retry_v4_real_execution_route
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_preflight_corrective_retry_v4_real_execution_route(
+            _make_args_preflight(project_root))
+        out = json.loads(capsys.readouterr().out)
+        assert out["next_allowed_action"] == "operator_retry_v4_real_execution_authorization_required"
+
+    def test_real_execute_no_flag_next_allowed_action(self, tmp_path, capsys):
+        """Real execute (no --execute) next_allowed_action must be operator_retry_v4_real_execution_authorization_required."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, _ = _setup_full_project(tmp_path)
+        combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=False))
+        out = json.loads(capsys.readouterr().out)
+        assert out["next_allowed_action"] == "operator_retry_v4_real_execution_authorization_required"
+
+    def test_artifact_index_next_allowed_action(self, tmp_path):
+        """artifact_index next_allowed_action must be operator_retry_v4_real_execution_authorization_required."""
+        project_root, control_dir = _setup_full_project(tmp_path)
+        index = json.loads((control_dir / "artifact_index.json").read_text())
+        assert index["next_allowed_action"] == "operator_retry_v4_real_execution_authorization_required"
+
+
+# ---------------------------------------------------------------------------
+# Guard: real execute blocked without operator authorization state
+# ---------------------------------------------------------------------------
+
+class TestRealExecuteStateGuard:
+    def test_execute_blocked_without_authorization_state(self, tmp_path):
+        """Real execute with --execute must be blocked if state != operator_retry_v4_real_execution_authorization_required."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, _ = _setup_full_project(
+            tmp_path,
+            current_state="corrective_retry_v4_non_stub_execution_route_required")
+        result = combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=True))
+        assert result == 1
+
+    def test_execute_blocked_without_route_artifact(self, tmp_path):
+        """Real execute with --execute must be blocked if route artifact missing."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, control_dir = _setup_full_project(tmp_path)
+        (control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json").unlink()
+        result = combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=True))
+        assert result == 1
+
+    def test_execute_calls_comfyclient_queue_prompt(self, tmp_path, capsys):
+        """Real execute with --execute and proper state must call ComfyClient.queue_prompt."""
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+        project_root, _ = _setup_full_project(tmp_path)
+
+        mock_client = MagicMock()
+        mock_client.queue_prompt = AsyncMock(return_value="test-prompt-id-123")
+
+        with patch("app.comfy.comfy_client.ComfyClient", return_value=mock_client):
+            with patch("asyncio.run", return_value="test-prompt-id-123"):
+                result = combine_corrective_retry_v4_real_execute_assets(
+                    _make_args_execute(project_root, execute=True))
+
+        assert result == 0
+        out = json.loads(capsys.readouterr().out)
+        assert out["prompt_id"] == "test-prompt-id-123"
+        assert out["workflow_submitted"] is True
+        assert out["comfyui_execution"] is True
+        assert out["real_workflow_binding_used"] is True
+        assert out["fallback_workflow_used"] is False
