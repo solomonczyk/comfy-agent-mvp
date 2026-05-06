@@ -587,3 +587,70 @@ class TestPrefixShotidFreezeCheck:
         # Shot01 prefix != shot02 runtime prefix → isolation enforced
         assert out["old_shot01_outputs_cannot_satisfy_v4_manifest"] is True
         assert out["source_workflow_prefix_detected"] != out["runtime_saveimage_prefix"]
+
+
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-2361-2420: ComfyClient constructor fix tests
+# ---------------------------------------------------------------------------
+
+class TestComfyClientConstructorFix:
+    def test_v4_real_adapter_uses_no_arg_comfyclient_constructor(self, tmp_path):
+        """V4 real adapter must instantiate ComfyClient() with no arguments.
+
+        Root cause fix: ComfyClient.__init__(self) -> None takes NO arguments.
+        base_url is read from settings.comfy_base_url internally.
+        The broken call was: ComfyClient(base_url=comfy_base_url)
+        The correct call is: ComfyClient()
+        """
+        import inspect
+        import ast
+        import textwrap
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+
+        src = inspect.getsource(combine_corrective_retry_v4_real_execute_assets)
+        # Must NOT contain ComfyClient(base_url= anywhere in the function source
+        assert "ComfyClient(base_url=" not in src, (
+            "V4 real adapter still uses invalid ComfyClient(base_url=...) constructor. "
+            "ComfyClient.__init__ takes no arguments."
+        )
+        # Must contain the correct no-arg instantiation
+        assert "ComfyClient()" in src, (
+            "V4 real adapter must instantiate ComfyClient() with no arguments."
+        )
+
+    def test_comfyclient_constructor_takes_no_args(self):
+        """ComfyClient.__init__ must accept no arguments beyond self."""
+        import inspect
+        from app.comfy.comfy_client import ComfyClient
+
+        sig = inspect.signature(ComfyClient.__init__)
+        params = [p for p in sig.parameters if p != "self"]
+        assert params == [], (
+            f"ComfyClient.__init__ must have no parameters beyond self, got: {params}"
+        )
+
+    def test_comfyclient_constructor_failure_yields_honest_blocked_output(self, tmp_path, capsys, monkeypatch):
+        """If ComfyClient() raises on construction, the adapter must return exit 1
+        with workflow_submitted=false, comfyui_execution=false, generation_performed=false.
+        """
+        from app.cli import combine_corrective_retry_v4_real_execute_assets
+
+        project_root, _ = _setup_full_project(
+            tmp_path, current_state="corrective_retry_v4_real_execute_assets")
+
+        def _bad_init(self):
+            raise RuntimeError("settings misconfigured: COMFY_BASE_URL missing")
+
+        import app.comfy.comfy_client as comfy_mod
+        monkeypatch.setattr(comfy_mod.ComfyClient, "__init__", _bad_init)
+
+        result = combine_corrective_retry_v4_real_execute_assets(
+            _make_args_execute(project_root, execute=True))
+
+        assert result == 1
+        out = json.loads(capsys.readouterr().out)
+        assert out["workflow_submitted"] is False
+        assert out["comfyui_execution"] is False
+        assert out["generation_performed"] is False
+        assert out["production_accepted"] is False
+        assert "settings misconfigured" in out["error"]

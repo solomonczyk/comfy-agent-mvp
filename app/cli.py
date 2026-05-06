@@ -24444,7 +24444,7 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
     from app.comfy.comfy_client import ComfyClient
 
     async def _submit():
-        client = ComfyClient(base_url=comfy_base_url)
+        client = ComfyClient()
         prompt_id = await client.queue_prompt(patched_workflow)
         return prompt_id
 
