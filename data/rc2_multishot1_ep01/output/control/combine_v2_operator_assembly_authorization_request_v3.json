@@ -1,0 +1,31 @@
+{
+  "request_type": "operator_assembly_authorization_request_v3",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T07:49:08.641051+00:00",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "source_asset_sha256": "63b8184f6fd80cec7c1d3851b150eae9f6520c9a32b00d8b7b4b4c56a532fad4",
+  "source_asset_dimensions": {
+    "width": 1344,
+    "height": 1024
+  },
+  "assembly_plan": "output/control/combine_v2_assembly_plan_v3.json",
+  "input_manifest": "output/control/combine_v2_assembly_input_manifest_v3.json",
+  "assembly_preflight": "output/control/combine_v2_assembly_preflight_v3.json",
+  "authorization_required": true,
+  "authorization_status": "pending",
+  "assembly_type": "single_visual_asset_assembly",
+  "assembly_description": "Single visual asset assembly requiring operator authorization before execution",
+  "boundary_conditions": {
+    "generation_performed": false,
+    "retry_attempted": false,
+    "visual_qa_rerun": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  },
+  "authorization_gate": {
+    "gate_name": "operator_assembly_authorization",
+    "gate_status": "awaiting_operator_decision",
+    "required_approval": true
+  }
+}

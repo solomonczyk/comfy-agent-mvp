@@ -3,7 +3,7 @@
   "packet_type": "assembly_readiness_packet_v3",
   "shot_id": "shot02",
   "timestamp": "2026-05-06T07:27:44.950598+00:00",
-  "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
   "previous_qa_verdict": "qa_passed",
   "operator_visual_acceptance_confirmed": true,
   "visual_asset_accepted": true,

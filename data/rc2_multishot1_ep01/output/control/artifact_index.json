@@ -5214,7 +5214,7 @@
   "retry_allowed": false,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "assembly_preflight_required",
+  "next_allowed_action": "operator_assembly_authorization_required",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
@@ -5306,5 +5306,13 @@
   "visual_asset_accepted": true,
   "assembly_readiness_packet_created": true,
   "assembly_readiness_confirmed": true,
-  "visual_qa_rerun": false
+  "visual_qa_rerun": false,
+  "assembly_preflight_executed": true,
+  "assembly_entry_allowed": true,
+  "assembly_plan_created": true,
+  "assembly_input_manifest_created": true,
+  "assembly_requires_operator_authorization": true,
+  "assembly_allowed": false,
+  "operator_assembly_authorization_request_created": true,
+  "authorization_status": "pending"
 }

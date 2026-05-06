@@ -504,5 +504,45 @@
     "assembly_readiness_confirmed": true,
     "next_allowed_action": "assembly_preflight_required",
     "timestamp": "2026-05-06T07:27:44.950598+00:00"
+  },
+  {
+    "event_type": "assembly_preflight_v3_executed",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "assembly_entry_allowed": false,
+    "next_allowed_action": "assembly_preflight_failed",
+    "timestamp": "2026-05-06T07:46:21.806919+00:00"
+  },
+  {
+    "event_type": "assembly_preflight_v3_executed",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "assembly_entry_allowed": false,
+    "next_allowed_action": "assembly_preflight_failed",
+    "timestamp": "2026-05-06T07:47:03.911796+00:00"
+  },
+  {
+    "event_type": "assembly_preflight_v3_executed",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "assembly_entry_allowed": true,
+    "next_allowed_action": "assembly_plan_required",
+    "timestamp": "2026-05-06T07:48:34.952153+00:00"
+  },
+  {
+    "event_type": "assembly_plan_v3_created",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "assembly_plan_created": true,
+    "next_allowed_action": "operator_assembly_authorization_required",
+    "timestamp": "2026-05-06T07:49:00.901376+00:00"
+  },
+  {
+    "event_type": "operator_assembly_authorization_request_v3_created",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "authorization_status": "pending",
+    "next_allowed_action": "operator_assembly_authorization_required",
+    "timestamp": "2026-05-06T07:49:08.641051+00:00"
   }
 ]

@@ -6805,6 +6805,69 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1461-1520 — combine-run-assembly-preflight-v3 subcommand
+    combine_run_assembly_preflight_v3_parser = subparsers.add_parser(
+        "combine-run-assembly-preflight-v3",
+        help="Run assembly preflight V3 to validate assembly readiness"
+    )
+    combine_run_assembly_preflight_v3_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_run_assembly_preflight_v3_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_run_assembly_preflight_v3_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1461-1520 — combine-build-assembly-plan-v3 subcommand
+    combine_build_assembly_plan_v3_parser = subparsers.add_parser(
+        "combine-build-assembly-plan-v3",
+        help="Build assembly plan V3 after successful preflight"
+    )
+    combine_build_assembly_plan_v3_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_assembly_plan_v3_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_assembly_plan_v3_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1461-1520 — combine-build-operator-assembly-authorization-request-v3 subcommand
+    combine_build_operator_assembly_authorization_request_v3_parser = subparsers.add_parser(
+        "combine-build-operator-assembly-authorization-request-v3",
+        help="Build operator assembly authorization request V3"
+    )
+    combine_build_operator_assembly_authorization_request_v3_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_operator_assembly_authorization_request_v3_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_operator_assembly_authorization_request_v3_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-11 — combine-authorize-retry subcommand
     combine_authorize_retry_parser = subparsers.add_parser("combine-authorize-retry", help="Authorize retry return to generation authorization without opening retry execution gate")
     combine_authorize_retry_parser.add_argument(
@@ -8760,6 +8823,12 @@ def main() -> int:
         return combine_operator_visual_decision_v3(args)
     elif args.command == "combine-build-assembly-readiness-packet-v3":
         return combine_build_assembly_readiness_packet_v3(args)
+    elif args.command == "combine-run-assembly-preflight-v3":
+        return combine_run_assembly_preflight_v3(args)
+    elif args.command == "combine-build-assembly-plan-v3":
+        return combine_build_assembly_plan_v3(args)
+    elif args.command == "combine-build-operator-assembly-authorization-request-v3":
+        return combine_build_operator_assembly_authorization_request_v3(args)
     elif args.command == "combine-create-corrective-retry-v3-plan":
         return combine_create_corrective_retry_v3_plan(args)
     elif args.command == "combine-build-retry-v3-plan-review-packet":
@@ -19903,6 +19972,490 @@ def combine_build_assembly_readiness_packet_v3(args: argparse.Namespace) -> int:
         print(f"Visual Asset Accepted: {visual_asset_accepted}")
         print(f"Assembly Readiness Confirmed: True")
         print(f"Next Allowed Action: assembly_preflight_required")
+
+    return 0
+
+
+def combine_run_assembly_preflight_v3(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1461-1520 — Run Assembly Preflight V3.
+
+    Validates assembly readiness before creating assembly plan.
+    Checks visual asset acceptance, assembly readiness packet, and source asset validity.
+
+    Exit codes:
+    - 0: preflight passed successfully
+    - 1: error
+    """
+    import json
+    import hashlib
+    from pathlib import Path
+    from datetime import datetime, timezone
+    from PIL import Image
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    assembly_readiness_packet = _load_json(control_dir / "combine_v2_assembly_readiness_packet_v3.json")
+    operator_acceptance_v3 = _load_json(control_dir / "combine_v2_operator_visual_acceptance_v3.json")
+
+    if not assembly_readiness_packet:
+        msg = "Error: Assembly readiness packet not found. Run combine-build-assembly-readiness-packet-v3 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    if not operator_acceptance_v3:
+        msg = "Error: Operator visual acceptance V3 not found."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    source_asset_path = project_root / assembly_readiness_packet.get("source_asset", "")
+    source_asset = assembly_readiness_packet.get("source_asset", "")
+    visual_asset_accepted = assembly_readiness_packet.get("visual_asset_accepted", False)
+    operator_visual_acceptance_confirmed = assembly_readiness_packet.get("operator_visual_acceptance_confirmed", False)
+
+    # Validate source asset
+    source_asset_exists = source_asset_path.exists()
+    source_asset_readable = False
+    source_asset_sha256_present = False
+    source_asset_dimensions_valid = False
+    source_asset_sha256 = None
+    asset_width = None
+    asset_height = None
+
+    if source_asset_exists:
+        try:
+            # Read file for SHA256
+            with open(source_asset_path, 'rb') as f:
+                file_content = f.read()
+                source_asset_readable = True
+                source_asset_sha256 = hashlib.sha256(file_content).hexdigest()
+                source_asset_sha256_present = True
+
+            # Validate dimensions using the same file content
+            import io
+            with Image.open(io.BytesIO(file_content)) as img:
+                asset_width, asset_height = img.size
+                source_asset_dimensions_valid = asset_width > 0 and asset_height > 0
+        except Exception as e:
+            source_asset_readable = False
+            if not json_output:
+                print(f"Warning: Could not read source asset: {e}")
+
+    # Determine if assembly entry is allowed
+    assembly_entry_allowed = (
+        visual_asset_accepted and
+        operator_visual_acceptance_confirmed and
+        source_asset_exists and
+        source_asset_readable and
+        source_asset_sha256_present and
+        source_asset_dimensions_valid
+    )
+
+    # Create assembly preflight result
+    assembly_preflight = {
+        "assembly_preflight_executed": True,
+        "source_asset": source_asset,
+        "visual_asset_accepted": visual_asset_accepted,
+        "operator_visual_acceptance_v3_available": bool(operator_acceptance_v3),
+        "assembly_readiness_packet_available": bool(assembly_readiness_packet),
+        "source_asset_exists": source_asset_exists,
+        "source_asset_readable": source_asset_readable,
+        "source_asset_sha256_present": source_asset_sha256_present,
+        "source_asset_sha256": source_asset_sha256,
+        "source_asset_dimensions_valid": source_asset_dimensions_valid,
+        "source_asset_width": asset_width,
+        "source_asset_height": asset_height,
+        "assembly_entry_allowed": assembly_entry_allowed,
+        "generation_performed": False,
+        "retry_attempted": False,
+        "visual_qa_rerun": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "assembly_plan_required" if assembly_entry_allowed else "assembly_preflight_failed",
+        "timestamp": timestamp,
+    }
+
+    preflight_path = control_dir / "combine_v2_assembly_preflight_v3.json"
+    with open(preflight_path, 'w') as f:
+        json.dump(assembly_preflight, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["assembly_preflight_executed"] = True
+    artifact_index["assembly_entry_allowed"] = assembly_entry_allowed
+    artifact_index["next_allowed_action"] = assembly_preflight["next_allowed_action"]
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "assembly_preflight_v3_executed",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "assembly_entry_allowed": assembly_entry_allowed,
+        "next_allowed_action": assembly_preflight["next_allowed_action"],
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    if json_output:
+        print(json.dumps(assembly_preflight, indent=2))
+    else:
+        print(f"Assembly Preflight V3 Executed")
+        print(f"Shot: {shot_id}")
+        print(f"Source Asset: {source_asset}")
+        print(f"Assembly Entry Allowed: {assembly_entry_allowed}")
+        print(f"Next Allowed Action: {assembly_preflight['next_allowed_action']}")
+
+    return 0 if assembly_entry_allowed else 1
+
+
+def combine_build_assembly_plan_v3(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1461-1520 — Build Assembly Plan V3.
+
+    Creates assembly plan and input manifest after successful preflight.
+    Requires operator authorization before assembly execution.
+
+    Exit codes:
+    - 0: plan created successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    assembly_preflight = _load_json(control_dir / "combine_v2_assembly_preflight_v3.json")
+    assembly_readiness_packet = _load_json(control_dir / "combine_v2_assembly_readiness_packet_v3.json")
+
+    if not assembly_preflight:
+        msg = "Error: Assembly preflight not found. Run combine-run-assembly-preflight-v3 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    if not assembly_preflight.get("assembly_entry_allowed", False):
+        msg = "Error: Assembly preflight failed. Assembly entry not allowed."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    source_asset = assembly_preflight.get("source_asset", "")
+    source_asset_sha256 = assembly_preflight.get("source_asset_sha256", "")
+    asset_width = assembly_preflight.get("source_asset_width", 0)
+    asset_height = assembly_preflight.get("source_asset_height", 0)
+
+    # Create input manifest
+    input_manifest = {
+        "manifest_type": "single_visual_asset_assembly_manifest_v3",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "source_asset": source_asset,
+        "source_asset_sha256": source_asset_sha256,
+        "source_asset_dimensions": {
+            "width": asset_width,
+            "height": asset_height,
+        },
+        "assembly_type": "single_visual_asset_assembly",
+        "assembly_requirements": {
+            "operator_authorization": True,
+            "visual_asset_locked": True,
+        },
+    }
+
+    manifest_path = control_dir / "combine_v2_assembly_input_manifest_v3.json"
+    with open(manifest_path, 'w') as f:
+        json.dump(input_manifest, f, indent=2)
+
+    # Create assembly plan
+    assembly_plan = {
+        "assembly_plan_created": True,
+        "assembly_plan_type": "single_visual_asset_assembly_plan_v3",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "source_asset": source_asset,
+        "input_manifest": "output/control/combine_v2_assembly_input_manifest_v3.json",
+        "input_manifest_created": True,
+        "accepted_visual_asset_locked": True,
+        "assembly_requires_operator_authorization": True,
+        "assembly_allowed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_assembly_authorization_required",
+        "plan_components": {
+            "visual_asset": source_asset,
+            "asset_sha256": source_asset_sha256,
+            "asset_dimensions": {
+                "width": asset_width,
+                "height": asset_height,
+            },
+        },
+    }
+
+    plan_path = control_dir / "combine_v2_assembly_plan_v3.json"
+    with open(plan_path, 'w') as f:
+        json.dump(assembly_plan, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["assembly_plan_created"] = True
+    artifact_index["assembly_input_manifest_created"] = True
+    artifact_index["assembly_requires_operator_authorization"] = True
+    artifact_index["assembly_allowed"] = False
+    artifact_index["next_allowed_action"] = "operator_assembly_authorization_required"
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "assembly_plan_v3_created",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "assembly_plan_created": True,
+        "next_allowed_action": "operator_assembly_authorization_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "assembly_plan_created": True,
+        "assembly_plan_type": "single_visual_asset_assembly_plan_v3",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "input_manifest_created": True,
+        "accepted_visual_asset_locked": True,
+        "assembly_requires_operator_authorization": True,
+        "assembly_allowed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_assembly_authorization_required",
+        "artifacts": [
+            "output/control/combine_v2_assembly_plan_v3.json",
+            "output/control/combine_v2_assembly_input_manifest_v3.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Assembly Plan V3 Created")
+        print(f"Shot: {shot_id}")
+        print(f"Source Asset: {source_asset}")
+        print(f"Assembly Requires Operator Authorization: True")
+        print(f"Next Allowed Action: operator_assembly_authorization_required")
+
+    return 0
+
+
+def combine_build_operator_assembly_authorization_request_v3(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1461-1520 — Build Operator Assembly Authorization Request V3.
+
+    Creates authorization request for operator to approve assembly execution.
+    This is the final gate before assembly can be executed.
+
+    Exit codes:
+    - 0: authorization request created successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    assembly_plan = _load_json(control_dir / "combine_v2_assembly_plan_v3.json")
+    assembly_preflight = _load_json(control_dir / "combine_v2_assembly_preflight_v3.json")
+    input_manifest = _load_json(control_dir / "combine_v2_assembly_input_manifest_v3.json")
+
+    if not assembly_plan:
+        msg = "Error: Assembly plan not found. Run combine-build-assembly-plan-v3 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    source_asset = assembly_plan.get("source_asset", "")
+    source_asset_sha256 = assembly_preflight.get("source_asset_sha256", "") if assembly_preflight else ""
+    asset_width = assembly_preflight.get("source_asset_width", 0) if assembly_preflight else 0
+    asset_height = assembly_preflight.get("source_asset_height", 0) if assembly_preflight else 0
+
+    # Create operator assembly authorization request
+    authorization_request = {
+        "request_type": "operator_assembly_authorization_request_v3",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "source_asset": source_asset,
+        "source_asset_sha256": source_asset_sha256,
+        "source_asset_dimensions": {
+            "width": asset_width,
+            "height": asset_height,
+        },
+        "assembly_plan": "output/control/combine_v2_assembly_plan_v3.json",
+        "input_manifest": "output/control/combine_v2_assembly_input_manifest_v3.json",
+        "assembly_preflight": "output/control/combine_v2_assembly_preflight_v3.json",
+        "authorization_required": True,
+        "authorization_status": "pending",
+        "assembly_type": "single_visual_asset_assembly",
+        "assembly_description": "Single visual asset assembly requiring operator authorization before execution",
+        "boundary_conditions": {
+            "generation_performed": False,
+            "retry_attempted": False,
+            "visual_qa_rerun": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        },
+        "authorization_gate": {
+            "gate_name": "operator_assembly_authorization",
+            "gate_status": "awaiting_operator_decision",
+            "required_approval": True,
+        },
+    }
+
+    auth_request_path = control_dir / "combine_v2_operator_assembly_authorization_request_v3.json"
+    with open(auth_request_path, 'w') as f:
+        json.dump(authorization_request, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["operator_assembly_authorization_request_created"] = True
+    artifact_index["authorization_status"] = "pending"
+    artifact_index["next_allowed_action"] = "operator_assembly_authorization_required"
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "operator_assembly_authorization_request_v3_created",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "authorization_status": "pending",
+        "next_allowed_action": "operator_assembly_authorization_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "operator_assembly_authorization_request_created": True,
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "authorization_status": "pending",
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_assembly_authorization_required",
+        "artifacts": ["output/control/combine_v2_operator_assembly_authorization_request_v3.json"],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Operator Assembly Authorization Request V3 Created")
+        print(f"Shot: {shot_id}")
+        print(f"Source Asset: {source_asset}")
+        print(f"Authorization Status: pending")
+        print(f"Next Allowed Action: operator_assembly_authorization_required")
 
     return 0
 

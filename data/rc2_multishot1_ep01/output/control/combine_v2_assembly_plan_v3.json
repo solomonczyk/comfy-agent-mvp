@@ -1,0 +1,24 @@
+{
+  "assembly_plan_created": true,
+  "assembly_plan_type": "single_visual_asset_assembly_plan_v3",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T07:49:00.901376+00:00",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "input_manifest": "output/control/combine_v2_assembly_input_manifest_v3.json",
+  "input_manifest_created": true,
+  "accepted_visual_asset_locked": true,
+  "assembly_requires_operator_authorization": true,
+  "assembly_allowed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_assembly_authorization_required",
+  "plan_components": {
+    "visual_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+    "asset_sha256": "63b8184f6fd80cec7c1d3851b150eae9f6520c9a32b00d8b7b4b4c56a532fad4",
+    "asset_dimensions": {
+      "width": 1344,
+      "height": 1024
+    }
+  }
+}

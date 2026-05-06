@@ -1,0 +1,23 @@
+{
+  "assembly_preflight_executed": true,
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "visual_asset_accepted": true,
+  "operator_visual_acceptance_v3_available": true,
+  "assembly_readiness_packet_available": true,
+  "source_asset_exists": true,
+  "source_asset_readable": true,
+  "source_asset_sha256_present": true,
+  "source_asset_sha256": "63b8184f6fd80cec7c1d3851b150eae9f6520c9a32b00d8b7b4b4c56a532fad4",
+  "source_asset_dimensions_valid": true,
+  "source_asset_width": 1344,
+  "source_asset_height": 1024,
+  "assembly_entry_allowed": true,
+  "generation_performed": false,
+  "retry_attempted": false,
+  "visual_qa_rerun": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "assembly_plan_required",
+  "timestamp": "2026-05-06T07:48:34.952153+00:00"
+}

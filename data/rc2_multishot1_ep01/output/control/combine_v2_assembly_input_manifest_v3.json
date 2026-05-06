@@ -1,0 +1,16 @@
+{
+  "manifest_type": "single_visual_asset_assembly_manifest_v3",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T07:49:00.901376+00:00",
+  "source_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "source_asset_sha256": "63b8184f6fd80cec7c1d3851b150eae9f6520c9a32b00d8b7b4b4c56a532fad4",
+  "source_asset_dimensions": {
+    "width": 1344,
+    "height": 1024
+  },
+  "assembly_type": "single_visual_asset_assembly",
+  "assembly_requirements": {
+    "operator_authorization": true,
+    "visual_asset_locked": true
+  }
+}
