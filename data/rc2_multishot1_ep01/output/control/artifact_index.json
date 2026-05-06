@@ -1,5 +1,5 @@
 {
-  "current_state": "assembly_preflight_required",
+  "current_state": "corrective_retry_v4_plan_required",
   "route_family": "custom",
   "stage_results": [
     {

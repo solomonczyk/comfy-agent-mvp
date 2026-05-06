@@ -6919,6 +6919,69 @@ def main() -> int:
         func=combine_validate_no_accepted_asset_substitution
     )
 
+    # RC-COMBINE-V2-1521-1580 — combine-reconcile-corrective-retry-v3-result subcommand
+    combine_reconcile_corrective_retry_v3_result_parser = subparsers.add_parser(
+        "combine-reconcile-corrective-retry-v3-result",
+        help="Reconcile corrupted corrective retry V3 result and determine recovery path"
+    )
+    combine_reconcile_corrective_retry_v3_result_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_reconcile_corrective_retry_v3_result_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_reconcile_corrective_retry_v3_result_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1521-1580 — combine-audit-corrective-retry-v3-output-collector subcommand
+    combine_audit_corrective_retry_v3_output_collector_parser = subparsers.add_parser(
+        "combine-audit-corrective-retry-v3-output-collector",
+        help="Audit corrective retry V3 output collector behavior and failure"
+    )
+    combine_audit_corrective_retry_v3_output_collector_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_audit_corrective_retry_v3_output_collector_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_audit_corrective_retry_v3_output_collector_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1521-1580 — combine-build-corrective-retry-v3-result-reconciliation-report subcommand
+    combine_build_corrective_retry_v3_result_reconciliation_report_parser = subparsers.add_parser(
+        "combine-build-corrective-retry-v3-result-reconciliation-report",
+        help="Build comprehensive reconciliation report for corrupted V3 result"
+    )
+    combine_build_corrective_retry_v3_result_reconciliation_report_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_corrective_retry_v3_result_reconciliation_report_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_corrective_retry_v3_result_reconciliation_report_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-11 — combine-authorize-retry subcommand
     combine_authorize_retry_parser = subparsers.add_parser("combine-authorize-retry", help="Authorize retry return to generation authorization without opening retry execution gate")
     combine_authorize_retry_parser.add_argument(
@@ -8906,6 +8969,12 @@ def main() -> int:
         return combine_reconcile_accepted_v3_asset_integrity(args)
     elif args.command == "combine-validate-no-accepted-asset-substitution":
         return combine_validate_no_accepted_asset_substitution(args)
+    elif args.command == "combine-reconcile-corrective-retry-v3-result":
+        return combine_reconcile_corrective_retry_v3_result(args)
+    elif args.command == "combine-audit-corrective-retry-v3-output-collector":
+        return combine_audit_corrective_retry_v3_output_collector(args)
+    elif args.command == "combine-build-corrective-retry-v3-result-reconciliation-report":
+        return combine_build_corrective_retry_v3_result_reconciliation_report(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
@@ -20877,6 +20946,496 @@ def combine_validate_no_accepted_asset_substitution(args: argparse.Namespace) ->
         print(f"Validation Passed: {not substitution_detected}")
 
     return 0 if not substitution_detected else 1
+
+
+def combine_reconcile_corrective_retry_v3_result(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1521-1580 — Reconcile Corrupted Corrective Retry V3 Result.
+
+    Investigates why corrective retry V3 result gave a corrupted/stub asset and determines recovery path.
+    Checks V3 generation result, trace, manifest, and physical assets to determine if valid V3 asset can be recovered.
+
+    Exit codes:
+    - 0: reconciliation completed successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v3_generation_result = _load_json(control_dir / "combine_v2_corrective_retry_v3_generation_result.json")
+    v3_outputs_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v3_outputs_manifest.json")
+    v3_generation_trace = _load_json(control_dir / "combine_v2_corrective_retry_v3_generation_trace.json")
+    v3_result_review = _load_json(control_dir / "combine_v2_corrective_retry_v3_result_review.json")
+
+    # Determine V3 asset path from manifest
+    v3_asset_path = None
+    if v3_outputs_manifest and "generated_assets" in v3_outputs_manifest and len(v3_outputs_manifest["generated_assets"]) > 0:
+        v3_asset_path = v3_outputs_manifest["generated_assets"][0]
+
+    # Check physical V3 asset
+    v3_asset_exists = False
+    v3_asset_readable = False
+    v3_asset_size_bytes = 0
+    v3_asset_corrupted = False
+    v3_asset_full_path = None
+
+    if v3_asset_path:
+        v3_asset_full_path = project_root / v3_asset_path
+        v3_asset_exists = v3_asset_full_path.exists()
+        if v3_asset_exists:
+            try:
+                v3_asset_size_bytes = v3_asset_full_path.stat().st_size
+                # Check if file is too small to be a valid image (stub threshold: < 100 bytes)
+                if v3_asset_size_bytes < 100:
+                    v3_asset_corrupted = True
+                    v3_asset_readable = False
+                else:
+                    # Try to read and validate as image
+                    with open(v3_asset_full_path, 'rb') as f:
+                        header = f.read(8)
+                        # Check PNG header
+                        if len(header) >= 8 and header[:8] == b'\x89PNG\r\n\x1a\n':
+                            v3_asset_readable = True
+                        else:
+                            v3_asset_corrupted = True
+                            v3_asset_readable = False
+            except Exception:
+                v3_asset_corrupted = True
+                v3_asset_readable = False
+        else:
+            v3_asset_corrupted = True
+
+    # Check if generation was stubbed
+    stub_generation = False
+    if v3_generation_result and v3_generation_result.get("stub_generation", False):
+        stub_generation = True
+
+    # Check output collection status from trace
+    output_collection_status = "unknown"
+    if v3_generation_trace and "events" in v3_generation_trace:
+        for event in v3_generation_trace["events"]:
+            if event.get("event") == "output_collection":
+                output_collection_status = event.get("status", "unknown")
+
+    # Determine if valid V3 asset can be recovered
+    valid_v3_asset_recovered = False
+    recovered_asset_path = None
+    recovered_asset_exists = False
+    recovered_asset_readable = False
+    recovered_asset_size_bytes = 0
+
+    # Search for potential valid V3 asset in assets directory
+    if v3_asset_corrupted and not stub_generation:
+        # Try to find a valid asset with similar timestamp pattern
+        timestamp_pattern = v3_asset_path.split("_")[-2] if v3_asset_path else None
+        if timestamp_pattern:
+            for asset_file in assets_dir.glob(f"*{timestamp_pattern}*.png"):
+                if asset_file.name != Path(v3_asset_path).name:
+                    try:
+                        size = asset_file.stat().st_size
+                        if size > 1000:  # Reasonable size for valid image
+                            with open(asset_file, 'rb') as f:
+                                header = f.read(8)
+                                if len(header) >= 8 and header[:8] == b'\x89PNG\r\n\x1a\n':
+                                    valid_v3_asset_recovered = True
+                                    recovered_asset_path = str(asset_file.relative_to(project_root))
+                                    recovered_asset_exists = True
+                                    recovered_asset_readable = True
+                                    recovered_asset_size_bytes = size
+                                    break
+                    except Exception:
+                        continue
+
+    # Determine reconciliation outcome
+    corrupted_manifest_asset_detected = v3_asset_corrupted
+    collector_failure_confirmed = (output_collection_status == "pending") or (stub_generation and v3_asset_corrupted)
+
+    # Invalidate chains
+    visual_qa_pass_invalidated = v3_asset_corrupted
+    operator_visual_acceptance_invalidated = v3_asset_corrupted
+    assembly_readiness_invalidated = v3_asset_corrupted
+    assembly_prevented = v3_asset_corrupted
+
+    # Determine next allowed action
+    if valid_v3_asset_recovered and recovered_asset_readable:
+        next_allowed_action = "corrective_retry_v3_visual_qa_preflight_required"
+    else:
+        next_allowed_action = "corrective_retry_v4_plan_required"
+
+    failure_code = None
+    if not valid_v3_asset_recovered:
+        if stub_generation:
+            failure_code = "CORRUPTED_V3_ASSET_STUB_GENERATION"
+        elif output_collection_status == "pending":
+            failure_code = "CORRUPTED_V3_ASSET_OUTPUT_COLLECTION_FAILURE"
+        else:
+            failure_code = "CORRUPTED_V3_ASSET_UNKNOWN_CAUSE"
+
+    # Create reconciliation decision
+    reconciliation_decision = {
+        "decision_type": "corrective_retry_v3_result_reconciliation_decision",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "result_reconciliation_executed": True,
+        "corrupted_v3_asset_path": v3_asset_path or "unknown",
+        "corrupted_v3_asset_size_bytes": v3_asset_size_bytes,
+        "corrupted_manifest_asset_detected": corrupted_manifest_asset_detected,
+        "valid_v3_asset_recovered": valid_v3_asset_recovered,
+        "recovered_asset_path": recovered_asset_path or "none",
+        "recovered_asset_exists": recovered_asset_exists,
+        "recovered_asset_readable": recovered_asset_readable,
+        "recovered_asset_size_bytes": recovered_asset_size_bytes,
+        "collector_failure_confirmed": collector_failure_confirmed,
+        "failure_code": failure_code or "none",
+        "stub_generation_detected": stub_generation,
+        "output_collection_status": output_collection_status,
+        "manifest_repaired": valid_v3_asset_recovered and recovered_asset_readable,
+        "visual_qa_pass_invalidated": visual_qa_pass_invalidated,
+        "operator_visual_acceptance_invalidated": operator_visual_acceptance_invalidated,
+        "assembly_readiness_invalidated": assembly_readiness_invalidated,
+        "assembly_prevented": assembly_prevented,
+        "retry_v4_plan_required": not valid_v3_asset_recovered,
+        "generation_performed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": next_allowed_action,
+    }
+
+    reconciliation_decision_path = control_dir / "combine_v2_corrective_retry_v3_result_reconciliation_decision.json"
+    with open(reconciliation_decision_path, 'w') as f:
+        json.dump(reconciliation_decision, f, indent=2)
+
+    # Create recovered asset manifest if recovery succeeded
+    if valid_v3_asset_recovered and recovered_asset_path:
+        recovered_manifest = {
+            "manifest_type": "corrective_retry_v3_recovered_asset_manifest",
+            "shot_id": shot_id,
+            "timestamp": timestamp,
+            "original_corrupted_asset": v3_asset_path or "unknown",
+            "recovered_asset_path": recovered_asset_path,
+            "recovered_asset_exists": recovered_asset_exists,
+            "recovered_asset_readable": recovered_asset_readable,
+            "recovered_asset_size_bytes": recovered_asset_size_bytes,
+            "manifest_repaired": True,
+        }
+        recovered_manifest_path = control_dir / "combine_v2_corrective_retry_v3_recovered_asset_manifest.json"
+        with open(recovered_manifest_path, 'w') as f:
+            json.dump(recovered_manifest, f, indent=2)
+
+    # Create main reconciliation report
+    reconciliation_report = {
+        "report_type": "corrective_retry_v3_result_reconciliation",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "result_reconciliation_executed": True,
+        "corrupted_v3_asset_path": v3_asset_path or "unknown",
+        "corrupted_v3_asset_size_bytes": v3_asset_size_bytes,
+        "corrupted_manifest_asset_detected": corrupted_manifest_asset_detected,
+        "valid_v3_asset_recovered": valid_v3_asset_recovered,
+        "recovered_asset_path": recovered_asset_path or "none",
+        "collector_failure_confirmed": collector_failure_confirmed,
+        "failure_code": failure_code or "none",
+        "stub_generation_detected": stub_generation,
+        "output_collection_status": output_collection_status,
+        "manifest_repaired": valid_v3_asset_recovered and recovered_asset_readable,
+        "visual_qa_pass_invalidated": visual_qa_pass_invalidated,
+        "operator_visual_acceptance_invalidated": operator_visual_acceptance_invalidated,
+        "assembly_readiness_invalidated": assembly_readiness_invalidated,
+        "assembly_prevented": assembly_prevented,
+        "retry_v4_plan_required": not valid_v3_asset_recovered,
+        "generation_performed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": next_allowed_action,
+    }
+
+    reconciliation_report_path = control_dir / "combine_v2_corrective_retry_v3_result_reconciliation.json"
+    with open(reconciliation_report_path, 'w') as f:
+        json.dump(reconciliation_report, f, indent=2)
+
+    result = reconciliation_report.copy()
+    result["artifacts"] = ["output/control/combine_v2_corrective_retry_v3_result_reconciliation.json"]
+
+    if valid_v3_asset_recovered:
+        result["artifacts"].append("output/control/combine_v2_corrective_retry_v3_recovered_asset_manifest.json")
+
+    result["artifacts"].append("output/control/combine_v2_corrective_retry_v3_result_reconciliation_decision.json")
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V3 Result Reconciliation")
+        print(f"Shot: {shot_id}")
+        print(f"Corrupted Asset Detected: {corrupted_manifest_asset_detected}")
+        print(f"Valid V3 Asset Recovered: {valid_v3_asset_recovered}")
+        print(f"Collector Failure Confirmed: {collector_failure_confirmed}")
+        print(f"Failure Code: {failure_code or 'none'}")
+        print(f"Next Allowed Action: {next_allowed_action}")
+
+    return 0
+
+
+def combine_audit_corrective_retry_v3_output_collector(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1521-1580 — Audit Corrective Retry V3 Output Collector.
+
+    Audits the output collector behavior for corrective retry V3 to determine why asset collection failed.
+
+    Exit codes:
+    - 0: audit completed successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v3_generation_result = _load_json(control_dir / "combine_v2_corrective_retry_v3_generation_result.json")
+    v3_outputs_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v3_outputs_manifest.json")
+    v3_generation_trace = _load_json(control_dir / "combine_v2_corrective_retry_v3_generation_trace.json")
+
+    # Determine V3 asset path from manifest
+    v3_asset_path = None
+    if v3_outputs_manifest and "generated_assets" in v3_outputs_manifest and len(v3_outputs_manifest["generated_assets"]) > 0:
+        v3_asset_path = v3_outputs_manifest["generated_assets"][0]
+
+    # Check physical V3 asset
+    v3_asset_exists = False
+    v3_asset_size_bytes = 0
+    v3_asset_corrupted = False
+    v3_asset_full_path = None
+
+    if v3_asset_path:
+        v3_asset_full_path = project_root / v3_asset_path
+        v3_asset_exists = v3_asset_full_path.exists()
+        if v3_asset_exists:
+            v3_asset_size_bytes = v3_asset_full_path.stat().st_size
+            v3_asset_corrupted = v3_asset_size_bytes < 100
+
+    # Check if generation was stubbed
+    stub_generation = False
+    stub_asset = False
+    if v3_generation_result and v3_generation_result.get("stub_generation", False):
+        stub_generation = True
+    if v3_outputs_manifest and v3_outputs_manifest.get("stub_asset", False):
+        stub_asset = True
+
+    # Check output collection status from trace
+    output_collection_status = "unknown"
+    output_collection_executed = False
+    comfyui_execution_stubbed = False
+
+    if v3_generation_trace and "events" in v3_generation_trace:
+        for event in v3_generation_trace["events"]:
+            if event.get("event") == "output_collection":
+                output_collection_status = event.get("status", "unknown")
+                output_collection_executed = output_collection_status == "completed"
+            if event.get("event") == "comfyui_execution":
+                comfyui_execution_stubbed = event.get("stub", False)
+
+    # Check collector reliability guard
+    collector_reliability_guard_preserved = False
+    if v3_generation_result:
+        collector_reliability_guard_preserved = v3_generation_result.get("collector_reliability_guard_preserved", False)
+
+    # Check output path contract
+    output_path_contract_preserved = False
+    if v3_generation_result:
+        output_path_contract_preserved = v3_generation_result.get("output_path_contract_preserved", False)
+
+    # Determine audit findings
+    audit_findings = []
+    if stub_generation:
+        audit_findings.append("Generation was stubbed - no real ComfyUI execution occurred")
+    if stub_asset:
+        audit_findings.append("Manifest marks asset as stub - collector wrote stub instead of real image")
+    if output_collection_status == "pending":
+        audit_findings.append("Output collection never completed - status remains pending")
+    if not output_collection_executed:
+        audit_findings.append("Output collection was not executed")
+    if comfyui_execution_stubbed:
+        audit_findings.append("ComfyUI execution was stubbed - no real generation to collect")
+    if v3_asset_corrupted:
+        audit_findings.append(f"Physical asset is corrupted/stub: {v3_asset_size_bytes} bytes")
+
+    # Determine failure mode
+    failure_mode = "unknown"
+    if stub_generation and stub_asset:
+        failure_mode = "stub_generation_layer"
+    elif output_collection_status == "pending":
+        failure_mode = "output_collection_not_executed"
+    elif v3_asset_corrupted and not stub_generation:
+        failure_mode = "collector_wrote_stub_instead_of_real_image"
+    else:
+        failure_mode = "unknown"
+
+    # Create audit report
+    audit_report = {
+        "audit_type": "corrective_retry_v3_output_collector_audit",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "v3_asset_path": v3_asset_path or "unknown",
+        "v3_asset_exists": v3_asset_exists,
+        "v3_asset_size_bytes": v3_asset_size_bytes,
+        "v3_asset_corrupted": v3_asset_corrupted,
+        "stub_generation_detected": stub_generation,
+        "stub_asset_detected": stub_asset,
+        "output_collection_status": output_collection_status,
+        "output_collection_executed": output_collection_executed,
+        "comfyui_execution_stubbed": comfyui_execution_stubbed,
+        "collector_reliability_guard_preserved": collector_reliability_guard_preserved,
+        "output_path_contract_preserved": output_path_contract_preserved,
+        "audit_findings": audit_findings,
+        "failure_mode": failure_mode,
+        "collector_failure_confirmed": failure_mode != "unknown",
+    }
+
+    audit_report_path = control_dir / "combine_v2_corrective_retry_v3_output_collector_audit.json"
+    with open(audit_report_path, 'w') as f:
+        json.dump(audit_report, f, indent=2)
+
+    result = audit_report.copy()
+    result["artifacts"] = ["output/control/combine_v2_corrective_retry_v3_output_collector_audit.json"]
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V3 Output Collector Audit")
+        print(f"Shot: {shot_id}")
+        print(f"Failure Mode: {failure_mode}")
+        print(f"Collector Failure Confirmed: {failure_mode != 'unknown'}")
+        print(f"Audit Findings: {len(audit_findings)}")
+        for finding in audit_findings:
+            print(f"  - {finding}")
+
+    return 0
+
+
+def combine_build_corrective_retry_v3_result_reconciliation_report(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1521-1580 — Build Corrective Retry V3 Result Reconciliation Report.
+
+    Builds a comprehensive reconciliation report combining audit findings and reconciliation decision.
+
+    Exit codes:
+    - 0: report built successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    reconciliation_decision = _load_json(control_dir / "combine_v2_corrective_retry_v3_result_reconciliation_decision.json")
+    collector_audit = _load_json(control_dir / "combine_v2_corrective_retry_v3_output_collector_audit.json")
+    v3_generation_result = _load_json(control_dir / "combine_v2_corrective_retry_v3_generation_result.json")
+    v3_outputs_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v3_outputs_manifest.json")
+
+    # Build comprehensive report
+    comprehensive_report = {
+        "report_type": "corrective_retry_v3_corruption_root_cause_report",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "corrupted_v3_asset_path": reconciliation_decision.get("corrupted_v3_asset_path", "unknown"),
+        "corrupted_v3_asset_size_bytes": reconciliation_decision.get("corrupted_v3_asset_size_bytes", 0),
+        "root_cause_analysis": {
+            "failure_mode": collector_audit.get("failure_mode", "unknown"),
+            "stub_generation_detected": reconciliation_decision.get("stub_generation_detected", False),
+            "output_collection_status": collector_audit.get("output_collection_status", "unknown"),
+            "collector_failure_confirmed": reconciliation_decision.get("collector_failure_confirmed", False),
+            "failure_code": reconciliation_decision.get("failure_code", "none"),
+        },
+        "audit_findings": collector_audit.get("audit_findings", []),
+        "reconciliation_outcome": {
+            "valid_v3_asset_recovered": reconciliation_decision.get("valid_v3_asset_recovered", False),
+            "recovered_asset_path": reconciliation_decision.get("recovered_asset_path", "none"),
+            "manifest_repaired": reconciliation_decision.get("manifest_repaired", False),
+        },
+        "chain_invalidation": {
+            "visual_qa_pass_invalidated": reconciliation_decision.get("visual_qa_pass_invalidated", False),
+            "operator_visual_acceptance_invalidated": reconciliation_decision.get("operator_visual_acceptance_invalidated", False),
+            "assembly_readiness_invalidated": reconciliation_decision.get("assembly_readiness_invalidated", False),
+            "assembly_prevented": reconciliation_decision.get("assembly_prevented", False),
+        },
+        "next_steps": {
+            "retry_v4_plan_required": reconciliation_decision.get("retry_v4_plan_required", False),
+            "next_allowed_action": reconciliation_decision.get("next_allowed_action", "unknown"),
+        },
+        "hard_boundary": {
+            "new_generation": False,
+            "retry_submit": False,
+            "visual_qa_executed": False,
+            "operator_visual_decision": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        },
+    }
+
+    report_path = control_dir / "combine_v2_corrective_retry_v3_corruption_root_cause_report.json"
+    with open(report_path, 'w') as f:
+        json.dump(comprehensive_report, f, indent=2)
+
+    result = comprehensive_report.copy()
+    result["artifacts"] = ["output/control/combine_v2_corrective_retry_v3_corruption_root_cause_report.json"]
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V3 Corruption Root Cause Report")
+        print(f"Shot: {shot_id}")
+        print(f"Failure Mode: {comprehensive_report['root_cause_analysis']['failure_mode']}")
+        print(f"Failure Code: {comprehensive_report['root_cause_analysis']['failure_code']}")
+        print(f"Valid V3 Asset Recovered: {comprehensive_report['reconciliation_outcome']['valid_v3_asset_recovered']}")
+        print(f"Next Allowed Action: {comprehensive_report['next_steps']['next_allowed_action']}")
+
+    return 0
 
 
 if __name__ == "__main__":
