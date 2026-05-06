@@ -1,0 +1,12 @@
+{
+  "stage": "corrective_retry_v4_generate_assets",
+  "manifest_type": "corrective_retry_v4_outputs_manifest",
+  "shot_id": "shot02",
+  "generated_assets": [
+    "output/assets/combine_v2_corrective_retry_v4_generated_1778068970_00001_.png"
+  ],
+  "asset_count": 1,
+  "generation_performed": true,
+  "timestamp": "2026-05-06T12:02:50.452430+00:00",
+  "stub_asset": true
+}

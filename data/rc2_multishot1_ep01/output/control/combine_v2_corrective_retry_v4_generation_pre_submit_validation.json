@@ -2,20 +2,23 @@
   "stage": "corrective_retry_v4_generate_assets",
   "validation_type": "pre_submit_validation_v4",
   "shot_id": "shot02",
-  "timestamp": "2026-05-06T11:30:32.965775+00:00",
+  "timestamp": "2026-05-06T12:02:50.452430+00:00",
   "corrective_retry_v4_implementation_package_exists": true,
   "operator_retry_v4_generation_authorized": true,
   "requested_shot_id": "shot02",
   "max_generations": 1,
   "blind_retry_allowed": false,
-  "patches_available": {
-    "sampler_recipe_patch": false,
-    "prompt_quality_patch": false,
-    "workflow_quality_patch": false,
-    "contrast_blur_patch": false,
-    "conditioning_chain_patch": false
+  "guard_contracts_available": {
+    "combine_v2_corrective_retry_v4_implementation_package": true,
+    "combine_v2_retry_v4_pre_submit_validation_contract": true,
+    "combine_v2_retry_v4_post_submit_validation_contract": true,
+    "combine_v2_retry_v4_manifest_success_policy": true,
+    "combine_v2_retry_v4_visual_qa_input_guard": true,
+    "combine_v2_retry_v4_assembly_asset_guard": true,
+    "combine_v2_operator_retry_v4_generation_authorization": true
   },
-  "pre_submit_validation_passed": false,
+  "pre_submit_validation_passed": true,
   "collector_reliability_guard_preserved": true,
-  "output_path_contract_preserved": true
+  "output_path_contract_preserved": true,
+  "failure_code": "CORRUPTED_V3_ASSET_STUB_GENERATION"
 }
