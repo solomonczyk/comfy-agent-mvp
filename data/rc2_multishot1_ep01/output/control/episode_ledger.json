@@ -612,5 +612,32 @@
     "operator_plan_review_packet_created": true,
     "next_allowed_action": "operator_retry_v4_plan_review_required",
     "timestamp": "2026-05-06T08:56:33.515465+00:00"
+  },
+  {
+    "event_type": "retry_v4_stub_generation_fix_plan_created",
+    "stage": "corrective_retry_v4_plan_required",
+    "shot_id": "shot02",
+    "stub_generation_fix_plan_created": true,
+    "output_validation_policy_created": true,
+    "no_stub_asset_guard_created": true,
+    "timestamp": "2026-05-06T09:03:08.676433+00:00"
+  },
+  {
+    "event_type": "retry_v4_operator_plan_review_packet_created",
+    "stage": "operator_retry_v4_plan_review_required",
+    "shot_id": "shot02",
+    "operator_plan_review_packet_created": true,
+    "next_allowed_action": "operator_retry_v4_plan_review_required",
+    "timestamp": "2026-05-06T09:03:08.989734+00:00"
+  },
+  {
+    "event_type": "corrective_retry_v4_plan_created",
+    "stage": "corrective_retry_v4_plan_required",
+    "shot_id": "shot02",
+    "failure_code": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+    "corrupted_v3_asset_size_bytes": 8,
+    "valid_v3_asset_recovered": false,
+    "next_allowed_action": "operator_retry_v4_plan_review_required",
+    "timestamp": "2026-05-06T09:03:10.495832+00:00"
   }
 ]

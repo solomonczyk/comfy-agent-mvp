@@ -1,7 +1,7 @@
 {
   "guard_type": "retry_v4_no_stub_asset_guard",
   "shot_id": "shot02",
-  "timestamp": "2026-05-06T08:56:27.050752+00:00",
+  "timestamp": "2026-05-06T09:03:08.676433+00:00",
   "guard_rules": {
     "size_threshold": 1024,
     "reject_below_threshold": true,

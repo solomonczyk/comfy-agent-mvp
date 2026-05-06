@@ -1,7 +1,7 @@
 {
   "packet_type": "retry_v4_operator_plan_review_packet",
   "shot_id": "shot02",
-  "timestamp": "2026-05-06T08:56:33.515465+00:00",
+  "timestamp": "2026-05-06T09:03:08.989734+00:00",
   "failure_summary": {
     "failure_code": "CORRUPTED_V3_ASSET_STUB_GENERATION",
     "corrupted_v3_asset_size_bytes": 8,
