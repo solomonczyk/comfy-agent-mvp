@@ -37,11 +37,17 @@ def test_combine_corrective_retry_v4_generate_assets_execute(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    # Create required patches
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        patch = {"patch_type": f"corrective_retry_v4_{patch_name}_patch", "patch_created": True}
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump(patch, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(
@@ -93,8 +99,8 @@ def test_pre_submit_validation_required(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    # Missing some patches
-    with open(control_dir / "combine_v2_corrective_retry_v4_sampler_recipe_patch.json", 'w') as f:
+    # Missing some guard contracts
+    with open(control_dir / "combine_v2_retry_v4_pre_submit_validation_contract.json", 'w') as f:
         json.dump({}, f)
     
     # Create args
@@ -138,9 +144,17 @@ def test_generation_attempts_limited_to_one(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args with max_generations=1
     args = argparse.Namespace(
@@ -191,9 +205,17 @@ def test_second_generation_blocked(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(
@@ -243,9 +265,17 @@ def test_blind_retry_blocked(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(
@@ -295,9 +325,17 @@ def test_no_authorization_no_generation(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(
@@ -340,9 +378,17 @@ def test_visual_qa_not_executed(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(
@@ -392,9 +438,17 @@ def test_assembly_not_executed(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(
@@ -445,9 +499,17 @@ def test_post_submit_validation_executed(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(
@@ -500,9 +562,17 @@ def test_stub_asset_guard_enforced(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(
@@ -553,9 +623,17 @@ def test_production_accepted_false(tmp_path):
     with open(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json", 'w') as f:
         json.dump(package, f)
     
-    for patch_name in ["sampler_recipe", "prompt_quality", "workflow_quality", "contrast_blur", "conditioning_chain"]:
-        with open(control_dir / f"combine_v2_corrective_retry_v4_{patch_name}_patch.json", 'w') as f:
-            json.dump({}, f)
+    # Create required V4 guard contracts
+    guard_contracts = [
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+    ]
+    for contract in guard_contracts:
+        with open(control_dir / contract, 'w') as f:
+            json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
     # Create args
     args = argparse.Namespace(

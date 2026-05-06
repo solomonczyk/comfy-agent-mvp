@@ -1,0 +1,21 @@
+{
+  "stage": "corrective_retry_v4_generate_assets",
+  "validation_type": "pre_submit_validation_v4",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T11:30:32.965775+00:00",
+  "corrective_retry_v4_implementation_package_exists": true,
+  "operator_retry_v4_generation_authorized": true,
+  "requested_shot_id": "shot02",
+  "max_generations": 1,
+  "blind_retry_allowed": false,
+  "patches_available": {
+    "sampler_recipe_patch": false,
+    "prompt_quality_patch": false,
+    "workflow_quality_patch": false,
+    "contrast_blur_patch": false,
+    "conditioning_chain_patch": false
+  },
+  "pre_submit_validation_passed": false,
+  "collector_reliability_guard_preserved": true,
+  "output_path_contract_preserved": true
+}

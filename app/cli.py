@@ -22734,34 +22734,37 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
             print(msg)
         return 1
 
-    # Pre-submit validation
-    patches_required = [
-        "combine_v2_corrective_retry_v4_sampler_recipe_patch.json",
-        "combine_v2_corrective_retry_v4_prompt_quality_patch.json",
-        "combine_v2_corrective_retry_v4_workflow_quality_patch.json",
-        "combine_v2_corrective_retry_v4_contrast_blur_patch.json",
-        "combine_v2_corrective_retry_v4_conditioning_chain_patch.json",
+    # Pre-submit validation - V4 guard contracts for CORRUPTED_V3_ASSET_STUB_GENERATION
+    guard_contracts_required = [
+        "combine_v2_corrective_retry_v4_implementation_package.json",
+        "combine_v2_retry_v4_pre_submit_validation_contract.json",
+        "combine_v2_retry_v4_post_submit_validation_contract.json",
+        "combine_v2_retry_v4_manifest_success_policy.json",
+        "combine_v2_retry_v4_visual_qa_input_guard.json",
+        "combine_v2_retry_v4_assembly_asset_guard.json",
+        "combine_v2_operator_retry_v4_generation_authorization.json",
     ]
 
-    patches_available = {}
-    for patch_file in patches_required:
-        patch_path = control_dir / patch_file
-        patches_available[patch_file.replace('.json', '').replace('combine_v2_corrective_retry_v4_', '')] = patch_path.exists()
+    guard_contracts_available = {}
+    for contract_file in guard_contracts_required:
+        contract_path = control_dir / contract_file
+        guard_contracts_available[contract_file.replace('.json', '')] = contract_path.exists()
 
     pre_submit_validation = {
         "stage": "corrective_retry_v4_generate_assets",
         "validation_type": "pre_submit_validation_v4",
         "shot_id": shot_id,
         "timestamp": timestamp,
-        "corrective_retry_v4_implementation_package_exists": True,
-        "operator_retry_v4_generation_authorized": True,
+        "corrective_retry_v4_implementation_package_exists": guard_contracts_available.get("combine_v2_corrective_retry_v4_implementation_package", False),
+        "operator_retry_v4_generation_authorized": guard_contracts_available.get("combine_v2_operator_retry_v4_generation_authorization", False),
         "requested_shot_id": shot_id,
         "max_generations": max_generations,
         "blind_retry_allowed": False,
-        "patches_available": patches_available,
-        "pre_submit_validation_passed": all(patches_available.values()),
+        "guard_contracts_available": guard_contracts_available,
+        "pre_submit_validation_passed": all(guard_contracts_available.values()),
         "collector_reliability_guard_preserved": True,
         "output_path_contract_preserved": True,
+        "failure_code": package.get("failure_basis", "CORRUPTED_V3_ASSET_STUB_GENERATION"),
     }
 
     validation_path = control_dir / "combine_v2_corrective_retry_v4_generation_pre_submit_validation.json"
@@ -22769,7 +22772,7 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
         json.dump(pre_submit_validation, f, indent=2)
 
     if not pre_submit_validation["pre_submit_validation_passed"]:
-        msg = "Error: Pre-submit validation failed. Missing required patches."
+        msg = "Error: Pre-submit validation failed. Missing required V4 guard contracts."
         if json_output:
             print(json.dumps({"status": "error", "message": msg, "validation": pre_submit_validation}))
         else:
