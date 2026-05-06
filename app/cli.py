@@ -8215,6 +8215,38 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2301-2360 — combine-authorize-corrective-retry-v4-real-execution subcommand
+    combine_authorize_corrective_retry_v4_real_execution_parser = subparsers.add_parser(
+        "combine-authorize-corrective-retry-v4-real-execution",
+        help="Authorize corrective retry V4 real execution (separate from stub generation authorization)"
+    )
+    combine_authorize_corrective_retry_v4_real_execution_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_authorize_corrective_retry_v4_real_execution_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_authorize_corrective_retry_v4_real_execution_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["approve_corrective_retry_v4_real_execution", "approve_one_corrective_retry_v4_real_execution", "reject_corrective_retry_v4_real_execution"],
+        help="Operator decision for real execution authorization",
+    )
+    combine_authorize_corrective_retry_v4_real_execution_parser.add_argument(
+        "--reason",
+        required=True,
+        help="Reason for decision",
+    )
+    combine_authorize_corrective_retry_v4_real_execution_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1701-1760 — combine-corrective-retry-v4-generate-assets subcommand
     combine_corrective_retry_v4_generate_assets_parser = subparsers.add_parser(
         "combine-corrective-retry-v4-generate-assets",
@@ -9563,6 +9595,8 @@ def main() -> int:
         return combine_review_corrective_retry_v3_result(args)
     elif args.command == "combine-authorize-corrective-retry-v4-generation":
         return combine_authorize_corrective_retry_v4_generation(args)
+    elif args.command == "combine-authorize-corrective-retry-v4-real-execution":
+        return combine_authorize_corrective_retry_v4_real_execution(args)
     elif args.command == "combine-corrective-retry-v4-generate-assets":
         return combine_corrective_retry_v4_generate_assets(args)
     elif args.command == "combine-review-corrective-retry-v4-result":
@@ -23100,6 +23134,150 @@ def combine_authorize_corrective_retry_v4_generation(args: argparse.Namespace) -
     return 0
 
 
+def combine_authorize_corrective_retry_v4_real_execution(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2301-2360 — Authorize Corrective Retry V4 Real Execution.
+
+    Separate authorization command for real execution (distinct from stub generation authorization).
+    This command transitions to corrective_retry_v4_real_execute_assets, NOT corrective_retry_v4_generate_assets.
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    decision = args.decision
+    reason = args.reason
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Check that non-stub execution route exists
+    route_path = control_dir / "combine_v2_corrective_retry_v4_non_stub_execution_route.json"
+    if not route_path.exists():
+        msg = "Error: combine_v2_corrective_retry_v4_non_stub_execution_route.json not found. Real execution route must be created first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(route_path, 'r') as f:
+        route = json.load(f)
+
+    valid_decisions = [
+        "approve_corrective_retry_v4_real_execution",
+        "approve_one_corrective_retry_v4_real_execution",
+        "reject_corrective_retry_v4_real_execution",
+    ]
+    if decision not in valid_decisions:
+        msg = f"Error: Invalid decision '{decision}'. Valid: {valid_decisions}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    authorized = decision in ("approve_corrective_retry_v4_real_execution", "approve_one_corrective_retry_v4_real_execution")
+
+    # Create real execution authorization artifact (separate from stub generation authorization)
+    authorization = {
+        "stage": "operator_retry_v4_real_execution_authorization_required",
+        "operator_decision": decision,
+        "operator_retry_v4_real_execution_authorized": authorized,
+        "corrective_retry_v4_non_stub_execution_route_available": True,
+        "shot_id": shot_id,
+        "max_generations": 1,
+        "operator_reason": reason,
+        "real_execution_allowed": authorized,
+        "generation_performed": False,  # Hard boundary: no generation
+        "new_comfyui_submit_executed": False,  # Hard boundary: no ComfyUI submit
+        "comfyui_execution": False,  # Hard boundary: no ComfyUI execution
+        "retry_attempted": False,  # Hard boundary: no retry
+        "visual_qa_executed": False,  # Hard boundary: no visual QA
+        "assembly_executed": False,  # Hard boundary: no assembly
+        "downstream_executed": False,  # Hard boundary: no downstream
+        "production_accepted": False,  # Hard boundary: no production acceptance
+        "next_allowed_action": "corrective_retry_v4_real_execute_assets" if authorized else "operator_retry_v4_real_execution_authorization_required",
+        "timestamp": timestamp,
+    }
+
+    auth_path = control_dir / "combine_v2_operator_retry_v4_real_execution_authorization.json"
+    with open(auth_path, 'w') as f:
+        json.dump(authorization, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_v4_real_execute_assets" if authorized else "operator_retry_v4_real_execution_authorization_required"
+    artifact_index["next_allowed_action"] = authorization["next_allowed_action"]
+    artifact_index["operator_retry_v4_real_execution_authorized"] = authorized
+    artifact_index["real_execution_allowed"] = authorized
+    artifact_index["generation_performed"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "operator_retry_v4_real_execution_authorized",
+        "stage": "operator_retry_v4_real_execution_authorization_required",
+        "shot_id": shot_id,
+        "operator_decision": decision,
+        "operator_retry_v4_real_execution_authorized": authorized,
+        "real_execution_allowed": authorized,
+        "next_allowed_action": authorization["next_allowed_action"],
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "operator_retry_v4_real_execution_authorization_required",
+        "operator_decision": decision,
+        "operator_retry_v4_real_execution_authorized": authorized,
+        "corrective_retry_v4_non_stub_execution_route_available": True,
+        "shot_id": shot_id,
+        "real_execution_allowed": authorized,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "next_allowed_action": authorization["next_allowed_action"],
+        "artifacts": ["output/control/combine_v2_operator_retry_v4_real_execution_authorization.json"],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Operator Retry V4 Real Execution Authorized: {authorized}")
+        print(f"Next Allowed Action: {authorization['next_allowed_action']}")
+        print(f"Generation Performed: False (hard boundary)")
+        print(f"ComfyUI Execution: False (hard boundary)")
+
+    return 0
+
+
 def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-1701-1760 — Generate One Corrective Retry V4 Asset.
     
@@ -24131,24 +24309,9 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
             print("Real Execute V4: BLOCKED (real workflow binding missing)")
         return 1
 
-    # Guard: state must be operator_retry_v4_real_execution_authorization_required
+    # Load current state (used for both execute and no-execute paths)
     artifact_index = _load_json(control_dir / "artifact_index.json")
     current_state = artifact_index.get("current_state", "")
-    if current_state != "operator_retry_v4_real_execution_authorization_required":
-        blocked = {
-            "status": "blocked",
-            "blocked_reason": "operator_retry_v4_real_execution_authorization_not_yet_granted",
-            "current_state": current_state,
-            "required_state": "operator_retry_v4_real_execution_authorization_required",
-            "generation_performed": False,
-            "comfyui_execution": False,
-            "production_accepted": False,
-        }
-        if json_output:
-            print(json.dumps(blocked, indent=2))
-        else:
-            print(f"Real Execute V4: BLOCKED (state={current_state}, need operator_retry_v4_real_execution_authorization_required)")
-        return 1
 
     # Resolve workflow
     workflow_source = binding.get("workflow_source", "")
@@ -24168,7 +24331,7 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
     # Never use the source workflow prefix (may be shot01-stamped)
     runtime_saveimage_prefix = f"combine_v2_corrective_retry_v4_{shot_id}"
 
-    # Without --execute: informational output only (dry-run info)
+    # Without --execute: informational output only (dry-run info, no authorization required)
     if not execute:
         info = {
             "status": "authorization_required",
@@ -24209,6 +24372,63 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
 
     # --execute path: real ComfyUI submission
     # Only reached after operator authorization and explicit --execute flag
+
+    # Guard: RC-COMBINE-V2-2301-2360 — require real execution authorization artifact
+    real_execution_auth_path = control_dir / "combine_v2_operator_retry_v4_real_execution_authorization.json"
+    if not real_execution_auth_path.exists():
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "real_execution_authorization_artifact_not_found",
+            "current_state": current_state,
+            "required_artifact": "combine_v2_operator_retry_v4_real_execution_authorization.json",
+            "note": "Use combine-authorize-corrective-retry-v4-real-execution to authorize real execution",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"Real Execute V4: BLOCKED (real execution authorization artifact not found)")
+            print(f"Use: combine-authorize-corrective-retry-v4-real-execution --decision approve_one_corrective_retry_v4_real_execution")
+        return 1
+
+    real_execution_auth = _load_json(real_execution_auth_path)
+    real_execution_authorized = real_execution_auth.get("operator_retry_v4_real_execution_authorized", False)
+
+    if not real_execution_authorized:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "real_execution_not_authorized",
+            "current_state": current_state,
+            "real_execution_authorized": real_execution_authorized,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"Real Execute V4: BLOCKED (real execution not authorized)")
+        return 1
+
+    # Guard: verify state allows real execution
+    if current_state != "operator_retry_v4_real_execution_authorization_required" and current_state != "corrective_retry_v4_real_execute_assets":
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "invalid_state_for_real_execution",
+            "current_state": current_state,
+            "expected_states": ["operator_retry_v4_real_execution_authorization_required", "corrective_retry_v4_real_execute_assets"],
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"Real Execute V4: BLOCKED (state={current_state}, expected real execution authorization state)")
+        return 1
+
     comfy_base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188")
 
     # Deep-copy workflow and patch SaveImage filename_prefix to the runtime prefix

@@ -88,6 +88,13 @@ def _setup_full_project(tmp_path, current_state="operator_retry_v4_real_executio
         "failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION",
     }))
 
+    # real execution authorization artifact (required by execute=True path)
+    (control_dir / "combine_v2_operator_retry_v4_real_execution_authorization.json").write_text(json.dumps({
+        "operator_retry_v4_real_execution_authorized": True,
+        "operator_decision": "approve_one_corrective_retry_v4_real_execution",
+        "next_allowed_action": "corrective_retry_v4_real_execute_assets",
+    }))
+
     return project_root, control_dir
 
 
