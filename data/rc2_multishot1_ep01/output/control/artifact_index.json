@@ -5214,7 +5214,7 @@
   "retry_allowed": false,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "operator_assembly_authorization_required",
+  "next_allowed_action": "corrective_retry_v3_result_reconciliation_required",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
@@ -5314,5 +5314,8 @@
   "assembly_requires_operator_authorization": true,
   "assembly_allowed": false,
   "operator_assembly_authorization_request_created": true,
-  "authorization_status": "pending"
+  "authorization_status": "pending",
+  "accepted_v3_asset_integrity_reconciliation_completed": true,
+  "silent_asset_substitution_guard_enforced": true,
+  "assembly_blocked": true
 }

@@ -1,0 +1,12 @@
+{
+  "guard_type": "silent_asset_substitution_guard",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T08:05:46.928797+00:00",
+  "silent_asset_substitution_detected": true,
+  "silent_asset_substitution_allowed": false,
+  "invalid_substitute_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "substitute_asset_rejected": true,
+  "original_accepted_v3_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+  "guard_enforced": true,
+  "next_allowed_action": "corrective_retry_v3_result_reconciliation_required"
+}

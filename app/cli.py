@@ -6867,6 +6867,57 @@ def main() -> int:
         action="store_true",
         help="Output in JSON format",
     )
+    combine_build_operator_assembly_authorization_request_v3_parser.set_defaults(
+        func=combine_build_operator_assembly_authorization_request_v3
+    )
+
+    # RC-COMBINE-V2-1461-1520-BLOCKER-FIX — combine-reconcile-accepted-v3-asset-integrity subcommand
+    combine_reconcile_accepted_v3_asset_integrity_parser = subparsers.add_parser(
+        "combine-reconcile-accepted-v3-asset-integrity",
+        help="Reconcile accepted V3 asset integrity and prevent silent substitution"
+    )
+    combine_reconcile_accepted_v3_asset_integrity_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_reconcile_accepted_v3_asset_integrity_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_reconcile_accepted_v3_asset_integrity_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_reconcile_accepted_v3_asset_integrity_parser.set_defaults(
+        func=combine_reconcile_accepted_v3_asset_integrity
+    )
+
+    # RC-COMBINE-V2-1461-1520-BLOCKER-FIX — combine-validate-no-accepted-asset-substitution subcommand
+    combine_validate_no_accepted_asset_substitution_parser = subparsers.add_parser(
+        "combine-validate-no-accepted-asset-substitution",
+        help="Validate no silent asset substitution occurred"
+    )
+    combine_validate_no_accepted_asset_substitution_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_no_accepted_asset_substitution_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_validate_no_accepted_asset_substitution_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_validate_no_accepted_asset_substitution_parser.set_defaults(
+        func=combine_validate_no_accepted_asset_substitution
+    )
 
     # RC-COMBINE-V2-11 — combine-authorize-retry subcommand
     combine_authorize_retry_parser = subparsers.add_parser("combine-authorize-retry", help="Authorize retry return to generation authorization without opening retry execution gate")
@@ -8851,6 +8902,10 @@ def main() -> int:
         return combine_run_corrective_retry_v3_visual_qa(args)
     elif args.command == "combine-build-corrective-retry-v3-operator-review-packet":
         return combine_build_corrective_retry_v3_operator_review_packet(args)
+    elif args.command == "combine-reconcile-accepted-v3-asset-integrity":
+        return combine_reconcile_accepted_v3_asset_integrity(args)
+    elif args.command == "combine-validate-no-accepted-asset-substitution":
+        return combine_validate_no_accepted_asset_substitution(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
@@ -20458,6 +20513,370 @@ def combine_build_operator_assembly_authorization_request_v3(args: argparse.Name
         print(f"Next Allowed Action: operator_assembly_authorization_required")
 
     return 0
+
+
+def combine_reconcile_accepted_v3_asset_integrity(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1461-1520-BLOCKER-FIX — Reconcile Accepted V3 Asset Integrity.
+
+    Investigates why an accepted V3 asset became corrupted and invalidates the acceptance chain if needed.
+    Prevents silent asset substitution by validating the physical asset against acceptance records.
+
+    Exit codes:
+    - 0: reconciliation completed successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+    import hashlib
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v3_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v3_outputs_manifest.json")
+    v3_qa_report = _load_json(control_dir / "combine_v2_corrective_retry_v3_visual_qa_report.json")
+    v3_operator_acceptance = _load_json(control_dir / "combine_v2_operator_visual_acceptance_v3.json")
+    v3_assembly_readiness = _load_json(control_dir / "combine_v2_assembly_readiness_packet_v3.json")
+    v3_assembly_preflight = _load_json(control_dir / "combine_v2_assembly_preflight_v3.json")
+
+    # Determine V3 asset path from manifest
+    v3_asset_path = None
+    if v3_manifest and "generated_assets" in v3_manifest and len(v3_manifest["generated_assets"]) > 0:
+        v3_asset_path = v3_manifest["generated_assets"][0]
+
+    # Check physical V3 asset
+    v3_asset_exists = False
+    v3_asset_readable = False
+    v3_asset_size_bytes = 0
+    v3_asset_corrupted = False
+    v3_asset_full_path = None
+
+    if v3_asset_path:
+        v3_asset_full_path = project_root / v3_asset_path
+        v3_asset_exists = v3_asset_full_path.exists()
+        if v3_asset_exists:
+            try:
+                v3_asset_size_bytes = v3_asset_full_path.stat().st_size
+                # Check if file is too small to be a valid image
+                if v3_asset_size_bytes < 100:
+                    v3_asset_corrupted = True
+                    v3_asset_readable = False
+                else:
+                    # Try to read and validate as image
+                    with open(v3_asset_full_path, 'rb') as f:
+                        header = f.read(8)
+                        # Check PNG header
+                        if len(header) >= 8 and header[:8] == b'\x89PNG\r\n\x1a\n':
+                            v3_asset_readable = True
+                        else:
+                            v3_asset_corrupted = True
+                            v3_asset_readable = False
+            except Exception:
+                v3_asset_corrupted = True
+                v3_asset_readable = False
+        else:
+            v3_asset_corrupted = True
+
+    # Check for silent asset substitution
+    silent_substitution_detected = False
+    invalid_substitute_asset = None
+    substitute_asset_rejected = True
+
+    if v3_assembly_readiness and "source_asset" in v3_assembly_readiness:
+        assembly_asset = v3_assembly_readiness["source_asset"]
+        if v3_asset_path and assembly_asset != v3_asset_path:
+            silent_substitution_detected = True
+            invalid_substitute_asset = assembly_asset
+
+    if v3_assembly_preflight and "source_asset" in v3_assembly_preflight:
+        preflight_asset = v3_assembly_preflight["source_asset"]
+        if v3_asset_path and preflight_asset != v3_asset_path:
+            silent_substitution_detected = True
+            if not invalid_substitute_asset:
+                invalid_substitute_asset = preflight_asset
+
+    # Invalidate acceptance chain if V3 asset is corrupted
+    visual_qa_pass_invalidated = False
+    operator_visual_acceptance_invalidated = False
+    assembly_readiness_invalidated = False
+    assembly_preflight_invalidated = False
+
+    if v3_asset_corrupted or (not v3_asset_exists and v3_asset_path):
+        visual_qa_pass_invalidated = True
+        operator_visual_acceptance_invalidated = True
+        assembly_readiness_invalidated = True
+        assembly_preflight_invalidated = True
+
+    # Determine next allowed action
+    if v3_asset_corrupted or (not v3_asset_exists and v3_asset_path):
+        next_allowed_action = "corrective_retry_v3_result_reconciliation_required"
+    elif silent_substitution_detected:
+        next_allowed_action = "assembly_readiness_packet_repair_required"
+    else:
+        next_allowed_action = "assembly_preflight_required"
+
+    # Create reconciliation report
+    reconciliation_report = {
+        "reconciliation_type": "accepted_v3_asset_integrity_reconciliation",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "accepted_v3_asset_integrity_checked": True,
+        "accepted_v3_asset_path": v3_asset_path or "unknown",
+        "accepted_v3_asset_exists": v3_asset_exists,
+        "accepted_v3_asset_readable": v3_asset_readable,
+        "accepted_v3_asset_size_bytes": v3_asset_size_bytes,
+        "accepted_v3_asset_corrupted": v3_asset_corrupted,
+        "visual_qa_pass_invalidated": visual_qa_pass_invalidated,
+        "operator_visual_acceptance_invalidated": operator_visual_acceptance_invalidated,
+        "assembly_readiness_invalidated": assembly_readiness_invalidated,
+        "assembly_preflight_invalidated": assembly_preflight_invalidated,
+        "silent_asset_substitution_detected": silent_substitution_detected,
+        "silent_asset_substitution_allowed": False,
+        "invalid_substitute_asset": invalid_substitute_asset or "none",
+        "substitute_asset_rejected": substitute_asset_rejected,
+        "next_allowed_action": next_allowed_action,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "hard_boundary": {
+            "new_generation": False,
+            "retry_submit": False,
+            "visual_qa_rerun": False,
+            "operator_visual_acceptance_rerun": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        },
+    }
+
+    reconciliation_report_path = control_dir / "combine_v2_accepted_v3_asset_integrity_reconciliation.json"
+    with open(reconciliation_report_path, 'w') as f:
+        json.dump(reconciliation_report, f, indent=2)
+
+    # Create silent asset substitution guard
+    substitution_guard = {
+        "guard_type": "silent_asset_substitution_guard",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "silent_asset_substitution_detected": silent_substitution_detected,
+        "silent_asset_substitution_allowed": False,
+        "invalid_substitute_asset": invalid_substitute_asset or "none",
+        "substitute_asset_rejected": True,
+        "original_accepted_v3_asset": v3_asset_path or "unknown",
+        "guard_enforced": True,
+        "next_allowed_action": next_allowed_action,
+    }
+
+    substitution_guard_path = control_dir / "combine_v2_silent_asset_substitution_guard.json"
+    with open(substitution_guard_path, 'w') as f:
+        json.dump(substitution_guard, f, indent=2)
+
+    # Create blocker report if needed
+    blocker_report = None
+    if v3_asset_corrupted or silent_substitution_detected:
+        blocker_report = {
+            "report_type": "assembly_readiness_v3_blocker_report",
+            "shot_id": shot_id,
+            "timestamp": timestamp,
+            "blocker_detected": True,
+            "blocker_reason": "v3_asset_corrupted" if v3_asset_corrupted else "silent_asset_substitution_detected",
+            "blocker_details": {
+                "v3_asset_corrupted": v3_asset_corrupted,
+                "silent_substitution_detected": silent_substitution_detected,
+                "invalid_substitute_asset": invalid_substitute_asset or "none",
+            },
+            "assembly_blocked": True,
+            "required_action": next_allowed_action,
+        }
+        blocker_report_path = control_dir / "combine_v2_assembly_readiness_v3_blocker_report.json"
+        with open(blocker_report_path, 'w') as f:
+            json.dump(blocker_report, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["accepted_v3_asset_integrity_reconciliation_completed"] = True
+    artifact_index["silent_asset_substitution_guard_enforced"] = True
+    artifact_index["assembly_blocked"] = v3_asset_corrupted or silent_substitution_detected
+    artifact_index["next_allowed_action"] = next_allowed_action
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "accepted_v3_asset_integrity_reconciliation",
+        "shot_id": shot_id,
+        "v3_asset_corrupted": v3_asset_corrupted,
+        "silent_substitution_detected": silent_substitution_detected,
+        "next_allowed_action": next_allowed_action,
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "accepted_v3_asset_integrity_checked": True,
+        "accepted_v3_asset_path": v3_asset_path or "unknown",
+        "accepted_v3_asset_exists": v3_asset_exists,
+        "accepted_v3_asset_readable": v3_asset_readable,
+        "accepted_v3_asset_size_bytes": v3_asset_size_bytes,
+        "accepted_v3_asset_corrupted": v3_asset_corrupted,
+        "silent_asset_substitution_detected": silent_substitution_detected,
+        "silent_asset_substitution_allowed": False,
+        "invalid_substitute_asset": invalid_substitute_asset or "none",
+        "substitute_asset_rejected": True,
+        "visual_qa_pass_invalidated": visual_qa_pass_invalidated,
+        "operator_visual_acceptance_invalidated": operator_visual_acceptance_invalidated,
+        "assembly_readiness_invalidated": assembly_readiness_invalidated,
+        "assembly_preflight_invalidated": assembly_preflight_invalidated,
+        "next_allowed_action": next_allowed_action,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "artifacts": [
+            "output/control/combine_v2_accepted_v3_asset_integrity_reconciliation.json",
+            "output/control/combine_v2_silent_asset_substitution_guard.json",
+        ],
+    }
+
+    if blocker_report:
+        result["artifacts"].append("output/control/combine_v2_assembly_readiness_v3_blocker_report.json")
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Accepted V3 Asset Integrity Reconciliation Completed")
+        print(f"Shot: {shot_id}")
+        print(f"V3 Asset Corrupted: {v3_asset_corrupted}")
+        print(f"Silent Substitution Detected: {silent_substitution_detected}")
+        print(f"Next Allowed Action: {next_allowed_action}")
+
+    return 0
+
+
+def combine_validate_no_accepted_asset_substitution(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1461-1520-BLOCKER-FIX — Validate No Accepted Asset Substitution.
+
+    Validates that the assembly readiness packet uses the correct accepted asset
+    and prevents silent substitution of older assets.
+
+    Exit codes:
+    - 0: validation passed (no substitution detected)
+    - 1: validation failed (substitution detected)
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    v3_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v3_outputs_manifest.json")
+    v3_operator_acceptance = _load_json(control_dir / "combine_v2_operator_visual_acceptance_v3.json")
+    v3_assembly_readiness = _load_json(control_dir / "combine_v2_assembly_readiness_packet_v3.json")
+    v3_assembly_preflight = _load_json(control_dir / "combine_v2_assembly_preflight_v3.json")
+
+    # Determine accepted V3 asset path
+    accepted_v3_asset = None
+    if v3_operator_acceptance and "source_asset" in v3_operator_acceptance:
+        accepted_v3_asset = v3_operator_acceptance["source_asset"]
+    elif v3_manifest and "generated_assets" in v3_manifest and len(v3_manifest["generated_assets"]) > 0:
+        accepted_v3_asset = v3_manifest["generated_assets"][0]
+
+    # Check assembly readiness packet
+    assembly_readiness_asset = None
+    if v3_assembly_readiness and "source_asset" in v3_assembly_readiness:
+        assembly_readiness_asset = v3_assembly_readiness["source_asset"]
+
+    # Check assembly preflight
+    assembly_preflight_asset = None
+    if v3_assembly_preflight and "source_asset" in v3_assembly_preflight:
+        assembly_preflight_asset = v3_assembly_preflight["source_asset"]
+
+    # Detect substitution
+    substitution_detected = False
+    invalid_substitute_asset = None
+
+    if accepted_v3_asset and assembly_readiness_asset and assembly_readiness_asset != accepted_v3_asset:
+        substitution_detected = True
+        invalid_substitute_asset = assembly_readiness_asset
+
+    if accepted_v3_asset and assembly_preflight_asset and assembly_preflight_asset != accepted_v3_asset:
+        substitution_detected = True
+        if not invalid_substitute_asset:
+            invalid_substitute_asset = assembly_preflight_asset
+
+    # Create validation report
+    validation_report = {
+        "validation_type": "no_accepted_asset_substitution_validation",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "accepted_v3_asset": accepted_v3_asset or "unknown",
+        "assembly_readiness_asset": assembly_readiness_asset or "unknown",
+        "assembly_preflight_asset": assembly_preflight_asset or "unknown",
+        "substitution_detected": substitution_detected,
+        "substitution_allowed": False,
+        "invalid_substitute_asset": invalid_substitute_asset or "none",
+        "validation_passed": not substitution_detected,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+    }
+
+    validation_report_path = control_dir / "combine_v2_no_accepted_asset_substitution_validation.json"
+    with open(validation_report_path, 'w') as f:
+        json.dump(validation_report, f, indent=2)
+
+    result = validation_report.copy()
+    result["artifacts"] = ["output/control/combine_v2_no_accepted_asset_substitution_validation.json"]
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"No Accepted Asset Substitution Validation")
+        print(f"Shot: {shot_id}")
+        print(f"Substitution Detected: {substitution_detected}")
+        print(f"Validation Passed: {not substitution_detected}")
+
+    return 0 if not substitution_detected else 1
 
 
 if __name__ == "__main__":

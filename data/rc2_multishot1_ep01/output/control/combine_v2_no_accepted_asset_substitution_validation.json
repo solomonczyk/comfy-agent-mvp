@@ -1,0 +1,15 @@
+{
+  "validation_type": "no_accepted_asset_substitution_validation",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T08:05:25.709346+00:00",
+  "accepted_v3_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+  "assembly_readiness_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "assembly_preflight_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "substitution_detected": true,
+  "substitution_allowed": false,
+  "invalid_substitute_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png",
+  "validation_passed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}

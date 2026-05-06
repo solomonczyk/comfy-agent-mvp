@@ -1,0 +1,14 @@
+{
+  "report_type": "assembly_readiness_v3_blocker_report",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T08:05:46.928797+00:00",
+  "blocker_detected": true,
+  "blocker_reason": "v3_asset_corrupted",
+  "blocker_details": {
+    "v3_asset_corrupted": true,
+    "silent_substitution_detected": true,
+    "invalid_substitute_asset": "output/assets/combine_v2_corrective_retry_1777971208_00001_.png"
+  },
+  "assembly_blocked": true,
+  "required_action": "corrective_retry_v3_result_reconciliation_required"
+}
