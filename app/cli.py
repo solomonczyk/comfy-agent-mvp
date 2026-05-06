@@ -6747,6 +6747,64 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1401-1460 — combine-operator-visual-decision-v3 subcommand
+    combine_operator_visual_decision_v3_parser = subparsers.add_parser(
+        "combine-operator-visual-decision-v3",
+        help="Record operator visual acceptance V3 after qa_passed on corrective_retry_v3 asset"
+    )
+    combine_operator_visual_decision_v3_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_operator_visual_decision_v3_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_operator_visual_decision_v3_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["accept_visual_quality"],
+        help="Operator decision (only accept_visual_quality is accepted)",
+    )
+    combine_operator_visual_decision_v3_parser.add_argument(
+        "--asset",
+        required=True,
+        help="Path to the asset being accepted (relative to project root)",
+    )
+    combine_operator_visual_decision_v3_parser.add_argument(
+        "--reason",
+        required=True,
+        help="Acceptance reason",
+    )
+    combine_operator_visual_decision_v3_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1401-1460 — combine-build-assembly-readiness-packet-v3 subcommand
+    combine_build_assembly_readiness_packet_v3_parser = subparsers.add_parser(
+        "combine-build-assembly-readiness-packet-v3",
+        help="Build assembly readiness packet after operator visual acceptance V3"
+    )
+    combine_build_assembly_readiness_packet_v3_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_assembly_readiness_packet_v3_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_assembly_readiness_packet_v3_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-11 — combine-authorize-retry subcommand
     combine_authorize_retry_parser = subparsers.add_parser("combine-authorize-retry", help="Authorize retry return to generation authorization without opening retry execution gate")
     combine_authorize_retry_parser.add_argument(
@@ -8698,6 +8756,10 @@ def main() -> int:
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "combine-operator-visual-decision-v2":
         return combine_operator_visual_decision_v2(args)
+    elif args.command == "combine-operator-visual-decision-v3":
+        return combine_operator_visual_decision_v3(args)
+    elif args.command == "combine-build-assembly-readiness-packet-v3":
+        return combine_build_assembly_readiness_packet_v3(args)
     elif args.command == "combine-create-corrective-retry-v3-plan":
         return combine_create_corrective_retry_v3_plan(args)
     elif args.command == "combine-build-retry-v3-plan-review-packet":
@@ -19479,6 +19541,368 @@ def combine_build_corrective_retry_v3_operator_review_packet(args: argparse.Name
         print(f"QA Verdict: {qa_verdict}")
         print(f"Operator Review Required: True")
         print(f"Next Allowed Action: operator_visual_review")
+
+    return 0
+
+
+def combine_operator_visual_decision_v3(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1401-1460 — Operator Visual Acceptance V3 Gate.
+
+    Records operator acceptance of corrective_retry_v3 asset after qa_passed.
+    Transitions state from operator_visual_review to assembly_preflight_required.
+    Does NOT trigger generation, retry, visual QA rerun, assembly, or downstream.
+
+    Exit codes:
+    - 0: decision recorded successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    decision = args.decision
+    asset_arg = args.asset
+    reason = args.reason
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Only accept_visual_quality is allowed here
+    if decision != "accept_visual_quality":
+        msg = f"Error: Only 'accept_visual_quality' is allowed for v3 operator visual decision. Got: '{decision}'"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Resolve source asset
+    source_asset = asset_arg if asset_arg else "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png"
+
+    # Read prior QA verdict from v3 visual QA report if present
+    previous_qa_verdict = "qa_failed"
+    failure_categories = []
+
+    qa_report_path = control_dir / "combine_v2_corrective_retry_v3_visual_qa_report.json"
+    if qa_report_path.exists():
+        with open(qa_report_path, 'r') as f:
+            qa_report = json.load(f)
+        previous_qa_verdict = qa_report.get("qa_verdict", "qa_failed")
+        if qa_report.get("failure_categories"):
+            failure_categories = qa_report["failure_categories"]
+
+    # Validate that previous QA verdict is qa_passed
+    if previous_qa_verdict != "qa_passed":
+        msg = f"Error: Operator can only accept V3 asset after qa_passed. Previous QA verdict: {previous_qa_verdict}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Validate that source asset matches the one from v3 visual QA
+    qa_source_asset = qa_report.get("source_asset", "")
+    if qa_source_asset and source_asset != qa_source_asset:
+        msg = f"Error: Source asset mismatch. Expected: {qa_source_asset}, Got: {source_asset}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 1. Create operator visual acceptance v3 artifact
+    acceptance_v3 = {
+        "stage": "operator_visual_review",
+        "shot_id": shot_id,
+        "operator_visual_decision": "accept_visual_quality",
+        "source_asset": source_asset,
+        "previous_qa_verdict": previous_qa_verdict,
+        "failure_categories": failure_categories,
+        "reason": reason,
+        "operator_visual_acceptance_confirmed": True,
+        "visual_asset_accepted": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "assembly_preflight_required",
+        "timestamp": timestamp,
+    }
+    acceptance_v3_path = control_dir / "combine_v2_operator_visual_acceptance_v3.json"
+    with open(acceptance_v3_path, 'w') as f:
+        json.dump(acceptance_v3, f, indent=2)
+
+    # 2. Create visual asset acceptance record
+    visual_asset_acceptance_record = {
+        "stage": "operator_visual_review",
+        "shot_id": shot_id,
+        "acceptance_type": "corrective_retry_v3_visual_acceptance",
+        "source_asset": source_asset,
+        "previous_qa_verdict": previous_qa_verdict,
+        "operator_visual_acceptance_confirmed": True,
+        "visual_asset_accepted": True,
+        "generation_performed": False,
+        "retry_attempted": False,
+        "visual_qa_rerun": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+    acceptance_record_path = control_dir / "combine_v2_visual_asset_acceptance_record_v3.json"
+    with open(acceptance_record_path, 'w') as f:
+        json.dump(visual_asset_acceptance_record, f, indent=2)
+
+    # 3. Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "operator_visual_review"
+    artifact_index["next_allowed_action"] = "assembly_preflight_required"
+    artifact_index["operator_visual_decision_v3"] = "accept_visual_quality"
+    artifact_index["operator_visual_acceptance_confirmed"] = True
+    artifact_index["visual_asset_accepted"] = True
+    artifact_index["source_asset"] = source_asset
+    artifact_index["previous_qa_verdict"] = previous_qa_verdict
+    artifact_index["failure_categories"] = failure_categories
+    artifact_index["generation_allowed"] = False
+    artifact_index["retry_allowed"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 4. Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "operator_visual_acceptance_v3",
+        "stage": "operator_visual_review",
+        "shot_id": shot_id,
+        "operator_visual_decision": "accept_visual_quality",
+        "source_asset": source_asset,
+        "previous_qa_verdict": previous_qa_verdict,
+        "operator_visual_acceptance_confirmed": True,
+        "visual_asset_accepted": True,
+        "generation_allowed": False,
+        "next_allowed_action": "assembly_preflight_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "operator_visual_review",
+        "shot_id": shot_id,
+        "operator_visual_decision": "accept_visual_quality",
+        "source_asset": source_asset,
+        "previous_qa_verdict": previous_qa_verdict,
+        "operator_visual_acceptance_confirmed": True,
+        "visual_asset_accepted": True,
+        "generation_allowed": False,
+        "retry_allowed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "assembly_preflight_required",
+        "artifacts": [
+            "output/control/combine_v2_operator_visual_acceptance_v3.json",
+            "output/control/combine_v2_visual_asset_acceptance_record_v3.json"
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Operator Visual Decision V3: ACCEPT_VISUAL_QUALITY")
+        print(f"Shot: {shot_id}")
+        print(f"Source Asset: {source_asset}")
+        print(f"Previous QA Verdict: {previous_qa_verdict}")
+        print(f"Operator Visual Acceptance Confirmed: True")
+        print(f"Visual Asset Accepted: True")
+        print(f"Next Allowed Action: assembly_preflight_required")
+
+    return 0
+
+
+def combine_build_assembly_readiness_packet_v3(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1401-1460 — Build Assembly Readiness Packet V3.
+
+    Assembles operator visual acceptance V3 and related artifacts into
+    an assembly readiness packet. Transitions to assembly_preflight_required.
+
+    Exit codes:
+    - 0: packet created successfully
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # Load required artifacts
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    operator_acceptance_v3 = _load_json(control_dir / "combine_v2_operator_visual_acceptance_v3.json")
+    visual_asset_acceptance_record = _load_json(control_dir / "combine_v2_visual_asset_acceptance_record_v3.json")
+    visual_qa_report = _load_json(control_dir / "combine_v2_corrective_retry_v3_visual_qa_report.json")
+
+    if not operator_acceptance_v3:
+        msg = "Error: Operator visual acceptance V3 not found. Run combine-operator-visual-decision-v3 first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    source_asset = operator_acceptance_v3.get("source_asset", "")
+    previous_qa_verdict = operator_acceptance_v3.get("previous_qa_verdict", "qa_failed")
+    operator_visual_acceptance_confirmed = operator_acceptance_v3.get("operator_visual_acceptance_confirmed", False)
+    visual_asset_accepted = operator_acceptance_v3.get("visual_asset_accepted", False)
+
+    # Create assembly readiness packet
+    assembly_readiness_packet = {
+        "stage": "assembly_preflight_required",
+        "packet_type": "assembly_readiness_packet_v3",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "source_asset": source_asset,
+        "previous_qa_verdict": previous_qa_verdict,
+        "operator_visual_acceptance_confirmed": operator_visual_acceptance_confirmed,
+        "visual_asset_accepted": visual_asset_accepted,
+        "assembly_readiness_confirmed": True,
+        "generation_performed": False,
+        "retry_attempted": False,
+        "visual_qa_rerun": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "assembly_preflight_required",
+        "packet_components": {
+            "operator_visual_acceptance_v3": "output/control/combine_v2_operator_visual_acceptance_v3.json",
+            "visual_asset_acceptance_record_v3": "output/control/combine_v2_visual_asset_acceptance_record_v3.json",
+            "visual_qa_report_v3": "output/control/combine_v2_corrective_retry_v3_visual_qa_report.json",
+        },
+        "boundary_enforcement": {
+            "new_generation": False,
+            "retry_submit": False,
+            "visual_qa_rerun": False,
+            "assembly": False,
+            "audio": False,
+            "render": False,
+            "downstream": False,
+            "production_accepted": False,
+        },
+    }
+    packet_path = control_dir / "combine_v2_assembly_readiness_packet_v3.json"
+    with open(packet_path, 'w') as f:
+        json.dump(assembly_readiness_packet, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "assembly_preflight_required"
+    artifact_index["next_allowed_action"] = "assembly_preflight_required"
+    artifact_index["assembly_readiness_packet_created"] = True
+    artifact_index["assembly_readiness_confirmed"] = True
+    artifact_index["source_asset"] = source_asset
+    artifact_index["generation_performed"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["visual_qa_rerun"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "assembly_readiness_packet_v3_created",
+        "stage": "assembly_preflight_required",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "assembly_readiness_confirmed": True,
+        "next_allowed_action": "assembly_preflight_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "assembly_preflight_required",
+        "assembly_readiness_packet_created": True,
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "previous_qa_verdict": previous_qa_verdict,
+        "operator_visual_acceptance_confirmed": operator_visual_acceptance_confirmed,
+        "visual_asset_accepted": visual_asset_accepted,
+        "assembly_readiness_confirmed": True,
+        "generation_performed": False,
+        "retry_attempted": False,
+        "visual_qa_rerun": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "assembly_preflight_required",
+        "artifacts": ["output/control/combine_v2_assembly_readiness_packet_v3.json"],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Assembly Readiness Packet V3 Created")
+        print(f"Shot: {shot_id}")
+        print(f"Source Asset: {source_asset}")
+        print(f"Previous QA Verdict: {previous_qa_verdict}")
+        print(f"Operator Visual Acceptance Confirmed: {operator_visual_acceptance_confirmed}")
+        print(f"Visual Asset Accepted: {visual_asset_accepted}")
+        print(f"Assembly Readiness Confirmed: True")
+        print(f"Next Allowed Action: assembly_preflight_required")
 
     return 0
 

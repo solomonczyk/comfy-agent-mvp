@@ -71,6 +71,7 @@ class CombineStateMachine:
         "generation_payload_rebuild_required",
         "workflow_graph_rebuild_required",
         "workflow_rebuild_validation_required",
+        "assembly_preflight_required",
         "assembly_required",
         "final_qc_required",
         "final_operator_acceptance",
@@ -167,6 +168,7 @@ class CombineStateMachine:
             "real_generation_readiness_required",
         },
         "operator_visual_review": {
+            "assembly_preflight_required",
             "assembly_required",
             "retry_correction_required",
             "real_generation_readiness_required",
@@ -297,6 +299,9 @@ class CombineStateMachine:
         },
         "corrective_retry_payload_rebuild_required": {
             "real_generation_readiness_required"
+        },
+        "assembly_preflight_required": {
+            "assembly_required"
         },
         "assembly_required": {
             "final_qc_required"

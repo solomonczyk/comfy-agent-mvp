@@ -482,5 +482,27 @@
     "operator_review_required": true,
     "next_allowed_action": "operator_visual_review",
     "timestamp": "2026-05-06T05:20:03.338134+00:00"
+  },
+  {
+    "event_type": "operator_visual_acceptance_v3",
+    "stage": "operator_visual_review",
+    "shot_id": "shot02",
+    "operator_visual_decision": "accept_visual_quality",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "previous_qa_verdict": "qa_passed",
+    "operator_visual_acceptance_confirmed": true,
+    "visual_asset_accepted": true,
+    "generation_allowed": false,
+    "next_allowed_action": "assembly_preflight_required",
+    "timestamp": "2026-05-06T07:27:34.497709+00:00"
+  },
+  {
+    "event_type": "assembly_readiness_packet_v3_created",
+    "stage": "assembly_preflight_required",
+    "shot_id": "shot02",
+    "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+    "assembly_readiness_confirmed": true,
+    "next_allowed_action": "assembly_preflight_required",
+    "timestamp": "2026-05-06T07:27:44.950598+00:00"
   }
 ]

@@ -1,0 +1,33 @@
+{
+  "stage": "assembly_preflight_required",
+  "packet_type": "assembly_readiness_packet_v3",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-06T07:27:44.950598+00:00",
+  "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+  "previous_qa_verdict": "qa_passed",
+  "operator_visual_acceptance_confirmed": true,
+  "visual_asset_accepted": true,
+  "assembly_readiness_confirmed": true,
+  "generation_performed": false,
+  "retry_attempted": false,
+  "visual_qa_rerun": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "assembly_preflight_required",
+  "packet_components": {
+    "operator_visual_acceptance_v3": "output/control/combine_v2_operator_visual_acceptance_v3.json",
+    "visual_asset_acceptance_record_v3": "output/control/combine_v2_visual_asset_acceptance_record_v3.json",
+    "visual_qa_report_v3": "output/control/combine_v2_corrective_retry_v3_visual_qa_report.json"
+  },
+  "boundary_enforcement": {
+    "new_generation": false,
+    "retry_submit": false,
+    "visual_qa_rerun": false,
+    "assembly": false,
+    "audio": false,
+    "render": false,
+    "downstream": false,
+    "production_accepted": false
+  }
+}

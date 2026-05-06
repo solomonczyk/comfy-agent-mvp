@@ -1,5 +1,5 @@
 {
-  "current_state": "operator_visual_review",
+  "current_state": "assembly_preflight_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5210,18 +5210,18 @@
   ],
   "operator_visual_decision": "reject_visual_quality",
   "operator_rejection_confirmed": true,
-  "generation_allowed": true,
-  "retry_allowed": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
   "blind_retry_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "operator_visual_review",
+  "next_allowed_action": "assembly_preflight_required",
   "operator_visual_rejection_created": true,
   "failure_classification_created": true,
   "corrective_retry_plan_created": true,
   "retry_requires_operator_authorization": true,
   "retry_attempted": false,
   "comfyui_execution": false,
-  "workflow_submitted": true,
+  "workflow_submitted": false,
   "downstream_executed": false,
   "corrective_retry_implementation_authorized": true,
   "retry_generation_authorized": false,
@@ -5275,11 +5275,8 @@
   "collector_reliability_guard_created": true,
   "collector_reliability_guard_validation_passed": false,
   "operator_visual_decision_v2": "reject_visual_quality",
-  "previous_qa_verdict": "qa_failed",
-  "failure_categories": [
-    "blur_detected",
-    "low_contrast"
-  ],
+  "previous_qa_verdict": "qa_passed",
+  "failure_categories": [],
   "corrective_retry_v3_failure_classification_created": true,
   "corrective_retry_v3_plan_created": true,
   "sampler_recipe_plan_created": true,
@@ -5303,5 +5300,11 @@
   "operator_retry_v3_generation_decision": "approve_one_corrective_retry_v3_generation",
   "corrective_retry_v3_generation_executed": true,
   "corrective_retry_v3_result_review_executed": true,
-  "operator_review_packet_created": true
+  "operator_review_packet_created": true,
+  "operator_visual_decision_v3": "accept_visual_quality",
+  "operator_visual_acceptance_confirmed": true,
+  "visual_asset_accepted": true,
+  "assembly_readiness_packet_created": true,
+  "assembly_readiness_confirmed": true,
+  "visual_qa_rerun": false
 }

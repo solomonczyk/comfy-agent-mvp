@@ -1,0 +1,16 @@
+{
+  "stage": "operator_visual_review",
+  "shot_id": "shot02",
+  "acceptance_type": "corrective_retry_v3_visual_acceptance",
+  "source_asset": "output/assets/combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+  "previous_qa_verdict": "qa_passed",
+  "operator_visual_acceptance_confirmed": true,
+  "visual_asset_accepted": true,
+  "generation_performed": false,
+  "retry_attempted": false,
+  "visual_qa_rerun": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-06T07:27:34.497709+00:00"
+}
