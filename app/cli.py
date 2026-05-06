@@ -22998,7 +22998,12 @@ def combine_authorize_corrective_retry_v4_generation(args: argparse.Namespace) -
 
 
 def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int:
-    """RC-COMBINE-V2-1701-1760 — Generate One Corrective Retry V4 Asset."""
+    """RC-COMBINE-V2-1701-1760 — Generate One Corrective Retry V4 Asset.
+    
+    CRITICAL: This is a stub layer that does NOT perform real ComfyUI execution.
+    When --execute is passed, this function BLOCKS and fails honestly.
+    Real generation must happen in a downstream layer with actual ComfyUI access.
+    """
     import json
     from pathlib import Path
     from datetime import datetime, timezone
@@ -23035,6 +23040,29 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
         msg = "Error: Implementation package not found."
         if json_output:
             print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # RC-COMBINE-V2-2061-2120 FIX: Set dry_run based on execute flag
+    # When --execute is passed, dry_run must be false (not stub mode)
+    # When not --execute (preflight), dry_run remains true
+    dry_run_mode = not execute
+
+    # RC-COMBINE-V2-2061-2120 FIX: Block --execute in stub layer
+    # This is a stub layer without real ComfyUI access
+    # Real generation must happen in a downstream layer with actual ComfyUI access
+    if execute:
+        msg = "Error: --execute flag passed in stub layer. This layer does not have ComfyUI access. Real generation must happen in a downstream layer. Use preflight mode (without --execute) for contract validation only."
+        if json_output:
+            print(json.dumps({
+                "status": "error",
+                "message": msg,
+                "failure_code": "CORRECTIVE_RETRY_V4_EXECUTE_BLOCKED_IN_STUB_LAYER",
+                "stub_layer_no_comfyui_access": True,
+                "dry_run": False,
+                "timestamp": timestamp
+            }))
         else:
             print(msg)
         return 1
@@ -23117,7 +23145,11 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
     source_asset = package.get("source_asset", "")
     failure_basis = package.get("failure_basis", ["blur_detected", "low_contrast"])
 
-    # Create submit request
+    # RC-COMBINE-V2-2061-2120 FIX: Use consistent filename_prefix across submit/observed/collector/manifest
+    # This prefix must match the SaveImage node in the submitted workflow
+    filename_prefix = f"combine_v2_corrective_retry_v4_{shot_id}"
+
+    # Create submit request - dry_run based on execute flag
     submit_request = {
         "stage": "corrective_retry_v4_generate_assets",
         "request_type": "corrective_retry_v4_submit",
@@ -23127,9 +23159,11 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
         "max_generations": max_generations,
         "blind_retry_allowed": False,
         "pre_submit_validation_passed": True,
-        "workflow_submitted": execute,
-        "generation_performed": False,
-        "comfyui_execution": False,
+        "workflow_submitted": False,  # Always False in stub layer (no real submit)
+        "generation_performed": False,  # Always False in stub layer (no real generation)
+        "comfyui_execution": False,  # Always False in stub layer (no ComfyUI access)
+        "dry_run": dry_run_mode,  # False when --execute, True for preflight
+        "filename_prefix": filename_prefix,  # Consistent prefix for SaveImage, observed settings, collector, manifest
         "timestamp": timestamp,
     }
 
@@ -23137,22 +23171,22 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
     with open(submit_path, 'w') as f:
         json.dump(submit_request, f, indent=2)
 
-    # Stub generation result
+    # Stub generation result - all execution flags False (stub layer)
     generation_result = {
         "stage": "corrective_retry_v4_generate_assets",
         "result_type": "corrective_retry_v4_generation_result",
         "shot_id": shot_id,
         "source_asset": source_asset,
         "failure_basis": failure_basis,
-        "generation_attempted": True,
-        "generation_performed": execute,
-        "comfyui_execution": execute,
-        "retry_attempted": True,
+        "generation_attempted": False,  # Not attempted in stub layer
+        "generation_performed": False,  # Always False in stub layer (no real generation)
+        "comfyui_execution": False,  # Always False in stub layer (no ComfyUI access)
+        "retry_attempted": False,  # Not attempted in stub layer
         "second_generation_attempted": False,
         "blind_retry_allowed": False,
         "max_generations": max_generations,
-        "generation_count": 1 if execute else 0,
-        "workflow_submitted": execute,
+        "generation_count": 0,
+        "workflow_submitted": False,  # Always False in stub layer (no real submit)
         "pre_submit_validation_passed": True,
         "collector_reliability_guard_preserved": True,
         "output_path_contract_preserved": True,
@@ -23160,7 +23194,9 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
         "assembly_executed": False,
         "downstream_executed": False,
         "production_accepted": False,
-        "stub_generation": True,
+        "stub_generation": True,  # This is a stub layer
+        "dry_run": dry_run_mode,  # False when --execute, True for preflight
+        "filename_prefix": filename_prefix,  # Consistent prefix for collector search
         "timestamp": timestamp,
     }
 
@@ -23175,10 +23211,11 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
         "shot_id": shot_id,
         "events": [
             {"event": "pre_submit_validation", "passed": True, "timestamp": timestamp},
-            {"event": "workflow_submitted", "executed": execute, "timestamp": timestamp},
-            {"event": "comfyui_execution", "executed": execute, "stub": True, "timestamp": timestamp},
-            {"event": "output_collection", "status": "pending", "timestamp": timestamp},
+            {"event": "workflow_submitted", "executed": False, "stub": True, "reason": "stub_layer_no_comfyui_access", "timestamp": timestamp},
+            {"event": "comfyui_execution", "executed": False, "stub": True, "reason": "stub_layer_no_comfyui_access", "timestamp": timestamp},
+            {"event": "output_collection", "status": "skipped", "reason": "stub_layer_no_generation", "timestamp": timestamp},
         ],
+        "dry_run": dry_run_mode,  # False when --execute, True for preflight
         "timestamp": timestamp,
     }
 
@@ -23186,22 +23223,18 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
     with open(trace_path, 'w') as f:
         json.dump(generation_trace, f, indent=2)
 
-    # Create outputs manifest
+    # Create outputs manifest - no stub assets, empty manifest
     outputs_manifest = {
         "stage": "corrective_retry_v4_generate_assets",
         "manifest_type": "corrective_retry_v4_outputs_manifest",
         "shot_id": shot_id,
-        "generated_assets": [],
+        "generated_assets": [],  # Always empty in stub layer
         "asset_count": 0,
-        "generation_performed": execute,
+        "generation_performed": False,  # Always False in stub layer
+        "dry_run": dry_run_mode,  # False when --execute, True for preflight
+        "filename_prefix": filename_prefix,  # Consistent prefix for manifest
         "timestamp": timestamp,
     }
-
-    if execute:
-        stub_asset = f"combine_v2_corrective_retry_v4_generated_{int(datetime.now().timestamp())}_00001_.png"
-        outputs_manifest["generated_assets"] = [f"output/assets/{stub_asset}"]
-        outputs_manifest["asset_count"] = 1
-        outputs_manifest["stub_asset"] = True
 
     manifest_path = control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json"
     with open(manifest_path, 'w') as f:
@@ -23213,13 +23246,14 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
         "validation_type": "post_submit_validation_v4",
         "shot_id": shot_id,
         "timestamp": timestamp,
-        "asset_exists": execute,
+        "asset_exists": False,  # Always False in stub layer
         "asset_readable": False,
         "asset_size_bytes_gt_1024": False,
         "sha256_present": False,
-        "stub_asset_detected": execute,
+        "stub_asset_detected": False,  # No stub assets created
         "post_submit_validation_executed": True,
         "stub_asset_guard_enforced": True,
+        "dry_run": True,  # Always True in stub layer
     }
 
     post_validation_path = control_dir / "combine_v2_corrective_retry_v4_post_submit_validation.json"
@@ -23234,11 +23268,12 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
             artifact_index = json.load(f)
 
     artifact_index["current_state"] = "corrective_retry_v4_generate_assets"
-    artifact_index["next_allowed_action"] = "corrective_retry_v4_result_review_required"
-    artifact_index["corrective_retry_v4_generation_executed"] = execute
-    artifact_index["workflow_submitted"] = execute
-    artifact_index["comfyui_execution"] = execute
-    artifact_index["generation_performed"] = execute
+    artifact_index["next_allowed_action"] = "corrective_retry_v4_result_review_required"  # Continue to review
+    artifact_index["corrective_retry_v4_generation_executed"] = False  # Always False in stub layer
+    artifact_index["workflow_submitted"] = False  # Always False in stub layer (no real submit)
+    artifact_index["comfyui_execution"] = False  # Always False in stub layer (no ComfyUI access)
+    artifact_index["generation_performed"] = False  # Always False in stub layer (no real generation)
+    artifact_index["dry_run"] = dry_run_mode  # False when --execute, True for preflight
     artifact_index["post_submit_validation_executed"] = True
     artifact_index["visual_qa_executed"] = False
     artifact_index["assembly_executed"] = False
@@ -23263,11 +23298,12 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
         "event_type": "corrective_retry_v4_generation_executed",
         "stage": "corrective_retry_v4_generate_assets",
         "shot_id": shot_id,
-        "generation_performed": execute,
-        "retry_attempted": True,
+        "generation_performed": False,  # Always False in stub layer
+        "retry_attempted": False,
         "second_generation_attempted": False,
         "post_submit_validation_executed": True,
-        "next_allowed_action": "corrective_retry_v4_result_review_required",
+        "dry_run": True,  # Always True in stub layer
+        "next_allowed_action": "operator_retry_v4_generation_authorization_required",
         "timestamp": timestamp,
     })
     with open(ledger_path, 'w') as f:
@@ -23277,21 +23313,23 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
         "stage": "corrective_retry_v4_generate_assets",
         "corrective_retry_v4_implementation_package_used": True,
         "requested_shot_id": shot_id,
-        "generation_attempts": 1,
+        "generation_attempts": 0,  # 0 in stub layer
         "max_generations": max_generations,
-        "workflow_submitted": execute,
-        "generation_performed": execute,
-        "comfyui_execution": execute,
-        "retry_attempted": True,
+        "workflow_submitted": False,  # Always False in stub layer (no real submit)
+        "generation_performed": False,  # Always False in stub layer (no real generation)
+        "comfyui_execution": False,  # Always False in stub layer (no ComfyUI access)
+        "retry_attempted": False,
         "second_generation_attempted": False,
         "blind_retry_allowed": False,
         "pre_submit_validation_passed": True,
         "post_submit_validation_executed": True,
         "stub_asset_guard_enforced": True,
+        "dry_run": dry_run_mode,  # False when --execute, True for preflight
         "visual_qa_executed": False,
         "assembly_executed": False,
         "downstream_executed": False,
         "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_result_review_required",
         "artifacts": [
             "output/control/combine_v2_corrective_retry_v4_generation_pre_submit_validation.json",
             "output/control/combine_v2_corrective_retry_v4_generation_submit_request.json",
@@ -23305,7 +23343,10 @@ def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int
     if json_output:
         print(json.dumps(result, indent=2))
     else:
-        print(f"Corrective Retry V4 Generation Executed: {execute}")
+        if dry_run_mode:
+            print(f"Corrective Retry V4 Generation Preflight Validated (dry_run=True)")
+        else:
+            print(f"Corrective Retry V4 Generation Submit Prepared (dry_run=False)")
         print(f"Next Allowed Action: corrective_retry_v4_result_review_required")
 
     return 0

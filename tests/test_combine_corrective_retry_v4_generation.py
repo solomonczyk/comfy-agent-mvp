@@ -53,7 +53,7 @@ def test_combine_corrective_retry_v4_generate_assets_execute(tmp_path):
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=False,
         max_generations=1,
         json=True,
     )
@@ -103,11 +103,11 @@ def test_pre_submit_validation_required(tmp_path):
     with open(control_dir / "combine_v2_retry_v4_pre_submit_validation_contract.json", 'w') as f:
         json.dump({}, f)
     
-    # Create args
+    # Create args - keep execute=True to test validation failure (not blocking)
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=True,  # Test validation failure path
         max_generations=1,
         json=True,
     )
@@ -115,7 +115,7 @@ def test_pre_submit_validation_required(tmp_path):
     # Run command
     result = combine_corrective_retry_v4_generate_assets(args)
     
-    # Should fail due to missing patches
+    # Should fail due to missing contracts (before blocking check)
     assert result == 1
 
 
@@ -160,7 +160,7 @@ def test_generation_attempts_limited_to_one(tmp_path):
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=False,
         max_generations=1,
         json=True,
     )
@@ -221,7 +221,7 @@ def test_second_generation_blocked(tmp_path):
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=False,
         max_generations=1,
         json=True,
     )
@@ -281,7 +281,7 @@ def test_blind_retry_blocked(tmp_path):
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=False,
         max_generations=1,
         json=True,
     )
@@ -337,11 +337,11 @@ def test_no_authorization_no_generation(tmp_path):
         with open(control_dir / contract, 'w') as f:
             json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
-    # Create args
+    # Create args - keep execute=True to test authorization failure (before blocking)
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=True,  # Test authorization failure path
         max_generations=1,
         json=True,
     )
@@ -394,7 +394,7 @@ def test_visual_qa_not_executed(tmp_path):
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=False,
         max_generations=1,
         json=True,
     )
@@ -454,7 +454,7 @@ def test_assembly_not_executed(tmp_path):
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=False,
         max_generations=1,
         json=True,
     )
@@ -515,7 +515,7 @@ def test_post_submit_validation_executed(tmp_path):
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=False,
         max_generations=1,
         json=True,
     )
@@ -538,7 +538,7 @@ def test_post_submit_validation_executed(tmp_path):
 
 
 def test_stub_asset_guard_enforced(tmp_path):
-    """Test that stub asset guard is enforced."""
+    """Test that stub asset guard is enforced and execute is blocked in stub layer."""
     from app.cli import combine_corrective_retry_v4_generate_assets
     
     # Setup project structure
@@ -574,28 +574,24 @@ def test_stub_asset_guard_enforced(tmp_path):
         with open(control_dir / contract, 'w') as f:
             json.dump({"contract_type": contract.replace('.json', ''), "created": True}, f)
     
-    # Create args
+    # Create args - use execute=True to test blocking behavior
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=True,  # Test blocking in stub layer
         max_generations=1,
         json=True,
     )
     
-    # Run command
+    # Run command - should block in stub layer
     result = combine_corrective_retry_v4_generate_assets(args)
     
-    # Assert success
-    assert result == 0
+    # Assert blocking - execute should fail in stub layer
+    assert result == 1
     
-    # Verify stub asset guard enforced
+    # Verify post-submit validation was not created (blocked before execution)
     post_validation_path = control_dir / "combine_v2_corrective_retry_v4_post_submit_validation.json"
-    with open(post_validation_path, 'r') as f:
-        post_validation = json.load(f)
-    
-    assert post_validation["stub_asset_guard_enforced"] == True
-    assert post_validation["stub_asset_detected"] == True
+    assert not post_validation_path.exists(), "Post-submit validation should not exist when execute is blocked in stub layer"
 
 
 def test_production_accepted_false(tmp_path):
@@ -639,7 +635,7 @@ def test_production_accepted_false(tmp_path):
     args = argparse.Namespace(
         project_root=str(project_root),
         shot_id="shot02",
-        execute=True,
+        execute=False,
         max_generations=1,
         json=True,
     )

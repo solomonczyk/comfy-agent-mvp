@@ -62,13 +62,13 @@ class GenerationAgent(BaseRoleAgent):
                 return {}
         return {}
 
-    def create_stub_result(self, context: CombineRunContext) -> AgentResult:
+    def create_stub_result(self, context: CombineRunContext, dry_run: bool = True) -> AgentResult:
         """Create a stub result for dry-run execution."""
         return AgentResult(
             agent=self.role_name,
             stage=context.stage,
             status="stubbed",
-            dry_run=True,
+            dry_run=dry_run,  # Respect the parameter
             generation_performed=False,
             comfyui_execution=False,
             downstream_executed=False,
@@ -86,8 +86,12 @@ class GenerationAgent(BaseRoleAgent):
     def run(self, context: CombineRunContext, dry_run: bool = True) -> AgentResult:
         """Execute the generation agent.
         
-        OVERRIDE: Always forces dry_run=True and returns stub result.
+        OVERRIDE: This agent refuses real generation and returns stub result only.
         Real generation is explicitly refused at this layer.
+        
+        RC-COMBINE-V2-2061-2120 FIX: Respect dry_run parameter instead of forcing True.
+        If dry_run=False is passed, the agent should still refuse real execution
+        but should not override the flag - the refusal happens at the execution level.
         """
         # Validate inputs
         if not self.validate_inputs(context):
@@ -96,7 +100,7 @@ class GenerationAgent(BaseRoleAgent):
                 agent=self.role_name,
                 stage=context.stage,
                 status="error",
-                dry_run=True,
+                dry_run=dry_run,  # Respect the parameter
                 generation_performed=False,
                 comfyui_execution=False,
                 downstream_executed=False,
@@ -262,7 +266,7 @@ class GenerationAgent(BaseRoleAgent):
                 agent=self.role_name,
                 stage=stage,
                 status=status,
-                dry_run=True,
+                dry_run=dry_run,  # Respect the parameter
                 generation_performed=False,
                 comfyui_execution=False,
                 downstream_executed=False,
@@ -289,7 +293,7 @@ class GenerationAgent(BaseRoleAgent):
                 agent=self.role_name,
                 stage=stage,
                 status=status,
-                dry_run=True,
+                dry_run=dry_run,  # Respect the parameter
                 generation_performed=False,
                 comfyui_execution=False,
                 downstream_executed=False,
@@ -319,7 +323,7 @@ class GenerationAgent(BaseRoleAgent):
                     agent=self.role_name,
                     stage=stage,
                     status="blocked",
-                    dry_run=True,
+                    dry_run=dry_run,  # Respect the parameter
                     generation_performed=False,
                     comfyui_execution=False,
                     downstream_executed=False,
@@ -389,7 +393,7 @@ class GenerationAgent(BaseRoleAgent):
                 agent=self.role_name,
                 stage=stage,
                 status="stubbed",
-                dry_run=True,
+                dry_run=dry_run,  # Respect the parameter
                 generation_performed=False,
                 comfyui_execution=False,
                 downstream_executed=False,
@@ -416,7 +420,7 @@ class GenerationAgent(BaseRoleAgent):
                 agent=self.role_name,
                 stage=stage,
                 status=status,
-                dry_run=True,
+                dry_run=dry_run,  # Respect the parameter
                 generation_performed=False,
                 comfyui_execution=False,
                 downstream_executed=False,
@@ -453,7 +457,7 @@ class GenerationAgent(BaseRoleAgent):
                     agent=self.role_name,
                     stage=stage,
                     status="blocked",
-                    dry_run=True,
+                    dry_run=dry_run,  # Respect the parameter
                     generation_performed=False,
                     comfyui_execution=False,
                     downstream_executed=False,
@@ -573,9 +577,9 @@ class GenerationAgent(BaseRoleAgent):
                 agent=self.role_name,
                 stage=stage,
                 status="stubbed",
-                dry_run=True,
-                generation_performed=True,
-                comfyui_execution=True,
+                dry_run=dry_run,  # Respect the parameter
+                generation_performed=False,  # Always False in stub layer
+                comfyui_execution=False,  # Always False in stub layer
                 downstream_executed=False,
                 artifacts=artifacts,
                 next_recommended_stage="corrective_retry_result_review_required",
@@ -638,7 +642,7 @@ class GenerationAgent(BaseRoleAgent):
                 agent=self.role_name,
                 stage=stage,
                 status="ok",
-                dry_run=True,
+                dry_run=dry_run,  # Respect the parameter
                 generation_performed=False,
                 comfyui_execution=False,
                 downstream_executed=False,

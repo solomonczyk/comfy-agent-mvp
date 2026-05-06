@@ -462,12 +462,15 @@ class CombineOrchestrator:
         current_route_family = route_family or self._get_route_family()
         route_policy = self._get_route_policy(current_route_family)
         
+        # RC-COMBINE-V2-2061-2120 FIX: Respect dry_run parameter, don't force True
+        # This orchestrator is a stub layer but should respect the dry_run flag
+        # If dry_run=False is passed, it should still fail honestly (no real execution)
         context = CombineRunContext(
             project_root=str(self.project_root),
             current_state=current_state,
             stage=stage,
             route_family=current_route_family,
-            dry_run=True,  # Always True for this layer
+            dry_run=dry_run,  # Respect the parameter, don't force True
             metadata={
                 "route_family": current_route_family,
                 "route_policy": route_policy,
