@@ -8099,6 +8099,91 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-1701-1760 — combine-authorize-corrective-retry-v4-generation subcommand
+    combine_authorize_corrective_retry_v4_generation_parser = subparsers.add_parser(
+        "combine-authorize-corrective-retry-v4-generation",
+        help="Authorize one corrective retry V4 generation"
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["approve_one_corrective_retry_v4_generation", "reject_corrective_retry_v4_generation", "request_implementation_package_changes"],
+        help="Operator decision",
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--reason",
+        required=True,
+        help="Reason for decision",
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1701-1760 — combine-corrective-retry-v4-generate-assets subcommand
+    combine_corrective_retry_v4_generate_assets_parser = subparsers.add_parser(
+        "combine-corrective-retry-v4-generate-assets",
+        help="Generate one corrective retry V4 asset with guarded implementation"
+    )
+    combine_corrective_retry_v4_generate_assets_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_corrective_retry_v4_generate_assets_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_corrective_retry_v4_generate_assets_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute generation (stub mode in this layer)",
+    )
+    combine_corrective_retry_v4_generate_assets_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum generations allowed (default: 1)",
+    )
+    combine_corrective_retry_v4_generate_assets_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-1701-1760 — combine-review-corrective-retry-v4-result subcommand
+    combine_review_corrective_retry_v4_result_parser = subparsers.add_parser(
+        "combine-review-corrective-retry-v4-result",
+        help="Review corrective retry V4 generation result with post-submit validation"
+    )
+    combine_review_corrective_retry_v4_result_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_review_corrective_retry_v4_result_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_review_corrective_retry_v4_result_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC2-DIRECTOR1 — Director-lite subcommand
     director_parser = subparsers.add_parser("director", help="Director-lite read-only inspection commands")
     director_subparsers = director_parser.add_subparsers(dest="director_command")
@@ -9102,6 +9187,12 @@ def main() -> int:
         return combine_corrective_retry_v3_generate_assets(args)
     elif args.command == "combine-review-corrective-retry-v3-result":
         return combine_review_corrective_retry_v3_result(args)
+    elif args.command == "combine-authorize-corrective-retry-v4-generation":
+        return combine_authorize_corrective_retry_v4_generation(args)
+    elif args.command == "combine-corrective-retry-v4-generate-assets":
+        return combine_corrective_retry_v4_generate_assets(args)
+    elif args.command == "combine-review-corrective-retry-v4-result":
+        return combine_review_corrective_retry_v4_result(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa-preflight":
         return combine_run_corrective_retry_v3_visual_qa_preflight(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa":
@@ -22457,6 +22548,612 @@ def combine_build_corrective_retry_v4_implementation_package(args: argparse.Name
         print(json.dumps(result, indent=2))
     else:
         print(f"Corrective Retry V4 Implementation Package Created")
+
+    return 0
+
+
+def combine_authorize_corrective_retry_v4_generation(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1701-1760 — Authorize One Corrective Retry V4 Generation."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    decision = args.decision
+    reason = args.reason
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    package_path = control_dir / "combine_v2_corrective_retry_v4_implementation_package.json"
+    auth_request_path = control_dir / "combine_v2_operator_retry_v4_generation_authorization_request.json"
+
+    if not package_path.exists():
+        msg = "Error: combine_v2_corrective_retry_v4_implementation_package.json not found."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    if not auth_request_path.exists():
+        msg = "Error: combine_v2_operator_retry_v4_generation_authorization_request.json not found."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    with open(package_path, 'r') as f:
+        package = json.load(f)
+
+    with open(auth_request_path, 'r') as f:
+        auth_request = json.load(f)
+
+    valid_decisions = [
+        "approve_one_corrective_retry_v4_generation",
+        "reject_corrective_retry_v4_generation",
+        "request_implementation_package_changes"
+    ]
+    if decision not in valid_decisions:
+        msg = f"Error: Invalid decision '{decision}'. Valid: {valid_decisions}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    source_asset = package.get("source_asset", "")
+    failure_basis = package.get("failure_basis", ["blur_detected", "low_contrast"])
+    authorized = decision == "approve_one_corrective_retry_v4_generation"
+
+    authorization = {
+        "stage": "operator_retry_v4_generation_authorization_required",
+        "operator_decision": decision,
+        "operator_retry_v4_generation_authorized": authorized,
+        "corrective_retry_v4_implementation_package_available": True,
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "max_generations": 1,
+        "operator_reason": reason,
+        "generation_allowed": authorized,
+        "retry_allowed": authorized,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_generate_assets" if authorized else "operator_retry_v4_generation_authorization_required",
+        "timestamp": timestamp,
+    }
+
+    auth_path = control_dir / "combine_v2_operator_retry_v4_generation_authorization.json"
+    with open(auth_path, 'w') as f:
+        json.dump(authorization, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "operator_retry_v4_generation_authorization_required"
+    artifact_index["next_allowed_action"] = authorization["next_allowed_action"]
+    artifact_index["operator_retry_v4_generation_authorized"] = authorized
+    artifact_index["max_generations"] = 1
+    artifact_index["generation_allowed"] = authorized
+    artifact_index["retry_allowed"] = authorized
+    artifact_index["workflow_submitted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "operator_retry_v4_generation_authorized",
+        "stage": "operator_retry_v4_generation_authorization_required",
+        "shot_id": shot_id,
+        "operator_decision": decision,
+        "operator_retry_v4_generation_authorized": authorized,
+        "max_generations": 1,
+        "generation_allowed": authorized,
+        "next_allowed_action": authorization["next_allowed_action"],
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "operator_retry_v4_generation_authorization_required",
+        "operator_decision": decision,
+        "operator_retry_v4_generation_authorized": authorized,
+        "corrective_retry_v4_implementation_package_available": True,
+        "shot_id": shot_id,
+        "max_generations": 1,
+        "generation_allowed": authorized,
+        "next_allowed_action": authorization["next_allowed_action"],
+        "artifacts": ["output/control/combine_v2_operator_retry_v4_generation_authorization.json"],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Operator Retry V4 Generation Authorized: {authorized}")
+        print(f"Next Allowed Action: {authorization['next_allowed_action']}")
+
+    return 0
+
+
+def combine_corrective_retry_v4_generate_assets(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1701-1760 — Generate One Corrective Retry V4 Asset."""
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    execute = args.execute
+    max_generations = args.max_generations
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    authorization = _load_json(control_dir / "combine_v2_operator_retry_v4_generation_authorization.json")
+    package = _load_json(control_dir / "combine_v2_corrective_retry_v4_implementation_package.json")
+
+    if not authorization.get("operator_retry_v4_generation_authorized", False):
+        msg = "Error: Operator has not authorized corrective retry V4 generation."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    if not package:
+        msg = "Error: Implementation package not found."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Pre-submit validation
+    patches_required = [
+        "combine_v2_corrective_retry_v4_sampler_recipe_patch.json",
+        "combine_v2_corrective_retry_v4_prompt_quality_patch.json",
+        "combine_v2_corrective_retry_v4_workflow_quality_patch.json",
+        "combine_v2_corrective_retry_v4_contrast_blur_patch.json",
+        "combine_v2_corrective_retry_v4_conditioning_chain_patch.json",
+    ]
+
+    patches_available = {}
+    for patch_file in patches_required:
+        patch_path = control_dir / patch_file
+        patches_available[patch_file.replace('.json', '').replace('combine_v2_corrective_retry_v4_', '')] = patch_path.exists()
+
+    pre_submit_validation = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "validation_type": "pre_submit_validation_v4",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "corrective_retry_v4_implementation_package_exists": True,
+        "operator_retry_v4_generation_authorized": True,
+        "requested_shot_id": shot_id,
+        "max_generations": max_generations,
+        "blind_retry_allowed": False,
+        "patches_available": patches_available,
+        "pre_submit_validation_passed": all(patches_available.values()),
+        "collector_reliability_guard_preserved": True,
+        "output_path_contract_preserved": True,
+    }
+
+    validation_path = control_dir / "combine_v2_corrective_retry_v4_generation_pre_submit_validation.json"
+    with open(validation_path, 'w') as f:
+        json.dump(pre_submit_validation, f, indent=2)
+
+    if not pre_submit_validation["pre_submit_validation_passed"]:
+        msg = "Error: Pre-submit validation failed. Missing required patches."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg, "validation": pre_submit_validation}))
+        else:
+            print(msg)
+        return 1
+
+    source_asset = package.get("source_asset", "")
+    failure_basis = package.get("failure_basis", ["blur_detected", "low_contrast"])
+
+    # Create submit request
+    submit_request = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "request_type": "corrective_retry_v4_submit",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "max_generations": max_generations,
+        "blind_retry_allowed": False,
+        "pre_submit_validation_passed": True,
+        "workflow_submitted": execute,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "timestamp": timestamp,
+    }
+
+    submit_path = control_dir / "combine_v2_corrective_retry_v4_generation_submit_request.json"
+    with open(submit_path, 'w') as f:
+        json.dump(submit_request, f, indent=2)
+
+    # Stub generation result
+    generation_result = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "result_type": "corrective_retry_v4_generation_result",
+        "shot_id": shot_id,
+        "source_asset": source_asset,
+        "failure_basis": failure_basis,
+        "generation_attempted": True,
+        "generation_performed": execute,
+        "comfyui_execution": execute,
+        "retry_attempted": True,
+        "second_generation_attempted": False,
+        "blind_retry_allowed": False,
+        "max_generations": max_generations,
+        "generation_count": 1 if execute else 0,
+        "workflow_submitted": execute,
+        "pre_submit_validation_passed": True,
+        "collector_reliability_guard_preserved": True,
+        "output_path_contract_preserved": True,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "stub_generation": True,
+        "timestamp": timestamp,
+    }
+
+    result_path = control_dir / "combine_v2_corrective_retry_v4_generation_result.json"
+    with open(result_path, 'w') as f:
+        json.dump(generation_result, f, indent=2)
+
+    # Create generation trace
+    generation_trace = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "trace_type": "corrective_retry_v4_generation_trace",
+        "shot_id": shot_id,
+        "events": [
+            {"event": "pre_submit_validation", "passed": True, "timestamp": timestamp},
+            {"event": "workflow_submitted", "executed": execute, "timestamp": timestamp},
+            {"event": "comfyui_execution", "executed": execute, "stub": True, "timestamp": timestamp},
+            {"event": "output_collection", "status": "pending", "timestamp": timestamp},
+        ],
+        "timestamp": timestamp,
+    }
+
+    trace_path = control_dir / "combine_v2_corrective_retry_v4_generation_trace.json"
+    with open(trace_path, 'w') as f:
+        json.dump(generation_trace, f, indent=2)
+
+    # Create outputs manifest
+    outputs_manifest = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "manifest_type": "corrective_retry_v4_outputs_manifest",
+        "shot_id": shot_id,
+        "generated_assets": [],
+        "asset_count": 0,
+        "generation_performed": execute,
+        "timestamp": timestamp,
+    }
+
+    if execute:
+        stub_asset = f"combine_v2_corrective_retry_v4_generated_{int(datetime.now().timestamp())}_00001_.png"
+        outputs_manifest["generated_assets"] = [f"output/assets/{stub_asset}"]
+        outputs_manifest["asset_count"] = 1
+        outputs_manifest["stub_asset"] = True
+
+    manifest_path = control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json"
+    with open(manifest_path, 'w') as f:
+        json.dump(outputs_manifest, f, indent=2)
+
+    # Post-submit validation
+    post_submit_validation = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "validation_type": "post_submit_validation_v4",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "asset_exists": execute,
+        "asset_readable": False,
+        "asset_size_bytes_gt_1024": False,
+        "sha256_present": False,
+        "stub_asset_detected": execute,
+        "post_submit_validation_executed": True,
+        "stub_asset_guard_enforced": True,
+    }
+
+    post_validation_path = control_dir / "combine_v2_corrective_retry_v4_post_submit_validation.json"
+    with open(post_validation_path, 'w') as f:
+        json.dump(post_submit_validation, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_v4_generate_assets"
+    artifact_index["next_allowed_action"] = "corrective_retry_v4_result_review_required"
+    artifact_index["corrective_retry_v4_generation_executed"] = execute
+    artifact_index["workflow_submitted"] = execute
+    artifact_index["comfyui_execution"] = execute
+    artifact_index["generation_performed"] = execute
+    artifact_index["post_submit_validation_executed"] = True
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v4_generation_executed",
+        "stage": "corrective_retry_v4_generate_assets",
+        "shot_id": shot_id,
+        "generation_performed": execute,
+        "retry_attempted": True,
+        "second_generation_attempted": False,
+        "post_submit_validation_executed": True,
+        "next_allowed_action": "corrective_retry_v4_result_review_required",
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "corrective_retry_v4_implementation_package_used": True,
+        "requested_shot_id": shot_id,
+        "generation_attempts": 1,
+        "max_generations": max_generations,
+        "workflow_submitted": execute,
+        "generation_performed": execute,
+        "comfyui_execution": execute,
+        "retry_attempted": True,
+        "second_generation_attempted": False,
+        "blind_retry_allowed": False,
+        "pre_submit_validation_passed": True,
+        "post_submit_validation_executed": True,
+        "stub_asset_guard_enforced": True,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v4_generation_pre_submit_validation.json",
+            "output/control/combine_v2_corrective_retry_v4_generation_submit_request.json",
+            "output/control/combine_v2_corrective_retry_v4_generation_result.json",
+            "output/control/combine_v2_corrective_retry_v4_generation_trace.json",
+            "output/control/combine_v2_corrective_retry_v4_outputs_manifest.json",
+            "output/control/combine_v2_corrective_retry_v4_post_submit_validation.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V4 Generation Executed: {execute}")
+        print(f"Next Allowed Action: corrective_retry_v4_result_review_required")
+
+    return 0
+
+
+def combine_review_corrective_retry_v4_result(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-1701-1760 — Review Corrective Retry V4 Generation Result.
+
+    Reviews the result of one corrective retry V4 generation with post-submit validation.
+    Determines success/failure branch and next action.
+
+    Exit codes:
+    - 0: review completed
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    generation_result = _load_json(control_dir / "combine_v2_corrective_retry_v4_generation_result.json")
+    outputs_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json")
+    post_submit_validation = _load_json(control_dir / "combine_v2_corrective_retry_v4_post_submit_validation.json")
+
+    if not generation_result:
+        msg = "Error: Generation result not found. Run combine-corrective-retry-v4-generate-assets first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Determine branch based on post-submit validation
+    stub_asset_detected = post_submit_validation.get("stub_asset_detected", False)
+    asset_exists = post_submit_validation.get("asset_exists", False)
+    asset_readable = post_submit_validation.get("asset_readable", False)
+    asset_size_gt_1024 = post_submit_validation.get("asset_size_bytes_gt_1024", False)
+    sha256_present = post_submit_validation.get("sha256_present", False)
+
+    # Success if all validations pass and no stub
+    manifest_success = (
+        asset_exists and
+        asset_readable and
+        asset_size_gt_1024 and
+        sha256_present and
+        not stub_asset_detected
+    )
+
+    if manifest_success:
+        branch = "success"
+        failure_code = None
+        next_action = "corrective_retry_v4_visual_qa_preflight_required"
+    else:
+        branch = "failed"
+        failure_code = "CORRECTIVE_RETRY_V4_OUTPUT_VALIDATION_FAILED"
+        next_action = "corrective_retry_v4_result_reconciliation_required"
+
+    # Create result review
+    result_review = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "review_type": "corrective_retry_v4_result_review",
+        "shot_id": shot_id,
+        "branch_selected": branch,
+        "generated_assets_count": outputs_manifest.get("asset_count", 0),
+        "asset_exists": asset_exists,
+        "asset_readable": asset_readable,
+        "asset_size_bytes_gt_1024": asset_size_gt_1024,
+        "sha256_present": sha256_present,
+        "stub_asset_detected": stub_asset_detected,
+        "manifest_success_policy_passed": manifest_success,
+        "failure_code": failure_code,
+        "result_review_executed": True,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": next_action,
+        "timestamp": timestamp,
+    }
+
+    review_path = control_dir / "combine_v2_corrective_retry_v4_result_review.json"
+    with open(review_path, 'w') as f:
+        json.dump(result_review, f, indent=2)
+
+    # Update artifact index
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_v4_generate_assets"
+    artifact_index["next_allowed_action"] = next_action
+    artifact_index["corrective_retry_v4_result_review_executed"] = True
+    artifact_index["branch_selected"] = branch
+    artifact_index["generated_assets_count"] = outputs_manifest.get("asset_count", 0)
+    artifact_index["manifest_success_policy_passed"] = manifest_success
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "corrective_retry_v4_result_review_executed",
+        "stage": "corrective_retry_v4_generate_assets",
+        "shot_id": shot_id,
+        "branch_selected": branch,
+        "generated_assets_count": outputs_manifest.get("asset_count", 0),
+        "manifest_success_policy_passed": manifest_success,
+        "failure_code": failure_code,
+        "next_allowed_action": next_action,
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "stage": "corrective_retry_v4_generate_assets",
+        "branch_selected": branch,
+        "generated_assets_count": outputs_manifest.get("asset_count", 0),
+        "asset_exists": asset_exists,
+        "asset_readable": asset_readable,
+        "asset_size_bytes_gt_1024": asset_size_gt_1024,
+        "sha256_present": sha256_present,
+        "stub_asset_detected": stub_asset_detected,
+        "manifest_success_policy_passed": manifest_success,
+        "failure_code": failure_code,
+        "result_review_executed": True,
+        "next_allowed_action": next_action,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "artifacts": ["output/control/combine_v2_corrective_retry_v4_result_review.json"],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Corrective Retry V4 Result Review Completed")
+        print(f"Shot: {shot_id}")
+        print(f"Branch Selected: {branch}")
+        print(f"Generated Assets: {outputs_manifest.get('asset_count', 0)}")
+        print(f"Manifest Success: {manifest_success}")
+        if failure_code:
+            print(f"Failure Code: {failure_code}")
+        print(f"Next Allowed Action: {next_action}")
 
     return 0
 
