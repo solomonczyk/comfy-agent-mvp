@@ -8647,6 +8647,38 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2961-3200 — combine-corrective-retry-v5-visual-recovery subcommand
+    combine_corrective_retry_v5_visual_recovery_parser = subparsers.add_parser(
+        "combine-corrective-retry-v5-visual-recovery",
+        help="Execute V5 visual recovery with controlled single generation"
+    )
+    combine_corrective_retry_v5_visual_recovery_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_corrective_retry_v5_visual_recovery_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_corrective_retry_v5_visual_recovery_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute real ComfyUI submission (without flag: dry-run info only)",
+    )
+    combine_corrective_retry_v5_visual_recovery_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Max generations (must be 1)",
+    )
+    combine_corrective_retry_v5_visual_recovery_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1881-1940 — combine-build-corrective-retry-v4-generator-loader-fix-plan subcommand
     combine_build_corrective_retry_v4_generator_loader_fix_plan_parser = subparsers.add_parser(
         "combine-build-corrective-retry-v4-generator-loader-fix-plan",
@@ -9785,6 +9817,8 @@ def main() -> int:
         return combine_validate_corrective_retry_v4_real_workflow_binding(args)
     elif args.command == "combine-review-corrective-retry-v4-real-workflow-binding":
         return combine_review_corrective_retry_v4_real_workflow_binding(args)
+    elif args.command == "combine-corrective-retry-v5-visual-recovery":
+        return combine_corrective_retry_v5_visual_recovery(args)
     elif args.command == "combine-build-corrective-retry-v4-generator-loader-fix-plan":
         return combine_build_corrective_retry_v4_generator_loader_fix_plan(args)
     elif args.command == "combine-validate-corrective-retry-v4-generator-loader-fix-plan":
@@ -24691,6 +24725,490 @@ def combine_corrective_retry_v4_real_execute_assets(args: argparse.Namespace) ->
         print(f"  workflow_source: {workflow_source}")
         print(f"  runtime_saveimage_prefix (patched): {runtime_saveimage_prefix}")
         print(f"  source_workflow_prefix_detected: {source_workflow_prefix}")
+
+    return 0
+
+
+def combine_corrective_retry_v5_visual_recovery(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2961-3200 — V5 Visual Recovery.
+
+    Executes one controlled generation with composition and subject-scale constraints.
+    This is the ONLY generation allowed in the V5 visual recovery layer.
+
+    Guards:
+    - Requires V5 visual recovery package
+    - Requires V5 patched workflow
+    - max_generations must equal 1
+    - Requires --execute flag for real ComfyUI submission
+    - Without --execute: informational dry-run only
+
+    Exit codes:
+    - 0: success (or dry-run info)
+    - 1: blocked / error
+    """
+    import json
+    import os
+    from pathlib import Path
+    from datetime import datetime, timezone
+    import hashlib
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # Guard: max_generations must be 1
+    if max_generations != 1:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "max_generations_must_equal_1",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("V5 Visual Recovery: BLOCKED (max_generations must be 1)")
+        return 1
+
+    # Guard: V5 visual recovery package must exist
+    v5_package = _load_json(control_dir / "combine_v2_corrective_retry_v5_visual_recovery_package.json")
+    if not v5_package or v5_package.get("retry_version") != "v5_visual_recovery":
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "v5_visual_recovery_package_missing_or_invalid",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("V5 Visual Recovery: BLOCKED (V5 visual recovery package missing or invalid)")
+        return 1
+
+    # Guard: V5 patched workflow must exist
+    v5_workflow_path = control_dir / "shot02_v5_patched_workflow.json"
+    if not v5_workflow_path.exists():
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "v5_patched_workflow_missing",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("V5 Visual Recovery: BLOCKED (V5 patched workflow missing)")
+        return 1
+
+    # Load V5 workflow
+    workflow = _load_json(v5_workflow_path)
+
+    # Verify V5 workflow has correct SaveImage prefix
+    workflow_prefix = None
+    for node_id, node in workflow.items():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            workflow_prefix = node.get("inputs", {}).get("filename_prefix")
+            break
+
+    expected_prefix = f"combine_v2_corrective_retry_v5_{shot_id}"
+    if workflow_prefix != expected_prefix:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "v5_workflow_prefix_invalid",
+            "expected_prefix": expected_prefix,
+            "actual_prefix": workflow_prefix,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"V5 Visual Recovery: BLOCKED (workflow prefix mismatch: expected {expected_prefix}, got {workflow_prefix})")
+        return 1
+
+    # Verify V5 workflow has patched positive prompt
+    positive_prompt = None
+    for node_id, node in workflow.items():
+        if isinstance(node, dict) and node.get("class_type") == "CLIPTextEncode":
+            text = node.get("inputs", {}).get("text", "")
+            if "Subject is large and clearly visible" in text and "medium shot" in text:
+                positive_prompt = text
+                break
+
+    if not positive_prompt:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "v5_workflow_positive_prompt_not_patched",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("V5 Visual Recovery: BLOCKED (V5 workflow positive prompt not patched with composition constraints)")
+        return 1
+
+    # Verify V5 workflow has patched negative prompt
+    negative_prompt = None
+    for node_id, node in workflow.items():
+        if isinstance(node, dict) and node.get("class_type") == "CLIPTextEncode":
+            text = node.get("inputs", {}).get("text", "")
+            if "tiny subject" in text and "vast empty background" in text:
+                negative_prompt = text
+                break
+
+    if not negative_prompt:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "v5_workflow_negative_prompt_not_patched",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print("V5 Visual Recovery: BLOCKED (V5 workflow negative prompt not patched with forbidden camera distances)")
+        return 1
+
+    # Without --execute: informational dry-run only
+    if not execute:
+        info = {
+            "status": "authorization_required",
+            "message": "Pass --execute to run real ComfyUI submission for V5 visual recovery",
+            "v5_package_loaded": True,
+            "v5_workflow_loaded": True,
+            "workflow_prefix_valid": True,
+            "positive_prompt_patched": True,
+            "negative_prompt_patched": True,
+            "max_generations": 1,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "workflow_submitted": False,
+            "retry_attempted": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "next_allowed_action": "operator_visual_review_required",
+        }
+        if json_output:
+            print(json.dumps(info, indent=2))
+        else:
+            print("V5 Visual Recovery: AUTHORIZATION REQUIRED (pass --execute to run real ComfyUI submission)")
+        return 0
+
+    # --execute path: real ComfyUI submission
+    comfy_base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188")
+
+    import asyncio
+    from app.comfy.comfy_client import ComfyClient
+
+    async def _submit():
+        client = ComfyClient()
+        prompt_id = await client.queue_prompt(workflow)
+        return prompt_id
+
+    try:
+        prompt_id = asyncio.run(_submit())
+    except Exception as exc:
+        err = {
+            "status": "error",
+            "blocked_reason": "comfyui_submission_failed",
+            "error": str(exc),
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "workflow_submitted": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(err, indent=2))
+        else:
+            print(f"V5 Visual Recovery: FAILED - {exc}")
+        return 1
+
+    # Wait for generation to complete and collect output
+    import time
+    time.sleep(8)  # Wait for ComfyUI to process
+
+    # Find generated asset
+    generated_asset_path = None
+    generated_asset_filename = None
+    asset_files = list(assets_dir.glob(f"{expected_prefix}_*.png"))
+    if asset_files:
+        generated_asset_path = asset_files[0]
+        generated_asset_filename = generated_asset_path.name
+
+    if not generated_asset_path or not generated_asset_path.exists():
+        err = {
+            "status": "error",
+            "blocked_reason": "v5_output_missing",
+            "prompt_id": prompt_id,
+            "generation_performed": True,
+            "comfyui_execution": True,
+            "workflow_submitted": True,
+            "asset_found": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(err, indent=2))
+        else:
+            print(f"V5 Visual Recovery: FAILED (output asset not found for prefix {expected_prefix})")
+        return 1
+
+    # Compute SHA256
+    sha256_hash = hashlib.sha256()
+    with open(generated_asset_path, "rb") as f:
+        for byte_block in iter(lambda: f.read(4096), b""):
+            sha256_hash.update(byte_block)
+    sha256 = sha256_hash.hexdigest()
+
+    # Get asset dimensions
+    from PIL import Image
+    with Image.open(generated_asset_path) as img:
+        width, height = img.size
+        dimensions = f"{width}x{height}"
+
+    asset_size_bytes = generated_asset_path.stat().st_size
+
+    # Create real execution result artifact
+    real_execution_result = {
+        "task_id": "RC-COMBINE-V2-2961-3200",
+        "stage": "corrective_retry_v5_visual_recovery",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "generation_performed": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "prompt_id": prompt_id,
+        "comfy_base_url": comfy_base_url,
+        "workflow_source": "shot02_v5_patched_workflow.json",
+        "runtime_saveimage_prefix": expected_prefix,
+        "generated_assets_count": 1,
+        "generated_asset_paths": [f"output/assets/{generated_asset_filename}"],
+        "asset_filename": generated_asset_filename,
+        "asset_path": f"output/assets/{generated_asset_filename}",
+        "asset_exists": True,
+        "asset_readable": True,
+        "asset_size_bytes": asset_size_bytes,
+        "asset_size_gt_1024": asset_size_bytes > 1024,
+        "sha256": sha256,
+        "sha256_present": True,
+        "dimensions": dimensions,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+    }
+
+    with open(control_dir / "combine_v2_corrective_retry_v5_real_execution_result.json", 'w') as f:
+        json.dump(real_execution_result, f, indent=2)
+
+    # Create outputs manifest
+    outputs_manifest = {
+        "task_id": "RC-COMBINE-V2-2961-3200",
+        "stage": "corrective_retry_v5_visual_recovery",
+        "manifest_type": "corrective_retry_v5_outputs_manifest",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "prompt_id": prompt_id,
+        "assets": [
+            {
+                "filename": generated_asset_filename,
+                "relative_path": f"output/assets/{generated_asset_filename}",
+                "exists": True,
+                "readable": True,
+                "size_bytes": asset_size_bytes,
+                "size_gt_1024": asset_size_bytes > 1024,
+                "sha256": sha256,
+                "dimensions": dimensions,
+                "node_id": "9",
+                "saveimage_prefix": expected_prefix
+            }
+        ],
+        "generated_assets_count": 1,
+        "all_assets_valid": True,
+        "output_manifest_created": True,
+        "production_accepted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+    }
+
+    with open(control_dir / "combine_v2_corrective_retry_v5_outputs_manifest.json", 'w') as f:
+        json.dump(outputs_manifest, f, indent=2)
+
+    # Create result review
+    result_review = {
+        "task_id": "RC-COMBINE-V2-2961-3200",
+        "stage": "corrective_retry_v5_visual_recovery",
+        "review_type": "corrective_retry_v5_result_review",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "generation_performed": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "asset_generated": True,
+        "asset_path": f"output/assets/{generated_asset_filename}",
+        "asset_sha256": sha256,
+        "asset_dimensions": dimensions,
+        "asset_size_bytes": asset_size_bytes,
+        "asset_valid": True,
+        "visual_qa_executed": False,
+        "operator_visual_review_required": True,
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+    }
+
+    with open(control_dir / "combine_v2_corrective_retry_v5_result_review.json", 'w') as f:
+        json.dump(result_review, f, indent=2)
+
+    # Create visual recovery technical packet
+    technical_packet = {
+        "task_id": "RC-COMBINE-V2-2961-3200",
+        "packet_type": "corrective_retry_v5_visual_recovery_technical_packet",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "new_asset": f"output/assets/{generated_asset_filename}",
+        "compared_to_failed_asset": "combine_v2_corrective_retry_v4_shot02_00002_.png",
+        "technical_validity": {
+            "exists": True,
+            "readable": True,
+            "size_bytes_gt_1024": asset_size_bytes > 1024,
+            "sha256_present": True,
+            "dimensions_valid": True
+        },
+        "visual_recovery_checks": {
+            "subject_scale_check": "pending_operator_review",
+            "empty_space_check": "pending_operator_review",
+            "composition_check": "pending_operator_review",
+            "shot_intent_check": "pending_operator_review",
+            "production_quality_check": "pending_operator_review"
+        },
+        "operator_visual_review_required": True,
+        "production_accepted": False,
+    }
+
+    with open(control_dir / "combine_v2_corrective_retry_v5_visual_recovery_technical_packet.json", 'w') as f:
+        json.dump(technical_packet, f, indent=2)
+
+    # Create operator visual review packet
+    operator_review_packet = {
+        "task_id": "RC-COMBINE-V2-2961-3200",
+        "packet_type": "corrective_retry_v5_operator_visual_review_packet",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "v5_generation_completed": True,
+        "asset_path": f"output/assets/{generated_asset_filename}",
+        "asset_sha256": sha256,
+        "asset_dimensions": dimensions,
+        "operator_visual_review_required": True,
+        "visual_recovery_technical_packet": "output/control/combine_v2_corrective_retry_v5_visual_recovery_technical_packet.json",
+        "visual_failure_diagnosis": "output/control/combine_v2_visual_quality_failure_diagnosis_v1.json",
+        "v5_visual_recovery_package": "output/control/combine_v2_corrective_retry_v5_visual_recovery_package.json",
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "next_allowed_action": "operator_visual_review_required",
+    }
+
+    with open(control_dir / "combine_v2_corrective_retry_v5_operator_visual_review_packet.json", 'w') as f:
+        json.dump(operator_review_packet, f, indent=2)
+
+    # Update artifact_index.json
+    artifact_index = _load_json(control_dir / "artifact_index.json")
+    artifact_index["current_state"] = "operator_visual_review_required"
+    artifact_index["next_allowed_action"] = "operator_visual_review_required"
+    artifact_index["production_accepted"] = False
+    artifact_index["downstream_blocked"] = True
+    artifact_index["v5_visual_recovery_executed"] = True
+    artifact_index["v5_generation_timestamp"] = timestamp
+    artifact_index["v5_prompt_id"] = prompt_id
+    artifact_index["v5_generated_asset"] = f"output/assets/{generated_asset_filename}"
+    artifact_index["v5_asset_sha256"] = sha256
+
+    with open(control_dir / "artifact_index.json", 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode_ledger.json
+    ledger = _load_json(control_dir / "episode_ledger.json")
+    if not isinstance(ledger, list):
+        ledger = []
+    ledger.append({
+        "event_type": "corrective_retry_v5_visual_recovery_completed",
+        "task_id": "RC-COMBINE-V2-2961-3200",
+        "shot_id": shot_id,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "prompt_id": prompt_id,
+        "generated_asset": generated_asset_filename,
+        "asset_sha256": sha256,
+        "operator_visual_review_required": True,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    })
+
+    with open(control_dir / "episode_ledger.json", 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "status": "ok",
+        "task_id": "RC-COMBINE-V2-2961-3200",
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "generation_performed": True,
+        "generation_attempts": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "prompt_id": prompt_id,
+        "generated_asset": generated_asset_filename,
+        "asset_sha256": sha256,
+        "asset_dimensions": dimensions,
+        "visual_qa_executed": False,
+        "operator_visual_review_required": True,
+        "production_accepted": False,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("V5 Visual Recovery: COMPLETED")
+        print(f"Prompt ID: {prompt_id}")
+        print(f"Generated Asset: {generated_asset_filename}")
+        print(f"SHA256: {sha256}")
+        print(f"Dimensions: {dimensions}")
+        print(f"Operator Visual Review: REQUIRED")
 
     return 0
 
