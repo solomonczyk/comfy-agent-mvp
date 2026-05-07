@@ -100,7 +100,8 @@ class CombineStateMachine:
         "targeted_refinement_generation_authorization_required",
         "v8_quality_locked_generation_authorization_required",
         "v8_generation_runtime_blocked",
-        "v8_generation_runtime_recovery_required"
+        "v8_generation_runtime_recovery_required",
+        "v8_generation_reexecution_authorization_required"
     ]
     
     # Terminal states
@@ -289,12 +290,18 @@ class CombineStateMachine:
         "v8_generation_runtime_blocked": {
             "v8_generation_runtime_blocked",  # Self-loop: blocked until ComfyUI available
             "v8_generation_runtime_recovery_required",  # Can transition to recovery
+            "v8_generation_reexecution_authorization_required",  # Can advance to reexecution authorization gate
             "v8_quality_locked_generation_authorization_required"  # Can restart authorization
         },
         "v8_generation_runtime_recovery_required": {
             "v8_generation_runtime_recovery_required",  # Self-loop: halted pending recovery
             "v8_quality_locked_generation_authorization_required",  # Can go back to generation authorization
+            "v8_generation_reexecution_authorization_required",  # Can advance to reexecution authorization gate
             "blocked_manual_review"
+        },
+        "v8_generation_reexecution_authorization_required": {
+            "v8_generation_reexecution_authorization_required",  # Self-loop: halted pending authorization
+            "v8_quality_locked_generation_authorization_required"  # Authorized -> proceed to generation
         },
         "operator_visual_review_required": {
             "operator_visual_review_required",  # Self-loop: halted pending operator
@@ -552,6 +559,16 @@ class CombineStateMachine:
         ("operator_retry_v4_updated_implementation_plan_review_required", "assembly_preflight_required"),
         ("operator_retry_v4_updated_implementation_plan_review_required", "completed"),
         ("operator_retry_v4_updated_implementation_plan_review_required", "production_accepted"),
+
+        # v8_generation_reexecution_authorization_required: cannot skip to runtime, visual review, assembly, or downstream
+        ("v8_generation_reexecution_authorization_required", "generate_assets"),
+        ("v8_generation_reexecution_authorization_required", "real_generate_assets"),
+        ("v8_generation_reexecution_authorization_required", "operator_visual_review_required"),
+        ("v8_generation_reexecution_authorization_required", "visual_qa_required"),
+        ("v8_generation_reexecution_authorization_required", "assembly_required"),
+        ("v8_generation_reexecution_authorization_required", "assembly_preflight_required"),
+        ("v8_generation_reexecution_authorization_required", "completed"),
+        ("v8_generation_reexecution_authorization_required", "production_accepted"),
     }
     
     @classmethod

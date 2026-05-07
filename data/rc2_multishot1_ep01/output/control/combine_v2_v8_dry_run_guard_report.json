@@ -1,0 +1,49 @@
+{
+  "stage": "v8_dry_run_guard_check",
+  "task_id": "RC-COMBINE-V2-6001-6300",
+  "dry_run_cannot_claim_real_generation": true,
+  "empty_prompt_id_blocks_success": true,
+  "empty_generated_assets_blocks_operator_visual_review": true,
+  "missing_execute_flag_stays_safe": true,
+  "real_execute_path_requires_explicit_execute": true,
+  "dry_run_not_accepted_as_real_generation_new": true,
+  "guards_enforced": {
+    "dry_run_claimed_real_generation": false,
+    "dry_run_claimed_comfyui_execution": false,
+    "dry_run_claimed_real_workflow_submit": false,
+    "dry_run_claimed_prompt_id_success": false,
+    "operator_visual_review_blocked": true,
+    "dry_run_routes_to_authorization_not_visual_review": true
+  },
+  "v8_artifact_findings": {
+    "comfyui_execution": false,
+    "execute_mode": false,
+    "prompt_id": "",
+    "prompt_id_available": false,
+    "generation_performed": false,
+    "workflow_submitted": false,
+    "manifest_collection_status": "dry_run",
+    "manifest_asset_count": 0,
+    "canonical_outputs_registered": false,
+    "result_review_next_allowed_action": "v8_generation_runtime_recovery_required",
+    "visual_packet_generated_assets_count": 0
+  },
+  "guards_triggered": [
+    "missing_execute_flag_stays_safe",
+    "empty_prompt_id_blocks_success",
+    "empty_generated_assets_blocks_operator_visual_review"
+  ],
+  "contradictions": [],
+  "generation_allowed_now": false,
+  "new_generation_performed": false,
+  "new_comfyui_submit_executed": false,
+  "workflow_submitted": false,
+  "retry_attempted": false,
+  "visual_qa_executed": false,
+  "operator_visual_decision_created": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "v8_generation_reexecution_authorization_required",
+  "timestamp": "2026-05-07T14:32:17.256978"
+}

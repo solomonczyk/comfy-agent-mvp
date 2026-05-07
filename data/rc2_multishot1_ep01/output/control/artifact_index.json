@@ -1,6 +1,6 @@
 {
-  "current_state": "v8_generation_runtime_blocked",
-  "next_allowed_action": "v8_generation_runtime_recovery_required",
+  "current_state": "v8_generation_reexecution_authorization_required",
+  "next_allowed_action": "v8_generation_reexecution_authorization_required",
   "generation_runtime_blocked": true,
   "blocker": "V8_GENERATION_TIMEOUT",
   "blocker_summary": "V8 quality-locked generation attempt timed out / was dry-run only. No real ComfyUI submit occurred. No prompt_id generated. No native output produced. State repaired from v8_operator_visual_review_required to v8_generation_runtime_blocked. Runtime recovery required before any further generation.",
@@ -123,6 +123,57 @@
       "no_generation_performed": true,
       "reconciliation_performed": true,
       "reconciliation_task_id": "RC-COMBINE-V2-5701-6000-RECOVERY"
+    },
+    {
+      "stage": "v8_generation_runtime_blocked",
+      "success": true,
+      "message": "Agent GenericStageAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "GenericStageAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "none"
+      },
+      "timestamp": "2026-05-07T14:29:30.701855",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "v8_generation_runtime_blocked",
+      "success": true,
+      "message": "Agent GenericStageAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "GenericStageAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "none"
+      },
+      "timestamp": "2026-05-07T14:29:35.958533",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "v8_generation_reexecution_authorization_required",
+      "success": true,
+      "message": "Agent GenericStageAgent executed stage (stub)",
+      "artifacts": [],
+      "metadata": {
+        "agent": "GenericStageAgent",
+        "dry_run": true,
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "downstream_executed": false,
+        "not_required_for_route": false,
+        "next_recommended_stage": "none"
+      },
+      "timestamp": "2026-05-07T14:29:41.488917",
+      "no_generation_performed": true
     }
   ],
   "timestamp": "2026-05-07T16:07:09+02:00",
@@ -150,5 +201,10 @@
   "operator_visual_review_packet_created": false,
   "v8_operator_visual_review_packet_created": false,
   "no_second_generation_attempted": true,
-  "no_new_generation_performed": true
+  "no_new_generation_performed": true,
+  "generation_allowed_now": false,
+  "new_comfyui_submit_executed": false,
+  "visual_qa_executed": false,
+  "operator_visual_decision_created": false,
+  "v8_reexecution_authorization_gate_created": true
 }

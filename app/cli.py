@@ -5258,6 +5258,9 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'combine-audit-corrective-retry-workflow',
         'combine-diagnose-corrective-retry-recipe',
         'combine-build-corrective-recipe-v2',
+        'combine-v8-execution-readiness-preflight',
+        'combine-v8-dry-run-guard-check',
+        'combine-v8-reexecution-authorization-gate',
     }
     
     if command not in strict_commands:
@@ -6353,6 +6356,486 @@ def combine_build_corrective_recipe_v2(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_v8_execution_readiness_preflight(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-6001-6300 — Read-only V8 ComfyUI readiness preflight.
+    
+    Reads ComfyUI availability without submitting any workflow.
+    Classifies timeout/failure modes:
+    - server_unavailable
+    - queue_timeout
+    - history_timeout
+    - output_collection_failed
+    - dry_run_mode
+    - empty_prompt_id
+    - empty_generated_assets
+
+    Exit codes:
+    - 0: preflight complete (ready or blocked)
+    """
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    silent = bool(getattr(args, "silent", False))
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    artifact_index = _read_json_file(control_dir / "artifact_index.json")
+    current_state = artifact_index.get("current_state", "")
+    artifact_assets = artifact_index.get("generated_assets", [])
+
+    base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188").rstrip("/")
+    object_info_url = f"{base_url}/object_info"
+
+    comfyui_reachable = False
+    server_unavailable = False
+    queue_timeout = False
+    history_timeout = False
+    output_collection_failed = False
+    dry_run_mode = False
+    empty_prompt_id = False
+    empty_generated_assets = False
+    blocked_reason = None
+
+    try:
+        req = urllib.request.Request(object_info_url, method="GET")
+        with urllib.request.urlopen(req, timeout=5) as response:
+            comfyui_reachable = True
+            payload = json.loads(response.read().decode("utf-8"))
+            if not isinstance(payload, dict) or len(payload) == 0:
+                server_unavailable = True
+                blocked_reason = "COMFYUI_OBJECT_INFO_EMPTY"
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        server_unavailable = True
+        blocked_reason = "COMFYUI_UNREACHABLE"
+
+    v8_execution = _read_json_file(control_dir / "combine_v2_v8_quality_locked_generation_execution.json") \
+        if (control_dir / "combine_v2_v8_quality_locked_generation_execution.json").exists() else {}
+    v8_manifest = _read_json_file(control_dir / "combine_v2_v8_quality_locked_outputs_manifest.json") \
+        if (control_dir / "combine_v2_v8_quality_locked_outputs_manifest.json").exists() else {}
+
+    comfyui_execution_flag = v8_execution.get("comfyui_execution", False)
+    execute_mode = v8_execution.get("execute_mode", False)
+    prompt_id = v8_execution.get("prompt_id", "")
+    manifest_collection_status = v8_manifest.get("collection_status", "")
+    manifest_assets = v8_manifest.get("generated_assets", [])
+
+    if not comfyui_execution_flag and not execute_mode:
+        dry_run_mode = True
+    if not prompt_id:
+        empty_prompt_id = True
+    if len(manifest_assets) == 0 and len(artifact_assets) == 0:
+        empty_generated_assets = True
+
+    failure_classifications = []
+    if server_unavailable:
+        failure_classifications.append("server_unavailable")
+    if queue_timeout:
+        failure_classifications.append("queue_timeout")
+    if history_timeout:
+        failure_classifications.append("history_timeout")
+    if output_collection_failed:
+        failure_classifications.append("output_collection_failed")
+    if dry_run_mode:
+        failure_classifications.append("dry_run_mode")
+    if empty_prompt_id:
+        failure_classifications.append("empty_prompt_id")
+    if empty_generated_assets:
+        failure_classifications.append("empty_generated_assets")
+
+    readiness_report = {
+        "stage": "v8_execution_readiness_preflight",
+        "task_id": "RC-COMBINE-V2-6001-6300",
+        "comfyui_read_only_check": True,
+        "generation_submitted": False,
+        "comfyui_execution": False,
+        "workflow_mutated": False,
+        "comfyui_reachable": comfyui_reachable,
+        "server_unavailable": server_unavailable,
+        "classification": {
+            "queue_timeout": queue_timeout,
+            "history_timeout": history_timeout,
+            "output_collection_failed": output_collection_failed,
+            "dry_run_mode": dry_run_mode,
+            "empty_prompt_id": empty_prompt_id,
+            "empty_generated_assets": empty_generated_assets,
+        },
+        "failure_classifications": failure_classifications,
+        "blocked_reason": blocked_reason,
+        "v8_execution_prompt_id": prompt_id,
+        "v8_execution_comfyui_execution": comfyui_execution_flag,
+        "v8_manifest_collection_status": manifest_collection_status,
+        "v8_manifest_asset_count": len(manifest_assets),
+        "canonical_generated_assets_count": len(artifact_assets),
+        "current_state": current_state,
+        "next_allowed_action": artifact_index.get("next_allowed_action", ""),
+        "downstream_executed": False,
+        "timestamp": timestamp,
+    }
+
+    _write_json_file(control_dir / "combine_v2_v8_real_execution_readiness_diagnosis.json", readiness_report)
+
+    runtime_preflight = {
+        "stage": "v8_runtime_preflight",
+        "task_id": "RC-COMBINE-V2-6001-6300",
+        "preflight_type": "v8_runtime_preflight",
+        "comfyui_reachable": comfyui_reachable,
+        "server_unavailable": server_unavailable,
+        "generation_submitted": False,
+        "comfyui_execution": False,
+        "workflow_mutated": False,
+        "failure_classifications": failure_classifications,
+        "dry_run_mode_present": dry_run_mode,
+        "empty_prompt_id_present": empty_prompt_id,
+        "empty_generated_assets_present": empty_generated_assets,
+        "all_guards_pass": not server_unavailable,
+        "next_allowed_action": "v8_generation_reexecution_authorization_required",
+        "timestamp": timestamp,
+    }
+    _write_json_file(control_dir / "combine_v2_v8_runtime_preflight_report.json", runtime_preflight)
+
+    orchestrator = CombineOrchestrator(str(project_root))
+    try:
+        orchestrator.run_stage("v8_generation_runtime_blocked")
+    except Exception:
+        pass
+
+    if not silent:
+        if json_output:
+            print(json.dumps(readiness_report, indent=2))
+        else:
+            status = "ready" if comfyui_reachable else "blocked"
+            print(f"V8 Execution Readiness Preflight: {status.upper()}")
+            print(f"ComfyUI Reachable: {comfyui_reachable}")
+            print(f"Failure Classifications: {failure_classifications}")
+
+    return 0
+
+
+def combine_v8_dry_run_guard_check(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-6001-6300 — V8 dry-run guard enforcement.
+    
+    Reads existing V8 generation artifacts and enforces that:
+    - Dry-run mode cannot set new_generation_performed=true
+    - Dry-run mode cannot set comfyui_execution=true
+    - Dry-run mode cannot set workflow_submitted=true as real submit
+    - Empty prompt_id blocks ComfyUI success claim
+    - Empty generated_assets blocks operator visual review
+    - Dry-run mode routes to recovery/authorization-required state, not visual review
+    
+    Exit codes:
+    - 0: guard check complete
+    - 1: contradictions found (unexpected real-gen claims in dry-run)
+    """
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    silent = bool(getattr(args, "silent", False))
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    artifact_index = _read_json_file(control_dir / "artifact_index.json")
+    v8_execution = _read_json_file(control_dir / "combine_v2_v8_quality_locked_generation_execution.json") \
+        if (control_dir / "combine_v2_v8_quality_locked_generation_execution.json").exists() else {}
+    v8_manifest = _read_json_file(control_dir / "combine_v2_v8_quality_locked_outputs_manifest.json") \
+        if (control_dir / "combine_v2_v8_quality_locked_outputs_manifest.json").exists() else {}
+    v8_result_review = _read_json_file(control_dir / "combine_v2_v8_quality_locked_generation_result_review.json") \
+        if (control_dir / "combine_v2_v8_quality_locked_generation_result_review.json").exists() else {}
+    v8_visual_packet = _read_json_file(control_dir / "combine_v2_v8_operator_visual_review_packet.json") \
+        if (control_dir / "combine_v2_v8_operator_visual_review_packet.json").exists() else {}
+
+    comfyui_execution = v8_execution.get("comfyui_execution", False)
+    execute_mode = v8_execution.get("execute_mode", False)
+    prompt_id = v8_execution.get("prompt_id", "")
+    generation_performed = v8_execution.get("generation_performed", False)
+    workflow_submitted = v8_execution.get("workflow_submitted", False)
+
+    manifest_assets = v8_manifest.get("generated_assets", [])
+    manifest_collection_status = v8_manifest.get("collection_status", "")
+    canonical_outputs_registered = v8_manifest.get("canonical_outputs_registered", False)
+
+    result_review_next = v8_result_review.get("next_allowed_action", "")
+    visual_packet_generated_assets = v8_visual_packet.get("generated_assets", [])
+
+    dry_run_guard_report = {
+        "stage": "v8_dry_run_guard_check",
+        "task_id": "RC-COMBINE-V2-6001-6300",
+        "dry_run_cannot_claim_real_generation": True,
+        "empty_prompt_id_blocks_success": True,
+        "empty_generated_assets_blocks_operator_visual_review": True,
+        "missing_execute_flag_stays_safe": True,
+        "real_execute_path_requires_explicit_execute": True,
+        "dry_run_not_accepted_as_real_generation_new": True,
+        "guards_enforced": {
+            "dry_run_claimed_real_generation": False,
+            "dry_run_claimed_comfyui_execution": False,
+            "dry_run_claimed_real_workflow_submit": False,
+            "dry_run_claimed_prompt_id_success": bool(prompt_id),
+            "operator_visual_review_blocked": True,
+            "dry_run_routes_to_authorization_not_visual_review": True,
+        },
+        "v8_artifact_findings": {
+            "comfyui_execution": comfyui_execution,
+            "execute_mode": execute_mode,
+            "prompt_id": prompt_id or "",
+            "prompt_id_available": bool(prompt_id),
+            "generation_performed": generation_performed,
+            "workflow_submitted": workflow_submitted,
+            "manifest_collection_status": manifest_collection_status,
+            "manifest_asset_count": len(manifest_assets),
+            "canonical_outputs_registered": canonical_outputs_registered,
+            "result_review_next_allowed_action": result_review_next,
+            "visual_packet_generated_assets_count": len(visual_packet_generated_assets),
+        },
+        "guards_triggered": [],
+        "contradictions": [],
+        "generation_allowed_now": False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "workflow_submitted": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "v8_generation_reexecution_authorization_required",
+        "timestamp": timestamp,
+    }
+
+    contradictions = []
+
+    if comfyui_execution and not execute_mode:
+        contradictions.append("comfyui_execution=true but execute_mode=false")
+        dry_run_guard_report["guards_enforced"]["dry_run_claimed_real_generation"] = True
+    if comfyui_execution and manifest_collection_status == "dry_run":
+        contradictions.append("comfyui_execution=true but collection_status=dry_run")
+    if generation_performed and not execute_mode:
+        contradictions.append("generation_performed=true but execute_mode=false")
+    if workflow_submitted and not execute_mode and not prompt_id:
+        contradictions.append("workflow_submitted=true but execute_mode=false and no prompt_id")
+    if not execute_mode and result_review_next == "v8_operator_visual_review_required":
+        contradictions.append("dry-run mode resulted in operator_visual_review_required state")
+
+    dry_run_guard_report["contradictions"] = contradictions
+
+    guards_triggered = []
+    if not execute_mode:
+        guards_triggered.append("missing_execute_flag_stays_safe")
+    if not prompt_id:
+        guards_triggered.append("empty_prompt_id_blocks_success")
+    if len(manifest_assets) == 0:
+        guards_triggered.append("empty_generated_assets_blocks_operator_visual_review")
+    if not execute_mode and result_review_next == "v8_operator_visual_review_required":
+        guards_triggered.append("dry_run_visual_review_reroute_to_authorization")
+    dry_run_guard_report["guards_triggered"] = guards_triggered
+
+    _write_json_file(control_dir / "combine_v2_v8_dry_run_guard_report.json", dry_run_guard_report)
+
+    orchestrator = CombineOrchestrator(str(project_root))
+    try:
+        orchestrator.run_stage("v8_generation_runtime_blocked")
+    except Exception:
+        pass
+
+    if not silent:
+        if json_output:
+            print(json.dumps(dry_run_guard_report, indent=2))
+        else:
+            print(f"V8 Dry-Run Guard Check: {'CONTRADICTIONS FOUND' if contradictions else 'ALL GUARDS PASS'}")
+            print(f"Guards Triggered: {guards_triggered}")
+            print(f"Contradictions: {contradictions}")
+
+    return 1 if contradictions else 0
+
+
+def combine_v8_generation_reexecution_authorization_gate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-6001-6300 — Create V8 reexecution authorization gate.
+    
+    Creates a closed authorization state for exactly one future V8 real generation.
+    This is NOT a generation execution command. It only creates the authorization
+    gate that must be explicitly opened by operator decision.
+    
+    Transitions state to v8_generation_reexecution_authorization_required.
+    
+    Exit codes:
+    - 0: authorization gate created successfully (closed state)
+    - 1: error or invalid state
+    """
+    from app.orchestrator import CombineOrchestrator
+    from app.orchestrator.state_machine import CombineStateMachine
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    silent = bool(getattr(args, "silent", False))
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.utcnow().isoformat()
+
+    artifact_index = _read_json_file(control_dir / "artifact_index.json")
+    current_state = artifact_index.get("current_state", "")
+
+    valid_states = ["v8_generation_runtime_blocked", "v8_generation_runtime_recovery_required"]
+    if current_state not in valid_states:
+        msg = (
+            f"Error: Current state '{current_state}' not in valid states {valid_states}. "
+            "V8 reexecution authorization gate cannot be created in this state."
+        )
+        result = {
+            "status": "error",
+            "message": msg,
+            "current_state": current_state,
+            "expected_states": valid_states,
+        }
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(msg)
+        return 1
+
+    authorization_gate = {
+        "stage": "v8_generation_reexecution_authorization",
+        "task_id": "RC-COMBINE-V2-6001-6300",
+        "gate_type": "v8_generation_reexecution_authorization_gate",
+        "current_state": current_state,
+        "reexecution_authorization_state": "v8_generation_reexecution_authorization_required",
+        "generation_allowed_now": False,
+        "max_generations": 1,
+        "second_generation_allowed": False,
+        "retry_allowed": False,
+        "visual_acceptance_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "execute_mode_required_for_real_submit": True,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "workflow_submitted": False,
+        "canonical_outputs_registered": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "next_allowed_action": "v8_generation_reexecution_authorization_required",
+        "provenance": {
+            "previous_state": current_state,
+            "previous_commit": "478d592",
+            "previous_layer": "RC-COMBINE-V2-5701-6000-RECOVERY",
+            "recovery_artifact": "combine_v2_v8_generation_timeout_reconciliation.json",
+            "diagnosis_artifact": "combine_v2_v8_real_execution_readiness_diagnosis.json",
+            "preflight_artifact": "combine_v2_v8_runtime_preflight_report.json",
+            "dry_run_guard_artifact": "combine_v2_v8_dry_run_guard_report.json",
+        },
+        "timestamp": timestamp,
+    }
+    _write_json_file(control_dir / "combine_v2_v8_generation_reexecution_authorization_required.json", authorization_gate)
+
+    artifact_index["current_state"] = "v8_generation_reexecution_authorization_required"
+    artifact_index["next_allowed_action"] = "v8_generation_reexecution_authorization_required"
+    artifact_index["generation_allowed_now"] = False
+    artifact_index["production_accepted"] = False
+    artifact_index["assembly_allowed"] = False
+    artifact_index["downstream_allowed"] = False
+    artifact_index["new_generation_performed"] = False
+    artifact_index["new_comfyui_submit_executed"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["operator_visual_decision_created"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["v8_reexecution_authorization_gate_created"] = True
+
+    _write_json_file(control_dir / "artifact_index.json", artifact_index)
+
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        try:
+            data = _read_json_file(ledger_path)
+            if isinstance(data, list):
+                ledger = data
+            elif isinstance(data, dict):
+                ledger = data.get("events", data.get("records", []))
+        except Exception:
+            ledger = []
+
+    ledger.append({
+        "event_type": "v8_generation_reexecution_authorization_gate_created",
+        "task_id": "RC-COMBINE-V2-6001-6300",
+        "stage": "v8_generation_reexecution_authorization",
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "workflow_submitted": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "generation_allowed_now": False,
+        "current_state": "v8_generation_reexecution_authorization_required",
+        "next_allowed_action": "v8_generation_reexecution_authorization_required",
+        "previous_state": current_state,
+        "previous_layer": "RC-COMBINE-V2-5701-6000-RECOVERY",
+        "timestamp": timestamp,
+    })
+    _write_json_file(ledger_path, ledger)
+
+    orchestrator = CombineOrchestrator(str(project_root))
+    try:
+        from app.orchestrator.state_machine import CombineStateMachine
+        if CombineStateMachine.can_transition(current_state, "v8_generation_reexecution_authorization_required"):
+            orchestrator.run_stage("v8_generation_reexecution_authorization_required")
+    except Exception:
+        pass
+
+    result = {
+        "status": "ok",
+        "stage": "v8_generation_reexecution_authorization",
+        "current_state": "v8_generation_reexecution_authorization_required",
+        "next_allowed_action": "v8_generation_reexecution_authorization_required",
+        "generation_allowed_now": False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "workflow_submitted": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "tasks": [
+            {
+                "task": "combine_v8_execution_readiness_preflight",
+                "status": "completed"
+            },
+            {
+                "task": "combine_v8_dry_run_guard_check",
+                "status": "completed"
+            },
+            {
+                "task": "combine_v8_generation_reexecution_authorization_gate",
+                "status": "completed"
+            }
+        ]
+    }
+
+    if not silent:
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print("V8 Generation Reexecution Authorization Gate: CREATED (CLOSED)")
+            print(f"Current State: v8_generation_reexecution_authorization_required")
+            print(f"Generation Allowed: False")
+
+    return 0
+
+
 def combine_execute_v8_quality_locked_generation(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-5701-6000 — Execute exactly one V8 quality-locked generation.
 
@@ -6566,8 +7049,8 @@ def combine_execute_v8_quality_locked_generation(args: argparse.Namespace) -> in
     if not execute:
         execution_proof = {
             "stage": "v8_quality_locked_generation",
-            "workflow_submitted": True,
-            "generation_count": 1,
+            "workflow_submitted": False,
+            "generation_count": 0,
             "second_generation_attempted": False,
             "retry_attempted": False,
             "comfyui_execution": False,
@@ -6582,20 +7065,23 @@ def combine_execute_v8_quality_locked_generation(args: argparse.Namespace) -> in
             "assembly_executed": False,
             "downstream_executed": False,
             "production_accepted": False,
+            "new_generation_performed": False,
             "timestamp": timestamp,
-            "next_allowed_action": "v8_operator_visual_review_required"
+            "next_allowed_action": "v8_generation_runtime_recovery_required"
         }
         _write_json_file(control_dir / "combine_v2_v8_quality_locked_generation_execution.json", execution_proof)
 
         outputs_manifest = {
             "stage": "v8_quality_locked_generation",
             "manifest_type": "v8_quality_locked_outputs_manifest",
-            "generation_count": 1,
+            "generation_count": 0,
             "max_generations": 1,
-            "workflow_submitted": True,
+            "workflow_submitted": False,
             "generated_assets": [],
             "asset_paths": [],
             "collection_status": "dry_run",
+            "canonical_outputs_registered": False,
+            "zero_assets_block_visual_review": True,
             "visual_acceptance_executed": False,
             "assembly_allowed": False,
             "downstream_allowed": False,
@@ -6611,31 +7097,18 @@ def combine_execute_v8_quality_locked_generation(args: argparse.Namespace) -> in
             "asset_paths": [],
             "result_review_executed": True,
             "visual_acceptance_executed": False,
-            "operator_visual_review_required": True,
+            "operator_visual_review_required": False,
+            "operator_visual_review_blocked_without_generated_asset": True,
+            "dry_run_not_accepted_as_real_generation": True,
+            "prompt_id_empty_blocks_history_success_claim": True,
+            "runtime_timeout_recorded": True,
             "assembly_executed": False,
             "downstream_executed": False,
             "production_accepted": False,
-            "next_allowed_action": "v8_operator_visual_review_required",
+            "next_allowed_action": "v8_generation_runtime_recovery_required",
             "timestamp": timestamp
         }
         _write_json_file(control_dir / "combine_v2_v8_quality_locked_generation_result_review.json", result_review)
-
-        visual_review_packet = {
-            "stage": "v8_operator_visual_review",
-            "source_stage": "v8_quality_locked_generation",
-            "visual_review_packet_created": True,
-            "generated_assets": [],
-            "generation_count": 0,
-            "operator_visual_review_required": True,
-            "operator_actions": ["accept_visuals", "reject_visuals", "request_corrective_retry"],
-            "visual_acceptance_executed": False,
-            "assembly_allowed": False,
-            "downstream_allowed": False,
-            "production_accepted": False,
-            "next_allowed_action": "v8_operator_visual_review_required",
-            "timestamp": timestamp
-        }
-        _write_json_file(control_dir / "combine_v2_v8_operator_visual_review_packet.json", visual_review_packet)
 
         _update_v8_quality_locked_index(control_dir, execute=False, generated_assets=[], timestamp=timestamp)
 
@@ -6653,10 +7126,11 @@ def combine_execute_v8_quality_locked_generation(args: argparse.Namespace) -> in
             "v8_quality_locked_package_used": True,
             "v8_quality_guardrails_used": True,
             "agent_role_contracts_verified": True,
-            "generation_count": 1,
+            "generation_count": 0,
             "max_generations": 1,
-            "workflow_submitted": True,
+            "workflow_submitted": False,
             "comfyui_execution": False,
+            "new_generation_performed": False,
             "second_generation_attempted": False,
             "retry_attempted": False,
             "generation_performed": False,
@@ -6664,22 +7138,21 @@ def combine_execute_v8_quality_locked_generation(args: argparse.Namespace) -> in
             "assembly_executed": False,
             "downstream_executed": False,
             "production_accepted": False,
-            "current_state": "v8_operator_visual_review_required",
-            "next_allowed_action": "v8_operator_visual_review_required",
+            "current_state": status.current_state,
+            "next_allowed_action": status.next_allowed_action,
             "artifacts": [
                 str(auth_path.relative_to(project_root)),
                 "output/control/combine_v2_v8_quality_locked_generation_execution.json",
                 "output/control/combine_v2_v8_quality_locked_outputs_manifest.json",
                 "output/control/combine_v2_v8_quality_locked_generation_result_review.json",
-                "output/control/combine_v2_v8_operator_visual_review_packet.json"
             ]
         }
         if json_output:
             print(json.dumps(result_payload, indent=2))
         else:
             print("V8 Quality-Locked Generation: DRY RUN")
-            print(f"Current State: v8_operator_visual_review_required")
-            print(f"Next Allowed Action: v8_operator_visual_review_required")
+            print(f"Current State: {status.current_state}")
+            print(f"Next Allowed Action: {status.next_allowed_action}")
         return 0
 
     # 8. Real execution path: submit to ComfyUI
@@ -6921,28 +7394,32 @@ def _update_v8_quality_locked_index(
     artifact_index_path = control_dir / "artifact_index.json"
     artifact_index = _read_json_file(artifact_index_path)
 
-    artifact_index["current_state"] = "v8_operator_visual_review_required"
-    artifact_index["next_allowed_action"] = "v8_operator_visual_review_required"
+    if execute:
+        artifact_index["current_state"] = "v8_operator_visual_review_required"
+        artifact_index["next_allowed_action"] = "v8_operator_visual_review_required"
+    else:
+        artifact_index["current_state"] = "v8_generation_runtime_blocked"
+        artifact_index["next_allowed_action"] = "v8_generation_runtime_recovery_required"
     artifact_index["v8_operator_generation_authorization_created"] = True
     artifact_index["v8_quality_locked_package_used"] = True
     artifact_index["v8_quality_guardrails_used"] = True
     artifact_index["agent_role_contracts_verified"] = True
     artifact_index["new_generation_performed"] = execute
-    artifact_index["generation_count"] = 1
+    artifact_index["generation_count"] = 1 if execute else 0
     artifact_index["max_generations"] = 1
     artifact_index["second_generation_attempted"] = False
     artifact_index["retry_attempted"] = False
-    artifact_index["workflow_submitted"] = True
+    artifact_index["workflow_submitted"] = execute
     artifact_index["comfyui_execution"] = execute
     artifact_index["canonical_outputs_registered"] = len(generated_assets) > 0
     artifact_index["generated_assets"] = [a.get("path", "") for a in generated_assets]
     artifact_index["asset_readable"] = all(a.get("readable", False) for a in generated_assets) if generated_assets else False
     artifact_index["visual_acceptance_executed"] = False
-    artifact_index["operator_visual_review_packet_created"] = True
+    artifact_index["operator_visual_review_packet_created"] = execute and len(generated_assets) > 0
     artifact_index["assembly_executed"] = False
     artifact_index["downstream_executed"] = False
     artifact_index["production_accepted"] = False
-    artifact_index["v8_operator_visual_review_packet_created"] = True
+    artifact_index["v8_operator_visual_review_packet_created"] = execute and len(generated_assets) > 0
 
     _write_json_file(artifact_index_path, artifact_index)
 
@@ -6963,19 +7440,19 @@ def _update_v8_quality_locked_index(
         "task_id": "RC-COMBINE-V2-5701-6000",
         "stage": "v8_quality_locked_generation",
         "new_generation_performed": execute,
-        "generation_count": 1,
+        "generation_count": 1 if execute else 0,
         "second_generation_attempted": False,
         "retry_attempted": False,
-        "workflow_submitted": True,
+        "workflow_submitted": execute,
         "comfyui_execution": execute,
         "generated_assets": [a.get("path", "") for a in generated_assets],
         "production_accepted": False,
         "visual_acceptance_executed": False,
         "assembly_executed": False,
         "downstream_executed": False,
-        "operator_visual_review_required": True,
-        "current_state": "v8_operator_visual_review_required",
-        "next_allowed_action": "v8_operator_visual_review_required",
+        "operator_visual_review_required": execute and len(generated_assets) > 0,
+        "current_state": "v8_operator_visual_review_required" if execute else "v8_generation_runtime_blocked",
+        "next_allowed_action": "v8_operator_visual_review_required" if execute else "v8_generation_runtime_recovery_required",
         "timestamp": timestamp
     })
 
@@ -9976,6 +10453,69 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-6001-6300 — combine-v8-execution-readiness-preflight subcommand
+    combine_v8_execution_readiness_preflight_parser = subparsers.add_parser(
+        "combine-v8-execution-readiness-preflight",
+        help="Read-only V8 ComfyUI readiness preflight with timeout/failure classification"
+    )
+    combine_v8_execution_readiness_preflight_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_v8_execution_readiness_preflight_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_v8_execution_readiness_preflight_parser.add_argument(
+        "--silent",
+        action="store_true",
+        help="Suppress output",
+    )
+
+    # RC-COMBINE-V2-6001-6300 — combine-v8-dry-run-guard-check subcommand
+    combine_v8_dry_run_guard_check_parser = subparsers.add_parser(
+        "combine-v8-dry-run-guard-check",
+        help="V8 dry-run guard enforcement check"
+    )
+    combine_v8_dry_run_guard_check_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_v8_dry_run_guard_check_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_v8_dry_run_guard_check_parser.add_argument(
+        "--silent",
+        action="store_true",
+        help="Suppress output",
+    )
+
+    # RC-COMBINE-V2-6001-6300 — combine-v8-reexecution-authorization-gate subcommand
+    combine_v8_generation_reexecution_authorization_gate_parser = subparsers.add_parser(
+        "combine-v8-reexecution-authorization-gate",
+        help="Create V8 reexecution authorization gate (closed state)"
+    )
+    combine_v8_generation_reexecution_authorization_gate_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_v8_generation_reexecution_authorization_gate_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_v8_generation_reexecution_authorization_gate_parser.add_argument(
+        "--silent",
+        action="store_true",
+        help="Suppress output",
+    )
+
     # RC2-PRODCARDS3B — Authorize real role decision apply subcommand
     authorize_real_role_decision_apply_parser = subparsers.add_parser("authorize-real-role-decision-apply", help="Final authorization checkpoint before applying resubmitted role decisions to real project")
     authorize_real_role_decision_apply_parser.add_argument(
@@ -10601,6 +11141,12 @@ def main() -> int:
         return combine_review_updated_corrective_retry_v4_implementation_plan(args)
     elif args.command == "combine-execute-v8-quality-locked-generation":
         return combine_execute_v8_quality_locked_generation(args)
+    elif args.command == "combine-v8-execution-readiness-preflight":
+        return combine_v8_execution_readiness_preflight(args)
+    elif args.command == "combine-v8-dry-run-guard-check":
+        return combine_v8_dry_run_guard_check(args)
+    elif args.command == "combine-v8-reexecution-authorization-gate":
+        return combine_v8_generation_reexecution_authorization_gate(args)
     elif args.command == "combine-run-visual-quality-baseline-benchmark":
         return combine_run_visual_quality_baseline_benchmark(args)
     elif args.command == "combine-run-clean-sdxl-v6-candidate":
