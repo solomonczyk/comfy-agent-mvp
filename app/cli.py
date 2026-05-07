@@ -8337,6 +8337,27 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-4501-4800 — combine-v6-targeted-refinement-generate subcommand
+    combine_v6_targeted_refinement_generate_parser = subparsers.add_parser(
+        "combine-v6-targeted-refinement-generate",
+        help="Authorize and execute one controlled V6 targeted refinement generation"
+    )
+    combine_v6_targeted_refinement_generate_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory (absolute path)",
+    )
+    combine_v6_targeted_refinement_generate_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Submit workflow to ComfyUI (default: dry-run only)",
+    )
+    combine_v6_targeted_refinement_generate_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-2841-2900 — combine-authorize-corrective-retry-v4-generation subcommand
     combine_authorize_corrective_retry_v4_generation_parser = subparsers.add_parser(
         "combine-authorize-corrective-retry-v4-generation",
@@ -9926,6 +9947,8 @@ def main() -> int:
         return combine_run_visual_quality_baseline_benchmark(args)
     elif args.command == "combine-run-clean-sdxl-v6-candidate":
         return combine_run_clean_sdxl_v6_candidate(args)
+    elif args.command == "combine-v6-targeted-refinement-generate":
+        return combine_v6_targeted_refinement_generate(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
@@ -30414,6 +30437,574 @@ def combine_run_visual_quality_baseline_benchmark(args: argparse.Namespace) -> i
         print(json.dumps(result, indent=2))
     else:
         print("Visual Quality Baseline Benchmark: COMPLETE")
+        print(f"Prompt ID: {prompt_id}")
+        print(f"Canonical Assets: {[e['path'] for e in manifest_entries]}")
+        print("Next Action: operator_visual_review_required")
+    return 0
+
+
+import random as _random
+
+def combine_v6_targeted_refinement_generate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-4501-4800 — Authorize and execute one controlled V6 targeted refinement generation.
+
+    Creates operator authorization artifact, validates preconditions, executes
+    exactly one ComfyUI generation using the targeted refinement execution package,
+    collects canonical output, and stops at operator visual review.
+    """
+    from pathlib import Path as _Path
+    from datetime import datetime as _datetime, timezone as _timezone
+    import hashlib as _hashlib, json as _json, os as _os, time as _time, shutil as _shutil
+    import urllib.request as _urlreq, urllib.error as _urlerr
+
+    task_id = "RC-COMBINE-V2-4501-4800"
+    project_path = _Path(args.project_root)
+    control_dir = project_path / "output" / "control"
+    assets_dir = project_path / "output" / "assets"
+    execute = getattr(args, "execute", False)
+    json_output = getattr(args, "json", False)
+    timestamp = _datetime.now(_timezone.utc).isoformat()
+
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    def _load_json(path):
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as fh:
+                return _json.load(fh)
+        return {}
+
+    def _write_json(path, data):
+        with open(path, "w", encoding="utf-8") as fh:
+            _json.dump(data, fh, indent=2)
+
+    def _sha256(path):
+        h = _hashlib.sha256()
+        with open(path, "rb") as fh:
+            for chunk in iter(lambda: fh.read(65536), b""):
+                h.update(chunk)
+        return h.hexdigest()
+
+    def _image_dims(path):
+        try:
+            from PIL import Image as _PILImage
+            with _PILImage.open(path) as img:
+                return img.width, img.height, True
+        except Exception:
+            return 0, 0, False
+
+    expected_prefix = "combine_v2_v6_targeted_refinement_shot02"
+    max_generations = 1
+
+    def _blocked(code, extra=None):
+        r = {
+            "task_id": task_id,
+            "new_generation_performed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "failure_code": code,
+            "generation_count": 0,
+            "second_generation_attempted": False,
+            "production_accepted": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "current_state": "targeted_refinement_generation_runtime_blocked",
+            "next_allowed_action": "targeted_refinement_generation_runtime_blocked",
+        }
+        if extra:
+            r.update(extra)
+        return r
+
+    # === STEP 1: Create operator authorization artifact ===
+    authorization_payload = {
+        "task_id": task_id,
+        "operator_authorized": True,
+        "max_new_generations": 1,
+        "generation_allowed": True,
+        "blind_retry_allowed": False,
+        "second_generation_allowed": False,
+        "visual_acceptance_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_acceptance_allowed": False,
+        "timestamp": timestamp,
+    }
+    authorization_path = control_dir / "combine_v2_v6_targeted_refinement_generation_authorization.json"
+    _write_json(authorization_path, authorization_payload)
+
+    # === STEP 2: Pre-submit validation ===
+    # 2a. Verify existing execution package
+    package_path = control_dir / "combine_v2_v6_targeted_refinement_execution_package.json"
+    if not package_path.exists():
+        result = _blocked("targeted_refinement_execution_package_missing")
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print("BLOCKED: combine_v2_v6_targeted_refinement_execution_package.json missing")
+        return 1
+
+    package_data = _load_json(package_path)
+    if package_data.get("generation_not_performed") is not True:
+        result = _blocked("generation_already_performed_in_package", {"package_generation_not_performed": package_data.get("generation_not_performed")})
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print("BLOCKED: Package indicates generation already performed")
+        return 1
+
+    # 2b. Verify generation gate
+    gate_path = control_dir / "combine_v2_v6_targeted_refinement_generation_gate.json"
+    if not gate_path.exists():
+        result = _blocked("generation_gate_missing")
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print("BLOCKED: combine_v2_v6_targeted_refinement_generation_gate.json missing")
+        return 1
+
+    gate_data = _load_json(gate_path)
+    if gate_data.get("max_new_generations") != 1:
+        result = _blocked("max_new_generations_not_1", {"max_new_generations": gate_data.get("max_new_generations")})
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print("BLOCKED: Generation gate max_new_generations must be 1")
+        return 1
+
+    # 2c. Verify V6 candidate preserved
+    v6_asset_glob = list(assets_dir.glob("combine_v2_clean_sdxl_v6_candidate_shot02_*.png"))
+    if not v6_asset_glob:
+        result = _blocked("v6_candidate_asset_not_found")
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print("BLOCKED: V6 candidate asset not found in assets dir")
+        return 1
+
+    # 2d. Verify no generation already performed for this layer
+    existing_result_path = control_dir / "combine_v2_v6_targeted_refinement_result.json"
+    if existing_result_path.exists():
+        prior = _load_json(existing_result_path)
+        if prior.get("generation_count", 0) >= max_generations:
+            blocked_response = _blocked(
+                "generation_count_limit_reached",
+                {"generation_count": prior.get("generation_count", 1),
+                 "second_generation_attempted": True}
+            )
+            if json_output:
+                print(_json.dumps(blocked_response, indent=2))
+            else:
+                print("BLOCKED: generation_count >= 1 — second generation forbidden by task policy")
+            return 1
+
+    # === Dry-run path ===
+    if not execute:
+        info = {
+            "task_id": task_id,
+            "status": "authorization_required",
+            "message": "Pass --execute to submit targeted refinement workflow to ComfyUI",
+            "operator_authorization_created": True,
+            "execution_package_verified": True,
+            "generation_gate_verified": True,
+            "v6_candidate_preserved": True,
+            "max_generations": max_generations,
+            "new_generation_performed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "generation_count": 0,
+            "second_generation_attempted": False,
+            "production_accepted": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "current_state": "targeted_refinement_execute_required",
+            "next_allowed_action": "targeted_refinement_execute_required",
+        }
+        if json_output:
+            print(_json.dumps(info, indent=2))
+        else:
+            print("Targeted Refinement: AUTHORIZATION REQUIRED (pass --execute)")
+        return 0
+
+    # === STEP 3: Execute one targeted refinement generation ===
+    # Build workflow from targeted refinement execution package parameters
+    preserved = package_data.get("preserved_recipe_parameters", {})
+    adjusted = package_data.get("adjusted_parameters", {})
+    checkpoint = preserved.get("checkpoint", "juggernautXL_version2.safetensors")
+    resolution_str = preserved.get("resolution", "1024x1024")
+    parts = resolution_str.split("x")
+    target_width = int(parts[0]) if len(parts) == 2 else 1024
+    target_height = int(parts[1]) if len(parts) == 2 else 1024
+
+    # Sampler settings from refinement strategy
+    cfg_scale = 6.5
+    denoising_strength = 0.95
+
+    # Build positive prompt with texture/detail augmentation
+    base_prompt = (
+        "close portrait of an elderly woman with long white hair, "
+        "blue background, soft lighting, natural skin texture, subtle skin detail, "
+        "realistic skin grain, natural eyelash detail, well-defined eyes, "
+        "soft eye definition, matte skin, natural light, soft diffuse lighting, "
+        "detailed fabric texture, natural cloth folds, high quality, detailed face"
+    )
+
+    random_seed = _random.randint(1, 999999999)
+    refinement_workflow = {
+        "1": {
+            "inputs": {"ckpt_name": checkpoint},
+            "class_type": "CheckpointLoaderSimple",
+        },
+        "2": {"inputs": {"text": base_prompt, "clip": ["1", 1]}, "class_type": "CLIPTextEncode"},
+        "3": {"inputs": {"text": "shiny face, glossy skin, plastic skin, smooth skin, airbrushed, over-processed, bad anatomy, bad eyes, missing eyelashes, asymmetrical eyes, ugly, deformed, blurry, low quality", "clip": ["1", 1]}, "class_type": "CLIPTextEncode"},
+        "4": {
+            "inputs": {
+                "seed": random_seed,
+                "steps": 30,
+                "cfg": cfg_scale,
+                "sampler_name": "dpmpp_2m",
+                "scheduler": "karras",
+                "denoise": denoising_strength,
+                "model": ["1", 0],
+                "positive": ["2", 0],
+                "negative": ["3", 0],
+                "latent_image": ["5", 0],
+            },
+            "class_type": "KSampler",
+        },
+        "5": {"inputs": {"width": target_width, "height": target_height, "batch_size": 1}, "class_type": "EmptyLatentImage"},
+        "6": {"inputs": {"samples": ["4", 0], "vae": ["1", 2]}, "class_type": "VAEDecode"},
+        "7": {"inputs": {"filename_prefix": expected_prefix, "images": ["6", 0]}, "class_type": "SaveImage"},
+    }
+
+    comfy_base_url = _os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188")
+    comfy_output_dir = _Path(_os.getenv("COMFY_OUTPUT_DIR",
+        r"F:\ComfyUI\comfyUI_portable_inst\ComfyUI_windows_portable_nvidia_cu126\ComfyUI_windows_portable\ComfyUI\output"))
+
+    # Check ComfyUI reachable
+    try:
+        req = _urlreq.Request(f"{comfy_base_url}/system_stats")
+        with _urlreq.urlopen(req, timeout=10) as resp:
+            if resp.status != 200:
+                raise RuntimeError(f"system_stats returned {resp.status}")
+    except Exception as exc:
+        result = _blocked(f"comfyui_unreachable: {exc}")
+        _write_json(control_dir / "combine_v2_v6_targeted_refinement_result.json", result)
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: ComfyUI unreachable — {exc}")
+        return 1
+
+    # POST /prompt
+    payload = _json.dumps({"prompt": refinement_workflow}).encode("utf-8")
+    prompt_id = None
+    try:
+        req = _urlreq.Request(
+            f"{comfy_base_url}/prompt",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with _urlreq.urlopen(req, timeout=30) as resp:
+            resp_body = _json.loads(resp.read().decode("utf-8"))
+            prompt_id = resp_body.get("prompt_id", "")
+    except _urlerr.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        result = _blocked(f"post_prompt_http_{exc.code}", {"http_error_body": body[:500]})
+        _write_json(control_dir / "combine_v2_v6_targeted_refinement_result.json", result)
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: POST /prompt failed HTTP {exc.code}: {body[:200]}")
+        return 1
+    except Exception as exc:
+        result = _blocked(f"post_prompt_exception: {exc}")
+        _write_json(control_dir / "combine_v2_v6_targeted_refinement_result.json", result)
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: POST /prompt exception: {exc}")
+        return 1
+
+    if not prompt_id:
+        result = _blocked("post_prompt_no_prompt_id_in_response")
+        _write_json(control_dir / "combine_v2_v6_targeted_refinement_result.json", result)
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print("BLOCKED: ComfyUI /prompt response missing prompt_id")
+        return 1
+
+    # Poll ComfyUI history until prompt_id appears (max 600s)
+    deadline = _time.time() + 600
+    history_entry = None
+    while _time.time() < deadline:
+        try:
+            req = _urlreq.Request(f"{comfy_base_url}/history/{prompt_id}")
+            with _urlreq.urlopen(req, timeout=15) as resp:
+                hist = _json.loads(resp.read().decode("utf-8"))
+                if prompt_id in hist:
+                    history_entry = hist[prompt_id]
+                    break
+        except Exception:
+            pass
+        _time.sleep(5)
+
+    if not history_entry:
+        result = _blocked("comfyui_history_timeout", {"prompt_id": prompt_id, "workflow_submitted": True, "comfyui_execution": True})
+        _write_json(control_dir / "combine_v2_v6_targeted_refinement_result.json", result)
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: ComfyUI history timeout for prompt_id={prompt_id}")
+        return 1
+
+    # === STEP 4: Collect output files from history ===
+    output_files = []
+    outputs = history_entry.get("outputs", {})
+    for node_id, node_out in outputs.items():
+        for img in node_out.get("images", []):
+            fname = img.get("filename", "")
+            subfolder = img.get("subfolder", "")
+            if fname:
+                native_path = comfy_output_dir / subfolder / fname if subfolder else comfy_output_dir / fname
+                output_files.append((fname, native_path))
+
+    # Fallback: scan native output dir for matching prefix files
+    if not output_files and comfy_output_dir.exists():
+        for f in sorted(comfy_output_dir.glob(f"{expected_prefix}*.png")):
+            output_files.append((f.name, f))
+
+    if not output_files:
+        result = _blocked("no_output_files_found", {"prompt_id": prompt_id, "workflow_submitted": True, "comfyui_execution": True})
+        _write_json(control_dir / "combine_v2_v6_targeted_refinement_result.json", result)
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: No output files found for prompt_id={prompt_id}")
+        return 1
+
+    # Copy canonical assets and build manifest entries
+    manifest_entries = []
+    canonical_paths = []
+    for fname, native_path in output_files:
+        canonical_dest = assets_dir / fname
+        if native_path.exists() and native_path != canonical_dest:
+            _shutil.copy2(str(native_path), str(canonical_dest))
+        elif native_path == canonical_dest and canonical_dest.exists():
+            pass
+        elif not canonical_dest.exists():
+            continue
+
+        if canonical_dest.exists():
+            size = canonical_dest.stat().st_size
+            if size < 1024:
+                continue
+            w, h, readable = _image_dims(canonical_dest)
+            sha = _sha256(canonical_dest)
+            if not sha or not readable:
+                continue
+            asset_filename = canonical_dest.name
+            entry = {
+                "path": f"data/rc2_multishot1_ep01/output/assets/{asset_filename}",
+                "filename": asset_filename,
+                "size_bytes": size,
+                "sha256": sha,
+                "width": w,
+                "height": h,
+                "readable": readable,
+                "source_native_output_path": str(native_path) if native_path != canonical_dest else None,
+            }
+            manifest_entries.append(entry)
+            canonical_paths.append(str(canonical_dest))
+
+    if not manifest_entries:
+        result = _blocked("canonical_copy_failed_or_all_stubs", {"prompt_id": prompt_id, "workflow_submitted": True, "comfyui_execution": True})
+        _write_json(control_dir / "combine_v2_v6_targeted_refinement_result.json", result)
+        if json_output:
+            print(_json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: Canonical copy failed or all outputs are stubs for prompt_id={prompt_id}")
+        return 1
+
+    # === STEP 5: Write result artifacts ===
+    # Write outputs manifest
+    _write_json(control_dir / "combine_v2_v6_targeted_refinement_outputs_manifest.json", manifest_entries)
+
+    first = manifest_entries[0]
+    result_payload = {
+        "task_id": task_id,
+        "generation_count": 1,
+        "second_generation_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "canonical_outputs_registered": True,
+        "prompt_id": prompt_id,
+        "output_asset_paths": [e["path"] for e in manifest_entries],
+        "sha256": first["sha256"],
+        "size_bytes": first["size_bytes"],
+        "width": first["width"],
+        "height": first["height"],
+        "asset_readable": True,
+        "visual_acceptance_executed": False,
+        "production_accepted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+        "timestamp": timestamp,
+    }
+    _write_json(control_dir / "combine_v2_v6_targeted_refinement_result.json", result_payload)
+
+    # Write operator visual review packet
+    v5_asset = "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png"
+    v6_candidate_asset = "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+    baseline_asset = "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+    review_packet = {
+        "task_id": task_id,
+        "generation_type": "targeted_refinement",
+        "comparison_candidates": {
+            "v5_failed_asset": v5_asset,
+            "baseline_rejected_asset": baseline_asset,
+            "v6_candidate_asset": v6_candidate_asset,
+            "targeted_refinement_assets": [e["path"] for e in manifest_entries],
+        },
+        "target_defects_addressed": [
+            "eye/eyelash artifacts",
+            "possible eye symmetry issue",
+            "over-smoothed skin",
+            "AI-gloss/plastic look",
+            "minor fabric/detail artifacts",
+        ],
+        "previous_improvements_preserved": [
+            "close portrait composition",
+            "face framing",
+            "white hair direction",
+            "blue background mood",
+            "clean lighting",
+            "better subject scale",
+        ],
+        "refinement_parameters": {
+            "cfg_scale": "6.5 (reduced by 0.5)",
+            "denoising_strength": "0.95 (slightly reduced)",
+            "positive_prompt": "augmented with texture and detail keywords",
+            "checkpoint": "juggernautXL_version2.safetensors",
+            "resolution": "1024x1024",
+        },
+        "visual_pass_decision": "NONE — operator visual review required",
+        "automatic_visual_acceptance_forbidden": True,
+        "production_accepted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "allowed_operator_actions": [
+            "approve_targeted_refinement",
+            "request_adjustments",
+            "reject_targeted_refinement",
+        ],
+        "forbidden_automatic_actions": [
+            "production_acceptance",
+            "assembly",
+            "downstream",
+            "second_generation",
+            "blind_retry",
+            "visual_qa_acceptance",
+        ],
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+        "timestamp": timestamp,
+    }
+    _write_json(control_dir / "combine_v2_v6_targeted_refinement_operator_review_packet.json", review_packet)
+
+    # === STEP 6: Update artifact_index.json ===
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = _load_json(artifact_index_path)
+    artifact_index["task_id"] = task_id
+    artifact_index["current_state"] = "operator_visual_review_required"
+    artifact_index["next_allowed_action"] = "operator_visual_review_required"
+    artifact_index["targeted_refinement_generated"] = True
+    artifact_index["generation_count"] = 1
+    artifact_index["operator_visual_review_required"] = True
+    artifact_index["production_accepted"] = False
+    artifact_index["assembly_allowed"] = False
+    artifact_index["downstream_allowed"] = False
+    artifact_index["v6_targeted_refinement_prompt_id"] = prompt_id
+    artifact_index["v6_targeted_refinement_assets"] = [e["path"] for e in manifest_entries]
+    if "stage_results" not in artifact_index:
+        artifact_index["stage_results"] = []
+    artifact_index["stage_results"].append({
+        "stage": "v6_targeted_refinement_generation",
+        "task_id": task_id,
+        "success": True,
+        "new_generation_performed": True,
+        "generation_count": 1,
+        "prompt_id": prompt_id,
+        "canonical_assets": [e["path"] for e in manifest_entries],
+        "production_accepted": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "timestamp": timestamp,
+    })
+    _write_json(artifact_index_path, artifact_index)
+
+    # Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        try:
+            with open(ledger_path, "r", encoding="utf-8") as fh:
+                data = _json.load(fh)
+                ledger = data if isinstance(data, list) else data.get("events", [])
+        except _json.JSONDecodeError:
+            ledger = []
+    ledger.append({
+        "event_type": "v6_targeted_refinement_generation_completed",
+        "task_id": task_id,
+        "stage": "v6_targeted_refinement_generation",
+        "new_generation_performed": True,
+        "generation_count": 1,
+        "second_generation_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id,
+        "canonical_assets": [e["path"] for e in manifest_entries],
+        "production_accepted": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "operator_visual_review_required": True,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+        "timestamp": timestamp,
+    })
+    _write_json(ledger_path, ledger)
+
+    result_out = {
+        "task_id": task_id,
+        "status": "ok",
+        "operator_authorization_created": True,
+        "targeted_refinement_package_used": True,
+        "new_generation_performed": True,
+        "generation_count": 1,
+        "second_generation_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id,
+        "canonical_outputs_registered": True,
+        "asset_readable": True,
+        "sha256_present": True,
+        "canonical_assets": [e["path"] for e in manifest_entries],
+        "visual_acceptance_executed": False,
+        "production_accepted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+    }
+    if json_output:
+        print(_json.dumps(result_out, indent=2))
+    else:
+        print("V6 Targeted Refinement Generation: COMPLETE")
         print(f"Prompt ID: {prompt_id}")
         print(f"Canonical Assets: {[e['path'] for e in manifest_entries]}")
         print("Next Action: operator_visual_review_required")

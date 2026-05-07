@@ -1,0 +1,12 @@
+[
+  {
+    "path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
+    "filename": "combine_v2_v6_targeted_refinement_shot02_00001_.png",
+    "size_bytes": 1546304,
+    "sha256": "ce1c3c03c7753e4ef6e5c6b43b290c2f12f39efa2d7563a4b7fec2e8ca38ca36",
+    "width": 1024,
+    "height": 1024,
+    "readable": true,
+    "source_native_output_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\combine_v2_v6_targeted_refinement_shot02_00001_.png"
+  }
+]

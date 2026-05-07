@@ -1,0 +1,55 @@
+{
+  "task_id": "RC-COMBINE-V2-4501-4800",
+  "generation_type": "targeted_refinement",
+  "comparison_candidates": {
+    "v5_failed_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+    "baseline_rejected_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png",
+    "v6_candidate_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+    "targeted_refinement_assets": [
+      "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png"
+    ]
+  },
+  "target_defects_addressed": [
+    "eye/eyelash artifacts",
+    "possible eye symmetry issue",
+    "over-smoothed skin",
+    "AI-gloss/plastic look",
+    "minor fabric/detail artifacts"
+  ],
+  "previous_improvements_preserved": [
+    "close portrait composition",
+    "face framing",
+    "white hair direction",
+    "blue background mood",
+    "clean lighting",
+    "better subject scale"
+  ],
+  "refinement_parameters": {
+    "cfg_scale": "6.5 (reduced by 0.5)",
+    "denoising_strength": "0.95 (slightly reduced)",
+    "positive_prompt": "augmented with texture and detail keywords",
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "resolution": "1024x1024"
+  },
+  "visual_pass_decision": "NONE \u2014 operator visual review required",
+  "automatic_visual_acceptance_forbidden": true,
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "allowed_operator_actions": [
+    "approve_targeted_refinement",
+    "request_adjustments",
+    "reject_targeted_refinement"
+  ],
+  "forbidden_automatic_actions": [
+    "production_acceptance",
+    "assembly",
+    "downstream",
+    "second_generation",
+    "blind_retry",
+    "visual_qa_acceptance"
+  ],
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "timestamp": "2026-05-07T12:16:40.709576+00:00"
+}

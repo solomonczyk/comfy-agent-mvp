@@ -1,0 +1,24 @@
+{
+  "task_id": "RC-COMBINE-V2-4501-4800",
+  "generation_count": 1,
+  "second_generation_attempted": false,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "canonical_outputs_registered": true,
+  "prompt_id": "436cb2ab-e34e-42e7-82bd-b3d71fc8f387",
+  "output_asset_paths": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png"
+  ],
+  "sha256": "ce1c3c03c7753e4ef6e5c6b43b290c2f12f39efa2d7563a4b7fec2e8ca38ca36",
+  "size_bytes": 1546304,
+  "width": 1024,
+  "height": 1024,
+  "asset_readable": true,
+  "visual_acceptance_executed": false,
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "timestamp": "2026-05-07T12:16:40.709576+00:00"
+}

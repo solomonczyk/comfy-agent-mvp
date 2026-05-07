@@ -1,0 +1,13 @@
+{
+  "task_id": "RC-COMBINE-V2-4501-4800",
+  "operator_authorized": true,
+  "max_new_generations": 1,
+  "generation_allowed": true,
+  "blind_retry_allowed": false,
+  "second_generation_allowed": false,
+  "visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "timestamp": "2026-05-07T12:16:40.709576+00:00"
+}
