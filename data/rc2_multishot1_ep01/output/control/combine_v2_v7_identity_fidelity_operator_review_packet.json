@@ -1,0 +1,24 @@
+{
+  "task_id": "RC-COMBINE-V2-5101-5400",
+  "packet_type": "v7_identity_fidelity_operator_review_packet",
+  "concept_reference": "data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+  "concept_reference_exists": true,
+  "quality_reference": "data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "quality_reference_exists": true,
+  "new_v7_candidate": "output/assets/combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png",
+  "new_v7_candidate_exists": true,
+  "review_questions": {
+    "concept_preserved": "manual_review_required",
+    "quality_traits_transferred": "manual_review_required",
+    "age_drift_absent": "manual_review_required",
+    "fantasy_style_preserved": "manual_review_required",
+    "production_accepted": false
+  },
+  "operator_instructions": "Please visually compare the three images:\n1. Previous V6 fantasy candidate (concept reference)\n2. V6 elderly quality reference (quality reference only \u2014 NOT the target)\n3. New V7 identity/fidelity candidate\n\nAnswer the review questions above. Do NOT set production_accepted=true unless the V7 candidate meets all criteria:\n- Young adult female character preserved (no age drift)\n- Fantasy/cinematic portrait style maintained\n- Quality traits transferred from elderly reference without age/style drift\n- White hair, blue fantasy background, elegant white dress preserved\n- No passport/studio portrait drift",
+  "visual_acceptance_executed": false,
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "next_allowed_action": "operator_visual_review_required",
+  "timestamp": "2026-05-07T12:41:46.259555+00:00"
+}

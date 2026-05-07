@@ -1,0 +1,29 @@
+{
+  "task_id": "RC-COMBINE-V2-5101-5400",
+  "manifest_type": "v7_identity_fidelity_outputs_manifest",
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "prompt_id": "39c1a712-d83d-437a-a556-defef25610c5",
+  "generation_count": 1,
+  "second_generation_attempted": false,
+  "generated_assets": [
+    {
+      "path": "output/assets/combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png",
+      "exists": true,
+      "readable": true,
+      "width": 1024,
+      "height": 1024,
+      "size_bytes": 1455036,
+      "sha256": "8f96d59c6f47179443a73e1d5ec42657b0a7932ad35a3b4458d48efd8fc1beb1"
+    }
+  ],
+  "asset_paths": [
+    "output/assets/combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png"
+  ],
+  "visual_acceptance_executed": false,
+  "production_acceptance_allowed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-07T12:41:46.259555+00:00"
+}

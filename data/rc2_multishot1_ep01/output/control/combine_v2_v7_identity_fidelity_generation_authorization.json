@@ -1,0 +1,15 @@
+{
+  "task_id": "RC-COMBINE-V2-5101-5400",
+  "authorization_type": "v7_identity_fidelity_refinement_generation",
+  "operator_authorized": true,
+  "max_new_generations": 1,
+  "generation_allowed": true,
+  "blind_retry_allowed": false,
+  "second_generation_allowed": false,
+  "visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "pre_submit_validation_passed": true,
+  "timestamp": "2026-05-07T12:41:46.259555+00:00"
+}

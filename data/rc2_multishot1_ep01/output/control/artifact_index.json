@@ -1,9 +1,9 @@
 {
-  "current_state": "v7_identity_fidelity_generation_authorization_required",
-  "next_allowed_action": "v7_identity_fidelity_generation_authorization_required",
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
   "generation_runtime_blocked": false,
   "blocker": "V7_IDENTITY_FIDELITY_GENERATION_AUTHORIZATION_REQUIRED",
-  "blocker_summary": "V6 targeted refinement operator visual review completed. Elderly portrait promoted as quality reference only — NOT production accepted. Previous V6 fantasy candidate preserved as concept reference. V7 identity/fidelity-locked refinement package created. V7 generation gate created. Operator authorization required for single V7 refinement generation. production_accepted=false, generation_allowed_now=false, assembly_allowed=false, downstream_allowed=false.",
+  "blocker_summary": "V6 targeted refinement operator visual review completed. Elderly portrait promoted as quality reference only \u00e2\u20ac\u201d NOT production accepted. Previous V6 fantasy candidate preserved as concept reference. V7 identity/fidelity-locked refinement package created. V7 generation gate created. Operator authorization required for single V7 refinement generation. production_accepted=false, generation_allowed_now=false, assembly_allowed=false, downstream_allowed=false.",
   "downstream_allowed": false,
   "assembly_allowed": false,
   "route_family": "custom",
@@ -16,13 +16,46 @@
   "visual_acceptance_executed": false,
   "assembly_executed": false,
   "downstream_executed": false,
-  "operator_visual_verdict": "operator_visual_review_recorded",
+  "operator_visual_verdict": "pending",
   "v6_targeted_refinement_operator_visual_review": "combine_v2_v6_targeted_refinement_operator_visual_review.json",
   "v6_quality_reference_traits": "combine_v2_v6_quality_reference_traits.json",
   "v6_concept_fidelity_drift_taxonomy": "combine_v2_v6_concept_fidelity_drift_taxonomy.json",
   "v6_quality_vs_fidelity_root_cause_audit": "combine_v2_v6_quality_vs_fidelity_root_cause_audit.json",
   "v7_identity_fidelity_refinement_package": "combine_v2_v7_identity_fidelity_locked_refinement_package.json",
   "v7_generation_gate": "combine_v2_v7_identity_fidelity_generation_gate.json",
-  "stage_results": [],
-  "timestamp": "2026-05-07T14:31:38+02:00"
+  "stage_results": [
+    {
+      "stage": "v7_identity_fidelity_generation",
+      "success": true,
+      "message": "V7 identity/fidelity generation executed",
+      "artifacts": [
+        "combine_v2_v7_identity_fidelity_generation_authorization.json",
+        "shot02_v7_identity_fidelity_submitted_workflow.json",
+        "combine_v2_v7_identity_fidelity_outputs_manifest.json",
+        "combine_v2_v7_identity_fidelity_result.json",
+        "combine_v2_v7_identity_fidelity_operator_review_packet.json"
+      ],
+      "metadata": {
+        "generation_count": 1,
+        "second_generation_attempted": false,
+        "comfyui_execution": true,
+        "production_accepted": false,
+        "visual_acceptance_executed": false
+      },
+      "timestamp": "2026-05-07T12:41:46.259555+00:00",
+      "no_generation_performed": false
+    }
+  ],
+  "timestamp": "2026-05-07T14:31:38+02:00",
+  "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
+  "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
+  "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
+  "v7_identity_fidelity_result": "combine_v2_v7_identity_fidelity_result.json",
+  "v7_identity_fidelity_operator_review_packet": "combine_v2_v7_identity_fidelity_operator_review_packet.json",
+  "generation_allowed": false,
+  "generation_performed": true,
+  "comfyui_execution": true,
+  "generation_count": 1,
+  "second_generation_attempted": false,
+  "canonical_outputs_registered": true
 }

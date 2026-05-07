@@ -1,0 +1,133 @@
+{
+  "task_id": "RC-COMBINE-V2-5101-5400",
+  "workflow_type": "v7_identity_fidelity_locked_refinement",
+  "saveimage_filename_prefix": "combine_v2_v7_identity_fidelity_shot02_1778157706",
+  "positive_prompt": "masterpiece, best quality, young adult female fantasy character, ethereal cinematic portrait, beautiful young woman with flowing white hair, elegant white fantasy dress, blue atmospheric magical background with soft bokeh, soft natural skin texture, detailed iris and realistic eyes, natural skin grain without plastic look, cinematic lighting with soft falloff, intricate fantasy details, high fantasy art style, attractive fantasy character identity, close portrait framing, soft clean lighting, intricate hair detail, young adult fantasy character, ethereal fantasy cinematic portrait, beautiful young woman with white hair, elegant white fantasy dress, blue atmospheric magical background",
+  "negative_prompt": "old, elderly, aged face, wrinkles, aged skin, senior, grandmother, mature, realistic photo, studio portrait, passport photo, documentary, photorealistic, modern clothing, casual wear, undefined clothing, plain outfit, plain background, studio background, indoor setting, outdoor realistic, glossy plastic skin, airbrushed, over-smoothed face, photography style, realistic skin texture on elderly, age increase, changing character concept, loss of fantasy styling, loss of blue fantasy environment, replacing fantasy with realism, old elderly aged face, wrinkles or aged skin, realistic photo or studio portrait, passport photo style, modern clothing or casual wear, plain background or indoor setting, photorealistic or documentary style, glossy plastic skin, airbrushed or over-smoothed face",
+  "refinement_parameters": {
+    "cfg_scale": 6.5,
+    "denoising_strength": 0.6,
+    "steps": 25,
+    "sampler": "euler",
+    "scheduler": "normal",
+    "resolution": "1024x1024"
+  },
+  "concept_reference_asset": "data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+  "quality_reference_asset": "data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "identity_constraints_applied": {
+    "age_lock": true,
+    "identity_lock": true,
+    "style_lock": true,
+    "wardrobe_lock": true,
+    "background_lock": true
+  },
+  "quality_traits_transferred": [
+    "natural_skin_texture",
+    "better_eye_realism",
+    "less_plastic_gloss",
+    "believable_facial_micro_detail",
+    "cleaner_lighting",
+    "realistic_facial_structure"
+  ],
+  "forbidden_transformations": [
+    "elderly face",
+    "age increase",
+    "wrinkles_or_aged_skin",
+    "realistic_passport_photo_drift",
+    "plain_studio_portrait_drift",
+    "wardrobe_replacement",
+    "loss_of_fantasy_styling",
+    "loss_of_blue_fantasy_environment",
+    "changing_character_concept",
+    "realistic_photography_style",
+    "replacing_fantasy_with_realism"
+  ],
+  "workflow_payload": {
+    "1": {
+      "inputs": {
+        "ckpt_name": "realvisxlV50_v50Bakedvae.safetensors"
+      },
+      "class_type": "CheckpointLoaderSimple"
+    },
+    "2": {
+      "inputs": {
+        "text": "masterpiece, best quality, young adult female fantasy character, ethereal cinematic portrait, beautiful young woman with flowing white hair, elegant white fantasy dress, blue atmospheric magical background with soft bokeh, soft natural skin texture, detailed iris and realistic eyes, natural skin grain without plastic look, cinematic lighting with soft falloff, intricate fantasy details, high fantasy art style, attractive fantasy character identity, close portrait framing, soft clean lighting, intricate hair detail, young adult fantasy character, ethereal fantasy cinematic portrait, beautiful young woman with white hair, elegant white fantasy dress, blue atmospheric magical background",
+        "clip": [
+          "1",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode"
+    },
+    "3": {
+      "inputs": {
+        "text": "old, elderly, aged face, wrinkles, aged skin, senior, grandmother, mature, realistic photo, studio portrait, passport photo, documentary, photorealistic, modern clothing, casual wear, undefined clothing, plain outfit, plain background, studio background, indoor setting, outdoor realistic, glossy plastic skin, airbrushed, over-smoothed face, photography style, realistic skin texture on elderly, age increase, changing character concept, loss of fantasy styling, loss of blue fantasy environment, replacing fantasy with realism, old elderly aged face, wrinkles or aged skin, realistic photo or studio portrait, passport photo style, modern clothing or casual wear, plain background or indoor setting, photorealistic or documentary style, glossy plastic skin, airbrushed or over-smoothed face",
+        "clip": [
+          "1",
+          1
+        ]
+      },
+      "class_type": "CLIPTextEncode"
+    },
+    "4": {
+      "inputs": {
+        "seed": 3679481277,
+        "steps": 25,
+        "cfg": 6.5,
+        "sampler_name": "euler",
+        "scheduler": "normal",
+        "denoise": 0.6,
+        "model": [
+          "1",
+          0
+        ],
+        "positive": [
+          "2",
+          0
+        ],
+        "negative": [
+          "3",
+          0
+        ],
+        "latent_image": [
+          "5",
+          0
+        ]
+      },
+      "class_type": "KSampler"
+    },
+    "5": {
+      "inputs": {
+        "width": 1024,
+        "height": 1024,
+        "batch_size": 1
+      },
+      "class_type": "EmptyLatentImage"
+    },
+    "6": {
+      "inputs": {
+        "samples": [
+          "4",
+          0
+        ],
+        "vae": [
+          "1",
+          2
+        ]
+      },
+      "class_type": "VAEDecode"
+    },
+    "7": {
+      "inputs": {
+        "filename_prefix": "combine_v2_v7_identity_fidelity_shot02_1778157706",
+        "images": [
+          "6",
+          0
+        ]
+      },
+      "class_type": "SaveImage"
+    }
+  },
+  "generation_count": 1,
+  "timestamp": "2026-05-07T12:41:46.259555+00:00"
+}

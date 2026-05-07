@@ -44,5 +44,27 @@
     "current_state": "v7_identity_fidelity_generation_authorization_required",
     "next_allowed_action": "v7_identity_fidelity_generation_authorization_required",
     "timestamp": "2026-05-07T14:31:38+02:00"
+  },
+  {
+    "event_type": "v7_identity_fidelity_generation_completed",
+    "task_id": "RC-COMBINE-V2-5101-5400",
+    "stage": "v7_identity_fidelity_generation",
+    "new_generation_performed": true,
+    "generation_count": 1,
+    "second_generation_attempted": false,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "prompt_id": "39c1a712-d83d-437a-a556-defef25610c5",
+    "canonical_assets": [
+      "output/assets/combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png"
+    ],
+    "production_accepted": false,
+    "visual_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "operator_visual_review_required": true,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "timestamp": "2026-05-07T12:41:46.259555+00:00"
   }
 ]
