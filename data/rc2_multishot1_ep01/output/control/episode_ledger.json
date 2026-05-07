@@ -961,5 +961,43 @@
     "assembly_executed": false,
     "downstream_executed": false,
     "timestamp": "2026-05-07T05:25:51.364152+00:00"
+  },
+  {
+    "task_id": "RC-COMBINE-V2-2601-2660",
+    "event_type": "corrective_retry_v4_visual_correction_plan_created",
+    "stage": "corrective_retry_v4_visual_correction_plan_required",
+    "shot_id": "shot02",
+    "visual_qa_verdict": "failed",
+    "failed_reasons": [
+      "excessive_empty_space",
+      "subject_scale_check",
+      "empty_space_check",
+      "prompt_scene_alignment_check",
+      "weak_composition",
+      "composition_check",
+      "prompt_scene_alignment_weak",
+      "shot_intent_not_satisfied",
+      "subject_too_small",
+      "production_quality_check",
+      "shot_intent_alignment_check"
+    ],
+    "correction_areas": [
+      "subject_too_small",
+      "excessive_empty_space",
+      "weak_composition",
+      "shot_intent_not_satisfied",
+      "prompt_scene_alignment_weak"
+    ],
+    "visual_correction_plan_created": true,
+    "operator_review_packet_created": true,
+    "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required",
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "retry_attempted": false,
+    "workflow_mutated": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "timestamp": "2026-05-07T05:42:33.711974+00:00"
   }
 ]
