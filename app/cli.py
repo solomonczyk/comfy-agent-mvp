@@ -8188,6 +8188,27 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2601-2660 — combine-build-corrective-retry-v4-visual-correction-plan subcommand
+    combine_build_corrective_retry_v4_visual_correction_plan_parser = subparsers.add_parser(
+        "combine-build-corrective-retry-v4-visual-correction-plan",
+        help="Build corrective visual plan from failed V4 Visual QA verdict"
+    )
+    combine_build_corrective_retry_v4_visual_correction_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_corrective_retry_v4_visual_correction_plan_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_build_corrective_retry_v4_visual_correction_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1341-1400 — combine-run-corrective-retry-v3-visual-qa-preflight subcommand
     combine_run_corrective_retry_v3_visual_qa_preflight_parser = subparsers.add_parser(
         "combine-run-corrective-retry-v3-visual-qa-preflight",
@@ -9699,6 +9720,8 @@ def main() -> int:
         return combine_preflight_corrective_retry_v4_visual_qa(args)
     elif args.command == "combine-run-corrective-retry-v4-visual-qa":
         return combine_run_corrective_retry_v4_visual_qa(args)
+    elif args.command == "combine-build-corrective-retry-v4-visual-correction-plan":
+        return combine_build_corrective_retry_v4_visual_correction_plan(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa-preflight":
         return combine_run_corrective_retry_v3_visual_qa_preflight(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa":
@@ -27231,6 +27254,473 @@ def combine_run_corrective_retry_v4_visual_qa(args: argparse.Namespace) -> int:
         print(f"Visual QA Verdict: {visual_qa_verdict}")
         print(f"Failed Reasons: {failed_reasons}")
         print(f"Next Allowed Action: {next_allowed_action}")
+        print(f"Production Accepted: False")
+
+    return 0
+
+
+def combine_build_corrective_retry_v4_visual_correction_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2601-2660 — Build Corrective Retry V4 Visual Correction Plan.
+
+    Creates a formal corrective visual plan from Visual QA failure reasons.
+    Transforms failure reasons into actionable correction requirements.
+    No generation, no ComfyUI submit, no retry execution.
+
+    This command:
+    - Reads V4 Visual QA verdict and input packet
+    - Validates visual_qa_verdict=failed
+    - Creates correction plan with failure-to-fix mapping
+    - Creates operator review packet
+    - Updates artifact_index.json and episode_ledger.json
+
+    Exit codes:
+    - 0: visual correction plan created successfully
+    - 1: error or blocker (missing verdict, verdict not failed)
+    """
+    import json
+    import hashlib
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+    task_id = "RC-COMBINE-V2-2601-2660"
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {}
+
+    # 1. Read required artifacts
+    verdict_path = control_dir / "combine_v2_corrective_retry_v4_visual_qa_verdict.json"
+    input_packet_path = control_dir / "combine_v2_corrective_retry_v4_visual_qa_input_packet.json"
+
+    verdict = _load_json(verdict_path)
+    input_packet = _load_json(input_packet_path)
+
+    # 2. Validate required inputs
+    if not verdict:
+        msg = "Error: combine_v2_corrective_retry_v4_visual_qa_verdict.json not found. Run combine-run-corrective-retry-v4-visual-qa first."
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "VISUAL_QA_VERDICT_MISSING", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    if not input_packet:
+        msg = "Error: combine_v2_corrective_retry_v4_visual_qa_input_packet.json not found. Run combine-preflight-corrective-retry-v4-visual-qa first."
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "VISUAL_QA_INPUT_PACKET_MISSING", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 3. Validate verdict is failed
+    visual_qa_verdict = verdict.get("visual_qa_verdict", "")
+    if visual_qa_verdict != "failed":
+        msg = f"Error: Visual QA verdict is '{visual_qa_verdict}', not 'failed'. No correction plan needed."
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "VISUAL_QA_VERDICT_NOT_FAILED", "verdict": visual_qa_verdict, "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 4. Get failed reasons
+    failed_reasons = verdict.get("failed_reasons", [])
+    known_visual_issues = verdict.get("known_visual_issues", [])
+    operator_visual_concerns = verdict.get("operator_visual_concerns", {})
+
+    if not failed_reasons and not known_visual_issues:
+        msg = "Error: No failed_reasons or known_visual_issues found in verdict. Cannot create correction plan."
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "FAILED_REASONS_MISSING", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # Combine all failure reasons
+    all_failures = set(failed_reasons + known_visual_issues)
+
+    # 5. Build failure-to-fix mapping
+    correction_mapping = {}
+
+    # subject_too_small
+    if "subject_too_small" in all_failures or "subject_scale_check" in all_failures:
+        correction_mapping["subject_too_small"] = {
+            "failure": "Subject too small in frame",
+            "corrective_actions": [
+                "increase subject scale",
+                "target subject height ratio: 0.40-0.60 of frame height",
+                "reject if subject height ratio < 0.30",
+                "prefer medium shot / medium-full shot",
+                "avoid distant full-body landscape framing"
+            ],
+            "target_subject_height_ratio": "0.40-0.60",
+            "minimum_subject_height_ratio": "0.30",
+            "recommended_shot_type": "medium shot / medium-full shot",
+            "avoid": "distant full-body landscape framing"
+        }
+
+    # excessive_empty_space
+    if "excessive_empty_space" in all_failures or "empty_space_check" in all_failures:
+        correction_mapping["excessive_empty_space"] = {
+            "failure": "Excessive empty space - background dominates",
+            "corrective_actions": [
+                "reduce empty background dominance",
+                "target empty-space ratio <= 0.45",
+                "tighter crop/framing",
+                "stronger foreground subject placement"
+            ],
+            "target_empty_space_ratio_max": "0.45",
+            "recommended_framing": "tighter crop with foreground subject placement"
+        }
+
+    # weak_composition
+    if "weak_composition" in all_failures or "composition_check" in all_failures:
+        correction_mapping["weak_composition"] = {
+            "failure": "Weak composition - flat or unbalanced",
+            "corrective_actions": [
+                "define composition target",
+                "subject must be clear focal point",
+                "rule-of-thirds or centered cinematic framing",
+                "avoid flat empty background"
+            ],
+            "composition_target": "cinematic subject-focused framing",
+            "techniques": ["rule-of-thirds", "centered cinematic", "focal point emphasis"],
+            "avoid": "flat empty background"
+        }
+
+    # shot_intent_not_satisfied
+    if "shot_intent_not_satisfied" in all_failures or "shot_intent_alignment_check" in all_failures:
+        correction_mapping["shot_intent_not_satisfied"] = {
+            "failure": "Shot intent not satisfied - frame does not match target",
+            "corrective_actions": [
+                "restate shot intent",
+                "require prompt/graph to express shot02 target",
+                "reject if frame reads as generic landscape/background"
+            ],
+            "shot_intent_restatement": "Character-focused shot with clear subject presence",
+            "rejection_criteria": "generic landscape/background without clear subject"
+        }
+
+    # prompt_scene_alignment_weak
+    if "prompt_scene_alignment_weak" in all_failures or "prompt_scene_alignment_check" in all_failures:
+        correction_mapping["prompt_scene_alignment_weak"] = {
+            "failure": "Prompt/scene alignment weak",
+            "corrective_actions": [
+                "strengthen prompt with explicit subject scale, position, camera distance, focal length/style",
+                "include negative prompt constraints against tiny subject / empty background"
+            ],
+            "prompt_enhancements": [
+                "explicit subject scale descriptors",
+                "explicit subject position in frame",
+                "camera distance specification",
+                "focal length and style keywords"
+            ],
+            "negative_prompt_additions": [
+                "tiny subject",
+                "distant figure",
+                "empty background",
+                "landscape without subject"
+            ]
+        }
+
+    # 6. Build retry prompt patch recommendations
+    positive_prompt_additions = []
+    negative_prompt_additions = []
+    camera_framing_requirements = []
+    subject_scale_requirements = []
+    composition_requirements = []
+    rejection_criteria = []
+
+    if "subject_too_small" in correction_mapping:
+        positive_prompt_additions.extend([
+            "medium shot framing",
+            "subject fills 40-60% of frame height",
+            "close-up portrait composition",
+            "subject prominent in foreground"
+        ])
+        subject_scale_requirements.extend([
+            "subject height >= 40% of frame",
+            "reject if subject < 30% of frame"
+        ])
+        rejection_criteria.append("subject smaller than 30% of frame height")
+
+    if "excessive_empty_space" in correction_mapping:
+        positive_prompt_additions.extend([
+            "tight framing",
+            "minimal background",
+            "foreground subject emphasis"
+        ])
+        camera_framing_requirements.extend([
+            "empty space <= 45% of frame",
+            "subject dominant in composition"
+        ])
+        rejection_criteria.append("empty space exceeds 45% of frame")
+
+    if "weak_composition" in correction_mapping:
+        positive_prompt_additions.extend([
+            "cinematic composition",
+            "rule of thirds",
+            "strong focal point",
+            "professional photography"
+        ])
+        composition_requirements.extend([
+            "subject is clear focal point",
+            "balanced cinematic framing",
+            "avoid flat backgrounds"
+        ])
+
+    if "shot_intent_not_satisfied" in correction_mapping:
+        positive_prompt_additions.extend([
+            "character-focused",
+            "clear subject presence",
+            "intentional shot framing"
+        ])
+        camera_framing_requirements.append("shot must express specific intent, not generic")
+
+    if "prompt_scene_alignment_weak" in correction_mapping:
+        positive_prompt_additions.extend([
+            "explicit scale description",
+            "defined camera distance",
+            "specific focal length"
+        ])
+        negative_prompt_additions.extend([
+            "tiny subject",
+            "distant figure",
+            "empty background",
+            "landscape without subject",
+            "small person in vast space"
+        ])
+
+    # 7. Build graph/workflow recommendations
+    graph_recommendations = {
+        "save_image_prefix": "combine_v2_corrective_retry_v4_shot02",
+        "workflow_binding": "keep current canonical workflow binding unless review says otherwise",
+        "optional_future_controls": [
+            "crop/zoom node configuration",
+            "regional conditioning for subject emphasis",
+            "pose/layout control for composition",
+            "depth control for subject separation"
+        ],
+        "graph_mutation_in_this_layer": False,
+        "note": "No graph mutation in this layer - only metadata plan artifact is being built"
+    }
+
+    # 8. Create visual correction plan artifact
+    visual_correction_plan = {
+        "task_id": task_id,
+        "stage": "corrective_retry_v4_visual_correction_plan_required",
+        "plan_type": "corrective_retry_v4_visual_correction_plan",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "visual_qa_verdict_used": True,
+        "visual_qa_verdict": visual_qa_verdict,
+        "failed_reasons": list(all_failures),
+        "correction_mapping": correction_mapping,
+        "retry_prompt_patch": {
+            "positive_prompt_additions": list(set(positive_prompt_additions)),
+            "negative_prompt_additions": list(set(negative_prompt_additions)),
+            "camera_framing_requirements": camera_framing_requirements,
+            "subject_scale_requirements": subject_scale_requirements,
+            "composition_requirements": composition_requirements,
+            "rejection_criteria": rejection_criteria
+        },
+        "graph_recommendations": graph_recommendations,
+        "canonical_asset_path": verdict.get("canonical_asset_path", ""),
+        "sha256": verdict.get("sha256", ""),
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required"
+    }
+
+    plan_path = control_dir / "combine_v2_corrective_retry_v4_visual_correction_plan.json"
+    with open(plan_path, 'w', encoding='utf-8') as f:
+        json.dump(visual_correction_plan, f, indent=2)
+
+    # 9. Create operator review packet
+    operator_review_packet = {
+        "task_id": task_id,
+        "packet_type": "corrective_retry_v4_visual_correction_plan_review_packet",
+        "stage": "operator_retry_v4_visual_correction_plan_review_required",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "visual_correction_plan_path": "output/control/combine_v2_corrective_retry_v4_visual_correction_plan.json",
+        "operator_decision_required": True,
+        "allowed_decisions": [
+            "approve_visual_correction_plan",
+            "request_visual_correction_plan_changes",
+            "reject_visual_correction_plan"
+        ],
+        "decision_guidance": {
+            "approve_visual_correction_plan": "Proceed with retry using the correction plan specifications",
+            "request_visual_correction_plan_changes": "Request modifications to specific correction requirements",
+            "reject_visual_correction_plan": "Reject the plan and route to manual review"
+        },
+        "correction_summary": {
+            "failure_count": len(all_failures),
+            "correction_areas": list(correction_mapping.keys()),
+            "subject_scale_fixes": "subject_too_small" in correction_mapping,
+            "empty_space_fixes": "excessive_empty_space" in correction_mapping,
+            "composition_fixes": "weak_composition" in correction_mapping,
+            "shot_intent_fixes": "shot_intent_not_satisfied" in correction_mapping,
+            "prompt_alignment_fixes": "prompt_scene_alignment_weak" in correction_mapping
+        },
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required"
+    }
+
+    review_packet_path = control_dir / "combine_v2_corrective_retry_v4_visual_correction_plan_review_packet.json"
+    with open(review_packet_path, 'w', encoding='utf-8') as f:
+        json.dump(operator_review_packet, f, indent=2)
+
+    # 10. Update artifact_index.json
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = _load_json(artifact_index_path)
+
+    artifact_index["current_state"] = "corrective_retry_v4_visual_correction_plan_required"
+    artifact_index["next_allowed_action"] = "operator_retry_v4_visual_correction_plan_review_required"
+    artifact_index["visual_correction_plan_created"] = True
+    artifact_index["visual_qa_verdict_used"] = True
+    artifact_index["visual_qa_verdict"] = visual_qa_verdict
+    artifact_index["production_accepted"] = False
+    artifact_index["downstream_blocked"] = True
+    artifact_index["generation_performed"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["assembly_executed"] = False
+
+    # Add stage result
+    if "stage_results" not in artifact_index:
+        artifact_index["stage_results"] = []
+
+    artifact_index["stage_results"].append({
+        "stage": "corrective_retry_v4_visual_correction_plan_required",
+        "success": True,
+        "message": "Visual correction plan created from failed Visual QA verdict",
+        "artifacts": [
+            "combine_v2_corrective_retry_v4_visual_correction_plan.json",
+            "combine_v2_corrective_retry_v4_visual_correction_plan_review_packet.json"
+        ],
+        "metadata": {
+            "task_id": task_id,
+            "visual_qa_verdict": visual_qa_verdict,
+            "failed_reasons_count": len(all_failures),
+            "correction_areas": list(correction_mapping.keys()),
+            "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required",
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "retry_attempted": False,
+            "workflow_mutated": False,
+            "production_accepted": False
+        },
+        "timestamp": timestamp,
+        "no_generation_performed": True
+    })
+
+    with open(artifact_index_path, 'w', encoding='utf-8') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 11. Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "task_id": task_id,
+        "event_type": "corrective_retry_v4_visual_correction_plan_created",
+        "stage": "corrective_retry_v4_visual_correction_plan_required",
+        "shot_id": shot_id,
+        "visual_qa_verdict": visual_qa_verdict,
+        "failed_reasons": list(all_failures),
+        "correction_areas": list(correction_mapping.keys()),
+        "visual_correction_plan_created": True,
+        "operator_review_packet_created": True,
+        "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required",
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w', encoding='utf-8') as f:
+        json.dump(ledger, f, indent=2)
+
+    # 12. Build result
+    result = {
+        "task_id": task_id,
+        "status": "ok",
+        "visual_correction_plan_created": True,
+        "visual_qa_verdict_used": True,
+        "visual_qa_verdict": visual_qa_verdict,
+        "failed_reasons_mapped": True,
+        "failed_reasons": list(all_failures),
+        "correction_mapping": list(correction_mapping.keys()),
+        "subject_scale_requirements_created": "subject_too_small" in correction_mapping,
+        "target_subject_height_ratio": "0.40-0.60" if "subject_too_small" in correction_mapping else None,
+        "minimum_subject_height_ratio": "0.30" if "subject_too_small" in correction_mapping else None,
+        "empty_space_limit_created": "excessive_empty_space" in correction_mapping,
+        "target_empty_space_ratio_max": "0.45" if "excessive_empty_space" in correction_mapping else None,
+        "composition_requirements_created": "weak_composition" in correction_mapping,
+        "shot_intent_requirements_created": "shot_intent_not_satisfied" in correction_mapping,
+        "prompt_patch_recommendations_created": True,
+        "operator_review_packet_created": True,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": "corrective_retry_v4_visual_correction_plan_required",
+        "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required",
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v4_visual_correction_plan.json",
+            "output/control/combine_v2_corrective_retry_v4_visual_correction_plan_review_packet.json"
+        ]
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"V4 Visual Correction Plan: CREATED")
+        print(f"Shot: {shot_id}")
+        print(f"Visual QA Verdict: {visual_qa_verdict}")
+        print(f"Failed Reasons: {len(all_failures)}")
+        print(f"Correction Areas: {list(correction_mapping.keys())}")
+        print(f"Subject Scale Fixes: {'subject_too_small' in correction_mapping}")
+        print(f"Empty Space Fixes: {'excessive_empty_space' in correction_mapping}")
+        print(f"Composition Fixes: {'weak_composition' in correction_mapping}")
+        print(f"Shot Intent Fixes: {'shot_intent_not_satisfied' in correction_mapping}")
+        print(f"Prompt Alignment Fixes: {'prompt_scene_alignment_weak' in correction_mapping}")
+        print(f"Operator Review Packet: CREATED")
+        print(f"Next Allowed Action: operator_retry_v4_visual_correction_plan_review_required")
         print(f"Production Accepted: False")
 
     return 0
