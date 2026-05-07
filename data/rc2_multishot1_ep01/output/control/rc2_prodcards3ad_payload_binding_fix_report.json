@@ -1,0 +1,37 @@
+{
+  "fix_applied": true,
+  "fix_tag": "RC2-PRODCARDS3AD",
+  "fix_description": "Retry payload checkpoint binding fix with identity adapter compatibility gate",
+  "checkpoint_used": "juggernautXL_version2.safetensors",
+  "checkpoint_source": "controlled_retry_implementation_plan.json",
+  "checkpoint_consistency_check": {
+    "checkpoint_preflight_performed": true,
+    "checkpoint_source": "controlled_retry_implementation_plan.json",
+    "checkpoint_used": "juggernautXL_version2.safetensors",
+    "checks": {
+      "artifact_index_checkpoint": "juggernautXL_version2.safetensors",
+      "artifact_index_match": true,
+      "retry_plan_checkpoint": "juggernautXL_version2.safetensors",
+      "retry_plan_match": true,
+      "prompt_pack_checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+      "prompt_pack_match": false,
+      "workflow_checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "workflow_match": false
+    },
+    "all_layers_match": false,
+    "checkpoint_state_payload_mismatch": true
+  },
+  "identity_adapter_compatibility_check": {
+    "identity_adapter_compatibility_checked": true,
+    "checkpoint_family": "SDXL",
+    "identity_adapter_family": null,
+    "compatible": true,
+    "blocker": null
+  },
+  "dry_run": true,
+  "generation_performed": false,
+  "comfyui_submission_performed": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "timestamp": "2026-04-30T09:09:40.142257Z"
+}

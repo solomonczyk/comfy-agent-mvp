@@ -1,0 +1,33 @@
+{
+  "packet_type": "character_director_identity_review",
+  "role": "Character Director",
+  "blocked_shot": "shot01",
+  "issue": "identity_qa_failed",
+  "character_name": "Alya",
+  "character_reference": "Alya",
+  "character_card_path": "cards\\characters\\character_card.json",
+  "shot_card_path": "cards\\shots\\shot01.json",
+  "work_order_path": "output\\control\\work_orders\\character_director_identity_review.json",
+  "pending_decision_path": "output\\control\\role_decisions\\character_director_identity_decision.json",
+  "identity_qa_failure_summary": {
+    "frame_qc_passed": true,
+    "identity_consistency_passed": false,
+    "production_accepted": false,
+    "blocking_reason": "identity_qa_failed"
+  },
+  "required_review_questions": [
+    "is the current character reference strategy sufficient?",
+    "are identity rules complete?",
+    "does the failed output drift from approved identity?",
+    "should the role approve, reject, request_new_reference, or request_workflow_change?"
+  ],
+  "required_decision_output": "character_identity_approval or rejection/request",
+  "downstream_blocked": true,
+  "production_accepted": false,
+  "evidence_only": true,
+  "not_a_decision": true,
+  "created_at": "2026-04-28T12:43:48.803915Z",
+  "project_specific_data_allowed": true,
+  "source_data_origin": "production_cards",
+  "source_project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01"
+}

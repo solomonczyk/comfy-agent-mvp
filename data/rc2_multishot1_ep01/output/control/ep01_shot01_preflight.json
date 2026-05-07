@@ -1,0 +1,46 @@
+{
+  "status": "READY",
+  "blocks": [],
+  "warnings": [
+    "Dry preflight - reference path placeholder: output/control/references/ep01_shot01_clean_reference.png"
+  ],
+  "workflow_info": {
+    "load_image_nodes": [
+      "1"
+    ],
+    "resize_nodes": [
+      "2"
+    ],
+    "vae_encode_nodes": [
+      "3"
+    ],
+    "ksampler_nodes": [
+      "7"
+    ]
+  },
+  "checkpoint_info": {
+    "valid": true,
+    "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "path": "F:/ComfyUI/models/checkpoints/realvisxlV50_v50Bakedvae.safetensors"
+  },
+  "resize_node_type": "ImageScale",
+  "clean_reference_qc": {
+    "valid": true,
+    "blocks": [],
+    "qc_stats": {
+      "dimensions": "480x640",
+      "mean": 128.5,
+      "stddev": 45.2,
+      "variance": 2043.0,
+      "entropy": 7.5,
+      "file_size_bytes": 150000,
+      "verdict": "VALID"
+    }
+  },
+  "prompt_pack_valid": true,
+  "brief_valid": true,
+  "reference_locked": true,
+  "generation_mode": "reference_locked",
+  "dry_run": true,
+  "validated_at": "2026-04-28T06:27:47.157312Z"
+}

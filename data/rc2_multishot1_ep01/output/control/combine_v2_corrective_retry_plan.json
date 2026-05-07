@@ -1,0 +1,29 @@
+{
+  "stage": "corrective_retry_plan_required",
+  "plan_type": "controlled_corrective_retry_plan",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [
+    "semantic_content_failed",
+    "subject_not_recognizable",
+    "blur_or_softness",
+    "low_detail_quality",
+    "composition_failed",
+    "production_quality_failed"
+  ],
+  "blind_retry_allowed": false,
+  "retry_requires_operator_authorization": true,
+  "required_corrections": {
+    "prompt_correction_required": true,
+    "workflow_correction_required": true,
+    "quality_pipeline_correction_required": true,
+    "model_or_sampler_review_required": true,
+    "composition_or_subject_definition_required": true
+  },
+  "generation_allowed": false,
+  "retry_attempted": false,
+  "comfyui_execution": false,
+  "workflow_submitted": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "controlled_retry_authorization_required"
+}

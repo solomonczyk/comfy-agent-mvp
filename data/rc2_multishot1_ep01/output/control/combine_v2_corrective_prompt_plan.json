@@ -1,0 +1,17 @@
+{
+  "plan_type": "corrective_prompt_plan",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "required_corrections": {
+    "semantic_clarity_improvement": true,
+    "subject_definition_refinement": true,
+    "composition_adjustment": true,
+    "detail_enhancement": true
+  },
+  "prompt_elements_to_review": [
+    "subject_description",
+    "composition_keywords",
+    "style_modifiers",
+    "quality_parameters"
+  ],
+  "generation_allowed": false
+}

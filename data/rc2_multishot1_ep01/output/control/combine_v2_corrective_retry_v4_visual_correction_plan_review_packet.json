@@ -1,0 +1,42 @@
+{
+  "task_id": "RC-COMBINE-V2-2601-2660",
+  "packet_type": "corrective_retry_v4_visual_correction_plan_review_packet",
+  "stage": "operator_retry_v4_visual_correction_plan_review_required",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-07T05:42:33.711974+00:00",
+  "visual_correction_plan_path": "output/control/combine_v2_corrective_retry_v4_visual_correction_plan.json",
+  "operator_decision_required": true,
+  "allowed_decisions": [
+    "approve_visual_correction_plan",
+    "request_visual_correction_plan_changes",
+    "reject_visual_correction_plan"
+  ],
+  "decision_guidance": {
+    "approve_visual_correction_plan": "Proceed with retry using the correction plan specifications",
+    "request_visual_correction_plan_changes": "Request modifications to specific correction requirements",
+    "reject_visual_correction_plan": "Reject the plan and route to manual review"
+  },
+  "correction_summary": {
+    "failure_count": 11,
+    "correction_areas": [
+      "subject_too_small",
+      "excessive_empty_space",
+      "weak_composition",
+      "shot_intent_not_satisfied",
+      "prompt_scene_alignment_weak"
+    ],
+    "subject_scale_fixes": true,
+    "empty_space_fixes": true,
+    "composition_fixes": true,
+    "shot_intent_fixes": true,
+    "prompt_alignment_fixes": true
+  },
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "workflow_mutated": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required"
+}

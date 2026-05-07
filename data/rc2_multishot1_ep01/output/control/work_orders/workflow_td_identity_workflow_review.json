@@ -1,0 +1,31 @@
+{
+  "role": "Workflow TD / ComfyUI Technical Director",
+  "work_order_type": "identity_workflow_review",
+  "blocked_shot": "shot01",
+  "issue": "identity_qa_failed",
+  "current_required_generation_mode": "gorynych_identity",
+  "legacy_reference_locked_allowed_for_production": false,
+  "created_at": "2026-04-28T10:32:40.324719Z",
+  "required_decision": {
+    "options": [
+      "approve_workflow",
+      "reject_workflow",
+      "request_missing_nodes",
+      "request_missing_models",
+      "request_reference_rebuild"
+    ],
+    "description": "Workflow TD must approve the identity workflow or request necessary changes"
+  },
+  "required_artifacts": {
+    "workflow_audit": "Audit of the current identity workflow configuration",
+    "required_nodes": "List of required nodes for identity consistency",
+    "required_models": "List of required models for character identity",
+    "preflight_result": "Preflight validation result for the workflow",
+    "output_collection_contract": "Contract for collecting workflow outputs"
+  },
+  "handoff_to": "Image Generation Agent (only after Character Director approval)",
+  "downstream_blocked": true,
+  "project_specific_data_allowed": true,
+  "source_data_origin": "production_cards",
+  "source_project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01"
+}

@@ -1,0 +1,33 @@
+{
+  "resubmission_type": "completion_based_role_decision_resubmission",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "based_on_valid_completions": true,
+  "completions_used": [
+    "workflow_td",
+    "character_director"
+  ],
+  "resubmission_packets_created": 2,
+  "resubmission_packet_files": [
+    "output/control/role_decision_resubmissions/character_director_resubmission_packet.json",
+    "output/control/role_decision_resubmissions/workflow_td_resubmission_packet.json"
+  ],
+  "ready_for_role_resubmission": true,
+  "apply_performed": false,
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "boundary_conditions": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_tts_execution": true,
+    "no_ffmpeg_execution": true,
+    "no_scene_assembly": true,
+    "no_qa_review_execution": true,
+    "no_apply_decisions": true,
+    "no_role_decisions_modified": true,
+    "no_retry_gate_opened": true,
+    "no_production_accepted": true,
+    "no_downstream_actions_executed": true
+  },
+  "created_at": "2026-04-28T15:31:41.841013Z"
+}

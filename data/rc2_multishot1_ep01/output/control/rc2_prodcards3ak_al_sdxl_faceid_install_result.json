@@ -1,0 +1,30 @@
+{
+  "task_code": "RC2-PRODCARDS3AK-AL",
+  "phase": "D_Install",
+  "timestamp": "2026-04-30T13:57:51.433026Z",
+  "assets": [
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "install_result": {
+        "install_passed": true,
+        "final_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+        "final_file_size_bytes": 1487555181,
+        "final_sha256_hash": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb",
+        "file_existed_before": false,
+        "operation": "copy"
+      }
+    },
+    {
+      "filename": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "install_result": {
+        "install_passed": true,
+        "final_path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+        "final_file_size_bytes": 371842896,
+        "final_sha256_hash": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b",
+        "file_existed_before": false,
+        "operation": "copy"
+      }
+    }
+  ],
+  "all_assets_installed": true
+}

@@ -1,0 +1,16 @@
+{
+  "stage": "controlled_retry_authorization_required",
+  "operator_review_required": true,
+  "recommended_operator_decision": "approve_corrective_retry_implementation",
+  "operator_actions": [
+    "approve_corrective_retry_implementation",
+    "request_corrective_plan_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "production_accepted": false,
+  "next_allowed_action": "controlled_retry_authorization_required"
+}

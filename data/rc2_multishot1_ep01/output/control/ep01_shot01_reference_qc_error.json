@@ -1,0 +1,10 @@
+{
+  "generation_mode": "reference_locked",
+  "original_reference_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\output\\control\\references\\ep01_shot01_clean_reference.png",
+  "staged_reference_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\output\\control\\references\\ep01_shot01_clean_reference.png",
+  "valid": false,
+  "blocks": [
+    "Clean reference does not exist: F:\\ComfyUI\\comfy-agent-mvp\\output\\control\\references\\ep01_shot01_clean_reference.png"
+  ],
+  "qc_stats": {}
+}

@@ -1,0 +1,162 @@
+{
+  "task_id": "RC-COMBINE-V2-2601-2660",
+  "stage": "corrective_retry_v4_visual_correction_plan_required",
+  "plan_type": "corrective_retry_v4_visual_correction_plan",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-07T05:42:33.711974+00:00",
+  "visual_qa_verdict_used": true,
+  "visual_qa_verdict": "failed",
+  "failed_reasons": [
+    "excessive_empty_space",
+    "subject_scale_check",
+    "empty_space_check",
+    "prompt_scene_alignment_check",
+    "weak_composition",
+    "composition_check",
+    "prompt_scene_alignment_weak",
+    "shot_intent_not_satisfied",
+    "subject_too_small",
+    "production_quality_check",
+    "shot_intent_alignment_check"
+  ],
+  "correction_mapping": {
+    "subject_too_small": {
+      "failure": "Subject too small in frame",
+      "corrective_actions": [
+        "increase subject scale",
+        "target subject height ratio: 0.40-0.60 of frame height",
+        "reject if subject height ratio < 0.30",
+        "prefer medium shot / medium-full shot",
+        "avoid distant full-body landscape framing"
+      ],
+      "target_subject_height_ratio": "0.40-0.60",
+      "minimum_subject_height_ratio": "0.30",
+      "recommended_shot_type": "medium shot / medium-full shot",
+      "avoid": "distant full-body landscape framing"
+    },
+    "excessive_empty_space": {
+      "failure": "Excessive empty space - background dominates",
+      "corrective_actions": [
+        "reduce empty background dominance",
+        "target empty-space ratio <= 0.45",
+        "tighter crop/framing",
+        "stronger foreground subject placement"
+      ],
+      "target_empty_space_ratio_max": "0.45",
+      "recommended_framing": "tighter crop with foreground subject placement"
+    },
+    "weak_composition": {
+      "failure": "Weak composition - flat or unbalanced",
+      "corrective_actions": [
+        "define composition target",
+        "subject must be clear focal point",
+        "rule-of-thirds or centered cinematic framing",
+        "avoid flat empty background"
+      ],
+      "composition_target": "cinematic subject-focused framing",
+      "techniques": [
+        "rule-of-thirds",
+        "centered cinematic",
+        "focal point emphasis"
+      ],
+      "avoid": "flat empty background"
+    },
+    "shot_intent_not_satisfied": {
+      "failure": "Shot intent not satisfied - frame does not match target",
+      "corrective_actions": [
+        "restate shot intent",
+        "require prompt/graph to express shot02 target",
+        "reject if frame reads as generic landscape/background"
+      ],
+      "shot_intent_restatement": "Character-focused shot with clear subject presence",
+      "rejection_criteria": "generic landscape/background without clear subject"
+    },
+    "prompt_scene_alignment_weak": {
+      "failure": "Prompt/scene alignment weak",
+      "corrective_actions": [
+        "strengthen prompt with explicit subject scale, position, camera distance, focal length/style",
+        "include negative prompt constraints against tiny subject / empty background"
+      ],
+      "prompt_enhancements": [
+        "explicit subject scale descriptors",
+        "explicit subject position in frame",
+        "camera distance specification",
+        "focal length and style keywords"
+      ],
+      "negative_prompt_additions": [
+        "tiny subject",
+        "distant figure",
+        "empty background",
+        "landscape without subject"
+      ]
+    }
+  },
+  "retry_prompt_patch": {
+    "positive_prompt_additions": [
+      "subject fills 40-60% of frame height",
+      "minimal background",
+      "foreground subject emphasis",
+      "defined camera distance",
+      "strong focal point",
+      "close-up portrait composition",
+      "character-focused",
+      "medium shot framing",
+      "subject prominent in foreground",
+      "clear subject presence",
+      "specific focal length",
+      "intentional shot framing",
+      "rule of thirds",
+      "cinematic composition",
+      "professional photography",
+      "explicit scale description",
+      "tight framing"
+    ],
+    "negative_prompt_additions": [
+      "small person in vast space",
+      "landscape without subject",
+      "tiny subject",
+      "distant figure",
+      "empty background"
+    ],
+    "camera_framing_requirements": [
+      "empty space <= 45% of frame",
+      "subject dominant in composition",
+      "shot must express specific intent, not generic"
+    ],
+    "subject_scale_requirements": [
+      "subject height >= 40% of frame",
+      "reject if subject < 30% of frame"
+    ],
+    "composition_requirements": [
+      "subject is clear focal point",
+      "balanced cinematic framing",
+      "avoid flat backgrounds"
+    ],
+    "rejection_criteria": [
+      "subject smaller than 30% of frame height",
+      "empty space exceeds 45% of frame"
+    ]
+  },
+  "graph_recommendations": {
+    "save_image_prefix": "combine_v2_corrective_retry_v4_shot02",
+    "workflow_binding": "keep current canonical workflow binding unless review says otherwise",
+    "optional_future_controls": [
+      "crop/zoom node configuration",
+      "regional conditioning for subject emphasis",
+      "pose/layout control for composition",
+      "depth control for subject separation"
+    ],
+    "graph_mutation_in_this_layer": false,
+    "note": "No graph mutation in this layer - only metadata plan artifact is being built"
+  },
+  "canonical_asset_path": "output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png",
+  "sha256": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd",
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "workflow_mutated": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required"
+}

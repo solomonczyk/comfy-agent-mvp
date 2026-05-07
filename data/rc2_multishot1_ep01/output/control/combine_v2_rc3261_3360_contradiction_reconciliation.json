@@ -1,0 +1,94 @@
+{
+  "artifact_type": "contradiction_reconciliation",
+  "task_id": "RC-COMBINE-V2-3261-3360",
+  "reconciliation_timestamp": "2026-05-07T09:04:00Z",
+  "reconciliation_reason": "Operator rejected original diagnosis as inconsistent with console log evidence",
+
+  "original_diagnosis_artifact": "combine_v2_comfyui_prompt_500_diagnosis.json",
+  "original_blocked_artifact": "combine_v2_corrective_retry_v5_generation_runtime_blocked.json",
+
+  "console_log_evidence": {
+    "fact_1_post_500_root_cause": "POST /prompt 500 root cause was invalid prompt payload: ComfyUI validate_prompt received a string where node_data dict was expected (non-node shot_id field in workflow JSON). This is confirmed and correctly diagnosed.",
+    "fact_2_comfyui_executed_prompt_1": "ComfyUI console shows: Prompt executed in 00:12:33 — execution completed successfully.",
+    "fact_3_comfyui_executed_prompt_2": "ComfyUI console shows: Prompt executed in 00:18:48 — execution completed successfully.",
+    "fact_4_generation_performed_inconsistency": "Both executed prompts prove generation_performed=false was INCORRECT. At minimum one prompt executed to completion and produced output.",
+    "fact_5_missing_model_not_proven": "The claim 'missing checkpoint model (juggernautXL_version2.safetensors) or custom node (LoraLoader)' is NOT supported by these logs. ComfyUI executed successfully, which is incompatible with a missing required model.",
+    "fact_6_output_exists": "Native ComfyUI output folder contains combine_v2_corrective_retry_v5_shot02_00001_.png (2026-05-07 10:38:36, 1,383,828 bytes), produced during the RC-COMBINE-V2-3261-3360 session."
+  },
+
+  "errors_in_original_diagnosis": [
+    {
+      "field": "generation_performed",
+      "original_value": false,
+      "corrected_value": true,
+      "evidence": "combine_v2_corrective_retry_v5_shot02_00001_.png exists in native ComfyUI output at 2026-05-07T10:38:36 — consistent with Prompt executed in 00:18:48 console log"
+    },
+    {
+      "field": "comfyui_execution",
+      "original_value": false,
+      "corrected_value": true,
+      "evidence": "ComfyUI console logs show two successful executions (00:12:33 and 00:18:48)"
+    },
+    {
+      "field": "secondary_blocker",
+      "original_value": "MISSING_CHECKPOINT_MODEL_OR_CUSTOM_NODE",
+      "corrected_value": "NOT_PROVEN — model was present and executions completed",
+      "evidence": "A missing required checkpoint would prevent execution entirely; two executions completed successfully"
+    },
+    {
+      "field": "comfyui_execution_blocked",
+      "original_value": true,
+      "corrected_value": false,
+      "evidence": "Console logs prove executions completed"
+    },
+    {
+      "field": "current_state",
+      "original_value": "corrective_retry_v5_generation_runtime_blocked",
+      "corrected_value": "corrective_retry_v5_generated_operator_visual_failed",
+      "evidence": "Generation occurred; output exists; no production acceptance was granted"
+    }
+  ],
+
+  "output_reconciliation": {
+    "native_comfyui_output_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output",
+    "file_found": "combine_v2_corrective_retry_v5_shot02_00001_.png",
+    "file_timestamp": "2026-05-07T10:38:36",
+    "file_size_bytes": 1383828,
+    "timestamp_matches_console_log": "consistent with Prompt executed in 00:18:48 (console log from same session)",
+    "canonical_asset_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+    "canonical_asset_registered": true,
+    "registration_action": "Copied from native ComfyUI output to canonical assets during contradiction reconciliation"
+  },
+
+  "corrected_status": {
+    "generation_performed": true,
+    "comfyui_execution": true,
+    "production_accepted": false,
+    "operator_visual_verdict": "operator_visual_failed",
+    "assembly": false,
+    "downstream": false,
+    "reason_production_not_accepted": "Operator visual review not performed; output exists but was not reviewed or accepted during session",
+    "reason_assembly_false": "Production acceptance is prerequisite for assembly; not granted",
+    "reason_downstream_false": "Downstream blocked pending production acceptance"
+  },
+
+  "what_is_still_accurate_from_original": [
+    "POST /prompt 500 root cause correctly identified: non-node shot_id field in workflow JSON",
+    "Payload fix applied: validator removes non-node fields before submission — CORRECT",
+    "payload_validation_passed: true — CORRECT",
+    "prompt_submission_success: true — CORRECT",
+    "production_accepted: false — CORRECT, unchanged",
+    "assembly_allowed: false — CORRECT, unchanged",
+    "downstream_allowed: false — CORRECT, unchanged"
+  ],
+
+  "corrected_notes": [
+    "RC-COMBINE-V2-3261-3360: POST /prompt 500 correctly diagnosed and fixed (shot_id non-node field)",
+    "ComfyUI executed at least one prompt successfully — output artifact exists",
+    "Output file combine_v2_corrective_retry_v5_shot02_00001_.png registered to canonical assets",
+    "Status corrected: operator_visual_failed (not runtime_blocked)",
+    "Missing model claim was speculation — not proven by evidence; model was present",
+    "production_accepted remains false, assembly remains false, downstream remains false",
+    "No new generation performed during this reconciliation"
+  ]
+}

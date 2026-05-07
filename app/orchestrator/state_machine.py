@@ -101,7 +101,8 @@ class CombineStateMachine:
         "v8_quality_locked_generation_authorization_required",
         "v8_generation_runtime_blocked",
         "v8_generation_runtime_recovery_required",
-        "v8_generation_reexecution_authorization_required"
+        "v8_generation_reexecution_authorization_required",
+        "v8_operator_visual_review_required"
     ]
     
     # Terminal states
@@ -285,6 +286,7 @@ class CombineStateMachine:
         "v8_quality_locked_generation_authorization_required": {
             "v8_quality_locked_generation_authorization_required",  # Self-loop: halted pending operator authorization
             "generate_assets",  # Operator authorized -> proceed to generate
+            "v8_operator_visual_review_required",  # V8 runtime recovery -> operator visual review
             "blocked_manual_review"
         },
         "v8_generation_runtime_blocked": {
@@ -308,6 +310,11 @@ class CombineStateMachine:
             "assembly_preflight_required",  # Approved - proceed to assembly
             "blocked_manual_review",
             "v8_quality_locked_generation_authorization_required"  # V7 rejected -> V8 quality lock
+        },
+        "v8_operator_visual_review_required": {
+            "v8_operator_visual_review_required",  # Self-loop: halted pending operator
+            "assembly_preflight_required",  # Approved - proceed to assembly
+            "blocked_manual_review",
         },
         "real_generation_readiness_required": {
             "real_generation_preflight_required"
@@ -569,6 +576,12 @@ class CombineStateMachine:
         ("v8_generation_reexecution_authorization_required", "assembly_preflight_required"),
         ("v8_generation_reexecution_authorization_required", "completed"),
         ("v8_generation_reexecution_authorization_required", "production_accepted"),
+
+        # v8_operator_visual_review_required: cannot skip to downstream, final, or production
+        ("v8_operator_visual_review_required", "completed"),
+        ("v8_operator_visual_review_required", "production_accepted"),
+        ("v8_operator_visual_review_required", "final_qc_required"),
+        ("v8_operator_visual_review_required", "final_operator_acceptance"),
     }
     
     @classmethod

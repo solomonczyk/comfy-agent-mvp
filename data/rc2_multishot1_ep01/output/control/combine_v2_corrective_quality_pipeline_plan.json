@@ -1,0 +1,16 @@
+{
+  "plan_type": "corrective_quality_pipeline_plan",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "required_corrections": {
+    "resolution_validation": true,
+    "quality_threshold_adjustment": true,
+    "output_format_verification": true
+  },
+  "quality_pipeline_elements_to_review": [
+    "target_resolution",
+    "quality_metrics",
+    "output_format",
+    "compression_settings"
+  ],
+  "generation_allowed": false
+}

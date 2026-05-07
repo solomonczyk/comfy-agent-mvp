@@ -1,0 +1,64 @@
+{
+  "packet_type": "character_director_resubmission",
+  "role": "Character Director",
+  "decision_source": "completion_based_resubmission",
+  "blocked_shot": "shot01",
+  "character_name": "Alya",
+  "character_reference": "Alya",
+  "based_on_submitted_completion": "output/control/change_request_completions/submitted/character_director_reference_rebuild.SUBMITTED.json",
+  "based_on_review_packet": null,
+  "based_on_submission_template": "output/control/role_decision_submissions/character_director_real_decision.SUBMIT.json",
+  "current_decision_status": "pending_resubmission",
+  "allowed_decisions": [
+    "approve",
+    "reject",
+    "request_new_reference",
+    "request_workflow_change"
+  ],
+  "selected_decision": null,
+  "completion_evidence": {
+    "updated_character_identity_rules": {
+      "identity_preservation_level": "strict",
+      "reference_fidelity": "high",
+      "consistency_requirements": [
+        "pose",
+        "expression",
+        "lighting"
+      ],
+      "notes": "Identity rules updated to ensure strict character consistency"
+    },
+    "updated_reference_strategy": {
+      "strategy_type": "identity_first",
+      "reference_selection": "curated_identity_set",
+      "multi_reference_handling": "weighted_average",
+      "notes": "Reference strategy updated to prioritize identity preservation"
+    },
+    "identity_acceptance_criteria": {
+      "identity_similarity_threshold": 0.85,
+      "expression_match_required": true,
+      "pose_consistency_required": true,
+      "quality_threshold": 0.9
+    },
+    "reference_rebuild_notes": {
+      "rebuild_status": "strategy_updated",
+      "new_references_required": false,
+      "existing_references_sufficient": true,
+      "notes": "Reference strategy updated without requiring new reference images"
+    }
+  },
+  "required_artifacts": [
+    "approved_character_identity_rules",
+    "approved_reference_strategy",
+    "identity_acceptance_criteria"
+  ],
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "apply_performed": false,
+  "retry_gate_open": false,
+  "ready_for_resubmission": true,
+  "next_allowed_action_if_approved": "retry_generate_frames",
+  "created_at": "2026-04-28T15:31:41.839791Z",
+  "project_specific_data_allowed": true,
+  "source_project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "source_data_origin": "production_cards_completion_based_resubmission"
+}

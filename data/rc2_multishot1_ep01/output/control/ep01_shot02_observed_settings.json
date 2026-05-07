@@ -1,0 +1,19 @@
+{
+  "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+  "sampler": "dpmpp_sde",
+  "scheduler": "karras",
+  "steps": 30,
+  "cfg": 7.5,
+  "denoise": 0.5,
+  "width": 480,
+  "height": 640,
+  "seed": 23456,
+  "filename_prefix": "rc2_multishot1_ep01_ep01_shot02_generate_frames_1777357667",
+  "reference_path": "output/control/references/ep01_shot02_clean_reference.png",
+  "positive_prompt_hash": "-1836036279766611521",
+  "negative_prompt_hash": "-5085639612071945395",
+  "generation_mode": "reference_locked",
+  "reference_locked": true,
+  "dry_run": true,
+  "captured_at": "2026-04-28T06:27:47.165444Z"
+}

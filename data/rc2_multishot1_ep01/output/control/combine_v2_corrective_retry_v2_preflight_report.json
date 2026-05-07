@@ -1,0 +1,16 @@
+{
+  "stage": "corrective_retry_v2_preflight",
+  "package_type": "corrective_retry_package_v2",
+  "shot_id": "shot02",
+  "shot_specific_workflow_binding_required": true,
+  "cross_shot_workflow_reuse_blocked": true,
+  "prompt_patch_exact_text_dependency_removed": true,
+  "fallback_minimal_workflow_forbidden": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false,
+  "preflight_status": "ready_for_operator_authorization",
+  "timestamp": "2026-05-05T11:03:36.894928"
+}

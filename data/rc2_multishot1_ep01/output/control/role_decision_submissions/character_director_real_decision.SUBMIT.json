@@ -1,0 +1,30 @@
+{
+  "role": "Character Director",
+  "decision_source": "real_role_decision",
+  "fixture_only": false,
+  "approved_by_role": "Character Director",
+  "approved_for_project_id": "rc2_multishot1_ep01",
+  "approved_for_shot": "shot01",
+  "character_name": "Alya",
+  "based_on_evidence_packet": "output\\control\\role_review_packets\\character_director_identity_evidence_packet.json",
+  "based_on_work_order": "output\\control\\work_orders\\character_director_identity_review.json",
+  "current_decision_status": "draft_submission",
+  "allowed_decisions": [
+    "approve",
+    "reject",
+    "request_new_reference",
+    "request_workflow_change"
+  ],
+  "selected_decision": null,
+  "required_artifacts": [
+    "approved_character_identity_rules",
+    "approved_reference_strategy",
+    "identity_acceptance_criteria"
+  ],
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "next_allowed_action_if_approved": "retry_generate_frames",
+  "created_at": "2026-04-28T12:49:03.112279Z",
+  "project_specific_data_allowed": true,
+  "source_project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01"
+}

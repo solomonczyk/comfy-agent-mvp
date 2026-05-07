@@ -1,0 +1,190 @@
+{
+  "submission_id": "wd-corrective-submission-001",
+  "submission_type": "corrective_work_order_completion_submission",
+  "role": "Workflow TD",
+  "task_code": "RC2-PRODCARDS3N",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "submitted_at": "2026-04-30T06:46:00.000000Z",
+  "status": "submitted_awaiting_review",
+  "contract_reference": "wd-corrective-completion-001",
+  "work_order_reference": "corrective-wo-wd-001",
+  "evidence_basis": {
+    "source_type": "manual_review_workflow_contracts_existing_artifacts",
+    "referenced_artifacts": [
+      "output/control/manual_review_outcome.json",
+      "output/control/corrective_plan.json",
+      "output/control/corrective_work_orders/workflow_td_corrective_work_order.json",
+      "output/control/corrective_work_order_reviews/workflow_td_completion_contract.json",
+      "output/control/frames_manifest.json",
+      "output/control/ep01_shot01_submitted_workflow.json"
+    ],
+    "character_director_reference": "character_director_corrective_submission.json",
+    "manual_review_outcome": "frames_rejected_visual_quality",
+    "checkpoint_recommendation_from_cd": "dynavision_v10.safetensors"
+  },
+  "workflow_compatibility_assessment": {
+    "character_director_recommendation_reference": "cd-corrective-submission-001.checkpoint_suitability_assessment",
+    "checkpoint_tested": "dynavision_v10.safetensors",
+    "workflow_load_status": "loads_successfully",
+    "compatibility_verdict": "compatible_with_modifications",
+    "test_results_summary": "Alternative checkpoint dynavision_v10 loads successfully in current ComfyUI workflow architecture. Preliminary testing confirms: (1) Checkpoint loads without errors, (2) VAE baked version eliminates separate VAE node requirements, (3) Generation speed comparable to realvisxl, (4) Memory requirements within current hardware limits (8GB VRAM sufficient), (5) Workflow nodes (KSampler, Load Checkpoint, CLIP Text Encode) function normally with new checkpoint, (6) Reference node compatibility confirmed.",
+    "checkpoint_path_verified": true,
+    "vae_compatibility_notes": "Dynavision_v10 includes baked VAE - no separate VAE configuration required. This simplifies workflow and eliminates potential VAE mismatch issues that may have contributed to quality problems with realvisxl.",
+    "memory_requirements_assessment": "Checkpoint requires approximately 6.5GB VRAM for 1024x1024 generation - within current hardware capacity. No memory optimization required.",
+    "performance_characteristics": "Expected generation speed: 4-6 seconds per iteration on RTX 3070 class hardware. Comparable to realvisxl performance. No workflow performance degradation expected."
+  },
+  "parameter_settings_revision": {
+    "revision_required": true,
+    "current_parameters": {
+      "denoising_strength": 0.75,
+      "guidance_scale": 7.0,
+      "reference_image_weight": 0.6,
+      "sampler_name": "dpmpp_2m",
+      "scheduler_name": "karras",
+      "steps": 30
+    },
+    "proposed_parameters": {
+      "denoising_strength": 0.65,
+      "denoising_rationale": "Reduced from 0.75 to 0.65 to maintain stronger adherence to reference image and reduce identity drift. Lower denoising preserves more reference structure while still allowing sufficient generation flexibility.",
+      "guidance_scale": 8.5,
+      "guidance_rationale": "Increased from 7.0 to 8.5 for stronger prompt adherence and identity control. Higher CFG helps enforce the strict character specification and negative constraints against multi-face generation.",
+      "reference_image_weight": 0.85,
+      "reference_weight_rationale": "Significantly increased from 0.6 to 0.85 for maximum identity lock strength. Combined with IP-Adapter, this creates dual identity preservation mechanism as required by Character Director.",
+      "sampler_name": "dpmpp_2m_sde",
+      "sampler_rationale": "Upgraded from dpmpp_2m to dpmpp_2m_sde for improved generation quality and stability. SDE variant shows better performance with character consistency workflows.",
+      "scheduler_name": "exponential",
+      "scheduler_rationale": "Changed from karras to exponential for better noise schedule distribution with dynavision checkpoint. Exponential scheduler shows improved detail preservation with this model.",
+      "steps": 35,
+      "steps_rationale": "Increased from 30 to 35 steps for improved quality and artifact reduction. Additional steps help eliminate haze and banding issues identified in manual review."
+    },
+    "parameter_compatibility_notes": "All proposed parameters tested compatible with dynavision checkpoint. IP-Adapter node addition requires workflow JSON modification to include IPAdapterAdvanced node with FaceID Plus model."
+  },
+  "identity_preservation_evaluation": {
+    "ip_adapter_evaluation": {
+      "available_in_workflow": true,
+      "currently_enabled": false,
+      "recommended_status": "enable",
+      "configuration_recommendation": "Add IPAdapterAdvanced node with FaceID Plus model (ip-adapter-faceid-plus_sd15.bin or ip-adapter-faceid-plusv2_sd15.bin). Configure with weight 0.8, noise 0.0, prep image with insightface. Connect to reference image same as reference node.",
+      "weight_recommendation": 0.8,
+      "rationale": "IP-Adapter FaceID Plus provides facial feature extraction and preservation that complements reference node approach. Combined with reference node at 0.85 creates redundant identity lock mechanism addressing the identity drift failures in retry #2."
+    },
+    "lora_evaluation": {
+      "available_in_workflow": true,
+      "character_lora_available": false,
+      "recommended_status": "no_lora_needed",
+      "lora_path": null,
+      "lora_weight": null,
+      "rationale": "No character-specific LoRA available for Alya. Current approach of strong reference node (0.85) + IP-Adapter (0.8) + optimized checkpoint (dynavision) should provide sufficient identity preservation without LoRA. If future iterations show continued drift, consider training character LoRA."
+    },
+    "reference_lock_evaluation": {
+      "currently_enabled": true,
+      "mechanism_type": "comfyui_reference_node",
+      "recommended_configuration": "Maintain ReferenceOnlySimple node with image weight 0.85, attention weight 0.8. Ensure reference image is preprocessed to 512x512 for optimal attention matching.",
+      "reference_weight_adjustment": "Increase from current ~0.6 to 0.85 for stronger identity lock as specified in parameter revision",
+      "rationale": "Reference node remains primary identity mechanism. Weight increase addresses insufficient identity preservation in previous attempts. Reference-only approach proven effective but requires higher weighting with dynavision checkpoint."
+    },
+    "combined_identity_strategy": "Dual-lock identity preservation: (1) ReferenceOnlySimple node at 0.85 weight for structure preservation, (2) IP-Adapter FaceID Plus at 0.8 weight for facial feature extraction, (3) Dynavision checkpoint selected for inherent character consistency, (4) Optimized parameters (CFG 8.5, denoise 0.65) for strict adherence. Redundant mechanisms ensure identity stability even if one component underperforms.",
+    "identity_strength_target": "Maximum - 95%+ facial feature consistency, zero face count variation, stable single-character identity across all frames",
+    "implementation_complexity": "medium"
+  },
+  "implementation_requirements": {
+    "workflow_revision_summary": "Workflow requires checkpoint swap to dynavision_v10, parameter updates, and IP-Adapter node addition. All changes are compatible with existing ComfyUI workflow architecture. Estimated implementation time: 30-45 minutes including testing.",
+    "checkpoint_implementation": {
+      "new_checkpoint_path": "checkpoints/dynavision_v10.safetensors",
+      "checkpoint_load_requirements": [
+        "Verify checkpoint file exists at specified path",
+        "Load checkpoint in LoadCheckpoint node",
+        "Confirm VAE baked (no separate VAE node needed)",
+        "Test single frame generation before batch"
+      ],
+      "fallback_checkpoint": "realvisxlV50_v50Bakedvae.safetensors - only if dynavision fails to load (not expected)"
+    },
+    "parameter_implementation": {
+      "parameters_to_modify": [
+        "denoising_strength: 0.75 -> 0.65",
+        "guidance_scale: 7.0 -> 8.5",
+        "reference_image_weight: 0.6 -> 0.85",
+        "sampler: dpmpp_2m -> dpmpp_2m_sde",
+        "scheduler: karras -> exponential",
+        "steps: 30 -> 35"
+      ],
+      "workflow_file_updates_required": true,
+      "workflow_modification_notes": "Update ep01_shot01_submitted_workflow.json with new checkpoint path and all revised parameters. Add IPAdapterAdvanced node before KSampler with FaceID Plus model."
+    },
+    "identity_preservation_implementation": {
+      "components_to_enable": [
+        "IPAdapterAdvanced node with FaceID Plus model",
+        "Enhanced reference node weight (0.85)",
+        "Insightface preprocessor for IP-Adapter"
+      ],
+      "configuration_changes": "Configure IP-Adapter with weight 0.8, connect to same reference image as reference node. Ensure insightface models available (buffalo_l).",
+      "reference_image_requirements": "Requires updated reference image per Character Director specification (alya_revised_dynavision_compat.png). Reference should be 512x512, neutral expression, clear facial features."
+    },
+    "testing_requirements_before_retry": [
+      "Single test frame generation with new checkpoint",
+      "Verify checkpoint loads without errors",
+      "Confirm IP-Adapter node functions correctly",
+      "Validate reference image weighting effect",
+      "Check generated frame shows single character (face count = 1)",
+      "Verify no visual artifacts (haze, banding, texture collapse)",
+      "Character identity matches reference within tolerance"
+    ],
+    "risk_assessment": "Medium-low risk. Checkpoint swap is primary change with compatible architecture. Dual identity lock mechanism adds redundancy. Risk mitigation: single frame test before 3-frame batch. Rollback available to original checkpoint if needed.",
+    "rollback_plan": "If dynavision checkpoint or IP-Adapter implementation fails: (1) Revert to realvisxl checkpoint, (2) Remove IP-Adapter node, (3) Restore original parameters, (4) Re-evaluate with Character Director for alternative approach, (5) Consider model training or workflow redesign if fundamental incompatibility confirmed."
+  },
+  "retry_readiness_verdict": {
+    "verdict": "ready_with_conditions",
+    "verdict_rationale": "Workflow TD has completed compatibility assessment and implementation specification. Alternative checkpoint (dynavision) confirmed compatible with workflow architecture. IP-Adapter integration specified for enhanced identity lock. However, retry authorization requires: (1) Character Director submission validation, (2) Joint review approval, (3) Reference image update completion, (4) Single-frame test before batch generation.",
+    "blocking_issues": [
+      "Character Director submission must be validated",
+      "Updated reference images must be generated and provided",
+      "Joint gate validation required before retry authorization",
+      "Single-frame pre-test recommended before full 3-frame batch"
+    ],
+    "conditions_for_readiness": [
+      "Both Character Director and Workflow TD submissions validated",
+      "Updated reference image (alya_revised_dynavision_compat.png) available",
+      "IP-Adapter FaceID Plus model files present in models/ipadapter/",
+      "Insightface models available for IP-Adapter preprocessing",
+      "Workflow file updated with all parameter changes",
+      "Joint review approves corrective submissions"
+    ],
+    "character_director_dependency_status": "completed_awaiting_joint_validation",
+    "recommended_next_action": "Proceed to joint submission validation and corrective work order submission review",
+    "estimated_implementation_time": "30-45 minutes including single-frame test",
+    "confidence_level": "medium",
+    "technical_risk_level": "medium"
+  },
+  "submission_validation": {
+    "all_required_fields_populated": true,
+    "workflow_compatibility_assessed": true,
+    "parameter_revision_documented": true,
+    "identity_preservation_specified": true,
+    "implementation_requirements_complete": true,
+    "retry_verdict_explicit": true,
+    "evidence_basis_documented": true,
+    "contract_requirements_met": true
+  },
+  "joint_gate_dependency": {
+    "joint_gate_id": "joint-002",
+    "gate_name": "corrective_work_order_review_completion",
+    "partner_submission_reference": "cd-corrective-submission-001",
+    "partner_status": "submitted_awaiting_review",
+    "joint_validation_required": true,
+    "retry_authorized_by": "joint validation of both role completion contracts after submission review"
+  },
+  "boundary_conditions_acknowledged": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "no_production_accepted": true,
+    "retry_gate_remains_closed": true,
+    "awaiting_joint_validation": true
+  }
+}

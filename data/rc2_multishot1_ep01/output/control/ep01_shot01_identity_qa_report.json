@@ -1,0 +1,55 @@
+{
+  "shot_id": "shot01",
+  "frame_paths": [
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000001.png",
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000002.png",
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000003.png"
+  ],
+  "reference_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\references\\ep01_shot01_clean_reference.png",
+  "checks_performed": [
+    {
+      "check": "frame_count",
+      "passed": true,
+      "details": {
+        "frame_count": 3
+      }
+    },
+    {
+      "check": "valid_images",
+      "passed": true,
+      "details": {
+        "valid_count": 3,
+        "total_count": 3
+      }
+    },
+    {
+      "check": "reference_exists",
+      "passed": true,
+      "details": {
+        "reference_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\references\\ep01_shot01_clean_reference.png"
+      }
+    },
+    {
+      "check": "face_detector_available",
+      "passed": true,
+      "details": {
+        "available": true
+      }
+    }
+  ],
+  "similarity_scores": {
+    "frame_0_face_count": 2,
+    "frame_1_face_count": 3,
+    "frame_2_face_count": 1,
+    "face_counts": [
+      2,
+      3,
+      1
+    ]
+  },
+  "identity_consistency_passed": false,
+  "verdict": "identity_drift",
+  "reason": "Inconsistent face counts across frames: [2, 3, 1]",
+  "recommended_action": "retry_generate_frames",
+  "evaluated_at": "2026-04-28T07:05:22.972565Z"
+}

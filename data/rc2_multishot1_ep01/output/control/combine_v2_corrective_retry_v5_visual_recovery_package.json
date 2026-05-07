@@ -1,0 +1,54 @@
+{
+  "retry_version": "v5_visual_recovery",
+  "source_failure": "v4_subject_too_small_empty_space_composition_failed",
+  "target_shot": "shot02",
+  "max_generations": 1,
+  "must_improve": {
+    "subject_scale": true,
+    "subject_prominence": true,
+    "composition": true,
+    "shot_intent": true,
+    "empty_space_reduction": true
+  },
+  "composition_constraints": {
+    "subject_must_be_primary_focus": true,
+    "subject_scale_target": "medium_full_body_or_waist_up_not_tiny",
+    "subject_height_target_ratio_min": 0.35,
+    "subject_height_target_ratio_preferred": "0.45-0.70",
+    "subject_position": "left_third_or_center_left_but_large_enough",
+    "empty_background_allowed": false,
+    "negative_space_max_ratio": 0.45,
+    "camera_distance": "medium_shot_or_medium_full_body",
+    "forbidden_camera_distance": [
+      "extreme_wide_shot",
+      "far_away_subject",
+      "tiny_person_in_landscape"
+    ]
+  },
+  "prompt_constraints": {
+    "must_include": [
+      "subject is large and clearly visible",
+      "medium shot",
+      "primary focus on woman",
+      "fills significant part of frame",
+      "cinematic portrait composition",
+      "balanced background, not empty"
+    ],
+    "must_avoid": [
+      "tiny subject",
+      "small person",
+      "far away",
+      "vast empty background",
+      "huge empty sky",
+      "minimal subject"
+    ]
+  },
+  "runtime_limits": {
+    "generation_attempts_allowed": 1,
+    "second_retry_allowed": false,
+    "visual_qa_after_generation": "technical_packet_only",
+    "operator_visual_review_required": true,
+    "production_accepted": false
+  },
+  "timestamp": "2026-05-07T09:43:00.000000+00:00"
+}

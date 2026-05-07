@@ -1,0 +1,16 @@
+{
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "current_state": "qa_failed",
+  "expected_next_action": "retry_generate_frames",
+  "last_updated": "2026-04-29T10:54:30",
+  "artifact_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\frames_manifest.json",
+  "brief_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\data\\briefs\\ep01_shot01_brief.md",
+  "transition_reason": "qa_review failed: identity drift - inconsistent face counts across frames",
+  "metadata": {},
+  "frame_manifest_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\frames_manifest.json",
+  "scene_mp4_path": null,
+  "qa_report_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\ep01_shot01_identity_qa_report.json",
+  "audio_output_path": null,
+  "episode_output_path": null
+}

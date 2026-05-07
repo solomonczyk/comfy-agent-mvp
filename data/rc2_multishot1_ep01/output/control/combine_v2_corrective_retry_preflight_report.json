@@ -1,0 +1,28 @@
+{
+  "stage": "corrective_retry_implementation_required",
+  "preflight_type": "corrective_retry_preflight",
+  "source_failed_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "checks": {
+    "prompt_patch_ready": true,
+    "workflow_patch_ready": true,
+    "quality_pipeline_patch_ready": true,
+    "implementation_authorized": true,
+    "blind_retry_blocked": true,
+    "legacy_512_blocked": true,
+    "minimum_short_side_1024_enforced": true,
+    "output_path_contract_preserved": true,
+    "canonical_manifest_required": true,
+    "post_qa_required": true,
+    "downstream_blocked": true
+  },
+  "all_checks_passed": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "retry_attempted": false,
+  "comfyui_execution": false,
+  "workflow_submitted": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-05T10:11:11.386655",
+  "next_allowed_action": "operator_retry_generation_authorization_required"
+}

@@ -1,0 +1,12 @@
+{
+  "stage": "prompt_contract_rebuild_required",
+  "must_update_positive_prompt": true,
+  "must_update_negative_prompt": true,
+  "negative_prompt_required": true,
+  "must_include_quality_constraints": true,
+  "must_include_anatomy_and_hand_guards": true,
+  "must_include_face_identity_guards_if_character_route": true,
+  "generation_allowed": false,
+  "next_allowed_action": "quality_pipeline_contract_required",
+  "timestamp": "2026-05-04T17:15:21.419374"
+}

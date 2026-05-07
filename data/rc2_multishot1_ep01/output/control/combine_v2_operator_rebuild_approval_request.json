@@ -1,0 +1,16 @@
+{
+  "stage": "operator_rebuild_approval_required",
+  "operator_review_required": true,
+  "recommended_operator_decision": "approve_rebuild_implementation",
+  "operator_actions": [
+    "approve_rebuild_implementation",
+    "request_rebuild_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_rebuild_approval_required",
+  "timestamp": "2026-05-04T17:15:33.500370"
+}

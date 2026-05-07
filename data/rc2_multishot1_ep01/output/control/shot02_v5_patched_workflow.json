@@ -1,0 +1,93 @@
+{
+  "shot_id": "shot02",
+  "3": {
+    "inputs": {
+      "seed": 847392,
+      "steps": 30,
+      "cfg": 7.5,
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "karras",
+      "denoise": 0.5,
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "juggernautXL_version2.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "5": {
+    "inputs": {
+      "width": 1344,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, kneeling beside crystal-clear stream, ancient stone altar partially buried in streambed, mysterious glowing blue crystal orb resting on altar pulsing with soft blue light, Alya reaching toward crystal with wonder and hesitation, reflection visible in water below, soft morning mist, blue glow illuminating scene, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, mystical atmosphere. Subject is large and clearly visible, medium shot, primary focus on woman, fills significant part of frame, cinematic portrait composition, balanced background not empty.",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, harsh lighting, urban, buildings, modern, weapons, violence, bright daylight, no mist, tiny subject, small person, far away, vast empty background, huge empty sky, minimal subject, extreme wide shot, far away subject, tiny person in landscape",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "filename_prefix": "combine_v2_corrective_retry_v5_shot02"
+    },
+    "class_type": "SaveImage"
+  },
+  "10": {
+    "inputs": {
+      "lora_stack": []
+    },
+    "class_type": "LoraLoader"
+  }
+}

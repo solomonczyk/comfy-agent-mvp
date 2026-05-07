@@ -1,0 +1,18 @@
+{
+  "layer": "RC2-PRODCARDS3AM",
+  "task": "SDXL FaceID Workflow Integration Proof",
+  "verification_timestamp": "2026-04-30T14:02:50Z",
+  "asset_verification": {
+    "adapter_path": "F:\\ComfyUI\\models\\ipadapter\\ip-adapter-faceid-plusv2_sdxl.bin",
+    "adapter_exists": true,
+    "adapter_sha256_actual": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb",
+    "adapter_sha256_expected": "c6945d82b543700cc3ccbb98d363b837e9c596281607857c74b713a876daf5fb",
+    "adapter_sha256_match": true,
+    "lora_path": "F:\\ComfyUI\\models\\lora\\ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "lora_exists": true,
+    "lora_sha256_actual": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b",
+    "lora_sha256_expected": "f24b4bb2dad6638a09c00f151cde84991baf374409385bcbab53c1871a30cb7b",
+    "lora_sha256_match": true
+  },
+  "sdxl_faceid_assets_verified": true
+}

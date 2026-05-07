@@ -1,0 +1,22 @@
+{
+  "work_order_type": "reference_rebuild_order",
+  "role": "Character Director",
+  "source_request": "reference_rebuild_request",
+  "source_decision": "request_reference_rebuild",
+  "blocked_shot": "shot01",
+  "reason": "identity_qa_failed",
+  "required_action": "rebuild_or_update_identity_reference_strategy",
+  "required_generation_mode": "gorynych_identity",
+  "required_outputs": [
+    "updated_character_identity_rules",
+    "updated_reference_strategy",
+    "identity_acceptance_criteria",
+    "reference_rebuild_notes"
+  ],
+  "execution_performed": false,
+  "apply_performed": false,
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "created_at": "2026-04-28T14:03:33.822835Z"
+}

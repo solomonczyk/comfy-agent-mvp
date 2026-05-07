@@ -1,0 +1,15 @@
+{
+  "policy_name": "combine_v2_shot_workflow_binding_policy",
+  "policy_version": "2.0",
+  "require_matching_shot_id": true,
+  "allow_cross_shot_reuse": false,
+  "allow_fallback_minimal_workflow": false,
+  "on_mismatch": "block_and_request_shot_specific_workflow",
+  "validation_rules": {
+    "workflow_filename_must_contain_shot_id": true,
+    "workflow_shot_id_extraction_required": true,
+    "cross_shot_reuse_forbidden": true,
+    "fallback_minimal_workflow_forbidden": true
+  },
+  "timestamp": "2026-05-05T11:03:29.421128"
+}

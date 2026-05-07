@@ -1,0 +1,40 @@
+{
+  "shot_id": "shot03",
+  "positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, fingers making contact with mysterious glowing blue crystal, brilliant blue energy swirling around hands and up arms, eyes wide with realization, forest transforming around her, flowers blooming instantly, gentle motes of light dancing in air, entire clearing radiating with newfound magic, camera pulling back to show transformation, brilliant blue magical energy illuminating scene, epic magical awakening, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, fantasy transformation",
+  "negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence, no magic, no transformation, dull colors",
+  "shot_beats": [
+    {
+      "beat": "contact",
+      "description": "Close-up of fingers touching crystal",
+      "camera": "extreme close-up",
+      "focus": "action"
+    },
+    {
+      "beat": "energy_flow",
+      "description": "Blue energy swirling up Alya's arms",
+      "camera": "close-up",
+      "focus": "effect"
+    },
+    {
+      "beat": "transformation",
+      "description": "Forest blooming and illuminating with magic",
+      "camera": "pulling back to wide shot",
+      "focus": "environment"
+    },
+    {
+      "beat": "realization",
+      "description": "Alya's eyes wide with understanding",
+      "camera": "medium shot",
+      "focus": "character"
+    }
+  ],
+  "reference_locked": true,
+  "generation_mode": "reference_locked",
+  "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+  "seed": 34567,
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "width": 480,
+  "height": 640,
+  "created_at": "2026-04-28T08:18:00Z"
+}

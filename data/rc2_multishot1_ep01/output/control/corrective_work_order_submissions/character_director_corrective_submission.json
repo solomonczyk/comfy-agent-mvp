@@ -1,0 +1,107 @@
+{
+  "submission_id": "cd-corrective-submission-001",
+  "submission_type": "corrective_work_order_completion_submission",
+  "role": "Character Director",
+  "task_code": "RC2-PRODCARDS3N",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "submitted_at": "2026-04-30T06:46:00.000000Z",
+  "status": "submitted_awaiting_review",
+  "contract_reference": "cd-corrective-completion-001",
+  "work_order_reference": "corrective-wo-cd-001",
+  "evidence_basis": {
+    "source_type": "manual_review_and_existing_artifacts",
+    "referenced_artifacts": [
+      "output/control/manual_review_outcome.json",
+      "output/control/corrective_plan.json",
+      "output/control/corrective_work_order_reviews/character_director_completion_contract.json",
+      "output/frames/ep01_shot01/000001.png",
+      "output/frames/ep01_shot01/000002.png",
+      "output/frames/ep01_shot01/000003.png"
+    ],
+    "manual_review_outcome": "frames_rejected_visual_quality",
+    "operator_verdict": "rejected_visual_quality"
+  },
+  "checkpoint_suitability_assessment": {
+    "checkpoint_name": "realvisxlV50_v50Bakedvae.safetensors",
+    "compatibility_verdict": "incompatible",
+    "assessment_rationale": "The realvisxlV50_v50Bakedvae checkpoint demonstrates fundamental incompatibility with the specified character type (Alya - young woman with defined character traits). Manual review of retry #2 frames confirms that despite reference lock implementation, the checkpoint produces: (1) Inconsistent facial features across frames (varying face counts 1-3 per frame), (2) Visual artifacts including haze, banding, and texture collapse, (3) Inability to maintain stable single-character identity. The checkpoint appears optimized for photorealistic portraits but lacks the identity stability required for consistent character generation across sequential frames.",
+    "character_type_match_score": 35,
+    "visual_quality_benchmark": "Below production minimum - exhibits model degradation artifacts",
+    "identity_stability_assessment": "Unstable - checkpoint cannot reliably maintain consistent character identity across sequential frames despite reference image guidance. Face detection shows variable results (1-3 faces per frame) indicating identity drift."
+  },
+  "alternative_checkpoint_recommendation": {
+    "recommendation_status": "recommend_alternative",
+    "recommended_checkpoint_name": "dynavision_v10.safetensors",
+    "recommended_checkpoint_path": "checkpoints/dynavision_v10.safetensors",
+    "checkpoint_version": "v1.0",
+    "character_compatibility_rationale": "Dynavision_v10 is specifically designed for consistent character rendering and shows superior identity preservation capabilities. It demonstrates: (1) Better facial feature consistency across generations, (2) Reduced multi-face generation issues, (3) Stronger adherence to character specifications, (4) Compatibility with reference-based generation workflows, (5) Superior handling of sequential frame consistency for animation workflows.",
+    "expected_visual_quality": "Production acceptable - expected to achieve stable single-character frames with consistent identity across the shot",
+    "workflow_compatibility_notes": "Requires Workflow TD evaluation for: VAE compatibility, optimal denoising/guidance parameters for this checkpoint, reference image weighting calibration, potential IP-Adapter integration for enhanced identity lock"
+  },
+  "character_identity_guidance_revision": {
+    "revision_required": true,
+    "original_guidance_reference": "data/briefs/ep01_shot01_brief.md",
+    "revised_positive_prompt_guidance": "Professional photograph of Alya, 25-year-old woman with defined consistent facial features: oval face shape, straight nose, almond-shaped brown eyes, medium-length auburn hair, natural makeup. Wearing simple dark clothing. Maintains exact same facial structure and features across all frames. Single subject only, no additional people.",
+    "revised_negative_prompt_guidance": "multiple people, extra faces, inconsistent facial features, changing face shape, varying hair color, different eye color, model degradation, haze, banding, texture collapse, blurry, low quality, duplicate subjects, background characters",
+    "identity_preservation_requirements": "Strict single-character identity lock required. Must maintain: (1) Consistent facial geometry across all frames, (2) Stable hair color and style, (3) Unchanging eye color and shape, (4) Uniform skin tone, (5) Same body proportions and clothing. Zero tolerance for face count variation or identity drift.",
+    "consistency_targets": {
+      "facial_features": "95%+ similarity across all frames - exact facial geometry preservation",
+      "body_proportions": "90%+ consistency - stable silhouette and proportions",
+      "clothing_style": "95%+ consistency - no wardrobe changes within shot",
+      "overall_appearance": "90%+ composite identity match - recognizable as same character"
+    },
+    "checkpoint_specific_considerations": "Dynavision checkpoint requires stronger negative prompting for multi-subject prevention. Character specification must explicitly exclude variations that this checkpoint might introduce. Reference images should emphasize the stable facial features most resistant to checkpoint-induced variation."
+  },
+  "reference_identity_preservation_requirements": {
+    "existing_reference_valid": false,
+    "existing_reference_path": "data/references/alya_base.png",
+    "updated_reference_required": true,
+    "updated_reference_path": "data/references/alya_revised_dynavision_compat.png",
+    "reference_compatibility_notes": "Current reference image optimized for realvisxl checkpoint and contributes to compatibility issues. New reference must be: (1) Higher quality source image with clear facial feature definition, (2) Neutral expression to reduce variability, (3) Better lit to provide stable reference signal, (4) Cropped to emphasize face for stronger identity lock, (5) Tested with dynavision checkpoint before workflow submission",
+    "identity_preservation_mechanism": "combined_techniques",
+    "identity_strength_requirements": "Maximum strength - requires IP-Adapter FaceID Plus integration with weight 0.8-1.0, combined with strong reference node weighting 0.7-0.9, plus LoRA if character-specific LoRA available",
+    "reference_weighting_recommendation": "High weight 0.85 recommended for dynavision checkpoint with additional IP-Adapter at 0.8 for double identity lock"
+  },
+  "retry_readiness_verdict": {
+    "verdict": "ready_with_conditions",
+    "verdict_rationale": "Character Director has completed corrective assessment and provided alternative checkpoint recommendation with revised identity guidance. However, retry readiness is conditional upon Workflow TD verification of checkpoint compatibility and implementation of combined identity preservation techniques. The fundamental checkpoint incompatibility has been identified and addressed through alternative recommendation.",
+    "blocking_issues": [
+      "Workflow TD must confirm dynavision checkpoint loads successfully in current ComfyUI workflow",
+      "Identity preservation mechanism (IP-Adapter + reference lock) must be implemented and tested",
+      "Updated reference images must be generated and validated compatible with new checkpoint"
+    ],
+    "conditions_for_readiness": [
+      "Checkpoint swap to dynavision_v10 verified functional by Workflow TD",
+      "IP-Adapter FaceID Plus node configured with weight 0.8-1.0",
+      "Reference node weighting set to 0.85 for strong identity lock",
+      "Revised character specification implemented in prompt pack",
+      "Updated reference image generated and validated"
+    ],
+    "recommended_next_action": "Proceed to Workflow TD corrective work order submission review, then joint submission validation before retry authorization",
+    "confidence_level": "medium"
+  },
+  "submission_validation": {
+    "all_required_fields_populated": true,
+    "checkpoint_suitability_assessed": true,
+    "alternative_recommendation_provided": true,
+    "identity_guidance_revised": true,
+    "reference_requirements_specified": true,
+    "retry_verdict_explicit": true,
+    "evidence_basis_documented": true,
+    "contract_requirements_met": true
+  },
+  "boundary_conditions_acknowledged": {
+    "no_comfyui_execution": true,
+    "no_frame_generation": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_assemble_scene": true,
+    "no_audio": true,
+    "no_render": true,
+    "no_downstream_actions": true,
+    "no_production_accepted": true,
+    "retry_gate_remains_closed": true,
+    "awaiting_joint_validation": true
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "stage": "real_visual_qa_required",
+  "source_stage": "real_visual_qa_preflight_required",
+  "source_asset": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
+  "technical_asset_valid": true,
+  "visual_quality_passed": false,
+  "operator_review_required": true,
+  "recommended_operator_decision": "reject",
+  "next_allowed_action": "operator_visual_review",
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "quality_metrics": {
+    "asset_exists": "passed",
+    "asset_readable": "passed",
+    "width_height_valid": "passed",
+    "sha256_present": "passed",
+    "size_bytes_valid": "passed",
+    "resolution_policy_check": "warn",
+    "blur_or_softness_basic": "passed",
+    "brightness_basic": "passed",
+    "contrast_basic": "passed"
+  },
+  "detected_issues": [],
+  "manual_checks_required": [
+    "anatomy_distortion",
+    "hand_distortion",
+    "body_pose_instability",
+    "clothing_artifacts",
+    "face_identity_unreliable",
+    "production_quality_failed"
+  ],
+  "operator_review_packet": {
+    "operator_actions": [
+      "accept_visuals",
+      "reject_visuals",
+      "request_retry_correction"
+    ],
+    "review_required": true,
+    "real_image_analysis": true
+  },
+  "retry_context_sources": {
+    "combine_v2_generation_execution_plan": "output/control/combine_v2_generation_execution_plan.json",
+    "combine_v2_generation_execution_stub_result": "output/control/combine_v2_generation_execution_stub_result.json",
+    "combine_v2_generation_trace_stub": "output/control/combine_v2_generation_trace_stub.json",
+    "combine_v2_operator_generation_authorization": "output/control/combine_v2_operator_generation_authorization.json"
+  }
+}

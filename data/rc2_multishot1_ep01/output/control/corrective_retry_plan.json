@@ -1,0 +1,37 @@
+{
+  "status": "planned",
+  "source_failure": "identity_drift",
+  "qa_reason": "Inconsistent face counts across frames: [2, 3, 1]",
+  "retry_attempt": 2,
+  "target_action": "retry_generate_frames",
+  "corrections": {
+    "single_subject_required": true,
+    "visible_face_required": true,
+    "avoid_extra_characters": true,
+    "character_must_be_centered": true,
+    "consistent_identity_across_frames": true,
+    "portrait_480x640_preserved": true
+  },
+  "prompt_patch": {
+    "positive_additions": [
+      "single visible character",
+      "one face only",
+      "clear face visible",
+      "same character across all frames",
+      "centered portrait composition"
+    ],
+    "negative_additions": [
+      "multiple people",
+      "extra faces",
+      "no face",
+      "face hidden",
+      "back turned",
+      "crowd",
+      "duplicate character"
+    ]
+  },
+  "generation_performed": false,
+  "qa_review_executed": false,
+  "production_accepted": false,
+  "downstream_actions_executed": false
+}

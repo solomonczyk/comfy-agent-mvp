@@ -1,0 +1,28 @@
+{
+  "plan_type": "character_director_reference_rebuild_execution_plan",
+  "role": "Character Director",
+  "source_work_order": "character_director_reference_rebuild_order.json",
+  "source_completion_template": "character_director_reference_rebuild.COMPLETION_TEMPLATE.json",
+  "blocked_shot": "shot01",
+  "reason": "identity_qa_failed",
+  "execution_status": "planned",
+  "execution_performed": false,
+  "planned_steps": [
+    "review_identity_failure_evidence",
+    "review_current_character_identity_rules",
+    "define_updated_reference_strategy",
+    "define_identity_acceptance_criteria",
+    "write_reference_rebuild_notes"
+  ],
+  "required_outputs_before_completion": [
+    "updated_character_identity_rules",
+    "updated_reference_strategy",
+    "identity_acceptance_criteria",
+    "reference_rebuild_notes"
+  ],
+  "completion_submission_allowed": false,
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "created_at": "2026-04-28T14:51:04.278415Z"
+}

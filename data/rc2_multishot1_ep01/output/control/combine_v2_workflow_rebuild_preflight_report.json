@@ -1,0 +1,12 @@
+{
+  "stage": "workflow_rebuild_preflight_required",
+  "recipe_contract_exists": true,
+  "prompt_contract_exists": true,
+  "quality_pipeline_contract_exists": true,
+  "old_failure_addressed": true,
+  "resolution_512_blocked": true,
+  "workflow_rebuild_ready_for_operator_review": true,
+  "generation_allowed": false,
+  "next_allowed_action": "operator_rebuild_approval_required",
+  "timestamp": "2026-05-04T17:15:29.812471"
+}

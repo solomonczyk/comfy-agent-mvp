@@ -1,0 +1,15 @@
+{
+  "request_type": "workflow_change_request",
+  "source_role": "Character Director",
+  "source_decision": "request_workflow_change",
+  "blocked_shot": "shot01",
+  "reason": "identity_qa_failed",
+  "target_role": "Workflow TD / ComfyUI Technical Director",
+  "required_generation_mode": "gorynych_identity",
+  "legacy_reference_locked_allowed_for_production": false,
+  "required_action": "revise_identity_workflow_strategy",
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "created_at": "2026-04-28T13:42:12.854296Z"
+}

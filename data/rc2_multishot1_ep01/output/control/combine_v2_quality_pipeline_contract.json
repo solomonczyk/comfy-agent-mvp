@@ -1,0 +1,15 @@
+{
+  "stage": "quality_pipeline_contract_required",
+  "upscale_or_hires_fix_required": true,
+  "refiner_recommended": true,
+  "pose_or_composition_control_required_if_human_subject": true,
+  "identity_lock_required_if_character_consistency_required": true,
+  "forbidden": [
+    "single_pass_512x512_production_generation",
+    "retry_without_recipe_change",
+    "retry_without_preflight"
+  ],
+  "generation_allowed": false,
+  "next_allowed_action": "workflow_rebuild_preflight_required",
+  "timestamp": "2026-05-04T17:15:25.649641"
+}

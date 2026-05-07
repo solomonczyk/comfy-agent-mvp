@@ -1,0 +1,14 @@
+{
+  "stage": "corrective_retry_v4_generate_assets",
+  "request_type": "corrective_retry_v4_submit",
+  "shot_id": "shot02",
+  "source_asset": "",
+  "failure_basis": "CORRUPTED_V3_ASSET_STUB_GENERATION",
+  "max_generations": 1,
+  "blind_retry_allowed": false,
+  "pre_submit_validation_passed": true,
+  "workflow_submitted": true,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "timestamp": "2026-05-06T13:27:21.317041+00:00"
+}

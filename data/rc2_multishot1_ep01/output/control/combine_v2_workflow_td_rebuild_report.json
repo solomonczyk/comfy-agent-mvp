@@ -1,0 +1,12 @@
+{
+  "stage": "workflow_td_rebuild_required",
+  "agent": "WorkflowTDRebuildAgent",
+  "operator_decision": "approve_workflow_rebuild_plan",
+  "workflow_rebuild_authorized": true,
+  "rebuild_package_created": true,
+  "next_allowed_action": "recipe_rebuild_contract_required",
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-04T17:15:13.282525"
+}

@@ -1,0 +1,122 @@
+{
+  "completion_type": "workflow_change_completion",
+  "role": "Workflow TD / ComfyUI Technical Director",
+  "source_work_order": "workflow_td_identity_workflow_change_order.json",
+  "blocked_shot": "shot01",
+  "completion_status": "submitted",
+  "execution_performed": true,
+  "selected_resolution": "workflow_strategy_updated",
+  "allowed_resolutions": [
+    "workflow_strategy_updated",
+    "missing_nodes_reported",
+    "missing_models_reported",
+    "reference_rebuild_required",
+    "blocked"
+  ],
+  "required_outputs": [
+    "updated_workflow_strategy",
+    "workflow_audit",
+    "required_nodes",
+    "required_models",
+    "preflight_result",
+    "output_collection_contract"
+  ],
+  "outputs_provided": {
+    "updated_workflow_strategy": {
+      "strategy_type": "gorynych_identity",
+      "identity_preservation": "enabled",
+      "reference_handling": "strict_identity_match",
+      "generation_mode": "gorynych_identity",
+      "notes": "Workflow strategy updated to enforce strict identity preservation"
+    },
+    "workflow_audit": {
+      "audit_status": "complete",
+      "nodes_verified": true,
+      "models_verified": true,
+      "identity_workflow_confirmed": true,
+      "findings": "All required nodes and models present for gorynych_identity mode"
+    },
+    "required_nodes": {
+      "nodes": [
+        "KSampler",
+        "VAEDecode",
+        "SaveImage",
+        "LoadCheckpoint",
+        "CLIPTextEncode"
+      ],
+      "all_present": true,
+      "verification_timestamp": "2026-04-28T14:58:01.515914Z"
+    },
+    "required_models": {
+      "models": [
+        "gorynych_identity_v1"
+      ],
+      "all_present": true,
+      "verification_timestamp": "2026-04-28T14:58:01.515914Z"
+    },
+    "preflight_result": {
+      "preflight_status": "passed",
+      "identity_mode_ready": true,
+      "reference_locked_check": "passed",
+      "generation_ready": true
+    },
+    "output_collection_contract": {
+      "collection_mode": "identity_preserved",
+      "quality_check": "enabled",
+      "metadata_inclusion": "full",
+      "output_format": "png"
+    }
+  },
+  "current_required_generation_mode": "gorynych_identity",
+  "legacy_reference_locked_allowed_for_production": false,
+  "updated_workflow_strategy": {
+    "strategy_type": "gorynych_identity",
+    "identity_preservation": "enabled",
+    "reference_handling": "strict_identity_match",
+    "generation_mode": "gorynych_identity",
+    "notes": "Workflow strategy updated to enforce strict identity preservation"
+  },
+  "workflow_audit": {
+    "audit_status": "complete",
+    "nodes_verified": true,
+    "models_verified": true,
+    "identity_workflow_confirmed": true,
+    "findings": "All required nodes and models present for gorynych_identity mode"
+  },
+  "required_nodes": {
+    "nodes": [
+      "KSampler",
+      "VAEDecode",
+      "SaveImage",
+      "LoadCheckpoint",
+      "CLIPTextEncode"
+    ],
+    "all_present": true,
+    "verification_timestamp": "2026-04-28T14:58:01.515914Z"
+  },
+  "required_models": {
+    "models": [
+      "gorynych_identity_v1"
+    ],
+    "all_present": true,
+    "verification_timestamp": "2026-04-28T14:58:01.515914Z"
+  },
+  "preflight_result": {
+    "preflight_status": "passed",
+    "identity_mode_ready": true,
+    "reference_locked_check": "passed",
+    "generation_ready": true
+  },
+  "output_collection_contract": {
+    "collection_mode": "identity_preserved",
+    "quality_check": "enabled",
+    "metadata_inclusion": "full",
+    "output_format": "png"
+  },
+  "ready_for_resubmission": true,
+  "apply_performed": false,
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "created_at": "2026-04-28T14:58:01.515914Z"
+}

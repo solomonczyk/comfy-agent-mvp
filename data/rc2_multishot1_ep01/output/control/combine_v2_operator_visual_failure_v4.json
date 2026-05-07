@@ -1,0 +1,24 @@
+{
+  "task_id": "RC-COMBINE-V2-2961-3200",
+  "failed_layer": "RC-COMBINE-V2-2901-2960",
+  "failed_commit": "63a906c",
+  "failed_asset": "output/assets/combine_v2_corrective_retry_v4_shot02_00002_.png",
+  "failed_asset_sha256": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd",
+  "failed_asset_dimensions": "1344x768",
+  "failed_asset_size_bytes": 1054825,
+  "operator_visual_failed": true,
+  "technical_generation_passed": true,
+  "visual_quality_failed": true,
+  "defects": {
+    "subject_too_small": true,
+    "excessive_empty_space": true,
+    "composition_failed": true,
+    "shot_intent_failed": true,
+    "production_quality_failed": true
+  },
+  "operator_rejected_for_quality": true,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "timestamp": "2026-05-07T09:43:00.000000+00:00"
+}

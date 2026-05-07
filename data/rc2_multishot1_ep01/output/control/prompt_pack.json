@@ -1,0 +1,15 @@
+{
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "generation_mode": "reference_locked",
+  "character_name": "",
+  "characters": [],
+  "reference_image_path": "",
+  "reference_role": "character_identity",
+  "positive_prompt": "",
+  "negative_prompt": "",
+  "width": 480,
+  "height": 640,
+  "steps": 16,
+  "denoise": 0.5
+}

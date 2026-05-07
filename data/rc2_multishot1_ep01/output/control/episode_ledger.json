@@ -78,5 +78,14 @@
     "previous_state": "v8_quality_locked_generation_authorization_required",
     "previous_layer": "RC-COMBINE-V2-6301-6600",
     "timestamp": "2026-05-07T14:49:34.457068"
+  },
+  {
+    "event_type": "v8_runtime_recovery_blocked",
+    "failure_code": "server_unavailable",
+    "server_available": false,
+    "v8_real_generation_attempted": false,
+    "current_state": "v8_generation_runtime_blocked",
+    "next_allowed_action": "v8_generation_runtime_recovery_required",
+    "timestamp": "2026-05-07T17:17:24.729883"
   }
 ]

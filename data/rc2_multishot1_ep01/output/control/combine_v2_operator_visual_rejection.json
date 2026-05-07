@@ -1,0 +1,14 @@
+{
+  "stage": "operator_visual_review",
+  "operator_visual_decision": "reject_visual_quality",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "asset_width": null,
+  "asset_height": null,
+  "previous_qa_verdict": "qa_failed",
+  "operator_rejection_confirmed": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "next_allowed_action": "corrective_retry_plan_required"
+}

@@ -1,0 +1,27 @@
+{
+  "package_type": "corrective_retry_package_v2",
+  "package_version": "2.0",
+  "corrective_retry_package_v2_created": true,
+  "shot_id": "shot02",
+  "shot_specific_workflow_binding_required": true,
+  "cross_shot_workflow_reuse_blocked": true,
+  "prompt_patch_exact_text_dependency_removed": true,
+  "prompt_patch_verification_required": true,
+  "fallback_minimal_workflow_forbidden": true,
+  "source_failed_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [
+    "semantic_content_failed",
+    "subject_not_recognizable",
+    "blur_or_softness",
+    "low_detail_quality",
+    "composition_failed",
+    "production_quality_failed"
+  ],
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_retry_generation_authorization_required",
+  "timestamp": "2026-05-05T11:03:36.894928"
+}

@@ -1,0 +1,180 @@
+{
+  "task_code": "RC2-PRODCARDS3AU-EVIDENCE-RECONCILE",
+  "reconciliation_timestamp": "2026-04-30T17:24:00.000000Z",
+  "conclusion": "AT_EXISTS_BUT_AU_DOES_NOT",
+  "summary": "RC2-PRODCARDS3AU report is not backed by repository evidence. The local workspace is synced to the AT commit (0bd4f3e), but no AU execution occurred after that authorization.",
+  
+  "git_sync_check": {
+    "git_status": "## main...origin/main",
+    "local_branch": "main",
+    "remote_branch": "origin/main",
+    "tracking_status": "synced",
+    "uncommitted_changes": [
+      "data/rc2_multishot1_ep01/output/control/rc2_prodcards3ad_dry_run_payload_audit.json",
+      "data/rc2_multishot1_ep01/output/control/rc2_prodcards3ad_final_workflow_binding_proof.json"
+    ],
+    "untracked_files": [
+      "data/rc2_multishot1_ep01_backup_2026-04-28T12-09-55-728221/",
+      "data/rc2_multishot1_ep01_backup_2026-04-28T12-09-55-841757/",
+      "data/rc2_multishot1_ep01_backup_2026-04-28T12-09-55-945974/",
+      "data/rc2_multishot1_ep01_backup_2026-04-29T08-08-13-566966/",
+      "data/rc2_multishot1_ep01_backup_2026-04-29T08-14-13-147662/",
+      "data/rc2_multishot1_ep01_backup_2026-04-29T08-14-47-868301/",
+      "data/rc2_multishot1_ep01_temp_apply_test_backup_2026-04-28T11-34-04-619201/",
+      "data/rc2_prodcards3s/",
+      "data/workflow_template.json",
+      "temp_auth_retry.py",
+      "temp_check_frame_dimensions.py",
+      "temp_decide_retry.py",
+      "temp_inspect_state.py",
+      "temp_retry_generate.py",
+      "test_inspect_diag.py"
+    ]
+  },
+  
+  "commit_0bd4f3e_check": {
+    "commit_exists_locally": true,
+    "commit_exists_on_origin_main": true,
+    "commit_message": "RC2-PRODCARDS3AT: Authorize patched SDXL FaceID retry generation",
+    "commit_files": [
+      "data/rc2_multishot1_ep01/output/control/artifact_index.json",
+      "data/rc2_multishot1_ep01/output/control/episode_ledger.json",
+      "data/rc2_multishot1_ep01/output/control/rc2_prodcards3at_controlled_retry_authorization_result.json",
+      "data/rc2_multishot1_ep01/output/control/rc2_prodcards3at_retry_preflight_result.json"
+    ],
+    "local_log": [
+      "0bd4f3e (HEAD -> main, origin/main, origin/HEAD) RC2-PRODCARDS3AT: Authorize patched SDXL FaceID retry generation",
+      "f82084a RC2-PRODCARDS3AS: Bind patched SDXL FaceID workflow into retry payload",
+      "aecde1d RC2-PRODCARDS3AR: Reconcile AO rejection with identity wiring corrective state",
+      "b0c7a73 RC2-PRODCARDS3AO: Reject poor retry frames and diagnose quality regression",
+      "b92505d RC2-PRODCARDS3AQ-FREEZE: Persist SDXL FaceID wiring preflight artifacts",
+      "a87dd0d RC2-PRODCARDS3AP: Create identity workflow wiring corrective plan",
+      "0319792 RC2-PRODCARDS3AO: Reject poor retry frames and diagnose quality regression",
+      "ba2ee0a RC2-PRODCARDS3AO: Execute controlled retry generate frames for shot01",
+      "69851cf diagnosis: RC2-PRODCARDS3AN-BLOCKER1B - no hang exists, pytest and inspect bounded",
+      "da10c23 RC2-PRODCARDS3AN: Revalidate controlled retry authorization after SDXL FaceID integration"
+    ],
+    "origin_main_log": [
+      "0bd4f3e (HEAD -> main, origin/main, origin/HEAD) RC2-PRODCARDS3AT: Authorize patched SDXL FaceID retry generation",
+      "f82084a RC2-PRODCARDS3AS: Bind patched SDXL FaceID workflow into retry payload",
+      "aecde1d RC2-PRODCARDS3AR: Reconcile AO rejection with identity wiring corrective state",
+      "b0c7a73 RC2-PRODCARDS3AO: Reject poor retry frames and diagnose quality regression",
+      "b92505d RC2-PRODCARDS3AQ-FREEZE: Persist SDXL FaceID wiring preflight artifacts",
+      "a87dd0d RC2-PRODCARDS3AP: Create identity workflow wiring corrective plan",
+      "0319792 RC2-PRODCARDS3AO: Reject poor retry frames and diagnose quality regression",
+      "ba2ee0a RC2-PRODCARDS3AO: Execute controlled retry generate frames for shot01",
+      "69851cf diagnosis: RC2-PRODCARDS3AN-BLOCKER1B - no hang exists, pytest and inspect bounded",
+      "da10c23 RC2-PRODCARDS3AN: Revalidate controlled retry authorization after SDXL FaceID Integration"
+    ]
+  },
+  
+  "rc2_prodcards3at_state": {
+    "exists_in_artifact_index": true,
+    "exists_in_episode_ledger": true,
+    "authorization_result": {
+      "controlled_retry_authorized": true,
+      "next_allowed_action": "retry_generate_frames",
+      "retry_gate_open": true,
+      "production_accepted": false,
+      "assemble_scene_allowed": false,
+      "downstream_blocked": false,
+      "authorization_timestamp": "2026-04-30T16:58:54.000000Z"
+    },
+    "preflight_result": {
+      "retry_generation_preflight_passed": true,
+      "checkpoint": "juggernautXL_version2.safetensors",
+      "resolution": "1344x768",
+      "ip_adapter_file": "ip-adapter-faceid-plusv2_sdxl.bin",
+      "ip_adapter_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+      "identity_weight": 0.7,
+      "identity_schedule": "0.0-1.0 linear"
+    }
+  },
+  
+  "rc2_prodcards3au_state": {
+    "exists_in_artifact_index": false,
+    "exists_in_episode_ledger": false,
+    "latest_known_task": "rc2_prodcards3at",
+    "latest_known_task_timestamp": "2026-04-30T16:58:54.000000Z",
+    "no_au_artifacts_found": true
+  },
+  
+  "partial_frame_search": {
+    "target_frame": "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777568886_00001_.png",
+    "found_in_project": false,
+    "existing_frames": [
+      "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000001.png",
+      "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000002.png",
+      "data/rc2_multishot1_ep01/output/frames/ep01_shot01/000003.png"
+    ],
+    "existing_frame_timestamps": [
+      "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777358229",
+      "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777358331",
+      "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777358408"
+    ],
+    "timestamp_mismatch": "Target timestamp 1777568886 does not match existing frames (1777358229, 1777358331, 1777358408)"
+  },
+  
+  "memory_error_log_search": {
+    "search_patterns": [
+      "DefaultCPUAllocator",
+      "not enough memory",
+      "tried to allocate",
+      "beat 2/3",
+      "seed 747001"
+    ],
+    "found_in_rc2_multishot1_ep01": false,
+    "found_in_project_logs": false,
+    "historical_seed_747001_found": true,
+    "historical_seed_context": "Seed 747001 found in ep01_shot01_ledger.json from earlier generation (timestamp 1777358229), not from AU attempt",
+    "no_memory_exhaustion_evidence": true
+  },
+  
+  "evidence_assessment": {
+    "repo_sync_status": "SYNCED",
+    "at_commit_present": true,
+    "au_execution_evidence": "NONE",
+    "partial_frame_evidence": "NONE",
+    "memory_error_evidence": "NONE",
+    "au_report_backed_by_repo": false,
+    "au_report_backed_by_external_logs": false
+  },
+  
+  "root_cause_analysis": {
+    "primary_cause": "AU_REPORT_NOT_BACKED_BY_EVIDENCE",
+    "explanation": "The RC2-PRODCARDS3AU failure report provided in the task description describes a partial generation with memory exhaustion, but no such execution evidence exists in the repository. The local workspace is fully synced to the AT commit (0bd4f3e), and no AU artifacts, logs, or frames exist after that commit. The AU report appears to be hypothetical or from an external execution not tracked in this worktree.",
+    "possible_explanations": [
+      "AU report is hypothetical/test scenario for failure recording workflow",
+      "AU was executed in a different worktree or environment",
+      "AU report was operator-provided but not persisted to repo",
+      "AU execution failed before any artifacts were written"
+    ]
+  },
+  
+  "recommendations": {
+    "do_not_create_au_fail_artifacts": true,
+    "do_not_modify_artifact_index": true,
+    "do_not_modify_episode_ledger": true,
+    "do_not_mark_au_accepted": true,
+    "do_not_run_qa_or_downstream": true,
+    "next_step": "Controlled AU execution from AT state (rc2_prodcards3at) if operator confirms, or operator must provide exact external logs/artifact paths if AU was executed externally",
+    "evidence_required_for_au_fail_recording": [
+      "Partial frame with timestamp 1777568886",
+      "Memory error log with DefaultCPUAllocator or similar",
+      "ComfyUI execution log showing beat 2/3 failure",
+      "Updated artifact_index.json with rc2_prodcards3au entry",
+      "Updated episode_ledger.json with rc2_prodcards3au event"
+    ]
+  },
+  
+  "project_root_verification": {
+    "inspected_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+    "expected_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+    "path_match": true,
+    "repo_root": "F:\\ComfyUI\\comfy-agent-mvp",
+    "repo_root_correct": true
+  },
+  
+  "verdict": "PASS",
+  "verdict_reason": "Evidence reconciliation completed successfully. Conclusion: RC2-PRODCARDS3AU did not execute in this worktree. The AU report is not backed by repository evidence. Local repo is synced to AT commit (0bd4f3e), but no AU execution occurred after that authorization."
+}

@@ -1,0 +1,115 @@
+{
+  "task_id": "RC-COMBINE-V2-2961-3200",
+  "diagnosis_type": "visual_quality_failure_diagnosis_v1",
+  "failed_asset": "output/assets/combine_v2_corrective_retry_v4_shot02_00002_.png",
+  "failed_asset_sha256": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd",
+  "failed_asset_dimensions": "1344x768",
+  "timestamp": "2026-05-07T09:43:00.000000+00:00",
+  "subject_scale_analysis": {
+    "estimated_subject_height_ratio": "less_than_0.25",
+    "target_subject_height_ratio_min": 0.35,
+    "target_subject_height_ratio_preferred": "0.45-0.70",
+    "status": "FAILED",
+    "notes": "Subject (Alya) is tiny relative to frame — appears as small figure in a wide environment"
+  },
+  "empty_space_analysis": {
+    "estimated_empty_space_ratio": "greater_than_0.65",
+    "allowed_max_empty_space_ratio": 0.45,
+    "status": "FAILED",
+    "notes": "Vast sky, mist, and water dominate — empty background area exceeds 65% of frame"
+  },
+  "subject_bounding_area_estimate": {
+    "estimated_bounding_width_fraction": "less_than_0.15",
+    "estimated_bounding_height_fraction": "less_than_0.25",
+    "status": "FAILED",
+    "notes": "Subject occupies less than ~3% of total frame area"
+  },
+  "subject_position_analysis": {
+    "estimated_position": "center_left_small_foreground",
+    "is_primary_focus": false,
+    "status": "FAILED",
+    "notes": "Subject present but too small; background/environment is visually dominant"
+  },
+  "camera_framing_prompt_weakness": {
+    "positive_prompt_audit": "Prompt does not include explicit camera distance modifiers (medium shot, close-up, portrait). Scene description focuses on environment (stream, altar, crystal orb, mist) rather than subject scale.",
+    "negative_prompt_audit": "Negative prompt does not include: 'tiny subject', 'small person', 'far away', 'vast empty background', 'huge empty sky', 'wide shot', 'minimal subject'.",
+    "landscape_bias": true,
+    "landscape_stronger_than_subject": true,
+    "missing_subject_scale_keywords": true,
+    "missing_camera_distance_constraint": true,
+    "status": "FAILED"
+  },
+  "workflow_binding_audit": {
+    "workflow_source": "shot02_submitted_workflow.json",
+    "workflow_node_count": 7,
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "saveimage_prefix_source": "rc2_multishot1_ep01_ep01_shot02_corrective_retry_v4",
+    "runtime_prefix_used": "combine_v2_corrective_retry_v4_shot02",
+    "prompt_patching_applied": false,
+    "composition_constraint_patched_into_prompt": false,
+    "status": "PARTIAL",
+    "notes": "Workflow binding was real and non-stub, but positive prompt was not upgraded with composition enforcement keywords from V4 visual correction plan"
+  },
+  "sampler_settings_audit": {
+    "sampler": "dpmpp_sde",
+    "steps": 30,
+    "cfg": 7.5,
+    "scheduler": "karras",
+    "denoise": 0.5,
+    "status": "ACCEPTABLE",
+    "notes": "Sampler settings are reasonable for SDXL; denoise=0.5 not a root cause. CFG 7.5 adequate."
+  },
+  "resolution_audit": {
+    "width": 1344,
+    "height": 768,
+    "aspect_ratio": "1.75:1",
+    "aspect_ratio_class": "widescreen_16_9",
+    "status": "SUSPECTED_CONTRIBUTING_FACTOR",
+    "notes": "Wide 16:9 landscape aspect ratio encourages wide environmental framing. Keeping same resolution for V5 but mandatory to counteract with strong subject-scale prompt language."
+  },
+  "model_checkpoint_audit": {
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_class": "SDXL_photorealistic",
+    "suitability": "SUITABLE",
+    "notes": "JuggernautXL is capable of subject-focused shots but requires explicit framing direction in prompt."
+  },
+  "prompt_scene_dominance_audit": {
+    "environment_keywords_in_positive": [
+      "crystal-clear stream",
+      "ancient stone altar",
+      "mysterious glowing blue crystal orb",
+      "soft morning mist",
+      "blue glow illuminating scene"
+    ],
+    "subject_scale_keywords_in_positive": [],
+    "camera_distance_keywords_in_positive": [],
+    "composition_keywords_in_positive": [],
+    "environment_dominates_subject": true,
+    "status": "FAILED"
+  },
+  "negative_prompt_effectiveness_audit": {
+    "negative_prompt_present": true,
+    "negative_prompt_includes_tiny_subject": false,
+    "negative_prompt_includes_small_person": false,
+    "negative_prompt_includes_far_away": false,
+    "negative_prompt_includes_empty_background": false,
+    "negative_prompt_includes_wide_shot": false,
+    "status": "FAILED",
+    "notes": "Negative prompt failed to prevent tiny subject and vast empty space. V5 must add explicit negative constraints."
+  },
+  "root_cause_summary": {
+    "primary_root_cause": "Prompt lacks explicit subject-scale and camera-distance constraints",
+    "secondary_root_cause": "Negative prompt does not prevent tiny subject or vast empty space",
+    "contributing_factor": "Wide 16:9 aspect ratio encourages landscape framing",
+    "status": "DIAGNOSIS_COMPLETE"
+  },
+  "v5_correction_requirements": {
+    "prompt_must_include_subject_scale_constraints": true,
+    "prompt_must_include_camera_distance_constraints": true,
+    "prompt_must_include_composition_keywords": true,
+    "negative_prompt_must_prevent_tiny_subject": true,
+    "negative_prompt_must_prevent_vast_empty_space": true,
+    "subject_height_ratio_target": "0.45-0.70",
+    "empty_space_ratio_max": "0.45"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "override_task": "RC2-PRODCARDS3J-OVERRIDE",
+  "override_type": "qa_review_operator_override",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "override_timestamp": "2026-04-29T15:58:00.000000Z",
+  "retry_attempt": 2,
+  "status": "operator_override_applied",
+  "previous_qa_verdict": "qa_passed",
+  "previous_qa_report_path": "output/control/rc2_prodcards3j_qa_report.json",
+  "corrected_qa_verdict": "qa_failed",
+  "operator_verdict": "rejected_visual_quality",
+  "operator_reason": "Operator rejected retry #2 frame quality as unacceptable despite previous QA pass. Frames are visually unacceptable / extremely low quality. The automated/manual QA pass was a false positive.",
+  "failure_reasons": [
+    "operator_rejected_visual_quality",
+    "low_visual_quality",
+    "unacceptable_for_assemble_scene",
+    "qa_false_positive"
+  ],
+  "assemble_scene_allowed": false,
+  "next_allowed_action": "manual_review",
+  "production_accepted": false,
+  "retry_gate_open": false,
+  "downstream_blocked": true,
+  "boundary_conditions_verified": {
+    "no_comfyui_execution": true,
+    "no_new_frames_generated": true,
+    "no_retry_generate_frames_executed": true,
+    "no_qa_rerun": true,
+    "no_tts_executed": true,
+    "no_ffmpeg_executed": true,
+    "no_assemble_scene_executed": true,
+    "no_audio_attached": true,
+    "no_render_executed": true
+  },
+  "state_corrections_applied": {
+    "artifact_index_updated": true,
+    "episode_ledger_event_added": true,
+    "qa_verdict_corrected": true,
+    "next_allowed_action_corrected": true,
+    "assemble_scene_blocked": true
+  }
+}

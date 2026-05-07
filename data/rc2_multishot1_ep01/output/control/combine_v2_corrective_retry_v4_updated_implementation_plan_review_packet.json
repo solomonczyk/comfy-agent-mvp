@@ -1,0 +1,43 @@
+{
+  "task_id": "RC-COMBINE-V2-2721-2780",
+  "packet_type": "corrective_retry_v4_updated_implementation_plan_review_packet",
+  "stage": "operator_retry_v4_updated_implementation_plan_review_required",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-07T06:21:11.742760+00:00",
+  "updated_implementation_plan_path": "output/control/combine_v2_corrective_retry_v4_updated_implementation_plan.json",
+  "source_visual_correction_plan_path": "output/control/combine_v2_corrective_retry_v4_visual_correction_plan.json",
+  "source_operator_review_path": "output/control/combine_v2_operator_retry_v4_visual_correction_plan_review.json",
+  "summary": {
+    "prompt_patch_present": true,
+    "negative_prompt_patch_present": true,
+    "subject_scale_requirements_present": true,
+    "empty_space_requirements_present": true,
+    "composition_requirements_present": true,
+    "pre_submit_contract_present": true,
+    "post_submit_contract_present": true,
+    "runtime_prefix_invariants_present": true,
+    "generation_gate_closed": true
+  },
+  "operator_actions": [
+    "approve_updated_retry_implementation_plan",
+    "request_updated_retry_implementation_plan_changes",
+    "reject_updated_retry_implementation_plan"
+  ],
+  "hard_boundary": {
+    "generation_allowed": false,
+    "comfyui_submit_allowed": false,
+    "retry_execution_allowed": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "production_accepted": false
+  },
+  "new_generation_performed": false,
+  "new_comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "workflow_mutated": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "corrective_retry_v4_retry_implementation_plan_update_required",
+  "next_allowed_action": "operator_retry_v4_updated_implementation_plan_review_required"
+}

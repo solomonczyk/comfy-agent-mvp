@@ -6513,6 +6513,562 @@ def combine_v8_execution_readiness_preflight(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_v8_runtime_recovery_and_generation(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-6601-7600 — Complete V8 runtime recovery and controlled generation.
+
+    This command performs the complete V8 runtime recovery layer:
+    1. Check pre-state (must be v8_quality_locked_generation_authorization_required)
+    2. Check ComfyUI connectivity
+    3. If unavailable: write blocker artifacts, set state to v8_generation_runtime_blocked
+    4. If available and --execute: execute exactly one V8 real generation
+    5. Collect outputs, validate assets
+    6. Create result review, outputs manifest, operator visual review packet
+    7. Update artifact_index and episode_ledger
+    8. Return proof back
+
+    Exit codes:
+    - 0: completed (blocked gracefully or generation completed)
+    - 1: error or invalid args
+    """
+    from app.comfy.comfy_client import ComfyClient
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+    json_output = args.json
+    timestamp = datetime.utcnow().isoformat()
+
+    if max_generations != 1:
+        msg = "Error: max-generations must be 1 for V8 runtime recovery generation."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    artifact_index = _read_json_file(control_dir / "artifact_index.json")
+    current_state = artifact_index.get("current_state", "")
+    production_accepted = artifact_index.get("production_accepted", False)
+
+    if current_state != "v8_quality_locked_generation_authorization_required":
+        msg = (
+            f"Error: Current state is '{current_state}', "
+            f"expected 'v8_quality_locked_generation_authorization_required'. "
+            "Cannot proceed with V8 runtime recovery."
+        )
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    if production_accepted:
+        msg = "Error: production_accepted is already true. V8 generation blocked."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188").rstrip("/")
+    object_info_url = f"{base_url}/object_info"
+
+    comfyui_reachable = False
+    server_available = False
+    failure_code = None
+    server_check_error = None
+
+    try:
+        req = urllib.request.Request(object_info_url, method="GET")
+        with urllib.request.urlopen(req, timeout=5) as response:
+            comfyui_reachable = True
+            payload = json.loads(response.read().decode("utf-8"))
+            server_available = isinstance(payload, dict) and len(payload) > 0
+            if not server_available:
+                failure_code = "invalid_endpoint"
+    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as exc:
+        server_available = False
+        failure_code = "server_unavailable"
+        server_check_error = str(exc)
+
+    recovery_report = {
+        "task_id": "RC-COMBINE-V2-6601-7600",
+        "current_state": current_state,
+        "production_accepted": production_accepted,
+        "comfyui_endpoint_checked": base_url,
+        "server_available": server_available,
+        "failure_code": failure_code,
+        "v8_real_generation_attempted": False,
+        "generation_count": 0,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "dry_run_used": not execute,
+        "timestamp": timestamp
+    }
+    if server_check_error:
+        recovery_report["server_check_error"] = server_check_error
+
+    _write_json_file(control_dir / "combine_v2_v8_runtime_recovery_report.json", recovery_report)
+
+    if not server_available:
+        failure_report = {
+            "task_id": "RC-COMBINE-V2-6601-7600",
+            "failure_code": failure_code or "server_unavailable",
+            "server_available": False,
+            "v8_real_generation_attempted": False,
+            "generation_count": 0,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "operator_action_required": "Start ComfyUI server and rerun the same macro task; do not create a new micro-layer",
+            "comfyui_endpoint": base_url,
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v8_generation_failure_report.json", failure_report)
+
+        artifact_index["current_state"] = "v8_generation_runtime_blocked"
+        artifact_index["next_allowed_action"] = "v8_generation_runtime_recovery_required"
+        artifact_index["production_accepted"] = False
+        artifact_index["v8_real_generation_attempted"] = False
+        artifact_index["failure_code"] = failure_code
+        _write_json_file(control_dir / "artifact_index.json", artifact_index)
+
+        _append_v8_ledger_event(control_dir, {
+            "event_type": "v8_runtime_recovery_blocked",
+            "failure_code": failure_code,
+            "server_available": False,
+            "v8_real_generation_attempted": False,
+            "current_state": "v8_generation_runtime_blocked",
+            "next_allowed_action": "v8_generation_runtime_recovery_required",
+            "timestamp": timestamp
+        })
+
+        result = {
+            "task_id": "RC-COMBINE-V2-6601-7600",
+            "macro_feature_completed": False,
+            "runtime_recovery_checked": True,
+            "server_available": False,
+            "failure_code": failure_code,
+            "v8_real_generation_attempted": False,
+            "generation_count": 0,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "prompt_id": "",
+            "generated_assets": [],
+            "canonical_outputs_registered": False,
+            "operator_visual_review_packet_created": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "current_state": "v8_generation_runtime_blocked",
+            "next_allowed_action": "v8_generation_runtime_recovery_required",
+            "operator_action_required": "Start ComfyUI server and rerun the same macro task; do not create a new micro-layer"
+        }
+
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"V8 Runtime Recovery: BLOCKED - Server unavailable ({failure_code})")
+            print(f"Next Allowed Action: v8_generation_runtime_recovery_required")
+            print(f"Operator Action Required: Start ComfyUI server at {base_url}")
+        return 0
+
+    import random as _random
+    import time as _time
+
+    seed = _random.randint(1, 2**32 - 1)
+    filename_prefix = f"combine_v2_v8_{int(_time.time())}"
+
+    workflow_payload = {
+        "1": {
+            "inputs": {"ckpt_name": "realvisxlV50_v50Bakedvae.safetensors"},
+            "class_type": "CheckpointLoaderSimple",
+        },
+        "2": {
+            "inputs": {
+                "text": "test, sharp focus, highly detailed, crisp, realistic skin texture",
+                "clip": ["1", 1]
+            },
+            "class_type": "CLIPTextEncode",
+        },
+        "3": {
+            "inputs": {
+                "text": "blurry, soft focus, low quality, ugly, deformed, bad anatomy",
+                "clip": ["1", 1]
+            },
+            "class_type": "CLIPTextEncode",
+        },
+        "4": {
+            "inputs": {
+                "seed": seed,
+                "steps": 30,
+                "cfg": 7,
+                "sampler_name": "dpmpp_2m",
+                "scheduler": "karras",
+                "denoise": 1,
+                "model": ["1", 0],
+                "positive": ["2", 0],
+                "negative": ["3", 0],
+                "latent_image": ["5", 0],
+            },
+            "class_type": "KSampler",
+        },
+        "5": {"inputs": {"width": 1024, "height": 1024, "batch_size": 1}, "class_type": "EmptyLatentImage"},
+        "6": {"inputs": {"samples": ["4", 0], "vae": ["1", 2]}, "class_type": "VAEDecode"},
+        "7": {"inputs": {"filename_prefix": filename_prefix, "images": ["6", 0]}, "class_type": "SaveImage"},
+    }
+
+    if not execute:
+        recovery_report["v8_real_generation_attempted"] = False
+        recovery_report["dry_run_used"] = True
+        _write_json_file(control_dir / "combine_v2_v8_runtime_recovery_report.json", recovery_report)
+
+        generation_result = {
+            "task_id": "RC-COMBINE-V2-6601-7600",
+            "v8_real_generation_attempted": False,
+            "generation_count": 0,
+            "max_generations": 1,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "dry_run_used": True,
+            "execute_mode": False,
+            "generated_assets": [],
+            "canonical_outputs_registered": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v8_real_generation_result.json", generation_result)
+
+        outputs_manifest = {
+            "task_id": "RC-COMBINE-V2-6601-7600",
+            "manifest_type": "v8_real_generation_outputs_manifest",
+            "generation_count": 0,
+            "max_generations": 1,
+            "workflow_submitted": False,
+            "generated_assets": [],
+            "asset_paths": [],
+            "collection_status": "dry_run",
+            "canonical_outputs_registered": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v8_real_generation_outputs_manifest.json", outputs_manifest)
+
+        artifact_index["current_state"] = "v8_quality_locked_generation_authorization_required"
+        artifact_index["next_allowed_action"] = "v8_quality_locked_generation_authorization_required"
+        artifact_index["v8_real_generation_attempted"] = False
+        artifact_index["generation_count"] = 0
+        artifact_index["production_accepted"] = False
+        _write_json_file(control_dir / "artifact_index.json", artifact_index)
+
+        _append_v8_ledger_event(control_dir, {
+            "event_type": "v8_runtime_recovery_dry_run",
+            "v8_real_generation_attempted": False,
+            "generation_count": 0,
+            "server_available": True,
+            "timestamp": timestamp
+        })
+
+        if json_output:
+            print(json.dumps({
+                "task_id": "RC-COMBINE-V2-6601-7600",
+                "status": "dry_run",
+                "server_available": True,
+                "v8_real_generation_attempted": False,
+                "message": "Server available. Use --execute to run real generation."
+            }, indent=2))
+        else:
+            print("V8 Runtime Recovery: DRY RUN (server available)")
+            print("Use --execute to run real generation")
+        return 0
+
+    client = ComfyClient()
+    prompt_id = None
+    comfyui_status = "completed"
+    generated_assets = []
+    trace_events = []
+    error_message = None
+
+    try:
+        prompt_id = asyncio.run(client.queue_prompt(workflow_payload))
+        trace_events.append({"event": "workflow_submitted", "status": "success", "prompt_id": prompt_id})
+        history_item = asyncio.run(client.wait_for_history(prompt_id, max_attempts=180, delay_seconds=2))
+        history_images = _extract_history_images(history_item)
+        generated_assets, collection_trace = _collect_real_generation_outputs(
+            client=client,
+            project_root=project_root,
+            history_images=history_images,
+        )
+        trace_events.extend(collection_trace)
+        trace_events.append({"event": "outputs_collected", "status": "success", "assets_count": len(generated_assets)})
+    except Exception as exc:
+        comfyui_status = "failed"
+        error_message = str(exc)
+        trace_events.append({"event": "generation_failed", "status": "failed", "error": error_message})
+
+    if comfyui_status == "completed" and len(generated_assets) == 0:
+        comfyui_status = "failed"
+        failure_code = "output_collection_failed"
+        trace_events.append({"event": "zero_assets_guard_triggered", "status": "failed", "failure_code": failure_code})
+
+    asset_readable = True
+    sha256_present = True
+    dimensions_present = True
+    stub_asset_detected = False
+    all_sizes_gt_1024 = True
+    validated_assets = []
+
+    for asset in generated_assets:
+        a_path = project_root / asset.get("path", "")
+        readable_check = {"readable": False, "width": None, "height": None}
+        if a_path.exists():
+            readable_check = _is_image_readable(a_path)
+            if not readable_check["readable"]:
+                asset_readable = False
+                stub_asset_detected = True
+            if not readable_check["width"] or not readable_check["height"]:
+                dimensions_present = False
+            sha256_val = asset.get("sha256", "")
+            if not sha256_val or len(sha256_val) != 64:
+                sha256_present = False
+            if a_path.stat().st_size <= 1024:
+                all_sizes_gt_1024 = False
+                stub_asset_detected = True
+        else:
+            asset_readable = False
+            stub_asset_detected = True
+
+        validated_assets.append(dict(asset))
+
+    asset_validation_failed = stub_asset_detected or not asset_readable or not all_sizes_gt_1024
+
+    recovery_report["v8_real_generation_attempted"] = True
+    recovery_report["generation_count"] = 1 if comfyui_status == "completed" else 0
+    recovery_report["workflow_submitted"] = True
+    recovery_report["comfyui_execution"] = True
+    recovery_report["prompt_id"] = prompt_id or ""
+    recovery_report["comfyui_status"] = comfyui_status
+    if failure_code:
+        recovery_report["failure_code"] = failure_code
+    _write_json_file(control_dir / "combine_v2_v8_runtime_recovery_report.json", recovery_report)
+
+    generation_result = {
+        "task_id": "RC-COMBINE-V2-6601-7600",
+        "v8_real_generation_attempted": True,
+        "generation_count": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "dry_run_used": False,
+        "execute_mode": True,
+        "prompt_id": prompt_id or "",
+        "comfyui_status": comfyui_status,
+        "generated_assets": validated_assets,
+        "generated_assets_count": len(validated_assets),
+        "canonical_outputs_registered": len(validated_assets) > 0,
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "stub_asset_detected": stub_asset_detected,
+        "all_sizes_gt_1024": all_sizes_gt_1024,
+        "asset_validation_failed": asset_validation_failed,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "v8_operator_visual_review_required",
+        "timestamp": timestamp
+    }
+    if error_message:
+        generation_result["error"] = error_message
+    if failure_code:
+        generation_result["failure_code"] = failure_code
+    _write_json_file(control_dir / "combine_v2_v8_real_generation_result.json", generation_result)
+
+    outputs_manifest = {
+        "task_id": "RC-COMBINE-V2-6601-7600",
+        "manifest_type": "v8_real_generation_outputs_manifest",
+        "generation_count": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "generated_assets": validated_assets,
+        "asset_paths": [a.get("path", "") for a in validated_assets],
+        "collection_status": comfyui_status,
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "stub_asset_detected": stub_asset_detected,
+        "all_sizes_gt_1024": all_sizes_gt_1024,
+        "canonical_outputs_registered": len(validated_assets) > 0,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp
+    }
+    if failure_code:
+        outputs_manifest["failure_code"] = failure_code
+    _write_json_file(control_dir / "combine_v2_v8_real_generation_outputs_manifest.json", outputs_manifest)
+
+    operator_visual_review_packet_created = False
+    if len(validated_assets) > 0 and not asset_validation_failed:
+        visual_review_packet = {
+            "task_id": "RC-COMBINE-V2-6601-7600",
+            "stage": "v8_operator_visual_review",
+            "source_stage": "v8_runtime_recovery_and_generation",
+            "visual_review_packet_created": True,
+            "generated_assets": validated_assets,
+            "generation_count": len(validated_assets),
+            "operator_visual_review_required": True,
+            "operator_actions": ["accept_visuals", "reject_visuals", "request_corrective_retry"],
+            "visual_acceptance_executed": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "production_accepted": False,
+            "next_allowed_action": "v8_operator_visual_review_required",
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v8_operator_visual_review_packet.json", visual_review_packet)
+        operator_visual_review_packet_created = True
+
+    if comfyui_status == "completed" and len(validated_assets) > 0 and not asset_validation_failed:
+        final_state = "v8_operator_visual_review_required"
+        final_next_action = "v8_operator_visual_review_required"
+    else:
+        final_state = "v8_generation_runtime_blocked"
+        final_next_action = "v8_generation_runtime_recovery_required"
+        failure_code = failure_code or "invalid_generated_asset"
+
+    artifact_index["current_state"] = final_state
+    artifact_index["next_allowed_action"] = final_next_action
+    artifact_index["v8_real_generation_attempted"] = True
+    artifact_index["generation_count"] = 1
+    artifact_index["max_generations"] = 1
+    artifact_index["second_generation_attempted"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["workflow_submitted"] = True
+    artifact_index["comfyui_execution"] = True
+    artifact_index["prompt_id"] = prompt_id or ""
+    artifact_index["canonical_outputs_registered"] = len(validated_assets) > 0
+    artifact_index["generated_assets"] = [a.get("path", "") for a in validated_assets]
+    artifact_index["asset_readable"] = asset_readable
+    artifact_index["sha256_present"] = sha256_present
+    artifact_index["dimensions_present"] = dimensions_present
+    artifact_index["stub_asset_detected"] = stub_asset_detected
+    artifact_index["operator_visual_review_packet_created"] = operator_visual_review_packet_created
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+    artifact_index["v8_runtime_recovery_completed"] = True
+    if failure_code:
+        artifact_index["failure_code"] = failure_code
+    _write_json_file(control_dir / "artifact_index.json", artifact_index)
+
+    _append_v8_ledger_event(control_dir, {
+        "event_type": "v8_runtime_recovery_generation_completed",
+        "v8_real_generation_attempted": True,
+        "generation_count": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id or "",
+        "generated_assets_count": len(validated_assets),
+        "operator_visual_review_packet_created": operator_visual_review_packet_created,
+        "current_state": final_state,
+        "next_allowed_action": final_next_action,
+        "production_accepted": False,
+        "timestamp": timestamp
+    })
+
+    result = {
+        "task_id": "RC-COMBINE-V2-6601-7600",
+        "macro_feature_completed": final_state == "v8_operator_visual_review_required",
+        "runtime_recovery_checked": True,
+        "server_available": server_available,
+        "failure_code": failure_code,
+        "v8_real_generation_attempted": True,
+        "generation_count": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id or "",
+        "comfyui_status": comfyui_status,
+        "dry_run_used": False,
+        "canonical_outputs_registered": len(validated_assets) > 0,
+        "generated_assets": [a.get("path", "") for a in validated_assets],
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "size_bytes_gt_1024": all_sizes_gt_1024,
+        "stub_asset_detected": stub_asset_detected,
+        "operator_visual_review_packet_created": operator_visual_review_packet_created,
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": final_state,
+        "next_allowed_action": final_next_action
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        status = "COMPLETED" if final_state == "v8_operator_visual_review_required" else "BLOCKED"
+        print(f"V8 Runtime Recovery and Generation: {status}")
+        print(f"Server Available: {server_available}")
+        print(f"Generation Count: 1")
+        print(f"Generated Assets: {len(validated_assets)}")
+        print(f"Current State: {final_state}")
+        print(f"Next Allowed Action: {final_next_action}")
+
+    return 0 if final_state == "v8_operator_visual_review_required" else 1
+
+
+def _append_v8_ledger_event(control_dir: Path, event: dict) -> None:
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        try:
+            with ledger_path.open("r", encoding="utf-8") as f:
+                data = json.load(f)
+            if isinstance(data, list):
+                ledger = data
+            elif isinstance(data, dict):
+                ledger = data.get("events", data.get("records", []))
+        except Exception:
+            ledger = []
+    if not isinstance(ledger, list):
+        ledger = []
+    ledger.append(event)
+    _write_json_file(ledger_path, ledger)
+
+
 def combine_v8_dry_run_guard_check(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-6001-6300 — V8 dry-run guard enforcement.
     
@@ -10516,6 +11072,33 @@ def main() -> int:
         help="Suppress output",
     )
 
+    # RC-COMBINE-V2-6601-7600 — combine-v8-runtime-recovery-and-generation subcommand
+    combine_v8_runtime_recovery_and_generation_parser = subparsers.add_parser(
+        "combine-v8-runtime-recovery-and-generation",
+        help="V8 runtime recovery and controlled generation with ComfyUI availability check"
+    )
+    combine_v8_runtime_recovery_and_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_v8_runtime_recovery_and_generation_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute the generation (default: dry run only)",
+    )
+    combine_v8_runtime_recovery_and_generation_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum generations (must be 1, default: 1)",
+    )
+    combine_v8_runtime_recovery_and_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC2-PRODCARDS3B — Authorize real role decision apply subcommand
     authorize_real_role_decision_apply_parser = subparsers.add_parser("authorize-real-role-decision-apply", help="Final authorization checkpoint before applying resubmitted role decisions to real project")
     authorize_real_role_decision_apply_parser.add_argument(
@@ -11140,7 +11723,11 @@ def main() -> int:
     elif args.command == "combine-review-updated-corrective-retry-v4-implementation-plan":
         return combine_review_updated_corrective_retry_v4_implementation_plan(args)
     elif args.command == "combine-execute-v8-quality-locked-generation":
+        _require_absolute_project_root(args, "combine-execute-v8-quality-locked-generation")
         return combine_execute_v8_quality_locked_generation(args)
+    elif args.command == "combine-v8-runtime-recovery-and-generation":
+        _require_absolute_project_root(args, "combine-v8-runtime-recovery-and-generation")
+        return combine_v8_runtime_recovery_and_generation(args)
     elif args.command == "combine-v8-execution-readiness-preflight":
         return combine_v8_execution_readiness_preflight(args)
     elif args.command == "combine-v8-dry-run-guard-check":

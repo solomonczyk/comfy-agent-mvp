@@ -1,0 +1,219 @@
+{
+  "workflow_path": "app/gorynych/",
+  "workflow_template_path": "data/workflow_template.json",
+  "workflow_type": "knowledge_planning_layer_with_ipadapter_generation",
+  "description": "Gorynych is a knowledge-driven planning layer that provides character canon and reference lock contracts. The actual identity-stable generation uses an IPAdapter-based ComfyUI workflow template.",
+  "required_nodes": [
+    {
+      "node_type": "IPAdapterAdvanced",
+      "class_type": "IPAdapterAdvanced",
+      "required": true,
+      "purpose": "Advanced IPAdapter for identity preservation with configurable weight and embedding scaling"
+    },
+    {
+      "node_type": "IPAdapterUnifiedLoader",
+      "class_type": "IPAdapterUnifiedLoader",
+      "required": true,
+      "purpose": "Unified IPAdapter model loader with preset configuration"
+    },
+    {
+      "node_type": "LoadImage",
+      "class_type": "LoadImage",
+      "required": true,
+      "purpose": "Load reference image for identity injection"
+    },
+    {
+      "node_type": "CheckpointLoaderSimple",
+      "class_type": "CheckpointLoaderSimple",
+      "required": true,
+      "purpose": "Load base checkpoint model (realvisxlV50_v50Bakedvae.safetensors)"
+    },
+    {
+      "node_type": "KSampler",
+      "class_type": "KSampler",
+      "required": true,
+      "purpose": "Main sampling node for generation"
+    },
+    {
+      "node_type": "CLIPTextEncode",
+      "class_type": "CLIPTextEncode",
+      "required": true,
+      "purpose": "Encode positive and negative prompts"
+    },
+    {
+      "node_type": "VAEDecode",
+      "class_type": "VAEDecode",
+      "required": true,
+      "purpose": "Decode latent images to pixel space"
+    },
+    {
+      "node_type": "SaveImage",
+      "class_type": "SaveImage",
+      "required": true,
+      "purpose": "Save generated images with filename prefix"
+    }
+  ],
+  "missing_nodes": [],
+  "required_models": [
+    {
+      "model_type": "checkpoint",
+      "model_name": "realvisxlV50_v50Bakedvae.safetensors",
+      "required": true,
+      "status": "present",
+      "location": "ComfyUI models directory"
+    },
+    {
+      "model_type": "ipadapter",
+      "model_name": "IPAdapter model (PLUS preset)",
+      "required": true,
+      "status": "unknown",
+      "location": "ComfyUI models directory (ipadapter folder)"
+    }
+  ],
+  "missing_models": [
+    {
+      "model_type": "ipadapter",
+      "model_name": "IPAdapter model (PLUS preset)",
+      "reason": "IPAdapter model presence cannot be verified from code alone - requires ComfyUI models directory check"
+    }
+  ],
+  "identity_input_nodes": [
+    {
+      "node_id": "22",
+      "class_type": "LoadImage",
+      "input_name": "image",
+      "purpose": "Reference image for identity injection",
+      "identity_mechanism": "reference_image_as_identity_not_full_canvas"
+    },
+    {
+      "node_id": "20",
+      "class_type": "IPAdapterAdvanced",
+      "input_name": "image",
+      "purpose": "IPAdapter identity injection from reference image",
+      "weight": 0.6,
+      "weight_type": "linear",
+      "embeds_scaling": "V only"
+    }
+  ],
+  "prompt_nodes": [
+    {
+      "node_id": "6",
+      "class_type": "CLIPTextEncode",
+      "input_name": "text",
+      "purpose": "Positive prompt",
+      "injectable": true,
+      "inject_marker": "__inject__.positive_prompt_node"
+    },
+    {
+      "node_id": "7",
+      "class_type": "CLIPTextEncode",
+      "input_name": "text",
+      "purpose": "Negative prompt",
+      "injectable": true,
+      "inject_marker": "__inject__.negative_prompt_node"
+    }
+  ],
+  "save_image_node": {
+    "node_id": "9",
+    "class_type": "SaveImage",
+    "input_name": "filename_prefix",
+    "purpose": "Save generated images with deterministic filename prefix",
+    "injectable": true,
+    "default_prefix": "agent/output"
+  },
+  "supported_resolution": {
+    "width": 512,
+    "height": 512,
+    "notes": "Can be adjusted via EmptyLatentImage node inputs"
+  },
+  "has_true_identity_mechanism": true,
+  "identity_mechanism_type": "IPAdapterAdvanced",
+  "reference_image_as_identity_not_full_canvas": true,
+  "can_run_now": false,
+  "blockers": [
+    {
+      "blocker_type": "missing_ipadapter_model",
+      "description": "IPAdapter model (PLUS preset) presence cannot be verified from code alone",
+      "resolution": "Requires manual verification of ComfyUI models/ipadapter directory"
+    },
+    {
+      "blocker_type": "gorynych_knowledge_files",
+      "description": "Gorynych knowledge files (head_1.md, head_2.md, head_3.md) must be present and validated",
+      "resolution": "Knowledge files exist in docs/knowledge/ but require validation for production use"
+    },
+    {
+      "blocker_type": "character_canon_required",
+      "description": "CharacterCanon with approved CharacterAnchor references required for production",
+      "resolution": "Must generate and approve character anchor references before production use"
+    },
+    {
+      "blocker_type": "reference_lock_contract",
+      "description": "ReferenceLockContract must have downstream_generation_allowed=true",
+      "resolution": "Must approve all required character anchors to unlock generation"
+    }
+  ],
+  "gorynych_knowledge_layer": {
+    "module_path": "app/gorynych/",
+    "components": [
+      "app/gorynych/__init__.py",
+      "app/gorynych/contracts.py",
+      "app/gorynych/knowledge.py",
+      "app/gorynych/planner.py"
+    ],
+    "knowledge_files": [
+      "docs/knowledge/head_1.md",
+      "docs/knowledge/head_2.md",
+      "docs/knowledge/head_3.md"
+    ],
+    "contracts": [
+      "StoryContract",
+      "ScenePlan",
+      "BeatSpec",
+      "CharacterCanon",
+      "CharacterAnchor",
+      "ReferenceLockContract",
+      "ShotContract",
+      "PromptPack",
+      "BeatPromptPack"
+    ],
+    "key_features": [
+      "Knowledge-driven planning from markdown files",
+      "Character canon with immutable anchors",
+      "Reference lock contract blocking downstream generation",
+      "Deterministic seed policy for character consistency",
+      "English-only prompt validation",
+      "Safe resolution limits (width <= 640, height <= 640)"
+    ]
+  },
+  "legacy_reference_locked_workflow": {
+    "workflow_type": "img2img_reference_locked",
+    "nodes": [
+      "LoadImage",
+      "ImageScale",
+      "VAEEncode",
+      "KSampler"
+    ],
+    "identity_mechanism": "none",
+    "reference_image_as_identity": false,
+    "reference_image_as_full_canvas": true,
+    "production_accepted": false,
+    "technical_fallback_only": true,
+    "reason": "Simple img2img does not preserve character identity across frames - reference used as full canvas, not as identity injection"
+  },
+  "generation_mode_comparison": {
+    "reference_locked": {
+      "identity_stable": false,
+      "production_accepted": false,
+      "technical_fallback_only": true,
+      "recommended_action": "Use gorynych_identity mode for production character sequences"
+    },
+    "gorynych_identity": {
+      "identity_stable": true,
+      "production_accepted": true,
+      "technical_fallback_only": false,
+      "recommended_action": "Use for all multi-frame character shots requiring identity consistency"
+    }
+  },
+  "audit_timestamp": "2026-04-28T09:14:00Z",
+  "audited_by": "RC2-GORYNYCH1"
+}

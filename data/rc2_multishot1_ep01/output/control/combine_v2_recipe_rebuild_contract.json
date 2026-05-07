@@ -1,0 +1,18 @@
+{
+  "stage": "recipe_rebuild_contract_required",
+  "old_resolution": "512x512",
+  "new_resolution_policy": {
+    "minimum_short_side": 1024,
+    "recommended": "1024x1024 or route-specific higher",
+    "512x512_forbidden_for_production": true
+  },
+  "must_add_quality_stage": true,
+  "required_quality_stages": [
+    "hires_fix_or_latent_upscale",
+    "image_upscale_pass",
+    "optional_refiner_pass"
+  ],
+  "generation_allowed": false,
+  "next_allowed_action": "prompt_contract_rebuild_required",
+  "timestamp": "2026-05-04T17:15:17.466376"
+}

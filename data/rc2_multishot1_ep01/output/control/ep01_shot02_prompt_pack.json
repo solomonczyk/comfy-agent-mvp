@@ -1,0 +1,34 @@
+{
+  "shot_id": "shot02",
+  "positive_prompt": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, kneeling beside crystal-clear stream, ancient stone altar partially buried in streambed, mysterious glowing blue crystal orb resting on altar pulsing with soft blue light, Alya reaching toward crystal with wonder and hesitation, reflection visible in water below, soft morning mist, blue glow illuminating scene, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, mystical atmosphere",
+  "negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, harsh lighting, urban, buildings, modern, weapons, violence, bright daylight, no mist",
+  "shot_beats": [
+    {
+      "beat": "scene_setting",
+      "description": "Wide shot of stream with stone altar",
+      "camera": "medium shot",
+      "focus": "environment"
+    },
+    {
+      "beat": "discovery",
+      "description": "Alya kneeling beside altar, crystal visible",
+      "camera": "medium shot",
+      "focus": "character"
+    },
+    {
+      "beat": "approach",
+      "description": "Close-up of hands reaching toward glowing crystal",
+      "camera": "close-up",
+      "focus": "action"
+    }
+  ],
+  "reference_locked": true,
+  "generation_mode": "reference_locked",
+  "checkpoint": "juggernautXL_version2.safetensors",
+  "seed": 23456,
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "width": 1344,
+  "height": 768,
+  "created_at": "2026-04-28T08:18:00Z"
+}

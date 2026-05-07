@@ -1,0 +1,83 @@
+{
+  "packet_type": "workflow_td_resubmission",
+  "role": "Workflow TD / ComfyUI Technical Director",
+  "decision_source": "completion_based_resubmission",
+  "blocked_shot": "shot01",
+  "current_required_generation_mode": "gorynych_identity",
+  "legacy_reference_locked_allowed_for_production": false,
+  "based_on_submitted_completion": "output/control/change_request_completions/submitted/workflow_td_identity_workflow_change.SUBMITTED.json",
+  "based_on_review_packet": null,
+  "based_on_submission_template": "output/control/role_decision_submissions/workflow_td_real_decision.SUBMIT.json",
+  "current_decision_status": "pending_resubmission",
+  "allowed_decisions": [
+    "approve_workflow",
+    "reject_workflow",
+    "request_missing_nodes",
+    "request_missing_models",
+    "request_reference_rebuild"
+  ],
+  "selected_decision": null,
+  "completion_evidence": {
+    "updated_workflow_strategy": {
+      "strategy_type": "gorynych_identity",
+      "identity_preservation": "enabled",
+      "reference_handling": "strict_identity_match",
+      "generation_mode": "gorynych_identity",
+      "notes": "Workflow strategy updated to enforce strict identity preservation"
+    },
+    "workflow_audit": {
+      "audit_status": "complete",
+      "nodes_verified": true,
+      "models_verified": true,
+      "identity_workflow_confirmed": true,
+      "findings": "All required nodes and models present for gorynych_identity mode"
+    },
+    "required_nodes": {
+      "nodes": [
+        "KSampler",
+        "VAEDecode",
+        "SaveImage",
+        "LoadCheckpoint",
+        "CLIPTextEncode"
+      ],
+      "all_present": true,
+      "verification_timestamp": "2026-04-28T14:58:01.515914Z"
+    },
+    "required_models": {
+      "models": [
+        "gorynych_identity_v1"
+      ],
+      "all_present": true,
+      "verification_timestamp": "2026-04-28T14:58:01.515914Z"
+    },
+    "preflight_result": {
+      "preflight_status": "passed",
+      "identity_mode_ready": true,
+      "reference_locked_check": "passed",
+      "generation_ready": true
+    },
+    "output_collection_contract": {
+      "collection_mode": "identity_preserved",
+      "quality_check": "enabled",
+      "metadata_inclusion": "full",
+      "output_format": "png"
+    }
+  },
+  "required_artifacts": [
+    "workflow_audit",
+    "required_nodes",
+    "required_models",
+    "preflight_result",
+    "output_collection_contract"
+  ],
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "apply_performed": false,
+  "retry_gate_open": false,
+  "ready_for_resubmission": true,
+  "next_allowed_action_if_approved": "retry_generate_frames",
+  "created_at": "2026-04-28T15:31:41.840496Z",
+  "project_specific_data_allowed": true,
+  "source_project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "source_data_origin": "production_cards_completion_based_resubmission"
+}

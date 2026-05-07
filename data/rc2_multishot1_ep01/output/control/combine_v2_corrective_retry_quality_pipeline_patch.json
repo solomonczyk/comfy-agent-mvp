@@ -1,0 +1,23 @@
+{
+  "stage": "corrective_retry_implementation_required",
+  "patch_type": "corrective_retry_quality_pipeline_patch",
+  "source_failed_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [
+    "semantic_content_failed",
+    "subject_not_recognizable",
+    "blur_or_softness",
+    "low_detail_quality",
+    "composition_failed",
+    "production_quality_failed"
+  ],
+  "quality_pipeline_corrections": {
+    "blind_retry_blocked": true,
+    "preflight_before_retry_submit": true,
+    "manifest_must_reference_canonical_project_asset": true,
+    "post_generation_visual_qa_required": true,
+    "downstream_blocked_until_qa_acceptance": true
+  },
+  "generation_allowed": false,
+  "retry_attempted": false,
+  "timestamp": "2026-05-05T10:11:11.386655"
+}

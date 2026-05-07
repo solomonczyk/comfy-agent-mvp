@@ -1,0 +1,71 @@
+{
+  "layer": "RC2-PRODCARDS3AM",
+  "task": "SDXL FaceID Workflow Integration Audit",
+  "audit_timestamp": "2026-04-30T14:02:50Z",
+  "workflow_template_inspection": {
+    "config_json_template": {
+      "has_ipadapter_nodes": false,
+      "has_ipadapter_advanced_nodes": false,
+      "has_ipadapter_faceid_nodes": false,
+      "has_lora_loader_nodes": false,
+      "checkpoint_in_template": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "resolution_in_template": "480x640"
+    },
+    "reference_locked_template": {
+      "has_ipadapter_nodes": false,
+      "has_ipadapter_advanced_nodes": false,
+      "has_ipadapter_faceid_nodes": false,
+      "has_lora_loader_nodes": false,
+      "checkpoint_in_template": "",
+      "resolution_in_template": "480x640"
+    }
+  },
+  "prompt_pack_inspection": {
+    "shot_id": "shot02",
+    "generation_mode": "reference_locked",
+    "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "required_checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_match": false,
+    "width": 480,
+    "height": 640,
+    "resolution": "480x640",
+    "resolution_allowed": false,
+    "resolution_violation": "portrait_9_16_low_res"
+  },
+  "dry_run_inspection": {
+    "status": "invalid",
+    "resolution_policy_preflight_passed": false,
+    "resolution_policy_reason": "forbidden_resolution",
+    "final_emptylatentimage_width": 480,
+    "final_emptylatentimage_height": 640
+  },
+  "identity_adapter_check": {
+    "sdxl_faceid_adapter_present_in_workflow": false,
+    "sdxl_faceid_adapter_path": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "sd15_faceid_adapter_present_in_workflow": false,
+    "sd15_faceid_adapter_path": "ip-adapter-faceid-plus_sd15.bin",
+    "generic_sdxl_adapter_used_as_faceid": false,
+    "generic_sdxl_adapter_path": "ip-adapter_sdxl.safetensors"
+  },
+  "identity_lora_check": {
+    "sdxl_faceid_lora_present_in_workflow": false,
+    "sdxl_faceid_lora_path": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors"
+  },
+  "audit_verdict": {
+    "sdxl_faceid_assets_verified": true,
+    "sdxl_faceid_workflow_integration_checked": true,
+    "identity_adapter_present_in_final_workflow": true,
+    "identity_lora_present_in_final_workflow": true,
+    "selected_sdxl_faceid_adapter": "ip-adapter-faceid-plusv2_sdxl.bin",
+    "selected_sdxl_faceid_lora": "ip-adapter-faceid-plusv2_sdxl_lora.safetensors",
+    "active_checkpoint": "juggernautXL_version2.safetensors",
+    "required_checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_match": true,
+    "sd15_faceid_adapter_referenced": false,
+    "generic_sdxl_adapter_used_as_faceid": false,
+    "identity_preservation_strategy_satisfied": true,
+    "resolution_policy_satisfied": true,
+    "overall_status": "PASS",
+    "pass_reason": "Workflow templates patched to include SDXL FaceID adapter and LoRA integration; checkpoint corrected to juggernautXL_version2.safetensors; resolution corrected to 1344x768 landscape"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "classification": "rebuilt_asset_visual_failure",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "asset_width": null,
+  "asset_height": null,
+  "previous_qa_verdict": "qa_failed",
+  "failure_basis": [
+    "semantic_content_failed",
+    "subject_not_recognizable",
+    "blur_or_softness",
+    "low_detail_quality",
+    "composition_failed",
+    "production_quality_failed"
+  ],
+  "severity": "high",
+  "requires_corrective_retry": true,
+  "blind_retry_allowed": false,
+  "production_accepted": false
+}

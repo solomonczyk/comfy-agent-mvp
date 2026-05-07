@@ -1,0 +1,79 @@
+{
+  "stage": "real_visual_qa_required",
+  "source_asset": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
+  "technical_asset_valid": true,
+  "visual_quality_passed": false,
+  "operator_review_required": true,
+  "recommended_operator_decision": "reject",
+  "checks": {
+    "asset_exists": {
+      "status": "passed",
+      "message": "Asset found: F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png"
+    },
+    "asset_readable": {
+      "status": "passed",
+      "message": "Asset readable"
+    },
+    "width_height_valid": {
+      "status": "passed",
+      "message": "Dimensions: 512x512",
+      "actual_width": 512,
+      "actual_height": 512
+    },
+    "sha256_present": {
+      "status": "passed",
+      "message": "SHA256 computed",
+      "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427"
+    },
+    "size_bytes_valid": {
+      "status": "passed",
+      "message": "Size: 367208 bytes",
+      "size_bytes": 367208
+    },
+    "resolution_policy_check": {
+      "status": "warn",
+      "message": "No expected resolution in manifest",
+      "actual_width": 512,
+      "actual_height": 512,
+      "expected_or_policy": "route_expected_resolution"
+    },
+    "blur_or_softness_basic": {
+      "status": "passed",
+      "message": "No significant blur (variance: 2730.40)",
+      "metric": 2730.4008800422307
+    },
+    "brightness_basic": {
+      "status": "passed",
+      "message": "Brightness within range (mean: 129.00)",
+      "metric": 128.99745178222656
+    },
+    "contrast_basic": {
+      "status": "passed",
+      "message": "Contrast adequate (std: 52.25)",
+      "metric": 52.25323798619786
+    },
+    "anatomy_distortion": {
+      "status": "manual_review_required"
+    },
+    "hand_distortion": {
+      "status": "manual_review_required"
+    },
+    "body_pose_instability": {
+      "status": "manual_review_required"
+    },
+    "clothing_artifacts": {
+      "status": "manual_review_required"
+    },
+    "face_identity_unreliable": {
+      "status": "manual_review_required"
+    },
+    "production_quality_failed": {
+      "status": "manual_review_required"
+    }
+  },
+  "next_allowed_action": "operator_visual_review",
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}

@@ -130,3 +130,6 @@ data/external_smoke/
 
 # Quarantine
 data/_quarantine_*/
+
+# Model acquisition temp files (too large for git)
+data/rc2_multishot1_ep01/output/control/temp/

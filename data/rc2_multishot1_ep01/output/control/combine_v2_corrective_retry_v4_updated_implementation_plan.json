@@ -1,0 +1,118 @@
+{
+  "task_id": "RC-COMBINE-V2-2721-2780",
+  "plan_type": "corrective_retry_v4_updated_implementation_plan",
+  "stage": "corrective_retry_v4_retry_implementation_plan_update_required",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-07T06:21:11.742760+00:00",
+  "source_visual_qa_failed_reasons": [
+    "excessive_empty_space",
+    "subject_scale_check",
+    "empty_space_check",
+    "prompt_scene_alignment_check",
+    "weak_composition",
+    "composition_check",
+    "prompt_scene_alignment_weak",
+    "shot_intent_not_satisfied",
+    "subject_too_small",
+    "production_quality_check",
+    "shot_intent_alignment_check"
+  ],
+  "approved_visual_correction_plan_id": "RC-COMBINE-V2-2721-2780",
+  "approved_visual_correction_plan_path": "output/control/combine_v2_corrective_retry_v4_visual_correction_plan.json",
+  "approved_operator_review_id": "RC-COMBINE-V2-2661-2720",
+  "approved_operator_review_path": "output/control/combine_v2_operator_retry_v4_visual_correction_plan_review.json",
+  "target_shot_id": "shot02",
+  "runtime_saveimage_prefix": "combine_v2_corrective_retry_v4_shot02",
+  "collector_uses_runtime_saveimage_prefix": true,
+  "old_shot01_outputs_forbidden": true,
+  "stub_outputs_forbidden": true,
+  "production_accepted": false,
+  "prompt_patch": {
+    "positive_prompt_additions": [
+      "medium shot / medium-full shot",
+      "subject clearly dominant in frame",
+      "subject occupies 40-60% of frame height",
+      "tighter cinematic framing",
+      "character-focused composition",
+      "clear focal point",
+      "reduced empty background dominance",
+      "shot02 intent explicitly represented"
+    ],
+    "negative_prompt_additions": [
+      "tiny person",
+      "distant subject",
+      "empty landscape",
+      "excessive empty space",
+      "subject lost in background",
+      "weak composition",
+      "generic background-only frame"
+    ],
+    "source": "approved_visual_correction_plan"
+  },
+  "camera_framing": {
+    "target_subject_height_ratio_min": 0.4,
+    "target_subject_height_ratio_max": 0.6,
+    "hard_reject_subject_height_ratio_below": 0.3,
+    "target_empty_space_ratio_max": 0.45,
+    "framing_style": "medium_shot_or_medium_full_shot",
+    "subject_priority": "primary_focal_point"
+  },
+  "subject_scale_requirements": [
+    "subject height >= 40% of frame",
+    "reject if subject < 30% of frame"
+  ],
+  "empty_space_requirements": [
+    "empty space <= 45% of frame",
+    "subject dominant in composition",
+    "shot must express specific intent, not generic"
+  ],
+  "composition_requirements": [
+    "subject is clear focal point",
+    "balanced cinematic framing",
+    "avoid flat backgrounds"
+  ],
+  "rejection_criteria": [
+    "subject smaller than 30% of frame height",
+    "empty space exceeds 45% of frame"
+  ],
+  "pre_submit_validation_contract": {
+    "prompt_patch_present": true,
+    "subject_scale_requirements_present": true,
+    "empty_space_requirements_present": true,
+    "composition_requirements_present": true,
+    "runtime_prefix_consistency_required": true,
+    "max_generations": 1,
+    "dry_run_for_preflight_only": true,
+    "real_submit_requires_separate_operator_authorization": true
+  },
+  "post_submit_validation_contract": {
+    "asset_exists": true,
+    "asset_readable": true,
+    "sha256_present": true,
+    "stub_asset_detected": false,
+    "old_shot01_asset_used": false,
+    "runtime_prefix_match_required": true,
+    "visual_qa_required_after_generation": true,
+    "production_accepted": false
+  },
+  "runtime_prefix_invariants": {
+    "saveimage_prefix": "combine_v2_corrective_retry_v4_shot02",
+    "collector_must_use_prefix": true,
+    "cross_shot_prefix_reuse_forbidden": true
+  },
+  "generation_gate": {
+    "generation_allowed": false,
+    "comfyui_submit_allowed": false,
+    "retry_execution_allowed": false,
+    "next_gate": "operator_retry_v4_updated_implementation_plan_review_required",
+    "note": "Generation requires separate operator authorization after plan review approval"
+  },
+  "new_generation_performed": false,
+  "new_comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "workflow_mutated": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "current_state": "corrective_retry_v4_retry_implementation_plan_update_required",
+  "next_allowed_action": "operator_retry_v4_updated_implementation_plan_review_required"
+}

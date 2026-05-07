@@ -1,0 +1,76 @@
+{
+  "qa_task": "RC2-PRODCARDS3F",
+  "qa_type": "retry_frames_review",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "qa_timestamp": "2026-04-29T15:04:32.000000Z",
+  "frames_evaluated": 3,
+  "frame_paths": [
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000001.png",
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000002.png",
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000003.png"
+  ],
+  "qa_command_used": "existing identity_qa_report.json (qa-review requires scene MP4, not frames)",
+  "qa_command_explanation": "The qa-review CLI command expects a --scene parameter with an MP4 path. Since this task evaluates retry-generated frames without assembling them into a scene MP4 (per boundary conditions), the existing identity_qa_report.json is used as the QA result.",
+  "identity_qa_report_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\ep01_shot01_identity_qa_report.json",
+  "identity_qa_result": {
+    "identity_consistency_passed": false,
+    "verdict": "identity_drift",
+    "reason": "Inconsistent face counts across frames: [2, 3, 1]",
+    "recommended_action": "retry_generate_frames"
+  },
+  "visual_evaluation": {
+    "frame_files_exist": true,
+    "frame_manifest_exists": true,
+    "frame_manifest_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\frames_manifest.json",
+    "no_black_empty_frames": true,
+    "visual_artifacts_detected": true,
+    "visual_artifacts_details": [
+      "strong haze/fog washout visible in frames",
+      "visible horizontal banding / texture artifacts",
+      "possible texture-collapse / background flattening",
+      "one frame appears severely degraded / wallpaper-like"
+    ],
+    "character_consistency": "unstable",
+    "character_consistency_details": "Face counts vary across frames: [2, 3, 1], indicating identity drift",
+    "identity_drift": true,
+    "identity_drift_details": "Inconsistent face detection suggests character identity is not stable across the sequence",
+    "technical_quality": "poor",
+    "technical_quality_details": "Visual degradation, banding, and texture collapse indicate technical quality issues",
+    "acceptable_for_assemble_scene": false,
+    "acceptable_for_assemble_scene_reason": "Identity drift and visual quality issues make frames unsuitable for scene assembly",
+    "another_corrective_retry_required": true,
+    "retry_blocked": false,
+    "retry_status": "retry_gate_open=false (requires controlled authorization)"
+  },
+  "qa_verdict": "qa_failed",
+  "qa_score": 0.0,
+  "qa_reason": "Frames fail identity consistency checks and exhibit severe visual quality issues (haze, banding, texture collapse, identity drift)",
+  "recommended_next_action": "controlled_retry_decision",
+  "production_accepted": false,
+  "boundary_conditions_verified": {
+    "no_comfyui_execution": true,
+    "no_new_frames_generated": true,
+    "no_retry_generate_frames_executed": true,
+    "no_tts_executed": true,
+    "no_ffmpeg_executed": true,
+    "no_assemble_scene_executed": true,
+    "no_audio_attached": true,
+    "no_render_executed": true
+  },
+  "qa_criteria_evaluation": {
+    "1_frame_files_exist": "PASS - 3 frame files exist",
+    "2_frame_manifest_exists": "PASS - frames_manifest.json exists",
+    "3_no_black_empty_frames": "PASS - all frames are valid images",
+    "4_visual_artifacts_banding_texture_collapse": "FAIL - severe artifacts detected",
+    "5_character_consistency": "FAIL - inconsistent face counts [2, 3, 1]",
+    "6_identity_drift": "FAIL - identity drift detected",
+    "7_prompt_corrective_retry_alignment": "NOT_EVALUATED - requires prompt comparison",
+    "8_technical_quality": "FAIL - poor technical quality with degradation",
+    "9_acceptable_for_assemble_scene": "FAIL - not acceptable due to identity drift and quality issues",
+    "10_another_corrective_retry_required_or_blocked": "PARTIAL - retry required but gate closed (needs authorization)"
+  },
+  "overall_qa_decision": "qa_failed",
+  "qa_decision_reason": "Retry frames exhibit severe identity drift (inconsistent face counts) and visual quality issues (haze, banding, texture collapse). Frames are not acceptable for assemble_scene. Another corrective retry is required but retry_gate_open=false, indicating controlled authorization is needed."
+}

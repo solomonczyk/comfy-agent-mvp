@@ -1,0 +1,14 @@
+{
+  "stage": "controlled_retry_authorization_required",
+  "operator_decision": "approve_corrective_retry_implementation",
+  "corrective_retry_implementation_authorized": true,
+  "retry_generation_authorized": false,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "comfyui_execution": false,
+  "workflow_submitted": false,
+  "production_accepted": false,
+  "reason": "operator_approved_corrective_retry_package_preparation_after_visual_rejection",
+  "timestamp": "2026-05-05T10:07:29.870496",
+  "next_allowed_action": "corrective_retry_implementation_required"
+}

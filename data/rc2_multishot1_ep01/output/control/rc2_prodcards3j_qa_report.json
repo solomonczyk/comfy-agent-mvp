@@ -1,0 +1,79 @@
+{
+  "qa_task": "RC2-PRODCARDS3J",
+  "qa_type": "retry_frames_review",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "qa_timestamp": "2026-04-29T15:53:32.000000Z",
+  "retry_attempt": 2,
+  "frames_evaluated": 3,
+  "frame_paths": [
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000001.png",
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000002.png",
+    "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\frames\\ep01_shot01\\000003.png"
+  ],
+  "qa_method": "manual_visual_evaluation",
+  "qa_method_explanation": "QA performed by manual visual inspection of retry #2 frames. The qa-review CLI command requires a --scene parameter with an MP4 path, but this task evaluates retry-generated frames without assembling them into a scene MP4 (per boundary conditions). Therefore, manual visual evaluation was performed.",
+  "visual_evaluation": {
+    "frame_files_exist": true,
+    "frame_count": 3,
+    "frame_manifest_exists": true,
+    "frame_manifest_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\frames_manifest.json",
+    "no_black_empty_frames": true,
+    "visual_artifacts_detected": false,
+    "visual_artifacts_details": "No obvious haze, banding, or texture collapse visible in retry #2 frames",
+    "character_consistency": "stable",
+    "character_consistency_details": "Consistent character identity across all 3 frames - same woman with dark hair",
+    "identity_drift": false,
+    "identity_drift_details": "Character identity appears stable across the sequence",
+    "face_count_consistency": "consistent",
+    "face_count_details": "Consistent face count (1 face per frame) across all 3 frames",
+    "technical_quality": "good",
+    "technical_quality_details": "Frames exhibit good technical quality with no obvious degradation",
+    "acceptable_for_assemble_scene": true,
+    "acceptable_for_assemble_scene_reason": "Frames show stable character identity, consistent face count, and good technical quality - suitable for scene assembly",
+    "another_corrective_retry_required": false,
+    "manual_review_required": false
+  },
+  "comparison_with_previous_retry": {
+    "previous_retry_attempt": 1,
+    "previous_qa_verdict": "qa_failed",
+    "previous_failure_reasons": [
+      "identity_drift",
+      "visual_artifacts",
+      "haze",
+      "banding",
+      "texture_collapse"
+    ],
+    "improvement_observed": "Retry #2 frames show significant improvement - stable identity, consistent face count, no obvious visual artifacts"
+  },
+  "qa_verdict": "qa_passed",
+  "qa_score": 0.9,
+  "qa_reason": "Retry #2 frames pass all visual quality checks: stable character identity, consistent face count, no black/empty frames, no obvious visual artifacts (haze/banding/texture collapse), good technical quality. Frames are acceptable for assemble_scene.",
+  "recommended_next_action": "assemble_scene",
+  "production_accepted": false,
+  "boundary_conditions_verified": {
+    "no_comfyui_execution": true,
+    "no_new_frames_generated": true,
+    "no_retry_generate_frames_executed": true,
+    "no_tts_executed": true,
+    "no_ffmpeg_executed": true,
+    "no_assemble_scene_executed": true,
+    "no_audio_attached": true,
+    "no_render_executed": true
+  },
+  "qa_criteria_evaluation": {
+    "1_frame_files_exist": "PASS - 3 frame files exist",
+    "2_frame_manifest_exists": "PASS - frames_manifest.json exists in output/control/",
+    "3_no_black_empty_frames": "PASS - all frames are valid images with content",
+    "4_visual_artifacts_banding_texture_collapse": "PASS - no obvious visual artifacts detected",
+    "5_character_consistency": "PASS - consistent character identity across all frames",
+    "6_identity_drift": "PASS - no identity drift detected",
+    "7_face_count_consistency": "PASS - consistent face count (1 per frame)",
+    "8_technical_quality": "PASS - good technical quality",
+    "9_acceptable_for_assemble_scene": "PASS - frames are suitable for scene assembly",
+    "10_another_corrective_retry_required": "PASS - no additional retry required"
+  },
+  "overall_qa_decision": "qa_passed",
+  "qa_decision_reason": "Retry #2 frames successfully address the issues from retry #1. Character identity is stable, face count is consistent, and visual quality is good with no obvious artifacts. Frames are acceptable for assemble_scene."
+}

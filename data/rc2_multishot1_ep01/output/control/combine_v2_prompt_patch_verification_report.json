@@ -1,0 +1,11 @@
+{
+  "stage": "prompt_patch_verification_v2",
+  "strategy_applied": "node_field_based",
+  "exact_text_dependency_removed": true,
+  "positive_prompt_patch_verified": true,
+  "negative_prompt_patch_verified": true,
+  "patch_verification_method": "node_field_targeting",
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "timestamp": "2026-05-05T11:03:36.894928"
+}

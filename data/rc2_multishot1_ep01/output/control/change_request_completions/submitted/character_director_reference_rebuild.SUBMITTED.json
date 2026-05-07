@@ -1,0 +1,86 @@
+{
+  "completion_type": "reference_rebuild_completion",
+  "role": "Character Director",
+  "source_work_order": "character_director_reference_rebuild_order.json",
+  "blocked_shot": "shot01",
+  "completion_status": "submitted",
+  "execution_performed": true,
+  "selected_resolution": "reference_strategy_updated",
+  "allowed_resolutions": [
+    "reference_strategy_updated",
+    "identity_rules_updated",
+    "new_reference_required",
+    "workflow_change_required",
+    "blocked"
+  ],
+  "required_outputs": [
+    "updated_character_identity_rules",
+    "updated_reference_strategy",
+    "identity_acceptance_criteria",
+    "reference_rebuild_notes"
+  ],
+  "outputs_provided": {
+    "updated_character_identity_rules": {
+      "identity_preservation_level": "strict",
+      "reference_fidelity": "high",
+      "consistency_requirements": [
+        "pose",
+        "expression",
+        "lighting"
+      ],
+      "notes": "Identity rules updated to ensure strict character consistency"
+    },
+    "updated_reference_strategy": {
+      "strategy_type": "identity_first",
+      "reference_selection": "curated_identity_set",
+      "multi_reference_handling": "weighted_average",
+      "notes": "Reference strategy updated to prioritize identity preservation"
+    },
+    "identity_acceptance_criteria": {
+      "identity_similarity_threshold": 0.85,
+      "expression_match_required": true,
+      "pose_consistency_required": true,
+      "quality_threshold": 0.9
+    },
+    "reference_rebuild_notes": {
+      "rebuild_status": "strategy_updated",
+      "new_references_required": false,
+      "existing_references_sufficient": true,
+      "notes": "Reference strategy updated without requiring new reference images"
+    }
+  },
+  "updated_character_identity_rules": {
+    "identity_preservation_level": "strict",
+    "reference_fidelity": "high",
+    "consistency_requirements": [
+      "pose",
+      "expression",
+      "lighting"
+    ],
+    "notes": "Identity rules updated to ensure strict character consistency"
+  },
+  "updated_reference_strategy": {
+    "strategy_type": "identity_first",
+    "reference_selection": "curated_identity_set",
+    "multi_reference_handling": "weighted_average",
+    "notes": "Reference strategy updated to prioritize identity preservation"
+  },
+  "identity_acceptance_criteria": {
+    "identity_similarity_threshold": 0.85,
+    "expression_match_required": true,
+    "pose_consistency_required": true,
+    "quality_threshold": 0.9
+  },
+  "reference_rebuild_notes": {
+    "rebuild_status": "strategy_updated",
+    "new_references_required": false,
+    "existing_references_sufficient": true,
+    "notes": "Reference strategy updated without requiring new reference images"
+  },
+  "ready_for_resubmission": true,
+  "apply_performed": false,
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "created_at": "2026-04-28T14:58:01.517553Z"
+}

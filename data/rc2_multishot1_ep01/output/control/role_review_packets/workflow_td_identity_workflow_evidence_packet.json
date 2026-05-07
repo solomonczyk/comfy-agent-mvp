@@ -1,0 +1,44 @@
+{
+  "packet_type": "workflow_td_identity_workflow_review",
+  "role": "Workflow TD / ComfyUI Technical Director",
+  "blocked_shot": "shot01",
+  "issue": "identity_qa_failed",
+  "workflow_card_path": "cards\\workflows\\workflow_card.json",
+  "shot_card_path": "cards\\shots\\shot01.json",
+  "work_order_path": "output\\control\\work_orders\\workflow_td_identity_workflow_review.json",
+  "pending_decision_path": "output\\control\\role_decisions\\workflow_td_identity_workflow_decision.json",
+  "current_required_generation_mode": "gorynych_identity",
+  "legacy_reference_locked_allowed_for_production": false,
+  "known_workflow_requirements": {
+    "required_nodes": [
+      "IPAdapter",
+      "ControlNet",
+      "KSampler"
+    ],
+    "required_models": [
+      "character_reference_model",
+      "identity_preservation_model"
+    ],
+    "output_collection_contract": "frame_manifest.json"
+  },
+  "previous_failure_summary": {
+    "generation_mode": "gorynych_identity",
+    "identity_consistency_passed": false,
+    "blocking_reason": "identity_qa_failed"
+  },
+  "required_review_questions": [
+    "is gorynych_identity workflow fit for retry?",
+    "are required nodes/models available?",
+    "is output collection contract complete?",
+    "should the role approve_workflow, reject_workflow, request_missing_nodes, request_missing_models, or request_reference_rebuild?"
+  ],
+  "required_decision_output": "workflow_fit_approval or rejection/request",
+  "downstream_blocked": true,
+  "production_accepted": false,
+  "evidence_only": true,
+  "not_a_decision": true,
+  "created_at": "2026-04-28T12:43:48.803915Z",
+  "project_specific_data_allowed": true,
+  "source_data_origin": "production_cards",
+  "source_project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01"
+}

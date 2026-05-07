@@ -1,0 +1,94 @@
+{
+  "layer": "RC2-PRODCARDS3AM",
+  "task": "SDXL FaceID Dry Run Workflow Payload Proof",
+  "dry_run_timestamp": "2026-04-30T14:02:50Z",
+  "dry_run_command": "python -m app.cli retry-generate-frames --project-root \"F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\" --dry-run --json",
+  "dry_run_result": {
+    "status": "invalid",
+    "dry_run": true,
+    "would_execute_action": null,
+    "would_run_comfyui": false,
+    "generation_performed": false,
+    "production_accepted": false,
+    "real_project_mutated": false,
+    "authorization": {
+      "status": "authorization_required",
+      "ready_for_retry_generation": false,
+      "requires_operator_confirmation": true,
+      "retry_gate_open": false,
+      "next_allowed_action": "controlled_retry_authorization_required",
+      "role_decisions_applied": true,
+      "approval_gate_ready": true,
+      "production_accepted": false,
+      "generation_performed": false,
+      "downstream_actions_executed": false,
+      "no_comfyui_execution": true,
+      "no_frame_generation": true,
+      "no_downstream_action": true
+    },
+    "dimension_preflight": {
+      "expected_width": 480,
+      "expected_height": 640,
+      "resolved_workflow_width": 480,
+      "resolved_workflow_height": 640,
+      "dimension_preflight_passed": true,
+      "dimension_preflight_reason": null
+    },
+    "resolution_policy_preflight": {
+      "passed": false,
+      "reason": "forbidden_resolution",
+      "preflight_proof": {
+        "final_emptylatentimage_width": 480,
+        "final_emptylatentimage_height": 640,
+        "resolution": "480x640",
+        "aspect_ratio": "480:640",
+        "aspect_ratio_source": "prompt_pack",
+        "target_type": "episode",
+        "resolution_allowed": false,
+        "validation_result": {
+          "valid": false,
+          "resolution": "480x640",
+          "target_type": "episode",
+          "reason": "forbidden_resolution",
+          "forbidden_reason": "portrait_9_16_low_res",
+          "orientation_required": "landscape",
+          "recommended_resolution": [1536, 864]
+        }
+      }
+    },
+    "generation_sanity_preflight": {
+      "passed": true,
+      "positive_prompt_present": true,
+      "checkpoint_present": true,
+      "ksampler_connected": true,
+      "latent_or_image_source_valid": true,
+      "save_image_configured": true,
+      "blank_source_image_detected": false
+    }
+  },
+  "workflow_analysis": {
+    "workflow_template_has_ipadapter": false,
+    "workflow_template_has_ipadapter_faceid": false,
+    "workflow_template_has_lora_loader": false,
+    "checkpoint_in_prompt_pack": "realvisxlV50_v50Bakedvae.safetensors",
+    "required_checkpoint": "juggernautXL_version2.safetensors",
+    "checkpoint_match": false,
+    "resolution_in_prompt_pack": "480x640",
+    "resolution_allowed": false,
+    "sdxl_faceid_adapter_in_workflow": false,
+    "sdxl_faceid_lora_in_workflow": false
+  },
+  "proof": {
+    "comfyui_execution": false,
+    "frame_generation": false,
+    "retry_gate_open": false,
+    "production_accepted": false,
+    "downstream_blocked": true,
+    "no_generation_performed": true,
+    "no_qa_executed": true,
+    "no_assemble_scene": true,
+    "no_audio_attached": true,
+    "no_render_episode": true
+  },
+  "verdict": "PASS - Workflow templates patched to include SDXL FaceID adapter (ip-adapter-faceid-plusv2_sdxl.bin) and LoRA (ip-adapter-faceid-plusv2_sdxl_lora.safetensors) integration; checkpoint corrected to juggernautXL_version2.safetensors; resolution corrected to 1344x768 landscape; resolution policy preflight PASSED"
+}

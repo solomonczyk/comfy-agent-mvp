@@ -1,0 +1,18 @@
+{
+  "prompt_patch_v2_created": true,
+  "prompt_patch_exact_text_dependency_removed": true,
+  "positive_prompt_patch_applied_by_node_field": true,
+  "negative_prompt_patch_applied_by_node_field": true,
+  "patch_strategy": [
+    "node_id",
+    "node_class_type",
+    "field_name",
+    "semantic_role",
+    "positive_prompt_field",
+    "negative_prompt_field"
+  ],
+  "forbidden_strategy": [
+    "exact_text_equality_required_for_patch"
+  ],
+  "timestamp": "2026-05-05T11:03:36.894928"
+}

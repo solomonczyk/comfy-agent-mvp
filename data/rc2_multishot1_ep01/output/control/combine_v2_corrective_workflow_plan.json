@@ -1,0 +1,19 @@
+{
+  "plan_type": "corrective_workflow_plan",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "required_corrections": {
+    "model_selection_review": true,
+    "sampler_parameter_adjustment": true,
+    "step_count_optimization": true,
+    "cfg_scale_review": true
+  },
+  "workflow_elements_to_review": [
+    "checkpoint_selection",
+    "sampler_name",
+    "scheduler",
+    "steps",
+    "cfg",
+    "denoise_strength"
+  ],
+  "generation_allowed": false
+}

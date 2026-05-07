@@ -1,0 +1,17 @@
+{
+  "stage": "shot_workflow_binding_validation",
+  "requested_shot_id": "shot02",
+  "workflow_shot_id": "ep01_shot01",
+  "actual_submitted_workflow_path": "output\\control\\ep01_shot01_submitted_workflow.json",
+  "cross_shot_workflow_reuse_detected": true,
+  "cross_shot_workflow_reuse_blocked": true,
+  "silent_cross_shot_reuse_allowed": false,
+  "fallback_minimal_workflow_forbidden": true,
+  "binding_policy_applied": true,
+  "validation_result": "blocked",
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "timestamp": "2026-05-05T11:03:29.421128"
+}

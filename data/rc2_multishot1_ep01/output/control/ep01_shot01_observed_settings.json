@@ -1,0 +1,21 @@
+{
+  "observed_settings": {
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "sampler_name": "dpmpp_sde",
+    "scheduler": "karras",
+    "steps": 20,
+    "cfg": 7.5,
+    "width": 1344,
+    "height": 768,
+    "batch_size": 1,
+    "denoise": 0.5,
+    "negative_prompt": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence",
+    "raw_nodes": {
+      "source": "patched_workflow_before_submit",
+      "checkpoint_node": "4",
+      "ksampler_node": "3",
+      "latent_node": "5",
+      "negative_prompt_node": "7"
+    }
+  }
+}

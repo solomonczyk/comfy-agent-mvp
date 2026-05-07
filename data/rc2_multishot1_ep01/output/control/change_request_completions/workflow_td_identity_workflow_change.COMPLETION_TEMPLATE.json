@@ -1,0 +1,32 @@
+{
+  "completion_type": "workflow_change_completion",
+  "role": "Workflow TD / ComfyUI Technical Director",
+  "source_work_order": "workflow_td_identity_workflow_change_order.json",
+  "blocked_shot": "shot01",
+  "completion_status": "template",
+  "execution_performed": false,
+  "selected_resolution": null,
+  "allowed_resolutions": [
+    "workflow_strategy_updated",
+    "missing_nodes_reported",
+    "missing_models_reported",
+    "reference_rebuild_required",
+    "blocked"
+  ],
+  "required_outputs": [
+    "updated_workflow_strategy",
+    "workflow_audit",
+    "required_nodes",
+    "required_models",
+    "preflight_result",
+    "output_collection_contract"
+  ],
+  "current_required_generation_mode": "gorynych_identity",
+  "legacy_reference_locked_allowed_for_production": false,
+  "ready_for_resubmission": false,
+  "apply_performed": false,
+  "retry_gate_open": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "created_at": "2026-04-28T14:26:07.680233Z"
+}

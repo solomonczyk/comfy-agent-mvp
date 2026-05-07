@@ -1,0 +1,18 @@
+{
+  "stage": "operator_retry_generation_authorization_required",
+  "operator_review_required": true,
+  "recommended_operator_decision": "approve_one_corrective_retry_generation",
+  "operator_actions": [
+    "approve_one_corrective_retry_generation",
+    "request_corrective_retry_package_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "retry_generation_authorized": false,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-05T10:11:11.386655",
+  "next_allowed_action": "operator_retry_generation_authorization_required"
+}

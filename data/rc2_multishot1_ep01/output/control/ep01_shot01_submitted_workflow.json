@@ -1,0 +1,92 @@
+{
+  "3": {
+    "inputs": {
+      "seed": 2345109629,
+      "steps": 20,
+      "cfg": 7.5,
+      "sampler_name": "dpmpp_sde",
+      "scheduler": "karras",
+      "denoise": 0.5,
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "4": {
+    "inputs": {
+      "ckpt_name": "juggernautXL_version2.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "5": {
+    "inputs": {
+      "width": 1344,
+      "height": 768,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": "Alya, beautiful young woman with long flowing silver hair, wearing elegant white flowing dress, standing in sun-dappled forest clearing surrounded by colorful wildflowers, soft golden light filtering through canopy, dreamlike atmosphere, peaceful contemplative expression gazing at distant mountain peak, cinematic lighting, photorealistic, highly detailed, masterpiece, 8k, serene forest setting",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, floating limbs, disconnected limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, dark, harsh lighting, urban, buildings, modern, weapons, violence",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "filename_prefix": "rc2_multishot1_ep01_ep01_shot01_generate_frames_1777576340"
+    },
+    "class_type": "SaveImage"
+  },
+  "10": {
+    "inputs": {
+      "lora_stack": []
+    },
+    "class_type": "LoraLoader"
+  }
+}
