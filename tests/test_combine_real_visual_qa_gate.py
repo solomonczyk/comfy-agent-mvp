@@ -665,3 +665,101 @@ def test_v4_preflight_production_accepted_false_hard_boundary(tmp_path):
         with open(control_dir / fname) as f:
             data = json.load(f)
         assert data.get("production_accepted") is False, f"{fname}: production_accepted must be False"
+
+
+# ── RC-COMBINE-V2-2721-2780: Visual Correction Plan Approval Gate ──────────────
+
+def test_visual_correction_plan_review_state_valid():
+    """State machine: operator_retry_v4_visual_correction_plan_review_required is a valid state."""
+    sm = CombineStateMachine()
+    assert sm.is_valid_state("operator_retry_v4_visual_correction_plan_review_required")
+
+
+def test_corrective_retry_v4_implementation_plan_update_state_valid():
+    """State machine: corrective_retry_v4_retry_implementation_plan_update_required is a valid state."""
+    sm = CombineStateMachine()
+    assert sm.is_valid_state("corrective_retry_v4_retry_implementation_plan_update_required")
+
+
+def test_operator_retry_v4_updated_implementation_plan_review_state_valid():
+    """State machine: operator_retry_v4_updated_implementation_plan_review_required is a valid state."""
+    sm = CombineStateMachine()
+    assert sm.is_valid_state("operator_retry_v4_updated_implementation_plan_review_required")
+
+
+def test_visual_correction_plan_review_to_implementation_plan_update_transition():
+    """State machine: visual correction plan review -> implementation plan update allowed."""
+    sm = CombineStateMachine()
+    assert sm.can_transition(
+        "operator_retry_v4_visual_correction_plan_review_required",
+        "corrective_retry_v4_retry_implementation_plan_update_required",
+    )
+
+
+def test_implementation_plan_update_to_operator_review_transition():
+    """State machine: implementation plan update -> operator review required allowed."""
+    sm = CombineStateMachine()
+    assert sm.can_transition(
+        "corrective_retry_v4_retry_implementation_plan_update_required",
+        "operator_retry_v4_updated_implementation_plan_review_required",
+    )
+
+
+def test_updated_plan_review_self_loop():
+    """State machine: operator_retry_v4_updated_implementation_plan_review_required self-loop allowed."""
+    sm = CombineStateMachine()
+    assert sm.can_transition(
+        "operator_retry_v4_updated_implementation_plan_review_required",
+        "operator_retry_v4_updated_implementation_plan_review_required",
+    )
+
+
+def test_visual_qa_gate_requires_approval_before_implementation_plan_update(tmp_path):
+    """CLI: update command blocks if visual correction plan not approved."""
+    import argparse
+    from app.cli import combine_update_corrective_retry_v4_implementation_plan
+
+    control_dir = tmp_path / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    # Only write plan but no review — should block
+    with open(control_dir / "combine_v2_corrective_retry_v4_visual_correction_plan.json", "w") as f:
+        json.dump({"failed_reasons": [], "retry_prompt_patch": {}, "production_accepted": False}, f)
+    with open(control_dir / "artifact_index.json", "w") as f:
+        json.dump({
+            "current_state": "operator_retry_v4_visual_correction_plan_review_required",
+            "next_allowed_action": "corrective_retry_v4_retry_implementation_plan_update_required",
+            "production_accepted": False,
+        }, f)
+
+    args = argparse.Namespace(project_root=str(tmp_path), shot_id="shot02", json=True)
+    rc = combine_update_corrective_retry_v4_implementation_plan(args)
+    assert rc == 1
+
+
+def test_visual_qa_gate_approved_allows_implementation_plan_update(tmp_path):
+    """CLI: update command succeeds when visual correction plan is approved."""
+    import argparse
+    from app.cli import combine_update_corrective_retry_v4_implementation_plan
+
+    control_dir = tmp_path / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    with open(control_dir / "combine_v2_operator_retry_v4_visual_correction_plan_review.json", "w") as f:
+        json.dump({
+            "task_id": "RC-COMBINE-V2-2661-2720",
+            "operator_decision": "approve_visual_correction_plan",
+            "visual_correction_plan_approved": True,
+        }, f)
+    with open(control_dir / "combine_v2_corrective_retry_v4_visual_correction_plan.json", "w") as f:
+        json.dump({"failed_reasons": ["subject_too_small"], "retry_prompt_patch": {}, "production_accepted": False}, f)
+    with open(control_dir / "artifact_index.json", "w") as f:
+        json.dump({
+            "current_state": "operator_retry_v4_visual_correction_plan_review_required",
+            "next_allowed_action": "corrective_retry_v4_retry_implementation_plan_update_required",
+            "production_accepted": False,
+        }, f)
+    with open(control_dir / "episode_ledger.json", "w") as f:
+        json.dump([], f)
+
+    args = argparse.Namespace(project_root=str(tmp_path), shot_id="shot02", json=True)
+    rc = combine_update_corrective_retry_v4_implementation_plan(args)
+    assert rc == 0

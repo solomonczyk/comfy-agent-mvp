@@ -8241,6 +8241,27 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2721-2780 — combine-update-corrective-retry-v4-implementation-plan subcommand
+    combine_update_corrective_retry_v4_implementation_plan_parser = subparsers.add_parser(
+        "combine-update-corrective-retry-v4-implementation-plan",
+        help="Update retry V4 implementation plan from approved visual correction plan"
+    )
+    combine_update_corrective_retry_v4_implementation_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_update_corrective_retry_v4_implementation_plan_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_update_corrective_retry_v4_implementation_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1341-1400 — combine-run-corrective-retry-v3-visual-qa-preflight subcommand
     combine_run_corrective_retry_v3_visual_qa_preflight_parser = subparsers.add_parser(
         "combine-run-corrective-retry-v3-visual-qa-preflight",
@@ -9788,6 +9809,8 @@ def main() -> int:
         return combine_build_retry_v4_stub_generation_fix_plan(args)
     elif args.command == "combine-build-retry-v4-plan-review-packet":
         return combine_build_retry_v4_plan_review_packet(args)
+    elif args.command == "combine-update-corrective-retry-v4-implementation-plan":
+        return combine_update_corrective_retry_v4_implementation_plan(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
@@ -28036,6 +28059,413 @@ def combine_review_corrective_retry_v4_visual_correction_plan(args: argparse.Nam
         print(f"Current State: {new_state}")
         print(f"Next Allowed Action: {new_next_allowed_action}")
         print(f"Production Accepted: False")
+
+    return 0
+
+
+def combine_update_corrective_retry_v4_implementation_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2721-2780 — Update Retry V4 Implementation Plan from Approved Visual Correction Plan.
+
+    Transforms approved visual correction requirements into a concrete retry implementation plan.
+    No generation, no ComfyUI submit, no retry execution.
+
+    Exit codes:
+    - 0: updated implementation plan created successfully
+    - 1: blocker (missing review, not approved, invalid state)
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+    task_id = "RC-COMBINE-V2-2721-2780"
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        return {}
+
+    def _blocker(code: str, msg: str) -> int:
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": code, "message": msg}))
+        else:
+            print(f"BLOCKER: {code} — {msg}")
+        return 1
+
+    # 1. Load required artifacts
+    review_path = control_dir / "combine_v2_operator_retry_v4_visual_correction_plan_review.json"
+    plan_path = control_dir / "combine_v2_corrective_retry_v4_visual_correction_plan.json"
+    artifact_index_path = control_dir / "artifact_index.json"
+
+    operator_review = _load_json(review_path)
+    visual_correction_plan = _load_json(plan_path)
+    artifact_index = _load_json(artifact_index_path)
+
+    # 2. Gate: operator review artifact must exist
+    if not operator_review:
+        return _blocker(
+            "VISUAL_CORRECTION_PLAN_REVIEW_MISSING",
+            "combine_v2_operator_retry_v4_visual_correction_plan_review.json not found.",
+        )
+
+    # 3. Gate: visual correction plan must exist
+    if not visual_correction_plan:
+        return _blocker(
+            "VISUAL_CORRECTION_PLAN_MISSING",
+            "combine_v2_corrective_retry_v4_visual_correction_plan.json not found.",
+        )
+
+    # 4. Gate: operator_decision must be approve_visual_correction_plan
+    if operator_review.get("operator_decision") != "approve_visual_correction_plan":
+        return _blocker(
+            "VISUAL_CORRECTION_PLAN_NOT_APPROVED",
+            f"operator_decision={operator_review.get('operator_decision')}. Must be approve_visual_correction_plan.",
+        )
+
+    # 5. Gate: visual_correction_plan_approved must be true
+    if not operator_review.get("visual_correction_plan_approved", False):
+        return _blocker(
+            "VISUAL_CORRECTION_PLAN_NOT_APPROVED",
+            "visual_correction_plan_approved is not true in operator review artifact.",
+        )
+
+    # 6. Gate: state machine allows this action
+    current_state = artifact_index.get("current_state", "")
+    next_allowed = artifact_index.get("next_allowed_action", "")
+    allowed_states = [
+        "operator_retry_v4_visual_correction_plan_review_required",
+        "corrective_retry_v4_retry_implementation_plan_update_required",
+    ]
+    allowed_next = [
+        "corrective_retry_v4_retry_implementation_plan_update_required",
+    ]
+    if current_state not in allowed_states and next_allowed not in allowed_next:
+        return _blocker(
+            "RETRY_IMPLEMENTATION_PLAN_UPDATE_NOT_ALLOWED",
+            f"current_state={current_state}, next_allowed_action={next_allowed}. "
+            f"Expected state in {allowed_states} or next_allowed_action in {allowed_next}.",
+        )
+
+    # 7. Gate: production_accepted must be false
+    if artifact_index.get("production_accepted", False):
+        return _blocker(
+            "RETRY_IMPLEMENTATION_PLAN_UPDATE_NOT_ALLOWED",
+            "production_accepted is true. Cannot update implementation plan.",
+        )
+
+    # 8. Extract source data
+    failed_reasons = visual_correction_plan.get("failed_reasons", [])
+    retry_prompt_patch = visual_correction_plan.get("retry_prompt_patch", {})
+    correction_mapping = visual_correction_plan.get("correction_mapping", {})
+    graph_recommendations = visual_correction_plan.get("graph_recommendations", {})
+
+    # 9. Build updated implementation plan
+    updated_plan = {
+        "task_id": task_id,
+        "plan_type": "corrective_retry_v4_updated_implementation_plan",
+        "stage": "corrective_retry_v4_retry_implementation_plan_update_required",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "source_visual_qa_failed_reasons": failed_reasons,
+        "approved_visual_correction_plan_id": task_id,
+        "approved_visual_correction_plan_path": "output/control/combine_v2_corrective_retry_v4_visual_correction_plan.json",
+        "approved_operator_review_id": operator_review.get("task_id", "RC-COMBINE-V2-2661-2720"),
+        "approved_operator_review_path": "output/control/combine_v2_operator_retry_v4_visual_correction_plan_review.json",
+        "target_shot_id": shot_id,
+        "runtime_saveimage_prefix": f"combine_v2_corrective_retry_v4_{shot_id}",
+        "collector_uses_runtime_saveimage_prefix": True,
+        "old_shot01_outputs_forbidden": True,
+        "stub_outputs_forbidden": True,
+        "production_accepted": False,
+        "prompt_patch": {
+            "positive_prompt_additions": [
+                "medium shot / medium-full shot",
+                "subject clearly dominant in frame",
+                "subject occupies 40-60% of frame height",
+                "tighter cinematic framing",
+                "character-focused composition",
+                "clear focal point",
+                "reduced empty background dominance",
+                "shot02 intent explicitly represented",
+            ],
+            "negative_prompt_additions": [
+                "tiny person",
+                "distant subject",
+                "empty landscape",
+                "excessive empty space",
+                "subject lost in background",
+                "weak composition",
+                "generic background-only frame",
+            ],
+            "source": "approved_visual_correction_plan",
+        },
+        "camera_framing": {
+            "target_subject_height_ratio_min": 0.40,
+            "target_subject_height_ratio_max": 0.60,
+            "hard_reject_subject_height_ratio_below": 0.30,
+            "target_empty_space_ratio_max": 0.45,
+            "framing_style": "medium_shot_or_medium_full_shot",
+            "subject_priority": "primary_focal_point",
+        },
+        "subject_scale_requirements": retry_prompt_patch.get(
+            "subject_scale_requirements",
+            ["subject height >= 40% of frame", "reject if subject < 30% of frame"],
+        ),
+        "empty_space_requirements": retry_prompt_patch.get(
+            "camera_framing_requirements",
+            [
+                "empty space <= 45% of frame",
+                "subject dominant in composition",
+                "shot must express specific intent, not generic",
+            ],
+        ),
+        "composition_requirements": retry_prompt_patch.get(
+            "composition_requirements",
+            [
+                "subject is clear focal point",
+                "balanced cinematic framing",
+                "avoid flat backgrounds",
+            ],
+        ),
+        "rejection_criteria": retry_prompt_patch.get(
+            "rejection_criteria",
+            [
+                "subject smaller than 30% of frame height",
+                "empty space exceeds 45% of frame",
+            ],
+        ),
+        "pre_submit_validation_contract": {
+            "prompt_patch_present": True,
+            "subject_scale_requirements_present": True,
+            "empty_space_requirements_present": True,
+            "composition_requirements_present": True,
+            "runtime_prefix_consistency_required": True,
+            "max_generations": 1,
+            "dry_run_for_preflight_only": True,
+            "real_submit_requires_separate_operator_authorization": True,
+        },
+        "post_submit_validation_contract": {
+            "asset_exists": True,
+            "asset_readable": True,
+            "sha256_present": True,
+            "stub_asset_detected": False,
+            "old_shot01_asset_used": False,
+            "runtime_prefix_match_required": True,
+            "visual_qa_required_after_generation": True,
+            "production_accepted": False,
+        },
+        "runtime_prefix_invariants": {
+            "saveimage_prefix": f"combine_v2_corrective_retry_v4_{shot_id}",
+            "collector_must_use_prefix": True,
+            "cross_shot_prefix_reuse_forbidden": True,
+        },
+        "generation_gate": {
+            "generation_allowed": False,
+            "comfyui_submit_allowed": False,
+            "retry_execution_allowed": False,
+            "next_gate": "operator_retry_v4_updated_implementation_plan_review_required",
+            "note": "Generation requires separate operator authorization after plan review approval",
+        },
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": "corrective_retry_v4_retry_implementation_plan_update_required",
+        "next_allowed_action": "operator_retry_v4_updated_implementation_plan_review_required",
+    }
+
+    plan_out_path = control_dir / "combine_v2_corrective_retry_v4_updated_implementation_plan.json"
+    with open(plan_out_path, "w", encoding="utf-8") as f:
+        json.dump(updated_plan, f, indent=2)
+
+    # 10. Build operator review packet for updated implementation plan
+    review_packet = {
+        "task_id": task_id,
+        "packet_type": "corrective_retry_v4_updated_implementation_plan_review_packet",
+        "stage": "operator_retry_v4_updated_implementation_plan_review_required",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "updated_implementation_plan_path": "output/control/combine_v2_corrective_retry_v4_updated_implementation_plan.json",
+        "source_visual_correction_plan_path": "output/control/combine_v2_corrective_retry_v4_visual_correction_plan.json",
+        "source_operator_review_path": "output/control/combine_v2_operator_retry_v4_visual_correction_plan_review.json",
+        "summary": {
+            "prompt_patch_present": True,
+            "negative_prompt_patch_present": True,
+            "subject_scale_requirements_present": True,
+            "empty_space_requirements_present": True,
+            "composition_requirements_present": True,
+            "pre_submit_contract_present": True,
+            "post_submit_contract_present": True,
+            "runtime_prefix_invariants_present": True,
+            "generation_gate_closed": True,
+        },
+        "operator_actions": [
+            "approve_updated_retry_implementation_plan",
+            "request_updated_retry_implementation_plan_changes",
+            "reject_updated_retry_implementation_plan",
+        ],
+        "hard_boundary": {
+            "generation_allowed": False,
+            "comfyui_submit_allowed": False,
+            "retry_execution_allowed": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "production_accepted": False,
+        },
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": "corrective_retry_v4_retry_implementation_plan_update_required",
+        "next_allowed_action": "operator_retry_v4_updated_implementation_plan_review_required",
+    }
+
+    packet_out_path = control_dir / "combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json"
+    with open(packet_out_path, "w", encoding="utf-8") as f:
+        json.dump(review_packet, f, indent=2)
+
+    # 11. Update artifact_index.json
+    artifact_index["current_state"] = "corrective_retry_v4_retry_implementation_plan_update_required"
+    artifact_index["next_allowed_action"] = "operator_retry_v4_updated_implementation_plan_review_required"
+    artifact_index["updated_retry_implementation_plan_created"] = True
+    artifact_index["production_accepted"] = False
+    artifact_index["downstream_blocked"] = True
+    artifact_index["new_generation_performed"] = False
+    artifact_index["new_comfyui_submit_executed"] = False
+    artifact_index["retry_attempted"] = False
+
+    if "stage_results" not in artifact_index:
+        artifact_index["stage_results"] = []
+
+    artifact_index["stage_results"].append({
+        "stage": "corrective_retry_v4_retry_implementation_plan_update_required",
+        "success": True,
+        "message": "Updated implementation plan created from approved visual correction plan",
+        "artifacts": [
+            "combine_v2_corrective_retry_v4_updated_implementation_plan.json",
+            "combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json",
+        ],
+        "metadata": {
+            "task_id": task_id,
+            "shot_id": shot_id,
+            "updated_retry_implementation_plan_created": True,
+            "generation_gate_opened": False,
+            "new_generation_performed": False,
+            "new_comfyui_submit_executed": False,
+            "retry_attempted": False,
+            "workflow_mutated": False,
+            "production_accepted": False,
+            "next_allowed_action": "operator_retry_v4_updated_implementation_plan_review_required",
+        },
+        "timestamp": timestamp,
+        "no_generation_performed": True,
+    })
+
+    with open(artifact_index_path, "w", encoding="utf-8") as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 12. Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, "r", encoding="utf-8") as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get("events", data.get("records", []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "task_id": task_id,
+        "event_type": "corrective_retry_v4_updated_implementation_plan_created",
+        "stage": "corrective_retry_v4_retry_implementation_plan_update_required",
+        "shot_id": shot_id,
+        "updated_retry_implementation_plan_created": True,
+        "approved_visual_correction_plan_used": True,
+        "operator_visual_correction_plan_review_used": True,
+        "prompt_patch_requirements_created": True,
+        "negative_prompt_requirements_created": True,
+        "subject_scale_requirements_created": True,
+        "empty_space_requirements_created": True,
+        "composition_requirements_created": True,
+        "pre_submit_contract_created": True,
+        "post_submit_contract_created": True,
+        "operator_review_packet_created": True,
+        "generation_gate_opened": False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "operator_retry_v4_updated_implementation_plan_review_required",
+        "timestamp": timestamp,
+    })
+
+    with open(ledger_path, "w", encoding="utf-8") as f:
+        json.dump(ledger, f, indent=2)
+
+    result = {
+        "task_id": task_id,
+        "status": "ok",
+        "updated_retry_implementation_plan_created": True,
+        "approved_visual_correction_plan_used": True,
+        "operator_visual_correction_plan_review_used": True,
+        "prompt_patch_requirements_created": True,
+        "negative_prompt_requirements_created": True,
+        "subject_scale_requirements_created": True,
+        "target_subject_height_ratio": "0.40-0.60",
+        "minimum_subject_height_ratio": "0.30",
+        "empty_space_requirements_created": True,
+        "target_empty_space_ratio_max": "0.45",
+        "composition_requirements_created": True,
+        "pre_submit_contract_created": True,
+        "post_submit_contract_created": True,
+        "operator_review_packet_created": True,
+        "generation_gate_opened": False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "workflow_submitted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": "corrective_retry_v4_retry_implementation_plan_update_required",
+        "next_allowed_action": "operator_retry_v4_updated_implementation_plan_review_required",
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v4_updated_implementation_plan.json",
+            "output/control/combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Updated Retry V4 Implementation Plan: CREATED")
+        print(f"Shot: {shot_id}")
+        print(f"Prompt Patch Requirements: Created")
+        print(f"Subject Scale Requirements: Created (0.40-0.60 target, 0.30 minimum)")
+        print(f"Empty Space Requirements: Created (max 0.45)")
+        print(f"Composition Requirements: Created")
+        print(f"Pre-Submit Contract: Created")
+        print(f"Post-Submit Contract: Created")
+        print(f"Operator Review Packet: Created")
+        print(f"Generation Gate Opened: False")
+        print(f"Production Accepted: False")
+        print(f"Next Allowed Action: operator_retry_v4_updated_implementation_plan_review_required")
 
     return 0
 

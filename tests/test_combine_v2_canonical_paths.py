@@ -138,3 +138,90 @@ class TestV4VisualQAPreflightCanonicalPaths:
 
         root_jsons = list(project_root.glob("*.json"))
         assert root_jsons == [], f"Stray JSON at project root: {root_jsons}"
+
+
+class TestUpdatedImplementationPlanCanonicalPaths:
+    """Updated implementation plan artifacts are written to output/control/ only."""
+
+    def _setup(self, tmp_path):
+        project_root = tmp_path / "ep01"
+        control_dir = project_root / "output" / "control"
+        control_dir.mkdir(parents=True)
+        import json
+        (control_dir / "combine_v2_operator_retry_v4_visual_correction_plan_review.json").write_text(json.dumps({
+            "task_id": "RC-COMBINE-V2-2661-2720",
+            "operator_decision": "approve_visual_correction_plan",
+            "visual_correction_plan_approved": True,
+        }), encoding="utf-8")
+        (control_dir / "combine_v2_corrective_retry_v4_visual_correction_plan.json").write_text(json.dumps({
+            "failed_reasons": ["subject_too_small"],
+            "retry_prompt_patch": {},
+            "production_accepted": False,
+        }), encoding="utf-8")
+        (control_dir / "artifact_index.json").write_text(json.dumps({
+            "current_state": "operator_retry_v4_visual_correction_plan_review_required",
+            "next_allowed_action": "corrective_retry_v4_retry_implementation_plan_update_required",
+            "production_accepted": False,
+        }), encoding="utf-8")
+        (control_dir / "episode_ledger.json").write_text("[]", encoding="utf-8")
+        return project_root, control_dir
+
+    def test_updated_plan_written_to_control_dir(self, tmp_path):
+        """Updated implementation plan JSON is in output/control/, not project root."""
+        import argparse
+        from app.cli import combine_update_corrective_retry_v4_implementation_plan
+        project_root, control_dir = self._setup(tmp_path)
+
+        combine_update_corrective_retry_v4_implementation_plan(argparse.Namespace(
+            project_root=str(project_root), shot_id="shot02", json=False))
+
+        assert (control_dir / "combine_v2_corrective_retry_v4_updated_implementation_plan.json").exists()
+        assert not (project_root / "combine_v2_corrective_retry_v4_updated_implementation_plan.json").exists()
+
+    def test_review_packet_written_to_control_dir(self, tmp_path):
+        """Operator review packet JSON is in output/control/, not project root."""
+        import argparse
+        from app.cli import combine_update_corrective_retry_v4_implementation_plan
+        project_root, control_dir = self._setup(tmp_path)
+
+        combine_update_corrective_retry_v4_implementation_plan(argparse.Namespace(
+            project_root=str(project_root), shot_id="shot02", json=False))
+
+        assert (control_dir / "combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json").exists()
+        assert not (project_root / "combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json").exists()
+
+    def test_no_stray_json_at_project_root(self, tmp_path):
+        """No stray JSON artifacts written to project root by update command."""
+        import argparse
+        from app.cli import combine_update_corrective_retry_v4_implementation_plan
+        project_root, control_dir = self._setup(tmp_path)
+
+        combine_update_corrective_retry_v4_implementation_plan(argparse.Namespace(
+            project_root=str(project_root), shot_id="shot02", json=False))
+
+        root_jsons = list(project_root.glob("*.json"))
+        assert root_jsons == [], f"Stray JSON at project root: {root_jsons}"
+
+    def test_artifact_index_updated_in_control_dir(self, tmp_path):
+        """artifact_index.json is updated in canonical output/control/ path."""
+        import argparse
+        from app.cli import combine_update_corrective_retry_v4_implementation_plan
+        project_root, control_dir = self._setup(tmp_path)
+
+        combine_update_corrective_retry_v4_implementation_plan(argparse.Namespace(
+            project_root=str(project_root), shot_id="shot02", json=False))
+
+        assert (control_dir / "artifact_index.json").exists()
+        assert not (project_root / "artifact_index.json").exists()
+
+    def test_episode_ledger_updated_in_control_dir(self, tmp_path):
+        """episode_ledger.json is updated in canonical output/control/ path."""
+        import argparse
+        from app.cli import combine_update_corrective_retry_v4_implementation_plan
+        project_root, control_dir = self._setup(tmp_path)
+
+        combine_update_corrective_retry_v4_implementation_plan(argparse.Namespace(
+            project_root=str(project_root), shot_id="shot02", json=False))
+
+        assert (control_dir / "episode_ledger.json").exists()
+        assert not (project_root / "episode_ledger.json").exists()

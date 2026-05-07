@@ -53,6 +53,7 @@ class CombineStateMachine:
         "corrective_retry_v4_visual_correction_plan_required",
         "operator_retry_v4_visual_correction_plan_review_required",
         "corrective_retry_v4_retry_implementation_plan_update_required",
+        "operator_retry_v4_updated_implementation_plan_review_required",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
         "real_generation_payload_review",
@@ -239,6 +240,14 @@ class CombineStateMachine:
             "operator_retry_v4_visual_correction_plan_review_required",  # Self-loop: halted pending operator
             "corrective_retry_v4_plan_required",  # Operator approved - proceed to V4 plan
             "corrective_retry_v4_retry_implementation_plan_update_required",  # Operator approved visual correction plan
+            "blocked_manual_review"
+        },
+        "corrective_retry_v4_retry_implementation_plan_update_required": {
+            "operator_retry_v4_updated_implementation_plan_review_required"
+        },
+        "operator_retry_v4_updated_implementation_plan_review_required": {
+            "operator_retry_v4_updated_implementation_plan_review_required",  # Self-loop: halted pending operator
+            "corrective_retry_v4_retry_implementation_plan_update_required",  # Request changes — back to update
             "blocked_manual_review"
         },
         "real_generation_readiness_required": {
