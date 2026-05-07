@@ -1,6 +1,6 @@
 {
-  "current_state": "v8_generation_reexecution_authorization_required",
-  "next_allowed_action": "v8_generation_reexecution_authorization_required",
+  "current_state": "v8_quality_locked_generation_authorization_required",
+  "next_allowed_action": "v8_quality_locked_generation_authorization_required",
   "generation_runtime_blocked": true,
   "blocker": "V8_GENERATION_TIMEOUT",
   "blocker_summary": "V8 quality-locked generation attempt timed out / was dry-run only. No real ComfyUI submit occurred. No prompt_id generated. No native output produced. State repaired from v8_operator_visual_review_required to v8_generation_runtime_blocked. Runtime recovery required before any further generation.",
@@ -206,5 +206,12 @@
   "new_comfyui_submit_executed": false,
   "visual_qa_executed": false,
   "operator_visual_decision_created": false,
-  "v8_reexecution_authorization_gate_created": true
+  "v8_reexecution_authorization_gate_created": true,
+  "v8_operator_reexecution_authorization_created": true,
+  "v8_real_generation_attempted": true,
+  "v8_real_generation_result": "combine_v2_v8_real_generation_result.json",
+  "v8_real_generation_outputs_manifest": "combine_v2_v8_real_generation_outputs_manifest.json",
+  "v8_operator_visual_review_packet": null,
+  "v8_real_generation_success": false,
+  "failure_code": "server_unavailable"
 }

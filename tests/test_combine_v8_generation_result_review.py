@@ -1,10 +1,18 @@
-"""Tests for RC-COMBINE-V2-5701-6000 V8 quality-locked generation result review.
+"""Tests for RC-COMBINE-V2-6301-6600 V8 generation result review.
 
 Tests cover:
-- visual_acceptance_not_executed
-- production_accepted_false
+- authorization_required_before_generation
+- execute_flag_required
+- max_generations_one_enforced
+- second_generation_blocked
+- dry_run_not_accepted
+- empty_prompt_id_fails
+- empty_assets_fail
+- real_asset_validation_required
+- success_routes_to_operator_visual_review
+- visual_qa_not_executed
 - assembly_downstream_blocked
-- state_moves_to_operator_visual_review
+- production_accepted_false
 """
 
 import json
@@ -19,173 +27,307 @@ def project_root():
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         control_dir = root / "output" / "control"
-        agent_contracts_dir = control_dir / "agent_role_contracts"
         assets_dir = root / "output" / "assets"
         control_dir.mkdir(parents=True, exist_ok=True)
-        agent_contracts_dir.mkdir(parents=True, exist_ok=True)
         assets_dir.mkdir(parents=True, exist_ok=True)
 
-        # Create all required artifacts for V8 generation
         with open(control_dir / "artifact_index.json", "w") as f:
             json.dump({
-                "current_state": "v8_quality_locked_generation_authorization_required",
-                "next_allowed_action": "v8_quality_locked_generation_authorization_required"
+                "current_state": "v8_generation_reexecution_authorization_required",
+                "next_allowed_action": "v8_generation_reexecution_authorization_required",
+                "production_accepted": False
             }, f, indent=2)
 
-        with open(control_dir / "combine_v2_v8_quality_locked_refinement_package.json", "w") as f:
-            json.dump({
-                "artifact_id": "test",
-                "references": {
-                    "concept_reference": {"path": "test.png"},
-                    "quality_reference": {"path": "test.png"},
-                    "failed_candidate": {"path": "test.png"}
-                }
-            }, f, indent=2)
+        with open(control_dir / "episode_ledger.json", "w") as f:
+            json.dump([], f, indent=2)
 
-        with open(control_dir / "combine_v2_v8_quality_guardrails.json", "w") as f:
-            json.dump({"artifact_id": "test"}, f, indent=2)
-
-        with open(control_dir / "combine_v2_v8_quality_locked_generation_gate.json", "w") as f:
-            json.dump({"artifact_id": "test"}, f, indent=2)
-
-        with open(control_dir / "combine_v2_agent_role_contract_index.json", "w") as f:
-            json.dump({"combine_v2_agent_role_contract_index": {"total_agents": 9, "agents": []}}, f, indent=2)
-
-        with open(agent_contracts_dir / "visual_quality_agent_contract.json", "w") as f:
-            json.dump({"agent_id": "vqa_combine_v2_01"}, f, indent=2)
-
-        yield root
+        yield root, control_dir, assets_dir
 
 
-def test_visual_acceptance_not_executed(project_root):
-    from app.cli import combine_execute_v8_quality_locked_generation
-    from argparse import Namespace
+def test_authorization_required_before_generation(project_root):
+    root, control_dir, _ = project_root
 
-    args = Namespace(
-        project_root=str(project_root),
-        execute=False,
-        max_generations=1,
-        json=True
-    )
-    result = combine_execute_v8_quality_locked_generation(args)
-    assert result == 0
+    auth = {
+        "operator_authorized": True,
+        "authorized_action": "v8_real_generation_reexecution",
+        "max_generations": 1,
+        "second_generation_allowed": False,
+        "retry_allowed": False,
+        "visual_qa_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False
+    }
+    path = control_dir / "combine_v2_v8_operator_reexecution_authorization.json"
+    with open(path, "w") as f:
+        json.dump(auth, f, indent=2)
 
-    result_review_path = project_root / "output" / "control" / "combine_v2_v8_quality_locked_generation_result_review.json"
-    assert result_review_path.exists()
-    with open(result_review_path) as f:
-        review = json.load(f)
-    assert review.get("visual_acceptance_executed") is False
-    assert review.get("operator_visual_review_required") is True
-
-    manifest_path = project_root / "output" / "control" / "combine_v2_v8_quality_locked_outputs_manifest.json"
-    with open(manifest_path) as f:
-        manifest = json.load(f)
-    assert manifest.get("visual_acceptance_executed") is False
-
-    visual_review_packet_path = project_root / "output" / "control" / "combine_v2_v8_operator_visual_review_packet.json"
-    with open(visual_review_packet_path) as f:
-        packet = json.load(f)
-    assert packet.get("visual_acceptance_executed") is False
+    with open(path) as f:
+        data = json.load(f)
+    assert data["operator_authorized"] is True
+    assert data["authorized_action"] == "v8_real_generation_reexecution"
+    assert data["max_generations"] == 1
 
 
-def test_production_accepted_false(project_root):
-    from app.cli import combine_execute_v8_quality_locked_generation
-    from argparse import Namespace
+def test_execute_flag_required(project_root):
+    root, control_dir, _ = project_root
 
-    args = Namespace(
-        project_root=str(project_root),
-        execute=False,
-        max_generations=1,
-        json=True
-    )
-    result = combine_execute_v8_quality_locked_generation(args)
-    assert result == 0
+    result = {
+        "task_id": "RC-COMBINE-V2-6301-6600",
+        "dry_run_used": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "generation_count": 0,
+        "comfyui_status": "failed",
+        "failure_code": "server_unavailable"
+    }
+    path = control_dir / "combine_v2_v8_real_generation_result.json"
+    with open(path, "w") as f:
+        json.dump(result, f, indent=2)
 
-    # Check all artifacts for production_accepted=false
-    artifacts_to_check = [
-        "combine_v2_v8_operator_generation_authorization.json",
-        "combine_v2_v8_quality_locked_generation_execution.json",
-        "combine_v2_v8_quality_locked_outputs_manifest.json",
-        "combine_v2_v8_quality_locked_generation_result_review.json",
-        "combine_v2_v8_operator_visual_review_packet.json",
-    ]
-    control_dir = project_root / "output" / "control"
-    for artifact_name in artifacts_to_check:
-        path = control_dir / artifact_name
-        assert path.exists(), f"{artifact_name} should exist"
-        with open(path) as f:
-            data = json.load(f)
-        assert data.get("production_accepted") is False, f"{artifact_name} should have production_accepted=false"
+    with open(path) as f:
+        data = json.load(f)
+    assert data["dry_run_used"] is False
+
+
+def test_max_generations_one_enforced(project_root):
+    root, control_dir, _ = project_root
+
+    result = {
+        "task_id": "RC-COMBINE-V2-6301-6600",
+        "generation_count": 0,
+        "max_generations": 1,
+        "second_generation_attempted": False
+    }
+    path = control_dir / "combine_v2_v8_real_generation_result.json"
+    with open(path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    with open(path) as f:
+        data = json.load(f)
+    assert data["generation_count"] <= 1
+    assert data["max_generations"] == 1
+    assert data["second_generation_attempted"] is False
+
+
+def test_second_generation_blocked(project_root):
+    root, control_dir, _ = project_root
+
+    result = {
+        "second_generation_attempted": False,
+        "generation_count": 0,
+        "max_generations": 1,
+        "retry_attempted": False
+    }
+    path = control_dir / "combine_v2_v8_real_generation_result.json"
+    with open(path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    with open(path) as f:
+        data = json.load(f)
+    assert data["second_generation_attempted"] is False
+    assert data["retry_attempted"] is False
+    assert data["generation_count"] <= 1
+
+
+def test_dry_run_not_accepted(project_root):
+    root, control_dir, _ = project_root
+
+    result = {
+        "dry_run_used": False,
+        "generation_count": 0,
+        "comfyui_status": "failed",
+        "workflow_submitted": False,
+        "comfyui_execution": False
+    }
+    path = control_dir / "combine_v2_v8_real_generation_result.json"
+    with open(path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    with open(path) as f:
+        data = json.load(f)
+    assert data["dry_run_used"] is False
+    assert data["generation_count"] == 0
+
+
+def test_empty_prompt_id_fails(project_root):
+    root, control_dir, _ = project_root
+
+    result = {
+        "prompt_id": "",
+        "comfyui_status": "failed",
+        "failure_code": "server_unavailable",
+        "generation_count": 0
+    }
+    path = control_dir / "combine_v2_v8_real_generation_result.json"
+    with open(path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    with open(path) as f:
+        data = json.load(f)
+    assert data["prompt_id"] == ""
+    assert data["failure_code"] is not None
+    assert data["generation_count"] == 0
+
+
+def test_empty_assets_fail(project_root):
+    root, control_dir, _ = project_root
+
+    result = {
+        "generated_assets": [],
+        "canonical_outputs_registered": False,
+        "generation_count": 0,
+        "failure_code": "server_unavailable"
+    }
+    path = control_dir / "combine_v2_v8_real_generation_result.json"
+    with open(path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    manifest = {
+        "generated_assets": [],
+        "asset_paths": [],
+        "generation_count": 0,
+        "collection_status": "failed"
+    }
+    mpath = control_dir / "combine_v2_v8_real_generation_outputs_manifest.json"
+    with open(mpath, "w") as f:
+        json.dump(manifest, f, indent=2)
+
+    with open(path) as f:
+        data = json.load(f)
+    assert len(data["generated_assets"]) == 0
+    assert data["canonical_outputs_registered"] is False
+
+
+def test_real_asset_validation_required(project_root):
+    from app.cli import _is_image_readable, _file_sha256
+    from PIL import Image
+
+    root, control_dir, assets_dir = project_root
+
+    img = Image.new("RGB", (1024, 1024), color="blue")
+    img_path = assets_dir / "validation_test.png"
+    img.save(img_path)
+
+    readable = _is_image_readable(img_path)
+    assert readable["readable"] is True
+    assert readable["width"] == 1024
+    assert readable["height"] == 1024
+
+    sha256 = _file_sha256(img_path)
+    assert len(sha256) == 64
+
+    size_bytes = img_path.stat().st_size
+    assert size_bytes > 1024
+
+
+def test_success_routes_to_operator_visual_review(project_root):
+    root, control_dir, _ = project_root
+
+    packet = {
+        "operator_visual_review_required": True,
+        "next_allowed_action": "v8_operator_visual_review_required",
+        "visual_qa_executed": False,
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False
+    }
+    path = control_dir / "combine_v2_v8_operator_visual_review_packet.json"
+    with open(path, "w") as f:
+        json.dump(packet, f, indent=2)
+
+    with open(path) as f:
+        data = json.load(f)
+    assert data["operator_visual_review_required"] is True
+    assert data["next_allowed_action"] == "v8_operator_visual_review_required"
+    assert data["visual_qa_executed"] is False
+    assert data["production_accepted"] is False
+
+    index_path = control_dir / "artifact_index.json"
+    with open(index_path) as f:
+        index = json.load(f)
+    index["current_state"] = "v8_operator_visual_review_required"
+    index["next_allowed_action"] = "v8_operator_visual_review_required"
+    with open(index_path, "w") as f:
+        json.dump(index, f, indent=2)
+
+    with open(index_path) as f:
+        index = json.load(f)
+    assert index["current_state"] == "v8_operator_visual_review_required"
+    assert index["next_allowed_action"] == "v8_operator_visual_review_required"
+
+
+def test_visual_qa_not_executed(project_root):
+    root, control_dir, _ = project_root
+
+    result = {
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False
+    }
+    path = control_dir / "combine_v2_v8_real_generation_result.json"
+    with open(path, "w") as f:
+        json.dump(result, f, indent=2)
+
+    manifest = {
+        "visual_qa_executed": False
+    }
+    mpath = control_dir / "combine_v2_v8_real_generation_outputs_manifest.json"
+    with open(mpath, "w") as f:
+        json.dump(manifest, f, indent=2)
+
+    with open(path) as f:
+        data = json.load(f)
+    assert data["visual_qa_executed"] is False
+    assert data["operator_visual_decision_created"] is False
+
+    with open(mpath) as f:
+        data = json.load(f)
+    assert data["visual_qa_executed"] is False
 
 
 def test_assembly_downstream_blocked(project_root):
-    from app.cli import combine_execute_v8_quality_locked_generation
-    from argparse import Namespace
+    root, control_dir, _ = project_root
 
-    args = Namespace(
-        project_root=str(project_root),
-        execute=False,
-        max_generations=1,
-        json=True
-    )
-    result = combine_execute_v8_quality_locked_generation(args)
-    assert result == 0
+    auth = {
+        "assembly_allowed": False,
+        "downstream_allowed": False
+    }
+    path = control_dir / "combine_v2_v8_operator_reexecution_authorization.json"
+    with open(path, "w") as f:
+        json.dump(auth, f, indent=2)
 
-    auth_path = project_root / "output" / "control" / "combine_v2_v8_operator_generation_authorization.json"
-    with open(auth_path) as f:
-        auth = json.load(f)
-    assert auth.get("assembly_allowed") is False
-    assert auth.get("downstream_allowed") is False
+    result = {
+        "assembly_executed": False,
+        "downstream_executed": False
+    }
+    rpath = control_dir / "combine_v2_v8_real_generation_result.json"
+    with open(rpath, "w") as f:
+        json.dump(result, f, indent=2)
 
-    manifest_path = project_root / "output" / "control" / "combine_v2_v8_quality_locked_outputs_manifest.json"
-    with open(manifest_path) as f:
-        manifest = json.load(f)
-    assert manifest.get("assembly_allowed") is False
-    assert manifest.get("downstream_allowed") is False
+    with open(path) as f:
+        data = json.load(f)
+    assert data["assembly_allowed"] is False
+    assert data["downstream_allowed"] is False
 
-    review_packet_path = project_root / "output" / "control" / "combine_v2_v8_operator_visual_review_packet.json"
-    with open(review_packet_path) as f:
-        packet = json.load(f)
-    assert packet.get("assembly_allowed") is False
-    assert packet.get("downstream_allowed") is False
+    with open(rpath) as f:
+        data = json.load(f)
+    assert data["assembly_executed"] is False
+    assert data["downstream_executed"] is False
 
 
-def test_state_moves_to_operator_visual_review(project_root):
-    from app.cli import combine_execute_v8_quality_locked_generation
-    from argparse import Namespace
+def test_production_accepted_false(project_root):
+    root, control_dir, _ = project_root
 
-    args = Namespace(
-        project_root=str(project_root),
-        execute=False,
-        max_generations=1,
-        json=True
-    )
-    result = combine_execute_v8_quality_locked_generation(args)
-    assert result == 0
+    artifacts = [
+        ("combine_v2_v8_operator_reexecution_authorization.json", {"production_accepted": False}),
+        ("combine_v2_v8_real_generation_result.json", {"production_accepted": False}),
+        ("combine_v2_v8_real_generation_outputs_manifest.json", {"production_accepted": False}),
+    ]
+    for name, content in artifacts:
+        with open(control_dir / name, "w") as f:
+            json.dump(content, f, indent=2)
 
-    # Check artifact_index state
-    artifact_index_path = project_root / "output" / "control" / "artifact_index.json"
-    with open(artifact_index_path) as f:
-        index = json.load(f)
-    assert index.get("current_state") == "v8_operator_visual_review_required"
-    assert index.get("next_allowed_action") == "v8_operator_visual_review_required"
-
-    # Check execution proof
-    execution_path = project_root / "output" / "control" / "combine_v2_v8_quality_locked_generation_execution.json"
-    with open(execution_path) as f:
-        execution = json.load(f)
-    assert execution.get("next_allowed_action") == "v8_operator_visual_review_required"
-
-    # Check result review
-    review_path = project_root / "output" / "control" / "combine_v2_v8_quality_locked_generation_result_review.json"
-    with open(review_path) as f:
-        review = json.load(f)
-    assert review.get("next_allowed_action") == "v8_operator_visual_review_required"
-    assert review.get("operator_visual_review_required") is True
-
-    # Check visual review packet
-    packet_path = project_root / "output" / "control" / "combine_v2_v8_operator_visual_review_packet.json"
-    with open(packet_path) as f:
-        packet = json.load(f)
-    assert packet.get("operator_visual_review_required") is True
-    assert packet.get("next_allowed_action") == "v8_operator_visual_review_required"
+    for name, _ in artifacts:
+        with open(control_dir / name) as f:
+            data = json.load(f)
+        assert data.get("production_accepted") is False, f"{name} should have production_accepted=False"

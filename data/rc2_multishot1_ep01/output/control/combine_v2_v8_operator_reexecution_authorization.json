@@ -1,0 +1,21 @@
+{
+  "operator_authorized": true,
+  "authorized_action": "v8_real_generation_reexecution",
+  "max_generations": 1,
+  "generation_attempts_allowed": 1,
+  "second_generation_allowed": false,
+  "retry_allowed": false,
+  "visual_qa_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "task_id": "RC-COMBINE-V2-6301-6600",
+  "timestamp": "2026-05-07T14:49:34.457068",
+  "current_state": "v8_generation_reexecution_authorization_required",
+  "v8_artifacts_verified": {
+    "refinement_package_exists": true,
+    "guardrails_exists": true,
+    "generation_gate_exists": true,
+    "agent_role_contracts_verified": true
+  }
+}
