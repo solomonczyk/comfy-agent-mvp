@@ -1,0 +1,45 @@
+{
+  "task_id": "RC-COMBINE-V2-3601-3900",
+  "comparison_candidates": {
+    "v5_failed_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+    "baseline_rejected_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png",
+    "clean_sdxl_v6_candidate_assets": [
+      "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+    ]
+  },
+  "baseline_operator_rejection": "combine_v2_baseline_operator_visual_rejection.json",
+  "visual_failure_taxonomy": "combine_v2_visual_failure_taxonomy.json",
+  "recipe_root_cause_audit": "combine_v2_recipe_quality_root_cause_audit.json",
+  "v6_recipe_changes": {
+    "positive_prompt": "subject-scale and close-portrait framing enforced; atmosphere keywords reduced",
+    "negative_prompt": "anti-glow, anti-overprocessing, anti-tiny-subject, anti-artifact terms added",
+    "cfg": "reduced from 8.0 to 7.0",
+    "steps": "increased from 25 to 30",
+    "seed": "changed from 42 to 137492",
+    "denoise": "1.0 (correct, unchanged from baseline)",
+    "sampler": "dpmpp_2m / karras (unchanged)",
+    "resolution": "1024x1024 (unchanged)"
+  },
+  "visual_pass_decision": "NONE \u2014 operator visual review required",
+  "automatic_visual_acceptance_forbidden": true,
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "allowed_operator_actions": [
+    "approve_v6_direction",
+    "request_further_recipe_changes",
+    "request_full_rebuild",
+    "reject_all"
+  ],
+  "forbidden_automatic_actions": [
+    "production_acceptance",
+    "assembly",
+    "downstream",
+    "second_generation_attempt",
+    "blind_retry"
+  ],
+  "operator_visual_review_required": true,
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "timestamp": "2026-05-07T11:10:51.899288+00:00"
+}

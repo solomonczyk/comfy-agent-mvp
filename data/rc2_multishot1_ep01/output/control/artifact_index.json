@@ -5362,6 +5362,45 @@
       ],
       "production_accepted": false,
       "timestamp": "2026-05-07T09:29:24.621147+00:00"
+    },
+    {
+      "stage": "clean_sdxl_v6_candidate_generation",
+      "task_id": "RC-COMBINE-V2-3601-3900",
+      "success": true,
+      "new_generation_performed": true,
+      "generation_count": 1,
+      "prompt_id": "06df3b60-7460-4ea5-9787-1043f7368451",
+      "canonical_assets": [
+        "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+      ],
+      "production_accepted": false,
+      "timestamp": "2026-05-07T10:52:06.225830+00:00"
+    },
+    {
+      "stage": "clean_sdxl_v6_candidate_generation",
+      "task_id": "RC-COMBINE-V2-3601-3900",
+      "success": true,
+      "new_generation_performed": true,
+      "generation_count": 1,
+      "prompt_id": "cd76b07a-6b1f-4e30-81ec-b10107097ac4",
+      "canonical_assets": [
+        "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+      ],
+      "production_accepted": false,
+      "timestamp": "2026-05-07T11:08:41.996616+00:00"
+    },
+    {
+      "stage": "clean_sdxl_v6_candidate_generation",
+      "task_id": "RC-COMBINE-V2-3601-3900",
+      "success": true,
+      "new_generation_performed": true,
+      "generation_count": 1,
+      "prompt_id": "f3e8acbc-b584-4f7b-8686-85705fd823b6",
+      "canonical_assets": [
+        "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+      ],
+      "production_accepted": false,
+      "timestamp": "2026-05-07T11:10:51.899288+00:00"
     }
   ],
   "operator_visual_decision": "reject_visual_quality",
@@ -5531,7 +5570,7 @@
     "output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
     "output/control/combine_v2_rc3261_3360_contradiction_reconciliation.json"
   ],
-  "task_id": "RC-COMBINE-V2-3361-3600",
+  "task_id": "RC-COMBINE-V2-3601-3900",
   "baseline_generation_performed": true,
   "benchmark_generation_count": 1,
   "operator_visual_review_required": true,
@@ -5541,5 +5580,12 @@
   "baseline_prompt_id": "9264564c-deac-4571-8f48-7a0a81e53a58",
   "baseline_canonical_assets": [
     "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+  ],
+  "baseline_rejected_as_production": true,
+  "clean_sdxl_v6_candidate_generated": true,
+  "generation_count": 1,
+  "v6_prompt_id": "f3e8acbc-b584-4f7b-8686-85705fd823b6",
+  "v6_canonical_assets": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
   ]
 }

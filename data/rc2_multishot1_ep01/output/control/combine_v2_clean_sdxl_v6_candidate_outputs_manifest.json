@@ -1,0 +1,12 @@
+[
+  {
+    "path": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+    "filename": "combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+    "size_bytes": 1460975,
+    "sha256": "9e40f5a2bf8e83341541839980ccbae0ff71dc5678e81acb3538dc8f6a65f617",
+    "width": 1024,
+    "height": 1024,
+    "readable": true,
+    "source_native_output_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+  }
+]

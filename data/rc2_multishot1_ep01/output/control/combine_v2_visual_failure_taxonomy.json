@@ -1,0 +1,55 @@
+{
+  "task_id": "RC-COMBINE-V2-3601-3900",
+  "taxonomy_scope": ["v5", "baseline"],
+  "v5_defects": {
+    "artifact_heavy": true,
+    "anatomy_risk": true,
+    "face_skin_artifacts": true,
+    "fabric_artifacts": true,
+    "overprocessed_glow": true,
+    "style_not_controlled": true,
+    "composition_risk": true,
+    "production_quality_failed": true,
+    "detail": {
+      "primary_cause": "denoise=0.5 on txt2img EmptyLatentImage produces half-denoised muddy/gray output",
+      "secondary_cause": "resolution 1344x768 (short_side=768) below project minimum 1024",
+      "tertiary_cause": "wide 16:9 aspect ratio encourages landscape framing over subject-focused composition",
+      "prompt_cause": "prompt lacks explicit subject-scale and camera-distance constraints; negative prompt does not prevent tiny subject or vast empty space",
+      "node_overhead": "empty LoraLoader node present with no active weights — adds risk without benefit"
+    }
+  },
+  "baseline_defects": {
+    "artifact_heavy": true,
+    "anatomy_risk": true,
+    "face_skin_artifacts": true,
+    "fabric_artifacts": true,
+    "overprocessed_glow": true,
+    "style_not_controlled": true,
+    "composition_risk": true,
+    "production_quality_failed": true,
+    "detail": {
+      "primary_cause": "baseline recipe structurally correct (denoise=1.0, dpmpp_2m/karras, cfg=8.0, 1024x1024) but prompt composition remains environment-dominant",
+      "secondary_cause": "positive prompt has too many environment/atmosphere descriptors competing with subject focus",
+      "tertiary_cause": "juggernautXL_version2 with no style lora anchor produces inconsistent photorealistic output with overprocessed skin/fabric",
+      "overprocessed_glow": "blue glow and mystical atmosphere keywords trigger HDR-like overprocessing",
+      "no_style_control": "no explicit cinematic realism anchor or style lora — model generates variable interpretation of aesthetics"
+    }
+  },
+  "shared_defect_root_causes": [
+    "prompt composition: environment-dominant scene description over subject-scale",
+    "no style lora to anchor consistent photorealistic aesthetic",
+    "overprocessed glow/mystical atmosphere keywords produce artifact-prone HDR bias",
+    "insufficient negative prompt coverage for anatomy/fabric artifacts",
+    "both generations required operator visual rejection"
+  ],
+  "recovery_direction": "clean_sdxl_v6_candidate",
+  "recovery_requirements": [
+    "stronger subject-scale and camera-distance enforcement in positive prompt",
+    "reduced environment atmosphere keyword density",
+    "explicit anti-artifact and anti-glow negative prompt additions",
+    "seed variation to escape local optima",
+    "cfg and scheduler tuning to reduce overprocessing"
+  ],
+  "production_quality_failed": true,
+  "timestamp": "2026-05-07T12:38:00.000000+02:00"
+}

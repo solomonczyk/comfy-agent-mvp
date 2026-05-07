@@ -1216,5 +1216,71 @@
     "current_state": "operator_visual_review_required",
     "next_allowed_action": "operator_visual_review_required",
     "timestamp": "2026-05-07T09:29:24.621147+00:00"
+  },
+  {
+    "event_type": "clean_sdxl_v6_candidate_generation_completed",
+    "task_id": "RC-COMBINE-V2-3601-3900",
+    "stage": "clean_sdxl_v6_candidate_generation",
+    "new_generation_performed": true,
+    "generation_count": 1,
+    "second_generation_attempted": false,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "prompt_id": "06df3b60-7460-4ea5-9787-1043f7368451",
+    "baseline_rejected_as_production": true,
+    "canonical_assets": [
+      "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+    ],
+    "production_accepted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "operator_visual_review_required": true,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "timestamp": "2026-05-07T10:52:06.225830+00:00"
+  },
+  {
+    "event_type": "clean_sdxl_v6_candidate_generation_completed",
+    "task_id": "RC-COMBINE-V2-3601-3900",
+    "stage": "clean_sdxl_v6_candidate_generation",
+    "new_generation_performed": true,
+    "generation_count": 1,
+    "second_generation_attempted": false,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "prompt_id": "cd76b07a-6b1f-4e30-81ec-b10107097ac4",
+    "baseline_rejected_as_production": true,
+    "canonical_assets": [
+      "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+    ],
+    "production_accepted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "operator_visual_review_required": true,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "timestamp": "2026-05-07T11:08:41.996616+00:00"
+  },
+  {
+    "event_type": "clean_sdxl_v6_candidate_generation_completed",
+    "task_id": "RC-COMBINE-V2-3601-3900",
+    "stage": "clean_sdxl_v6_candidate_generation",
+    "new_generation_performed": true,
+    "generation_count": 1,
+    "second_generation_attempted": false,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "prompt_id": "f3e8acbc-b584-4f7b-8686-85705fd823b6",
+    "baseline_rejected_as_production": true,
+    "canonical_assets": [
+      "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+    ],
+    "production_accepted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "operator_visual_review_required": true,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "timestamp": "2026-05-07T11:10:51.899288+00:00"
   }
 ]

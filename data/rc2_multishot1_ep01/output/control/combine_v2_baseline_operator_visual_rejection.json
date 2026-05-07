@@ -1,0 +1,28 @@
+{
+  "task_id": "RC-COMBINE-V2-3601-3900",
+  "operator_decision": "reject_baseline_as_production_candidate",
+  "baseline_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png",
+  "baseline_better_than_v5": true,
+  "baseline_production_accepted": false,
+  "rejection_reasons": [
+    "artifact-heavy output despite cleaner recipe",
+    "anatomy risk present in generated image",
+    "face/skin artifacts not resolved",
+    "fabric/clothing artifacts present",
+    "overprocessed glow effect interfering with composition",
+    "style not sufficiently controlled for production",
+    "composition risk — subject scale and framing insufficient for production grade"
+  ],
+  "baseline_vs_v5_comparison": {
+    "baseline_sharper_than_v5": true,
+    "baseline_higher_contrast_than_v5": true,
+    "baseline_better_denoise": true,
+    "baseline_better_resolution": true,
+    "baseline_still_fails_production_bar": true
+  },
+  "required_next_action": "rebuild_clean_sdxl_recipe",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "timestamp": "2026-05-07T12:38:00.000000+02:00"
+}

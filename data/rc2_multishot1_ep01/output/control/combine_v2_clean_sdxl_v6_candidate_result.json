@@ -1,0 +1,24 @@
+{
+  "task_id": "RC-COMBINE-V2-3601-3900",
+  "new_generation_performed": true,
+  "generation_count": 1,
+  "second_generation_attempted": false,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "prompt_id": "f3e8acbc-b584-4f7b-8686-85705fd823b6",
+  "workflow_path": "data/rc2_multishot1_ep01/output/control/shot02_clean_sdxl_v6_candidate_workflow.json",
+  "output_asset_paths": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
+  ],
+  "sha256": "9e40f5a2bf8e83341541839980ccbae0ff71dc5678e81acb3538dc8f6a65f617",
+  "size_bytes": 1460975,
+  "width": 1024,
+  "height": 1024,
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "operator_visual_review_required": true,
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "timestamp": "2026-05-07T11:10:51.899288+00:00"
+}

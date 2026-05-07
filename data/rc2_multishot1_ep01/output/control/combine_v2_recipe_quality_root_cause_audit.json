@@ -1,0 +1,66 @@
+{
+  "task_id": "RC-COMBINE-V2-3601-3900",
+  "audit_scope": ["v5_patched_workflow", "baseline_default_sdxl_workflow"],
+  "model_checkpoint_audit": {
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "class": "SDXL_photorealistic_v2",
+    "issue": "capable model but overprocessing bias at high CFG with mystical/glow prompts — version2 base without refiner is prone to artifact-heavy glow in atmospheric scenes",
+    "verdict": "CONTRIBUTING_FACTOR — model suitable but needs tighter prompt and CFG control",
+    "recommended_action": "keep juggernautXL_version2 but reduce CFG to 7.0 and add explicit negative prompt artifact constraints"
+  },
+  "prompt_audit": {
+    "v5_positive_prompt_issue": "environment scene description (stream, altar, crystal orb, mist, blue glow) dominates over subject scale constraints — model treats scene as landscape/environment shot",
+    "v5_negative_prompt_issue": "missing: tiny subject, small person, far away, vast empty sky, wide landscape shot — allows environmental framing to dominate",
+    "baseline_positive_prompt_issue": "same environment-dominant prompt as v5; blue glow and mystical atmosphere keywords trigger overprocessed HDR output",
+    "baseline_negative_prompt_issue": "added artifact keywords but missing explicit anti-glow and anti-overprocessing terms",
+    "v6_prompt_direction": "increase subject-scale keywords, reduce atmospheric descriptors, add close portrait framing, add negative overprocessing/glow/HDR terms",
+    "verdict": "PRIMARY_ROOT_CAUSE — prompt is primary driver of composition failure and style overprocessing"
+  },
+  "sampler_scheduler_steps_cfg_audit": {
+    "v5_settings": {"sampler": "dpmpp_sde", "scheduler": "karras", "steps": 30, "cfg": 7.5, "denoise": 0.5},
+    "v5_denoise_issue": "denoise=0.5 on EmptyLatentImage txt2img path is primary technical defect — produces half-denoised muddy gray output",
+    "baseline_settings": {"sampler": "dpmpp_2m", "scheduler": "karras", "steps": 25, "cfg": 8.0, "denoise": 1.0},
+    "baseline_cfg_issue": "cfg=8.0 with overprocessing-prone prompt can amplify artifact generation; reduce to 7.0 for v6",
+    "v6_recommended": {"sampler": "dpmpp_2m", "scheduler": "karras", "steps": 30, "cfg": 7.0, "denoise": 1.0, "seed": 137492},
+    "verdict": "TECHNICAL_ROOT_CAUSE_V5 — denoise=0.5 is confirmed primary defect; cfg=8.0 contributing to overprocessing in baseline"
+  },
+  "resolution_composition_audit": {
+    "v5_resolution": "1344x768 — short_side=768 below project minimum 1024; wide 16:9 biases landscape framing",
+    "baseline_resolution": "1024x1024 — meets project minimum; square aspect better for portrait subject but prompt compensation still needed",
+    "v6_recommended": "1024x1024 — maintain baseline resolution; composition must be enforced via prompt not aspect ratio alone",
+    "verdict": "CONTRIBUTING_FACTOR — v5 resolution is below minimum; baseline resolution is correct but composition must come from prompt"
+  },
+  "overprocessing_style_control_audit": {
+    "issue": "mystical/glow/atmospheric prompt keywords trigger JuggernautXL overprocessing bias — produces HDR-like skin/fabric glow artifacts",
+    "no_style_lora": "no style LoRA anchor present in either recipe — model applies its own aesthetic interpretation causing style drift between seeds",
+    "v6_mitigation": "reduce glow/mystical/atmospheric keyword density; add explicit anti-overprocessing negative terms (overprocessed, HDR glow, overexposed skin, artificial glow, lens flare)",
+    "verdict": "CONTRIBUTING_FACTOR — overprocessing/style drift is secondary cause of visual failure"
+  },
+  "workflow_graph_audit": {
+    "v5_lora_node_issue": "empty LoraLoader node with no active weights — adds graph complexity and potential execution overhead with zero benefit",
+    "v5_non_node_metadata_risk": "shot_id non-node field in source workflow file — validator patches this before submit but source file remains risky",
+    "baseline_graph": "clean 6-node graph (CheckpointLoaderSimple, EmptyLatentImage, CLIPTextEncode x2, KSampler, VAEDecode, SaveImage) — no extraneous nodes",
+    "v6_graph_direction": "clean 6-node SDXL graph identical to baseline structure; updated prompt text; updated seed; updated cfg",
+    "verdict": "ACCEPTABLE_BASELINE — v5 graph has overhead risks; baseline/v6 graph structure is sound"
+  },
+  "root_cause_priority": [
+    "1. PROMPT — environment-dominant composition and atmospheric keywords (primary)",
+    "2. DENOISE — v5 denoise=0.5 on txt2img path (primary technical, v5 only)",
+    "3. CFG — baseline cfg=8.0 amplifies overprocessing bias (secondary)",
+    "4. RESOLUTION — v5 below minimum (secondary, fixed in baseline and v6)",
+    "5. STYLE_CONTROL — no lora anchor, model aesthetic drift (tertiary)",
+    "6. WORKFLOW_GRAPH — v5 empty lora node overhead (minor)"
+  ],
+  "v6_recipe_requirements": [
+    "positive prompt: increase subject-scale, close portrait framing, reduce environment atmosphere density",
+    "negative prompt: add anti-glow, anti-overprocessing, anti-HDR, anti-tiny-subject terms",
+    "sampler: dpmpp_2m / karras / 30 steps",
+    "cfg: 7.0",
+    "denoise: 1.0",
+    "resolution: 1024x1024",
+    "seed: different from baseline (use 137492)",
+    "no empty lora nodes",
+    "SaveImage prefix: combine_v2_clean_sdxl_v6_candidate_shot02"
+  ],
+  "timestamp": "2026-05-07T12:38:00.000000+02:00"
+}

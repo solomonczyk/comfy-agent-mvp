@@ -1,0 +1,86 @@
+{
+  "4": {
+    "inputs": {
+      "ckpt_name": "juggernautXL_version2.safetensors"
+    },
+    "class_type": "CheckpointLoaderSimple"
+  },
+  "5": {
+    "inputs": {
+      "width": 1024,
+      "height": 1024,
+      "batch_size": 1
+    },
+    "class_type": "EmptyLatentImage"
+  },
+  "6": {
+    "inputs": {
+      "text": "Alya, beautiful young woman, long flowing silver hair, elegant white dress with delicate fabric, close portrait composition, woman fills 60 percent of frame, medium close-up shot, face and upper body prominent, kneeling beside stream, glowing blue crystal orb on stone altar, soft blue light on face, cinematic portrait lighting, photorealistic, sharp focus on subject face and clothing, highly detailed skin texture, masterpiece quality, 8k resolution, subject-dominant framing, primary subject fills frame",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "7": {
+    "inputs": {
+      "text": "ugly, deformed, noisy, blurry, distorted, out of focus, bad anatomy, extra limbs, missing limbs, mutation, mutated, watermark, text, signature, grain, oversaturated, harsh lighting, muddy, gray, hazy, low contrast, soft, washed out, dark, underexposed, tiny subject, small person, far away person, vast empty background, wide landscape shot, huge empty sky, overprocessed, HDR glow, artificial glow, overexposed skin, lens flare, glowing aura, overlit, plastic skin, fabric artifacts, clothing distortion, anatomy errors, multiple subjects, duplicate person",
+      "clip": [
+        "4",
+        1
+      ]
+    },
+    "class_type": "CLIPTextEncode"
+  },
+  "3": {
+    "inputs": {
+      "seed": 137492,
+      "steps": 30,
+      "cfg": 7.0,
+      "sampler_name": "dpmpp_2m",
+      "scheduler": "karras",
+      "denoise": 1.0,
+      "model": [
+        "4",
+        0
+      ],
+      "positive": [
+        "6",
+        0
+      ],
+      "negative": [
+        "7",
+        0
+      ],
+      "latent_image": [
+        "5",
+        0
+      ]
+    },
+    "class_type": "KSampler"
+  },
+  "8": {
+    "inputs": {
+      "samples": [
+        "3",
+        0
+      ],
+      "vae": [
+        "4",
+        2
+      ]
+    },
+    "class_type": "VAEDecode"
+  },
+  "9": {
+    "inputs": {
+      "images": [
+        "8",
+        0
+      ],
+      "filename_prefix": "combine_v2_clean_sdxl_v6_candidate_shot02"
+    },
+    "class_type": "SaveImage"
+  }
+}
