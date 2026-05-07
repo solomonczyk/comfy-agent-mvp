@@ -5,10 +5,15 @@
   "asset_paths": [],
   "result_review_executed": true,
   "visual_acceptance_executed": false,
-  "operator_visual_review_required": true,
+  "operator_visual_review_required": false,
+  "operator_visual_review_blocked_without_generated_asset": true,
   "assembly_executed": false,
   "downstream_executed": false,
   "production_accepted": false,
-  "next_allowed_action": "v8_operator_visual_review_required",
-  "timestamp": "2026-05-07T14:03:03.974420"
+  "dry_run_not_accepted_as_real_generation": true,
+  "prompt_id_empty_blocks_history_success_claim": true,
+  "runtime_timeout_recorded": true,
+  "next_allowed_action": "v8_generation_runtime_recovery_required",
+  "timestamp": "2026-05-07T14:03:03.974420",
+  "reconciliation_applied": "RC-COMBINE-V2-5701-6000-RECOVERY"
 }

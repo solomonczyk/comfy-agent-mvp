@@ -98,7 +98,9 @@ class CombineStateMachine:
         "blocked_generation_route_aborted",
         "targeted_visual_refinement_plan_required",
         "targeted_refinement_generation_authorization_required",
-        "v8_quality_locked_generation_authorization_required"
+        "v8_quality_locked_generation_authorization_required",
+        "v8_generation_runtime_blocked",
+        "v8_generation_runtime_recovery_required"
     ]
     
     # Terminal states
@@ -282,6 +284,16 @@ class CombineStateMachine:
         "v8_quality_locked_generation_authorization_required": {
             "v8_quality_locked_generation_authorization_required",  # Self-loop: halted pending operator authorization
             "generate_assets",  # Operator authorized -> proceed to generate
+            "blocked_manual_review"
+        },
+        "v8_generation_runtime_blocked": {
+            "v8_generation_runtime_blocked",  # Self-loop: blocked until ComfyUI available
+            "v8_generation_runtime_recovery_required",  # Can transition to recovery
+            "v8_quality_locked_generation_authorization_required"  # Can restart authorization
+        },
+        "v8_generation_runtime_recovery_required": {
+            "v8_generation_runtime_recovery_required",  # Self-loop: halted pending recovery
+            "v8_quality_locked_generation_authorization_required",  # Can go back to generation authorization
             "blocked_manual_review"
         },
         "operator_visual_review_required": {

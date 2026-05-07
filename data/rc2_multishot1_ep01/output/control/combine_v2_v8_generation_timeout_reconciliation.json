@@ -1,0 +1,53 @@
+{
+  "task_id": "RC-COMBINE-V2-5701-6000-RECOVERY",
+  "title": "Reconcile Failed/Timed-Out V8 Generation Attempt Before Any Rerun",
+  "mode": "Runtime failure reconciliation, no new generation",
+  "timeout_reconciliation_executed": true,
+  "new_generation_performed": false,
+  "new_comfyui_submit_executed": false,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "prompt_id_found": false,
+  "native_output_checked": true,
+  "canonical_assets_checked": true,
+  "existing_v8_asset_found": false,
+  "native_output_files_searched": "F:\\comfyui\\comfyui_portable_inst\\comfyui_windows_portable_nvidia_cu126\\comfyui_windows_portable\\comfyui\\output",
+  "canonical_outputs_registered": false,
+  "operator_visual_review_allowed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "reconciled_from_state": "v8_operator_visual_review_required",
+  "reconciled_to_state": "v8_generation_runtime_blocked",
+  "current_state": "v8_generation_runtime_blocked",
+  "next_allowed_action": "v8_generation_runtime_recovery_required",
+  "blocking_contradictions_found": [
+    "new_generation_performed=false but generation_count=1",
+    "comfyui_execution=false but runtime note claims ComfyUI timeout after real execute attempt",
+    "prompt_id is empty",
+    "canonical_outputs_registered=false",
+    "generated_assets=[]",
+    "state incorrectly moved to v8_operator_visual_review_required without image"
+  ],
+  "contradictions_resolved": [
+    "generation_count corrected from 1 to 0 (dry-run should not increment generation count)",
+    "comfyui_execution confirmed false; no real execution occurred — corrected workflow_submitted to false",
+    "prompt_id_available confirmed false; comfyui_history_check_possible set to false",
+    "canonical_outputs_registered set to false explicitly",
+    "generated_assets remains [] — no real output produced",
+    "state repaired from v8_operator_visual_review_required to v8_generation_runtime_blocked"
+  ],
+  "artifacts_reconciled": [
+    "combine_v2_v8_quality_locked_generation_execution.json",
+    "combine_v2_v8_quality_locked_outputs_manifest.json",
+    "combine_v2_v8_quality_locked_generation_result_review.json",
+    "combine_v2_v8_operator_visual_review_packet.json",
+    "artifact_index.json",
+    "episode_ledger.json"
+  ],
+  "reconciliation_artifact_created": "combine_v2_v8_generation_timeout_reconciliation.json",
+  "previous_commit": "b7ae233",
+  "previous_layer": "RC-COMBINE-V2-5701-6000",
+  "timestamp": "2026-05-07T16:07:09+02:00"
+}

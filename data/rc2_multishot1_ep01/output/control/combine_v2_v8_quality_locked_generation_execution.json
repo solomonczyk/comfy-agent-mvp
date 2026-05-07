@@ -1,7 +1,7 @@
 {
   "stage": "v8_quality_locked_generation",
-  "workflow_submitted": true,
-  "generation_count": 1,
+  "workflow_submitted": false,
+  "generation_count": 0,
   "second_generation_attempted": false,
   "retry_attempted": false,
   "comfyui_execution": false,
@@ -16,6 +16,12 @@
   "assembly_executed": false,
   "downstream_executed": false,
   "production_accepted": false,
+  "new_generation_performed": false,
+  "prompt_id_available": false,
+  "comfyui_history_check_possible": false,
+  "generation_timeout": true,
+  "timeout_reason": "execute_mode=false; comfyui_execution=false; workflow was dry-run only, no real ComfyUI submit occurred. No prompt_id was generated. No native output file exists in ComfyUI output directory.",
   "timestamp": "2026-05-07T14:03:03.974420",
-  "next_allowed_action": "v8_operator_visual_review_required"
+  "reconciliation_applied": "RC-COMBINE-V2-5701-6000-RECOVERY",
+  "next_allowed_action": "v8_generation_runtime_recovery_required"
 }

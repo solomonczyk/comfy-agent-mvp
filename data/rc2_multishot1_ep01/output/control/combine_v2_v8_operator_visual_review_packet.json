@@ -1,19 +1,18 @@
 {
-  "stage": "v8_operator_visual_review",
+  "stage": "v8_generation_runtime_blocked",
   "source_stage": "v8_quality_locked_generation",
-  "visual_review_packet_created": true,
+  "visual_review_packet_created": false,
   "generated_assets": [],
   "generation_count": 0,
-  "operator_visual_review_required": true,
-  "operator_actions": [
-    "accept_visuals",
-    "reject_visuals",
-    "request_corrective_retry"
-  ],
+  "operator_visual_review_required": false,
+  "visual_review_blocked_no_image": true,
+  "blocked_reason": "No real V8 output image was produced during generation. Dry-run executed but no ComfyUI submit occurred. No prompt_id generated. No native output files in ComfyUI output directory.",
+  "operator_actions": [],
   "visual_acceptance_executed": false,
   "assembly_allowed": false,
   "downstream_allowed": false,
   "production_accepted": false,
-  "next_allowed_action": "v8_operator_visual_review_required",
-  "timestamp": "2026-05-07T14:03:03.974420"
+  "next_allowed_action": "v8_generation_runtime_recovery_required",
+  "timestamp": "2026-05-07T14:03:03.974420",
+  "reconciliation_applied": "RC-COMBINE-V2-5701-6000-RECOVERY"
 }
