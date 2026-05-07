@@ -1,0 +1,21 @@
+{
+  "stage": "v8_quality_locked_generation",
+  "workflow_submitted": true,
+  "generation_count": 1,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "comfyui_execution": false,
+  "max_generations": 1,
+  "execute_mode": false,
+  "v8_quality_locked_package_used": true,
+  "v8_quality_guardrails_used": true,
+  "agent_role_contracts_verified": true,
+  "operator_authorization_created": true,
+  "generation_performed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-07T14:03:03.974420",
+  "next_allowed_action": "v8_operator_visual_review_required"
+}

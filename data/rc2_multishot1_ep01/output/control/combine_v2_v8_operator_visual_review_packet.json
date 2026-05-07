@@ -1,0 +1,19 @@
+{
+  "stage": "v8_operator_visual_review",
+  "source_stage": "v8_quality_locked_generation",
+  "visual_review_packet_created": true,
+  "generated_assets": [],
+  "generation_count": 0,
+  "operator_visual_review_required": true,
+  "operator_actions": [
+    "accept_visuals",
+    "reject_visuals",
+    "request_corrective_retry"
+  ],
+  "visual_acceptance_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "next_allowed_action": "v8_operator_visual_review_required",
+  "timestamp": "2026-05-07T14:03:03.974420"
+}

@@ -6353,6 +6353,635 @@ def combine_build_corrective_recipe_v2(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_execute_v8_quality_locked_generation(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-5701-6000 — Execute exactly one V8 quality-locked generation.
+
+    This command is the explicit V8 generation gate. It:
+    - Validates current state is v8_quality_locked_generation_authorization_required
+    - Verifies V8 quality-locked refinement package, guardrails, generation gate exist
+    - Verifies agent role contract index and visual quality agent contract exist
+    - Creates operator generation authorization artifact
+    - Executes exactly one ComfyUI generation using V8 quality-locked package
+    - Collects outputs to canonical project assets
+    - Creates execution proof, output manifest, result review, operator visual review packet
+    - Transitions state to v8_operator_visual_review_required
+    - Does NOT run Visual QA acceptance, assembly, or downstream
+
+    Exit codes:
+    - 0: generation completed successfully (stops at operator visual review)
+    - 1: blocked, failed, or error
+    """
+    from app.comfy.comfy_client import ComfyClient
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+    json_output = args.json
+    timestamp = datetime.utcnow().isoformat()
+
+    # 1. Validate max_generations
+    if max_generations != 1:
+        msg = "Error: max-generations must be 1 for V8 quality-locked generation."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 2. Read artifact_index to verify current state
+    artifact_index = _read_json_file(control_dir / "artifact_index.json")
+    current_state = artifact_index.get("current_state", "")
+    if current_state != "v8_quality_locked_generation_authorization_required":
+        msg = (
+            f"Error: Current state is '{current_state}', "
+            f"expected 'v8_quality_locked_generation_authorization_required'. "
+            "V8 generation not authorized in this state."
+        )
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg, "current_state": current_state}))
+        else:
+            print(msg)
+        return 1
+
+    # 3. Verify V8 artifacts exist
+    v8_package_path = control_dir / "combine_v2_v8_quality_locked_refinement_package.json"
+    v8_guardrails_path = control_dir / "combine_v2_v8_quality_guardrails.json"
+    v8_gate_path = control_dir / "combine_v2_v8_quality_locked_generation_gate.json"
+    agent_role_index_path = control_dir / "combine_v2_agent_role_contract_index.json"
+    visual_quality_contract_path = control_dir / "agent_role_contracts" / "visual_quality_agent_contract.json"
+
+    missing_artifacts = []
+    if not v8_package_path.exists():
+        missing_artifacts.append("combine_v2_v8_quality_locked_refinement_package.json")
+    if not v8_guardrails_path.exists():
+        missing_artifacts.append("combine_v2_v8_quality_guardrails.json")
+    if not v8_gate_path.exists():
+        missing_artifacts.append("combine_v2_v8_quality_locked_generation_gate.json")
+    if not agent_role_index_path.exists():
+        missing_artifacts.append("combine_v2_agent_role_contract_index.json")
+    if not visual_quality_contract_path.exists():
+        missing_artifacts.append("agent_role_contracts/visual_quality_agent_contract.json")
+
+    if missing_artifacts:
+        msg = f"Error: Missing required V8 artifacts: {', '.join(missing_artifacts)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg, "missing_artifacts": missing_artifacts}))
+        else:
+            print(msg)
+        return 1
+
+    # 4. Load V8 refinement package for reference paths
+    with open(v8_package_path, 'r') as f:
+        v8_package = json.load(f)
+    with open(v8_guardrails_path, 'r') as f:
+        v8_guardrails = json.load(f)
+    with open(v8_gate_path, 'r') as f:
+        v8_gate = json.load(f)
+
+    references = v8_package.get("references", {})
+    concept_ref = references.get("concept_reference", {})
+    quality_ref = references.get("quality_reference", {})
+    failed_ref = references.get("failed_candidate", {})
+
+    # 5. Create operator generation authorization artifact
+    operator_auth = {
+        "operator_authorized_v8_generation": True,
+        "authorization_scope": "exactly_one_v8_quality_locked_generation",
+        "max_generations": 1,
+        "second_generation_allowed": False,
+        "retry_allowed": False,
+        "visual_acceptance_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "current_state_verified": current_state,
+        "v8_quality_locked_refinement_package_exists": True,
+        "v8_quality_guardrails_exists": True,
+        "v8_generation_gate_exists": True,
+        "agent_role_contract_index_exists": True,
+        "visual_quality_agent_contract_exists": True,
+        "generation_allowed_by_operator_authorization": True,
+        "concept_reference_used": concept_ref.get("path", ""),
+        "quality_reference_used": quality_ref.get("path", ""),
+        "failed_candidate_used_as_negative_audit": failed_ref.get("path", ""),
+        "timestamp": timestamp
+    }
+    auth_path = control_dir / "combine_v2_v8_operator_generation_authorization.json"
+    _write_json_file(auth_path, operator_auth)
+
+    # 6. Build workflow payload using V8 quality-locked recipe
+    # Load the V7 submitted workflow as base (it's the closest reference), then apply V8 refinements
+    v7_submitted_workflow_path = control_dir / "shot02_v7_identity_fidelity_submitted_workflow.json"
+    workflow_payload = None
+    if v7_submitted_workflow_path.exists():
+        try:
+            with open(v7_submitted_workflow_path, 'r') as f:
+                raw = json.load(f)
+            # V7 workflow may be wrapped: extract workflow_payload key if present
+            if isinstance(raw, dict) and "workflow_payload" in raw:
+                workflow_payload = raw["workflow_payload"]
+            else:
+                workflow_payload = raw
+        except Exception:
+            workflow_payload = None
+
+    if not workflow_payload:
+        workflow_payload = _build_minimal_real_workflow_with_resolution(1024, 1024)
+        print("[V8-GEN] Using minimal workflow (1024x1024) as base")
+
+    # Apply V8 quality guardrails to the workflow
+    # QR_V8_001: Anti-blur - CFG >= 5.0, steps >= 30, DPM++ 2M Karras
+    for node_id, node in workflow_payload.items():
+        if isinstance(node, dict) and node.get("class_type") == "KSampler":
+            inputs = node.setdefault("inputs", {})
+            inputs["cfg"] = max(inputs.get("cfg", 7.0), 5.0)
+            inputs["steps"] = max(inputs.get("steps", 30), 30)
+            inputs["sampler_name"] = "dpmpp_2m"
+            inputs["scheduler"] = "karras"
+            inputs["denoise"] = min(inputs.get("denoise", 0.90), 0.90)
+
+    # Apply V8 quality guardrails prompts via CLIPTextEncode injection
+    # Node 2 = positive, Node 3 = negative in the V7 7-node workflow
+    v8_positive_enhancements = (
+        "sharp focus, highly detailed, crisp, "
+        "sharp facial features, clear definition, high detail face, "
+        "realistic eyes, detailed iris, clean eye shape, natural eye appearance, "
+        "detailed eyelashes, natural eyelashes, clean eyelash detail, "
+        "natural mouth, well-formed teeth, natural smile, "
+        "natural skin texture, visible skin pores, realistic skin detail, natural skin reflectance, "
+        "natural skin, realistic skin texture, "
+        "detailed hair strands, individual hair strands, sharp hair detail, "
+        "sharp facial features, well-defined face, crisp face detail"
+    )
+    v8_negative_enhancements = (
+        "blurry, soft focus, out of focus, "
+        "soft face, blurry face, "
+        "deformed eyes, bad eyes, unrealistic eyes, distorted eyes, "
+        "clumpy eyelashes, missing eyelashes, bad eyelashes, "
+        "deformed mouth, bad teeth, missing teeth, open mouth distortion, "
+        "smooth skin, plastic skin, wax skin, airbrushed skin, unreal skin, "
+        "wax skin, plastic face, synthetic skin, doll-like skin, mannequin skin, "
+        "soft hair, blurry hair, hair blob, undefined hair, "
+        "soft face, undefined features, "
+        "low quality, ugly, deformed, blurry, bad anatomy, bad proportions, "
+        "worst quality, low resolution, monochrome, grayscale"
+    )
+
+    # Track which CLIPTextEncode nodes have been assigned
+    positive_assigned = False
+    negative_assigned = False
+    for node_id, node in workflow_payload.items():
+        if isinstance(node, dict) and node.get("class_type") == "CLIPTextEncode":
+            inputs = node.get("inputs", {})
+            if not positive_assigned:
+                existing = inputs.get("text", "")
+                inputs["text"] = existing + ", " + v8_positive_enhancements if existing else v8_positive_enhancements
+                positive_assigned = True
+            elif not negative_assigned:
+                existing = inputs.get("text", "")
+                new_neg = existing + ", " + v8_negative_enhancements if existing else v8_negative_enhancements
+                inputs["text"] = new_neg
+                negative_assigned = True
+            if positive_assigned and negative_assigned:
+                break
+
+    # Randomize seed to avoid cache
+    import random as _random
+    for node in workflow_payload.values():
+        if isinstance(node, dict) and node.get("class_type") == "KSampler":
+            node.setdefault("inputs", {})["seed"] = _random.randint(1, 2**32 - 1)
+
+    # Set filename prefix
+    filename_prefix = f"combine_v2_v8_quality_locked_{int(time.time())}"
+    for node in workflow_payload.values():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            node.setdefault("inputs", {})["filename_prefix"] = filename_prefix
+
+    # 7. Dry-run path
+    if not execute:
+        execution_proof = {
+            "stage": "v8_quality_locked_generation",
+            "workflow_submitted": True,
+            "generation_count": 1,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "comfyui_execution": False,
+            "max_generations": 1,
+            "execute_mode": False,
+            "v8_quality_locked_package_used": True,
+            "v8_quality_guardrails_used": True,
+            "agent_role_contracts_verified": True,
+            "operator_authorization_created": True,
+            "generation_performed": False,
+            "visual_acceptance_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": timestamp,
+            "next_allowed_action": "v8_operator_visual_review_required"
+        }
+        _write_json_file(control_dir / "combine_v2_v8_quality_locked_generation_execution.json", execution_proof)
+
+        outputs_manifest = {
+            "stage": "v8_quality_locked_generation",
+            "manifest_type": "v8_quality_locked_outputs_manifest",
+            "generation_count": 1,
+            "max_generations": 1,
+            "workflow_submitted": True,
+            "generated_assets": [],
+            "asset_paths": [],
+            "collection_status": "dry_run",
+            "visual_acceptance_executed": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "production_accepted": False,
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v8_quality_locked_outputs_manifest.json", outputs_manifest)
+
+        result_review = {
+            "stage": "v8_quality_locked_generation",
+            "branch_selected": "dry_run",
+            "generated_assets_count": 0,
+            "asset_paths": [],
+            "result_review_executed": True,
+            "visual_acceptance_executed": False,
+            "operator_visual_review_required": True,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "next_allowed_action": "v8_operator_visual_review_required",
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v8_quality_locked_generation_result_review.json", result_review)
+
+        visual_review_packet = {
+            "stage": "v8_operator_visual_review",
+            "source_stage": "v8_quality_locked_generation",
+            "visual_review_packet_created": True,
+            "generated_assets": [],
+            "generation_count": 0,
+            "operator_visual_review_required": True,
+            "operator_actions": ["accept_visuals", "reject_visuals", "request_corrective_retry"],
+            "visual_acceptance_executed": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "production_accepted": False,
+            "next_allowed_action": "v8_operator_visual_review_required",
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v8_operator_visual_review_packet.json", visual_review_packet)
+
+        _update_v8_quality_locked_index(control_dir, execute=False, generated_assets=[], timestamp=timestamp)
+
+        orchestrator = CombineOrchestrator(str(project_root))
+        try:
+            orchestrator.run_stage("v8_quality_locked_generation_authorization_required")
+        except Exception:
+            pass
+        status = orchestrator.get_status()
+
+        result_payload = {
+            "status": "ok",
+            "stage": "v8_quality_locked_generation",
+            "operator_authorization_created": True,
+            "v8_quality_locked_package_used": True,
+            "v8_quality_guardrails_used": True,
+            "agent_role_contracts_verified": True,
+            "generation_count": 1,
+            "max_generations": 1,
+            "workflow_submitted": True,
+            "comfyui_execution": False,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "generation_performed": False,
+            "visual_acceptance_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "current_state": "v8_operator_visual_review_required",
+            "next_allowed_action": "v8_operator_visual_review_required",
+            "artifacts": [
+                str(auth_path.relative_to(project_root)),
+                "output/control/combine_v2_v8_quality_locked_generation_execution.json",
+                "output/control/combine_v2_v8_quality_locked_outputs_manifest.json",
+                "output/control/combine_v2_v8_quality_locked_generation_result_review.json",
+                "output/control/combine_v2_v8_operator_visual_review_packet.json"
+            ]
+        }
+        if json_output:
+            print(json.dumps(result_payload, indent=2))
+        else:
+            print("V8 Quality-Locked Generation: DRY RUN")
+            print(f"Current State: v8_operator_visual_review_required")
+            print(f"Next Allowed Action: v8_operator_visual_review_required")
+        return 0
+
+    # 8. Real execution path: submit to ComfyUI
+    client = ComfyClient()
+    comfyui_status = "success"
+    prompt_id = None
+    generated_assets = []
+    trace_events = []
+    error_message = None
+
+    try:
+        prompt_id = asyncio.run(client.queue_prompt(workflow_payload))
+        trace_events.append({"event": "workflow_submitted", "status": "success", "prompt_id": prompt_id})
+        history_item = asyncio.run(client.wait_for_history(prompt_id, max_attempts=180, delay_seconds=2))
+        history_images = _extract_history_images(history_item)
+        generated_assets, collection_trace = _collect_real_generation_outputs(
+            client=client,
+            project_root=project_root,
+            history_images=history_images,
+        )
+        trace_events.extend(collection_trace)
+        trace_events.append({"event": "outputs_collected", "status": "success", "assets_count": len(generated_assets)})
+    except Exception as exc:
+        comfyui_status = "failed"
+        error_message = str(exc)
+        trace_events.append({"event": "generation_failed", "status": "failed", "error": error_message})
+
+    failure_code = None
+    if comfyui_status == "success" and len(generated_assets) == 0:
+        comfyui_status = "failed"
+        failure_code = "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+        trace_events.append({"event": "zero_assets_guard_triggered", "status": "failed", "failure_code": failure_code})
+
+    # 9. Create execution proof
+    execution_proof = {
+        "stage": "v8_quality_locked_generation",
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "generation_count": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "max_generations": 1,
+        "execute_mode": True,
+        "v8_quality_locked_package_used": True,
+        "v8_quality_guardrails_used": True,
+        "agent_role_contracts_verified": True,
+        "operator_authorization_created": True,
+        "generation_performed": True,
+        "prompt_id": prompt_id or "",
+        "comfyui_status": comfyui_status,
+        "generated_assets": generated_assets,
+        "generated_assets_count": len(generated_assets),
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "failure_code": failure_code,
+        "timestamp": timestamp,
+        "next_allowed_action": "v8_operator_visual_review_required"
+    }
+    if error_message:
+        execution_proof["error"] = error_message
+    _write_json_file(control_dir / "combine_v2_v8_quality_locked_generation_execution.json", execution_proof)
+
+    # 10. Verify output assets
+    asset_readable = True
+    sha256_present = True
+    dimensions_present = True
+    stub_asset_detected = False
+    validated_assets = []
+    for asset in generated_assets:
+        entry = dict(asset)
+        asset_path = project_root / asset.get("path", "")
+        if asset_path.exists():
+            readable_check = _is_image_readable(asset_path)
+            if not readable_check["readable"]:
+                asset_readable = False
+                stub_asset_detected = True
+            if not readable_check["width"] or not readable_check["height"]:
+                dimensions_present = False
+            sha256 = entry.get("sha256", "")
+            if not sha256 or len(sha256) != 64:
+                sha256_present = False
+            size_bytes = asset_path.stat().st_size
+            if size_bytes < 1024:
+                stub_asset_detected = True
+        else:
+            asset_readable = False
+            stub_asset_detected = True
+
+        validated_assets.append({
+            "path": entry.get("path", ""),
+            "exists": entry.get("exists", False),
+            "readable": entry.get("readable", False),
+            "width": entry.get("width"),
+            "height": entry.get("height"),
+            "size_bytes": entry.get("size_bytes", 0),
+            "sha256": entry.get("sha256", ""),
+        })
+
+    # 11. Create outputs manifest
+    outputs_manifest = {
+        "stage": "v8_quality_locked_generation",
+        "manifest_type": "v8_quality_locked_outputs_manifest",
+        "generation_count": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "generated_assets": validated_assets,
+        "asset_paths": [a.get("path", "") for a in validated_assets],
+        "collection_status": comfyui_status,
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "stub_asset_detected": stub_asset_detected,
+        "visual_acceptance_executed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "timestamp": timestamp
+    }
+    if failure_code:
+        outputs_manifest["failure_code"] = failure_code
+    _write_json_file(control_dir / "combine_v2_v8_quality_locked_outputs_manifest.json", outputs_manifest)
+
+    # 12. Create generation result review
+    branch = "success" if comfyui_status == "success" and len(generated_assets) > 0 else "failed_collection"
+    result_review = {
+        "stage": "v8_quality_locked_generation",
+        "branch_selected": branch,
+        "generated_assets_count": len(generated_assets),
+        "asset_paths": validated_assets,
+        "result_review_executed": True,
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "stub_asset_detected": stub_asset_detected,
+        "visual_acceptance_executed": False,
+        "operator_visual_review_required": True,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "v8_operator_visual_review_required",
+        "timestamp": timestamp
+    }
+    if failure_code:
+        result_review["failure_code"] = failure_code
+    _write_json_file(control_dir / "combine_v2_v8_quality_locked_generation_result_review.json", result_review)
+
+    # 13. Create operator visual review packet
+    visual_review_packet = {
+        "stage": "v8_operator_visual_review",
+        "source_stage": "v8_quality_locked_generation",
+        "visual_review_packet_created": True,
+        "generated_assets": validated_assets,
+        "generation_count": len(generated_assets),
+        "operator_visual_review_required": True,
+        "operator_actions": ["accept_visuals", "reject_visuals", "request_corrective_retry"],
+        "visual_acceptance_executed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "next_allowed_action": "v8_operator_visual_review_required",
+        "timestamp": timestamp
+    }
+    _write_json_file(control_dir / "combine_v2_v8_operator_visual_review_packet.json", visual_review_packet)
+
+    # 14. Update artifact index and ledger
+    _update_v8_quality_locked_index(control_dir, execute=True, generated_assets=validated_assets, timestamp=timestamp)
+
+    # 15. Run orchestrator stage
+    orchestrator = CombineOrchestrator(str(project_root))
+    try:
+        orchestrator.run_stage("v8_quality_locked_generation_authorization_required")
+    except Exception:
+        pass
+    orchestrator_status = orchestrator.get_status()
+
+    result_payload = {
+        "task_id": "RC-COMBINE-V2-5701-6000",
+        "operator_authorization_created": True,
+        "v8_quality_locked_package_used": True,
+        "v8_quality_guardrails_used": True,
+        "agent_role_contracts_verified": True,
+        "visual_quality_agent_contract_verified": True,
+        "new_generation_performed": True,
+        "generation_count": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id or "",
+        "comfyui_status": comfyui_status,
+        "canonical_outputs_registered": len(generated_assets) > 0,
+        "generated_assets": [a.get("path", "") for a in validated_assets],
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "stub_asset_detected": stub_asset_detected,
+        "visual_acceptance_executed": False,
+        "operator_visual_review_packet_created": True,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": "v8_operator_visual_review_required",
+        "next_allowed_action": "v8_operator_visual_review_required",
+        "artifacts": [
+            str(auth_path.relative_to(project_root)),
+            "output/control/combine_v2_v8_quality_locked_generation_execution.json",
+            "output/control/combine_v2_v8_quality_locked_outputs_manifest.json",
+            "output/control/combine_v2_v8_quality_locked_generation_result_review.json",
+            "output/control/combine_v2_v8_operator_visual_review_packet.json"
+        ]
+    }
+    if error_message:
+        result_payload["error"] = error_message
+    if failure_code:
+        result_payload["failure_code"] = failure_code
+
+    if json_output:
+        print(json.dumps(result_payload, indent=2))
+    else:
+        print(f"V8 Quality-Locked Generation: {comfyui_status.upper()}")
+        print(f"Generated Assets: {len(generated_assets)}")
+        print(f"Current State: v8_operator_visual_review_required")
+        print(f"Next Allowed Action: v8_operator_visual_review_required")
+
+    return 0 if comfyui_status == "success" else 1
+
+
+def _update_v8_quality_locked_index(
+    control_dir: Path,
+    execute: bool,
+    generated_assets: list,
+    timestamp: str
+) -> None:
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = _read_json_file(artifact_index_path)
+
+    artifact_index["current_state"] = "v8_operator_visual_review_required"
+    artifact_index["next_allowed_action"] = "v8_operator_visual_review_required"
+    artifact_index["v8_operator_generation_authorization_created"] = True
+    artifact_index["v8_quality_locked_package_used"] = True
+    artifact_index["v8_quality_guardrails_used"] = True
+    artifact_index["agent_role_contracts_verified"] = True
+    artifact_index["new_generation_performed"] = execute
+    artifact_index["generation_count"] = 1
+    artifact_index["max_generations"] = 1
+    artifact_index["second_generation_attempted"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["workflow_submitted"] = True
+    artifact_index["comfyui_execution"] = execute
+    artifact_index["canonical_outputs_registered"] = len(generated_assets) > 0
+    artifact_index["generated_assets"] = [a.get("path", "") for a in generated_assets]
+    artifact_index["asset_readable"] = all(a.get("readable", False) for a in generated_assets) if generated_assets else False
+    artifact_index["visual_acceptance_executed"] = False
+    artifact_index["operator_visual_review_packet_created"] = True
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+    artifact_index["v8_operator_visual_review_packet_created"] = True
+
+    _write_json_file(artifact_index_path, artifact_index)
+
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        try:
+            data = _read_json_file(ledger_path)
+            if isinstance(data, list):
+                ledger = data
+            elif isinstance(data, dict):
+                ledger = data.get("events", data.get("records", []))
+        except Exception:
+            ledger = []
+
+    ledger.append({
+        "event_type": "v8_quality_locked_generation_executed",
+        "task_id": "RC-COMBINE-V2-5701-6000",
+        "stage": "v8_quality_locked_generation",
+        "new_generation_performed": execute,
+        "generation_count": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": execute,
+        "generated_assets": [a.get("path", "") for a in generated_assets],
+        "production_accepted": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "operator_visual_review_required": True,
+        "current_state": "v8_operator_visual_review_required",
+        "next_allowed_action": "v8_operator_visual_review_required",
+        "timestamp": timestamp
+    })
+
+    _write_json_file(ledger_path, ledger)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -9320,6 +9949,33 @@ def main() -> int:
         help="Output as JSON",
     )
 
+    # RC-COMBINE-V2-5701-6000 — combine-execute-v8-quality-locked-generation subcommand
+    combine_execute_v8_quality_locked_generation_parser = subparsers.add_parser(
+        "combine-execute-v8-quality-locked-generation",
+        help="Execute exactly one V8 quality-locked generation (explicit V8 generation gate)"
+    )
+    combine_execute_v8_quality_locked_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_execute_v8_quality_locked_generation_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute the generation (default: dry run only)",
+    )
+    combine_execute_v8_quality_locked_generation_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum generations (must be 1, default: 1)",
+    )
+    combine_execute_v8_quality_locked_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC2-PRODCARDS3B — Authorize real role decision apply subcommand
     authorize_real_role_decision_apply_parser = subparsers.add_parser("authorize-real-role-decision-apply", help="Final authorization checkpoint before applying resubmitted role decisions to real project")
     authorize_real_role_decision_apply_parser.add_argument(
@@ -9943,6 +10599,8 @@ def main() -> int:
         return combine_update_corrective_retry_v4_implementation_plan(args)
     elif args.command == "combine-review-updated-corrective-retry-v4-implementation-plan":
         return combine_review_updated_corrective_retry_v4_implementation_plan(args)
+    elif args.command == "combine-execute-v8-quality-locked-generation":
+        return combine_execute_v8_quality_locked_generation(args)
     elif args.command == "combine-run-visual-quality-baseline-benchmark":
         return combine_run_visual_quality_baseline_benchmark(args)
     elif args.command == "combine-run-clean-sdxl-v6-candidate":

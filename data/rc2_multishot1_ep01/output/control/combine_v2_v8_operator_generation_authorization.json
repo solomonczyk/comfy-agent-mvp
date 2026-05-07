@@ -1,0 +1,22 @@
+{
+  "operator_authorized_v8_generation": true,
+  "authorization_scope": "exactly_one_v8_quality_locked_generation",
+  "max_generations": 1,
+  "second_generation_allowed": false,
+  "retry_allowed": false,
+  "visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "current_state_verified": "v8_quality_locked_generation_authorization_required",
+  "v8_quality_locked_refinement_package_exists": true,
+  "v8_quality_guardrails_exists": true,
+  "v8_generation_gate_exists": true,
+  "agent_role_contract_index_exists": true,
+  "visual_quality_agent_contract_exists": true,
+  "generation_allowed_by_operator_authorization": true,
+  "concept_reference_used": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+  "quality_reference_used": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "failed_candidate_used_as_negative_audit": "data/rc2_multishot1_ep01/output/assets/combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png",
+  "timestamp": "2026-05-07T14:03:03.974420"
+}

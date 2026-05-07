@@ -1,0 +1,14 @@
+{
+  "stage": "v8_quality_locked_generation",
+  "branch_selected": "dry_run",
+  "generated_assets_count": 0,
+  "asset_paths": [],
+  "result_review_executed": true,
+  "visual_acceptance_executed": false,
+  "operator_visual_review_required": true,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "v8_operator_visual_review_required",
+  "timestamp": "2026-05-07T14:03:03.974420"
+}

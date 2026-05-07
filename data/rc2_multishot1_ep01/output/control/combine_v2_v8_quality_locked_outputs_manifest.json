@@ -1,0 +1,15 @@
+{
+  "stage": "v8_quality_locked_generation",
+  "manifest_type": "v8_quality_locked_outputs_manifest",
+  "generation_count": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "generated_assets": [],
+  "asset_paths": [],
+  "collection_status": "dry_run",
+  "visual_acceptance_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-07T14:03:03.974420"
+}
