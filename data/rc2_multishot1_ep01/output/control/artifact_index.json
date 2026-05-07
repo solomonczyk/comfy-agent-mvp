@@ -1,6 +1,6 @@
 {
-  "current_state": "operator_retry_v4_generation_authorization_required",
-  "next_allowed_action": "operator_retry_v4_generation_authorization_required",
+  "current_state": "corrective_retry_v4_real_execute_assets",
+  "next_allowed_action": "corrective_retry_v4_real_execute_assets",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5306,6 +5306,24 @@
       },
       "timestamp": "2026-05-07T06:32:24.275696+00:00",
       "no_generation_performed": true
+    },
+    {
+      "stage": "operator_retry_v4_generation_authorization_required",
+      "success": true,
+      "message": "Operator authorized corrective retry V4 generation (max 1)",
+      "artifacts": [
+        "combine_v2_operator_retry_v4_generation_authorization.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-2841-2900",
+        "operator_authorized": true,
+        "max_generations": 1,
+        "generation_gate_opened": true,
+        "generation_performed": false,
+        "next_allowed_action": "corrective_retry_v4_real_execute_assets"
+      },
+      "timestamp": "2026-05-07T06:57:47.477691+00:00",
+      "no_generation_performed": true
     }
   ],
   "operator_visual_decision": "reject_visual_quality",
@@ -5338,10 +5356,10 @@
   "corrective_retry_package_required": true,
   "corrective_retry_package_available": true,
   "max_generations": 1,
-  "visual_qa_executed": true,
+  "visual_qa_executed": false,
   "assembly_executed": false,
   "corrective_retry_package_used": true,
-  "generation_attempts": 1,
+  "generation_attempts": 0,
   "generation_performed": false,
   "second_generation_attempted": false,
   "branch_selected": "success",
@@ -5453,12 +5471,12 @@
   "visual_qa_verdict_used": true,
   "operator_visual_correction_plan_review_executed": true,
   "visual_correction_plan_approved": true,
-  "operator_decision": "approve_updated_retry_implementation_plan",
+  "operator_decision": "approve_retry_v4_generation",
   "updated_retry_implementation_plan_created": true,
   "new_generation_performed": false,
   "new_comfyui_submit_executed": false,
   "operator_updated_retry_v4_implementation_plan_review_executed": true,
   "updated_retry_v4_implementation_plan_approved": true,
-  "generation_gate_opened": false,
+  "generation_gate_opened": true,
   "retry_authorized": false
 }

@@ -8288,6 +8288,38 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2841-2900 — combine-authorize-corrective-retry-v4-generation subcommand
+    combine_authorize_corrective_retry_v4_generation_parser = subparsers.add_parser(
+        "combine-authorize-corrective-retry-v4-generation",
+        help="Authorize one corrective retry V4 generation (operator gate)"
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--approve",
+        action="store_true",
+        help="Approve one corrective retry V4 generation",
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--reject",
+        action="store_true",
+        help="Reject corrective retry V4 generation authorization",
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum number of generations (must be 1)",
+    )
+    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1341-1400 — combine-run-corrective-retry-v3-visual-qa-preflight subcommand
     combine_run_corrective_retry_v3_visual_qa_preflight_parser = subparsers.add_parser(
         "combine-run-corrective-retry-v3-visual-qa-preflight",
@@ -8346,38 +8378,6 @@ def main() -> int:
         help="Shot ID (e.g., shot02)",
     )
     combine_build_corrective_retry_v3_operator_review_packet_parser.add_argument(
-        "--json",
-        action="store_true",
-        help="Output in JSON format",
-    )
-
-    # RC-COMBINE-V2-1701-1760 — combine-authorize-corrective-retry-v4-generation subcommand
-    combine_authorize_corrective_retry_v4_generation_parser = subparsers.add_parser(
-        "combine-authorize-corrective-retry-v4-generation",
-        help="Authorize one corrective retry V4 generation"
-    )
-    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
-        "--project-root",
-        required=True,
-        help="Project root directory",
-    )
-    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
-        "--shot-id",
-        required=True,
-        help="Shot ID (e.g., shot02)",
-    )
-    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
-        "--decision",
-        required=True,
-        choices=["approve_one_corrective_retry_v4_generation", "reject_corrective_retry_v4_generation", "request_implementation_package_changes"],
-        help="Operator decision",
-    )
-    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
-        "--reason",
-        required=True,
-        help="Reason for decision",
-    )
-    combine_authorize_corrective_retry_v4_generation_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -28807,6 +28807,341 @@ def combine_review_updated_corrective_retry_v4_implementation_plan(args: argpars
         print(f"Production Accepted: False")
         print(f"Current State: {new_state}")
         print(f"Next Allowed Action: {new_next_allowed_action}")
+
+    return 0
+
+
+def combine_authorize_corrective_retry_v4_generation(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2841-2900 — Operator Authorize Corrective Retry V4 Generation Gate.
+
+    This command records the operator's approval for exactly one corrective retry V4
+    real generation attempt. It does NOT trigger real ComfyUI execution.
+
+    Validates:
+    - current_state == operator_retry_v4_generation_authorization_required
+    - next_allowed_action == operator_retry_v4_generation_authorization_required
+    - Updated implementation plan review artifact exists and is approved
+    - generation_gate_opened is currently false
+    - production_accepted is false
+    - max_generations == 1
+
+    Exit codes:
+    - 0: authorization granted
+    - 1: authorization rejected or error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    approve = getattr(args, "approve", False)
+    reject = getattr(args, "reject", False)
+    max_generations = getattr(args, "max_generations", 1)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+    task_id = "RC-COMBINE-V2-2841-2900"
+    previous_layer = "RC-COMBINE-V2-2781-2840"
+    previous_commit = "a41714b"
+
+    def _error(msg: str, blocker: str = None) -> int:
+        if json_output:
+            result = {"status": "error", "message": msg, "operator_retry_v4_generation_authorized": False}
+            if blocker:
+                result["blocker"] = blocker
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"ERROR: {msg}")
+        return 1
+
+    # 1. Read artifact_index.json
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, "r", encoding="utf-8") as f:
+            artifact_index = json.load(f)
+
+    # 2. Validate state requirements
+    current_state = artifact_index.get("current_state", "")
+    next_allowed_action = artifact_index.get("next_allowed_action", "")
+
+    if current_state != "operator_retry_v4_generation_authorization_required":
+        return _error(
+            f"Invalid current_state: {current_state}. Expected: operator_retry_v4_generation_authorization_required",
+            "INVALID_STATE_FOR_RETRY_V4_GENERATION_AUTHORIZATION"
+        )
+
+    if next_allowed_action != "operator_retry_v4_generation_authorization_required":
+        return _error(
+            f"Invalid next_allowed_action: {next_allowed_action}. Expected: operator_retry_v4_generation_authorization_required",
+            "INVALID_STATE_FOR_RETRY_V4_GENERATION_AUTHORIZATION"
+        )
+
+    # 3. Check production_accepted is false
+    if artifact_index.get("production_accepted", False):
+        return _error("production_accepted is true. Cannot authorize generation after production acceptance.")
+
+    # 4. Read updated implementation plan review artifact
+    review_path = control_dir / "combine_v2_operator_retry_v4_updated_implementation_plan_review.json"
+    if not review_path.exists():
+        return _error(
+            "Updated implementation plan review artifact not found. Run combine-review-updated-corrective-retry-v4-implementation-plan first.",
+            "UPDATED_RETRY_V4_PLAN_REVIEW_MISSING"
+        )
+
+    with open(review_path, "r", encoding="utf-8") as f:
+        review = json.load(f)
+
+    # 5. Validate review artifact is approved
+    if not review.get("operator_approved", False):
+        return _error("Updated implementation plan review is not approved. Approval required before generation authorization.")
+
+    if not review.get("updated_plan_reviewed", False):
+        return _error("Updated implementation plan not reviewed. Review required before generation authorization.")
+
+    # 6. Validate max_generations == 1
+    if max_generations != 1:
+        return _error(f"max_generations must be 1, got {max_generations}. Only single generation attempts are allowed.")
+
+    # 7. Validate generation_gate_opened is currently false
+    if artifact_index.get("generation_gate_opened", False):
+        return _error("generation_gate_opened is already true. Gate can only be opened once per authorization.")
+
+    # 8. Handle decision
+    if approve and reject:
+        return _error("Cannot specify both --approve and --reject. Choose one.")
+
+    if reject:
+        # Rejection - do not open gate
+        rejection_artifact = {
+            "task_id": task_id,
+            "authorization_type": "operator_corrective_retry_v4_generation_authorization",
+            "previous_layer": previous_layer,
+            "previous_commit": previous_commit,
+            "operator_authorized": False,
+            "operator_decision": "reject_retry_v4_generation",
+            "max_generations": 0,
+            "generation_attempts": 0,
+            "generation_gate_opened": False,
+            "generation_performed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "retry_attempted": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "timestamp": timestamp,
+            "current_state": "operator_retry_v4_generation_authorization_required",
+            "next_allowed_action": "operator_retry_v4_generation_authorization_required",
+        }
+
+        rejection_path = control_dir / "combine_v2_operator_retry_v4_generation_authorization_rejection.json"
+        with open(rejection_path, "w", encoding="utf-8") as f:
+            json.dump(rejection_artifact, f, indent=2)
+
+        # Update artifact_index
+        artifact_index["current_state"] = "operator_retry_v4_generation_authorization_required"
+        artifact_index["next_allowed_action"] = "operator_retry_v4_generation_authorization_required"
+        artifact_index["generation_gate_opened"] = False
+        artifact_index["operator_retry_v4_generation_authorized"] = False
+        artifact_index["operator_decision"] = "reject_retry_v4_generation"
+
+        with open(artifact_index_path, "w", encoding="utf-8") as f:
+            json.dump(artifact_index, f, indent=2)
+
+        # Update ledger
+        ledger_path = control_dir / "episode_ledger.json"
+        ledger = []
+        if ledger_path.exists():
+            with open(ledger_path, "r", encoding="utf-8") as f:
+                try:
+                    data = json.load(f)
+                    ledger = data if isinstance(data, list) else data.get("events", data.get("records", []))
+                except json.JSONDecodeError:
+                    ledger = []
+
+        ledger.append({
+            "event_type": "operator_retry_v4_generation_authorization_rejected",
+            "task_id": task_id,
+            "stage": "operator_retry_v4_generation_authorization_required",
+            "operator_decision": "reject_retry_v4_generation",
+            "operator_retry_v4_generation_authorized": False,
+            "generation_gate_opened": False,
+            "timestamp": timestamp,
+        })
+
+        with open(ledger_path, "w", encoding="utf-8") as f:
+            json.dump(ledger, f, indent=2)
+
+        if json_output:
+            print(json.dumps({
+                "status": "rejected",
+                "operator_retry_v4_generation_authorized": False,
+                "generation_gate_opened": False,
+                "next_allowed_action": "operator_retry_v4_generation_authorization_required",
+            }, indent=2))
+        else:
+            print("Corrective Retry V4 Generation Authorization: REJECTED")
+            print("Generation Gate: CLOSED")
+            print("Next Allowed Action: operator_retry_v4_generation_authorization_required")
+
+        return 1
+
+    if not approve:
+        return _error("Must specify --approve or --reject.")
+
+    # 9. Create authorization artifact (approval)
+    authorization_artifact = {
+        "task_id": task_id,
+        "authorization_type": "operator_corrective_retry_v4_generation_authorization",
+        "previous_layer": previous_layer,
+        "previous_commit": previous_commit,
+        "operator_authorized": True,
+        "operator_decision": "approve_retry_v4_generation",
+        "max_generations": 1,
+        "generation_attempts": 0,
+        "generation_gate_opened": True,
+        "generation_performed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp,
+        "current_state": "corrective_retry_v4_real_execute_assets",
+        "next_allowed_action": "corrective_retry_v4_real_execute_assets",
+        "source_review_artifact": "output/control/combine_v2_operator_retry_v4_updated_implementation_plan_review.json",
+        "preconditions_validated": {
+            "current_state_valid": True,
+            "next_allowed_action_valid": True,
+            "review_artifact_exists": True,
+            "review_artifact_approved": True,
+            "max_generations_valid": True,
+            "production_accepted_false": True,
+            "generation_gate_was_closed": True,
+        }
+    }
+
+    auth_path = control_dir / "combine_v2_operator_retry_v4_generation_authorization.json"
+    with open(auth_path, "w", encoding="utf-8") as f:
+        json.dump(authorization_artifact, f, indent=2)
+
+    # 10. Update artifact_index.json
+    artifact_index["current_state"] = "corrective_retry_v4_real_execute_assets"
+    artifact_index["next_allowed_action"] = "corrective_retry_v4_real_execute_assets"
+    artifact_index["operator_retry_v4_generation_authorized"] = True
+    artifact_index["generation_gate_opened"] = True
+    artifact_index["max_generations"] = 1
+    artifact_index["generation_attempts"] = 0
+    artifact_index["generation_performed"] = False
+    artifact_index["workflow_submitted"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+    artifact_index["operator_decision"] = "approve_retry_v4_generation"
+
+    if "stage_results" not in artifact_index:
+        artifact_index["stage_results"] = []
+
+    artifact_index["stage_results"].append({
+        "stage": "operator_retry_v4_generation_authorization_required",
+        "success": True,
+        "message": "Operator authorized corrective retry V4 generation (max 1)",
+        "artifacts": ["combine_v2_operator_retry_v4_generation_authorization.json"],
+        "metadata": {
+            "task_id": task_id,
+            "operator_authorized": True,
+            "max_generations": 1,
+            "generation_gate_opened": True,
+            "generation_performed": False,
+            "next_allowed_action": "corrective_retry_v4_real_execute_assets",
+        },
+        "timestamp": timestamp,
+        "no_generation_performed": True,
+    })
+
+    with open(artifact_index_path, "w", encoding="utf-8") as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 11. Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, "r", encoding="utf-8") as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get("events", data.get("records", []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "operator_retry_v4_generation_authorized",
+        "task_id": task_id,
+        "stage": "operator_retry_v4_generation_authorization_required",
+        "operator_decision": "approve_retry_v4_generation",
+        "operator_retry_v4_generation_authorized": True,
+        "max_generations": 1,
+        "generation_gate_opened": True,
+        "generation_allowed": True,
+        "generation_performed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "next_allowed_action": "corrective_retry_v4_real_execute_assets",
+        "timestamp": timestamp,
+    })
+
+    with open(ledger_path, "w", encoding="utf-8") as f:
+        json.dump(ledger, f, indent=2)
+
+    # 12. Build result
+    result = {
+        "task_id": task_id,
+        "status": "ok",
+        "operator_retry_v4_generation_authorized": True,
+        "max_generations": 1,
+        "generation_gate_opened": True,
+        "generation_performed": False,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": "corrective_retry_v4_real_execute_assets",
+        "next_allowed_action": "corrective_retry_v4_real_execute_assets",
+        "artifact": str(auth_path.relative_to(project_root)),
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Corrective Retry V4 Generation Authorization: GRANTED")
+        print(f"Task ID: {task_id}")
+        print(f"Max Generations: 1")
+        print(f"Generation Gate: OPENED")
+        print(f"Generation Performed: False")
+        print(f"ComfyUI Execution: False")
+        print(f"Retry Attempted: False")
+        print(f"Visual QA Executed: False")
+        print(f"Assembly Executed: False")
+        print(f"Downstream Executed: False")
+        print(f"Production Accepted: False")
+        print(f"Current State: corrective_retry_v4_real_execute_assets")
+        print(f"Next Allowed Action: corrective_retry_v4_real_execute_assets")
+        print(f"Artifact: {auth_path}")
 
     return 0
 
