@@ -1,7 +1,18 @@
 {
-  "current_state": "corrective_retry_v4_result_review_required",
-  "next_allowed_action": "corrective_retry_v4_result_review_required",
+  "current_state": "corrective_retry_v5_generation_runtime_blocked",
+  "next_allowed_action": "corrective_retry_v5_generation_runtime_blocked",
+  "generation_runtime_blocked": true,
+  "blocker": "COMFYUI_PROMPT_500_ROOT_CAUSE_IDENTIFIED",
+  "blocker_summary": "POST /prompt 500 FIXED - secondary blocker: missing checkpoint model (juggernautXL_version2.safetensors) or custom node (LoraLoader). Manual action required.",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
   "route_family": "custom",
+  "post_prompt_500_fixed": true,
+  "payload_validation_added": true,
+  "manual_action_required": true,
+  "required_model": "juggernautXL_version2.safetensors",
+  "required_custom_nodes": ["LoraLoader"],
   "stage_results": [
     {
       "stage": "asset_resolution_required",
@@ -5486,6 +5497,9 @@
     "output/control/combine_v2_corrective_retry_v4_real_execution_result.json",
     "output/control/combine_v2_corrective_retry_v4_real_result_review.json",
     "output/control/combine_v2_corrective_retry_v4_outputs_manifest.json",
-    "output/assets/combine_v2_corrective_retry_v4_shot02_00002_.png"
+    "output/assets/combine_v2_corrective_retry_v4_shot02_00002_.png",
+    "output/control/combine_v2_comfyui_prompt_500_diagnosis.json",
+    "output/control/combine_v2_corrective_retry_v5_prompt_payload_validation.json",
+    "output/control/combine_v2_corrective_retry_v5_generation_runtime_blocked.json"
   ]
 }

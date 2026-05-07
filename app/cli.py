@@ -24919,12 +24919,108 @@ def combine_corrective_retry_v5_visual_recovery(args: argparse.Namespace) -> int
     # --execute path: real ComfyUI submission
     comfy_base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188")
 
+    # Payload validation before ComfyUI submit
+    def validate_and_clean_workflow(wf: dict) -> dict:
+        """Validate workflow and clean for ComfyUI API submission."""
+        validation_errors = []
+        
+        # Check workflow is not empty
+        if not wf:
+            validation_errors.append("Workflow is empty")
+            return None, validation_errors
+        
+        # Extract only node entries (keys that are numeric strings)
+        cleaned_workflow = {}
+        for key, value in wf.items():
+            # ComfyUI API expects node IDs as string keys (e.g., "3", "4")
+            # Skip non-node metadata like "shot_id"
+            if isinstance(key, str) and key.isdigit():
+                cleaned_workflow[key] = value
+        
+        if not cleaned_workflow:
+            validation_errors.append("No valid node entries found in workflow")
+            return None, validation_errors
+        
+        # Validate required nodes exist
+        node_types = {node.get("class_type") for node in cleaned_workflow.values() if isinstance(node, dict)}
+        
+        if "KSampler" not in node_types:
+            validation_errors.append("Missing required KSampler node")
+        
+        if "SaveImage" not in node_types:
+            validation_errors.append("Missing required SaveImage node")
+        
+        if "CheckpointLoaderSimple" not in node_types:
+            validation_errors.append("Missing required CheckpointLoaderSimple node")
+        
+        if "CLIPTextEncode" not in node_types:
+            validation_errors.append("Missing required CLIPTextEncode node(s)")
+        
+        # Validate SaveImage prefix
+        saveimage_prefix = None
+        for node in cleaned_workflow.values():
+            if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+                saveimage_prefix = node.get("inputs", {}).get("filename_prefix")
+                break
+        
+        if saveimage_prefix != expected_prefix:
+            validation_errors.append(f"SaveImage prefix mismatch: expected '{expected_prefix}', got '{saveimage_prefix}'")
+        
+        # Validate checkpoint reference
+        checkpoint_found = False
+        for node in cleaned_workflow.values():
+            if isinstance(node, dict) and node.get("class_type") == "CheckpointLoaderSimple":
+                ckpt_name = node.get("inputs", {}).get("ckpt_name")
+                if ckpt_name:
+                    checkpoint_found = True
+                break
+        
+        if not checkpoint_found:
+            validation_errors.append("CheckpointLoaderSimple missing ckpt_name reference")
+        
+        if validation_errors:
+            return None, validation_errors
+        
+        return cleaned_workflow, []
+
+    # Validate and clean workflow before submission
+    cleaned_workflow, validation_errors = validate_and_clean_workflow(workflow)
+    if validation_errors:
+        blocked = {
+            "status": "blocked",
+            "blocked_reason": "workflow_validation_failed",
+            "validation_errors": validation_errors,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "workflow_submitted": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"V5 Visual Recovery: BLOCKED - Workflow validation failed: {', '.join(validation_errors)}")
+        return 1
+    
+    # Save validation result
+    validation_result = {
+        "task_id": "RC-COMBINE-V2-3261-3360",
+        "workflow_valid_for_comfyui_api": True,
+        "validation_passed": True,
+        "validation_errors": [],
+        "original_workflow_keys": list(workflow.keys()),
+        "cleaned_workflow_keys": list(cleaned_workflow.keys()),
+        "removed_keys": [k for k in workflow.keys() if k not in cleaned_workflow],
+        "timestamp": timestamp,
+    }
+    with open(control_dir / "combine_v2_corrective_retry_v5_prompt_payload_validation.json", 'w') as f:
+        json.dump(validation_result, f, indent=2)
+
     import asyncio
     from app.comfy.comfy_client import ComfyClient
 
     async def _submit():
         client = ComfyClient()
-        prompt_id = await client.queue_prompt(workflow)
+        prompt_id = await client.queue_prompt(cleaned_workflow)
         return prompt_id
 
     try:
@@ -24945,17 +25041,57 @@ def combine_corrective_retry_v5_visual_recovery(args: argparse.Namespace) -> int
             print(f"V5 Visual Recovery: FAILED - {exc}")
         return 1
 
-    # Wait for generation to complete and collect output
-    import time
-    time.sleep(8)  # Wait for ComfyUI to process
+    # Wait for generation to complete and fetch output from ComfyUI
+    async def _wait_and_fetch():
+        client = ComfyClient()
+        # Wait for history to be available
+        history_item = await client.wait_for_history(prompt_id, max_attempts=180, delay_seconds=3)
+        # Extract image info from history
+        images = client.extract_images(history_item)
+        if not images:
+            raise RuntimeError("No images found in ComfyUI history")
+        
+        # Fetch the first image
+        img_info = images[0]
+        img_response = await client.fetch_image(
+            filename=img_info["filename"],
+            subfolder=img_info.get("subfolder", ""),
+            type=img_info.get("type", "output"),
+        )
+        
+        return {
+            "history_item": history_item,
+            "images": images,
+            "image_data": img_response["content"],
+            "filename": img_info["filename"],
+        }
 
-    # Find generated asset
-    generated_asset_path = None
-    generated_asset_filename = None
-    asset_files = list(assets_dir.glob(f"{expected_prefix}_*.png"))
-    if asset_files:
-        generated_asset_path = asset_files[0]
-        generated_asset_filename = generated_asset_path.name
+    try:
+        result = asyncio.run(_wait_and_fetch())
+        image_data = result["image_data"]
+        generated_asset_filename = result["filename"]
+        
+        # Save image to project assets directory
+        generated_asset_path = assets_dir / generated_asset_filename
+        generated_asset_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(generated_asset_path, "wb") as f:
+            f.write(image_data)
+    except Exception as exc:
+        err = {
+            "status": "error",
+            "blocked_reason": "comfyui_execution_or_fetch_failed",
+            "error": str(exc),
+            "prompt_id": prompt_id,
+            "generation_performed": True,
+            "comfyui_execution": True,
+            "workflow_submitted": True,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(err, indent=2))
+        else:
+            print(f"V5 Visual Recovery: FAILED - {exc}")
+        return 1
 
     if not generated_asset_path or not generated_asset_path.exists():
         err = {

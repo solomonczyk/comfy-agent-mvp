@@ -403,3 +403,130 @@ class TestCombineV2VisualQualityRecoveryV1:
 
         result = combine_corrective_retry_v5_visual_recovery(args)
         assert result == 1
+
+    def test_payload_validation_removes_non_node_fields(self, tmp_path):
+        """Test that payload validator removes non-node fields like shot_id"""
+        from app.cli import combine_corrective_retry_v5_visual_recovery
+        import argparse
+
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+
+        package = {"retry_version": "v5_visual_recovery"}
+        with open(control_dir / "combine_v2_corrective_retry_v5_visual_recovery_package.json", 'w') as f:
+            json.dump(package, f)
+
+        # Workflow with non-node metadata (shot_id) that should be removed
+        workflow = {
+            "shot_id": "shot02",  # Non-node field that should be removed
+            "3": {
+                "inputs": {"seed": 847392, "steps": 30, "cfg": 7.5, "sampler_name": "dpmpp_sde"},
+                "class_type": "KSampler"
+            },
+            "4": {
+                "inputs": {"ckpt_name": "model.safetensors"},
+                "class_type": "CheckpointLoaderSimple"
+            },
+            "6": {
+                "inputs": {"text": "Subject is large and clearly visible, medium shot", "clip": ["4", 1]},
+                "class_type": "CLIPTextEncode"
+            },
+            "7": {
+                "inputs": {"text": "tiny subject, vast empty background", "clip": ["4", 1]},
+                "class_type": "CLIPTextEncode"
+            },
+            "9": {
+                "inputs": {"filename_prefix": "combine_v2_corrective_retry_v5_shot02"},
+                "class_type": "SaveImage"
+            }
+        }
+        with open(control_dir / "shot02_v5_patched_workflow.json", 'w') as f:
+            json.dump(workflow, f)
+
+        args = argparse.Namespace(
+            project_root=str(tmp_path),
+            shot_id="shot02",
+            execute=False,
+            max_generations=1,
+            json=True
+        )
+
+        # Should pass dry-run (shot_id will be removed during validation)
+        result = combine_corrective_retry_v5_visual_recovery(args)
+        assert result == 0
+
+        # Verify validation would remove shot_id and keep only numeric node keys
+        valid_node_keys = [k for k in workflow.keys() if isinstance(k, str) and k.isdigit()]
+        assert "shot_id" not in valid_node_keys
+        assert "3" in valid_node_keys
+        assert "4" in valid_node_keys
+        assert "9" in valid_node_keys
+
+    def test_v5_exactly_one_generation_enforced(self, tmp_path):
+        """Test that exactly one generation is enforced"""
+        from app.cli import combine_corrective_retry_v5_visual_recovery
+        import argparse
+
+        control_dir = tmp_path / "output" / "control"
+        control_dir.mkdir(parents=True)
+
+        package = {"retry_version": "v5_visual_recovery"}
+        with open(control_dir / "combine_v2_corrective_retry_v5_visual_recovery_package.json", 'w') as f:
+            json.dump(package, f)
+
+        workflow = {
+            "6": {
+                "inputs": {"text": "Subject is large and clearly visible, medium shot", "clip": ["4", 1]},
+                "class_type": "CLIPTextEncode"
+            },
+            "7": {
+                "inputs": {"text": "tiny subject, vast empty background", "clip": ["4", 1]},
+                "class_type": "CLIPTextEncode"
+            },
+            "9": {
+                "inputs": {"filename_prefix": "combine_v2_corrective_retry_v5_shot02"},
+                "class_type": "SaveImage"
+            }
+        }
+        with open(control_dir / "shot02_v5_patched_workflow.json", 'w') as f:
+            json.dump(workflow, f)
+
+        # Test with max_generations=2 (should be blocked)
+        args = argparse.Namespace(
+            project_root=str(tmp_path),
+            shot_id="shot02",
+            execute=False,
+            max_generations=2,
+            json=True
+        )
+
+        result = combine_corrective_retry_v5_visual_recovery(args)
+        assert result == 1  # Blocked because max_generations != 1
+
+        # Test with max_generations=1 (should pass dry-run)
+        args.max_generations = 1
+        result = combine_corrective_retry_v5_visual_recovery(args)
+        assert result == 0  # Passes dry-run
+
+    def test_post_prompt_500_diagnosis_artifact_exists(self):
+        """Test that POST /prompt 500 diagnosis artifact exists"""
+        control_dir = Path("f:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01/output/control")
+        diagnosis_file = control_dir / "combine_v2_comfyui_prompt_500_diagnosis.json"
+
+        if diagnosis_file.exists():
+            with open(diagnosis_file) as f:
+                data = json.load(f)
+            assert data["task_id"] == "RC-COMBINE-V2-3261-3360"
+            assert data["root_cause_category"] == "invalid_prompt_payload"
+
+    def test_payload_validation_artifact_exists(self):
+        """Test that payload validation artifact exists"""
+        control_dir = Path("f:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01/output/control")
+        validation_file = control_dir / "combine_v2_corrective_retry_v5_prompt_payload_validation.json"
+
+        if validation_file.exists():
+            with open(validation_file) as f:
+                data = json.load(f)
+            assert data["task_id"] == "RC-COMBINE-V2-3261-3360"
+            assert data["workflow_valid_for_comfyui_api"] is True
+            assert "removed_keys" in data

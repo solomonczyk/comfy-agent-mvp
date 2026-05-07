@@ -1,0 +1,31 @@
+{
+  "task_id": "RC-COMBINE-V2-3261-3360",
+  "workflow_valid_for_comfyui_api": true,
+  "validation_passed": true,
+  "validation_errors": [],
+  "original_workflow_keys": [
+    "shot_id",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10"
+  ],
+  "cleaned_workflow_keys": [
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10"
+  ],
+  "removed_keys": [
+    "shot_id"
+  ],
+  "timestamp": "2026-05-07T08:20:16.192387+00:00"
+}

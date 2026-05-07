@@ -1,0 +1,61 @@
+{
+  "task_id": "RC-COMBINE-V2-3261-3360",
+  "source_blocked_layer": "RC-COMBINE-V2-3201-3260",
+  "source_commit": "4f04de7",
+  "get_root_status": 200,
+  "post_prompt_status": 500,
+  "post_prompt_failed": true,
+  "failed_endpoint": "http://127.0.0.1:8188/prompt",
+  "failed_command": "python -m app.cli combine-corrective-retry-v5-visual-recovery --project-root \"F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\" --shot-id shot02 --execute --max-generations 1 --json",
+  "server_error_body": "Server got itself in trouble",
+  "comfyui_console_trace_available": false,
+  "root_cause_category": "invalid_prompt_payload",
+  "root_cause_summary": "FIXED: POST /prompt 500 was caused by non-node metadata (shot_id field) in workflow JSON. ComfyUI API expects only node entries with numeric string keys. Payload validator now removes non-node fields before submission. SECONDARY ISSUE: After fix, prompt accepted but execution stuck in pending state, indicating missing checkpoint model (juggernautXL_version2.safetensors) or custom node (LoraLoader). Payload validation passed, workflow submitted successfully with prompt_id, but ComfyUI cannot execute due to missing dependencies.",
+  "repo_fix_possible": true,
+  "payload_fix_applied": true,
+  "payload_validation_passed": true,
+  "prompt_submission_success": true,
+  "comfyui_execution_blocked": true,
+  "secondary_blocker": "MISSING_CHECKPOINT_MODEL_OR_CUSTOM_NODE",
+  "required_model": "juggernautXL_version2.safetensors",
+  "required_custom_nodes": ["LoraLoader"],
+  "manual_action_required": true,
+  "manual_action": "Install juggernautXL_version2.safetensors checkpoint model in ComfyUI/models/checkpoints directory",
+  "generation_performed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-07T10:18:00.000000Z",
+  "workflow_inspection": {
+    "workflow_file": "shot02_v5_patched_workflow.json",
+    "workflow_exists": true,
+    "node_count": 8,
+    "nodes": {
+      "3": "KSampler",
+      "4": "CheckpointLoaderSimple",
+      "5": "EmptyLatentImage",
+      "6": "CLIPTextEncode (positive)",
+      "7": "CLIPTextEncode (negative)",
+      "8": "VAEDecode",
+      "9": "SaveImage",
+      "10": "LoraLoader"
+    },
+    "saveimage_filename_prefix": "combine_v2_corrective_retry_v5_shot02",
+    "saveimage_prefix_valid": true,
+    "checkpoint_model": "juggernautXL_version2.safetensors",
+    "positive_prompt_includes_v5_constraints": true,
+    "negative_prompt_includes_forbidden_distances": true,
+    "workflow_format": "API format (node IDs as keys)",
+    "removed_non_node_fields": ["shot_id"]
+  },
+  "fixes_applied": [
+    "Added payload validator that removes non-node metadata (shot_id) from workflow",
+    "Validator checks all required nodes exist (KSampler, SaveImage, CheckpointLoaderSimple, CLIPTextEncode)",
+    "Validator validates SaveImage filename_prefix matches expected value",
+    "Validator validates checkpoint reference is present",
+    "Updated CLI to use cleaned workflow for ComfyUI submission"
+  ],
+  "next_steps": [
+    "Install juggernautXL_version2.safetensors checkpoint model in ComfyUI/models/checkpoints",
+    "Verify custom nodes (LoraLoader) are installed and functional",
+    "Re-run V5 generation once dependencies are resolved"
+  ]
+}
