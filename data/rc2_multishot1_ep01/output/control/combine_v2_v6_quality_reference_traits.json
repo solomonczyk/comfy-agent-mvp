@@ -1,0 +1,38 @@
+{
+  "task_id": "RC-COMBINE-V2-4801-5100",
+  "source_asset": "combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "source_description": "elderly realistic portrait — standalone visual quality reference",
+  "extracted_quality_traits": {
+    "skin_realism_improved": true,
+    "skin_realism_detail": "pores, fine texture, absence of airbrushed or smoothed appearance",
+    "eye_detail_improved": true,
+    "eye_detail_description": "iris texture visible, natural catchlight, eyelash definition without artifacts",
+    "facial_texture_improved": true,
+    "facial_texture_detail": "believable skin grain, natural variation in skin tone, no wax/plastic appearance",
+    "lighting_naturalness_improved": true,
+    "lighting_detail": "soft directional light with natural falloff, shadows have realistic gradient",
+    "reduced_ai_plastic_look": true,
+    "reduced_ai_plastic_detail": "no glossy over-shine on nose/forehead, skin does not reflect like polished surface",
+    "better_micro_detail": true,
+    "better_micro_detail_description": "fine lines, hair strands individually resolvable, fabric texture visible",
+    "more_believable_face_structure": true,
+    "face_structure_detail": "natural bone structure rendering, proportional facial features, no warping",
+    "overall_quality_assessment": "strong_reference",
+    "quality_traits_applicable_to_v7": [
+      "natural_skin_texture",
+      "better_eye_realism",
+      "less_plastic_gloss",
+      "believable_facial_micro_detail",
+      "cleaner_lighting",
+      "realistic_facial_structure"
+    ],
+    "quality_traits_NOT_applicable": [
+      "age_characteristics_elderly",
+      "realistic_portrait_studio_lighting",
+      "wrinkle_detail",
+      "aged_skin_texture",
+      "passport_photo_composition"
+    ]
+  },
+  "timestamp": "2026-05-07T14:31:38+02:00"
+}

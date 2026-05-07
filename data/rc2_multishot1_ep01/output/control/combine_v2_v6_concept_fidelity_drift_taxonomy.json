@@ -1,0 +1,49 @@
+{
+  "task_id": "RC-COMBINE-V2-4801-5100",
+  "source_asset": "combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "source_description": "targeted refinement result — elderly realistic portrait (concept drift from fantasy character)",
+  "drift_categories": {
+    "age_drift": {
+      "detected": true,
+      "description": "Young adult female character became elderly woman with visible aging signs",
+      "severity": "critical"
+    },
+    "identity_drift": {
+      "detected": true,
+      "description": "Face, features, and character identity completely changed — not the same person",
+      "severity": "critical"
+    },
+    "style_drift": {
+      "detected": true,
+      "description": "Fantasy/cinematic portrait style replaced by realistic studio/passport photography style",
+      "severity": "critical"
+    },
+    "wardrobe_drift": {
+      "detected": true,
+      "description": "Elegant white fantasy dress replaced by plain realistic clothing or undefined wardrobe",
+      "severity": "critical"
+    },
+    "fantasy_character_direction_lost": {
+      "detected": true,
+      "description": "No remaining fantasy elements — character reads as real-world elderly subject",
+      "severity": "critical"
+    },
+    "background_mood_changed": {
+      "detected": true,
+      "description": "Blue fantasy atmospheric background replaced by plain or realistic environment",
+      "severity": "moderate"
+    },
+    "target_character_not_preserved": {
+      "detected": true,
+      "description": "The intended young fantasy character is entirely absent from the generated image",
+      "severity": "critical"
+    },
+    "production_quality_failed_due_to_fidelity": {
+      "detected": true,
+      "description": "Image quality is high but concept fidelity failure makes it unusable for production",
+      "severity": "critical"
+    }
+  },
+  "summary": "The targeted refinement achieved superior standalone image quality but at the cost of complete concept/identity drift. Every dimension of the target character (age, identity, style, wardrobe, fantasy direction) was lost. The refinement package lacked sufficient constraints to prevent the model from defaulting to a realistic elderly portrait, likely because the prompt refinements for 'texture' and 'detail' pushed the generation toward photorealism at the expense of fantasy character fidelity.",
+  "timestamp": "2026-05-07T14:31:38+02:00"
+}

@@ -1,0 +1,51 @@
+{
+  "task_id": "RC-COMBINE-V2-4801-5100",
+  "gate_type": "v7_identity_fidelity_generation",
+  "generation_allowed_now": false,
+  "requires_operator_authorization": true,
+  "max_new_generations": 1,
+  "blind_retry_allowed": false,
+  "second_generation_allowed": false,
+  "visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "operator_authorization_required_fields": {
+    "authorization_type": "v7_identity_fidelity_refinement_generation",
+    "required_approvals": [
+      "review_v7_identity_fidelity_refinement_package",
+      "confirm_identity_fidelity_constraints_adequate",
+      "authorize_single_v7_generation"
+    ],
+    "cannot_authorize_if": [
+      "identity_fidelity_constraints_not_reviewed",
+      "generation_gate_already_open",
+      "previous_generation_queued",
+      "quality_traits_not_separated_from_age_traits"
+    ]
+  },
+  "next_generation_command": {
+    "description": "Execute one V7 identity/fidelity-locked refinement generation. This command generates exactly 1 image using the identity-preserving refined prompt and constrained sampler settings. Do NOT run this command — it requires operator authorization first.",
+    "command_type": "cli_combine_command",
+    "command": "python -m app.cli combine-run-clean-sdxl-v7-identity-fidelity --project-root \"F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\" --execute --json",
+    "required_preconditions": [
+      "operator_authorization_granted",
+      "identity_fidelity_package_applied_to_payload",
+      "git_status_clean"
+    ],
+    "post_generation": {
+      "visual_qa_required": true,
+      "operator_review_required": true,
+      "production_acceptance_possible": false
+    }
+  },
+  "generation_executed": false,
+  "comfyui_submit_executed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "v7_identity_fidelity_generation_authorization_required",
+  "next_allowed_action": "v7_identity_fidelity_generation_authorization_required",
+  "timestamp": "2026-05-07T14:31:38+02:00"
+}

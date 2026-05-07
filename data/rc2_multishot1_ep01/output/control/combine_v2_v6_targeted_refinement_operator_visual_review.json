@@ -1,0 +1,31 @@
+{
+  "task_id": "RC-COMBINE-V2-4801-5100",
+  "review_type": "operator_visual_review_v6_targeted_refinement",
+  "targeted_refinement_asset": "combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "targeted_refinement_asset_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "standalone_visual_quality": "strong_reference",
+  "quality_better_than_previous_v6": true,
+  "promoted_as_quality_reference": true,
+  "production_accepted": false,
+  "concept_fidelity_failed": true,
+  "previous_v6_candidate_preserved_as_concept_reference": true,
+  "previous_v6_candidate_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+  "reason_not_production": "concept_identity_age_style_drift",
+  "operator_visual_decision": {
+    "targeted_refinement_standalone_quality": "strong",
+    "targeted_refinement_quality_better_than_previous_v6": true,
+    "targeted_refinement_promoted_as_quality_reference": true,
+    "targeted_refinement_production_accepted": false,
+    "reason_not_production": "concept_identity_age_style_drift",
+    "previous_v6_candidate_preserved_as_concept_reference": true,
+    "required_next_action": "v7_identity_fidelity_locked_refinement_package"
+  },
+  "control_points_verified": {
+    "elderly_portrait_not_marked_as_production_candidate": true,
+    "elderly_portrait_promoted_as_quality_reference": true,
+    "previous_v6_fantasy_candidate_path_found": true,
+    "comfyui_generation_not_triggered": true,
+    "next_allowed_action_valid": true
+  },
+  "timestamp": "2026-05-07T14:31:38+02:00"
+}

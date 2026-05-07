@@ -1,0 +1,100 @@
+{
+  "task_id": "RC-COMBINE-V2-4801-5100",
+  "package_type": "v7_identity_fidelity_locked_refinement",
+  "previous_v6_fantasy_candidate_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+  "quality_reference_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "dual_reference_strategy": {
+    "concept_reference": "previous_v6_fantasy_candidate",
+    "quality_reference": "v6_targeted_refinement_elderly_portrait",
+    "note": "Use concept reference for identity/fidelity/anchor. Use quality reference for texture/detail/lighting traits only — NOT for age, style, or subject."
+  },
+  "preserved_from_previous_v6_fantasy_candidate": {
+    "character_age": "young adult female (explicitly NOT elderly)",
+    "fantasy_portrait_style": true,
+    "white_hair_direction": "maintained with texture improvement",
+    "blue_fantasy_background_mood": true,
+    "elegant_white_dress_wardrobe": true,
+    "close_portrait_framing": true,
+    "soft_clean_lighting": true,
+    "attractive_fantasy_character_identity": true,
+    "fantasy_cinematic_atmosphere": true
+  },
+  "transferred_from_quality_reference_traits": {
+    "natural_skin_texture": "apply to young skin — not aged/wrinkled skin",
+    "better_eye_realism": "iris detail, catchlight, natural eyelash definition",
+    "less_plastic_gloss": "reduce AI over-smoothing on skin and face",
+    "believable_facial_micro_detail": "appropriate for young adult skin — not wrinkles",
+    "cleaner_lighting": "natural light falloff without over-exposure",
+    "realistic_facial_structure": "anatomically proportional without warping"
+  },
+  "explicit_forbidden_transformations": [
+    "elderly face",
+    "age increase",
+    "wrinkles_or_aged_skin",
+    "realistic_passport_photo_drift",
+    "plain_studio_portrait_drift",
+    "wardrobe_replacement",
+    "loss_of_fantasy_styling",
+    "loss_of_blue_fantasy_environment",
+    "changing_character_concept",
+    "realistic_photography_style",
+    "replacing_fantasy_with_realism"
+  ],
+  "identity_fidelity_constraints": {
+    "age_lock": {
+      "enabled": true,
+      "value": "young adult female, approximately 20-25 years old",
+      "negative_guard": "old, elderly, aged, wrinkles, senior, grandmother, mature"
+    },
+    "identity_lock": {
+      "enabled": true,
+      "value": "preserve character identity from previous V6 candidate — same person, same face structure"
+    },
+    "style_lock": {
+      "enabled": true,
+      "value": "fantasy cinematic portrait, ethereal atmospheric",
+      "negative_guard": "realistic photo, studio portrait, passport photo, documentary, photorealistic"
+    },
+    "wardrobe_lock": {
+      "enabled": true,
+      "value": "elegant white fantasy dress",
+      "negative_guard": "modern clothing, casual wear, undefined clothing, plain outfit"
+    },
+    "background_lock": {
+      "enabled": true,
+      "value": "blue fantasy atmospheric background",
+      "negative_guard": "plain background, studio background, indoor setting, outdoor realistic"
+    }
+  },
+  "prompt_anchors_positive": [
+    "young adult fantasy character",
+    "ethereal fantasy cinematic portrait",
+    "beautiful young woman with white hair",
+    "elegant white fantasy dress",
+    "blue atmospheric magical background",
+    "soft natural skin texture",
+    "detailed iris and realistic eyes",
+    "natural skin grain without plastic look",
+    "cinematic lighting with soft falloff",
+    "high fantasy art style"
+  ],
+  "prompt_anchors_negative": [
+    "old elderly aged face",
+    "wrinkles or aged skin",
+    "realistic photo or studio portrait",
+    "passport photo style",
+    "modern clothing or casual wear",
+    "plain background or indoor setting",
+    "photorealistic or documentary style",
+    "glossy plastic skin",
+    "airbrushed or over-smoothed face"
+  ],
+  "refinement_parameters": {
+    "cfg_scale": 6.5,
+    "denoising_strength": 0.6,
+    "note": "Reduced denoising from 0.95 to 0.6 to preserve more of the source latent structure and prevent full subject reinterpretation"
+  },
+  "generation_not_performed": true,
+  "operator_authorization_required": true,
+  "timestamp": "2026-05-07T14:31:38+02:00"
+}

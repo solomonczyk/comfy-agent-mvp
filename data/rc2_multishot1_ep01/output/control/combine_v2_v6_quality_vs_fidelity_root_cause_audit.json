@@ -1,0 +1,50 @@
+{
+  "task_id": "RC-COMBINE-V2-4801-5100",
+  "audit_type": "quality_vs_fidelity_root_cause",
+  "source_asset": "combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "finding": "Targeted refinement improved image quality but lost concept fidelity due to insufficient identity/concept locking in refinement prompt and parameters",
+  "root_causes": [
+    {
+      "cause": "prompt_caused_age_drift",
+      "detail": "Adding 'texture', 'detail', and 'realism' keywords to the positive prompt without age-locking caused the model to interpret 'more detail' as 'older face with wrinkles'. The model equated skin detail with aged skin.",
+      "severity": "high"
+    },
+    {
+      "cause": "missing_explicit_age_lock",
+      "detail": "Refinement prompt did not include any negative constraint like 'young adult', 'young', 'not elderly', 'no wrinkles'. The age attribute was left unconstrained, allowing free drift.",
+      "severity": "high"
+    },
+    {
+      "cause": "missing_identity_concept_lock",
+      "detail": "No identity-preservation keywords or negative prompts were added to prevent character replacement. The refinement prompt did not anchor to the character concept.",
+      "severity": "high"
+    },
+    {
+      "cause": "missing_wardrobe_lock",
+      "detail": "The elegant white fantasy dress direction was not reinforced in the refinement prompt. No negative prompt prevented wardrobe simplification or replacement.",
+      "severity": "high"
+    },
+    {
+      "cause": "missing_style_lock",
+      "detail": "Fantasy/cinematic portrait style was not explicitly preserved. The refinement prompt lacked style anchors like 'fantasy art', 'cinematic', 'ethereal'. No negative to block 'realistic photo', 'studio portrait', 'passport photo'.",
+      "severity": "high"
+    },
+    {
+      "cause": "too_much_freedom_in_refinement_package",
+      "detail": "The refinement package allowed the model too much semantic freedom by only adding detail-oriented keywords without sufficient concept-guardrails. The recipe changes (cfg 6.5, denoise 0.95) further enabled the model to reinterpret the subject.",
+      "severity": "medium"
+    },
+    {
+      "cause": "possible_denoise_sampler_issue",
+      "detail": "Denoising strength of 0.95 preserves very little of the original latent structure, effectively allowing a near-complete re-generation of the subject. Combined with a detail-focused prompt, this enabled the model to substitute a different subject entirely.",
+      "severity": "medium"
+    },
+    {
+      "cause": "missing_reference_candidate_preservation_rule",
+      "detail": "The refinement package did not include a rule requiring the output to preserve the character's age, identity, and style from the previous V6 candidate. No cross-reference comparison was enforced.",
+      "severity": "high"
+    }
+  ],
+  "lesson": "Quality improvements must be applied WITHIN identity/fidelity constraints, not at their expense. Every refinement prompt needs explicit age locks, identity anchors, style anchors, wardrobe anchors, and negative guards against realistic/photographic drift. Reference candidate preservation must be enforced as a hard constraint, not a suggestion.",
+  "timestamp": "2026-05-07T14:31:38+02:00"
+}
