@@ -1,0 +1,39 @@
+{
+  "task_id": "RC-COMBINE-V2-3901-4200",
+  "v6_candidate_found": true,
+  "v6_candidate_frozen": true,
+  "candidate_is_improved": true,
+  "candidate_better_than_previous": true,
+  "production_accepted": false,
+  "new_generation_performed": false,
+  "retry_attempted": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "frozen_asset_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+  "frozen_asset_readable": true,
+  "frozen_asset_size_bytes": 1460975,
+  "frozen_asset_sha256": "9e40f5a2bf8e83341541839980ccbae0ff71dc5678e81acb3538dc8f6a65f617",
+  "frozen_asset_width": 1024,
+  "frozen_asset_height": 1024,
+  "current_state": "targeted_visual_refinement_plan_required",
+  "next_allowed_action": "targeted_visual_refinement_plan_required",
+  "visual_progress_confirmed": true,
+  "operator_verdict": {
+    "candidate_is_improved": true,
+    "candidate_better_than_previous": true,
+    "production_accepted": false,
+    "remaining_defects": [
+      "eye/eyelash artifacts",
+      "possible eye symmetry issue",
+      "over-smoothed skin",
+      "AI-gloss/plastic look",
+      "minor fabric/detail artifacts"
+    ],
+    "next_action": "targeted_visual_refinement_plan_required"
+  },
+  "source_generation_task": "RC-COMBINE-V2-3601-3900",
+  "source_clean_sdxl_v6_result": "data/rc2_multishot1_ep01/output/control/combine_v2_clean_sdxl_v6_candidate_result.json",
+  "source_clean_sdxl_v6_manifest": "data/rc2_multishot1_ep01/output/control/combine_v2_clean_sdxl_v6_candidate_outputs_manifest.json",
+  "timestamp": "2026-05-07T13:50:56+02:00"
+}

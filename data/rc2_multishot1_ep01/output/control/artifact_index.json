@@ -1,9 +1,9 @@
 {
-  "current_state": "operator_visual_review_required",
-  "next_allowed_action": "operator_visual_review_required",
+  "current_state": "targeted_visual_refinement_plan_required",
+  "next_allowed_action": "targeted_visual_refinement_plan_required",
   "generation_runtime_blocked": false,
-  "blocker": "OPERATOR_VISUAL_REVIEW_PENDING",
-  "blocker_summary": "POST /prompt 500 fixed. ComfyUI executed successfully (two completions confirmed). Output artifact registered. Status: operator_visual_failed \u2014 operator visual review not yet performed.",
+  "blocker": "TARGETED_VISUAL_REFINEMENT_PLAN_REQUIRED",
+  "blocker_summary": "V6 candidate frozen and operator visual review complete. Improved but not production accepted. Targeted refinement plan prepared. Next: execute targeted refinement.",
   "downstream_allowed": false,
   "route_family": "custom",
   "post_prompt_500_fixed": true,
@@ -5401,6 +5401,39 @@
       ],
       "production_accepted": false,
       "timestamp": "2026-05-07T11:10:51.899288+00:00"
+    },
+    {
+      "stage": "v6_candidate_freeze_required",
+      "success": true,
+      "message": "Task RC-COMBINE-V2-3901-4200: V6 candidate frozen, operator visual review completed, targeted refinement plan prepared. No new generation performed.",
+      "artifacts": [
+        "output/control/combine_v2_v6_candidate_freeze_result.json",
+        "output/control/combine_v2_v6_candidate_outputs_manifest.json",
+        "output/control/combine_v2_v6_operator_visual_review.json",
+        "output/control/combine_v2_v6_targeted_refinement_plan.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-3901-4200",
+        "v6_candidate_found": true,
+        "v6_candidate_frozen": true,
+        "asset_readable": true,
+        "sha256_present": true,
+        "visual_progress_confirmed": true,
+        "production_accepted": false,
+        "new_generation_performed": false,
+        "retry_attempted": false,
+        "visual_acceptance_executed": false,
+        "assembly_executed": false,
+        "downstream_executed": false,
+        "next_allowed_action": "targeted_visual_refinement_plan_required",
+        "frozen_asset_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+        "frozen_asset_sha256": "9e40f5a2bf8e83341541839980ccbae0ff71dc5678e81acb3538dc8f6a65f617",
+        "frozen_asset_width": 1024,
+        "frozen_asset_height": 1024,
+        "frozen_asset_size_bytes": 1460975
+      },
+      "timestamp": "2026-05-07T13:50:56+02:00",
+      "no_generation_performed": true
     }
   ],
   "operator_visual_decision": "reject_visual_quality",
@@ -5556,10 +5589,14 @@
   "updated_retry_v4_implementation_plan_approved": true,
   "generation_gate_opened": false,
   "retry_authorized": false,
-  "last_task_id": "RC-COMBINE-V2-3261-3360",
-  "last_updated": "2026-05-07T09:04:00Z",
+  "last_task_id": "RC-COMBINE-V2-3901-4200",
+  "last_updated": "2026-05-07T13:50:56+02:00",
   "prompt_id": "8b60d0af-4011-4a4a-96ca-6ba9f7221b2e",
   "artifacts": [
+    "output/control/combine_v2_v6_targeted_refinement_plan.json",
+    "output/control/combine_v2_v6_operator_visual_review.json",
+    "output/control/combine_v2_v6_candidate_outputs_manifest.json",
+    "output/control/combine_v2_v6_candidate_freeze_result.json",
     "output/control/combine_v2_corrective_retry_v4_real_execution_result.json",
     "output/control/combine_v2_corrective_retry_v4_real_result_review.json",
     "output/control/combine_v2_corrective_retry_v4_outputs_manifest.json",
@@ -5573,7 +5610,7 @@
   "task_id": "RC-COMBINE-V2-3601-3900",
   "baseline_generation_performed": true,
   "benchmark_generation_count": 1,
-  "operator_visual_review_required": true,
+  "operator_visual_review_required": false,
   "v5_visual_failure_registered": true,
   "baseline_default_sdxl_workflow_created": true,
   "recommended_next_recipe": "baseline_default_sdxl",
@@ -5587,5 +5624,8 @@
   "v6_prompt_id": "f3e8acbc-b584-4f7b-8686-85705fd823b6",
   "v6_canonical_assets": [
     "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png"
-  ]
+  ],
+  "v6_candidate_frozen": true,
+  "visual_progress_confirmed": true,
+  "visual_acceptance_executed": false
 }

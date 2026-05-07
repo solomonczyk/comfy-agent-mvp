@@ -1,0 +1,38 @@
+{
+  "review_type": "operator_visual_review_v6",
+  "task_id": "RC-COMBINE-V2-3901-4200",
+  "candidate_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+  "asset_readable": true,
+  "asset_size_bytes": 1460975,
+  "asset_sha256": "9e40f5a2bf8e83341541839980ccbae0ff71dc5678e81acb3538dc8f6a65f617",
+  "asset_width": 1024,
+  "asset_height": 1024,
+  "verdict": {
+    "candidate_is_improved": true,
+    "candidate_better_than_previous": true,
+    "production_accepted": false,
+    "remaining_defects": [
+      "eye/eyelash artifacts",
+      "possible eye symmetry issue",
+      "over-smoothed skin",
+      "AI-gloss/plastic look",
+      "minor fabric/detail artifacts"
+    ],
+    "next_action": "targeted_visual_refinement_plan_required"
+  },
+  "comparison_to_baseline": {
+    "sharper_than_baseline": true,
+    "better_composition_than_baseline": true,
+    "reduced_artifacts_vs_baseline": true,
+    "better_anatomy_vs_baseline": true,
+    "still_below_production_bar": true
+  },
+  "comparison_to_v5": {
+    "sharper_than_v5": true,
+    "better_composition_than_v5": true,
+    "reduced_artifacts_vs_v5": true,
+    "better_detail_than_v5": true,
+    "still_below_production_bar": true
+  },
+  "review_timestamp": "2026-05-07T13:50:56+02:00"
+}

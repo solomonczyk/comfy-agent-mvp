@@ -1,0 +1,58 @@
+{
+  "plan_type": "targeted_visual_refinement_plan",
+  "task_id": "RC-COMBINE-V2-3901-4200",
+  "v6_candidate_frozen": true,
+  "visual_progress_confirmed": true,
+  "production_accepted": false,
+  "generation_forbidden": true,
+  "retry_forbidden": true,
+  "no_new_candidate": true,
+  "scope": "targeted_refinement_only",
+  "remaining_defects": [
+    {
+      "defect": "eye/eyelash artifacts",
+      "category": "anatomy",
+      "severity": "medium",
+      "proposed_refinement_type": "prompt_adjustment",
+      "notes": "Refine positive prompt to add eyelash detail keywords; ensure no over-generation"
+    },
+    {
+      "defect": "possible eye symmetry issue",
+      "category": "anatomy",
+      "severity": "medium",
+      "proposed_refinement_type": "prompt_adjustment",
+      "notes": "Add symmetry constraints via prompt; consider using face-restoration node"
+    },
+    {
+      "defect": "over-smoothed skin",
+      "category": "texture",
+      "severity": "high",
+      "proposed_refinement_type": "sampler_recipe_adjustment",
+      "notes": "Reduce denoising strength or adjust CFG; add skin texture detail to positive prompt"
+    },
+    {
+      "defect": "AI-gloss/plastic look",
+      "category": "lighting",
+      "severity": "high",
+      "proposed_refinement_type": "prompt_and_sampler_adjustment",
+      "notes": "Reduce specular/gloss keywords; adjust lighting parameters"
+    },
+    {
+      "defect": "minor fabric/detail artifacts",
+      "category": "detail",
+      "severity": "low",
+      "proposed_refinement_type": "prompt_adjustment",
+      "notes": "Add fabric texture detail keywords"
+    }
+  ],
+  "refinement_approach": {
+    "method": "prompt_adjustment_and_sampler_tuning",
+    "no_workflow_change_required": true,
+    "no_new_generation_required": false,
+    "retry_authorization_required": true,
+    "operator_review_required": true
+  },
+  "current_state": "targeted_visual_refinement_plan_required",
+  "next_allowed_action": "targeted_visual_refinement_plan",
+  "timestamp": "2026-05-07T13:50:56+02:00"
+}
