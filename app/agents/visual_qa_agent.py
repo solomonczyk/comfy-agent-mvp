@@ -23,7 +23,8 @@ class VisualQAAgent(BaseRoleAgent):
             "visual_qa_required",
             "real_visual_qa_preflight_required",
             "real_visual_qa_required",
-            "operator_visual_review"
+            "operator_visual_review",
+            "corrective_retry_v4_visual_qa_required"
         ]
     
     @property
@@ -654,6 +655,43 @@ class VisualQAAgent(BaseRoleAgent):
                     "assembly_executed": False,
                     "downstream_executed": False,
                     "combine_v2_visual_acceptance_gate_result": gate_result
+                }
+            )
+
+        if context.stage == "corrective_retry_v4_visual_qa_required":
+            # RC-COMBINE-V2-2541-2600 — V4 Visual QA verdict
+            # Read the verdict artifact created by CLI command
+            verdict = self._read_contract(
+                context.project_root,
+                "combine_v2_corrective_retry_v4_visual_qa_verdict"
+            )
+
+            visual_qa_verdict = verdict.get("visual_qa_verdict", "failed")
+            failed_reasons = verdict.get("failed_reasons", [])
+            next_action = verdict.get("recommended_next_action", "corrective_retry_v4_visual_correction_plan_required")
+
+            return AgentResult(
+                agent=self.role_name,
+                stage=context.stage,
+                status="ok" if verdict else "stubbed",
+                dry_run=context.dry_run,
+                generation_performed=False,
+                comfyui_execution=False,
+                downstream_executed=False,
+                artifacts=["combine_v2_corrective_retry_v4_visual_qa_verdict.json"],
+                next_recommended_stage=next_action,
+                metadata={
+                    "action": "corrective_retry_v4_visual_qa",
+                    "visual_qa_executed": verdict.get("visual_qa_executed", False),
+                    "visual_qa_verdict": visual_qa_verdict,
+                    "failed_reasons": failed_reasons,
+                    "production_accepted": False,
+                    "operator_concerns_preserved": verdict.get("operator_concerns_preserved", True),
+                    "next_allowed_action": next_action,
+                    "requires_operator_review": True,
+                    "retry_attempted": False,
+                    "assembly_executed": False,
+                    "downstream_executed": False
                 }
             )
             

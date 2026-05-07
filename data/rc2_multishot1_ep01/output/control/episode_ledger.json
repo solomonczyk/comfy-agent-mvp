@@ -933,5 +933,33 @@
     "downstream_executed": false,
     "production_accepted": false,
     "timestamp": "2026-05-07T05:10:30.945174+00:00"
+  },
+  {
+    "task_id": "RC-COMBINE-V2-2541-2600",
+    "event_type": "corrective_retry_v4_visual_qa_executed",
+    "stage": "corrective_retry_v4_visual_qa_required",
+    "shot_id": "shot02",
+    "visual_qa_verdict": "failed",
+    "failed_reasons": [
+      "subject_scale_check",
+      "empty_space_check",
+      "composition_check",
+      "shot_intent_alignment_check",
+      "prompt_scene_alignment_check",
+      "production_quality_check",
+      "subject_too_small",
+      "excessive_empty_space",
+      "weak_composition",
+      "shot_intent_not_satisfied",
+      "prompt_scene_alignment_weak"
+    ],
+    "operator_concerns_preserved": true,
+    "production_accepted": false,
+    "next_allowed_action": "corrective_retry_v4_visual_correction_plan_required",
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-07T05:25:51.364152+00:00"
   }
 ]

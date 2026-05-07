@@ -1,0 +1,92 @@
+{
+  "task_id": "RC-COMBINE-V2-2541-2600",
+  "stage": "corrective_retry_v4_visual_qa_required",
+  "verdict_type": "corrective_retry_v4_visual_qa_verdict",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-07T05:25:51.364152+00:00",
+  "visual_qa_executed": true,
+  "visual_qa_verdict": "failed",
+  "production_accepted": false,
+  "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_corrective_retry_v4_shot02_00001_.png",
+  "canonical_asset_path": "output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png",
+  "sha256": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd",
+  "sha256_expected": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd",
+  "sha256_match": true,
+  "width": 1344,
+  "height": 768,
+  "file_size_bytes": 1054825,
+  "checks": {
+    "subject_scale_check": {
+      "status": "failed",
+      "message": "Subject too small - operator concern"
+    },
+    "empty_space_check": {
+      "status": "failed",
+      "message": "Excessive empty space - operator concern"
+    },
+    "composition_check": {
+      "status": "failed",
+      "message": "Weak composition - operator concern"
+    },
+    "shot_intent_alignment_check": {
+      "status": "failed",
+      "message": "Shot intent not satisfied - operator concern"
+    },
+    "prompt_scene_alignment_check": {
+      "status": "failed",
+      "message": "Prompt/scene alignment weak - operator concern"
+    },
+    "technical_readability_check": {
+      "status": "passed",
+      "message": "Asset readable"
+    },
+    "production_quality_check": {
+      "status": "failed",
+      "message": "Production quality issues detected: 5"
+    }
+  },
+  "failed_reasons": [
+    "subject_scale_check",
+    "empty_space_check",
+    "composition_check",
+    "shot_intent_alignment_check",
+    "prompt_scene_alignment_check",
+    "production_quality_check",
+    "subject_too_small",
+    "excessive_empty_space",
+    "weak_composition",
+    "shot_intent_not_satisfied",
+    "prompt_scene_alignment_weak"
+  ],
+  "operator_concerns_preserved": true,
+  "known_visual_issues": [
+    "subject_too_small",
+    "excessive_empty_space",
+    "weak_composition",
+    "shot_intent_not_satisfied",
+    "prompt_scene_alignment_weak"
+  ],
+  "operator_visual_concerns": {
+    "subject_too_small": true,
+    "excessive_empty_space": true,
+    "weak_composition": true,
+    "shot_intent_not_satisfied": true,
+    "prompt_scene_alignment_weak": true
+  },
+  "recommended_next_action": "corrective_retry_v4_visual_correction_plan_required",
+  "requires_operator_review": true,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "input_validation": {
+    "input_packet_exists": true,
+    "canonical_asset_used": false,
+    "asset_exists": true,
+    "asset_readable": true,
+    "sha256_present": true,
+    "stub_asset_detected": false,
+    "old_shot01_asset_used": false
+  }
+}

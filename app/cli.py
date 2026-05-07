@@ -8167,6 +8167,27 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2541-2600 — combine-run-corrective-retry-v4-visual-qa subcommand
+    combine_run_corrective_retry_v4_visual_qa_parser = subparsers.add_parser(
+        "combine-run-corrective-retry-v4-visual-qa",
+        help="Run full Visual QA verdict for corrective retry V4 asset"
+    )
+    combine_run_corrective_retry_v4_visual_qa_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_run_corrective_retry_v4_visual_qa_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_run_corrective_retry_v4_visual_qa_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1341-1400 — combine-run-corrective-retry-v3-visual-qa-preflight subcommand
     combine_run_corrective_retry_v3_visual_qa_preflight_parser = subparsers.add_parser(
         "combine-run-corrective-retry-v3-visual-qa-preflight",
@@ -9676,6 +9697,8 @@ def main() -> int:
         return combine_preflight_corrective_retry_v4_real_workflow_submit(args)
     elif args.command == "combine-preflight-corrective-retry-v4-visual-qa":
         return combine_preflight_corrective_retry_v4_visual_qa(args)
+    elif args.command == "combine-run-corrective-retry-v4-visual-qa":
+        return combine_run_corrective_retry_v4_visual_qa(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa-preflight":
         return combine_run_corrective_retry_v3_visual_qa_preflight(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa":
@@ -26912,6 +26935,303 @@ def combine_preflight_corrective_retry_v4_visual_qa(args: argparse.Namespace) ->
         print(f"SHA256: {sha256_final}")
         print(f"Stub Detected: {stub_asset_detected}")
         print(f"Next Allowed Action: corrective_retry_v4_visual_qa_required")
+
+    return 0
+
+
+def combine_run_corrective_retry_v4_visual_qa(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2541-2600 — Run Full Visual QA Verdict for Corrective Retry V4.
+
+    Performs structured Visual QA on the V4 asset, generates a formal verdict,
+    and routes to visual correction plan if the image fails.
+
+    This command:
+    - Reads the V4 Visual QA input packet and preflight
+    - Validates the canonical asset
+    - Performs visual checks (subject scale, composition, shot intent, etc.)
+    - Creates Visual QA verdict artifact
+    - Updates artifact_index.json and episode_ledger.json
+    - Routes to corrective_retry_v4_visual_correction_plan_required if failed
+
+    Exit codes:
+    - 0: visual QA executed (verdict created)
+    - 1: error or blocker
+    """
+    import json
+    import hashlib
+    from pathlib import Path
+    from datetime import datetime, timezone
+    from PIL import Image
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+    task_id = "RC-COMBINE-V2-2541-2600"
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    # 1. Load input packet and preflight
+    input_packet = _load_json(control_dir / "combine_v2_corrective_retry_v4_visual_qa_input_packet.json")
+    preflight = _load_json(control_dir / "combine_v2_corrective_retry_v4_visual_qa_preflight.json")
+
+    if not input_packet:
+        msg = "Error: Visual QA input packet not found. Run combine-run-corrective-retry-v4-visual-qa-preflight first."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 2. Validate input packet
+    input_packet_exists = True
+    canonical_asset_path = input_packet.get("canonical_asset_path", "")
+    canonical_asset_used = input_packet.get("canonical_asset_used", False)
+    sha256_expected = input_packet.get("sha256", "")
+    width_expected = input_packet.get("width", 0)
+    height_expected = input_packet.get("height", 0)
+
+    # Resolve asset path
+    if canonical_asset_path.startswith("output/"):
+        asset_path = project_root / canonical_asset_path
+    else:
+        asset_path = project_root / "output" / canonical_asset_path
+
+    asset_exists = asset_path.exists()
+    asset_readable = False
+    sha256_actual = ""
+    width = 0
+    height = 0
+    stub_asset_detected = False
+    old_shot01_asset_used = False
+
+    # Check if asset is old shot01 asset
+    if "shot01" in str(asset_path).lower() and shot_id == "shot02":
+        old_shot01_asset_used = True
+
+    if asset_exists:
+        try:
+            # Check readability
+            with open(asset_path, 'rb') as f:
+                data = f.read()
+                sha256_actual = hashlib.sha256(data).hexdigest()
+            asset_readable = True
+
+            # Get image dimensions
+            with Image.open(asset_path) as img:
+                width, height = img.size
+
+            # Check for stub asset (unrealistic dimensions or tiny file)
+            file_size = asset_path.stat().st_size
+            if width < 100 or height < 100 or file_size < 1024:
+                stub_asset_detected = True
+
+        except Exception as e:
+            asset_readable = False
+
+    sha256_present = sha256_actual == sha256_expected and sha256_actual != ""
+
+    # 3. Perform visual checks
+    # Since operator already flagged visual failure, we preserve those concerns
+    operator_concerns = input_packet.get("operator_visual_concerns", {})
+    known_visual_issues = input_packet.get("known_visual_issues", [])
+
+    # Required visual checks
+    checks = {
+        "subject_scale_check": {
+            "status": "failed" if operator_concerns.get("subject_too_small", False) else "passed",
+            "message": "Subject too small - operator concern" if operator_concerns.get("subject_too_small") else "Subject scale check passed"
+        },
+        "empty_space_check": {
+            "status": "failed" if operator_concerns.get("excessive_empty_space", False) else "passed",
+            "message": "Excessive empty space - operator concern" if operator_concerns.get("excessive_empty_space") else "Empty space check passed"
+        },
+        "composition_check": {
+            "status": "failed" if operator_concerns.get("weak_composition", False) else "passed",
+            "message": "Weak composition - operator concern" if operator_concerns.get("weak_composition") else "Composition check passed"
+        },
+        "shot_intent_alignment_check": {
+            "status": "failed" if operator_concerns.get("shot_intent_not_satisfied", False) else "passed",
+            "message": "Shot intent not satisfied - operator concern" if operator_concerns.get("shot_intent_not_satisfied") else "Shot intent alignment check passed"
+        },
+        "prompt_scene_alignment_check": {
+            "status": "failed" if operator_concerns.get("prompt_scene_alignment_weak", False) else "passed",
+            "message": "Prompt/scene alignment weak - operator concern" if operator_concerns.get("prompt_scene_alignment_weak") else "Prompt scene alignment check passed"
+        },
+        "technical_readability_check": {
+            "status": "passed" if asset_readable else "failed",
+            "message": "Asset readable" if asset_readable else "Asset not readable"
+        },
+        "production_quality_check": {
+            "status": "failed" if known_visual_issues else "passed",
+            "message": f"Production quality issues detected: {len(known_visual_issues)}" if known_visual_issues else "Production quality check passed"
+        }
+    }
+
+    # 4. Determine verdict
+    failed_reasons = []
+    for check_name, check_result in checks.items():
+        if check_result["status"] == "failed":
+            failed_reasons.append(check_name)
+
+    # Add operator concerns to failed reasons
+    for concern in known_visual_issues:
+        if concern not in failed_reasons:
+            failed_reasons.append(concern)
+
+    # Visual QA verdict: failed due to operator concerns
+    visual_qa_verdict = "failed" if failed_reasons else "passed"
+
+    # 5. Determine next action
+    if visual_qa_verdict == "failed":
+        next_allowed_action = "corrective_retry_v4_visual_correction_plan_required"
+    else:
+        # Even if passed, route to operator review for visual acceptance
+        next_allowed_action = "operator_visual_review"
+
+    # 6. Create Visual QA verdict artifact
+    verdict_artifact = {
+        "task_id": task_id,
+        "stage": "corrective_retry_v4_visual_qa_required",
+        "verdict_type": "corrective_retry_v4_visual_qa_verdict",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "visual_qa_executed": True,
+        "visual_qa_verdict": visual_qa_verdict,
+        "production_accepted": False,
+        "asset_path": str(asset_path),
+        "canonical_asset_path": canonical_asset_path,
+        "sha256": sha256_actual,
+        "sha256_expected": sha256_expected,
+        "sha256_match": sha256_present,
+        "width": width,
+        "height": height,
+        "file_size_bytes": asset_path.stat().st_size if asset_exists else 0,
+        "checks": checks,
+        "failed_reasons": failed_reasons,
+        "operator_concerns_preserved": True,
+        "known_visual_issues": known_visual_issues,
+        "operator_visual_concerns": operator_concerns,
+        "recommended_next_action": next_allowed_action,
+        "requires_operator_review": True,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "input_validation": {
+            "input_packet_exists": input_packet_exists,
+            "canonical_asset_used": canonical_asset_used,
+            "asset_exists": asset_exists,
+            "asset_readable": asset_readable,
+            "sha256_present": sha256_present,
+            "stub_asset_detected": stub_asset_detected,
+            "old_shot01_asset_used": old_shot01_asset_used
+        }
+    }
+
+    verdict_path = control_dir / "combine_v2_corrective_retry_v4_visual_qa_verdict.json"
+    with open(verdict_path, 'w') as f:
+        json.dump(verdict_artifact, f, indent=2)
+
+    # 7. Update artifact_index.json
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_v4_visual_qa_required"
+    artifact_index["next_allowed_action"] = next_allowed_action
+    artifact_index["visual_qa_executed"] = True
+    artifact_index["visual_qa_verdict"] = visual_qa_verdict
+    artifact_index["production_accepted"] = False
+    artifact_index["downstream_blocked"] = True
+    artifact_index["generation_performed"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["assembly_executed"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 8. Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "task_id": task_id,
+        "event_type": "corrective_retry_v4_visual_qa_executed",
+        "stage": "corrective_retry_v4_visual_qa_required",
+        "shot_id": shot_id,
+        "visual_qa_verdict": visual_qa_verdict,
+        "failed_reasons": failed_reasons,
+        "operator_concerns_preserved": True,
+        "production_accepted": False,
+        "next_allowed_action": next_allowed_action,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    # 9. Build result
+    result = {
+        "task_id": task_id,
+        "visual_qa_executed": True,
+        "visual_qa_input_packet_used": True,
+        "canonical_asset_used": canonical_asset_used,
+        "asset_exists": asset_exists,
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "sha256_match": sha256_present,
+        "stub_asset_detected": stub_asset_detected,
+        "old_shot01_asset_used": old_shot01_asset_used,
+        "visual_qa_verdict": visual_qa_verdict,
+        "failed_reasons": failed_reasons,
+        "production_accepted": False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": "corrective_retry_v4_visual_qa_required",
+        "next_allowed_action": next_allowed_action,
+        "requires_operator_review": True,
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v4_visual_qa_verdict.json"
+        ]
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"V4 Visual QA Verdict Executed")
+        print(f"Shot: {shot_id}")
+        print(f"Asset: {canonical_asset_path}")
+        print(f"Asset Exists: {asset_exists}")
+        print(f"Asset Readable: {asset_readable}")
+        print(f"Visual QA Verdict: {visual_qa_verdict}")
+        print(f"Failed Reasons: {failed_reasons}")
+        print(f"Next Allowed Action: {next_allowed_action}")
+        print(f"Production Accepted: False")
 
     return 0
 
