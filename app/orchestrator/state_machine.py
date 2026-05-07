@@ -56,6 +56,7 @@ class CombineStateMachine:
         "operator_retry_v4_updated_implementation_plan_review_required",
         "operator_retry_v4_generation_authorization_required",
         "corrective_retry_v5_visual_recovery_required",
+        "corrective_retry_v5_generation_runtime_blocked",
         "operator_visual_review_required",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
@@ -261,6 +262,9 @@ class CombineStateMachine:
         },
         "corrective_retry_v5_visual_recovery_required": {
             "operator_visual_review_required"
+        },
+        "corrective_retry_v5_generation_runtime_blocked": {
+            "corrective_retry_v5_generation_runtime_blocked"  # Self-loop: blocked until ComfyUI available
         },
         "operator_visual_review_required": {
             "operator_visual_review_required",  # Self-loop: halted pending operator
