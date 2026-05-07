@@ -1,6 +1,6 @@
 {
-  "current_state": "corrective_retry_v4_visual_correction_plan_required",
-  "next_allowed_action": "operator_retry_v4_visual_correction_plan_review_required",
+  "current_state": "operator_retry_v4_visual_correction_plan_review_required",
+  "next_allowed_action": "corrective_retry_v4_retry_implementation_plan_update_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5236,6 +5236,28 @@
       },
       "timestamp": "2026-05-07T05:42:33.711974+00:00",
       "no_generation_performed": true
+    },
+    {
+      "stage": "operator_retry_v4_visual_correction_plan_review_required",
+      "success": true,
+      "message": "Operator visual correction plan review completed: approve_visual_correction_plan",
+      "artifacts": [
+        "combine_v2_operator_retry_v4_visual_correction_plan_review.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-2661-2720",
+        "operator_decision": "approve_visual_correction_plan",
+        "visual_correction_plan_approved": true,
+        "reason": "operator_approves_visual_correction_plan_for_controlled_retry_update",
+        "next_allowed_action": "corrective_retry_v4_retry_implementation_plan_update_required",
+        "generation_performed": false,
+        "comfyui_execution": false,
+        "retry_attempted": false,
+        "workflow_mutated": false,
+        "production_accepted": false
+      },
+      "timestamp": "2026-05-07T06:03:06.182996+00:00",
+      "no_generation_performed": true
     }
   ],
   "operator_visual_decision": "reject_visual_quality",
@@ -5380,5 +5402,8 @@
   "downstream_blocked": true,
   "visual_qa_verdict": "failed",
   "visual_correction_plan_created": true,
-  "visual_qa_verdict_used": true
+  "visual_qa_verdict_used": true,
+  "operator_visual_correction_plan_review_executed": true,
+  "visual_correction_plan_approved": true,
+  "operator_decision": "approve_visual_correction_plan"
 }

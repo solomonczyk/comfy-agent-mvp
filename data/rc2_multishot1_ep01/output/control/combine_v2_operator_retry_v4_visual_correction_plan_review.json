@@ -1,0 +1,75 @@
+{
+  "task_id": "RC-COMBINE-V2-2661-2720",
+  "stage": "operator_retry_v4_visual_correction_plan_review_required",
+  "review_type": "operator_retry_v4_visual_correction_plan_review",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-07T06:03:06.182996+00:00",
+  "operator_decision": "approve_visual_correction_plan",
+  "visual_correction_plan_approved": true,
+  "reason": "operator_approves_visual_correction_plan_for_controlled_retry_update",
+  "approved_failed_reasons": [
+    "excessive_empty_space",
+    "subject_scale_check",
+    "empty_space_check",
+    "prompt_scene_alignment_check",
+    "weak_composition",
+    "composition_check",
+    "prompt_scene_alignment_weak",
+    "shot_intent_not_satisfied",
+    "subject_too_small",
+    "production_quality_check",
+    "shot_intent_alignment_check"
+  ],
+  "approved_subject_scale_requirements": [
+    "subject height >= 40% of frame",
+    "reject if subject < 30% of frame"
+  ],
+  "approved_empty_space_requirements": [
+    "empty space <= 45% of frame",
+    "subject dominant in composition",
+    "shot must express specific intent, not generic"
+  ],
+  "approved_composition_requirements": [
+    "subject is clear focal point",
+    "balanced cinematic framing",
+    "avoid flat backgrounds"
+  ],
+  "approved_prompt_patch_recommendations": {
+    "positive_prompt_additions": [
+      "subject fills 40-60% of frame height",
+      "minimal background",
+      "foreground subject emphasis",
+      "defined camera distance",
+      "strong focal point",
+      "close-up portrait composition",
+      "character-focused",
+      "medium shot framing",
+      "subject prominent in foreground",
+      "clear subject presence",
+      "specific focal length",
+      "intentional shot framing",
+      "rule of thirds",
+      "cinematic composition",
+      "professional photography",
+      "explicit scale description",
+      "tight framing"
+    ],
+    "negative_prompt_additions": [
+      "small person in vast space",
+      "landscape without subject",
+      "tiny subject",
+      "distant figure",
+      "empty background"
+    ]
+  },
+  "requested_changes": [],
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "retry_attempted": false,
+  "workflow_mutated": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "operator_retry_v4_visual_correction_plan_review_required",
+  "next_allowed_action": "corrective_retry_v4_retry_implementation_plan_update_required"
+}

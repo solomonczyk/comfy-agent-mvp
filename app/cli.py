@@ -8209,6 +8209,38 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2661-2720 — combine-review-corrective-retry-v4-visual-correction-plan subcommand
+    combine_review_corrective_retry_v4_visual_correction_plan_parser = subparsers.add_parser(
+        "combine-review-corrective-retry-v4-visual-correction-plan",
+        help="Review and approve corrective retry V4 visual correction plan"
+    )
+    combine_review_corrective_retry_v4_visual_correction_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_review_corrective_retry_v4_visual_correction_plan_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_review_corrective_retry_v4_visual_correction_plan_parser.add_argument(
+        "--decision",
+        required=True,
+        choices=["approve_visual_correction_plan", "request_visual_correction_plan_changes", "reject_visual_correction_plan"],
+        help="Operator decision",
+    )
+    combine_review_corrective_retry_v4_visual_correction_plan_parser.add_argument(
+        "--reason",
+        required=True,
+        help="Reason for decision",
+    )
+    combine_review_corrective_retry_v4_visual_correction_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1341-1400 — combine-run-corrective-retry-v3-visual-qa-preflight subcommand
     combine_run_corrective_retry_v3_visual_qa_preflight_parser = subparsers.add_parser(
         "combine-run-corrective-retry-v3-visual-qa-preflight",
@@ -9722,6 +9754,8 @@ def main() -> int:
         return combine_run_corrective_retry_v4_visual_qa(args)
     elif args.command == "combine-build-corrective-retry-v4-visual-correction-plan":
         return combine_build_corrective_retry_v4_visual_correction_plan(args)
+    elif args.command == "combine-review-corrective-retry-v4-visual-correction-plan":
+        return combine_review_corrective_retry_v4_visual_correction_plan(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa-preflight":
         return combine_run_corrective_retry_v3_visual_qa_preflight(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa":
@@ -27721,6 +27755,286 @@ def combine_build_corrective_retry_v4_visual_correction_plan(args: argparse.Name
         print(f"Prompt Alignment Fixes: {'prompt_scene_alignment_weak' in correction_mapping}")
         print(f"Operator Review Packet: CREATED")
         print(f"Next Allowed Action: operator_retry_v4_visual_correction_plan_review_required")
+        print(f"Production Accepted: False")
+
+    return 0
+
+
+def combine_review_corrective_retry_v4_visual_correction_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2661-2720 — Review Corrective Retry V4 Visual Correction Plan.
+
+    Operator review gate for the V4 visual correction plan.
+    Allows operator to approve, request changes, or reject the correction plan.
+    No generation, no ComfyUI submit, no retry execution.
+
+    This command:
+    - Reads visual correction plan and review packet
+    - Validates current state requirements
+    - Records operator decision
+    - Updates artifact_index.json and episode_ledger.json
+    - Sets next_allowed_action based on decision
+
+    Exit codes:
+    - 0: operator review recorded successfully
+    - 1: error or blocker (missing plan, invalid state)
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    decision = args.decision
+    reason = args.reason
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+    task_id = "RC-COMBINE-V2-2661-2720"
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        return {}
+
+    # 1. Read required artifacts
+    plan_path = control_dir / "combine_v2_corrective_retry_v4_visual_correction_plan.json"
+    review_packet_path = control_dir / "combine_v2_corrective_retry_v4_visual_correction_plan_review_packet.json"
+    artifact_index_path = control_dir / "artifact_index.json"
+
+    visual_correction_plan = _load_json(plan_path)
+    review_packet = _load_json(review_packet_path)
+    artifact_index = _load_json(artifact_index_path)
+
+    # 2. Validate required artifacts exist
+    if not visual_correction_plan:
+        msg = "Error: combine_v2_corrective_retry_v4_visual_correction_plan.json not found."
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "VISUAL_CORRECTION_PLAN_MISSING", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    if not review_packet:
+        msg = "Error: combine_v2_corrective_retry_v4_visual_correction_plan_review_packet.json not found."
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "REVIEW_PACKET_MISSING", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 3. Validate current state
+    current_state = artifact_index.get("current_state", "")
+    next_allowed_action = artifact_index.get("next_allowed_action", "")
+
+    valid_states = [
+        "corrective_retry_v4_visual_correction_plan_required",
+        "operator_retry_v4_visual_correction_plan_review_required"
+    ]
+    valid_next_actions = [
+        "operator_retry_v4_visual_correction_plan_review_required"
+    ]
+
+    if current_state not in valid_states and next_allowed_action not in valid_next_actions:
+        msg = f"Error: Invalid state. current_state={current_state}, next_allowed_action={next_allowed_action}. Expected: state in {valid_states} or next_allowed_action in {valid_next_actions}"
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "INVALID_STATE", "current_state": current_state, "next_allowed_action": next_allowed_action, "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 4. Validate production_accepted is false
+    production_accepted = artifact_index.get("production_accepted", False)
+    if production_accepted:
+        msg = "Error: production_accepted is true. Cannot review visual correction plan after production acceptance."
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "PRODUCTION_ALREADY_ACCEPTED", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 5. Determine next state based on decision
+    if decision == "approve_visual_correction_plan":
+        new_state = "operator_retry_v4_visual_correction_plan_review_required"
+        new_next_allowed_action = "corrective_retry_v4_retry_implementation_plan_update_required"
+        visual_correction_plan_approved = True
+    elif decision == "request_visual_correction_plan_changes":
+        new_state = "operator_retry_v4_visual_correction_plan_review_required"
+        new_next_allowed_action = "corrective_retry_v4_visual_correction_plan_required"
+        visual_correction_plan_approved = False
+    elif decision == "reject_visual_correction_plan":
+        new_state = "blocked_manual_review"
+        new_next_allowed_action = "manual_review_required"
+        visual_correction_plan_approved = False
+    else:
+        msg = f"Error: Invalid decision '{decision}'. Must be one of: approve_visual_correction_plan, request_visual_correction_plan_changes, reject_visual_correction_plan"
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": "INVALID_DECISION", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 6. Extract approved elements if decision is approve
+    approved_failed_reasons = []
+    approved_subject_scale_requirements = None
+    approved_empty_space_requirements = None
+    approved_composition_requirements = None
+    approved_prompt_patch_recommendations = None
+
+    if decision == "approve_visual_correction_plan":
+        approved_failed_reasons = visual_correction_plan.get("failed_reasons", [])
+        retry_prompt_patch = visual_correction_plan.get("retry_prompt_patch", {})
+        approved_subject_scale_requirements = retry_prompt_patch.get("subject_scale_requirements", [])
+        approved_empty_space_requirements = retry_prompt_patch.get("camera_framing_requirements", [])
+        approved_composition_requirements = retry_prompt_patch.get("composition_requirements", [])
+        approved_prompt_patch_recommendations = {
+            "positive_prompt_additions": retry_prompt_patch.get("positive_prompt_additions", []),
+            "negative_prompt_additions": retry_prompt_patch.get("negative_prompt_additions", [])
+        }
+
+    # 7. Create operator review artifact
+    operator_review = {
+        "task_id": task_id,
+        "stage": "operator_retry_v4_visual_correction_plan_review_required",
+        "review_type": "operator_retry_v4_visual_correction_plan_review",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "operator_decision": decision,
+        "visual_correction_plan_approved": visual_correction_plan_approved,
+        "reason": reason,
+        "approved_failed_reasons": approved_failed_reasons,
+        "approved_subject_scale_requirements": approved_subject_scale_requirements,
+        "approved_empty_space_requirements": approved_empty_space_requirements,
+        "approved_composition_requirements": approved_composition_requirements,
+        "approved_prompt_patch_recommendations": approved_prompt_patch_recommendations,
+        "requested_changes": [] if decision != "request_visual_correction_plan_changes" else ["operator_requested_changes"],
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": new_state,
+        "next_allowed_action": new_next_allowed_action
+    }
+
+    review_path = control_dir / "combine_v2_operator_retry_v4_visual_correction_plan_review.json"
+    with open(review_path, 'w', encoding='utf-8') as f:
+        json.dump(operator_review, f, indent=2)
+
+    # 8. Update artifact_index.json
+    artifact_index["current_state"] = new_state
+    artifact_index["next_allowed_action"] = new_next_allowed_action
+    artifact_index["operator_visual_correction_plan_review_executed"] = True
+    artifact_index["visual_correction_plan_approved"] = visual_correction_plan_approved
+    artifact_index["operator_decision"] = decision
+    artifact_index["production_accepted"] = False
+    artifact_index["downstream_blocked"] = True
+    artifact_index["generation_performed"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["retry_attempted"] = False
+
+    # Add stage result
+    if "stage_results" not in artifact_index:
+        artifact_index["stage_results"] = []
+
+    artifact_index["stage_results"].append({
+        "stage": "operator_retry_v4_visual_correction_plan_review_required",
+        "success": True,
+        "message": f"Operator visual correction plan review completed: {decision}",
+        "artifacts": [
+            "combine_v2_operator_retry_v4_visual_correction_plan_review.json"
+        ],
+        "metadata": {
+            "task_id": task_id,
+            "operator_decision": decision,
+            "visual_correction_plan_approved": visual_correction_plan_approved,
+            "reason": reason,
+            "next_allowed_action": new_next_allowed_action,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "retry_attempted": False,
+            "workflow_mutated": False,
+            "production_accepted": False
+        },
+        "timestamp": timestamp,
+        "no_generation_performed": True
+    })
+
+    with open(artifact_index_path, 'w', encoding='utf-8') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 9. Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r', encoding='utf-8') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "task_id": task_id,
+        "event_type": "operator_retry_v4_visual_correction_plan_reviewed",
+        "stage": "operator_retry_v4_visual_correction_plan_review_required",
+        "shot_id": shot_id,
+        "operator_decision": decision,
+        "visual_correction_plan_approved": visual_correction_plan_approved,
+        "reason": reason,
+        "next_allowed_action": new_next_allowed_action,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp
+    })
+
+    with open(ledger_path, 'w', encoding='utf-8') as f:
+        json.dump(ledger, f, indent=2)
+
+    # 10. Build result
+    result = {
+        "task_id": task_id,
+        "status": "ok",
+        "operator_visual_correction_plan_review_executed": True,
+        "operator_decision": decision,
+        "visual_correction_plan_approved": visual_correction_plan_approved,
+        "approved_failed_reasons": approved_failed_reasons,
+        "approved_subject_scale_requirements": approved_subject_scale_requirements,
+        "approved_empty_space_requirements": approved_empty_space_requirements,
+        "approved_composition_requirements": approved_composition_requirements,
+        "approved_prompt_patch_recommendations": approved_prompt_patch_recommendations,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "workflow_mutated": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": new_state,
+        "next_allowed_action": new_next_allowed_action,
+        "artifacts": [
+            "output/control/combine_v2_operator_retry_v4_visual_correction_plan_review.json"
+        ]
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"V4 Visual Correction Plan Review: COMPLETED")
+        print(f"Shot: {shot_id}")
+        print(f"Decision: {decision}")
+        print(f"Visual Correction Plan Approved: {visual_correction_plan_approved}")
+        print(f"Reason: {reason}")
+        print(f"Current State: {new_state}")
+        print(f"Next Allowed Action: {new_next_allowed_action}")
         print(f"Production Accepted: False")
 
     return 0
