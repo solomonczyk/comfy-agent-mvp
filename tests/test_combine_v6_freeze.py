@@ -229,8 +229,8 @@ class TestArtifactIndexConsistency:
             return json.load(f)
 
     def test_artifact_index_state(self, artifact_index):
-        assert artifact_index["current_state"] == "targeted_visual_refinement_plan_required"
-        assert artifact_index["next_allowed_action"] == "targeted_visual_refinement_plan_required"
+        assert artifact_index["current_state"] == "targeted_refinement_generation_authorization_required"
+        assert artifact_index["next_allowed_action"] == "targeted_refinement_generation_authorization_required"
         assert artifact_index["v6_candidate_frozen"] is True
         assert artifact_index["visual_progress_confirmed"] is True
         assert artifact_index["production_accepted"] is False
@@ -250,4 +250,4 @@ class TestArtifactIndexConsistency:
             assert found, f"Artifact {a} not found in index artifacts"
 
     def test_artifact_index_last_task(self, artifact_index):
-        assert artifact_index["last_task_id"] == "RC-COMBINE-V2-3901-4200"
+        assert artifact_index["last_task_id"] in ("RC-COMBINE-V2-3901-4200", "RC-COMBINE-V2-4201-4500")

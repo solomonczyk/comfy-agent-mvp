@@ -19,6 +19,9 @@ ENV/
 .env.local
 .env.*.local
 
+# Kilo tool configuration
+.kilo/
+
 # IDE
 .vscode/
 .idea/

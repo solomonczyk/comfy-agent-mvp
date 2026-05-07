@@ -1,0 +1,26 @@
+{
+  "task_id": "RC-COMBINE-V2-4201-4500",
+  "reconciliation_type": "freeze_proof_contradiction",
+  "previous_claimed_git_status_clean": true,
+  "unstaged_files_reported": true,
+  "contradiction_acknowledged": true,
+  "contradiction_detail": "Previous layer RC-COMBINE-V2-3901-4200 reported git status as clean, but 3 modified files and 2 untracked items existed post-commit. The modified files were canonical artifacts updated during reconciliation work that was not committed before the freeze claim. The untracked items were tool noise (reset_and_run_v6.py script and .kilo/ config) that were never staged.",
+  "corrected_freeze_status": "accepted_with_blockers_until_reconciled",
+  "dirty_files_classification": {
+    "canonical_artifact_updates": 2,
+    "local_noise": 2,
+    "helper_scripts": 1
+  },
+  "correction_actions": [
+    "1. Committed canonical artifact updates (V5 diagnosis and V5 blocker reconciliation)",
+    "2. Removed tests/__pycache__/*.pyc from tracking with git rm --cached",
+    "3. Added .kilo/ to .gitignore",
+    "4. Moved reset_and_run_v6.py to scripts/tools/ and committed"
+  ],
+  "original_v6_freeze_artifacts_unchanged": true,
+  "v6_candidate_asset_untouched": true,
+  "v6_freeze_result_path": "data/rc2_multishot1_ep01/output/control/combine_v2_v6_candidate_freeze_result.json",
+  "production_accepted": false,
+  "generation_allowed": false,
+  "timestamp": "2026-05-07T13:59:30+02:00"
+}

@@ -1,0 +1,48 @@
+{
+  "task_id": "RC-COMBINE-V2-4201-4500",
+  "gate_type": "targeted_refinement_generation",
+  "generation_allowed_now": false,
+  "requires_operator_authorization": true,
+  "max_new_generations": 1,
+  "blind_retry_allowed": false,
+  "second_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "operator_authorization_required_fields": {
+    "authorization_type": "targeted_refinement_generation",
+    "required_approvals": [
+      "review_targeted_refinement_execution_package",
+      "authorize_single_generation"
+    ],
+    "cannot_authorize_if": [
+      "refinement_package_not_reviewed",
+      "generation_gate_already_open",
+      "previous_generation_queued"
+    ]
+  },
+  "next_generation_command": {
+    "description": "Execute one targeted V6 refinement generation. This command generates exactly 1 image using the refined prompt and sampler settings. Do NOT run this command — it requires operator authorization first.",
+    "command_type": "cli_combine_command",
+    "command": "python -m app.cli combine-run-clean-sdxl-v6-candidate --project-root \"F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\" --execute --json",
+    "required_preconditions": [
+      "operator_authorization_granted",
+      "refinement_package_applied_to_payload",
+      "git_status_clean"
+    ],
+    "post_generation": {
+      "visual_qa_required": true,
+      "operator_review_required": true,
+      "production_acceptance_possible": false
+    }
+  },
+  "generation_executed": false,
+  "comfyui_submit_executed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "targeted_refinement_generation_authorization_required",
+  "next_allowed_action": "targeted_refinement_generation_authorization_required",
+  "timestamp": "2026-05-07T13:59:30+02:00"
+}

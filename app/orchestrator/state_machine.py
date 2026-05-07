@@ -95,7 +95,9 @@ class CombineStateMachine:
         "final_operator_acceptance",
         "completed",
         "blocked_manual_review",
-        "blocked_generation_route_aborted"
+        "blocked_generation_route_aborted",
+        "targeted_visual_refinement_plan_required",
+        "targeted_refinement_generation_authorization_required"
     ]
     
     # Terminal states
@@ -264,7 +266,17 @@ class CombineStateMachine:
             "operator_visual_review_required"
         },
         "corrective_retry_v5_generation_runtime_blocked": {
-            "corrective_retry_v5_generation_runtime_blocked"  # Self-loop: blocked until ComfyUI available
+            "corrective_retry_v5_generation_runtime_blocked",  # Self-loop: blocked until ComfyUI available
+            "targeted_visual_refinement_plan_required"  # Can transition to refinement planning
+        },
+        "targeted_visual_refinement_plan_required": {
+            "targeted_refinement_generation_authorization_required",
+            "targeted_visual_refinement_plan_required"  # Self-loop: halted pending refinement plan
+        },
+        "targeted_refinement_generation_authorization_required": {
+            "targeted_refinement_generation_authorization_required",  # Self-loop: halted pending operator authorization
+            "generate_assets",  # Once authorized, can generate refined asset
+            "blocked_manual_review"
         },
         "operator_visual_review_required": {
             "operator_visual_review_required",  # Self-loop: halted pending operator

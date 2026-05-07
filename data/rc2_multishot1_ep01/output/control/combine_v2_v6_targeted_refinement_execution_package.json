@@ -1,0 +1,76 @@
+{
+  "task_id": "RC-COMBINE-V2-4201-4500",
+  "package_type": "v6_targeted_refinement_execution",
+  "v6_candidate_preserved": true,
+  "previous_improvements_preserved": [
+    "close portrait composition",
+    "face framing",
+    "white hair direction",
+    "blue background mood",
+    "clean lighting",
+    "better subject scale"
+  ],
+  "target_defects": [
+    {
+      "defect": "eye/eyelash artifacts",
+      "category": "anatomy",
+      "severity": "medium",
+      "refinement_action": "prompt_adjustment",
+      "detail": "Add targeted eyelash detail and eye refinement keywords to positive prompt. Avoid over-generation or artificial enhancement. Use terms like 'natural eyelash detail', 'well-defined eyes', 'soft eye definition'."
+    },
+    {
+      "defect": "possible eye symmetry issue",
+      "category": "anatomy",
+      "severity": "medium",
+      "refinement_action": "prompt_adjustment",
+      "detail": "Add symmetry-preserving keywords. Make no explicit symmetry demands as they can cause artifacts. Use natural framing language. If available, post-process with face-restoration node."
+    },
+    {
+      "defect": "over-smoothed skin",
+      "category": "texture",
+      "severity": "high",
+      "refinement_action": "sampler_recipe_adjustment_and_prompt",
+      "detail": "Reduce denoising strength slightly and adjust CFG scale to preserve skin texture. Add 'natural skin texture', 'subtle skin detail', 'realistic skin grain' to positive prompt. Do not add noise or grain keywords."
+    },
+    {
+      "defect": "AI-gloss/plastic look",
+      "category": "lighting",
+      "severity": "high",
+      "refinement_action": "prompt_and_sampler_adjustment",
+      "detail": "Reduce CFG scale slightly. Remove any 'shiny', 'glossy', 'specular' keywords. Add 'matte skin', 'natural light', 'soft diffuse lighting'. Keep the clean lighting that was improved."
+    },
+    {
+      "defect": "minor fabric/detail artifacts",
+      "category": "detail",
+      "severity": "low",
+      "refinement_action": "prompt_adjustment",
+      "detail": "Add 'detailed fabric texture', 'natural cloth folds' to positive prompt. Do not change clothing type or color."
+    }
+  ],
+  "refinement_strategy": {
+    "method": "prompt_adjustment_and_sampler_tuning",
+    "new_workflow_required": false,
+    "new_checkpoint_required": false,
+    "random_seed_change": false,
+    "generation_count": 1,
+    "refinement_only": true,
+    "no_recipe_overhaul": true
+  },
+  "preserved_recipe_parameters": {
+    "checkpoint": "juggernautXL_version2.safetensors",
+    "vae": "same_as_checkpoint",
+    "resolution": "1024x1024",
+    "upscale": "none",
+    "negative_prompt": "unchanged",
+    "workflow_graph": "unchanged"
+  },
+  "adjusted_parameters": {
+    "cfg_scale": "reduce_by_0.5",
+    "denoising_strength": "reduce_slightly",
+    "positive_prompt": "augment_with_texture_and_detail_keywords"
+  },
+  "no_whole_recipe_change": true,
+  "generation_not_performed": true,
+  "operator_authorization_required": true,
+  "timestamp": "2026-05-07T13:59:30+02:00"
+}
