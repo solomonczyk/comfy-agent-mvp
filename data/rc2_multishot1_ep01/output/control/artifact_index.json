@@ -1,6 +1,6 @@
 {
-  "current_state": "operator_retry_v4_visual_correction_plan_review_required",
-  "next_allowed_action": "corrective_retry_v4_retry_implementation_plan_update_required",
+  "current_state": "operator_retry_v4_generation_authorization_required",
+  "next_allowed_action": "operator_retry_v4_generation_authorization_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5258,6 +5258,54 @@
       },
       "timestamp": "2026-05-07T06:03:06.182996+00:00",
       "no_generation_performed": true
+    },
+    {
+      "stage": "corrective_retry_v4_retry_implementation_plan_update_required",
+      "success": true,
+      "message": "Updated implementation plan created from approved visual correction plan",
+      "artifacts": [
+        "combine_v2_corrective_retry_v4_updated_implementation_plan.json",
+        "combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-2721-2780",
+        "shot_id": "shot02",
+        "updated_retry_implementation_plan_created": true,
+        "generation_gate_opened": false,
+        "new_generation_performed": false,
+        "new_comfyui_submit_executed": false,
+        "retry_attempted": false,
+        "workflow_mutated": false,
+        "production_accepted": false,
+        "next_allowed_action": "operator_retry_v4_updated_implementation_plan_review_required"
+      },
+      "timestamp": "2026-05-07T06:21:11.742760+00:00",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "operator_retry_v4_updated_implementation_plan_review_required",
+      "success": true,
+      "message": "Operator updated retry V4 implementation plan review completed: approve_updated_retry_implementation_plan",
+      "artifacts": [
+        "combine_v2_operator_retry_v4_updated_implementation_plan_review.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-2781-2840",
+        "operator_decision": "approve_updated_retry_implementation_plan",
+        "operator_approved": true,
+        "updated_plan_reviewed": true,
+        "plan_structurally_valid": true,
+        "generation_authorized": false,
+        "retry_authorized": false,
+        "comfyui_submit_authorized": false,
+        "visual_qa_authorized": false,
+        "assembly_authorized": false,
+        "downstream_authorized": false,
+        "production_accepted": false,
+        "next_allowed_action": "operator_retry_v4_generation_authorization_required"
+      },
+      "timestamp": "2026-05-07T06:32:24.275696+00:00",
+      "no_generation_performed": true
     }
   ],
   "operator_visual_decision": "reject_visual_quality",
@@ -5405,5 +5453,12 @@
   "visual_qa_verdict_used": true,
   "operator_visual_correction_plan_review_executed": true,
   "visual_correction_plan_approved": true,
-  "operator_decision": "approve_visual_correction_plan"
+  "operator_decision": "approve_updated_retry_implementation_plan",
+  "updated_retry_implementation_plan_created": true,
+  "new_generation_performed": false,
+  "new_comfyui_submit_executed": false,
+  "operator_updated_retry_v4_implementation_plan_review_executed": true,
+  "updated_retry_v4_implementation_plan_approved": true,
+  "generation_gate_opened": false,
+  "retry_authorized": false
 }

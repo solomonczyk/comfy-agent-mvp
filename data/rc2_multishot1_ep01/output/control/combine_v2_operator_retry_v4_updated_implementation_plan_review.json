@@ -1,0 +1,32 @@
+{
+  "task_id": "RC-COMBINE-V2-2781-2840",
+  "review_type": "operator_review_updated_retry_v4_implementation_plan",
+  "previous_layer": "RC-COMBINE-V2-2721-2780",
+  "previous_commit": "2759d52",
+  "stage": "operator_retry_v4_updated_implementation_plan_review_required",
+  "shot_id": "shot02",
+  "timestamp": "2026-05-07T06:32:24.275696+00:00",
+  "updated_plan_reviewed": true,
+  "operator_approved": true,
+  "operator_decision": "approve_updated_retry_implementation_plan",
+  "plan_structurally_valid": true,
+  "generation_authorized": false,
+  "retry_authorized": false,
+  "comfyui_submit_authorized": false,
+  "visual_qa_authorized": false,
+  "assembly_authorized": false,
+  "downstream_authorized": false,
+  "production_accepted": false,
+  "new_generation_performed": false,
+  "new_comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "current_state": "operator_retry_v4_generation_authorization_required",
+  "next_allowed_action": "operator_retry_v4_generation_authorization_required",
+  "artifacts": [
+    "output/control/combine_v2_corrective_retry_v4_updated_implementation_plan.json",
+    "output/control/combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json"
+  ]
+}

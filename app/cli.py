@@ -8262,6 +8262,32 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2781-2840 — combine-review-updated-corrective-retry-v4-implementation-plan subcommand
+    combine_review_updated_corrective_retry_v4_implementation_plan_parser = subparsers.add_parser(
+        "combine-review-updated-corrective-retry-v4-implementation-plan",
+        help="Review and approve updated corrective retry V4 implementation plan"
+    )
+    combine_review_updated_corrective_retry_v4_implementation_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_review_updated_corrective_retry_v4_implementation_plan_parser.add_argument(
+        "--approve",
+        action="store_true",
+        help="Approve the updated retry V4 implementation plan",
+    )
+    combine_review_updated_corrective_retry_v4_implementation_plan_parser.add_argument(
+        "--reject",
+        action="store_true",
+        help="Reject the updated retry V4 implementation plan",
+    )
+    combine_review_updated_corrective_retry_v4_implementation_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1341-1400 — combine-run-corrective-retry-v3-visual-qa-preflight subcommand
     combine_run_corrective_retry_v3_visual_qa_preflight_parser = subparsers.add_parser(
         "combine-run-corrective-retry-v3-visual-qa-preflight",
@@ -9811,6 +9837,8 @@ def main() -> int:
         return combine_build_retry_v4_plan_review_packet(args)
     elif args.command == "combine-update-corrective-retry-v4-implementation-plan":
         return combine_update_corrective_retry_v4_implementation_plan(args)
+    elif args.command == "combine-review-updated-corrective-retry-v4-implementation-plan":
+        return combine_review_updated_corrective_retry_v4_implementation_plan(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
@@ -28466,6 +28494,319 @@ def combine_update_corrective_retry_v4_implementation_plan(args: argparse.Namesp
         print(f"Generation Gate Opened: False")
         print(f"Production Accepted: False")
         print(f"Next Allowed Action: operator_retry_v4_updated_implementation_plan_review_required")
+
+    return 0
+
+
+def combine_review_updated_corrective_retry_v4_implementation_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2781-2840 — Review Updated Corrective Retry V4 Implementation Plan.
+
+    Operator review gate for the updated V4 retry implementation plan.
+    Allows operator to approve or reject the updated implementation plan.
+    No generation, no ComfyUI submit, no retry execution, no Visual QA, no assembly.
+
+    This command:
+    - Reads updated implementation plan and review packet
+    - Validates current state requirements
+    - Validates plan does not illegally authorize runtime actions
+    - Records operator decision
+    - Updates artifact_index.json and episode_ledger.json
+    - Sets next_allowed_action based on decision
+
+    Exit codes:
+    - 0: operator review recorded successfully
+    - 1: error or blocker (missing plan, invalid state, illegal runtime authorization)
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    approve = getattr(args, "approve", False)
+    reject = getattr(args, "reject", False)
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+    task_id = "RC-COMBINE-V2-2781-2840"
+    previous_layer = "RC-COMBINE-V2-2721-2780"
+    previous_commit = "2759d52"
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as f:
+                return json.load(f)
+        return {}
+
+    def _blocker(code: str, msg: str) -> int:
+        if json_output:
+            print(json.dumps({"status": "error", "blocker": code, "message": msg}))
+        else:
+            print(f"BLOCKER: {code} — {msg}")
+        return 1
+
+    # 1. Load required artifacts
+    plan_path = control_dir / "combine_v2_corrective_retry_v4_updated_implementation_plan.json"
+    review_packet_path = control_dir / "combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json"
+    artifact_index_path = control_dir / "artifact_index.json"
+
+    updated_plan = _load_json(plan_path)
+    review_packet = _load_json(review_packet_path)
+    artifact_index = _load_json(artifact_index_path)
+
+    # 2. Gate: updated implementation plan must exist
+    if not updated_plan:
+        return _blocker(
+            "UPDATED_RETRY_V4_IMPLEMENTATION_PLAN_MISSING",
+            "combine_v2_corrective_retry_v4_updated_implementation_plan.json not found.",
+        )
+
+    # 3. Gate: review packet must exist
+    if not review_packet:
+        return _blocker(
+            "UPDATED_RETRY_V4_IMPLEMENTATION_PLAN_REVIEW_PACKET_MISSING",
+            "combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json not found.",
+        )
+
+    # 4. Gate: state machine validation
+    current_state = artifact_index.get("current_state", "")
+    next_allowed_action = artifact_index.get("next_allowed_action", "")
+
+    valid_states = [
+        "corrective_retry_v4_retry_implementation_plan_update_required",
+        "operator_retry_v4_updated_implementation_plan_review_required",
+    ]
+    valid_next_actions = [
+        "operator_retry_v4_updated_implementation_plan_review_required",
+    ]
+
+    if current_state not in valid_states and next_allowed_action not in valid_next_actions:
+        return _blocker(
+            "INVALID_STATE_FOR_UPDATED_RETRY_V4_PLAN_REVIEW",
+            f"current_state={current_state}, next_allowed_action={next_allowed_action}. "
+            f"Expected state in {valid_states} or next_allowed_action in {valid_next_actions}.",
+        )
+
+    # 5. Gate: production_accepted must be false
+    if artifact_index.get("production_accepted", False):
+        return _blocker(
+            "PRODUCTION_ALREADY_ACCEPTED",
+            "production_accepted is true. Cannot review updated implementation plan.",
+        )
+
+    # 6. Gate: plan must not illegally authorize runtime actions
+    generation_gate = updated_plan.get("generation_gate", {})
+    if generation_gate.get("generation_allowed", False):
+        return _blocker(
+            "UPDATED_PLAN_ILLEGALLY_AUTHORIZES_RUNTIME_ACTION",
+            "Plan illegally sets generation_allowed=true. Generation requires separate operator authorization.",
+        )
+    if generation_gate.get("comfyui_submit_allowed", False):
+        return _blocker(
+            "UPDATED_PLAN_ILLEGALLY_AUTHORIZES_RUNTIME_ACTION",
+            "Plan illegally sets comfyui_submit_allowed=true. ComfyUI submit requires separate operator authorization.",
+        )
+    if generation_gate.get("retry_execution_allowed", False):
+        return _blocker(
+            "UPDATED_PLAN_ILLEGALLY_AUTHORIZES_RUNTIME_ACTION",
+            "Plan illegally sets retry_execution_allowed=true. Retry requires separate operator authorization.",
+        )
+
+    # 7. Validate plan structural requirements
+    pre_submit_contract = updated_plan.get("pre_submit_validation_contract", {})
+    if pre_submit_contract.get("max_generations", 0) != 1:
+        return _blocker(
+            "UPDATED_PLAN_INVALID_MAX_GENERATIONS",
+            f"Plan max_generations must be 1, got {pre_submit_contract.get('max_generations', 'missing')}.",
+        )
+
+    # 8. Determine decision and next state
+    if approve and reject:
+        return _blocker(
+            "INVALID_DECISION",
+            "Cannot specify both --approve and --reject. Choose one.",
+        )
+
+    if approve:
+        decision = "approve_updated_retry_implementation_plan"
+        operator_approved = True
+        new_state = "operator_retry_v4_generation_authorization_required"
+        new_next_allowed_action = "operator_retry_v4_generation_authorization_required"
+    elif reject:
+        decision = "reject_updated_retry_implementation_plan"
+        operator_approved = False
+        new_state = "operator_retry_v4_updated_implementation_plan_review_required"
+        new_next_allowed_action = "operator_retry_v4_updated_implementation_plan_revision_required"
+    else:
+        return _blocker(
+            "INVALID_DECISION",
+            "Must specify either --approve or --reject.",
+        )
+
+    # 9. Create operator review artifact
+    operator_review = {
+        "task_id": task_id,
+        "review_type": "operator_review_updated_retry_v4_implementation_plan",
+        "previous_layer": previous_layer,
+        "previous_commit": previous_commit,
+        "stage": "operator_retry_v4_updated_implementation_plan_review_required",
+        "shot_id": updated_plan.get("shot_id", "unknown"),
+        "timestamp": timestamp,
+        "updated_plan_reviewed": True,
+        "operator_approved": operator_approved,
+        "operator_decision": decision,
+        "plan_structurally_valid": True,
+        "generation_authorized": False,
+        "retry_authorized": False,
+        "comfyui_submit_authorized": False,
+        "visual_qa_authorized": False,
+        "assembly_authorized": False,
+        "downstream_authorized": False,
+        "production_accepted": False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": new_state,
+        "next_allowed_action": new_next_allowed_action,
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v4_updated_implementation_plan.json",
+            "output/control/combine_v2_corrective_retry_v4_updated_implementation_plan_review_packet.json",
+        ],
+    }
+
+    review_path = control_dir / "combine_v2_operator_retry_v4_updated_implementation_plan_review.json"
+    with open(review_path, "w", encoding="utf-8") as f:
+        json.dump(operator_review, f, indent=2)
+
+    # 10. Update artifact_index.json
+    artifact_index["current_state"] = new_state
+    artifact_index["next_allowed_action"] = new_next_allowed_action
+    artifact_index["operator_updated_retry_v4_implementation_plan_review_executed"] = True
+    artifact_index["updated_retry_v4_implementation_plan_approved"] = operator_approved
+    artifact_index["operator_decision"] = decision
+    artifact_index["production_accepted"] = False
+    artifact_index["generation_gate_opened"] = False
+    artifact_index["retry_authorized"] = False
+    artifact_index["downstream_blocked"] = True
+    artifact_index["new_generation_performed"] = False
+    artifact_index["new_comfyui_submit_executed"] = False
+    artifact_index["retry_attempted"] = False
+
+    if "stage_results" not in artifact_index:
+        artifact_index["stage_results"] = []
+
+    artifact_index["stage_results"].append({
+        "stage": "operator_retry_v4_updated_implementation_plan_review_required",
+        "success": True,
+        "message": f"Operator updated retry V4 implementation plan review completed: {decision}",
+        "artifacts": [
+            "combine_v2_operator_retry_v4_updated_implementation_plan_review.json",
+        ],
+        "metadata": {
+            "task_id": task_id,
+            "operator_decision": decision,
+            "operator_approved": operator_approved,
+            "updated_plan_reviewed": True,
+            "plan_structurally_valid": True,
+            "generation_authorized": False,
+            "retry_authorized": False,
+            "comfyui_submit_authorized": False,
+            "visual_qa_authorized": False,
+            "assembly_authorized": False,
+            "downstream_authorized": False,
+            "production_accepted": False,
+            "next_allowed_action": new_next_allowed_action,
+        },
+        "timestamp": timestamp,
+        "no_generation_performed": True,
+    })
+
+    with open(artifact_index_path, "w", encoding="utf-8") as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 11. Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, "r", encoding="utf-8") as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get("events", data.get("records", []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "event_type": "operator_retry_v4_updated_implementation_plan_reviewed",
+        "task_id": task_id,
+        "stage": "operator_retry_v4_updated_implementation_plan_review_required",
+        "shot_id": updated_plan.get("shot_id", "unknown"),
+        "operator_decision": decision,
+        "operator_approved": operator_approved,
+        "updated_plan_reviewed": True,
+        "plan_structurally_valid": True,
+        "generation_authorized": False,
+        "retry_authorized": False,
+        "comfyui_submit_authorized": False,
+        "visual_qa_authorized": False,
+        "assembly_authorized": False,
+        "downstream_authorized": False,
+        "production_accepted": False,
+        "next_allowed_action": new_next_allowed_action,
+        "timestamp": timestamp,
+    })
+
+    with open(ledger_path, "w", encoding="utf-8") as f:
+        json.dump(ledger, f, indent=2)
+
+    # 12. Build result
+    result = {
+        "task_id": task_id,
+        "status": "ok",
+        "operator_updated_retry_v4_implementation_plan_review_executed": True,
+        "operator_decision": decision,
+        "operator_approved": operator_approved,
+        "updated_plan_reviewed": True,
+        "plan_structurally_valid": True,
+        "generation_authorized": False,
+        "retry_authorized": False,
+        "comfyui_submit_authorized": False,
+        "visual_qa_authorized": False,
+        "assembly_authorized": False,
+        "downstream_authorized": False,
+        "production_accepted": False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": new_state,
+        "next_allowed_action": new_next_allowed_action,
+        "artifacts": [
+            "output/control/combine_v2_operator_retry_v4_updated_implementation_plan_review.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Updated Retry V4 Implementation Plan Review: COMPLETED")
+        print(f"Decision: {decision}")
+        print(f"Operator Approved: {operator_approved}")
+        print(f"Updated Plan Reviewed: True")
+        print(f"Plan Structurally Valid: True")
+        print(f"Generation Authorized: False")
+        print(f"Retry Authorized: False")
+        print(f"ComfyUI Submit Authorized: False")
+        print(f"Visual QA Authorized: False")
+        print(f"Assembly Authorized: False")
+        print(f"Downstream Authorized: False")
+        print(f"Production Accepted: False")
+        print(f"Current State: {new_state}")
+        print(f"Next Allowed Action: {new_next_allowed_action}")
 
     return 0
 

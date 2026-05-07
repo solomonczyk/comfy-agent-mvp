@@ -54,6 +54,7 @@ class CombineStateMachine:
         "operator_retry_v4_visual_correction_plan_review_required",
         "corrective_retry_v4_retry_implementation_plan_update_required",
         "operator_retry_v4_updated_implementation_plan_review_required",
+        "operator_retry_v4_generation_authorization_required",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
         "real_generation_payload_review",
@@ -248,6 +249,12 @@ class CombineStateMachine:
         "operator_retry_v4_updated_implementation_plan_review_required": {
             "operator_retry_v4_updated_implementation_plan_review_required",  # Self-loop: halted pending operator
             "corrective_retry_v4_retry_implementation_plan_update_required",  # Request changes — back to update
+            "operator_retry_v4_generation_authorization_required",  # Operator approved - proceed to generation authorization
+            "blocked_manual_review"
+        },
+        "operator_retry_v4_generation_authorization_required": {
+            "operator_retry_v4_generation_authorization_required",  # Self-loop: halted pending operator
+            "corrective_retry_v4_generate_assets",  # Authorized - proceed to generation
             "blocked_manual_review"
         },
         "real_generation_readiness_required": {
@@ -487,6 +494,19 @@ class CombineStateMachine:
         ("generation_payload_rebuild_required", "assembly_required"),
         ("workflow_graph_rebuild_required", "assembly_required"),
         ("workflow_rebuild_validation_required", "assembly_required"),
+
+        # RC-COMBINE-V2-2781-2840: Block direct transitions from updated plan review to runtime actions
+        ("operator_retry_v4_updated_implementation_plan_review_required", "corrective_retry_v4_generate_assets"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "corrective_retry_v4_real_execute_assets"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "generate_assets"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "real_generate_assets"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "visual_qa_required"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "corrective_retry_v4_visual_qa_required"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "real_visual_qa_required"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "assembly_required"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "assembly_preflight_required"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "completed"),
+        ("operator_retry_v4_updated_implementation_plan_review_required", "production_accepted"),
     }
     
     @classmethod
