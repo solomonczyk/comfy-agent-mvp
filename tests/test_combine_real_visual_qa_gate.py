@@ -543,3 +543,125 @@ def test_no_retry_assembly_downstream_production_acceptance(temp_project):
     
     # Test 14: production_accepted=false
     assert result.metadata.get("production_accepted", False) is False
+
+
+# ── RC-COMBINE-V2-2481-2540: V4 Visual QA Gate Tests ──────────────────────────
+
+def test_v4_visual_qa_preflight_state_machine_validity():
+    """V4 visual QA states are valid in state machine."""
+    sm = CombineStateMachine()
+    assert sm.is_valid_state("corrective_retry_v4_visual_qa_preflight_required")
+    assert sm.is_valid_state("corrective_retry_v4_visual_qa_required")
+
+
+def test_v4_visual_qa_preflight_state_transition():
+    """State machine allows correct V4 visual QA transitions."""
+    sm = CombineStateMachine()
+    assert sm.can_transition(
+        "corrective_retry_v4_visual_qa_preflight_required",
+        "corrective_retry_v4_visual_qa_required"
+    )
+    assert sm.can_transition(
+        "corrective_retry_v4_visual_qa_required",
+        "operator_visual_review"
+    )
+
+
+def test_v4_visual_qa_preflight_not_bypassed():
+    """V4 result review cannot bypass preflight directly to visual_qa_required."""
+    sm = CombineStateMachine()
+    assert not sm.can_transition(
+        "corrective_retry_v4_result_review_required",
+        "corrective_retry_v4_visual_qa_required"
+    )
+
+
+def test_v4_cli_preflight_succeeds_with_real_asset(tmp_path):
+    """CLI preflight command returns 0 with a valid canonical V4 asset."""
+    from app.cli import combine_preflight_corrective_retry_v4_visual_qa
+    import argparse
+
+    project_root = tmp_path / "project"
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    (assets_dir / "combine_v2_corrective_retry_v4_shot02_00001_.png").write_bytes(b"X" * 4096)
+    with open(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json", "w") as f:
+        json.dump({
+            "generated_assets": ["output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png"],
+            "asset_count": 1,
+        }, f)
+    with open(control_dir / "combine_v2_corrective_retry_v4_result_review.json", "w") as f:
+        json.dump({"branch_selected": "success", "manifest_success_policy_passed": True}, f)
+
+    args = argparse.Namespace(
+        project_root=str(project_root),
+        shot_id="shot02",
+        json=True,
+    )
+    result = combine_preflight_corrective_retry_v4_visual_qa(args)
+    assert result == 0
+
+
+def test_v4_cli_preflight_rejects_stub_asset(tmp_path):
+    """CLI preflight command returns 1 when asset is a stub."""
+    from app.cli import combine_preflight_corrective_retry_v4_visual_qa
+    import argparse
+
+    project_root = tmp_path / "project"
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    (assets_dir / "combine_v2_corrective_retry_v4_shot02_00001_.png").write_bytes(b"\x00" * 8)
+    with open(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json", "w") as f:
+        json.dump({
+            "generated_assets": ["output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png"],
+            "asset_count": 1,
+        }, f)
+    with open(control_dir / "combine_v2_corrective_retry_v4_result_review.json", "w") as f:
+        json.dump({"branch_selected": "success", "manifest_success_policy_passed": True}, f)
+
+    args = argparse.Namespace(
+        project_root=str(project_root),
+        shot_id="shot02",
+        json=True,
+    )
+    result = combine_preflight_corrective_retry_v4_visual_qa(args)
+    assert result == 1
+
+
+def test_v4_preflight_production_accepted_false_hard_boundary(tmp_path):
+    """Hard boundary: production_accepted is False after V4 preflight in all artifacts."""
+    from app.cli import combine_preflight_corrective_retry_v4_visual_qa
+    import argparse
+
+    project_root = tmp_path / "project"
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    (assets_dir / "combine_v2_corrective_retry_v4_shot02_00001_.png").write_bytes(b"X" * 4096)
+    with open(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json", "w") as f:
+        json.dump({
+            "generated_assets": ["output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png"],
+            "asset_count": 1,
+        }, f)
+    with open(control_dir / "combine_v2_corrective_retry_v4_result_review.json", "w") as f:
+        json.dump({"branch_selected": "success", "manifest_success_policy_passed": True}, f)
+
+    args = argparse.Namespace(project_root=str(project_root), shot_id="shot02", json=True)
+    combine_preflight_corrective_retry_v4_visual_qa(args)
+
+    for fname in (
+        "combine_v2_corrective_retry_v4_visual_qa_preflight.json",
+        "combine_v2_corrective_retry_v4_visual_qa_input_packet.json",
+        "artifact_index.json",
+    ):
+        with open(control_dir / fname) as f:
+            data = json.load(f)
+        assert data.get("production_accepted") is False, f"{fname}: production_accepted must be False"

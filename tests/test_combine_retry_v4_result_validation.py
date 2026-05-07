@@ -575,3 +575,81 @@ def test_result_review_production_accepted_false(tmp_path):
         result_review = json.load(f)
     
     assert result_review["production_accepted"] == False
+
+
+# ── RC-COMBINE-V2-2481-2540: V4 result → preflight linkage ──────────────────
+
+def test_v4_result_review_next_action_leads_to_preflight(tmp_path):
+    """Successful V4 result review sets next_allowed_action to preflight stage."""
+    from app.cli import combine_review_corrective_retry_v4_result
+
+    project_root = tmp_path / "project"
+    project_root.mkdir()
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    with open(control_dir / "combine_v2_corrective_retry_v4_generation_result.json", 'w') as f:
+        json.dump({"generation_performed": True, "retry_attempted": True}, f)
+    with open(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json", 'w') as f:
+        json.dump({"asset_count": 1, "generated_assets": ["output/assets/x.png"]}, f)
+    with open(control_dir / "combine_v2_corrective_retry_v4_post_submit_validation.json", 'w') as f:
+        json.dump({"asset_exists": True, "asset_readable": True, "asset_size_bytes_gt_1024": True,
+                   "sha256_present": True, "stub_asset_detected": False}, f)
+
+    result = combine_review_corrective_retry_v4_result(argparse.Namespace(
+        project_root=str(project_root), shot_id="shot02", json=True))
+    assert result == 0
+
+    with open(control_dir / "combine_v2_corrective_retry_v4_result_review.json") as f:
+        review = json.load(f)
+    assert review["next_allowed_action"] == "corrective_retry_v4_visual_qa_preflight_required"
+
+
+def test_v4_preflight_accepts_canonical_asset_from_result_review(tmp_path):
+    """V4 preflight succeeds when manifest points at the canonical V4 shot02 asset."""
+    from app.cli import combine_preflight_corrective_retry_v4_visual_qa
+
+    project_root = tmp_path / "project"
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    (assets_dir / "combine_v2_corrective_retry_v4_shot02_00001_.png").write_bytes(b"Z" * 8192)
+    with open(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json", 'w') as f:
+        json.dump({
+            "generated_assets": ["output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png"],
+            "asset_count": 1,
+        }, f)
+    with open(control_dir / "combine_v2_corrective_retry_v4_result_review.json", 'w') as f:
+        json.dump({"branch_selected": "success", "manifest_success_policy_passed": True}, f)
+
+    result = combine_preflight_corrective_retry_v4_visual_qa(argparse.Namespace(
+        project_root=str(project_root), shot_id="shot02", json=True))
+    assert result == 0
+
+
+def test_v4_preflight_coupling_guard_full_visual_qa_not_triggered(tmp_path):
+    """Preflight does not couple into full Visual QA verdict (no verdict artifact created)."""
+    from app.cli import combine_preflight_corrective_retry_v4_visual_qa
+
+    project_root = tmp_path / "project"
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+
+    (assets_dir / "combine_v2_corrective_retry_v4_shot02_00001_.png").write_bytes(b"Z" * 8192)
+    with open(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json", 'w') as f:
+        json.dump({
+            "generated_assets": ["output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png"],
+            "asset_count": 1,
+        }, f)
+    with open(control_dir / "combine_v2_corrective_retry_v4_result_review.json", 'w') as f:
+        json.dump({"branch_selected": "success", "manifest_success_policy_passed": True}, f)
+
+    combine_preflight_corrective_retry_v4_visual_qa(argparse.Namespace(
+        project_root=str(project_root), shot_id="shot02", json=True))
+
+    verdict_path = control_dir / "combine_v2_corrective_retry_v4_visual_qa_verdict.json"
+    assert not verdict_path.exists(), "BLOCKER: preflight must not couple into full Visual QA verdict"

@@ -914,5 +914,24 @@
     "downstream_executed": false,
     "production_accepted": false,
     "timestamp": "2026-05-06T15:55:00.000000+00:00"
+  },
+  {
+    "task_id": "RC-COMBINE-V2-2481-2540",
+    "event_type": "corrective_retry_v4_visual_qa_preflight_executed",
+    "stage": "corrective_retry_v4_visual_qa_preflight_required",
+    "shot_id": "shot02",
+    "canonical_asset_path": "output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png",
+    "sha256": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd",
+    "technical_validation_passed": true,
+    "next_allowed_action": "corrective_retry_v4_visual_qa_required",
+    "visual_qa_preflight_executed": true,
+    "full_visual_qa_verdict_executed": false,
+    "operator_visual_review_executed": false,
+    "generation_performed": false,
+    "comfyui_execution": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "timestamp": "2026-05-07T05:10:30.945174+00:00"
   }
 ]

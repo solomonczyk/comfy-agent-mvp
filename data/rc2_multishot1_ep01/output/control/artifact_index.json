@@ -1,6 +1,6 @@
 {
   "current_state": "corrective_retry_v4_visual_qa_preflight_required",
-  "next_allowed_action": "corrective_retry_v4_visual_qa_preflight_required",
+  "next_allowed_action": "corrective_retry_v4_visual_qa_required",
   "route_family": "custom",
   "stage_results": [
     {
@@ -5346,5 +5346,7 @@
   "operator_retry_v4_real_execution_authorized": true,
   "real_execution_allowed": true,
   "real_output_reconciliation_executed": true,
-  "real_output_reconciliation_timestamp": "2026-05-06T15:50:12.539147+00:00"
+  "real_output_reconciliation_timestamp": "2026-05-06T15:50:12.539147+00:00",
+  "visual_qa_input_packet_created": true,
+  "downstream_blocked": true
 }

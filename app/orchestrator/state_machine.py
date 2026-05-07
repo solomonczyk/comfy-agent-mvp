@@ -48,6 +48,8 @@ class CombineStateMachine:
         "corrective_retry_v4_non_stub_execution_route_required",
         "operator_retry_v4_real_execution_authorization_required",
         "corrective_retry_v4_real_execute_assets",
+        "corrective_retry_v4_visual_qa_preflight_required",
+        "corrective_retry_v4_visual_qa_required",
         "real_generation_readiness_required",
         "real_generation_preflight_required",
         "real_generation_payload_review",
@@ -215,6 +217,16 @@ class CombineStateMachine:
         },
         "corrective_retry_v4_real_execute_assets": {
             "corrective_retry_v4_result_review_required"
+        },
+        "corrective_retry_v4_result_review_required": {
+            "corrective_retry_v4_visual_qa_preflight_required",
+            "blocked_manual_review"
+        },
+        "corrective_retry_v4_visual_qa_preflight_required": {
+            "corrective_retry_v4_visual_qa_required"
+        },
+        "corrective_retry_v4_visual_qa_required": {
+            "operator_visual_review"
         },
         "real_generation_readiness_required": {
             "real_generation_preflight_required"

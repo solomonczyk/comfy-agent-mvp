@@ -8146,6 +8146,27 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-2481-2540 — combine-preflight-corrective-retry-v4-visual-qa subcommand
+    combine_preflight_corrective_retry_v4_visual_qa_parser = subparsers.add_parser(
+        "combine-preflight-corrective-retry-v4-visual-qa",
+        help="Run Visual QA preflight for corrective retry V4 canonical asset"
+    )
+    combine_preflight_corrective_retry_v4_visual_qa_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_preflight_corrective_retry_v4_visual_qa_parser.add_argument(
+        "--shot-id",
+        required=True,
+        help="Shot ID (e.g., shot02)",
+    )
+    combine_preflight_corrective_retry_v4_visual_qa_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-1341-1400 — combine-run-corrective-retry-v3-visual-qa-preflight subcommand
     combine_run_corrective_retry_v3_visual_qa_preflight_parser = subparsers.add_parser(
         "combine-run-corrective-retry-v3-visual-qa-preflight",
@@ -9653,6 +9674,8 @@ def main() -> int:
         return combine_validate_corrective_retry_v4_generator_loader_fix(args)
     elif args.command == "combine-preflight-corrective-retry-v4-real-workflow-submit":
         return combine_preflight_corrective_retry_v4_real_workflow_submit(args)
+    elif args.command == "combine-preflight-corrective-retry-v4-visual-qa":
+        return combine_preflight_corrective_retry_v4_visual_qa(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa-preflight":
         return combine_run_corrective_retry_v3_visual_qa_preflight(args)
     elif args.command == "combine-run-corrective-retry-v3-visual-qa":
@@ -26491,6 +26514,404 @@ def combine_preflight_corrective_retry_v4_real_workflow_submit(args: argparse.Na
         print(f"Preflight Passed: {preflight['preflight_passed']}")
         print(f"Workflow Valid For Submit: {preflight['workflow_valid_for_submit']}")
         print(f"Next Allowed Action: {preflight['next_allowed_action']}")
+
+    return 0
+
+
+def combine_preflight_corrective_retry_v4_visual_qa(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-2481-2540 — Visual QA Preflight for Corrective Retry V4 canonical asset.
+
+    Resolves the canonical V4 asset from outputs manifest and result review,
+    validates all hard-boundary conditions, creates Visual QA input packet,
+    and creates preflight artifact. Does NOT execute Visual QA verdict,
+    operator review, generation, or assembly.
+
+    Exit codes:
+    - 0: preflight completed (check visual_qa_preflight_executed for status)
+    - 1: fatal error (missing manifest, blocker condition)
+    """
+    import json
+    import hashlib
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    shot_id = args.shot_id
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    CANONICAL_ASSET_RELATIVE = "output/assets/combine_v2_corrective_retry_v4_shot02_00001_.png"
+    CANONICAL_ASSET_FILENAME = "combine_v2_corrective_retry_v4_shot02_00001_.png"
+    OLD_SHOT01_MARKER = "shot01"
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, 'r') as f:
+                return json.load(f)
+        return {}
+
+    outputs_manifest = _load_json(control_dir / "combine_v2_corrective_retry_v4_outputs_manifest.json")
+    result_review = _load_json(control_dir / "combine_v2_corrective_retry_v4_result_review.json")
+
+    if not outputs_manifest:
+        msg = {"blocker": "CANONICAL_ASSET_MISSING", "reason": "V4 outputs manifest not found"}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"BLOCKER: CANONICAL_ASSET_MISSING — V4 outputs manifest not found")
+        return 1
+
+    if not result_review:
+        msg = {"blocker": "CANONICAL_ASSET_MISSING", "reason": "V4 result review not found"}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"BLOCKER: CANONICAL_ASSET_MISSING — V4 result review not found")
+        return 1
+
+    # Resolve canonical asset from manifest
+    generated_assets = outputs_manifest.get("generated_assets", [])
+    manifest_asset_count = len(generated_assets)
+    manifest_sha256 = outputs_manifest.get("sha256", None)
+
+    if manifest_asset_count == 0 or not generated_assets:
+        msg = {"blocker": "CANONICAL_ASSET_MISSING", "reason": "No assets in V4 outputs manifest"}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"BLOCKER: CANONICAL_ASSET_MISSING — No assets in V4 outputs manifest")
+        return 1
+
+    manifest_asset_path_str = generated_assets[0]
+
+    # Validate canonical asset identity — must match expected V4 path, not shot01
+    if OLD_SHOT01_MARKER in manifest_asset_path_str and "shot02" not in manifest_asset_path_str:
+        msg = {"blocker": "OLD_SHOT01_ASSET_SELECTED", "manifest_asset": manifest_asset_path_str}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"BLOCKER: OLD_SHOT01_ASSET_SELECTED — {manifest_asset_path_str}")
+        return 1
+
+    # Validate manifest asset matches canonical asset
+    manifest_asset_matches_canonical = (
+        CANONICAL_ASSET_FILENAME in manifest_asset_path_str
+    )
+
+    if not manifest_asset_matches_canonical:
+        msg = {
+            "blocker": "MANIFEST_CANONICAL_ASSET_MISMATCH",
+            "manifest_asset": manifest_asset_path_str,
+            "expected_canonical": CANONICAL_ASSET_RELATIVE,
+        }
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"BLOCKER: MANIFEST_CANONICAL_ASSET_MISMATCH")
+        return 1
+
+    # Resolve filesystem path
+    if manifest_asset_path_str.startswith("output/"):
+        canonical_asset_path = project_root / manifest_asset_path_str
+    else:
+        canonical_asset_path = project_root / "output" / manifest_asset_path_str
+
+    # Asset existence check
+    asset_exists = canonical_asset_path.exists()
+    if not asset_exists:
+        msg = {"blocker": "CANONICAL_ASSET_MISSING", "path": str(canonical_asset_path)}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"BLOCKER: CANONICAL_ASSET_MISSING — {canonical_asset_path}")
+        return 1
+
+    # Asset readability check
+    asset_readable = False
+    asset_size_bytes = 0
+    try:
+        asset_size_bytes = canonical_asset_path.stat().st_size
+        with open(canonical_asset_path, 'rb') as f:
+            f.read(1)
+        asset_readable = True
+    except Exception:
+        asset_readable = False
+
+    if not asset_readable:
+        msg = {"blocker": "CANONICAL_ASSET_UNREADABLE", "path": str(canonical_asset_path)}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"BLOCKER: CANONICAL_ASSET_UNREADABLE")
+        return 1
+
+    asset_size_bytes_gt_1024 = asset_size_bytes > 1024
+
+    # Stub asset detection: size <= 1024 or size == 8 bytes
+    stub_asset_detected = asset_size_bytes <= 1024
+
+    if stub_asset_detected:
+        msg = {"blocker": "STUB_ASSET_DETECTED", "size_bytes": asset_size_bytes}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"BLOCKER: STUB_ASSET_DETECTED — size={asset_size_bytes}")
+        return 1
+
+    # Compute SHA256
+    sha256_val = None
+    try:
+        h = hashlib.sha256()
+        with open(canonical_asset_path, 'rb') as f:
+            for chunk in iter(lambda: f.read(65536), b''):
+                h.update(chunk)
+        sha256_val = h.hexdigest()
+    except Exception:
+        sha256_val = None
+
+    sha256_present = sha256_val is not None
+
+    if not sha256_present:
+        msg = {"blocker": "SHA256_MISSING"}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print("BLOCKER: SHA256_MISSING")
+        return 1
+
+    # Validate manifest sha256 matches computed (if manifest has sha256)
+    if manifest_sha256 and manifest_sha256 != sha256_val:
+        msg = {"blocker": "MANIFEST_CANONICAL_ASSET_MISMATCH", "manifest_sha256": manifest_sha256, "computed_sha256": sha256_val}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print("BLOCKER: MANIFEST_CANONICAL_ASSET_MISMATCH — SHA256 mismatch")
+        return 1
+
+    # Use manifest sha256 if present, else computed
+    sha256_final = manifest_sha256 if manifest_sha256 else sha256_val
+
+    # Image dimensions — attempt PIL, fallback to None
+    width = None
+    height = None
+    try:
+        from PIL import Image
+        with Image.open(canonical_asset_path) as img:
+            width, height = img.size
+    except Exception:
+        pass
+
+    width_present = width is not None
+    height_present = height is not None
+    dimensions_valid = width_present and height_present and width > 0 and height > 0
+
+    # Result review success branch check
+    result_review_branch = result_review.get("branch_selected", None)
+    result_review_success_branch_used = result_review_branch == "success"
+    manifest_success_policy_passed = result_review.get("manifest_success_policy_passed", False)
+
+    # Old shot01 asset guard
+    old_shot01_asset_used = OLD_SHOT01_MARKER in manifest_asset_path_str and "shot02" not in manifest_asset_path_str
+    stale_stub_asset_used = stub_asset_detected
+
+    # Technical validation summary
+    technical_validation = {
+        "asset_exists": asset_exists,
+        "asset_readable": asset_readable,
+        "asset_size_bytes": asset_size_bytes,
+        "asset_size_bytes_gt_1024": asset_size_bytes_gt_1024,
+        "sha256_present": sha256_present,
+        "sha256": sha256_final,
+        "width_present": width_present,
+        "height_present": height_present,
+        "dimensions_valid": dimensions_valid,
+        "stub_asset_detected": stub_asset_detected,
+        "canonical_asset_used": manifest_asset_matches_canonical,
+        "old_shot01_asset_used": old_shot01_asset_used,
+        "stale_stub_asset_used": stale_stub_asset_used,
+        "manifest_asset_matches_canonical_asset": manifest_asset_matches_canonical,
+        "result_review_success_branch_used": result_review_success_branch_used,
+    }
+
+    # Operator visual concerns
+    operator_visual_concerns = {
+        "subject_too_small": True,
+        "excessive_empty_space": True,
+        "weak_composition": True,
+        "shot_intent_not_satisfied": True,
+        "prompt_scene_alignment_weak": True,
+    }
+
+    # Create Visual QA input packet
+    visual_qa_input_packet = {
+        "task_id": "RC-COMBINE-V2-2481-2540",
+        "packet_type": "corrective_retry_v4_visual_qa_input_packet",
+        "shot_id": shot_id,
+        "canonical_asset_path": CANONICAL_ASSET_RELATIVE,
+        "sha256": sha256_final,
+        "file_size_bytes": asset_size_bytes,
+        "width": width,
+        "height": height,
+        "source_manifest_path": "output/control/combine_v2_corrective_retry_v4_outputs_manifest.json",
+        "source_result_review_path": "output/control/combine_v2_corrective_retry_v4_result_review.json",
+        "technical_validation": technical_validation,
+        "operator_visual_concerns": operator_visual_concerns,
+        "known_visual_issues": list(operator_visual_concerns.keys()),
+        "operator_visual_concerns_recorded": True,
+        "full_visual_qa_verdict_executed": False,
+        "operator_visual_review_executed": False,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+
+    input_packet_path = control_dir / "combine_v2_corrective_retry_v4_visual_qa_input_packet.json"
+    with open(input_packet_path, 'w') as f:
+        json.dump(visual_qa_input_packet, f, indent=2)
+
+    # Create Visual QA preflight artifact
+    preflight_artifact = {
+        "task_id": "RC-COMBINE-V2-2481-2540",
+        "stage": "corrective_retry_v4_visual_qa_preflight_required",
+        "preflight_type": "corrective_retry_v4_visual_qa_preflight",
+        "shot_id": shot_id,
+        "timestamp": timestamp,
+        "visual_qa_preflight_executed": True,
+        "full_visual_qa_verdict_executed": False,
+        "operator_visual_review_executed": False,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "canonical_asset_path": CANONICAL_ASSET_RELATIVE,
+        "sha256": sha256_final,
+        "file_size_bytes": asset_size_bytes,
+        "width": width,
+        "height": height,
+        "technical_validation": technical_validation,
+        "operator_visual_concerns": operator_visual_concerns,
+        "visual_qa_input_packet_path": "output/control/combine_v2_corrective_retry_v4_visual_qa_input_packet.json",
+        "next_allowed_action": "corrective_retry_v4_visual_qa_required",
+    }
+
+    preflight_path = control_dir / "combine_v2_corrective_retry_v4_visual_qa_preflight.json"
+    with open(preflight_path, 'w') as f:
+        json.dump(preflight_artifact, f, indent=2)
+
+    # Update artifact_index.json
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["current_state"] = "corrective_retry_v4_visual_qa_preflight_required"
+    artifact_index["next_allowed_action"] = "corrective_retry_v4_visual_qa_required"
+    artifact_index["visual_qa_preflight_executed"] = True
+    artifact_index["visual_qa_input_packet_created"] = True
+    artifact_index["production_accepted"] = False
+    artifact_index["downstream_blocked"] = True
+    artifact_index["generation_performed"] = False
+    artifact_index["comfyui_execution"] = False
+    artifact_index["assembly_executed"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                ledger = data if isinstance(data, list) else data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger.append({
+        "task_id": "RC-COMBINE-V2-2481-2540",
+        "event_type": "corrective_retry_v4_visual_qa_preflight_executed",
+        "stage": "corrective_retry_v4_visual_qa_preflight_required",
+        "shot_id": shot_id,
+        "canonical_asset_path": CANONICAL_ASSET_RELATIVE,
+        "sha256": sha256_final,
+        "technical_validation_passed": (
+            asset_exists and asset_readable and asset_size_bytes_gt_1024
+            and sha256_present and not stub_asset_detected
+            and manifest_asset_matches_canonical and result_review_success_branch_used
+        ),
+        "next_allowed_action": "corrective_retry_v4_visual_qa_required",
+        "visual_qa_preflight_executed": True,
+        "full_visual_qa_verdict_executed": False,
+        "operator_visual_review_executed": False,
+        "generation_performed": False,
+        "comfyui_execution": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    })
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    # Build result
+    result = {
+        "task_id": "RC-COMBINE-V2-2481-2540",
+        "visual_qa_preflight_executed": True,
+        "visual_qa_input_packet_created": True,
+        "canonical_asset_used": manifest_asset_matches_canonical,
+        "asset_path": CANONICAL_ASSET_RELATIVE,
+        "asset_exists": asset_exists,
+        "asset_readable": asset_readable,
+        "asset_size_bytes_gt_1024": asset_size_bytes_gt_1024,
+        "sha256_present": sha256_present,
+        "sha256": sha256_final,
+        "width_present": width_present,
+        "height_present": height_present,
+        "dimensions_valid": dimensions_valid,
+        "stub_asset_detected": stub_asset_detected,
+        "stale_stub_asset_used": stale_stub_asset_used,
+        "old_shot01_asset_used": old_shot01_asset_used,
+        "manifest_asset_matches_canonical_asset": manifest_asset_matches_canonical,
+        "result_review_success_branch_used": result_review_success_branch_used,
+        "operator_visual_concerns_recorded": True,
+        "known_visual_issues": list(operator_visual_concerns.keys()),
+        "full_visual_qa_verdict_executed": False,
+        "operator_visual_review_executed": False,
+        "new_generation_performed": False,
+        "new_comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "second_generation_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": "corrective_retry_v4_visual_qa_preflight_required",
+        "next_allowed_action": "corrective_retry_v4_visual_qa_required",
+        "artifacts": [
+            "output/control/combine_v2_corrective_retry_v4_visual_qa_preflight.json",
+            "output/control/combine_v2_corrective_retry_v4_visual_qa_input_packet.json",
+        ],
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"V4 Visual QA Preflight Executed")
+        print(f"Shot: {shot_id}")
+        print(f"Canonical Asset: {CANONICAL_ASSET_RELATIVE}")
+        print(f"Asset Exists: {asset_exists}")
+        print(f"Asset Readable: {asset_readable}")
+        print(f"SHA256: {sha256_final}")
+        print(f"Stub Detected: {stub_asset_detected}")
+        print(f"Next Allowed Action: corrective_retry_v4_visual_qa_required")
 
     return 0
 
