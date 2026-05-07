@@ -1,0 +1,16 @@
+{
+  "task_id": "RC-COMBINE-V2-3361-3600",
+  "v5_visual_failed": true,
+  "baseline_generated": true,
+  "v5_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+  "baseline_assets": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+  ],
+  "recommended_next_recipe": "baseline_default_sdxl",
+  "reason": "V5 recipe has denoise=0.5 on txt2img (primary defect), sub-minimum resolution, empty lora stack overhead, and non-node metadata risk. Clean default SDXL baseline with denoise=1.0, dpmpp_2m, cfg=8.0 at 1024x1024 is structurally sound. Baseline direction recommended pending operator visual review.",
+  "operator_visual_review_required": true,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "timestamp": "2026-05-07T09:29:24.621147+00:00"
+}

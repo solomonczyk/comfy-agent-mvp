@@ -1,0 +1,21 @@
+{
+  "task_id": "RC-COMBINE-V2-3361-3600",
+  "baseline_generation_performed": true,
+  "benchmark_generation_count": 1,
+  "max_benchmark_generations_total": 2,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "prompt_id": "9264564c-deac-4571-8f48-7a0a81e53a58",
+  "native_outputs_checked": true,
+  "canonical_outputs_registered": true,
+  "canonical_assets": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+  ],
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "operator_visual_review_required": true,
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "timestamp": "2026-05-07T09:29:24.621147+00:00"
+}

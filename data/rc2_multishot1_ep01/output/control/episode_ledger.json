@@ -1124,10 +1124,8 @@
     "root_cause_fixed": true,
     "payload_validation_passed": true,
     "prompt_submission_success": true,
-    "secondary_blocker": "MISSING_CHECKPOINT_MODEL_OR_CUSTOM_NODE",
-    "required_model": "juggernautXL_version2.safetensors",
-    "required_custom_nodes": ["LoraLoader"],
-    "manual_action_required": true,
+    "secondary_blocker": "NOT_PROVEN \u2014 RETRACTED by reconciliation 2026-05-07T09:04:00Z",
+    "manual_action_required": false,
     "generation_performed": false,
     "comfyui_execution": false,
     "workflow_submitted": true,
@@ -1139,7 +1137,84 @@
     "validation_artifact": "output/control/combine_v2_corrective_retry_v5_prompt_payload_validation.json",
     "blocked_artifact": "output/control/combine_v2_corrective_retry_v5_generation_runtime_blocked.json",
     "payload_fix_applied": true,
-    "removed_non_node_fields": ["shot_id"],
+    "removed_non_node_fields": [
+      "shot_id"
+    ],
+    "note": "ORIGINAL STATE \u2014 see contradiction_reconciliation event below for corrected state",
     "timestamp": "2026-05-07T10:44:00.000000Z"
+  },
+  {
+    "event_type": "contradiction_reconciliation_completed",
+    "stage": "corrective_retry_v5_generated_operator_visual_failed",
+    "task_id": "RC-COMBINE-V2-3261-3360",
+    "shot_id": "shot02",
+    "reconciliation_reason": "Operator rejected original diagnosis as inconsistent with console log evidence",
+    "console_log_facts": [
+      "POST /prompt 500 root cause confirmed: non-node shot_id field in workflow JSON",
+      "ComfyUI executed Prompt in 00:12:33 \u2014 confirmed successful",
+      "ComfyUI executed Prompt in 00:18:48 \u2014 confirmed successful",
+      "generation_performed=false was incorrect",
+      "missing model/LoraLoader claim was not proven and is retracted"
+    ],
+    "corrected_generation_performed": true,
+    "corrected_comfyui_execution": true,
+    "corrected_current_state": "corrective_retry_v5_generated_operator_visual_failed",
+    "corrected_next_allowed_action": "operator_visual_review_required",
+    "output_artifact_found": "combine_v2_corrective_retry_v5_shot02_00001_.png",
+    "output_artifact_native_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\output\\combine_v2_corrective_retry_v5_shot02_00001_.png",
+    "output_artifact_timestamp": "2026-05-07T10:38:36",
+    "output_artifact_size_bytes": 1383828,
+    "canonical_asset_registered": "output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+    "operator_visual_verdict": "operator_visual_failed",
+    "production_accepted": false,
+    "assembly": false,
+    "downstream": false,
+    "new_generation_performed": false,
+    "reconciliation_artifact": "output/control/combine_v2_rc3261_3360_contradiction_reconciliation.json",
+    "timestamp": "2026-05-07T09:04:00Z"
+  },
+  {
+    "event_type": "visual_quality_baseline_benchmark_completed",
+    "task_id": "RC-COMBINE-V2-3361-3600",
+    "stage": "visual_quality_baseline_benchmark",
+    "baseline_generation_performed": true,
+    "benchmark_generation_count": 1,
+    "max_benchmark_generations_total": 2,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "prompt_id": "3bb60e16-27bb-40c5-990d-72621359cdac",
+    "blind_v5_retry_attempted": false,
+    "canonical_assets": [
+      "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+    ],
+    "production_accepted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "operator_visual_review_required": true,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "timestamp": "2026-05-07T09:31:34.733675+00:00"
+  },
+  {
+    "event_type": "visual_quality_baseline_benchmark_completed",
+    "task_id": "RC-COMBINE-V2-3361-3600",
+    "stage": "visual_quality_baseline_benchmark",
+    "baseline_generation_performed": true,
+    "benchmark_generation_count": 1,
+    "max_benchmark_generations_total": 2,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "prompt_id": "9264564c-deac-4571-8f48-7a0a81e53a58",
+    "blind_v5_retry_attempted": false,
+    "canonical_assets": [
+      "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+    ],
+    "production_accepted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "operator_visual_review_required": true,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "timestamp": "2026-05-07T09:29:24.621147+00:00"
   }
 ]

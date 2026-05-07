@@ -1,0 +1,28 @@
+{
+  "task_id": "RC-COMBINE-V2-3361-3600",
+  "v5_failed_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+  "baseline_assets": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+  ],
+  "visual_comparison_summary": "V5 output: muddy/gray/low-contrast, soft details, weak face, composition weak, style uncontrolled. Primary cause: denoise=0.5 on txt2img path produces half-denoised result. Baseline: clean default SDXL, denoise=1.0, dpmpp_2m/karras, cfg=8.0, 1024x1024, juggernautXL_version2. Baseline should show significantly sharper, higher-contrast result. Operator visual inspection required to confirm direction.",
+  "recommended_next_recipe": "baseline_default_sdxl",
+  "allowed_operator_actions": [
+    "approve_baseline_direction",
+    "request_simplified_v5",
+    "request_full_rebuild",
+    "reject_all"
+  ],
+  "forbidden_automatic_actions": [
+    "production_acceptance",
+    "assembly",
+    "downstream",
+    "additional_retry_without_gate"
+  ],
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "operator_visual_review_required": true,
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "timestamp": "2026-05-07T09:29:24.621147+00:00"
+}

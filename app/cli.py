@@ -8288,6 +8288,34 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-3361-3600 — combine-run-visual-quality-baseline-benchmark subcommand
+    combine_run_visual_quality_baseline_benchmark_parser = subparsers.add_parser(
+        "combine-run-visual-quality-baseline-benchmark",
+        help="Submit clean default SDXL baseline workflow and collect benchmark output"
+    )
+    combine_run_visual_quality_baseline_benchmark_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory (absolute path)",
+    )
+    combine_run_visual_quality_baseline_benchmark_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Submit workflow to ComfyUI (default: dry-run only)",
+    )
+    combine_run_visual_quality_baseline_benchmark_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        dest="max_generations",
+        help="Maximum benchmark generations allowed (default: 1, max: 2)",
+    )
+    combine_run_visual_quality_baseline_benchmark_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-2841-2900 — combine-authorize-corrective-retry-v4-generation subcommand
     combine_authorize_corrective_retry_v4_generation_parser = subparsers.add_parser(
         "combine-authorize-corrective-retry-v4-generation",
@@ -9873,6 +9901,8 @@ def main() -> int:
         return combine_update_corrective_retry_v4_implementation_plan(args)
     elif args.command == "combine-review-updated-corrective-retry-v4-implementation-plan":
         return combine_review_updated_corrective_retry_v4_implementation_plan(args)
+    elif args.command == "combine-run-visual-quality-baseline-benchmark":
+        return combine_run_visual_quality_baseline_benchmark(args)
     elif args.command == "director":
         return director_command(args)
     elif args.command == "render-final":
@@ -29797,6 +29827,573 @@ def combine_authorize_corrective_retry_v4_generation(args: argparse.Namespace) -
         print(f"Next Allowed Action: corrective_retry_v4_real_execute_assets")
         print(f"Artifact: {auth_path}")
 
+    return 0
+
+
+def combine_run_visual_quality_baseline_benchmark(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-3361-3600 — Visual Quality Baseline Benchmark.
+
+    Submits the clean default SDXL baseline workflow to ComfyUI and collects output.
+    Guards:
+    - V5 visual failure artifact must exist
+    - Baseline workflow must exist
+    - max_generations must be <= 2
+    - Requires --execute for real submission
+    - blind V5 retry is blocked
+
+    Exit codes:
+    - 0: success (or dry-run info)
+    - 1: blocked / error
+    """
+    from pathlib import Path
+    from datetime import datetime, timezone
+    import hashlib, json, os, time
+
+    project_root = Path(args.project_root)
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+    timestamp = datetime.now(timezone.utc).isoformat()
+    task_id = "RC-COMBINE-V2-3361-3600"
+
+    def _load_json(path: Path):
+        if path.exists():
+            with open(path, "r", encoding="utf-8") as fh:
+                return json.load(fh)
+        return {}
+
+    def _write_json(path: Path, data: dict):
+        with open(path, "w", encoding="utf-8") as fh:
+            json.dump(data, fh, indent=2)
+
+    def _sha256(path: Path) -> str:
+        h = hashlib.sha256()
+        with open(path, "rb") as fh:
+            for chunk in iter(lambda: fh.read(65536), b""):
+                h.update(chunk)
+        return h.hexdigest()
+
+    def _image_dims(path: Path):
+        try:
+            from PIL import Image as PILImage
+            with PILImage.open(path) as img:
+                return img.width, img.height, True
+        except Exception:
+            return 0, 0, False
+
+    # Guard: max_generations <= 2
+    if max_generations > 2:
+        msg = "max_generations exceeds 2 — forbidden by task policy"
+        result = {"status": "blocked", "blocked_reason": msg,
+                  "baseline_generation_performed": False, "production_accepted": False,
+                  "current_state": "visual_quality_baseline_runtime_blocked",
+                  "next_allowed_action": "visual_quality_baseline_runtime_blocked"}
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: {msg}")
+        return 1
+
+    # Guard: V5 visual failure artifact must exist
+    v5_failure_path = control_dir / "combine_v2_v5_operator_visual_failure.json"
+    if not v5_failure_path.exists():
+        msg = "combine_v2_v5_operator_visual_failure.json missing — run registration step first"
+        result = {"status": "blocked", "blocked_reason": msg,
+                  "baseline_generation_performed": False, "production_accepted": False,
+                  "current_state": "visual_quality_baseline_runtime_blocked",
+                  "next_allowed_action": "visual_quality_baseline_runtime_blocked"}
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: {msg}")
+        return 1
+
+    v5_failure = _load_json(v5_failure_path)
+    if not v5_failure.get("operator_visual_failed"):
+        msg = "V5 operator_visual_failed not set — cannot proceed without registered failure"
+        result = {"status": "blocked", "blocked_reason": msg,
+                  "baseline_generation_performed": False, "production_accepted": False,
+                  "current_state": "visual_quality_baseline_runtime_blocked",
+                  "next_allowed_action": "visual_quality_baseline_runtime_blocked"}
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: {msg}")
+        return 1
+
+    # Guard: baseline workflow must exist
+    baseline_wf_path = control_dir / "shot02_baseline_default_sdxl_workflow.json"
+    if not baseline_wf_path.exists():
+        msg = "shot02_baseline_default_sdxl_workflow.json missing"
+        result = {"status": "blocked", "blocked_reason": msg,
+                  "baseline_generation_performed": False, "production_accepted": False,
+                  "current_state": "visual_quality_baseline_runtime_blocked",
+                  "next_allowed_action": "visual_quality_baseline_runtime_blocked"}
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: {msg}")
+        return 1
+
+    # Load and validate baseline workflow
+    baseline_wf = _load_json(baseline_wf_path)
+    if not baseline_wf:
+        msg = "Baseline workflow is empty"
+        result = {"status": "blocked", "blocked_reason": msg,
+                  "baseline_generation_performed": False, "production_accepted": False,
+                  "current_state": "visual_quality_baseline_runtime_blocked",
+                  "next_allowed_action": "visual_quality_baseline_runtime_blocked"}
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: {msg}")
+        return 1
+
+    # Validate SaveImage prefix
+    saveimage_prefix = None
+    for node_id, node in baseline_wf.items():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            saveimage_prefix = node.get("inputs", {}).get("filename_prefix", "")
+            break
+    expected_prefix = "combine_v2_baseline_default_sdxl_shot02"
+    if saveimage_prefix != expected_prefix:
+        msg = f"Baseline workflow SaveImage prefix invalid: expected '{expected_prefix}', got '{saveimage_prefix}'"
+        result = {"status": "blocked", "blocked_reason": msg,
+                  "baseline_generation_performed": False, "production_accepted": False,
+                  "current_state": "visual_quality_baseline_runtime_blocked",
+                  "next_allowed_action": "visual_quality_baseline_runtime_blocked"}
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"BLOCKED: {msg}")
+        return 1
+
+    # Validate resolution >= 1024 short side
+    for node_id, node in baseline_wf.items():
+        if isinstance(node, dict) and node.get("class_type") == "EmptyLatentImage":
+            w = node.get("inputs", {}).get("width", 0)
+            h = node.get("inputs", {}).get("height", 0)
+            if min(w, h) < 1024:
+                msg = f"Baseline workflow resolution {w}x{h} violates minimum short side 1024"
+                result = {"status": "blocked", "blocked_reason": msg,
+                          "baseline_generation_performed": False, "production_accepted": False,
+                          "current_state": "visual_quality_baseline_runtime_blocked",
+                          "next_allowed_action": "visual_quality_baseline_runtime_blocked"}
+                if json_output:
+                    print(json.dumps(result, indent=2))
+                else:
+                    print(f"BLOCKED: {msg}")
+                return 1
+            break
+
+    # Strip non-node top-level keys before submission
+    def _clean_workflow(wf: dict) -> dict:
+        known_non_node_keys = {"shot_id", "metadata", "version", "extra_data"}
+        return {k: v for k, v in wf.items()
+                if k not in known_non_node_keys and isinstance(v, dict) and "class_type" in v}
+
+    clean_wf = _clean_workflow(baseline_wf)
+
+    # Dry-run (no --execute)
+    if not execute:
+        info = {
+            "status": "authorization_required",
+            "message": "Pass --execute to submit baseline workflow to ComfyUI",
+            "task_id": task_id,
+            "baseline_workflow_loaded": True,
+            "saveimage_prefix_valid": True,
+            "resolution_valid": True,
+            "v5_failure_registered": True,
+            "max_generations": max_generations,
+            "baseline_generation_performed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "production_accepted": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "next_allowed_action": "visual_quality_baseline_benchmark_execute_required",
+        }
+        if json_output:
+            print(json.dumps(info, indent=2))
+        else:
+            print("Baseline Benchmark: AUTHORIZATION REQUIRED (pass --execute)")
+        return 0
+
+    # --execute path: submit to ComfyUI
+    comfy_base_url = os.getenv("COMFY_BASE_URL", "http://127.0.0.1:8188")
+    comfy_output_dir = Path(os.getenv("COMFY_OUTPUT_DIR",
+        r"F:\ComfyUI\comfyUI_portable_inst\ComfyUI_windows_portable_nvidia_cu126\ComfyUI_windows_portable\ComfyUI\output"))
+
+    # Check ComfyUI reachable
+    try:
+        req = urllib.request.Request(f"{comfy_base_url}/system_stats")
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            if resp.status != 200:
+                raise RuntimeError(f"system_stats returned {resp.status}")
+    except Exception as exc:
+        blocked = {
+            "task_id": task_id,
+            "baseline_generation_performed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "failure_code": f"comfyui_unreachable: {exc}",
+            "current_state": "visual_quality_baseline_runtime_blocked",
+            "next_allowed_action": "visual_quality_baseline_runtime_blocked",
+            "production_accepted": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+        }
+        _write_json(control_dir / "combine_v2_visual_quality_baseline_benchmark_result.json", blocked)
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"BLOCKED: ComfyUI unreachable — {exc}")
+        return 1
+
+    # POST /prompt
+    payload = json.dumps({"prompt": clean_wf}).encode("utf-8")
+    prompt_id = None
+    try:
+        req = urllib.request.Request(
+            f"{comfy_base_url}/prompt",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST",
+        )
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            resp_body = json.loads(resp.read().decode("utf-8"))
+            prompt_id = resp_body.get("prompt_id", "")
+    except urllib.error.HTTPError as exc:
+        body = exc.read().decode("utf-8", errors="replace")
+        blocked = {
+            "task_id": task_id,
+            "baseline_generation_performed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "failure_code": f"post_prompt_http_{exc.code}",
+            "http_error_body": body[:500],
+            "current_state": "visual_quality_baseline_runtime_blocked",
+            "next_allowed_action": "visual_quality_baseline_runtime_blocked",
+            "production_accepted": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+        }
+        _write_json(control_dir / "combine_v2_visual_quality_baseline_benchmark_result.json", blocked)
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"BLOCKED: POST /prompt failed HTTP {exc.code}: {body[:200]}")
+        return 1
+    except Exception as exc:
+        blocked = {
+            "task_id": task_id,
+            "baseline_generation_performed": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "failure_code": f"post_prompt_exception: {exc}",
+            "current_state": "visual_quality_baseline_runtime_blocked",
+            "next_allowed_action": "visual_quality_baseline_runtime_blocked",
+            "production_accepted": False,
+        }
+        _write_json(control_dir / "combine_v2_visual_quality_baseline_benchmark_result.json", blocked)
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"BLOCKED: POST /prompt exception: {exc}")
+        return 1
+
+    # Poll ComfyUI history until prompt_id appears (max 600s)
+    deadline = time.time() + 600
+    history_entry = None
+    while time.time() < deadline:
+        try:
+            req = urllib.request.Request(f"{comfy_base_url}/history/{prompt_id}")
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                hist = json.loads(resp.read().decode("utf-8"))
+                if prompt_id in hist:
+                    history_entry = hist[prompt_id]
+                    break
+        except Exception:
+            pass
+        time.sleep(5)
+
+    if not history_entry:
+        blocked = {
+            "task_id": task_id,
+            "baseline_generation_performed": False,
+            "workflow_submitted": True,
+            "comfyui_execution": False,
+            "prompt_id": prompt_id,
+            "failure_code": "comfyui_history_timeout",
+            "current_state": "visual_quality_baseline_runtime_blocked",
+            "next_allowed_action": "visual_quality_baseline_runtime_blocked",
+            "production_accepted": False,
+        }
+        _write_json(control_dir / "combine_v2_visual_quality_baseline_benchmark_result.json", blocked)
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"BLOCKED: ComfyUI history timeout for prompt_id={prompt_id}")
+        return 1
+
+    # Collect output files from history
+    output_files = []
+    outputs = history_entry.get("outputs", {})
+    for node_id, node_out in outputs.items():
+        for img in node_out.get("images", []):
+            fname = img.get("filename", "")
+            subfolder = img.get("subfolder", "")
+            if fname:
+                native_path = comfy_output_dir / subfolder / fname if subfolder else comfy_output_dir / fname
+                output_files.append((fname, native_path))
+
+    # Fallback: scan native output dir for matching prefix files
+    if not output_files and comfy_output_dir.exists():
+        for f in sorted(comfy_output_dir.glob(f"{expected_prefix}*.png")):
+            output_files.append((f.name, f))
+
+    if not output_files:
+        blocked = {
+            "task_id": task_id,
+            "baseline_generation_performed": False,
+            "workflow_submitted": True,
+            "comfyui_execution": True,
+            "prompt_id": prompt_id,
+            "failure_code": "no_output_files_found_in_history_or_native_dir",
+            "native_outputs_checked": True,
+            "canonical_outputs_registered": False,
+            "current_state": "visual_quality_baseline_runtime_blocked",
+            "next_allowed_action": "visual_quality_baseline_runtime_blocked",
+            "production_accepted": False,
+        }
+        _write_json(control_dir / "combine_v2_visual_quality_baseline_benchmark_result.json", blocked)
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"BLOCKED: No output files found for prompt_id={prompt_id}")
+        return 1
+
+    # Copy canonical assets and build manifest entries
+    manifest_entries = []
+    canonical_paths = []
+    for fname, native_path in output_files:
+        canonical_dest = assets_dir / fname
+        if native_path.exists() and native_path != canonical_dest:
+            shutil.copy2(str(native_path), str(canonical_dest))
+        elif native_path == canonical_dest and canonical_dest.exists():
+            pass  # already in canonical location
+        elif not canonical_dest.exists():
+            continue  # skip if neither source nor dest exists
+
+        if canonical_dest.exists():
+            w, h, readable = _image_dims(canonical_dest)
+            sha = _sha256(canonical_dest)
+            size = canonical_dest.stat().st_size
+            entry = {
+                "path": f"data/rc2_multishot1_ep01/output/assets/{fname}",
+                "filename": fname,
+                "size_bytes": size,
+                "sha256": sha,
+                "width": w,
+                "height": h,
+                "readable": readable,
+                "source_native_output_path": str(native_path) if native_path != canonical_dest else None,
+            }
+            manifest_entries.append(entry)
+            canonical_paths.append(str(canonical_dest))
+
+    if not manifest_entries:
+        blocked = {
+            "task_id": task_id,
+            "baseline_generation_performed": False,
+            "workflow_submitted": True,
+            "comfyui_execution": True,
+            "prompt_id": prompt_id,
+            "failure_code": "canonical_copy_failed",
+            "native_outputs_checked": True,
+            "canonical_outputs_registered": False,
+            "current_state": "visual_quality_baseline_runtime_blocked",
+            "next_allowed_action": "visual_quality_baseline_runtime_blocked",
+            "production_accepted": False,
+        }
+        _write_json(control_dir / "combine_v2_visual_quality_baseline_benchmark_result.json", blocked)
+        if json_output:
+            print(json.dumps(blocked, indent=2))
+        else:
+            print(f"BLOCKED: Canonical copy failed for prompt_id={prompt_id}")
+        return 1
+
+    # Write outputs manifest
+    outputs_manifest = manifest_entries
+    _write_json(control_dir / "combine_v2_visual_quality_baseline_outputs_manifest.json", outputs_manifest)
+
+    # Write benchmark result
+    benchmark_result = {
+        "task_id": task_id,
+        "baseline_generation_performed": True,
+        "benchmark_generation_count": 1,
+        "max_benchmark_generations_total": 2,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id,
+        "native_outputs_checked": True,
+        "canonical_outputs_registered": True,
+        "canonical_assets": [e["path"] for e in manifest_entries],
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "operator_visual_review_required": True,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+        "timestamp": timestamp,
+    }
+    _write_json(control_dir / "combine_v2_visual_quality_baseline_benchmark_result.json", benchmark_result)
+
+    # Write recipe decision
+    recipe_decision = {
+        "task_id": task_id,
+        "v5_visual_failed": True,
+        "baseline_generated": True,
+        "v5_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+        "baseline_assets": [e["path"] for e in manifest_entries],
+        "recommended_next_recipe": "baseline_default_sdxl",
+        "reason": "V5 recipe has denoise=0.5 on txt2img (primary defect), sub-minimum resolution, empty lora stack overhead, and non-node metadata risk. Clean default SDXL baseline with denoise=1.0, dpmpp_2m, cfg=8.0 at 1024x1024 is structurally sound. Baseline direction recommended pending operator visual review.",
+        "operator_visual_review_required": True,
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "timestamp": timestamp,
+    }
+    _write_json(control_dir / "combine_v2_visual_quality_recipe_decision.json", recipe_decision)
+
+    # Write operator review packet
+    review_packet = {
+        "task_id": task_id,
+        "v5_failed_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+        "baseline_assets": [e["path"] for e in manifest_entries],
+        "visual_comparison_summary": (
+            "V5 output: muddy/gray/low-contrast, soft details, weak face, composition weak, style uncontrolled. "
+            "Primary cause: denoise=0.5 on txt2img path produces half-denoised result. "
+            "Baseline: clean default SDXL, denoise=1.0, dpmpp_2m/karras, cfg=8.0, 1024x1024, juggernautXL_version2. "
+            "Baseline should show significantly sharper, higher-contrast result. "
+            "Operator visual inspection required to confirm direction."
+        ),
+        "recommended_next_recipe": "baseline_default_sdxl",
+        "allowed_operator_actions": [
+            "approve_baseline_direction",
+            "request_simplified_v5",
+            "request_full_rebuild",
+            "reject_all",
+        ],
+        "forbidden_automatic_actions": [
+            "production_acceptance",
+            "assembly",
+            "downstream",
+            "additional_retry_without_gate",
+        ],
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "operator_visual_review_required": True,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+        "timestamp": timestamp,
+    }
+    _write_json(control_dir / "combine_v2_visual_quality_operator_review_packet.json", review_packet)
+
+    # Update artifact_index.json
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = _load_json(artifact_index_path)
+    artifact_index["task_id"] = task_id
+    artifact_index["current_state"] = "operator_visual_review_required"
+    artifact_index["next_allowed_action"] = "operator_visual_review_required"
+    artifact_index["baseline_generation_performed"] = True
+    artifact_index["benchmark_generation_count"] = 1
+    artifact_index["operator_visual_review_required"] = True
+    artifact_index["production_accepted"] = False
+    artifact_index["assembly_allowed"] = False
+    artifact_index["downstream_allowed"] = False
+    artifact_index["v5_visual_failure_registered"] = True
+    artifact_index["baseline_default_sdxl_workflow_created"] = True
+    artifact_index["recommended_next_recipe"] = "baseline_default_sdxl"
+    artifact_index["baseline_prompt_id"] = prompt_id
+    artifact_index["baseline_canonical_assets"] = [e["path"] for e in manifest_entries]
+    if "stage_results" not in artifact_index:
+        artifact_index["stage_results"] = []
+    artifact_index["stage_results"].append({
+        "stage": "visual_quality_baseline_benchmark",
+        "task_id": task_id,
+        "success": True,
+        "baseline_generation_performed": True,
+        "prompt_id": prompt_id,
+        "canonical_assets": [e["path"] for e in manifest_entries],
+        "production_accepted": False,
+        "timestamp": timestamp,
+    })
+    _write_json(artifact_index_path, artifact_index)
+
+    # Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        try:
+            with open(ledger_path, "r", encoding="utf-8") as fh:
+                data = json.load(fh)
+                ledger = data if isinstance(data, list) else data.get("events", [])
+        except json.JSONDecodeError:
+            ledger = []
+    ledger.append({
+        "event_type": "visual_quality_baseline_benchmark_completed",
+        "task_id": task_id,
+        "stage": "visual_quality_baseline_benchmark",
+        "baseline_generation_performed": True,
+        "benchmark_generation_count": 1,
+        "max_benchmark_generations_total": 2,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id,
+        "blind_v5_retry_attempted": False,
+        "canonical_assets": [e["path"] for e in manifest_entries],
+        "production_accepted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "operator_visual_review_required": True,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+        "timestamp": timestamp,
+    })
+    _write_json(ledger_path, ledger)
+
+    result = {
+        "task_id": task_id,
+        "status": "ok",
+        "baseline_generation_performed": True,
+        "benchmark_generation_count": 1,
+        "max_benchmark_generations_total": 2,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id,
+        "native_outputs_checked": True,
+        "canonical_outputs_registered": True,
+        "canonical_assets": [e["path"] for e in manifest_entries],
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "operator_visual_review_required": True,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+    }
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Visual Quality Baseline Benchmark: COMPLETE")
+        print(f"Prompt ID: {prompt_id}")
+        print(f"Canonical Assets: {[e['path'] for e in manifest_entries]}")
+        print("Next Action: operator_visual_review_required")
     return 0
 
 

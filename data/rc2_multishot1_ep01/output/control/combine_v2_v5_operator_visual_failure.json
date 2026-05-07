@@ -1,0 +1,21 @@
+{
+  "task_id": "RC-COMBINE-V2-3361-3600",
+  "v5_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+  "operator_visual_failed": true,
+  "visual_quality_failed": true,
+  "defects": {
+    "muddy_low_contrast": true,
+    "hazy_gray_output": true,
+    "soft_blurry_details": true,
+    "face_detail_weak": true,
+    "composition_still_weak": true,
+    "style_uncontrolled": true,
+    "generation_time_too_high_for_quality": true
+  },
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "current_state": "operator_visual_failed",
+  "next_allowed_action": "visual_quality_baseline_reset_required",
+  "timestamp": "2026-05-07T11:16:00.000000Z"
+}

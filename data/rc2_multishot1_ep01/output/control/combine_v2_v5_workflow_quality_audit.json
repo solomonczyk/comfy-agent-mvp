@@ -1,0 +1,59 @@
+{
+  "task_id": "RC-COMBINE-V2-3361-3600",
+  "workflow_source_path": "data/rc2_multishot1_ep01/output/control/shot02_v5_patched_workflow.json",
+  "checkpoint_used": "juggernautXL_version2.safetensors",
+  "sampler_settings": {
+    "sampler_name": "dpmpp_sde",
+    "scheduler": "karras",
+    "steps": 30,
+    "cfg": 7.5,
+    "seed": 847392,
+    "denoise": 0.5
+  },
+  "resolution": {
+    "width": 1344,
+    "height": 768,
+    "short_side": 768,
+    "policy_minimum_short_side": 1024,
+    "resolution_below_policy_minimum": true
+  },
+  "prompt_risks": {
+    "positive_prompt": "Alya, beautiful young woman... (full prompt in workflow)",
+    "negative_prompt": "ugly, deformed... (full prompt in workflow)",
+    "prompt_too_long_for_quality_control": false,
+    "competing_style_descriptors": true,
+    "no_style_lora_anchor": true,
+    "soft_style_guidance_risk": true
+  },
+  "node_analysis": {
+    "node_count": 8,
+    "major_nodes": ["KSampler", "CheckpointLoaderSimple", "EmptyLatentImage", "CLIPTextEncode", "CLIPTextEncode", "VAEDecode", "SaveImage", "LoraLoader"],
+    "faceid_dependency": false,
+    "lora_stack_empty": true,
+    "lora_stack_present_but_unused": true
+  },
+  "non_node_metadata_risk": {
+    "shot_id_field_present_in_workflow": true,
+    "shot_id_caused_previous_500_error": true,
+    "payload_validator_applied_fix": true,
+    "current_risk_if_validator_bypassed": true
+  },
+  "previous_500_risk_still_possible": true,
+  "denoise_risk": {
+    "denoise_0_5_with_no_input_image": true,
+    "denoise_too_low_causes_gray_hazy_output": true,
+    "root_cause_of_muddy_output": "denoise=0.5 on EmptyLatentImage produces weak half-denoised result — correct value is 1.0 for text-to-image"
+  },
+  "quality_risk_summary": [
+    "denoise=0.5 on txt2img path is primary visual quality defect cause",
+    "resolution 1344x768 short_side=768 is below project minimum of 1024",
+    "empty lora_stack adds node overhead with no benefit",
+    "dpmpp_sde sampler with karras scheduler is acceptable but slower than dpmpp_2m",
+    "cfg=7.5 acceptable but could be 8.0 for cleaner structure",
+    "non-node shot_id metadata remains in source file (validator protects submission)"
+  ],
+  "v5_recipe_trusted": false,
+  "v5_blind_retry_allowed": false,
+  "baseline_benchmark_required": true,
+  "audit_timestamp": "2026-05-07T11:16:00.000000Z"
+}

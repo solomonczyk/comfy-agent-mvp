@@ -1,18 +1,21 @@
 {
-  "current_state": "corrective_retry_v5_generation_runtime_blocked",
-  "next_allowed_action": "corrective_retry_v5_generation_runtime_blocked",
-  "generation_runtime_blocked": true,
-  "blocker": "COMFYUI_PROMPT_500_ROOT_CAUSE_IDENTIFIED",
-  "blocker_summary": "POST /prompt 500 FIXED - secondary blocker: missing checkpoint model (juggernautXL_version2.safetensors) or custom node (LoraLoader). Manual action required.",
-  "production_accepted": false,
-  "assembly_allowed": false,
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "generation_runtime_blocked": false,
+  "blocker": "OPERATOR_VISUAL_REVIEW_PENDING",
+  "blocker_summary": "POST /prompt 500 fixed. ComfyUI executed successfully (two completions confirmed). Output artifact registered. Status: operator_visual_failed \u2014 operator visual review not yet performed.",
   "downstream_allowed": false,
   "route_family": "custom",
   "post_prompt_500_fixed": true,
   "payload_validation_added": true,
-  "manual_action_required": true,
-  "required_model": "juggernautXL_version2.safetensors",
-  "required_custom_nodes": ["LoraLoader"],
+  "manual_action_required": false,
+  "output_artifact": "data/rc2_multishot1_ep01/output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+  "output_artifact_timestamp": "2026-05-07T10:38:36",
+  "operator_visual_verdict": "operator_visual_failed",
+  "reconciliation_artifact": "combine_v2_rc3261_3360_contradiction_reconciliation.json",
+  "reconciliation_timestamp": "2026-05-07T09:04:00Z",
+  "secondary_blocker_retracted": true,
+  "secondary_blocker_original_claim": "MISSING_CHECKPOINT_MODEL_OR_CUSTOM_NODE (RETRACTED \u2014 not proven by evidence)",
   "stage_results": [
     {
       "stage": "asset_resolution_required",
@@ -5335,6 +5338,30 @@
       },
       "timestamp": "2026-05-07T06:57:47.477691+00:00",
       "no_generation_performed": true
+    },
+    {
+      "stage": "visual_quality_baseline_benchmark",
+      "task_id": "RC-COMBINE-V2-3361-3600",
+      "success": true,
+      "baseline_generation_performed": true,
+      "prompt_id": "3bb60e16-27bb-40c5-990d-72621359cdac",
+      "canonical_assets": [
+        "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+      ],
+      "production_accepted": false,
+      "timestamp": "2026-05-07T09:31:34.733675+00:00"
+    },
+    {
+      "stage": "visual_quality_baseline_benchmark",
+      "task_id": "RC-COMBINE-V2-3361-3600",
+      "success": true,
+      "baseline_generation_performed": true,
+      "prompt_id": "9264564c-deac-4571-8f48-7a0a81e53a58",
+      "canonical_assets": [
+        "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
+      ],
+      "production_accepted": false,
+      "timestamp": "2026-05-07T09:29:24.621147+00:00"
     }
   ],
   "operator_visual_decision": "reject_visual_quality",
@@ -5490,8 +5517,8 @@
   "updated_retry_v4_implementation_plan_approved": true,
   "generation_gate_opened": false,
   "retry_authorized": false,
-  "last_task_id": "RC-COMBINE-V2-2901-2960",
-  "last_updated": "2026-05-07T07:22:03.388896+00:00",
+  "last_task_id": "RC-COMBINE-V2-3261-3360",
+  "last_updated": "2026-05-07T09:04:00Z",
   "prompt_id": "8b60d0af-4011-4a4a-96ca-6ba9f7221b2e",
   "artifacts": [
     "output/control/combine_v2_corrective_retry_v4_real_execution_result.json",
@@ -5500,6 +5527,19 @@
     "output/assets/combine_v2_corrective_retry_v4_shot02_00002_.png",
     "output/control/combine_v2_comfyui_prompt_500_diagnosis.json",
     "output/control/combine_v2_corrective_retry_v5_prompt_payload_validation.json",
-    "output/control/combine_v2_corrective_retry_v5_generation_runtime_blocked.json"
+    "output/control/combine_v2_corrective_retry_v5_generation_runtime_blocked.json",
+    "output/assets/combine_v2_corrective_retry_v5_shot02_00001_.png",
+    "output/control/combine_v2_rc3261_3360_contradiction_reconciliation.json"
+  ],
+  "task_id": "RC-COMBINE-V2-3361-3600",
+  "baseline_generation_performed": true,
+  "benchmark_generation_count": 1,
+  "operator_visual_review_required": true,
+  "v5_visual_failure_registered": true,
+  "baseline_default_sdxl_workflow_created": true,
+  "recommended_next_recipe": "baseline_default_sdxl",
+  "baseline_prompt_id": "9264564c-deac-4571-8f48-7a0a81e53a58",
+  "baseline_canonical_assets": [
+    "data/rc2_multishot1_ep01/output/assets/combine_v2_baseline_default_sdxl_shot02_00001_.png"
   ]
 }
