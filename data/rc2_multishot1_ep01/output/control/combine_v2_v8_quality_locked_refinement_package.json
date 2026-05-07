@@ -1,0 +1,51 @@
+{
+  "artifact_id": "combine_v2_v8_quality_locked_refinement_package",
+  "task_id": "RC-COMBINE-V2-5401-5700",
+  "previous_task": "RC-COMBINE-V2-5101-5400",
+  "previous_commit": "b28906686d000168498385282a728c8c676c6f9d",
+  "layer_id": "RC-COMBINE-V2-5401-5700",
+  "references": {
+    "concept_reference": {
+      "name": "previous V6 fantasy candidate",
+      "path": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+      "role": "concept_reference",
+      "usage": "preserve as creative concept direction for composition, lighting, and mood"
+    },
+    "quality_reference": {
+      "name": "V6 elderly portrait / бабка",
+      "path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
+      "role": "quality_reference",
+      "usage": "preserve as quality target for sharpness, skin detail, and natural appearance"
+    },
+    "failed_candidate": {
+      "name": "V7 identity/fidelity candidate",
+      "path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png",
+      "role": "negative_reference",
+      "usage": "negative audit / avoid defects, not production reference"
+    }
+  },
+  "failed_candidate_usage": "negative audit / avoid defects, not production reference",
+  "v7_visual_verdict": "REJECTED",
+  "v7_production_accepted": false,
+  "v7_defect_taxonomy_ref": "combine_v2_v7_visual_defect_taxonomy.json",
+  "v7_root_cause_audit_ref": "combine_v2_v7_quality_transfer_root_cause_audit.json",
+  "refinement_strategy": {
+    "approach": "quality_locked_refinement",
+    "core_principle": "Quality is the primary gate. Identity/fidelity is secondary. No generation without quality guardrails. No retry without root-cause analysis.",
+    "changes_required": [
+      "adjust generation recipe parameters to reduce over-smoothing",
+      "increase quality reference conditioning strength",
+      "add explicit prompt clauses for face micro-detail, eyes, eyelashes, mouth/teeth, hair",
+      "add negative prompts for wax/plastic/smooth artifacts",
+      "add post-processing sharpening or face detail enhancement",
+      "consider checkpoint change or skin-detail LoRA addition"
+    ],
+    "quality_first_principle": true,
+    "generation_allowed_now": false,
+    "requires_operator_authorization": true
+  },
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "timestamp": "2026-05-07T15:18:00+02:00"
+}

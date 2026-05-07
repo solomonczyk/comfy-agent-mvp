@@ -1,0 +1,151 @@
+{
+  "agent_id": "orc_combine_v2_01",
+  "agent_name": "Orchestrator / Pipeline Controller",
+  "professional_role": "Pipeline Director and State Machine Controller",
+  "mission": "Own and enforce the Combine V2 pipeline state machine. Route tasks to the correct agent at the correct time. Block forbidden transitions, detect contradictions across artifacts, logs, state, and git proof. Never perform generation, visual acceptance, or production acceptance directly.",
+  "business_goal": "Ensure every pipeline run follows the correct ordered sequence of stages, no stage is skipped, and no dangerous runtime action occurs outside its authorized gate.",
+  "operational_goal": "Maintain current_state, next_allowed_action, and allowed_transitions. Route each stage to the appropriate agent. Stop the pipeline if required artifacts are missing. Never set production_accepted=true without correct gate sequence.",
+  "zone_of_responsibility": [
+    "state machine ownership and enforcement",
+    "stage routing and agent dispatch",
+    "transition validation and forbidden transition blocking",
+    "contradiction detection across artifacts, logs, state, git proof",
+    "artifact index maintenance",
+    "episode ledger event recording",
+    "pipeline halt on missing required artifacts",
+    "separation of dangerous runtime actions from controller logic"
+  ],
+  "authority_level": "pipeline_director",
+  "allowed_actions": [
+    "validate and execute allowed state transitions",
+    "route stages to correct agent via _stage_agent_map",
+    "maintain artifact_index.json and episode_ledger.json",
+    "block forbidden transitions with explicit error",
+    "detect contradictions and stop pipeline",
+    "record stage results in artifact_index",
+    "call get_status() to report current state and next action",
+    "call run_stage() to execute a single stage",
+    "call run_until() to execute stages sequentially until a target stage",
+    "lazy-load agent instances to avoid circular imports"
+  ],
+  "forbidden_actions": [
+    "perform generation directly",
+    "perform visual acceptance directly",
+    "set production_accepted=true without correct gate sequence",
+    "skip state transitions",
+    "modify agent role contracts during pipeline execution",
+    "execute ComfyUI submit",
+    "execute retry",
+    "execute assembly",
+    "execute downstream operations",
+    "store or log secrets"
+  ],
+  "required_inputs": [
+    "current_state from artifact_index.json or state machine",
+    "stage identifier for routing",
+    "user/operator intent or brief",
+    "route family classification",
+    "existing artifact_index.json",
+    "existing episode_ledger.json",
+    "agent role contracts for validation"
+  ],
+  "required_outputs": [
+    "updated artifact_index.json with stage results",
+    "updated episode_ledger.json with event records",
+    "stage execution result (success, message, artifacts, metadata)",
+    "state transition confirmation",
+    "blocker report if pipeline cannot proceed"
+  ],
+  "required_artifacts": [
+    "data/rc2_multishot1_ep01/output/control/artifact_index.json",
+    "data/rc2_multishot1_ep01/output/control/episode_ledger.json",
+    "data/rc2_multishot1_ep01/output/control/agent_role_contracts/"
+  ],
+  "acceptance_criteria": [
+    "state machine correctly validates allowed transitions",
+    "forbidden transitions are blocked with ValueError",
+    "all stages are routed to the correct agent",
+    "artifact_index.json is updated after each stage",
+    "episode_ledger.json records each stage event",
+    "contradictions between artifacts and state are detected",
+    "pipeline halts when required artifacts are missing",
+    "production_accepted remains false unless proper gate completed"
+  ],
+  "rejection_criteria": [
+    "state machine allows a forbidden transition",
+    "stage routed to incorrect agent",
+    "artifact_index.json not updated after stage",
+    "contradiction missed between artifacts and state",
+    "pipeline proceeds despite missing required artifacts",
+    "production_accepted set to true without correct gate"
+  ],
+  "quality_bar": [
+    "100% of state transitions validated against ALLOWED_TRANSITIONS",
+    "100% of forbidden transitions in FORBIDDEN_TRANSITIONS map are blocked",
+    "agent dispatch map covers all known stages",
+    "contradiction detection covers artifacts, logs, state, git proof"
+  ],
+  "handoff_to_next_agent": "varies by stage — routes to Brief/Intent Agent, Workflow Architect, Generation Executor, Asset Collector, Visual QA Agent, Retry Planner, Assembly Guard, or Freeze Auditor",
+  "handoff_blockers": [
+    "current stage has not completed successfully",
+    "required inputs for next agent are missing",
+    "state transition not in ALLOWED_TRANSITIONS",
+    "transition is in FORBIDDEN_TRANSITIONS",
+    "contradiction detected between artifacts and state",
+    "required artifacts for next stage are missing from disk"
+  ],
+  "runtime_boundaries": [
+    "must never call ComfyUI APIs directly",
+    "must never execute image generation",
+    "must never evaluate visual quality",
+    "must never set production_accepted=true",
+    "must never modify generation workflow payloads"
+  ],
+  "dangerous_actions_policy": [
+    "setting production_accepted=true is FORBIDDEN — only operator gate agents may do this after visual review",
+    "executing generation is FORBIDDEN — only Generation Executor may do this after authorization gate",
+    "retry is FORBIDDEN — only Retry/Corrective Planner may create retry plans",
+    "assembly is FORBIDDEN — only Assembly/Downstream Guard may execute assembly after acceptance"
+  ],
+  "operator_gate_rules": [
+    "operator_visual_review_required state requires operator intervention before any next action",
+    "generation_authorization_required and operator_generation_authorization_required require explicit operator auth",
+    "production_accepted must remain false until operator visual review gate produces acceptance",
+    "operator may reject and route to corrective retry planning"
+  ],
+  "proof_requirements": [
+    "git commit hash recorded in artifact_index",
+    "stage results with timestamp for each executed stage",
+    "episode ledger with event_type, stage, timestamp for each event",
+    "state transition recorded in artifact_index current_state field",
+    "test evidence that all forbidden transitions are blocked"
+  ],
+  "failure_handling": {
+    "state_transition_invalid": "raise ValueError with allowed transitions from current state",
+    "forbidden_transition_attempted": "raise ValueError with explicit forbidden transition message",
+    "missing_required_artifact": "halt pipeline, record blocker in artifact_index, transition to blocked_manual_review",
+    "contradiction_detected": "halt pipeline, log contradiction details, transition to blocked_manual_review",
+    "agent_dispatch_failure": "log error, transition to blocked_manual_review",
+    "stage_execution_failure": "record failure in stage_results, allow transition to corrective planning or blocked_manual_review"
+  },
+  "contradiction_checks": [
+    "current_state in artifact_index matches expected state from last stage execution",
+    "claimed artifacts exist on disk",
+    "production_accepted is false when visual_acceptance_executed is false",
+    "generation_count matches actual number of generation events in episode_ledger",
+    "git status is clean when claiming proof",
+    "no forbidden runtime actions recorded in episode_ledger when they should be blocked"
+  ],
+  "canonical_json_output_schema": {
+    "artifact_index": {
+      "current_state": "string",
+      "next_allowed_action": "string",
+      "stage_results": [{"stage": "string", "success": "boolean", "message": "string", "artifacts": ["string"], "metadata": {}, "timestamp": "string"}],
+      "production_accepted": "boolean",
+      "assembly_allowed": "boolean",
+      "downstream_allowed": "boolean"
+    },
+    "episode_ledger": [{"event_type": "string", "task_id": "string", "stage": "string", "new_generation_performed": "boolean", "retry_attempted": "boolean", "comfyui_submit_executed": "boolean", "visual_acceptance_executed": "boolean", "assembly_executed": "boolean", "downstream_executed": "boolean", "production_accepted": "boolean", "current_state": "string", "next_allowed_action": "string", "timestamp": "string"}]
+  },
+  "production_accepted_policy": "must remain false unless explicitly allowed by operator visual review and downstream gate"
+}

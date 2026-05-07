@@ -1,0 +1,89 @@
+{
+  "combine_v2_agent_role_contract_index": {
+    "version": "1.0.0",
+    "description": "Index of all Combine V2 agent role contracts. Each contract defines full professional job instructions: role, mission, authority, responsibilities, allowed/forbidden actions, inputs, outputs, acceptance/rejection criteria, handoff rules, proof requirements, and JSON output schema.",
+    "layer_id": "RC-COMBINE-V2-5401-5700",
+    "total_agents": 9,
+    "agents": [
+      {
+        "agent_id": "orc_combine_v2_01",
+        "agent_name": "Orchestrator / Pipeline Controller",
+        "contract_file": "orchestrator_pipeline_controller_contract.json",
+        "order": 1,
+        "summary": "Pipeline Director and State Machine Controller. Owns state machine, routes tasks, blocks forbidden transitions, detects contradictions."
+      },
+      {
+        "agent_id": "bia_combine_v2_01",
+        "agent_name": "Brief / Intent Agent",
+        "contract_file": "brief_intent_agent_contract.json",
+        "order": 2,
+        "summary": "Creative Intent Extraction and Brief Specification Officer. Extracts operator intent, defines shot/style/subject intent, manages reference hierarchy."
+      },
+      {
+        "agent_id": "wra_combine_v2_01",
+        "agent_name": "Workflow / Recipe Architect",
+        "contract_file": "workflow_recipe_architect_contract.json",
+        "order": 3,
+        "summary": "Generation Recipe and Workflow Plan Engineer. Builds generation recipe, selects prompt/model/resolution/quality strategy, injects guardrails."
+      },
+      {
+        "agent_id": "gex_combine_v2_01",
+        "agent_name": "Generation Executor",
+        "contract_file": "generation_executor_contract.json",
+        "order": 4,
+        "summary": "Authorized Generation Execution and Output Collection Officer. Executes one authorized generation, captures proof, hands off manifest."
+      },
+      {
+        "agent_id": "amc_combine_v2_01",
+        "agent_name": "Asset / Manifest Collector",
+        "contract_file": "asset_manifest_collector_contract.json",
+        "order": 5,
+        "summary": "File Integrity and Asset Manifest Verification Officer. Validates file integrity, SHA256, dimensions, detects stubs/corruption."
+      },
+      {
+        "agent_id": "vqa_combine_v2_01",
+        "agent_name": "Visual Quality / QA Agent",
+        "contract_file": "visual_quality_agent_contract.json",
+        "order": 6,
+        "summary": "Independent Visual Quality Assurance and Rejection Authority. Independent blocking authority, technical PASS != visual PASS, requires operator visual review."
+      },
+      {
+        "agent_id": "rcp_combine_v2_01",
+        "agent_name": "Retry / Corrective Planner",
+        "contract_file": "retry_corrective_planner_contract.json",
+        "order": 7,
+        "summary": "Corrective Retry Strategy and Implementation Planner. Creates corrective plans from defect taxonomy, prevents blind retry, requires operator authorization."
+      },
+      {
+        "agent_id": "adg_combine_v2_01",
+        "agent_name": "Assembly / Downstream Guard",
+        "contract_file": "assembly_downstream_guard_contract.json",
+        "order": 8,
+        "summary": "Assembly, Render, and Downstream Pipeline Security Gate. Blocks downstream while production_accepted=false, prevents silent substitution."
+      },
+      {
+        "agent_id": "efa_combine_v2_01",
+        "agent_name": "Evidence / Freeze Auditor",
+        "contract_file": "evidence_freeze_auditor_contract.json",
+        "order": 9,
+        "summary": "Pipeline Integrity, Artifact Freeze, and Contradiction Auditor. Audits tests, artifacts, state, contradictions, forbidden actions. Can reject even if tests pass."
+      }
+    ],
+    "contract_validation": {
+      "all_contracts_have_required_sections": true,
+      "required_sections": [
+        "agent_id", "agent_name", "professional_role", "mission", "business_goal", "operational_goal",
+        "zone_of_responsibility", "authority_level", "allowed_actions", "forbidden_actions",
+        "required_inputs", "required_outputs", "required_artifacts", "acceptance_criteria",
+        "rejection_criteria", "quality_bar", "handoff_to_next_agent", "handoff_blockers",
+        "runtime_boundaries", "dangerous_actions_policy", "operator_gate_rules",
+        "proof_requirements", "failure_handling", "contradiction_checks",
+        "canonical_json_output_schema", "production_accepted_policy"
+      ],
+      "contracts_are_not_stubs": true,
+      "no_short_summaries": true
+    },
+    "created_at": "2026-05-07T15:18:00+02:00",
+    "production_accepted": false
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "artifact_id": "combine_v2_v8_quality_guardrails",
+  "task_id": "RC-COMBINE-V2-5401-5700",
+  "layer_id": "RC-COMBINE-V2-5401-5700",
+  "source_defect_taxonomy_ref": "combine_v2_v7_visual_defect_taxonomy.json",
+  "source_root_cause_audit_ref": "combine_v2_v7_quality_transfer_root_cause_audit.json",
+  "guardrails": [
+    {
+      "guardrail_id": "QR_V8_001",
+      "category": "anti_blur",
+      "description": "Anti-blur guard: generation recipe must include parameters that prevent soft/blurry output. Minimum sharpness threshold enforced at visual QA.",
+      "prompt_guard": "add 'sharp focus, highly detailed, crisp' to positive prompt; add 'blurry, soft focus, out of focus' to negative prompt",
+      "recipe_guard": "CFG scale >= 5.0, sampler must support sharp output (e.g. DPM++ 2M Karras), steps >= 30",
+      "post_processing_guard": "add sharpening or detail enhancement node if available",
+      "enforcement": "visual QA must verify sharpness before acceptance"
+    },
+    {
+      "guardrail_id": "QR_V8_002",
+      "category": "anti_softness",
+      "description": "Anti-softness guard: prevent overall image softness and loss of facial definition.",
+      "prompt_guard": "add 'sharp facial features, clear definition, high detail face' to positive prompt; add 'soft face, blurry face' to negative prompt",
+      "recipe_guard": "denoise <= 0.90, ensure proper latent scaling",
+      "post_processing_guard": "face detail enhancement pass recommended",
+      "enforcement": "visual QA must verify facial sharpness"
+    },
+    {
+      "guardrail_id": "QR_V8_003",
+      "category": "realistic_eyes",
+      "description": "Realistic eyes guard: eyes must be clean, realistic, with proper iris/pupil detail and no distortion.",
+      "prompt_guard": "add 'realistic eyes, detailed iris, clean eye shape, natural eye appearance' to positive prompt; add 'deformed eyes, bad eyes, unrealistic eyes, distorted eyes' to negative prompt",
+      "recipe_guard": "ensure face region is at sufficient resolution (minimum 512x512 face area)",
+      "post_processing_guard": "face detail restoration for eyes recommended",
+      "enforcement": "visual QA must verify eye realism before acceptance"
+    },
+    {
+      "guardrail_id": "QR_V8_004",
+      "category": "clean_eyelashes",
+      "description": "Clean eyelashes guard: eyelashes must be naturally rendered, not clumped or missing.",
+      "prompt_guard": "add 'detailed eyelashes, natural eyelashes, clean eyelash detail' to positive prompt; add 'clumpy eyelashes, missing eyelashes, bad eyelashes' to negative prompt",
+      "recipe_guard": "no specific recipe guard beyond resolution",
+      "post_processing_guard": "face detail enhancement for eye region",
+      "enforcement": "visual QA must verify eyelash quality"
+    },
+    {
+      "guardrail_id": "QR_V8_005",
+      "category": "stable_mouth_teeth",
+      "description": "Stable mouth/teeth guard: mouth must be naturally shaped, teeth must be well-formed or mouth closed.",
+      "prompt_guard": "add 'natural mouth, well-formed teeth, natural smile' to positive prompt; add 'deformed mouth, bad teeth, missing teeth, open mouth distortion' to negative prompt",
+      "recipe_guard": "consider closed mouth if teeth artifacts persist",
+      "post_processing_guard": "face detail restoration for mouth region",
+      "enforcement": "visual QA must verify mouth/teeth quality"
+    },
+    {
+      "guardrail_id": "QR_V8_006",
+      "category": "visible_skin_micro_detail",
+      "description": "Visible skin micro-detail guard: skin must have pores, texture, and natural reflectance. No wax/plastic appearance.",
+      "prompt_guard": "add 'natural skin texture, visible skin pores, realistic skin detail, natural skin reflectance' to positive prompt; add 'smooth skin, plastic skin, wax skin, airbrushed skin, unreal skin' to negative prompt",
+      "recipe_guard": "CFG scale between 5.0-7.0 (lower reduces smoothing), use detail-oriented sampler",
+      "post_processing_guard": "consider skin detail LoRA or face detail restoration",
+      "enforcement": "visual QA must verify skin has natural micro-detail"
+    },
+    {
+      "guardrail_id": "QR_V8_007",
+      "category": "no_wax_plastic_skin",
+      "description": "No wax/plastic skin guard: zero tolerance for waxy, plastic-like facial appearance.",
+      "prompt_guard": "add 'natural skin, realistic skin texture' to positive prompt; add 'wax skin, plastic face, synthetic skin, doll-like skin, mannequin skin' to negative prompt with increased weight",
+      "recipe_guard": "use checkpoint known for natural skin, avoid high CFG (>8.0)",
+      "post_processing_guard": "skin detail enhancement pass",
+      "enforcement": "visual QA must reject any waxy/plastic skin appearance"
+    },
+    {
+      "guardrail_id": "QR_V8_008",
+      "category": "hair_strand_detail",
+      "description": "Hair strand detail guard: hair must have visible individual strands, not rendered as soft blobs.",
+      "prompt_guard": "add 'detailed hair strands, individual hair strands, sharp hair detail' to positive prompt; add 'soft hair, blurry hair, hair blob, undefined hair' to negative prompt",
+      "recipe_guard": "ensure sufficient resolution for hair detail",
+      "post_processing_guard": "consider detail enhancement for hair region",
+      "enforcement": "visual QA must verify hair strand detail"
+    },
+    {
+      "guardrail_id": "QR_V8_009",
+      "category": "sharper_facial_features",
+      "description": "Sharper facial features guard: overall facial features must be sharp and well-defined, not soft.",
+      "prompt_guard": "add 'sharp facial features, well-defined face, crisp face detail' to positive prompt; add 'soft face, undefined features' to negative prompt",
+      "recipe_guard": "use appropriate CFG scale and sampler combination known for sharp output",
+      "post_processing_guard": "face detail sharpening pass",
+      "enforcement": "visual QA must verify facial feature sharpness"
+    },
+    {
+      "guardrail_id": "QR_V8_010",
+      "category": "operator_visual_review",
+      "description": "Operator visual review required before production acceptance: no automated production acceptance.",
+      "prompt_guard": "N/A",
+      "recipe_guard": "N/A",
+      "post_processing_guard": "N/A",
+      "enforcement": "visual QA must require operator visual review; no production_accepted=true without operator gate"
+    }
+  ],
+  "guardrail_count": 10,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "timestamp": "2026-05-07T15:18:00+02:00"
+}

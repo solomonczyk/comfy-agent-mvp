@@ -97,7 +97,8 @@ class CombineStateMachine:
         "blocked_manual_review",
         "blocked_generation_route_aborted",
         "targeted_visual_refinement_plan_required",
-        "targeted_refinement_generation_authorization_required"
+        "targeted_refinement_generation_authorization_required",
+        "v8_quality_locked_generation_authorization_required"
     ]
     
     # Terminal states
@@ -278,10 +279,16 @@ class CombineStateMachine:
             "generate_assets",  # Once authorized, can generate refined asset
             "blocked_manual_review"
         },
+        "v8_quality_locked_generation_authorization_required": {
+            "v8_quality_locked_generation_authorization_required",  # Self-loop: halted pending operator authorization
+            "generate_assets",  # Operator authorized -> proceed to generate
+            "blocked_manual_review"
+        },
         "operator_visual_review_required": {
             "operator_visual_review_required",  # Self-loop: halted pending operator
             "assembly_preflight_required",  # Approved - proceed to assembly
-            "blocked_manual_review"
+            "blocked_manual_review",
+            "v8_quality_locked_generation_authorization_required"  # V7 rejected -> V8 quality lock
         },
         "real_generation_readiness_required": {
             "real_generation_preflight_required"

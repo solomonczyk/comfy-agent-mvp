@@ -1,0 +1,60 @@
+{
+  "artifact_id": "combine_v2_v7_quality_transfer_root_cause_audit",
+  "task_id": "RC-COMBINE-V2-5401-5700",
+  "previous_commit": "b28906686d000168498385282a728c8c676c6f9d",
+  "source_visual_rejection_ref": "combine_v2_v7_operator_visual_rejection.json",
+  "source_defect_taxonomy_ref": "combine_v2_v7_visual_defect_taxonomy.json",
+  "quality_reference_used": "V6 elderly portrait / бабка",
+  "quality_reference_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
+  "failed_candidate": "V7 identity/fidelity candidate",
+  "failed_candidate_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png",
+  "root_causes": [
+    {
+      "root_cause_id": "RC_V7_001",
+      "category": "generation_recipe",
+      "cause": "over_smoothing_from_recipe",
+      "description": "The generation recipe parameters (likely CFG scale, sampler, steps combination) produce over-smoothed output. The V7 recipe prioritized identity fidelity over image sharpness, resulting in loss of natural detail.",
+      "affected_defects": ["V7_DEFECT_001", "V7_DEFECT_005", "V7_DEFECT_006", "V7_DEFECT_007"],
+      "recommended_fix": "Adjust CFG scale (try 5.0-6.0 range), change sampler to DPM++ 2M Karras with 30+ steps, reduce denoise to 0.85-0.90 range."
+    },
+    {
+      "root_cause_id": "RC_V7_002",
+      "category": "quality_transfer_mechanism",
+      "cause": "weak_quality_reference_conditioning",
+      "description": "The quality reference (V6 elderly portrait / бабка) was not sufficiently weighted in the generation conditioning. IP-Adapter or ControlNet strength for quality reference was too low, allowing the base model's smoothing tendency to dominate.",
+      "affected_defects": ["V7_DEFECT_008"],
+      "recommended_fix": "Increase quality reference IP-Adapter/ControlNet strength, ensure quality reference is used in conditioning chain, verify reference image dimensions match generation."
+    },
+    {
+      "root_cause_id": "RC_V7_003",
+      "category": "face_detail",
+      "cause": "insufficient_face_detail_prescription",
+      "description": "The prompt contract did not adequately prescribe natural face detail (skin pores, realistic eyes, individual eyelashes, hair strands). Over-emphasis on identity consistency led to neglect of micro-detail requirements.",
+      "affected_defects": ["V7_DEFECT_002", "V7_DEFECT_003", "V7_DEFECT_004", "V7_DEFECT_005", "V7_DEFECT_006"],
+      "recommended_fix": "Add explicit prompt clauses for skin micro-detail, realistic eyes with clean eyelashes, natural mouth/teeth. Add corresponding negative prompts for smooth/wax/plastic artifacts."
+    },
+    {
+      "root_cause_id": "RC_V7_004",
+      "category": "model_checkpoint",
+      "cause": "checkpoint_smoothing_bias",
+      "description": "The SDXL checkpoint used has an inherent smoothing bias that produces wax/plastic skin at the CFG scales used. A different checkpoint or LoRA may be needed for natural skin detail.",
+      "affected_defects": ["V7_DEFECT_005", "V7_DEFECT_006"],
+      "recommended_fix": "Consider checkpoint with better skin detail characteristics, or add skin-detail LoRA. Reduce CFG scale to reduce smoothing effect."
+    },
+    {
+      "root_cause_id": "RC_V7_005",
+      "category": "post_processing",
+      "cause": "no_sharpening_or_detail_enhancement",
+      "description": "The generation pipeline did not include any post-processing sharpening, face detail enhancement, or upscaling step that could compensate for the softness.",
+      "affected_defects": ["V7_DEFECT_001", "V7_DEFECT_007"],
+      "recommended_fix": "Add post-processing sharpening node (e.g., Detailer, FaceDetailer, or Sharpen). Consider 2x upscale with detail preservation. Add face restoration pass."
+    }
+  ],
+  "root_cause_count": 5,
+  "primary_root_cause": "RC_V7_001 — over_smoothing_from_recipe",
+  "secondary_root_cause": "RC_V7_003 — insufficient_face_detail_prescription",
+  "quality_reference_preserved": true,
+  "concept_reference_preserved": true,
+  "production_accepted": false,
+  "timestamp": "2026-05-07T15:18:00+02:00"
+}

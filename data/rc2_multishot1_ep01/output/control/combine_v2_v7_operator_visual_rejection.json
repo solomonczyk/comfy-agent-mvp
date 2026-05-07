@@ -1,0 +1,44 @@
+{
+  "artifact_id": "combine_v2_v7_operator_visual_rejection",
+  "task_id": "RC-COMBINE-V2-5401-5700",
+  "previous_task": "RC-COMBINE-V2-5101-5400",
+  "previous_commit": "b28906686d000168498385282a728c8c676c6f9d",
+  "technical_verdict": "ACCEPTED",
+  "visual_verdict": "REJECTED",
+  "production_accepted": false,
+  "reason": [
+    "soft_blurry_image",
+    "eye_artifacts",
+    "eyelash_artifacts",
+    "mouth_teeth_artifacts",
+    "over_smoothed_skin",
+    "wax_plastic_face",
+    "hair_detail_soft",
+    "quality_transfer_failed"
+  ],
+  "details": {
+    "soft_blurry_image": "Image lacks sharpness and crisp detail. Facial features appear soft and out of focus. Overall image is мыльно (soapy/blurry).",
+    "eye_artifacts": "Eyes show signs of generative artifacts. Pupils and irises lack clean definition. Eye shape appears distorted.",
+    "eyelash_artifacts": "Eyelashes are clumped, missing, or artifacted. Natural eyelash structure not preserved.",
+    "mouth_teeth_artifacts": "Mouth area shows distortion. Teeth are poorly formed or missing. Mouth shape appears artificial.",
+    "over_smoothed_skin": "Skin is excessively smoothed with loss of natural micro-detail. Pores and skin texture absent.",
+    "wax_plastic_face": "Facial skin has waxy, plastic-like appearance characteristic of over-smoothed generative output. Lacks natural skin reflectance.",
+    "hair_detail_soft": "Hair is rendered as soft blobs rather than individual strands. Hair detail is not sharp or readable.",
+    "quality_transfer_failed": "Quality reference (V6 elderly portrait / бабка) did not successfully transfer its sharpness, skin detail, and natural appearance to the V7 output."
+  },
+  "defect_severity": "critical",
+  "known_good_artifacts_preserved": {
+    "concept_reference": "previous V6 fantasy candidate",
+    "concept_reference_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+    "quality_reference": "V6 elderly portrait / бабка",
+    "quality_reference_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
+    "failed_candidate": "V7 identity/fidelity candidate",
+    "failed_candidate_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png",
+    "failed_candidate_usage": "negative audit / avoid defects, not production reference"
+  },
+  "next_allowed_action": "v8_quality_locked_generation_authorization_required",
+  "operator_visual_review_required": true,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "timestamp": "2026-05-07T15:18:00+02:00"
+}

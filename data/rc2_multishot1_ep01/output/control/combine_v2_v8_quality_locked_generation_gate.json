@@ -1,0 +1,35 @@
+{
+  "artifact_id": "combine_v2_v8_quality_locked_generation_gate",
+  "task_id": "RC-COMBINE-V2-5401-5700",
+  "layer_id": "RC-COMBINE-V2-5401-5700",
+  "generation_allowed_now": false,
+  "requires_operator_authorization": true,
+  "max_generations_after_authorization": 1,
+  "next_allowed_action": "v8_quality_locked_generation_authorization_required",
+  "current_state": "v8_quality_locked_generation_authorization_required",
+  "authorization_required_before_generation": true,
+  "authorization_artifact_type": "operator_generation_authorization",
+  "authorization_gate_conditions": [
+    "operator must review V7 rejection and defect taxonomy",
+    "operator must review V8 quality-locked refinement package",
+    "operator must review V8 quality guardrails",
+    "operator must explicitly authorize one V8 generation",
+    "operator authorization must be recorded as signed artifact"
+  ],
+  "generation_execution_limits": {
+    "max_generations": 1,
+    "second_generation_only_with_new_authorization": true,
+    "recipe_modification_forbidden_during_execution": true
+  },
+  "post_generation_gate": {
+    "visual_qa_required": true,
+    "operator_visual_review_required": true,
+    "production_accepted_remains_false_until_operator_gate": true,
+    "assembly_allowed": false,
+    "downstream_allowed": false
+  },
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "timestamp": "2026-05-07T15:18:00+02:00"
+}

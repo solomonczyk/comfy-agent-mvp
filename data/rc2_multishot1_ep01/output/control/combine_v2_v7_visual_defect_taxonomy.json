@@ -1,0 +1,102 @@
+{
+  "artifact_id": "combine_v2_v7_visual_defect_taxonomy",
+  "task_id": "RC-COMBINE-V2-5401-5700",
+  "previous_commit": "b28906686d000168498385282a728c8c676c6f9d",
+  "source_visual_qa_ref": "combine_v2_v7_operator_visual_rejection.json",
+  "defects": [
+    {
+      "defect_id": "V7_DEFECT_001",
+      "category": "blur_softness",
+      "defect_name": "soft_blurry_image",
+      "severity": "critical",
+      "location": "overall_image",
+      "description": "Image lacks sharpness and crisp detail throughout. Overall soft focus makes image appear мыльно (soapy/blurry).",
+      "detection_method": "visual_inspection",
+      "recommended_action": "increase sharpening, adjust CFG scale, change sampler, add anti-blur prompt guard, increase denoise strength",
+      "related_defects": ["V7_DEFECT_006", "V7_DEFECT_007"]
+    },
+    {
+      "defect_id": "V7_DEFECT_002",
+      "category": "eye_artifact",
+      "defect_name": "eye_artifacts",
+      "severity": "critical",
+      "location": "eye_region",
+      "description": "Eyes show generative artifacts. Pupils/irises lack clean definition. Eye shape distorted. Loss of realistic eye detail.",
+      "detection_method": "visual_inspection",
+      "recommended_action": "add eye detail prompt guard, increase face region resolution, use face restore or inpainting for eyes",
+      "related_defects": ["V7_DEFECT_003"]
+    },
+    {
+      "defect_id": "V7_DEFECT_003",
+      "category": "eyelash_artifact",
+      "defect_name": "eyelash_artifacts",
+      "severity": "high",
+      "location": "eyelash_region",
+      "description": "Eyelashes are clumped, missing, or artifacted. Natural eyelash structure not preserved.",
+      "detection_method": "visual_inspection",
+      "recommended_action": "add eyelash detail prompt guard, increase detail in eye region",
+      "related_defects": ["V7_DEFECT_002"]
+    },
+    {
+      "defect_id": "V7_DEFECT_004",
+      "category": "mouth_teeth_artifact",
+      "defect_name": "mouth_teeth_artifacts",
+      "severity": "high",
+      "location": "mouth_region",
+      "description": "Mouth area shows distortion. Teeth poorly formed or missing. Mouth shape appears artificial.",
+      "detection_method": "visual_inspection",
+      "recommended_action": "add mouth/teeth prompt guard, reduce smile intensity, add negative prompt for bad teeth",
+      "related_defects": []
+    },
+    {
+      "defect_id": "V7_DEFECT_005",
+      "category": "skin_artifact",
+      "defect_name": "over_smoothed_skin",
+      "severity": "critical",
+      "location": "face_skin",
+      "description": "Skin is excessively smoothed with loss of natural micro-detail. Pores and skin texture absent.",
+      "detection_method": "visual_inspection",
+      "recommended_action": "reduce face smoothing, add skin detail prompt, reduce denoise, change checkpoint to one with natural skin detail",
+      "related_defects": ["V7_DEFECT_006"]
+    },
+    {
+      "defect_id": "V7_DEFECT_006",
+      "category": "skin_artifact",
+      "defect_name": "wax_plastic_face",
+      "severity": "critical",
+      "location": "face_overall",
+      "description": "Facial skin has waxy, plastic-like appearance. Lacks natural skin reflectance and micro-texture. Characteristic of over-smoothed generative output.",
+      "detection_method": "visual_inspection",
+      "recommended_action": "reduce CFG scale, change sampler to one with more natural detail (DPM++ 2M Karras), add skin texture prompt, consider different checkpoint",
+      "related_defects": ["V7_DEFECT_005"]
+    },
+    {
+      "defect_id": "V7_DEFECT_007",
+      "category": "hair_artifact",
+      "defect_name": "hair_detail_soft",
+      "severity": "high",
+      "location": "hair_region",
+      "description": "Hair is rendered as soft blobs rather than individual strands. Hair detail is not sharp or readable.",
+      "detection_method": "visual_inspection",
+      "recommended_action": "add hair detail prompt guard, increase detail in hair region, add negative prompt for soft hair",
+      "related_defects": ["V7_DEFECT_001"]
+    },
+    {
+      "defect_id": "V7_DEFECT_008",
+      "category": "quality_transfer",
+      "defect_name": "quality_transfer_failed",
+      "severity": "critical",
+      "location": "overall_quality",
+      "description": "Quality reference (V6 elderly portrait / бабка) did not successfully transfer its sharpness, skin detail, and natural appearance to V7 output. V7 is softer and more synthetic than the quality reference.",
+      "detection_method": "visual_comparison",
+      "recommended_action": "increase IP-Adapter/ControlNet strength for quality reference, adjust reference conditioning, check reference image compatibility",
+      "related_defects": ["V7_DEFECT_001", "V7_DEFECT_005", "V7_DEFECT_006"]
+    }
+  ],
+  "defect_count": 8,
+  "critical_defect_count": 5,
+  "high_defect_count": 3,
+  "total_defects_found": 8,
+  "production_accepted": false,
+  "timestamp": "2026-05-07T15:18:00+02:00"
+}

@@ -66,5 +66,32 @@
     "current_state": "operator_visual_review_required",
     "next_allowed_action": "operator_visual_review_required",
     "timestamp": "2026-05-07T12:41:46.259555+00:00"
+  },
+  {
+    "event_type": "v7_visual_rejection_and_v8_quality_lock",
+    "task_id": "RC-COMBINE-V2-5401-5700",
+    "stage": "v7_visual_rejection_and_v8_quality_lock",
+    "new_generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "visual_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "technical_verdict": "ACCEPTED",
+    "visual_verdict": "REJECTED",
+    "concept_reference_preserved": true,
+    "quality_reference_preserved": true,
+    "agent_role_contracts_created": true,
+    "v7_operator_visual_rejection_created": true,
+    "v7_visual_defect_taxonomy_created": true,
+    "v7_quality_transfer_root_cause_audit_created": true,
+    "v8_quality_locked_refinement_package_created": true,
+    "v8_quality_guardrails_created": true,
+    "v8_generation_gate_created": true,
+    "generation_allowed_now": false,
+    "current_state": "v8_quality_locked_generation_authorization_required",
+    "next_allowed_action": "v8_quality_locked_generation_authorization_required",
+    "timestamp": "2026-05-07T15:18:00+02:00"
   }
 ]
