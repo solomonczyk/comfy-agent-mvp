@@ -1,0 +1,14 @@
+{
+  "task_id": "RC-COMBINE-V2-26001-30000",
+  "v13_preflight_completed": true,
+  "v13_correction_package_verified": true,
+  "full_mouth_teeth_defect_set_used": true,
+  "missing_defects_before_patch": [],
+  "patch_applied_if_needed": true,
+  "generation_allowed_after_preflight": true,
+  "correction_plan_path": "combine_v2_v13_correction_plan.json",
+  "prompt_patch_path": "combine_v2_v13_prompt_patch.json",
+  "workflow_patch_path": "combine_v2_v13_workflow_patch.json",
+  "quality_pipeline_patch_path": "combine_v2_v13_quality_pipeline_patch.json",
+  "timestamp": "2026-05-08T13:27:48.968650"
+}

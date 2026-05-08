@@ -1,0 +1,17 @@
+{
+  "task_id": "RC-COMBINE-V2-26001-30000",
+  "candidate_version": "v13",
+  "generation_authorized": true,
+  "operator_generation_authorized": true,
+  "max_generations": 1,
+  "allowed_generation_count": 1,
+  "second_generation_forbidden": true,
+  "blind_retry_forbidden": true,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "stage": "v13_generation_authorization_required",
+  "operator_decision": "approve_v13_generation",
+  "timestamp": "2026-05-08T13:27:48.968650",
+  "next_allowed_action": "v13_generate_assets"
+}

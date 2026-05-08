@@ -1,0 +1,67 @@
+{
+  "candidate_version": "v13",
+  "scene_type": "human_face_portrait",
+  "canons_used": [
+    "universal_quality_v1",
+    "human_face_photoreal_v1"
+  ],
+  "region_check_result": {
+    "image_path": "data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_v13_candidate_1778239698_00001_.png",
+    "readable": true,
+    "dimensions": {
+      "dimensions_available": true,
+      "width": 1024,
+      "height": 1024,
+      "min_width": 512,
+      "min_height": 512,
+      "pass": true,
+      "note": "1024x1024 (min 512x512)"
+    },
+    "file_size": {
+      "exists": true,
+      "size_bytes": 1651697,
+      "min_bytes": 1024,
+      "pass": true,
+      "stub_detected": false
+    },
+    "stub_asset": false,
+    "region_checks_pass": true
+  },
+  "opencv_result": {
+    "opencv_available": true,
+    "checks_executed": true,
+    "blur_score": 354.77917128004464,
+    "brightness": 71.7647123336792,
+    "contrast": 55.048318005494274,
+    "is_blurry": false,
+    "mouth_analysis": {
+      "opencv_available": true,
+      "checks_executed": true,
+      "face_detected": false,
+      "note": "No face detected in image"
+    }
+  },
+  "operator_feedback_used": true,
+  "detected_defects": [
+    "bad_teeth"
+  ],
+  "critical_failures": [
+    "bad_teeth"
+  ],
+  "decision": "operator_review_required",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "recommended_next_action": "v13_operator_visual_review_required",
+  "timestamp": "2026-05-08T13:36:14.286788",
+  "qa_canon_engine_used": true,
+  "universal_canon_used": true,
+  "human_face_canon_used": true,
+  "operator_feedback_memory_used": true,
+  "negative_reference_used": true,
+  "checked_defects": [
+    "bad_teeth",
+    "unnatural_mouth",
+    "lip_teeth_boundary_failed"
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "task_id": "RC-COMBINE-V2-26001-30000",
+  "candidate_version": "v13",
+  "asset_path": "output/assets/combine_v2_v13_candidate_1778239698_00001_.png",
+  "prompt_id": "521826b2-acc7-49b9-bb92-2ea28459783a",
+  "sha256": "40174c8d355f888496287befa8fbbad07ac0f2bf8b352990a558a5e409fbb0b8",
+  "dimensions": {
+    "width": 1024,
+    "height": 1024
+  },
+  "file_size_bytes": 1651697,
+  "qa_canon_engine_summary": {
+    "decision": "operator_review_required",
+    "detected_defects": [
+      "bad_teeth"
+    ],
+    "critical_failures": [
+      "bad_teeth"
+    ],
+    "operator_feedback_used": true
+  },
+  "mouth_teeth_defect_checklist": {
+    "bad_teeth": true,
+    "unnatural_mouth": false,
+    "lip_teeth_boundary_failed": false
+  },
+  "negative_reference": {
+    "v12_bad_teeth_reference": "qa/references/negative/v12_bad_teeth_reference.json",
+    "v12_asset": "output/assets/combine_v2_v12_candidate_1778235995_00001_.png"
+  },
+  "operator_visual_verdict_recorded": false,
+  "operator_decision": null,
+  "allowed_operator_decisions": [
+    "accepted",
+    "rejected",
+    "needs_manual_review"
+  ],
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "current_state": "v13_operator_visual_review_required",
+  "next_allowed_action": "v13_operator_visual_review_required",
+  "instruction": "Operator visual verdict is required. Inspect the V13 candidate asset and record your decision using one of: accepted, rejected, needs_manual_review.",
+  "timestamp": "2026-05-08T13:38:46.463520"
+}
