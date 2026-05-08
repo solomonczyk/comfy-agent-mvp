@@ -1,0 +1,34 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "workflow_type": "v10_photoreal_recovery_generation",
+  "saveimage_filename_prefix": "combine_v2_v10_photoreal_recovery_shot02",
+  "positive_prompt": "photorealistic close-up portrait, sharp focus, detailed skin texture, realistic human anatomy, natural lighting, high resolution, 8k, ultra-detailed, film grain, subtle imperfections, sharp facial features, clear definition, high detail face, realistic eyes, detailed iris, clean eye shape, natural eye appearance, detailed eyelashes, natural eyelashes, clean eyelash detail, natural mouth, well-formed teeth, natural smile, natural skin texture, visible skin pores, realistic skin detail, natural skin reflectance, detailed hair strands, individual hair strands, sharp hair detail, cinematic lighting with soft falloff, close portrait framing, medium shot, subject centered, engaged expression",
+  "negative_prompt": "blur, haze, fog, soft focus, doll, anime, plastic, low quality, bad anatomy, malformed hands, disfigured, oversmooth, airbrushed, cartoon, painting, drawing, illustration, text, watermark, signature, deformed eyes, bad eyes, unrealistic eyes, distorted eyes, clumpy eyelashes, missing eyelashes, bad eyelashes, deformed mouth, bad teeth, missing teeth, open mouth distortion, smooth skin, plastic skin, wax skin, airbrushed skin, unreal skin, wax skin, plastic face, synthetic skin, doll-like skin, mannequin skin, soft hair, blurry hair, hair blob, undefined hair, glossy plastic skin, over-smoothed face, ugly, deformed, bad anatomy, disfigured, poorly drawn face, extra limbs, cloned face, disgusting, monochrome, grayscale",
+  "prompt_id": "",
+  "refinement_parameters": {
+    "cfg_scale": 7.5,
+    "steps": 28,
+    "sampler": "dpmpp_2m",
+    "scheduler": "karras",
+    "resolution": "1024x1024",
+    "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "seed": "random",
+    "refiner_start": 0.25,
+    "refiner_strength": 0.25
+  },
+  "quality_guardrails_applied": [
+    "QR_V10_001:no_blur_haze",
+    "QR_V10_002:micro_detail_present",
+    "QR_V10_003:anatomy_correct",
+    "QR_V10_004:no_plastic_look",
+    "QR_V10_005:realistic_skin_texture",
+    "QR_V10_006:human_present",
+    "QR_V10_007:sharp_face_details",
+    "QR_V10_008:clear_eyes_mouth"
+  ],
+  "max_generations": 1,
+  "no_fallback_workflow": true,
+  "no_hidden_retry_path": true,
+  "no_dry_run_as_success_path": true,
+  "timestamp": "2026-05-08T08:39:36+02:00"
+}

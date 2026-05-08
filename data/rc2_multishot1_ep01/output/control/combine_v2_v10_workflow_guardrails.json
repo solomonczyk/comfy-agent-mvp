@@ -1,0 +1,28 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "workflow_guardrails": {
+    "positive_reference": "V8",
+    "negative_reference": "V9",
+    "forbidden_references": ["V9"],
+    "required_positive_reference": "V8",
+    "generation_parameters": {
+      "sampler": "DPM++ 2M Karras",
+      "cfg_scale": 7.5,
+      "steps": 28,
+      "seed": "random",
+      "refiner_start": 0.25,
+      "refiner_strength": 0.25
+    },
+    "quality_checks": [
+      "no_blur_haze",
+      "micro_detail_present",
+      "anatomy_correct",
+      "no_plastic_look",
+      "realistic_skin_texture",
+      "human_present"
+    ],
+    "block_if_violated": true,
+    "version": "1.0",
+    "timestamp": "2026-05-08T08:08:44+02:00"
+  }
+}
