@@ -1,0 +1,10 @@
+{
+  "version": "v12",
+  "preflight_type": "v12_correction_package_preflight",
+  "all_checks_passed": true,
+  "generation_allowed": false,
+  "blind_retry_blocked": true,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T12:26:08.942441",
+  "next_allowed_action": "v12_generation_authorization_required"
+}

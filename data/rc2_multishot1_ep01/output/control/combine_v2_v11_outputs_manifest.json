@@ -1,0 +1,11 @@
+{
+  "stage": "v11_generate_assets",
+  "version": "v11",
+  "generation_attempts": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "generated_assets": [],
+  "asset_paths": [],
+  "collection_status": "failed",
+  "timestamp": "2026-05-08T12:14:26.391452"
+}

@@ -1,0 +1,14 @@
+{
+  "stage": "v12_generation_authorization_required",
+  "operator_decision": "approve_v12_generation",
+  "operator_generation_authorized": true,
+  "max_generations": 1,
+  "generation_allowed": true,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "reason": "RC-COMBINE-V2-15001-22000: Authorizing V12 generation retry after V11 ComfyUI 500 error",
+  "timestamp": "2026-05-08T12:26:20.300421",
+  "next_allowed_action": "v12_generate_assets"
+}

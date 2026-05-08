@@ -1,0 +1,18 @@
+{
+  "version": "v11",
+  "patch_type": "v11_photoreal_correction_quality_pipeline",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [],
+  "quality_pipeline_corrections": {
+    "blind_retry_blocked": true,
+    "preflight_before_retry_submit": true,
+    "manifest_must_reference_canonical_project_asset": true,
+    "post_generation_visual_qa_required": true,
+    "downstream_blocked_until_qa_acceptance": true,
+    "asset_validation_checksum": true,
+    "minimum_resolution_enforced": 1024
+  },
+  "generation_allowed": false,
+  "retry_attempted": false,
+  "timestamp": "2026-05-08T12:14:02.605378"
+}

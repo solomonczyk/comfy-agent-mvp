@@ -1,0 +1,17 @@
+{
+  "stage": "v11_result_review_required",
+  "version": "v11",
+  "branch_selected": "failed_collection",
+  "generated_assets_count": 0,
+  "asset_paths": [],
+  "result_review_executed": true,
+  "next_allowed_action": "v11_correction_plan_required",
+  "visual_qa_executed": false,
+  "real_visual_qa_started": false,
+  "operator_visual_decision_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T12:14:41.306995",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS"
+}

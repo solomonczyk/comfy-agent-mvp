@@ -1,0 +1,28 @@
+{
+  "version": "v12",
+  "patch_type": "v12_photoreal_correction_workflow_patch",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [
+    "V11 generation failed: ComfyUI API error 500 - Server got itself in trouble",
+    "V11 generation produced 0 assets (failed_collection)",
+    "V11 workflow was submitted but ComfyUI execution returned 500 error",
+    "V12 correction needed: retry generation with same correction package",
+    "Ensure ComfyUI server is running and healthy before V12 execution"
+  ],
+  "workflow_corrections": {
+    "minimum_short_side_enforced": true,
+    "minimum_short_side": 1024,
+    "photoreal_optimizations": true,
+    "output_path_contract_preserved": true
+  },
+  "sampler_adjustments": {
+    "steps": "35-45 for maximum detail",
+    "cfg_scale": "7.0-7.5",
+    "sampler": "dpmpp_2m",
+    "scheduler": "karras",
+    "denoise": "1.0"
+  },
+  "generation_allowed": false,
+  "retry_attempted": false,
+  "timestamp": "2026-05-08T12:26:08.942441"
+}

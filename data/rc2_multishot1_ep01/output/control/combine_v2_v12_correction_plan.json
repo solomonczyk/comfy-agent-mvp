@@ -1,0 +1,28 @@
+{
+  "task_id": "RC-COMBINE-V2-15001-22000",
+  "version": "v12",
+  "stage": "v12_correction_plan_required",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [
+    "V11 generation failed: ComfyUI API error 500 - Server got itself in trouble",
+    "V11 generation produced 0 assets (failed_collection)",
+    "V11 workflow was submitted but ComfyUI execution returned 500 error",
+    "V12 correction needed: retry generation with same correction package",
+    "Ensure ComfyUI server is running and healthy before V12 execution"
+  ],
+  "required_corrections": {
+    "prompt_correction_required": true,
+    "workflow_correction_required": true,
+    "quality_pipeline_correction_required": true,
+    "model_or_sampler_review_required": true,
+    "composition_or_subject_definition_required": true,
+    "photoreal_quality_enhancement_required": true,
+    "comfyui_connectivity_check_required": true
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "next_allowed_action": "v12_corrective_package_build_required",
+  "timestamp": "2026-05-08T12:15:00.000000"
+}

@@ -1,0 +1,21 @@
+{
+  "task_id": "RC-COMBINE-V2-15001-22000",
+  "version": "v11",
+  "stage": "v11_correction_plan_required",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [],
+  "required_corrections": {
+    "prompt_correction_required": true,
+    "workflow_correction_required": true,
+    "quality_pipeline_correction_required": true,
+    "model_or_sampler_review_required": true,
+    "composition_or_subject_definition_required": true,
+    "photoreal_quality_enhancement_required": true
+  },
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "next_allowed_action": "v11_corrective_package_build_required",
+  "timestamp": "2026-05-08T12:13:35.142409"
+}

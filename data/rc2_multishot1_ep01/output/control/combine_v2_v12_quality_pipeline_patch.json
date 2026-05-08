@@ -1,0 +1,21 @@
+{
+  "version": "v12",
+  "patch_type": "v12_quality_pipeline_patch",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [
+    "V11 generation failed: ComfyUI API error 500 - Server got itself in trouble",
+    "V11 generation produced 0 assets (failed_collection)",
+    "V11 workflow was submitted but ComfyUI execution returned 500 error",
+    "V12 correction needed: retry generation with same correction package",
+    "Ensure ComfyUI server is running and healthy before V12 execution"
+  ],
+  "quality_pipeline_corrections": {
+    "blind_retry_blocked": true,
+    "max_one_generation_per_candidate": true,
+    "downstream_blocked_until_qa_acceptance": true,
+    "minimum_resolution_enforced": 1024
+  },
+  "generation_allowed": false,
+  "retry_attempted": false,
+  "timestamp": "2026-05-08T12:26:08.942441"
+}

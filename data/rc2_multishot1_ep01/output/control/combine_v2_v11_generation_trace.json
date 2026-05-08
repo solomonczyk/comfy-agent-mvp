@@ -1,0 +1,38 @@
+{
+  "stage": "v11_generate_assets",
+  "version": "v11",
+  "trace_id": "v11_trace_20260508T121426391452",
+  "events": [
+    {
+      "event": "operator_authorization_check",
+      "status": "authorized"
+    },
+    {
+      "event": "v11_correction_package_loaded",
+      "status": "success"
+    },
+    {
+      "event": "max_generations_enforced",
+      "max_generations": 1
+    },
+    {
+      "event": "blind_retry_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "legacy_512_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "minimum_short_side_1024",
+      "status": "enforced"
+    },
+    {
+      "event": "generation_failed",
+      "status": "failed",
+      "error": "ComfyUI API error 500 for POST http://127.0.0.1:8188/prompt: 500 Internal Server Error\n\nServer got itself in trouble"
+    }
+  ],
+  "timestamp": "2026-05-08T12:14:26.391452",
+  "status": "failed"
+}

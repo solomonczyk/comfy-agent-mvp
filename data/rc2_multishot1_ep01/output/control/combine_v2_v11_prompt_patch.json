@@ -1,0 +1,65 @@
+{
+  "version": "v11",
+  "patch_type": "v11_photoreal_correction_prompt_patch",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
+  "failure_basis": [],
+  "prompt_corrections": {
+    "unclear_subject": {
+      "action": "enhance_subject_description",
+      "add_explicit_subject_keywords": true,
+      "add_subject_identity_anchor": true,
+      "photoreal_anchor": "photorealistic human, real person, live person"
+    },
+    "semantic_content_failure": {
+      "action": "restructure_semantic_prompt_layers",
+      "separate_subject_from_style": true,
+      "add_compositional_anchor": true,
+      "add_photoreal_quality_tags": true
+    },
+    "subject_not_recognizable": {
+      "action": "add_recognizability_guards",
+      "enforce_facial_structure_keywords": true,
+      "add_distinctive_feature_markers": true,
+      "human_anatomy_anchors": "anatomical correctness, human proportions"
+    },
+    "weak_composition": {
+      "action": "inject_compositional_directives",
+      "add_rule_of_thirds_hint": true,
+      "enforce_focal_point_definition": true,
+      "photoreal_framing": "close-up portrait, natural framing"
+    },
+    "low_detail_quality": {
+      "action": "boost_detail_directives",
+      "add_texture_and_surface_keywords": true,
+      "increase_precision_language": true,
+      "detail_anchors": "skin pores, hair strands, fabric texture, subsurface scattering"
+    },
+    "production_quality_failed": {
+      "action": "add_production_quality_modifiers",
+      "enforce_hyperrealism_guard": true,
+      "add_resolution_aware_directives": true,
+      "photoreal_must_haves": [
+        "sharp focus",
+        "high resolution",
+        "natural skin texture",
+        "realistic lighting",
+        "human presence"
+      ]
+    },
+    "doll_anime_plastic_look": {
+      "action": "remove_artificial_stylization",
+      "ban_doll_anime_terms": true,
+      "add_organic_texture_keywords": true,
+      "human_skin_realism": true
+    },
+    "blur_haze_foggy_detail": {
+      "action": "enforce_sharpness_and_clarity",
+      "add_sharpness_keywords": true,
+      "remove_blur_terms": true,
+      "detail_preservation": "crisp details, no haze, no fog"
+    }
+  },
+  "generation_allowed": false,
+  "retry_attempted": false,
+  "timestamp": "2026-05-08T12:14:02.605378"
+}

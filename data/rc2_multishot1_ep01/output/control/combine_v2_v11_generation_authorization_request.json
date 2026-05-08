@@ -1,0 +1,20 @@
+{
+  "version": "v11",
+  "stage": "v11_generation_authorization_required",
+  "operator_review_required": true,
+  "recommended_operator_decision": "approve_v11_generation",
+  "operator_actions": [
+    "approve_v11_generation",
+    "request_package_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "workflow_submitted": false,
+  "production_accepted": false,
+  "max_generations_per_candidate": 1,
+  "note": "Each V11 candidate gets exactly one generation attempt. No blind retry.",
+  "timestamp": "2026-05-08T12:14:02.605378",
+  "next_allowed_action": "v11_generation_authorization_required"
+}

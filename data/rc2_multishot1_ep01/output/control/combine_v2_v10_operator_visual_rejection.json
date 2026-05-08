@@ -1,0 +1,19 @@
+{
+  "task_id": "RC-COMBINE-V2-13001-15000",
+  "stage": "v10_operator_visual_rejection",
+  "version": "v10",
+  "operator_decision": "reject_visual_quality",
+  "source_asset": "output/assets/combine_v2_v10_photoreal_recovery_shot02_00002_.png",
+  "rejection_reasons": [
+    "V10 photoreal recovery generation requires operator visual review",
+    "QA recovery loop initiated for photoreal character candidate",
+    "V11 correction package built to address quality deficiencies"
+  ],
+  "qa_recovery_loop_started": true,
+  "max_candidates": 3,
+  "candidate_version": "v11",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "timestamp": "2026-05-08T12:34:32.433908"
+}

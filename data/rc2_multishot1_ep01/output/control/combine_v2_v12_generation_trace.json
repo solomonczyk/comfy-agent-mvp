@@ -1,0 +1,39 @@
+{
+  "stage": "v12_generate_assets",
+  "version": "v12",
+  "trace_id": "v12_trace_20260508T122635193801",
+  "events": [
+    {
+      "event": "operator_authorization_check",
+      "status": "authorized"
+    },
+    {
+      "event": "max_generations_enforced",
+      "max_generations": 1
+    },
+    {
+      "event": "blind_retry_blocked",
+      "status": "enforced"
+    },
+    {
+      "event": "workflow_submitted",
+      "status": "success",
+      "prompt_id": "3de98858-5265-4da9-a161-b888fdcfe879"
+    },
+    {
+      "event": "asset_collected",
+      "status": "success",
+      "filename": "combine_v2_v12_candidate_1778235995_00001_.png",
+      "path": "output/assets/combine_v2_v12_candidate_1778235995_00001_.png",
+      "source": "fetched",
+      "fetch_error": null
+    },
+    {
+      "event": "outputs_collected",
+      "status": "success",
+      "assets_count": 1
+    }
+  ],
+  "timestamp": "2026-05-08T12:26:35.193801",
+  "status": "completed"
+}

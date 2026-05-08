@@ -1,0 +1,33 @@
+{
+  "task_id": "RC-COMBINE-V2-15001-22000",
+  "stage": "v12_operator_visual_review_required",
+  "version": "v12",
+  "generation_attempted": true,
+  "generation_success": true,
+  "generated_assets": [
+    "output/assets/combine_v2_v12_candidate_1778235995_00001_.png"
+  ],
+  "asset_count": 1,
+  "comfyui_execution": true,
+  "workflow_submitted": true,
+  "v12_correction_package_used": true,
+  "v12_generation_authorization_ref": "combine_v2_v12_generation_authorization.json",
+  "v12_generation_result_ref": "combine_v2_v12_generation_result.json",
+  "v12_outputs_manifest_ref": "combine_v2_v12_outputs_manifest.json",
+  "v12_generation_trace_ref": "combine_v2_v12_generation_trace.json",
+  "v12_result_review_ref": "combine_v2_v12_result_review.json",
+  "prompt_id": "",
+  "asset_path": "output/assets/combine_v2_v12_candidate_1778235995_00001_.png",
+  "asset_readable": true,
+  "sha256_present": true,
+  "stub_asset_detected": false,
+  "operator_visual_decision_created": false,
+  "operator_visual_verdict": null,
+  "operator_visual_decision_ref": null,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "notes": "V12 correction generation completed successfully. Asset requires operator visual review before any further pipeline progression. Do NOT record verdict yet.",
+  "next_allowed_action": "v12_operator_visual_review_required",
+  "timestamp": "2026-05-08T12:34:32.433908"
+}

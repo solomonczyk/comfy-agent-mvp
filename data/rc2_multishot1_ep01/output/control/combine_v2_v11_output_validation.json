@@ -1,0 +1,21 @@
+{
+  "stage": "v11_output_validation",
+  "version": "v11",
+  "generation_attempts": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "generated_assets": [],
+  "generated_assets_count": 0,
+  "collection_status": "failed",
+  "validation_status": "failed",
+  "failure_code": "FAILED_OUTPUT_COLLECTION_ZERO_ASSETS",
+  "failure_reason": "ComfyUI API error 500: Server got itself in trouble. No assets generated.",
+  "second_v11_generation_attempted": false,
+  "blind_retry_attempted": false,
+  "stub_asset_detected": false,
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "timestamp": "2026-05-08T12:34:32.433908"
+}

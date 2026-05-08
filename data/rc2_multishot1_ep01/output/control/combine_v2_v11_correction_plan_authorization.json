@@ -1,0 +1,13 @@
+{
+  "stage": "v11_correction_plan_required",
+  "plan_created": true,
+  "defect_taxonomy_created": true,
+  "correction_plan_created": true,
+  "next_allowed_action": "v11_corrective_package_build_required",
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T12:13:35.142409",
+  "source_asset": "output/assets/combine_v2_1777917278_00001_.png"
+}

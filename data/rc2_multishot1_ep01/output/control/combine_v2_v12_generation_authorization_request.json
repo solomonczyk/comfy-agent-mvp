@@ -1,0 +1,16 @@
+{
+  "version": "v12",
+  "stage": "v12_generation_authorization_required",
+  "operator_review_required": true,
+  "recommended_operator_decision": "approve_v12_generation",
+  "operator_actions": [
+    "approve_v12_generation",
+    "request_package_changes",
+    "manual_review",
+    "abort_route"
+  ],
+  "generation_allowed": false,
+  "max_generations_per_candidate": 1,
+  "timestamp": "2026-05-08T12:26:08.942441",
+  "next_allowed_action": "v12_generation_authorization_required"
+}
