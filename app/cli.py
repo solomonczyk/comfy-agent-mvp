@@ -16315,6 +16315,43 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-54001-62000 — Brief Intake Contract Layer commands
+    combine_build_brief_intake_parser = subparsers.add_parser(
+        "combine-build-brief-intake",
+        help="Build brief intake artifacts from user task text: contract, validation, constraints, intent, criteria",
+    )
+    combine_build_brief_intake_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_brief_intake_parser.add_argument(
+        "--input-text", required=True, help="User task description / brief input text",
+    )
+    combine_build_brief_intake_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_validate_brief_intake_parser = subparsers.add_parser(
+        "combine-validate-brief-intake",
+        help="Validate existing brief intake artifacts and re-generate validation report",
+    )
+    combine_validate_brief_intake_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_validate_brief_intake_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_build_brief_operator_review_parser = subparsers.add_parser(
+        "combine-build-brief-operator-review",
+        help="Build brief operator review packet summarizing intake readiness and next layer",
+    )
+    combine_build_brief_operator_review_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_brief_operator_review_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -16714,6 +16751,15 @@ def main() -> int:
     elif args.command == "combine-build-agent-operator-review":
         _require_absolute_project_root(args, "combine-build-agent-operator-review")
         return combine_build_agent_operator_review(args)
+    elif args.command == "combine-build-brief-intake":
+        _require_absolute_project_root(args, "combine-build-brief-intake")
+        return combine_build_brief_intake(args)
+    elif args.command == "combine-validate-brief-intake":
+        _require_absolute_project_root(args, "combine-validate-brief-intake")
+        return combine_validate_brief_intake(args)
+    elif args.command == "combine-build-brief-operator-review":
+        _require_absolute_project_root(args, "combine-build-brief-operator-review")
+        return combine_build_brief_operator_review(args)
     else:
         parser.print_help()
         return 0
@@ -38601,6 +38647,124 @@ def combine_build_agent_operator_review(args: argparse.Namespace) -> int:
         print(f"Next Layer: RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer")
         print(f"Generation Performed: False")
         print(f"Production Accepted: False")
+
+    return 0
+
+
+def combine_build_brief_intake(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-54001-62000 — Build brief intake artifacts from user task text.
+
+    Creates all canonical brief artifacts under output/control/brief/ including
+    the brief contract, validation report, project constraints, content intent,
+    success criteria, and forbidden actions.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: brief intake artifacts built successfully
+    - 1: error or invalid args
+    """
+    from app.brief.intake import build_brief_intake as _build_brief_intake
+
+    project_root = args.project_root
+    input_text = args.input_text
+    json_output = args.json
+
+    result = _build_brief_intake(project_root, input_text)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Brief Intake Build Status: {'OK' if result.get('brief_contract_created') else 'BLOCKED'}")
+        print(f"Contract Created: {result.get('brief_contract_created', False)}")
+        print(f"Validation Passed: {result.get('brief_validation_already_passed', False)}")
+        print(f"Ready for Director Planner: {result.get('brief_is_ready_for_director_planner', False)}")
+        print(f"Needs Clarification: {result.get('needs_operator_clarification', False)}")
+        print(f"Blocked: {result.get('blocked_path_reached', False)}")
+        if result.get('blocker_reason'):
+            print(f"Blocker: {result['blocker_reason']}")
+        print(f"Missing Fields: {result.get('missing_fields', [])}")
+        print(f"Current State: {result.get('current_state', 'unknown')}")
+        print(f"Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        print(f"Generation Performed: {result.get('generation_performed', False)}")
+        print(f"Production Accepted: {result.get('production_accepted', False)}")
+
+    return 0 if result.get('brief_contract_created', False) or not result.get('blocked_path_reached', True) else 1
+
+
+def combine_validate_brief_intake(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-54001-62000 — Validate existing brief intake artifacts.
+
+    Reads the brief_contract.json and re-validates all fields, producing
+    an updated validation report.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: validation completed (even if brief needs clarification)
+    - 1: validation failed (blocked path)
+    """
+    from app.brief.intake import validate_brief_intake as _validate_brief_intake
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _validate_brief_intake(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Brief Intake Validation Status:")
+        print(f"  Contract Created: {result.get('brief_contract_created', False)}")
+        print(f"  Validation Passed: {result.get('brief_validation_passed', False)}")
+        print(f"  Classification: {result.get('classification', 'unknown')}")
+        print(f"  Ready for Director Planner: {result.get('brief_is_ready_for_director_planner', False)}")
+        if result.get('blocker_reason'):
+            print(f"  Blocker: {result['blocker_reason']}")
+        if result.get('missing_fields'):
+            print(f"  Missing Fields: {result['missing_fields']}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+
+    is_blocked = result.get('blocked_path_reached', False)
+    return 1 if is_blocked else 0
+
+
+def combine_build_brief_operator_review(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-54001-62000 — Build brief operator review packet.
+
+    Reads all brief intake artifacts and creates a comprehensive operator
+    review packet summarizing the normalized brief, missing fields, assumptions,
+    risks, forbidden actions, success criteria, and readiness.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: operator review packet built successfully
+    - 1: error
+    """
+    from app.brief.intake import build_brief_operator_review as _build_brief_operator_review
+
+    project_root = args.project_root
+    json_output = args.json
+
+    packet = _build_brief_operator_review(project_root)
+
+    if json_output:
+        print(json.dumps({"status": "ok", "packet": packet}, indent=2))
+    else:
+        print(f"Brief Operator Review Packet Created:")
+        print(f"  Content Type: {packet.get('normalized_brief', {}).get('content_type', 'unknown')}")
+        print(f"  Goal: {packet.get('normalized_brief', {}).get('goal', '')[:80]}")
+        print(f"  Missing Fields: {packet.get('missing_fields', [])}")
+        print(f"  Ready for Director Planner: {packet.get('readiness_for_director_planner', False)}")
+        print(f"  Validation: {packet.get('validation_classification', 'unknown')}")
+        print(f"  Next Layer: {packet.get('next_recommended_layer', 'unknown')}")
+        print(f"  Generation Performed: {packet.get('generation_performed', False)}")
+        print(f"  Production Accepted: {packet.get('production_accepted', False)}")
 
     return 0
 

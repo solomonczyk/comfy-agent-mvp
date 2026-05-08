@@ -1,0 +1,12 @@
+{
+  "task_id": "RC-COMBINE-V2-54001-62000",
+  "created_timestamp": "2026-05-08T14:13:07.990831+00:00",
+  "content_type": "educational",
+  "goal": "a short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+  "target_audience": "beginners",
+  "expected_output": "video short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+  "primary_purpose": "a short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+  "secondary_purposes": [],
+  "key_message": null,
+  "call_to_action": null
+}

@@ -1,0 +1,12 @@
+{
+  "task_id": "RC-COMBINE-V2-54001-62000",
+  "created_timestamp": "2026-05-08T14:13:17.087975+00:00",
+  "brief_contract_created": true,
+  "brief_validation_passed": true,
+  "classification": "valid_for_director_planning",
+  "brief_is_ready_for_director_planner": true,
+  "operator_review_required": true,
+  "production_accepted": false,
+  "generation_performed": false,
+  "downstream_executed": false
+}

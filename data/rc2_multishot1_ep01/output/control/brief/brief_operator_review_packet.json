@@ -1,0 +1,59 @@
+{
+  "task_id": "RC-COMBINE-V2-54001-62000",
+  "packet_type": "brief_operator_review",
+  "created_timestamp": "2026-05-08T14:13:37.835449+00:00",
+  "normalized_brief": {
+    "project_id": "rc2_multishot1_ep01",
+    "content_type": "educational",
+    "goal": "a short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+    "expected_output": "video short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+    "target_audience": "beginners",
+    "duration_target": null,
+    "format_hint": null,
+    "style_tone": "clear_practical",
+    "topic_domain": "artificial_intelligence"
+  },
+  "missing_fields": [],
+  "assumptions": [
+    "Pipeline will stop at operator review for approval",
+    "No generation will be performed without authorization",
+    "All artifacts are validation/preparation only",
+    "Production acceptance requires explicit operator sign-off"
+  ],
+  "risks": [
+    "Missing fields may cause downstream planning to guess incorrectly",
+    "No generation has been performed \u2014 all artifacts are preparation only",
+    "Operator review required before proceeding to Director Planning",
+    "Dangerous actions detected in input are blocked"
+  ],
+  "forbidden_actions": [
+    "generation_without_operator_authorization",
+    "comfyui_submit",
+    "final_render",
+    "production_acceptance",
+    "assembly_execution",
+    "downstream_execution",
+    "visual_qa_skip",
+    "preview_render"
+  ],
+  "dangerous_actions_blocked": [],
+  "success_criteria": [
+    "All generated assets are valid and readable",
+    "Visual quality meets minimum threshold (no artifacts, proper framing)",
+    "Content matches the specified intent and goal",
+    "Information is clear and accurate",
+    "Visual aids support the educational content"
+  ],
+  "constraints": [],
+  "readiness_for_director_planner": true,
+  "validation_classification": "valid_for_director_planning",
+  "operator_review_required": true,
+  "production_accepted": false,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "next_recommended_layer": "RC-COMBINE-V2-62001-70000 Director Planning and Shot Contract Layer",
+  "notes": "Operator must review the normalized brief, confirm or correct missing fields, then authorize proceeding to Director Planning."
+}

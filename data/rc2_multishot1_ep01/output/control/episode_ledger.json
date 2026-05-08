@@ -690,5 +690,24 @@
     "next_layer": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
     "ready_for_next_layer": true,
     "timestamp": "2026-05-08T15:40:00"
+  },
+  {
+    "event": "brief_intake_layer_completed",
+    "task_id": "RC-COMBINE-V2-54001-62000",
+    "status": "brief_operator_review_required",
+    "classification": "valid_for_director_planning",
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "visual_qa_executed": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "current_state": "brief_operator_review_required",
+    "next_allowed_action": "brief_operator_review_required",
+    "previous_layer": "RC-COMBINE-V2-46001-54000",
+    "next_layer": "RC-COMBINE-V2-62001-70000 Director Planning and Shot Contract Layer",
+    "timestamp": "2026-05-08T14:13:07.990831+00:00"
   }
 ]

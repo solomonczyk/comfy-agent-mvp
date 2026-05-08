@@ -1,0 +1,21 @@
+{
+  "task_id": "RC-COMBINE-V2-54001-62000",
+  "created_timestamp": "2026-05-08T14:13:07.990831+00:00",
+  "forbidden_actions": [
+    "generation_without_operator_authorization",
+    "comfyui_submit",
+    "final_render",
+    "production_acceptance",
+    "assembly_execution",
+    "downstream_execution",
+    "visual_qa_skip",
+    "preview_render"
+  ],
+  "dangerous_actions_blocked": [],
+  "generation_blocked": true,
+  "comfyui_submit_blocked": true,
+  "assembly_blocked": true,
+  "downstream_blocked": true,
+  "production_acceptance_blocked": true,
+  "visual_qa_skip_blocked": true
+}

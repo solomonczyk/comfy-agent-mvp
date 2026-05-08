@@ -1,6 +1,6 @@
 {
-  "current_state": "agent_registry_operator_review_required",
-  "next_allowed_action": "agent_registry_operator_review_required",
+  "current_state": "brief_operator_review_required",
+  "next_allowed_action": "brief_operator_review_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -517,5 +517,17 @@
   "agent_contracts_created": true,
   "agent_registry_validated": false,
   "agent_operator_review_required": true,
-  "next_layer_ready": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer"
+  "next_layer_ready": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
+  "artifacts": [
+    "brief/brief_contract.json",
+    "brief/brief_validation_report.json",
+    "brief/project_constraints.json",
+    "brief/content_intent.json",
+    "brief/success_criteria.json",
+    "brief/forbidden_actions.json"
+  ],
+  "task_id": "RC-COMBINE-V2-54001-62000",
+  "created_timestamp": "2026-05-08T14:13:07.990831+00:00",
+  "total_artifacts": 6,
+  "brief_intake_layer_completed": true
 }

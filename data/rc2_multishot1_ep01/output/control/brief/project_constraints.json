@@ -1,0 +1,18 @@
+{
+  "task_id": "RC-COMBINE-V2-54001-62000",
+  "created_timestamp": "2026-05-08T14:13:07.990831+00:00",
+  "duration_target": null,
+  "format_hint": null,
+  "aspect_ratio": null,
+  "language": "en",
+  "style_tone": "clear_practical",
+  "topic_domain": "artificial_intelligence",
+  "constraints": [],
+  "technical_restrictions": [
+    "No real generation allowed at this layer",
+    "All actions are dry-run / preparation only",
+    "Operator review required before proceeding"
+  ],
+  "budget_hint": null,
+  "timeline_hint": null
+}

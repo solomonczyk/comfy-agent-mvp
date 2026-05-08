@@ -1,0 +1,46 @@
+{
+  "task_id": "RC-COMBINE-V2-54001-62000",
+  "schema_version": "1.0",
+  "created_timestamp": "2026-05-08T14:13:07.990831+00:00",
+  "project_id": "rc2_multishot1_ep01",
+  "source_input": "Create a short educational explainer video about how an AI production pipeline checks generated frames before assembly. The video should be clear, practical, and suitable for beginners.",
+  "normalized_task_summary": "Create a short educational explainer video about how an AI production pipeline checks generated frames before assembly. The video should be clear, practical, and suitable for beginners.",
+  "content_type": "educational",
+  "target_audience": "beginners",
+  "goal": "a short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+  "expected_output": "video short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+  "duration_target": null,
+  "format_hint": null,
+  "aspect_ratio": null,
+  "language": "en",
+  "style_tone": "clear_practical",
+  "topic_domain": "artificial_intelligence",
+  "constraints": [],
+  "forbidden_actions": [
+    "generation_without_operator_authorization",
+    "comfyui_submit",
+    "final_render",
+    "production_acceptance",
+    "assembly_execution",
+    "downstream_execution",
+    "visual_qa_skip",
+    "preview_render"
+  ],
+  "success_criteria": [
+    "All generated assets are valid and readable",
+    "Visual quality meets minimum threshold (no artifacts, proper framing)",
+    "Content matches the specified intent and goal",
+    "Information is clear and accurate",
+    "Visual aids support the educational content"
+  ],
+  "missing_fields": [],
+  "assumptions": [
+    "Pipeline will stop at operator review for approval",
+    "No generation will be performed without authorization",
+    "All artifacts are validation/preparation only",
+    "Production acceptance requires explicit operator sign-off"
+  ],
+  "readiness_for_director_planner": true,
+  "operator_review_required": true,
+  "production_accepted": false
+}

@@ -15,6 +15,7 @@ class CombineStateMachine:
     STATES = [
         "initial",
         "brief_intake_required",
+        "brief_operator_review_required",
         "route_classification_required",
         "production_plan_required",
         "production_plan_review",
@@ -159,7 +160,12 @@ class CombineStateMachine:
             "brief_intake_required"
         },
         "brief_intake_required": {
+            "brief_operator_review_required",
             "route_classification_required"
+        },
+        "brief_operator_review_required": {
+            "route_classification_required",
+            "brief_intake_required",
         },
         "route_classification_required": {
             "production_plan_required"
@@ -652,6 +658,15 @@ class CombineStateMachine:
         ("workflow_plan_required", "generate_assets"),
         ("workflow_preflight_required", "generate_assets"),
         ("brief_intake_required", "generate_assets"),
+        ("brief_intake_required", "generate_assets"),
+        ("brief_operator_review_required", "generate_assets"),
+        ("brief_operator_review_required", "real_generate_assets"),
+        ("brief_operator_review_required", "assembly_required"),
+        ("brief_operator_review_required", "assembly_preflight_required"),
+        ("brief_operator_review_required", "visual_qa_required"),
+        ("brief_operator_review_required", "real_visual_qa_required"),
+        ("brief_operator_review_required", "completed"),
+        ("brief_operator_review_required", "production_accepted"),
         ("route_classification_required", "generate_assets"),
         
         # QA cannot happen before generated artifacts
