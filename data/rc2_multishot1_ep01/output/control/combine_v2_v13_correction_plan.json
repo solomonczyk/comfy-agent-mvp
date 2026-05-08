@@ -1,0 +1,46 @@
+{
+  "task_id": "RC-COMBINE-V2-22001-26000",
+  "candidate_version": "v13",
+  "stage": "v13_correction_plan_required",
+  "source_asset": "output/assets/combine_v2_v12_candidate_1778235995_00001_.png",
+  "qa_evidence": {
+    "qa_report": "output/control/qa/reports/combine_v2_v12_qa_canon_report.json",
+    "v12_operator_rejection": "output/control/combine_v2_v12_operator_visual_rejection.json",
+    "v12_negative_reference": "output/control/qa/references/negative/v12_bad_teeth_reference.json",
+    "critical_failures": [
+      "bad_teeth",
+      "unnatural_mouth",
+      "lip_teeth_boundary_failed"
+    ]
+  },
+  "required_corrections": {
+    "prompt_correction_required": true,
+    "workflow_correction_required": false,
+    "quality_pipeline_correction_required": true,
+    "model_or_sampler_review_required": false,
+    "composition_or_subject_definition_required": false,
+    "photoreal_quality_enhancement_required": true
+  },
+  "correction_instructions": [
+    "avoid visible teeth if not required by shot intent",
+    "closed mouth or relaxed natural lips preferred",
+    "no exposed teeth unless anatomically convincing",
+    "stronger negative prompt against malformed teeth, merged teeth, fake teeth, plastic lips",
+    "preserve close-up composition",
+    "preserve sharp eyes",
+    "preserve realistic skin microtexture",
+    "no doll-like face",
+    "no beauty-plastic look"
+  ],
+  "prompt_patch_required": true,
+  "workflow_patch_required": false,
+  "quality_pipeline_patch_required": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "next_allowed_action": "v13_generation_authorization_required",
+  "timestamp": "2026-05-08T17:00:00"
+}

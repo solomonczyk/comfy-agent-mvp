@@ -1,0 +1,10 @@
+{
+  "task_id": "RC-COMBINE-V2-22001-26000",
+  "candidate_version": "v13",
+  "patch_type": "workflow_patch",
+  "changes_required": false,
+  "note": "V12 workflow settings are preserved. No workflow changes needed for V13. All corrections are prompt-side.",
+  "generation_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T17:00:00"
+}

@@ -1,0 +1,16 @@
+{
+  "policy_id": "visual_qa_decision_policy_v1",
+  "auto_reject_if": [
+    "bad_teeth",
+    "unnatural_mouth",
+    "lip_teeth_boundary_failed",
+    "facial_anatomy_failed",
+    "synthetic_doll_like_face"
+  ],
+  "operator_review_if": [
+    "borderline_skin_texture",
+    "minor_blur",
+    "style_uncertainty"
+  ],
+  "production_accepted_allowed": false
+}

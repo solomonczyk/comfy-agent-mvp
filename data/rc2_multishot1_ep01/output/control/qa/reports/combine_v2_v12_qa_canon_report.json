@@ -1,0 +1,57 @@
+{
+  "candidate_version": "v12",
+  "scene_type": "human_face_portrait",
+  "canons_used": [
+    "universal_quality_v1",
+    "human_face_photoreal_v1"
+  ],
+  "region_check_result": {
+    "image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_v12_candidate_1778235995_00001_.png",
+    "readable": true,
+    "dimensions": {
+      "dimensions_available": true,
+      "width": 1024,
+      "height": 1024,
+      "min_width": 512,
+      "min_height": 512,
+      "pass": true,
+      "note": "1024x1024 (min 512x512)"
+    },
+    "file_size": {
+      "exists": true,
+      "size_bytes": 1622135,
+      "min_bytes": 1024,
+      "pass": true,
+      "stub_detected": false
+    },
+    "stub_asset": false,
+    "region_checks_pass": true
+  },
+  "opencv_result": {
+    "opencv_available": true,
+    "checks_executed": true,
+    "blur_score": 370.004299121385,
+    "brightness": 73.71609020233154,
+    "contrast": 57.73737284600564,
+    "is_blurry": false,
+    "mouth_analysis": {
+      "opencv_available": true,
+      "checks_executed": true,
+      "face_detected": false,
+      "note": "No face detected in image"
+    }
+  },
+  "operator_feedback_used": true,
+  "detected_defects": [
+    "bad_teeth"
+  ],
+  "critical_failures": [
+    "bad_teeth"
+  ],
+  "decision": "reject",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "recommended_next_action": "v13_correction_plan_required",
+  "timestamp": "2026-05-08T13:10:35.574580"
+}

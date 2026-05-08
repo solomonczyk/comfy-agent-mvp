@@ -1,0 +1,21 @@
+{
+  "canon_id": "human_face_photoreal_v1",
+  "applies_to": "human_face_portrait",
+  "critical_regions": [
+    "eyes",
+    "mouth",
+    "teeth",
+    "lips",
+    "nose",
+    "skin",
+    "jawline"
+  ],
+  "hard_reject_defects": [
+    "bad_teeth",
+    "unnatural_mouth",
+    "lip_teeth_boundary_failed",
+    "facial_anatomy_failed",
+    "synthetic_doll_like_face",
+    "plastic_skin"
+  ]
+}

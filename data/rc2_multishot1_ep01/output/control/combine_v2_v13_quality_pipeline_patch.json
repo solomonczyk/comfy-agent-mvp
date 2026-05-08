@@ -1,0 +1,22 @@
+{
+  "task_id": "RC-COMBINE-V2-22001-26000",
+  "candidate_version": "v13",
+  "patch_type": "quality_pipeline_patch",
+  "quality_enhancements": [
+    "strengthen negative prompt against dental/mouth artifacts",
+    "add mouth/teeth quality check to visual QA",
+    "prefer closed-mouth expressions where possible",
+    "maintain skin microtexture fidelity",
+    "avoid synthetic/plastic appearance in post-processing"
+  ],
+  "qa_checklist_additions": [
+    "verify no visible teeth defects",
+    "verify natural mouth shape",
+    "verify lip-teeth boundary if teeth visible",
+    "verify skin microtexture is natural",
+    "verify no doll-like appearance"
+  ],
+  "generation_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T17:00:00"
+}

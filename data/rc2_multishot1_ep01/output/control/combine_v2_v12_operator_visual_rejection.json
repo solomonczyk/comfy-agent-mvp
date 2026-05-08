@@ -1,0 +1,19 @@
+{
+  "candidate_version": "v12",
+  "operator_verdict": "rejected",
+  "failed_regions": [
+    "mouth",
+    "teeth",
+    "lips"
+  ],
+  "critical_defects": [
+    "bad_teeth",
+    "unnatural_mouth",
+    "lip_teeth_boundary_failed"
+  ],
+  "operator_comment": "teeth do not pass visual approval",
+  "candidate_accepted_for_pipeline": false,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false
+}

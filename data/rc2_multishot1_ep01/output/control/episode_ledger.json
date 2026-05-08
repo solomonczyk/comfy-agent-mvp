@@ -237,5 +237,44 @@
     "current_state": "v12_operator_visual_review_required",
     "next_allowed_action": "v12_operator_visual_review_required",
     "timestamp": "2026-05-08T12:34:32.433908"
+  },
+  {
+    "event_type": "v12_operator_visual_rejection_recorded",
+    "task_id": "RC-COMBINE-V2-22001-26000",
+    "version": "v12",
+    "stage": "v12_operator_visual_qa_canon_rejection",
+    "operator_verdict": "rejected",
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "qa_canon_engine_available": true,
+    "v12_operator_rejected": true,
+    "critical_failures": [
+      "bad_teeth",
+      "unnatural_mouth",
+      "lip_teeth_boundary_failed"
+    ],
+    "current_state": "v13_correction_plan_required",
+    "next_allowed_action": "v13_generation_authorization_required",
+    "notes": "V12 operator visual rejection processed by QA Canon Engine. V13 correction package prepared.",
+    "timestamp": "2026-05-08T17:00:00"
+  },
+  {
+    "event_type": "v13_correction_package_created",
+    "task_id": "RC-COMBINE-V2-22001-26000",
+    "version": "v13",
+    "stage": "v13_correction_plan_required",
+    "correction_plan_created": true,
+    "prompt_patch_created": true,
+    "workflow_patch_created": true,
+    "quality_pipeline_patch_created": true,
+    "generation_allowed": false,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "current_state": "v13_correction_plan_required",
+    "next_allowed_action": "v13_generation_authorization_required",
+    "notes": "V13 correction package built from QA Canon Engine evidence on V12 rejection.",
+    "timestamp": "2026-05-08T17:00:00"
   }
 ]

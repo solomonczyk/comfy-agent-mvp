@@ -1,0 +1,22 @@
+{
+  "canon_id": "universal_quality_v1",
+  "applies_to": "all_visual_outputs",
+  "must_have": [
+    "readable_asset",
+    "no_stub_asset",
+    "sufficient_resolution",
+    "main_subject_readable",
+    "no_severe_blur",
+    "no_major_artifact_corruption",
+    "lighting_consistency",
+    "perspective_consistency"
+  ],
+  "hard_reject_defects": [
+    "stub_asset",
+    "unreadable_asset",
+    "severe_blur",
+    "major_anatomy_failure",
+    "major_object_deformation",
+    "critical_uncanny_artifact"
+  ]
+}

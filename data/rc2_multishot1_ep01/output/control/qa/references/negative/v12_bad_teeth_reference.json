@@ -1,0 +1,15 @@
+{
+  "candidate_version": "v12",
+  "asset_path": "output/assets/combine_v2_v12_candidate_1778235995_00001_.png",
+  "label": "negative",
+  "failed_regions": [
+    "mouth",
+    "teeth",
+    "lips"
+  ],
+  "defects": [
+    "bad_teeth"
+  ],
+  "operator_comment": "teeth do not pass visual approval",
+  "timestamp": "2026-05-08T13:10:35.573580"
+}

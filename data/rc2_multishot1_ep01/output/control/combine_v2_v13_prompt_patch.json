@@ -1,0 +1,33 @@
+{
+  "task_id": "RC-COMBINE-V2-22001-26000",
+  "candidate_version": "v13",
+  "patch_type": "prompt_patch",
+  "target": "positive_prompt",
+  "additions": [],
+  "modifications": [],
+  "target": "negative_prompt",
+  "negative_prompt_strengthened": [
+    "malformed teeth",
+    "merged teeth",
+    "fake teeth",
+    "plastic lips",
+    "synthetic doll face",
+    "beauty plastic look",
+    "unnatural mouth",
+    "exposed teeth",
+    "bad teeth",
+    "waxy skin",
+    "uncanny valley"
+  ],
+  "preserve_from_v12": [
+    "close-up composition",
+    "sharp eyes",
+    "realistic skin microtexture",
+    "photoreal quality",
+    "natural lighting"
+  ],
+  "guidance": "Prefer closed mouth or relaxed natural lips. Avoid visible teeth unless anatomically convincing. No doll-like or plastic appearance.",
+  "generation_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T17:00:00"
+}

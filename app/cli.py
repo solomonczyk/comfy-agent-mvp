@@ -11223,8 +11223,82 @@ def combine_execute_v10_real_generation(args: argparse.Namespace) -> int:
     return 0 if is_success else 1
 
 
+def combine_run_qa_canon_engine(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-22001-26000 — Run QA Canon Engine on a candidate asset.
+
+    This command loads canons, routes scene type, runs region checks and
+    OpenCV checks, maps operator feedback to defects, applies decision
+    policy, generates a QA report, and records negative reference metadata.
+
+    It does NOT perform any generation, retry, assembly, or downstream actions.
+    """
+    from app.qa.qa_canon_engine import QACanonEngine
+
+    project_root = Path(args.project_root)
+    candidate_version = args.candidate_version
+    asset_path = args.asset_path
+    operator_feedback = args.operator_feedback
+    json_output = args.json
+
+    engine = QACanonEngine(project_root)
+    task_contract = {"candidate_version": candidate_version}
+
+    # Run evaluation
+    decision = engine.evaluate(
+        candidate_version=candidate_version,
+        asset_path=asset_path,
+        task_contract=task_contract,
+        operator_feedback=operator_feedback,
+    )
+
+    # Record operator feedback as negative reference
+    engine.record_operator_feedback(
+        candidate_version=candidate_version,
+        asset_path=asset_path,
+        operator_comment=operator_feedback or "no operator feedback",
+        defects=decision.critical_failures,
+        failed_regions=["mouth", "teeth", "lips"] if "teeth" in str(operator_feedback) else [],
+    )
+
+    # Save QA report
+    report_path = engine.save_qa_report(decision)
+
+    # Build output
+    report = decision.to_dict()
+
+    if json_output:
+        print(json.dumps({
+            "status": "ok",
+            "candidate_version": candidate_version,
+            "scene_type": report["scene_type"],
+            "canons_used": report["canons_used"],
+            "operator_feedback_used": report["operator_feedback_used"],
+            "critical_failures": report["critical_failures"],
+            "decision": report["decision"],
+            "production_accepted": report["production_accepted"],
+            "assembly_allowed": report["assembly_allowed"],
+            "downstream_allowed": report["downstream_allowed"],
+            "recommended_next_action": report["recommended_next_action"],
+            "report_path": str(report_path.relative_to(project_root)),
+        }, indent=2))
+    else:
+        print(f"QA Canon Engine Report for {candidate_version}")
+        print(f"  Scene Type: {report['scene_type']}")
+        print(f"  Canons Used: {report['canons_used']}")
+        print(f"  Operator Feedback Used: {report['operator_feedback_used']}")
+        print(f"  Critical Failures: {report['critical_failures']}")
+        print(f"  Decision: {report['decision']}")
+        print(f"  Production Accepted: {report['production_accepted']}")
+        print(f"  Assembly Allowed: {report['assembly_allowed']}")
+        print(f"  Downstream Allowed: {report['downstream_allowed']}")
+        print(f"  Recommended Next Action: {report['recommended_next_action']}")
+        print(f"  Report: {report_path}")
+
+    return 0
+
+
 def main() -> int:
-    """RC-COMBINE-V2-10601-11600 — Execute exactly one V9 real generation.
+    """RC-COMBINE-V2-22001-26000 — Run QA Canon Engine on a candidate asset.
 
     This command is the explicit V9 generation gate. It:
     - Validates current state is v9_generation_authorization_required
@@ -15639,6 +15713,27 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-22001-26000 — QA Canon Engine subcommand
+    combine_run_qa_canon_engine_parser = subparsers.add_parser(
+        "combine-run-qa-canon-engine",
+        help="Run QA Canon Engine on a candidate asset"
+    )
+    combine_run_qa_canon_engine_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_run_qa_canon_engine_parser.add_argument(
+        "--candidate-version", required=True, help="Candidate version (e.g. v12, v13)",
+    )
+    combine_run_qa_canon_engine_parser.add_argument(
+        "--asset-path", required=True, help="Relative path to candidate asset from project root",
+    )
+    combine_run_qa_canon_engine_parser.add_argument(
+        "--operator-feedback", help="Operator visual feedback text",
+    )
+    combine_run_qa_canon_engine_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -16017,6 +16112,9 @@ def main() -> int:
     elif args.command == "combine-finalize-qa-recovery-loop":
         _require_absolute_project_root(args, "combine-finalize-qa-recovery-loop")
         return combine_finalize_qa_recovery_loop(args)
+    elif args.command == "combine-run-qa-canon-engine":
+        _require_absolute_project_root(args, "combine-run-qa-canon-engine")
+        return combine_run_qa_canon_engine(args)
     else:
         parser.print_help()
         return 0
