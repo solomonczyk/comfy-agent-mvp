@@ -16,6 +16,7 @@ class CombineStateMachine:
         "initial",
         "brief_intake_required",
         "brief_operator_review_required",
+        "planning_operator_review_required",
         "route_classification_required",
         "production_plan_required",
         "production_plan_review",
@@ -165,6 +166,11 @@ class CombineStateMachine:
         },
         "brief_operator_review_required": {
             "route_classification_required",
+            "brief_intake_required",
+            "planning_operator_review_required",
+        },
+        "planning_operator_review_required": {
+            "planning_operator_review_required",
             "brief_intake_required",
         },
         "route_classification_required": {
@@ -667,6 +673,18 @@ class CombineStateMachine:
         ("brief_operator_review_required", "real_visual_qa_required"),
         ("brief_operator_review_required", "completed"),
         ("brief_operator_review_required", "production_accepted"),
+        # Planning operator review: cannot skip to generation, assembly, QA, or downstream
+        ("planning_operator_review_required", "generate_assets"),
+        ("planning_operator_review_required", "real_generate_assets"),
+        ("planning_operator_review_required", "assembly_required"),
+        ("planning_operator_review_required", "assembly_preflight_required"),
+        ("planning_operator_review_required", "visual_qa_required"),
+        ("planning_operator_review_required", "real_visual_qa_required"),
+        ("planning_operator_review_required", "completed"),
+        ("planning_operator_review_required", "production_accepted"),
+        ("planning_operator_review_required", "final_qc_required"),
+        ("planning_operator_review_required", "final_operator_acceptance"),
+
         ("route_classification_required", "generate_assets"),
         
         # QA cannot happen before generated artifacts

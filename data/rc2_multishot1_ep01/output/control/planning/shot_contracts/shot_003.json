@@ -1,0 +1,48 @@
+{
+  "task_id": "RC-COMBINE-V2-62001-70000",
+  "shot_id": "shot_003",
+  "scene_id": "scene_002",
+  "source_brief_reference": "Create a short educational explainer video about how an AI production pipeline checks generated frames before assembly. The video should be clear, practical, and suitable for beginners.",
+  "narrative_purpose": "Show raw generation output examples",
+  "visual_intent": "Demonstrate the variability of raw AI generation output",
+  "composition_requirements": "Display a grid of sample AI-generated frames showing varied quality \u2014 some sharp, some with artifacts, some well-composed.",
+  "camera_framing_requirements": "Split-screen grid view with 4 sample frames",
+  "subject_object_requirements": "Sample generated frame images on grid",
+  "required_assets": "sample_frame_assets: 4 variant frame images",
+  "generation_requirements": {
+    "model_hint": "sdxl",
+    "workflow_hint": "txt2img",
+    "generation_ready": false
+  },
+  "workflow_requirements": {
+    "handoff_target": "Workflow-to-Assets layer",
+    "handoff_status": "pending",
+    "required_downstream": [
+      "frame_generation",
+      "qa_validation"
+    ]
+  },
+  "resolution_aspect_expectations": {
+    "resolution": null,
+    "aspect_ratio_hint": null
+  },
+  "negative_constraints": [
+    "generation_without_operator_authorization",
+    "comfyui_submit",
+    "final_render",
+    "production_acceptance",
+    "assembly_execution",
+    "downstream_execution",
+    "visual_qa_skip",
+    "preview_render"
+  ],
+  "qa_criteria": "grid layout balanced, quality differences visible, annotations clear",
+  "forbidden_actions": [
+    "generation_without_operator_authorization",
+    "comfyui_submit_without_authorization",
+    "production_acceptance_without_review"
+  ],
+  "handoff_target": "Workflow-to-Assets layer",
+  "production_accepted": false,
+  "created_timestamp": "2026-05-08T14:55:57.622440+00:00"
+}

@@ -1,0 +1,143 @@
+{
+  "task_id": "RC-COMBINE-V2-62001-70000",
+  "packet_type": "planning_operator_review",
+  "created_timestamp": "2026-05-08T14:56:12.173039+00:00",
+  "what_was_planned": "Director planning package converting accepted brief into scenario, scene, and shot plans with per-shot contracts",
+  "scenario_overview": {
+    "narrative_goal": "a short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+    "content_type": "educational",
+    "target_audience": "beginners",
+    "emotional_arc": "Curiosity -> Understanding -> Confidence in AI pipeline quality assurance",
+    "informational_arc": "Problem introduction -> Pipeline explanation -> QA mechanism -> Defect resolution -> Value reinforcement"
+  },
+  "scene_list": [
+    {
+      "scene_id": "scene_001",
+      "purpose": "hook_and_context",
+      "summary": "Open with a relatable question about AI video quality, introduce the concept of automated frame checking and why it matters."
+    },
+    {
+      "scene_id": "scene_002",
+      "purpose": "generation_output",
+      "summary": "Show what raw generated frames look like as they exit the AI model \u2014 diverse outputs, varying quality, and the need for automated screening."
+    },
+    {
+      "scene_id": "scene_003",
+      "purpose": "automated_qa_checks",
+      "summary": "Present the automated QA pipeline stages: format validation, resolution check, artifact detection, color integrity, and content alignment."
+    },
+    {
+      "scene_id": "scene_004",
+      "purpose": "defect_detection_and_correction",
+      "summary": "Illustrate common defect categories, how the system categorizes issues, and the correction loop that retries or patches problematic frames."
+    },
+    {
+      "scene_id": "scene_005",
+      "purpose": "assembly_readiness_and_conclusion",
+      "summary": "Wrap up by showing accepted frames proceeding to assembly, summarize the pipeline value, and end with a call to action for the viewer."
+    }
+  ],
+  "shot_list": [
+    {
+      "shot_id": "shot_001",
+      "scene_id": "scene_001",
+      "purpose": "Attention-grabbing open \u2014 pose the quality question",
+      "duration_target_seconds": 8
+    },
+    {
+      "shot_id": "shot_002",
+      "scene_id": "scene_001",
+      "purpose": "Establish the AI pipeline context",
+      "duration_target_seconds": 12
+    },
+    {
+      "shot_id": "shot_003",
+      "scene_id": "scene_002",
+      "purpose": "Show raw generation output examples",
+      "duration_target_seconds": 15
+    },
+    {
+      "shot_id": "shot_004",
+      "scene_id": "scene_002",
+      "purpose": "Illustrate common generation issues",
+      "duration_target_seconds": 15
+    },
+    {
+      "shot_id": "shot_005",
+      "scene_id": "scene_003",
+      "purpose": "QA pipeline overview",
+      "duration_target_seconds": 12
+    },
+    {
+      "shot_id": "shot_006",
+      "scene_id": "scene_003",
+      "purpose": "Technical validation checks",
+      "duration_target_seconds": 15
+    },
+    {
+      "shot_id": "shot_007",
+      "scene_id": "scene_003",
+      "purpose": "Visual quality assessment",
+      "duration_target_seconds": 15
+    },
+    {
+      "shot_id": "shot_008",
+      "scene_id": "scene_004",
+      "purpose": "Defect taxonomy presentation",
+      "duration_target_seconds": 12
+    },
+    {
+      "shot_id": "shot_009",
+      "scene_id": "scene_004",
+      "purpose": "Correction loop explanation",
+      "duration_target_seconds": 15
+    },
+    {
+      "shot_id": "shot_010",
+      "scene_id": "scene_004",
+      "purpose": "Re-check after correction",
+      "duration_target_seconds": 10
+    },
+    {
+      "shot_id": "shot_011",
+      "scene_id": "scene_005",
+      "purpose": "Approved frames proceeding to assembly",
+      "duration_target_seconds": 10
+    },
+    {
+      "shot_id": "shot_012",
+      "scene_id": "scene_005",
+      "purpose": "Summary and conclusion",
+      "duration_target_seconds": 12
+    }
+  ],
+  "shot_count": 12,
+  "scene_count": 5,
+  "shot_contracts_count": 24,
+  "assumptions_made": [
+    "Pipeline will stop at operator review for approval",
+    "No generation will be performed without authorization",
+    "All artifacts are validation/preparation only",
+    "Production acceptance requires explicit operator sign-off",
+    "Scenario structure follows three-act educational explainer format",
+    "Scene order follows logical pipeline flow: context -> generation -> QA -> correction -> assembly",
+    "Shot durations are estimates and may require adjustment during generation",
+    "All shots require operator review authorization before generation",
+    "No generation has been performed \u2014 all planning artifacts are preparation only"
+  ],
+  "missing_information": [],
+  "blockers": [],
+  "warnings": [],
+  "next_layer_allowed": true,
+  "operator_review_required": true,
+  "current_state": "planning_operator_review_required",
+  "next_allowed_action": "planning_operator_review_required",
+  "production_accepted": false,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "next_recommended_layer": "RC-COMBINE-V2-70001-86000 Workflow-to-Assets Package",
+  "notes": "Operator must review the planning package, confirm or modify scene/shot structure, then authorize proceeding to Workflow-to-Assets layer."
+}

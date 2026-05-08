@@ -1,0 +1,55 @@
+{
+  "task_id": "RC-COMBINE-V2-62001-70000",
+  "scenario_summary": "a short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+  "scene_count": 5,
+  "shot_count": 12,
+  "ordered_production_stages": [
+    "brief_intake",
+    "director_planning",
+    "workflow_to_assets",
+    "frame_generation",
+    "qa_validation",
+    "correction_loop",
+    "final_qa",
+    "assembly",
+    "preview",
+    "production_acceptance"
+  ],
+  "dependency_map": {
+    "brief_intake": "director_planning",
+    "director_planning": "workflow_to_assets",
+    "workflow_to_assets": "frame_generation",
+    "frame_generation": "qa_validation",
+    "qa_validation": "correction_loop",
+    "correction_loop": "final_qa",
+    "final_qa": "assembly",
+    "assembly": "preview",
+    "preview": "production_acceptance"
+  },
+  "required_downstream_layers": [
+    "RC-COMBINE-V2-70001-86000 Workflow-to-Assets Package",
+    "Frame Generation Layer",
+    "QA Validation Layer",
+    "Correction Loop Layer",
+    "Final Assembly Layer"
+  ],
+  "operator_gates_required": [
+    "planning_operator_review_required",
+    "workflow_operator_review_required",
+    "generation_authorization_required",
+    "visual_qa_operator_review_required",
+    "production_acceptance_required"
+  ],
+  "dangerous_actions_remaining_blocked": [
+    "production_acceptance",
+    "downstream_execution",
+    "final_render",
+    "generation_without_operator_authorization",
+    "comfyui_submit",
+    "assembly_execution",
+    "preview_render",
+    "visual_qa_skip"
+  ],
+  "ready_for_workflow_to_assets": true,
+  "created_timestamp": "2026-05-08T14:55:57.622440+00:00"
+}

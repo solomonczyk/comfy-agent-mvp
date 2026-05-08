@@ -709,5 +709,41 @@
     "previous_layer": "RC-COMBINE-V2-46001-54000",
     "next_layer": "RC-COMBINE-V2-62001-70000 Director Planning and Shot Contract Layer",
     "timestamp": "2026-05-08T14:13:07.990831+00:00"
+  },
+  {
+    "event": "director_planning_layer_completed",
+    "task_id": "RC-COMBINE-V2-62001-70000",
+    "status": "planning_completed",
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "visual_qa_executed": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "current_state": "planning_operator_review_required",
+    "next_allowed_action": "planning_operator_review_required",
+    "previous_layer": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
+    "next_layer": "RC-COMBINE-V2-70001-86000 Workflow-to-Assets Package",
+    "timestamp": "2026-05-08T14:55:23.052946+00:00"
+  },
+  {
+    "event": "director_planning_layer_completed",
+    "task_id": "RC-COMBINE-V2-62001-70000",
+    "status": "planning_completed",
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "visual_qa_executed": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "current_state": "planning_operator_review_required",
+    "next_allowed_action": "planning_operator_review_required",
+    "previous_layer": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
+    "next_layer": "RC-COMBINE-V2-70001-86000 Workflow-to-Assets Package",
+    "timestamp": "2026-05-08T14:55:57.622440+00:00"
   }
 ]

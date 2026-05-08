@@ -1,0 +1,43 @@
+{
+  "task_id": "RC-COMBINE-V2-62001-70000",
+  "source_brief_reference": "Create a short educational explainer video about how an AI production pipeline checks generated frames before assembly. The video should be clear, practical, and suitable for beginners.",
+  "project_id": "rc2_multishot1_ep01",
+  "episode_id": "rc2_multishot1_ep01",
+  "narrative_goal": "a short educational explainer video about how an AI production pipeline checks generated frames before assembly",
+  "target_audience": "beginners",
+  "content_type": "educational",
+  "format_assumptions": "Format: None",
+  "duration_assumptions": "Target duration: None",
+  "scenario_structure": {
+    "three_act": {
+      "act_1": "Setup \u2014 introduce the problem and context",
+      "act_2": "Confrontation \u2014 explore the pipeline steps and challenges",
+      "act_3": "Resolution \u2014 show successful resolution and conclusion"
+    }
+  },
+  "scene_sequence": [
+    "scene_001",
+    "scene_002",
+    "scene_003",
+    "scene_004",
+    "scene_005"
+  ],
+  "intended_emotional_arc": "Curiosity -> Understanding -> Confidence in AI pipeline quality assurance",
+  "intended_informational_arc": "Problem introduction -> Pipeline explanation -> QA mechanism -> Defect resolution -> Value reinforcement",
+  "forbidden_content_inherited": [
+    "production_acceptance",
+    "downstream_execution",
+    "final_render",
+    "generation_without_operator_authorization",
+    "comfyui_submit",
+    "assembly_execution",
+    "preview_render",
+    "visual_qa_skip"
+  ],
+  "downstream_readiness_flags": {
+    "ready_for_workflow_to_assets": false,
+    "operator_review_required": true,
+    "production_accepted": false
+  },
+  "created_timestamp": "2026-05-08T14:55:57.622440+00:00"
+}

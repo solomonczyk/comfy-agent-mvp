@@ -16352,6 +16352,40 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-62001-70000 — Director Planning and Shot Contract Layer commands
+    combine_build_director_planning_parser = subparsers.add_parser(
+        "combine-build-director-planning",
+        help="Build director planning package: scenario, scene, shot plans, contracts, production plan, validation, operator review",
+    )
+    combine_build_director_planning_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_director_planning_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_validate_director_planning_parser = subparsers.add_parser(
+        "combine-validate-director-planning",
+        help="Validate existing director planning artifacts and regenerate validation report",
+    )
+    combine_validate_director_planning_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_validate_director_planning_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_build_planning_operator_review_parser = subparsers.add_parser(
+        "combine-build-planning-operator-review",
+        help="Build planning operator review packet summarizing planning readiness and next layer",
+    )
+    combine_build_planning_operator_review_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_planning_operator_review_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -16760,6 +16794,15 @@ def main() -> int:
     elif args.command == "combine-build-brief-operator-review":
         _require_absolute_project_root(args, "combine-build-brief-operator-review")
         return combine_build_brief_operator_review(args)
+    elif args.command == "combine-build-director-planning":
+        _require_absolute_project_root(args, "combine-build-director-planning")
+        return combine_build_director_planning(args)
+    elif args.command == "combine-validate-director-planning":
+        _require_absolute_project_root(args, "combine-validate-director-planning")
+        return combine_validate_director_planning(args)
+    elif args.command == "combine-build-planning-operator-review":
+        _require_absolute_project_root(args, "combine-build-planning-operator-review")
+        return combine_build_planning_operator_review(args)
     else:
         parser.print_help()
         return 0
@@ -38765,6 +38808,145 @@ def combine_build_brief_operator_review(args: argparse.Namespace) -> int:
         print(f"  Next Layer: {packet.get('next_recommended_layer', 'unknown')}")
         print(f"  Generation Performed: {packet.get('generation_performed', False)}")
         print(f"  Production Accepted: {packet.get('production_accepted', False)}")
+
+    return 0
+
+
+def combine_build_director_planning(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-62001-70000 — Build director planning package.
+
+    Validates brief intake artifacts and builds the complete planning package
+    including scenario plan, scene plan, shot plan, per-shot contracts,
+    production plan, validation report, and operator review packet.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: planning artifacts built successfully
+    - 1: error or blocked
+    """
+    from app.planning.director import build_director_planning as _build_director_planning
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _build_director_planning(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        blocked = result.get('blocked', False) or result.get('blocked_path_reached', False)
+        print(f"Director Planning Build Status: {'BLOCKED' if blocked else 'OK'}")
+        print(f"  Scenario Plan Created: {result.get('scenario_plan_created', False)}")
+        print(f"  Scene Plan Created: {result.get('scene_plan_created', False)}")
+        print(f"  Shot Plan Created: {result.get('shot_plan_created', False)}")
+        print(f"  Shot Contracts Created: {result.get('shot_contracts_created', False)}")
+        print(f"  Production Plan Created: {result.get('production_plan_created', False)}")
+        print(f"  Validation Report Created: {result.get('planning_validation_report_created', False)}")
+        print(f"  Operator Review Packet Created: {result.get('planning_operator_review_packet_created', False)}")
+        print(f"  Current State: {result.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        if result.get('blocker_reason'):
+            print(f"  Blocker Reason: {result['blocker_reason']}")
+        if result.get('errors'):
+            print(f"  Errors: {result['errors']}")
+        if result.get('warnings'):
+            print(f"  Warnings: {result['warnings']}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  ComfyUI Submit Executed: {result.get('comfyui_submit_executed', False)}")
+        print(f"  Assembly Executed: {result.get('assembly_executed', False)}")
+        print(f"  Downstream Executed: {result.get('downstream_executed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        print(f"  Next Layer: {result.get('next_layer', 'unknown')}")
+
+    if result.get('blocked', False) or result.get('blocked_path_reached', False):
+        return 1
+    return 0
+
+
+def combine_validate_director_planning(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-62001-70000 — Validate existing director planning artifacts.
+
+    Reads all planning artifacts and re-validates completeness, schema, and safety.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: validation completed (even if artifacts have warnings)
+    - 1: validation failed (blocked path)
+    """
+    from app.planning.director import validate_director_planning as _validate_director_planning
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _validate_director_planning(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Director Planning Validation Status:")
+        print(f"  Scenario Plan Created: {result.get('scenario_plan_created', False)}")
+        print(f"  Scene Plan Created: {result.get('scene_plan_created', False)}")
+        print(f"  Shot Plan Created: {result.get('shot_plan_created', False)}")
+        print(f"  Shot Contracts Created: {result.get('shot_contracts_created', False)}")
+        print(f"  Every Scene Has Shots: {result.get('every_scene_has_at_least_one_shot', False)}")
+        print(f"  Every Shot Has Scene ID: {result.get('every_shot_has_scene_id', False)}")
+        print(f"  Every Shot Has Visual Intent: {result.get('every_shot_has_visual_intent', False)}")
+        print(f"  Every Shot Has QA Criteria: {result.get('every_shot_has_qa_criteria', False)}")
+        print(f"  Validation Passed: {result.get('validation_passed', False)}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        if result.get('blocker_reason'):
+            print(f"  Blocker: {result['blocker_reason']}")
+        if result.get('errors'):
+            print(f"  Errors: {result['errors']}")
+        if result.get('warnings'):
+            print(f"  Warnings: {result['warnings']}")
+
+    is_blocked = result.get('blocked_path_reached', False)
+    return 1 if is_blocked else 0
+
+
+def combine_build_planning_operator_review(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-62001-70000 — Build planning operator review packet.
+
+    Reads all planning artifacts and creates a comprehensive operator review
+    packet summarizing scenario, scenes, shots, contracts, assumptions, and readiness.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: operator review packet built successfully
+    - 1: error
+    """
+    from app.planning.director import build_planning_operator_review as _build_planning_operator_review
+
+    project_root = args.project_root
+    json_output = args.json
+
+    packet = _build_planning_operator_review(project_root)
+
+    if json_output:
+        print(json.dumps({"status": "ok", "packet": packet}, indent=2))
+    else:
+        print("Planning Operator Review Packet Created:")
+        print(f"  Scenario Goal: {packet.get('scenario_overview', {}).get('narrative_goal', '')[:80]}")
+        print(f"  Content Type: {packet.get('scenario_overview', {}).get('content_type', 'unknown')}")
+        print(f"  Scene Count: {packet.get('scene_count', 0)}")
+        print(f"  Shot Count: {packet.get('shot_count', 0)}")
+        print(f"  Shot Contracts Count: {packet.get('shot_contracts_count', 0)}")
+        print(f"  Missing Information: {packet.get('missing_information', [])}")
+        print(f"  Blockers: {packet.get('blockers', [])}")
+        print(f"  Next Layer Allowed: {packet.get('next_layer_allowed', False)}")
+        print(f"  Current State: {packet.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {packet.get('next_allowed_action', 'unknown')}")
+        print(f"  Generation Performed: {packet.get('generation_performed', False)}")
+        print(f"  Production Accepted: {packet.get('production_accepted', False)}")
+        print(f"  Next Recommended Layer: {packet.get('next_recommended_layer', 'unknown')}")
 
     return 0
 

@@ -1,0 +1,66 @@
+{
+  "task_id": "RC-COMBINE-V2-62001-70000",
+  "scenes": [
+    {
+      "scene_id": "scene_001",
+      "scene_purpose": "hook_and_context",
+      "scene_summary": "Open with a relatable question about AI video quality, introduce the concept of automated frame checking and why it matters.",
+      "expected_duration_range_seconds": [
+        15,
+        25
+      ],
+      "visual_intent": "Clean motion graphics with animated pipeline overview",
+      "narrative_role": "set the stage and establish the problem-solution framework",
+      "transition_intent_to_next_scene": "zoom into the pipeline entry point where generated frames arrive"
+    },
+    {
+      "scene_id": "scene_002",
+      "scene_purpose": "generation_output",
+      "scene_summary": "Show what raw generated frames look like as they exit the AI model \u2014 diverse outputs, varying quality, and the need for automated screening.",
+      "expected_duration_range_seconds": [
+        20,
+        35
+      ],
+      "visual_intent": "Split-screen display of multiple generated frame variants with quality indicators",
+      "narrative_role": "demonstrate the input to the QA pipeline",
+      "transition_intent_to_next_scene": "pan across frames into a magnifying glass inspection view"
+    },
+    {
+      "scene_id": "scene_003",
+      "scene_purpose": "automated_qa_checks",
+      "scene_summary": "Present the automated QA pipeline stages: format validation, resolution check, artifact detection, color integrity, and content alignment.",
+      "expected_duration_range_seconds": [
+        30,
+        45
+      ],
+      "visual_intent": "Flowchart-style animation showing frames moving through checkpoints with pass/fail indicators",
+      "narrative_role": "explain the core QA mechanism",
+      "transition_intent_to_next_scene": "transition to a zoomed defect view on a flagged frame"
+    },
+    {
+      "scene_id": "scene_004",
+      "scene_purpose": "defect_detection_and_correction",
+      "scene_summary": "Illustrate common defect categories, how the system categorizes issues, and the correction loop that retries or patches problematic frames.",
+      "expected_duration_range_seconds": [
+        25,
+        40
+      ],
+      "visual_intent": "Defect taxonomy visual with example images, correction arrows showing retry path",
+      "narrative_role": "show the detection and resolution process",
+      "transition_intent_to_next_scene": "transition to a green-check celebration as frames pass all checks"
+    },
+    {
+      "scene_id": "scene_005",
+      "scene_purpose": "assembly_readiness_and_conclusion",
+      "scene_summary": "Wrap up by showing accepted frames proceeding to assembly, summarize the pipeline value, and end with a call to action for the viewer.",
+      "expected_duration_range_seconds": [
+        15,
+        25
+      ],
+      "visual_intent": "Approved frames assembling into final sequence, clean summary graphics",
+      "narrative_role": "resolve the narrative and reinforce key takeaways",
+      "transition_intent_to_next_scene": "fade to end card"
+    }
+  ],
+  "created_timestamp": "2026-05-08T14:55:57.622440+00:00"
+}
