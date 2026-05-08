@@ -1,0 +1,27 @@
+{
+  "task_id": "RC-COMBINE-V2-94001-98000",
+  "decision_type": "checkpoint_source_allowlist",
+  "missing_checkpoint": "checkpoint_sdxl_base",
+  "allowed_sources": [
+    {
+      "source": "huggingface.co/stabilityai/stable-diffusion-xl-base-1.0",
+      "source_type": "huggingface",
+      "model_id": "stabilityai/stable-diffusion-xl-base-1.0",
+      "verified_trusted": true,
+      "download_authorized": false,
+      "requires_operator_approval": true
+    },
+    {
+      "source": "huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors",
+      "source_type": "huggingface_direct",
+      "model_id": "stabilityai/stable-diffusion-xl-base-1.0",
+      "verified_trusted": true,
+      "download_authorized": false,
+      "requires_operator_approval": true
+    }
+  ],
+  "operator_approval_required": true,
+  "download_authorized": false,
+  "download_performed": false,
+  "timestamp": "2026-05-08T16:33:59.238167+00:00"
+}

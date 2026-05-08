@@ -16454,6 +16454,29 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-94001-98000 — Checkpoint Asset Resolution and Gate Revalidation
+    combine_resolve_checkpoint_asset_parser = subparsers.add_parser(
+        "combine-resolve-checkpoint-asset",
+        help="Resolve checkpoint asset blocker: scan inventory, evaluate candidates, create resolution decision",
+    )
+    combine_resolve_checkpoint_asset_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_resolve_checkpoint_asset_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_revalidate_generation_gate_parser = subparsers.add_parser(
+        "combine-revalidate-generation-gate",
+        help="Revalidate generation gate after checkpoint resolution attempt",
+    )
+    combine_revalidate_generation_gate_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_revalidate_generation_gate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -16889,6 +16912,12 @@ def main() -> int:
     elif args.command == "combine-validate-generation-gate-package":
         _require_absolute_project_root(args, "combine-validate-generation-gate-package")
         return combine_validate_generation_gate_package(args)
+    elif args.command == "combine-resolve-checkpoint-asset":
+        _require_absolute_project_root(args, "combine-resolve-checkpoint-asset")
+        return combine_resolve_checkpoint_asset(args)
+    elif args.command == "combine-revalidate-generation-gate":
+        _require_absolute_project_root(args, "combine-revalidate-generation-gate")
+        return combine_revalidate_generation_gate(args)
     else:
         parser.print_help()
         return 0
@@ -39318,6 +39347,93 @@ def combine_validate_generation_gate_package(args: argparse.Namespace) -> int:
                 print(f"    - {w}")
 
     return 0 if result.get('validation_passed', False) else 1
+
+
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-94001-98000 — Checkpoint Asset Resolution and Gate Revalidation
+# ---------------------------------------------------------------------------
+
+
+def combine_resolve_checkpoint_asset(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-94001-98000 — Resolve checkpoint asset blocker.
+
+    Reads blocker artifacts, scans local checkpoint inventory (read-only),
+    evaluates candidates, creates resolution decision and appropriate
+    artifacts (substitution packet or acquisition contracts), revalidates
+    generation gate, and updates artifact index and episode ledger.
+
+    Does NOT perform generation, ComfyUI submit, download, install,
+    retry, visual QA, preview render, assembly, or downstream execution.
+
+    Exit codes:
+    - 0: resolution completed successfully (any branch)
+    - 1: error
+    """
+    from app.asset_resolution import resolve_checkpoint_asset as _resolve
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _resolve(project_root)
+
+    if json_output:
+        print(json.dumps({"status": "ok", "resolution": result}, indent=2))
+    else:
+        print("Checkpoint Asset Resolution:")
+        print(f"  Selected Branch: {result.get('selected_branch', 'unknown')}")
+        print(f"  Missing Checkpoint: {result.get('missing_checkpoint', 'unknown')}")
+        print(f"  Checkpoint Resolved: {result.get('checkpoint_resolved', False)}")
+        print(f"  Local Candidate Found: {result.get('local_candidate_found', False)}")
+        print(f"  Operator Review Required: {result.get('operator_review_required', False)}")
+        print(f"  Acquisition Required: {result.get('acquisition_required', False)}")
+        print(f"  Current State: {result.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        if result.get('substitution_packet_created'):
+            print(f"  Substitution Packet Created: True")
+        acq = result.get('acquisition_contracts_created', {})
+        if any(acq.values()):
+            print(f"  Acquisition Contracts Created: {acq}")
+
+    return 0
+
+
+def combine_revalidate_generation_gate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-94001-98000 — Revalidate generation gate after checkpoint resolution.
+
+    Reads checkpoint resolution artifacts and re-evaluates the generation gate.
+    Updates the generation gate decision based on the resolution outcome.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: revalidation completed successfully
+    - 1: error
+    """
+    from app.asset_resolution import revalidate_generation_gate as _revalidate
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _revalidate(project_root)
+
+    if json_output:
+        print(json.dumps({"status": "ok", "revalidation": result}, indent=2))
+    else:
+        print("Generation Gate Revalidation (after checkpoint resolution):")
+        print(f"  Gate Status: {result.get('gate_status', 'unknown')}")
+        print(f"  Generation Authorized: {result.get('generation_authorized', False)}")
+        print(f"  Gate Blocked: {result.get('generation_gate_blocked', True)}")
+        print(f"  Checkpoint Resolved: {result.get('checkpoint_resolved', False)}")
+        print(f"  Operator Review Required: {result.get('operator_review_required', False)}")
+        print(f"  Acquisition Required: {result.get('acquisition_required', False)}")
+        print(f"  Reason: {result.get('reason', '')}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+
+    return 0
 
 
 if __name__ == "__main__":

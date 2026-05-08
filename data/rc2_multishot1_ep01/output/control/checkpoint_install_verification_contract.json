@@ -1,0 +1,20 @@
+{
+  "task_id": "RC-COMBINE-V2-94001-98000",
+  "contract_type": "checkpoint_install_verification",
+  "missing_checkpoint": "checkpoint_sdxl_base",
+  "expected_install_path": "models/checkpoints/sd_xl_base_1.0.safetensors",
+  "verification_required": true,
+  "verification_checks": [
+    "file_exists",
+    "file_size > 5 GB",
+    "sha256_checksum_match",
+    "loadable_by_comfyui"
+  ],
+  "download_authorized": false,
+  "download_performed": false,
+  "install_authorized": false,
+  "install_performed": false,
+  "install_verified": false,
+  "fake_install_proof_forbidden": true,
+  "timestamp": "2026-05-08T16:33:59.238167+00:00"
+}

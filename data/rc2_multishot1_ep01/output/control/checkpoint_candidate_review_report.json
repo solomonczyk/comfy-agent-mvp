@@ -1,0 +1,13 @@
+{
+  "task_id": "RC-COMBINE-V2-94001-98000",
+  "candidate_assets_reviewed": true,
+  "candidates": [],
+  "rejected_candidates": [],
+  "valid_candidates": [],
+  "requires_operator_review": false,
+  "exact_match_available": false,
+  "substitution_candidate_available": false,
+  "no_candidates_found": true,
+  "reason": "No SDXL-compatible checkpoints found in local inventory",
+  "timestamp": "2026-05-08T16:33:59.236167+00:00"
+}

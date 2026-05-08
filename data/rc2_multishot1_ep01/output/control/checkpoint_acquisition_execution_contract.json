@@ -1,0 +1,18 @@
+{
+  "task_id": "RC-COMBINE-V2-94001-98000",
+  "contract_type": "checkpoint_acquisition_execution",
+  "missing_checkpoint": "checkpoint_sdxl_base",
+  "expected_file": "sd_xl_base_1.0.safetensors",
+  "expected_file_size_hint": "> 5 GB (SDXL base checkpoint)",
+  "target_install_path": "models/checkpoints/sd_xl_base_1.0.safetensors",
+  "source_url": "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors",
+  "checksum_url": "https://huggingface.co/stabilityai/stable-diffusion-xl-base-1.0/resolve/main/sd_xl_base_1.0.safetensors.sha256",
+  "download_authorized": false,
+  "download_performed": false,
+  "install_authorized": false,
+  "install_performed": false,
+  "operator_approval_required": true,
+  "fake_download_proof_forbidden": true,
+  "fake_install_proof_forbidden": true,
+  "timestamp": "2026-05-08T16:33:59.238167+00:00"
+}

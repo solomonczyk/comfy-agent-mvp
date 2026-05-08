@@ -1,0 +1,21 @@
+{
+  "task_id": "RC-COMBINE-V2-94001-98000",
+  "blocker_type": "checkpoint_acquisition_required",
+  "decision": "acquisition_required",
+  "missing_checkpoint": "checkpoint_sdxl_base",
+  "expected_asset_type": "checkpoint",
+  "local_inventory_checked": true,
+  "total_checkpoints_found": 0,
+  "sdxl_compatible_found": 0,
+  "why_resolution_blocked": "No SDXL-compatible checkpoint found in local inventory. Checkpoint must be acquired from trusted source and installed.",
+  "fake_availability_forbidden": true,
+  "unapproved_download_forbidden": true,
+  "unapproved_install_forbidden": true,
+  "generation_forbidden_until_resolved": true,
+  "operator_action_required": "Approve source, download, and install via operator review",
+  "download_authorized": false,
+  "download_performed": false,
+  "install_authorized": false,
+  "install_performed": false,
+  "timestamp": "2026-05-08T16:33:59.238167+00:00"
+}

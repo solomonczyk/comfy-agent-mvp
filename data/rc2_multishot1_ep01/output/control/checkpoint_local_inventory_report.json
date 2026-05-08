@@ -1,0 +1,22 @@
+{
+  "task_id": "RC-COMBINE-V2-94001-98000",
+  "inventory_checked": true,
+  "checkpoint_directories_scanned": [
+    "ComfyUI root not found"
+  ],
+  "comfyui_root_found": false,
+  "comfyui_root_path": null,
+  "found_checkpoints": [],
+  "sdxl_compatible_found": [],
+  "sdxl_exact_match_found": false,
+  "sdxl_exact_match": null,
+  "sd15_found": [],
+  "unknown_type_found": [],
+  "rejected_checkpoints": [],
+  "valid_candidates": [],
+  "comfyui_api_checked": false,
+  "total_checkpoints_found": 0,
+  "total_valid_candidates": 0,
+  "total_rejected": 0,
+  "timestamp": "2026-05-08T16:33:59.236167+00:00"
+}
