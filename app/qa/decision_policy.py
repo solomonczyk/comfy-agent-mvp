@@ -22,6 +22,9 @@ DEFAULT_DECISION_POLICY: Dict[str, Any] = {
         "lip_teeth_boundary_failed",
         "facial_anatomy_failed",
         "synthetic_doll_like_face",
+        "head_not_fully_in_frame",
+        "top_of_head_cropped",
+        "over_tight_face_crop",
     ],
     "operator_review_if": [
         "borderline_skin_texture",

@@ -70,6 +70,31 @@ DEFECT_TAXONOMY: Dict[str, Dict] = {
         "severity": "medium",
         "description": "Poor composition or framing",
     },
+    # --- Framing / crop defects (human_face domain) ---
+    "head_not_fully_in_frame": {
+        "id": "head_not_fully_in_frame",
+        "domain": "human_face",
+        "severity": "hard_reject",
+        "description": "Head is cropped or not fully visible in frame",
+    },
+    "top_of_head_cropped": {
+        "id": "top_of_head_cropped",
+        "domain": "human_face",
+        "severity": "hard_reject",
+        "description": "Top of head / hairline is cropped by frame edge",
+    },
+    "over_tight_face_crop": {
+        "id": "over_tight_face_crop",
+        "domain": "human_face",
+        "severity": "hard_reject",
+        "description": "Face fills too much of the frame — extreme close-up with no margin",
+    },
+    "portrait_framing_failed": {
+        "id": "portrait_framing_failed",
+        "domain": "human_face",
+        "severity": "medium",
+        "description": "Portrait framing is poorly composed",
+    },
     # --- Human face domain defects ---
     "bad_teeth": {
         "id": "bad_teeth",
@@ -175,6 +200,16 @@ def map_operator_feedback_to_defects(operator_feedback: str) -> List[str]:
         "deform": "major_anatomy_failure",
         "composition": "composition_failed",
         "detail": "low_micro_detail",
+        "head": "head_not_fully_in_frame",
+        "crop": "top_of_head_cropped",
+        "cropped": "top_of_head_cropped",
+        "forehead": "top_of_head_cropped",
+        "hair": "top_of_head_cropped",
+        "frame": "portrait_framing_failed",
+        "close-up": "over_tight_face_crop",
+        "closeup": "over_tight_face_crop",
+        "tight": "over_tight_face_crop",
+        "portrait": "portrait_framing_failed",
     }
 
     seen: set = set()

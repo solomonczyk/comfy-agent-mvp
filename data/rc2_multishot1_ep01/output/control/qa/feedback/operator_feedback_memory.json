@@ -31,6 +31,25 @@
       ],
       "operator_comment": "teeth do not pass visual approval",
       "timestamp": "2026-05-08T13:10:35.572582"
+    },
+    {
+      "candidate_version": "v13",
+      "asset_path": "output/assets/combine_v2_v13_candidate_1778239698_00001_.png",
+      "label": "negative",
+      "failed_regions": [
+        "head",
+        "forehead",
+        "hair",
+        "top_of_head"
+      ],
+      "defects": [
+        "head_not_fully_in_frame",
+        "top_of_head_cropped",
+        "over_tight_face_crop",
+        "portrait_framing_failed"
+      ],
+      "operator_comment": "Head is not fully in frame. Top of head cropped. Face too tight in frame.",
+      "timestamp": "2026-05-08T12:07:27.623871+00:00"
     }
   ]
 }

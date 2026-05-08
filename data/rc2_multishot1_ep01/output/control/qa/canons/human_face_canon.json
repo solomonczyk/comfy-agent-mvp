@@ -8,7 +8,10 @@
     "lips",
     "nose",
     "skin",
-    "jawline"
+    "jawline",
+    "hair",
+    "forehead",
+    "top_of_head"
   ],
   "hard_reject_defects": [
     "bad_teeth",
@@ -16,6 +19,12 @@
     "lip_teeth_boundary_failed",
     "facial_anatomy_failed",
     "synthetic_doll_like_face",
-    "plastic_skin"
+    "plastic_skin",
+    "head_not_fully_in_frame",
+    "top_of_head_cropped",
+    "over_tight_face_crop"
+  ],
+  "operator_review_defects": [
+    "portrait_framing_failed"
   ]
 }

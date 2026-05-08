@@ -9,7 +9,9 @@
     "no_severe_blur",
     "no_major_artifact_corruption",
     "lighting_consistency",
-    "perspective_consistency"
+    "perspective_consistency",
+    "full_head_in_frame",
+    "no_cropped_forehead"
   ],
   "hard_reject_defects": [
     "stub_asset",
