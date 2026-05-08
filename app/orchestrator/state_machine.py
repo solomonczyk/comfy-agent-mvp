@@ -102,7 +102,11 @@ class CombineStateMachine:
         "v8_generation_runtime_blocked",
         "v8_generation_runtime_recovery_required",
         "v8_generation_reexecution_authorization_required",
-        "v8_operator_visual_review_required"
+        "v8_operator_visual_review_required",
+        "v9_generation_authorization_required",
+        "v9_generation_runtime_blocked",
+        "v9_generation_runtime_recovery_required",
+        "v9_operator_visual_review_required"
     ]
     
     # Terminal states
@@ -313,6 +317,28 @@ class CombineStateMachine:
         },
         "v8_operator_visual_review_required": {
             "v8_operator_visual_review_required",  # Self-loop: halted pending operator
+            "assembly_preflight_required",  # Approved - proceed to assembly
+            "blocked_manual_review",
+        },
+        "v9_generation_authorization_required": {
+            "v9_generation_authorization_required",  # Self-loop: halted pending operator authorization
+            "v9_operator_visual_review_required",  # Success path after generation
+            "v9_generation_runtime_blocked",  # Runtime failure
+            "blocked_manual_review",
+        },
+        "v9_generation_runtime_blocked": {
+            "v9_generation_runtime_blocked",  # Self-loop: blocked until ComfyUI available
+            "v9_generation_runtime_recovery_required",  # Can transition to recovery
+            "v9_generation_authorization_required",  # Can restart authorization
+            "blocked_manual_review",
+        },
+        "v9_generation_runtime_recovery_required": {
+            "v9_generation_runtime_recovery_required",  # Self-loop: halted pending recovery
+            "v9_generation_authorization_required",  # Can go back to generation authorization
+            "blocked_manual_review",
+        },
+        "v9_operator_visual_review_required": {
+            "v9_operator_visual_review_required",  # Self-loop: halted pending operator
             "assembly_preflight_required",  # Approved - proceed to assembly
             "blocked_manual_review",
         },
@@ -582,6 +608,37 @@ class CombineStateMachine:
         ("v8_operator_visual_review_required", "production_accepted"),
         ("v8_operator_visual_review_required", "final_qc_required"),
         ("v8_operator_visual_review_required", "final_operator_acceptance"),
+
+        # v9 states: generation authorization required cannot skip to runtime or downstream
+        ("v9_generation_authorization_required", "generate_assets"),
+        ("v9_generation_authorization_required", "real_generate_assets"),
+        ("v9_generation_authorization_required", "visual_qa_required"),
+        ("v9_generation_authorization_required", "assembly_required"),
+        ("v9_generation_authorization_required", "assembly_preflight_required"),
+        ("v9_generation_authorization_required", "completed"),
+        ("v9_generation_authorization_required", "production_accepted"),
+
+        # v9 runtime blocked: cannot skip to visual review, assembly, downstream, or production
+        ("v9_generation_runtime_blocked", "v9_operator_visual_review_required"),
+        ("v9_generation_runtime_blocked", "visual_qa_required"),
+        ("v9_generation_runtime_blocked", "assembly_required"),
+        ("v9_generation_runtime_blocked", "assembly_preflight_required"),
+        ("v9_generation_runtime_blocked", "completed"),
+        ("v9_generation_runtime_blocked", "production_accepted"),
+
+        # v9 recovery: cannot skip to visual review or downstream
+        ("v9_generation_runtime_recovery_required", "v9_operator_visual_review_required"),
+        ("v9_generation_runtime_recovery_required", "visual_qa_required"),
+        ("v9_generation_runtime_recovery_required", "assembly_required"),
+        ("v9_generation_runtime_recovery_required", "assembly_preflight_required"),
+        ("v9_generation_runtime_recovery_required", "completed"),
+        ("v9_generation_runtime_recovery_required", "production_accepted"),
+
+        # v9 operator visual review: cannot skip to downstream, final, or production
+        ("v9_operator_visual_review_required", "completed"),
+        ("v9_operator_visual_review_required", "production_accepted"),
+        ("v9_operator_visual_review_required", "final_qc_required"),
+        ("v9_operator_visual_review_required", "final_operator_acceptance"),
     }
     
     @classmethod

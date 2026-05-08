@@ -8015,6 +8015,715 @@ def _update_v8_quality_locked_index(
     _write_json_file(ledger_path, ledger)
 
 
+def _update_v9_generation_index(
+    control_dir: Path,
+    execute: bool,
+    generated_assets: list,
+    timestamp: str
+) -> None:
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = _read_json_file(artifact_index_path)
+
+    if execute:
+        artifact_index["current_state"] = "v9_operator_visual_review_required"
+        artifact_index["next_allowed_action"] = "v9_operator_visual_review_required"
+    else:
+        artifact_index["current_state"] = "v9_generation_runtime_blocked"
+        artifact_index["next_allowed_action"] = "v9_generation_runtime_recovery_required"
+    artifact_index["v9_operator_generation_authorization_created"] = True
+    artifact_index["v9_quality_locked_package_used"] = True
+    artifact_index["v9_prompt_package_used"] = True
+    artifact_index["v9_pre_submit_validation_contract_verified"] = True
+    artifact_index["v9_post_submit_validation_contract_verified"] = True
+    artifact_index["v9_asset_validation_policy_verified"] = True
+    artifact_index["v9_generation_attempted"] = True
+    artifact_index["new_generation_performed"] = execute
+    artifact_index["generation_count"] = 1 if execute else 0
+    artifact_index["max_generations"] = 1
+    artifact_index["second_generation_attempted"] = False
+    artifact_index["retry_attempted"] = False
+    artifact_index["workflow_submitted"] = execute
+    artifact_index["comfyui_execution"] = execute
+    artifact_index["canonical_outputs_registered"] = len(generated_assets) > 0
+    artifact_index["generated_assets"] = [a.get("path", "") for a in generated_assets]
+    artifact_index["asset_readable"] = all(a.get("readable", False) for a in generated_assets) if generated_assets else False
+    artifact_index["visual_acceptance_executed"] = False
+    artifact_index["operator_visual_review_packet_created"] = execute and len(generated_assets) > 0
+    artifact_index["assembly_executed"] = False
+    artifact_index["downstream_executed"] = False
+    artifact_index["production_accepted"] = False
+    artifact_index["v9_operator_visual_review_packet_created"] = execute and len(generated_assets) > 0
+    artifact_index["visual_qa_executed"] = False
+    artifact_index["operator_visual_decision_created"] = False
+
+    _write_json_file(artifact_index_path, artifact_index)
+
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        try:
+            data = _read_json_file(ledger_path)
+            if isinstance(data, list):
+                ledger = data
+            elif isinstance(data, dict):
+                ledger = data.get("events", data.get("records", []))
+        except Exception:
+            ledger = []
+
+    event_type = "v9_real_generation_completed" if execute else "v9_real_generation_attempted"
+    generated_asset_paths = [a.get("path", "") for a in generated_assets]
+    asset_entry = generated_assets[0] if generated_assets else {}
+
+    ledger_entry = {
+        "event_type": event_type,
+        "task_id": "RC-COMBINE-V2-10601-11600",
+        "stage": "v9_real_generation",
+        "new_generation_performed": execute,
+        "generation_count": 1 if execute else 0,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": execute,
+        "comfyui_execution": execute,
+        "generated_assets": generated_asset_paths,
+        "asset_count": len(generated_assets),
+        "asset_readable": bool(asset_entry.get("readable", False)) if asset_entry else False,
+        "asset_sha256": asset_entry.get("sha256", "") if asset_entry else "",
+        "asset_dimensions": {"width": asset_entry.get("width"), "height": asset_entry.get("height")} if asset_entry and asset_entry.get("width") else None,
+        "asset_size_bytes": asset_entry.get("size_bytes", 0) if asset_entry else 0,
+        "failure_code": None if execute else "dry_run_not_executed",
+        "production_accepted": False,
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": "v9_operator_visual_review_required" if execute else "v9_generation_runtime_blocked",
+        "next_allowed_action": "v9_operator_visual_review_required" if execute else "v9_generation_runtime_recovery_required",
+        "previous_state": "v9_generation_authorization_required",
+        "previous_layer": "RC-COMBINE-V2-9601-10600",
+        "timestamp": timestamp
+    }
+    ledger.append(ledger_entry)
+    _write_json_file(ledger_path, ledger)
+
+
+def combine_execute_v9_real_generation(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-10601-11600 — Execute exactly one V9 real generation.
+
+    This command is the explicit V9 generation gate. It:
+    - Validates current state is v9_generation_authorization_required
+    - Verifies V9 artifacts exist (prompt package, workflow package, contracts)
+    - Creates operator generation authorization artifact
+    - Executes exactly one ComfyUI generation using V9 quality-locked package
+    - Collects outputs to canonical project assets
+    - Creates real generation result, outputs manifest, operator visual review packet
+    - Transitions state to v9_operator_visual_review_required on success
+    - Transitions state to v9_generation_runtime_blocked on failure
+    - Does NOT run Visual QA, assembly, or downstream
+
+    Exit codes:
+    - 0: generation completed successfully (stops at operator visual review)
+    - 1: blocked, failed, or error
+    """
+    from app.comfy.comfy_client import ComfyClient
+    from app.orchestrator import CombineOrchestrator
+
+    project_root = Path(args.project_root)
+    control_dir = project_root / "output" / "control"
+    assets_dir = project_root / "output" / "assets"
+    control_dir.mkdir(parents=True, exist_ok=True)
+    assets_dir.mkdir(parents=True, exist_ok=True)
+    execute = bool(getattr(args, "execute", False))
+    max_generations = int(getattr(args, "max_generations", 1))
+    json_output = args.json
+    timestamp = datetime.utcnow().isoformat()
+
+    # 1. Validate max_generations
+    if max_generations != 1:
+        msg = "Error: max-generations must be 1 for V9 real generation."
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    # 2. Read artifact_index to verify current state
+    artifact_index = _read_json_file(control_dir / "artifact_index.json")
+    current_state = artifact_index.get("current_state", "")
+    if current_state != "v9_generation_authorization_required":
+        msg = (
+            f"Error: Current state is '{current_state}', "
+            f"expected 'v9_generation_authorization_required'. "
+            "V9 generation not authorized in this state."
+        )
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg, "current_state": current_state}))
+        else:
+            print(msg)
+        return 1
+
+    # 3. Verify V9 artifacts exist
+    v9_workflow_package_path = control_dir / "combine_v2_v9_quality_locked_workflow_package.json"
+    v9_prompt_package_path = control_dir / "combine_v2_v9_prompt_package.json"
+    v9_pre_submit_contract_path = control_dir / "combine_v2_v9_pre_submit_validation_contract.json"
+    v9_post_submit_contract_path = control_dir / "combine_v2_v9_post_submit_validation_contract.json"
+    v9_asset_validation_policy_path = control_dir / "combine_v2_v9_asset_validation_policy.json"
+    v9_generation_gate_path = control_dir / "combine_v2_v9_generation_authorization_required.json"
+
+    missing_artifacts = []
+    if not v9_workflow_package_path.exists():
+        missing_artifacts.append("combine_v2_v9_quality_locked_workflow_package.json")
+    if not v9_prompt_package_path.exists():
+        missing_artifacts.append("combine_v2_v9_prompt_package.json")
+    if not v9_pre_submit_contract_path.exists():
+        missing_artifacts.append("combine_v2_v9_pre_submit_validation_contract.json")
+    if not v9_post_submit_contract_path.exists():
+        missing_artifacts.append("combine_v2_v9_post_submit_validation_contract.json")
+    if not v9_asset_validation_policy_path.exists():
+        missing_artifacts.append("combine_v2_v9_asset_validation_policy.json")
+    if not v9_generation_gate_path.exists():
+        missing_artifacts.append("combine_v2_v9_generation_authorization_required.json")
+
+    if missing_artifacts:
+        msg = f"Error: Missing required V9 artifacts: {', '.join(missing_artifacts)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg, "missing_artifacts": missing_artifacts}))
+        else:
+            print(msg)
+        return 1
+
+    # 4. Load V9 artifacts
+    with open(v9_workflow_package_path, 'r') as f:
+        v9_workflow_package = json.load(f)
+    with open(v9_prompt_package_path, 'r') as f:
+        v9_prompt_package = json.load(f)
+
+    v9_positive = v9_prompt_package.get("positive_prompt", "")
+    v9_negative = v9_prompt_package.get("negative_prompt", "")
+    v9_refinement = v9_workflow_package.get("refinement_parameters", {})
+    v9_filename_prefix = v9_workflow_package.get("saveimage_filename_prefix", "combine_v2_v9_quality_locked_shot02")
+
+    # 5. Create V9 operator generation authorization artifact
+    operator_auth = {
+        "operator_authorized": True,
+        "authorized_action": "v9_real_generation",
+        "max_generations": 1,
+        "generation_attempts_allowed": 1,
+        "second_generation_allowed": False,
+        "retry_allowed": False,
+        "visual_qa_allowed": False,
+        "operator_visual_acceptance_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "current_state_verified": current_state,
+        "v9_workflow_package_exists": True,
+        "v9_prompt_package_exists": True,
+        "v9_pre_submit_validation_contract_exists": True,
+        "v9_post_submit_validation_contract_exists": True,
+        "v9_asset_validation_policy_exists": True,
+        "v9_generation_gate_exists": True,
+        "generation_allowed_by_operator_authorization": True,
+        "timestamp": timestamp
+    }
+    auth_path = control_dir / "combine_v2_v9_operator_generation_authorization.json"
+    _write_json_file(auth_path, operator_auth)
+
+    # 6. Build workflow payload using V8 submitted workflow as base + V9 refinements
+    v8_submitted_workflow_path = control_dir / "combine_v2_v8_quality_locked_submitted_workflow.json"
+    v7_submitted_workflow_path = control_dir / "shot02_v7_identity_fidelity_submitted_workflow.json"
+    workflow_payload = None
+
+    # Try V8 submitted workflow first, fall back to V7, then minimal
+    if v8_submitted_workflow_path.exists():
+        try:
+            with open(v8_submitted_workflow_path, 'r') as f:
+                raw = json.load(f)
+            if isinstance(raw, dict) and "workflow_payload" in raw:
+                workflow_payload = raw["workflow_payload"]
+        except Exception:
+            workflow_payload = None
+
+    if not workflow_payload and v7_submitted_workflow_path.exists():
+        try:
+            with open(v7_submitted_workflow_path, 'r') as f:
+                raw = json.load(f)
+            if isinstance(raw, dict) and "workflow_payload" in raw:
+                workflow_payload = raw["workflow_payload"]
+            else:
+                workflow_payload = raw
+        except Exception:
+            workflow_payload = None
+
+    if not workflow_payload:
+        workflow_payload = _build_minimal_real_workflow_with_resolution(1024, 1024)
+        print("[V9-GEN] Using minimal workflow (1024x1024) as base")
+
+    # Apply V9 refinement parameters
+    v9_cfg = v9_refinement.get("cfg_scale", 6.5)
+    v9_steps = v9_refinement.get("steps", 30)
+    v9_sampler = v9_refinement.get("sampler", "dpmpp_2m")
+    v9_scheduler = v9_refinement.get("scheduler", "karras")
+
+    for node_id, node in workflow_payload.items():
+        if isinstance(node, dict) and node.get("class_type") == "KSampler":
+            inputs = node.setdefault("inputs", {})
+            inputs["cfg"] = v9_cfg
+            inputs["steps"] = v9_steps
+            inputs["sampler_name"] = v9_sampler
+            inputs["scheduler"] = v9_scheduler
+            inputs["denoise"] = min(inputs.get("denoise", 1.0), 1.0)
+
+    # Apply V9 prompts via CLIPTextEncode injection
+    positive_assigned = False
+    negative_assigned = False
+    for node_id, node in workflow_payload.items():
+        if isinstance(node, dict) and node.get("class_type") == "CLIPTextEncode":
+            inputs = node.get("inputs", {})
+            if not positive_assigned:
+                inputs["text"] = v9_positive
+                positive_assigned = True
+            elif not negative_assigned:
+                inputs["text"] = v9_negative
+                negative_assigned = True
+            if positive_assigned and negative_assigned:
+                break
+
+    # Randomize seed to avoid cache
+    import random as _random
+    for node in workflow_payload.values():
+        if isinstance(node, dict) and node.get("class_type") == "KSampler":
+            node.setdefault("inputs", {})["seed"] = _random.randint(1, 2**32 - 1)
+
+    # Set filename prefix
+    for node in workflow_payload.values():
+        if isinstance(node, dict) and node.get("class_type") == "SaveImage":
+            node.setdefault("inputs", {})["filename_prefix"] = v9_filename_prefix
+
+    # 7. Dry-run path
+    if not execute:
+        failure_report = {
+            "task_id": "RC-COMBINE-V2-10601-11600",
+            "stage": "v9_real_generation",
+            "failure_code": "dry_run_not_executed",
+            "failure_description": "V9 generation was run in dry-run mode without --execute flag. No ComfyUI submission occurred.",
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "generation_count": 0,
+            "operator_authorization_created": True,
+            "execute_mode": False,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "production_accepted": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v9_generation_failure_report.json", failure_report)
+
+        result = {
+            "task_id": "RC-COMBINE-V2-10601-11600",
+            "stage": "v9_real_generation",
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "generation_count": 0,
+            "max_generations": 1,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "dry_run_used": True,
+            "canonical_outputs_registered": False,
+            "generated_assets": [],
+            "asset_readable": False,
+            "sha256_present": False,
+            "dimensions_present": False,
+            "size_bytes_gt_1024": False,
+            "stub_asset_detected": False,
+            "failure_code": "dry_run_not_executed",
+            "error_message": "Dry-run mode. Use --execute for real ComfyUI submission.",
+            "operator_authorization_created": True,
+            "visual_qa_executed": False,
+            "operator_visual_decision_created": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "current_state": "v9_generation_runtime_blocked",
+            "next_allowed_action": "v9_generation_runtime_recovery_required",
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v9_real_generation_result.json", result)
+
+        outputs_manifest = {
+            "stage": "v9_real_generation",
+            "manifest_type": "v9_real_generation_outputs_manifest",
+            "task_id": "RC-COMBINE-V2-10601-11600",
+            "generation_count": 0,
+            "max_generations": 1,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "workflow_submitted": False,
+            "generated_assets": [],
+            "asset_paths": [],
+            "collection_status": "dry_run",
+            "canonical_outputs_registered": False,
+            "visual_qa_executed": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "production_accepted": False,
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v9_real_generation_outputs_manifest.json", outputs_manifest)
+
+        _update_v9_generation_index(control_dir, execute=False, generated_assets=[], timestamp=timestamp)
+
+        orchestrator = CombineOrchestrator(str(project_root))
+        try:
+            orchestrator.run_stage("v9_generation_authorization_required")
+        except Exception:
+            pass
+        status = orchestrator.get_status()
+
+        result_payload = {
+            "status": "ok",
+            "stage": "v9_real_generation",
+            "operator_authorization_created": True,
+            "v9_generation_attempted": False,
+            "generation_count": 0,
+            "max_generations": 1,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "workflow_submitted": False,
+            "comfyui_execution": False,
+            "new_generation_performed": False,
+            "generation_performed": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "current_state": status.current_state,
+            "next_allowed_action": status.next_allowed_action,
+            "artifacts": [
+                str(auth_path.relative_to(project_root)),
+                "output/control/combine_v2_v9_real_generation_result.json",
+                "output/control/combine_v2_v9_real_generation_outputs_manifest.json",
+                "output/control/combine_v2_v9_generation_failure_report.json",
+            ]
+        }
+        if json_output:
+            print(json.dumps(result_payload, indent=2))
+        else:
+            print("V9 Real Generation: DRY RUN")
+            print(f"Current State: {status.current_state}")
+            print(f"Next Allowed Action: {status.next_allowed_action}")
+        return 0
+
+    # 8. Real execution path: submit to ComfyUI
+    client = ComfyClient()
+    comfyui_status = "success"
+    prompt_id = None
+    generated_assets = []
+    trace_events = []
+    error_message = None
+
+    try:
+        prompt_id = asyncio.run(client.queue_prompt(workflow_payload))
+        trace_events.append({"event": "workflow_submitted", "status": "success", "prompt_id": prompt_id})
+        history_item = asyncio.run(client.wait_for_history(prompt_id, max_attempts=180, delay_seconds=2))
+        history_images = _extract_history_images(history_item)
+        generated_assets, collection_trace = _collect_real_generation_outputs(
+            client=client,
+            project_root=project_root,
+            history_images=history_images,
+        )
+        trace_events.extend(collection_trace)
+        trace_events.append({"event": "outputs_collected", "status": "success", "assets_count": len(generated_assets)})
+    except Exception as exc:
+        comfyui_status = "failed"
+        error_message = str(exc)
+        trace_events.append({"event": "generation_failed", "status": "failed", "error": error_message})
+
+    failure_code = None
+    if not prompt_id:
+        failure_code = "empty_prompt_id"
+        comfyui_status = "failed"
+        trace_events.append({"event": "empty_prompt_id_guard_triggered", "status": "failed"})
+    elif comfyui_status == "success" and len(generated_assets) == 0:
+        comfyui_status = "failed"
+        failure_code = "output_collection_failed"
+        trace_events.append({"event": "output_collection_failed_guard_triggered", "status": "failed", "failure_code": failure_code})
+
+    # 9. Verify output assets
+    asset_readable = True
+    sha256_present = True
+    dimensions_present = True
+    stub_asset_detected = False
+    size_bytes_gt_1024 = True
+    validated_assets = []
+    for asset in generated_assets:
+        entry = dict(asset)
+        asset_path = project_root / entry.get("path", "")
+        if asset_path.exists():
+            readable_check = _is_image_readable(asset_path)
+            if not readable_check["readable"]:
+                asset_readable = False
+                stub_asset_detected = True
+            if not readable_check["width"] or not readable_check["height"]:
+                dimensions_present = False
+            sha256 = entry.get("sha256", "")
+            if not sha256 or len(sha256) != 64:
+                sha256_present = False
+            size_bytes = asset_path.stat().st_size
+            if size_bytes < 1024:
+                size_bytes_gt_1024 = False
+                stub_asset_detected = True
+        else:
+            asset_readable = False
+            stub_asset_detected = True
+            size_bytes_gt_1024 = False
+
+        validated_assets.append({
+            "path": entry.get("path", ""),
+            "exists": entry.get("exists", False),
+            "readable": entry.get("readable", False),
+            "width": entry.get("width"),
+            "height": entry.get("height"),
+            "size_bytes": entry.get("size_bytes", 0),
+            "sha256": entry.get("sha256", ""),
+        })
+
+    # Asset validation: if generated_assets exist but fail validation, mark as failure
+    has_valid_asset = (
+        comfyui_status == "success"
+        and len(generated_assets) > 0
+        and asset_readable
+        and sha256_present
+        and dimensions_present
+        and size_bytes_gt_1024
+        and not stub_asset_detected
+    )
+
+    if has_valid_asset:
+        is_success = True
+        next_state = "v9_operator_visual_review_required"
+        next_action = "v9_operator_visual_review_required"
+        report_state = "v9_operator_visual_review_required"
+    else:
+        is_success = False
+        if failure_code is None:
+            if len(generated_assets) == 0:
+                failure_code = "invalid_generated_asset"
+            else:
+                failure_code = "invalid_generated_asset"
+        next_state = "v9_generation_runtime_blocked"
+        next_action = "v9_generation_runtime_recovery_required"
+        report_state = "v9_generation_runtime_blocked"
+
+    # 10. Create generation result
+    trace_events.append({"event": "generation_completed", "status": comfyui_status})
+
+    result = {
+        "task_id": "RC-COMBINE-V2-10601-11600",
+        "stage": "v9_real_generation",
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id or "",
+        "comfyui_status": comfyui_status,
+        "generation_count": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "dry_run_used": False,
+        "canonical_outputs_registered": has_valid_asset,
+        "generated_assets": [a.get("path", "") for a in validated_assets],
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "size_bytes_gt_1024": size_bytes_gt_1024,
+        "stub_asset_detected": stub_asset_detected,
+        "failure_code": failure_code,
+        "error_message": error_message,
+        "trace_events": trace_events,
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": report_state,
+        "next_allowed_action": next_action,
+        "timestamp": timestamp
+    }
+    _write_json_file(control_dir / "combine_v2_v9_real_generation_result.json", result)
+
+    # 11. Create outputs manifest
+    outputs_manifest = {
+        "stage": "v9_real_generation",
+        "manifest_type": "v9_real_generation_outputs_manifest",
+        "task_id": "RC-COMBINE-V2-10601-11600",
+        "generation_count": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "generated_assets": validated_assets,
+        "asset_paths": [a.get("path", "") for a in validated_assets],
+        "collection_status": "success" if has_valid_asset else (failure_code or "failed"),
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "stub_asset_detected": stub_asset_detected,
+        "canonical_outputs_registered": has_valid_asset,
+        "visual_qa_executed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "timestamp": timestamp
+    }
+    if failure_code:
+        outputs_manifest["failure_code"] = failure_code
+    _write_json_file(control_dir / "combine_v2_v9_real_generation_outputs_manifest.json", outputs_manifest)
+
+    # 12. Create failure report if blocked
+    if not is_success:
+        failure_report = {
+            "task_id": "RC-COMBINE-V2-10601-11600",
+            "stage": "v9_real_generation",
+            "failure_code": failure_code or "generation_failed",
+            "failure_description": error_message or f"V9 generation failed: {failure_code}",
+            "workflow_submitted": True,
+            "comfyui_execution": True,
+            "prompt_id": prompt_id or "",
+            "generated_assets_count": len(generated_assets),
+            "asset_readable": asset_readable,
+            "sha256_present": sha256_present,
+            "dimensions_present": dimensions_present,
+            "size_bytes_gt_1024": size_bytes_gt_1024,
+            "stub_asset_detected": stub_asset_detected,
+            "generation_count": 1,
+            "operator_authorization_created": True,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "production_accepted": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v9_generation_failure_report.json", failure_report)
+
+    # 13. Create operator visual review packet if real asset exists
+    if has_valid_asset:
+        first_asset = validated_assets[0] if validated_assets else {}
+        visual_review_packet = {
+            "task_id": "RC-COMBINE-V2-10601-11600",
+            "stage": "v9_operator_visual_review",
+            "artifact_id": "combine_v2_v9_operator_visual_review_packet",
+            "generation_attempted": True,
+            "generation_success": True,
+            "v9_quality_locked_workflow_package_used": "combine_v2_v9_quality_locked_workflow_package.json",
+            "v9_prompt_package_used": "combine_v2_v9_prompt_package.json",
+            "v9_generation_gate_used": "combine_v2_v9_generation_authorization_required.json",
+            "prompt_id": prompt_id or "",
+            "generation_count": 1,
+            "max_generations": 1,
+            "second_generation_attempted": False,
+            "retry_attempted": False,
+            "dry_run_used": False,
+            "generated_assets": [a.get("path", "") for a in validated_assets],
+            "asset_path": first_asset.get("path", ""),
+            "comfyui_execution": True,
+            "workflow_submitted": True,
+            "submitted_workflow_ref": "combine_v2_v9_quality_locked_workflow_package.json",
+            "outputs_manifest_ref": "combine_v2_v9_real_generation_outputs_manifest.json",
+            "generation_result_ref": "combine_v2_v9_real_generation_result.json",
+            "positive_prompt": v9_positive,
+            "negative_prompt": v9_negative,
+            "refinement_parameters": v9_refinement,
+            "asset_sha256": first_asset.get("sha256", ""),
+            "asset_dimensions": {
+                "width": first_asset.get("width"),
+                "height": first_asset.get("height")
+            },
+            "asset_size_bytes": first_asset.get("size_bytes", 0),
+            "visual_qa_executed": False,
+            "visual_qa_verdict": None,
+            "visual_qa_report_ref": None,
+            "operator_visual_decision_created": False,
+            "operator_visual_verdict": None,
+            "operator_visual_decision_ref": None,
+            "production_accepted": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "notes": "V9 real generation completed successfully. Asset requires operator visual review before any further pipeline progression. No visual QA executed by agent. Operator must inspect the generated image and issue a visual verdict before any downstream pipeline steps.",
+            "timestamp": timestamp
+        }
+        _write_json_file(control_dir / "combine_v2_v9_operator_visual_review_packet.json", visual_review_packet)
+
+    # 14. Update artifact index and ledger
+    _update_v9_generation_index(control_dir, execute=is_success, generated_assets=validated_assets, timestamp=timestamp)
+
+    # 15. Run orchestrator stage
+    orchestrator = CombineOrchestrator(str(project_root))
+    try:
+        orchestrator.run_stage("v9_generation_authorization_required")
+    except Exception:
+        pass
+    orchestrator_status = orchestrator.get_status()
+
+    # 16. Build result payload
+    result_payload = {
+        "task_id": "RC-COMBINE-V2-10601-11600",
+        "operator_authorization_created": True,
+        "v9_real_generation_attempted": True,
+        "generation_count": 1,
+        "max_generations": 1,
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "workflow_submitted": True,
+        "comfyui_execution": True,
+        "prompt_id": prompt_id or "",
+        "comfyui_status": comfyui_status,
+        "dry_run_used": False,
+        "canonical_outputs_registered": has_valid_asset,
+        "generated_assets": [a.get("path", "") for a in validated_assets],
+        "asset_readable": asset_readable,
+        "sha256_present": sha256_present,
+        "dimensions_present": dimensions_present,
+        "size_bytes_gt_1024": size_bytes_gt_1024,
+        "stub_asset_detected": stub_asset_detected,
+        "operator_visual_review_packet_created": has_valid_asset,
+        "visual_qa_executed": False,
+        "operator_visual_decision_created": False,
+        "operator_production_acceptance_created": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "current_state": next_state,
+        "next_allowed_action": next_action,
+        "artifacts": [
+            str(auth_path.relative_to(project_root)),
+            "output/control/combine_v2_v9_real_generation_result.json",
+            "output/control/combine_v2_v9_real_generation_outputs_manifest.json",
+        ]
+    }
+    if has_valid_asset:
+        result_payload["artifacts"].append("output/control/combine_v2_v9_operator_visual_review_packet.json")
+    if not is_success:
+        result_payload["artifacts"].append("output/control/combine_v2_v9_generation_failure_report.json")
+    if error_message:
+        result_payload["error"] = error_message
+    if failure_code:
+        result_payload["failure_code"] = failure_code
+
+    if json_output:
+        print(json.dumps(result_payload, indent=2))
+    else:
+        print(f"V9 Real Generation: {comfyui_status.upper()}")
+        print(f"Prompt ID: {prompt_id or 'N/A'}")
+        print(f"Generated Assets: {len(generated_assets)}")
+        print(f"Current State: {next_state}")
+        print(f"Next Allowed Action: {next_action}")
+
+    return 0 if is_success else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -11009,6 +11718,33 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-10601-11600 — combine-execute-v9-real-generation subcommand
+    combine_execute_v9_real_generation_parser = subparsers.add_parser(
+        "combine-execute-v9-real-generation",
+        help="Execute exactly one V9 real generation (explicit V9 generation gate)"
+    )
+    combine_execute_v9_real_generation_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_execute_v9_real_generation_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute the generation (default: dry run only)",
+    )
+    combine_execute_v9_real_generation_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Maximum generations (must be 1, default: 1)",
+    )
+    combine_execute_v9_real_generation_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-6001-6300 — combine-v8-execution-readiness-preflight subcommand
     combine_v8_execution_readiness_preflight_parser = subparsers.add_parser(
         "combine-v8-execution-readiness-preflight",
@@ -11725,6 +12461,9 @@ def main() -> int:
     elif args.command == "combine-execute-v8-quality-locked-generation":
         _require_absolute_project_root(args, "combine-execute-v8-quality-locked-generation")
         return combine_execute_v8_quality_locked_generation(args)
+    elif args.command == "combine-execute-v9-real-generation":
+        _require_absolute_project_root(args, "combine-execute-v9-real-generation")
+        return combine_execute_v9_real_generation(args)
     elif args.command == "combine-v8-runtime-recovery-and-generation":
         _require_absolute_project_root(args, "combine-v8-runtime-recovery-and-generation")
         return combine_v8_runtime_recovery_and_generation(args)

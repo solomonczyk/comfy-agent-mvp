@@ -1,0 +1,22 @@
+{
+  "operator_authorized": true,
+  "authorized_action": "v9_real_generation",
+  "max_generations": 1,
+  "generation_attempts_allowed": 1,
+  "second_generation_allowed": false,
+  "retry_allowed": false,
+  "visual_qa_allowed": false,
+  "operator_visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "current_state_verified": "v9_generation_authorization_required",
+  "v9_workflow_package_exists": true,
+  "v9_prompt_package_exists": true,
+  "v9_pre_submit_validation_contract_exists": true,
+  "v9_post_submit_validation_contract_exists": true,
+  "v9_asset_validation_policy_exists": true,
+  "v9_generation_gate_exists": true,
+  "generation_allowed_by_operator_authorization": true,
+  "timestamp": "2026-05-08T05:57:52.092963"
+}

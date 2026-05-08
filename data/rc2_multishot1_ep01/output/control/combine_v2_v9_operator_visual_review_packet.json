@@ -1,0 +1,53 @@
+{
+  "task_id": "RC-COMBINE-V2-10601-11600",
+  "stage": "v9_operator_visual_review",
+  "artifact_id": "combine_v2_v9_operator_visual_review_packet",
+  "generation_attempted": true,
+  "generation_success": true,
+  "v9_quality_locked_workflow_package_used": "combine_v2_v9_quality_locked_workflow_package.json",
+  "v9_prompt_package_used": "combine_v2_v9_prompt_package.json",
+  "v9_generation_gate_used": "combine_v2_v9_generation_authorization_required.json",
+  "prompt_id": "c5317512-71cb-4d84-8843-a874984a1540",
+  "generation_count": 1,
+  "max_generations": 1,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "dry_run_used": false,
+  "generated_assets": [
+    "output/assets/combine_v2_v9_quality_locked_shot02_00001_.png"
+  ],
+  "asset_path": "output/assets/combine_v2_v9_quality_locked_shot02_00001_.png",
+  "comfyui_execution": true,
+  "workflow_submitted": true,
+  "submitted_workflow_ref": "combine_v2_v9_quality_locked_workflow_package.json",
+  "outputs_manifest_ref": "combine_v2_v9_real_generation_outputs_manifest.json",
+  "generation_result_ref": "combine_v2_v9_real_generation_result.json",
+  "positive_prompt": "masterpiece, best quality, young adult female fantasy character, ethereal cinematic portrait, beautiful young woman with flowing white hair, elegant white fantasy dress, blue atmospheric magical background with soft bokeh, sharp focus, highly detailed, crisp, sharp facial features, clear definition, high detail face, realistic eyes, detailed iris, clean eye shape, natural eye appearance, detailed eyelashes, natural eyelashes, clean eyelash detail, natural mouth, well-formed teeth, natural smile, natural skin texture, visible skin pores, realistic skin detail, natural skin reflectance, detailed hair strands, individual hair strands, sharp hair detail, cinematic lighting with soft falloff, intricate fantasy details, high fantasy art style, attractive fantasy character identity, close portrait framing, soft clean lighting, intricate hair detail, medium shot, subject centered, engaged expression, storytelling through facial expression and posture",
+  "negative_prompt": "old, elderly, aged face, wrinkles, aged skin, senior, grandmother, realistic photo, studio portrait, passport photo, documentary, modern clothing, casual wear, plain background, blurry, soft focus, out of focus, soft face, blurry face, undefined features, deformed eyes, bad eyes, unrealistic eyes, distorted eyes, clumpy eyelashes, missing eyelashes, bad eyelashes, deformed mouth, bad teeth, missing teeth, open mouth distortion, smooth skin, plastic skin, wax skin, airbrushed skin, unreal skin, wax skin, plastic face, synthetic skin, doll-like skin, mannequin skin, soft hair, blurry hair, hair blob, undefined hair, glossy plastic skin, over-smoothed face, changing character concept, loss of fantasy styling, loss of blue fantasy environment, replacing fantasy with realism, ugly, deformed, bad anatomy, disfigured, poorly drawn face, extra limbs, cloned face, disgusting, low quality, worst quality, monochrome, grayscale, boring, mundane, small subject, empty space, off-center composition, wide angle, distorted perspective, tilted horizon, excessive negative space, disconnected subject",
+  "refinement_parameters": {
+    "cfg_scale": 6.5,
+    "steps": 30,
+    "sampler": "dpmpp_2m",
+    "scheduler": "karras",
+    "resolution": "1024x1024",
+    "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "seed": 94223796
+  },
+  "asset_sha256": "b7879bcbf065421a4bd27dfe5bbdb39505a3ebe29f0b2766789c6c01b05b9d81",
+  "asset_dimensions": {
+    "width": 1024,
+    "height": 1024
+  },
+  "asset_size_bytes": 1516048,
+  "visual_qa_executed": false,
+  "visual_qa_verdict": null,
+  "visual_qa_report_ref": null,
+  "operator_visual_decision_created": false,
+  "operator_visual_verdict": null,
+  "operator_visual_decision_ref": null,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "notes": "V9 real generation completed successfully. Asset requires operator visual review before any further pipeline progression. No visual QA executed by agent. Operator must inspect the generated image and issue a visual verdict before any downstream pipeline steps.",
+  "timestamp": "2026-05-08T05:57:52.092963"
+}

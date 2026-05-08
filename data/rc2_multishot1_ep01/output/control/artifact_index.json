@@ -1,6 +1,6 @@
 {
-  "current_state": "v9_generation_authorization_required",
-  "next_allowed_action": "v9_generation_authorization_required",
+  "current_state": "v9_operator_visual_review_required",
+  "next_allowed_action": "v9_operator_visual_review_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -13,7 +13,7 @@
   "current_best_quality_reference": "v6_targeted_refinement_elderly_portrait",
   "current_best_quality_reference_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
   "production_accepted": false,
-  "visual_acceptance_executed": true,
+  "visual_acceptance_executed": false,
   "assembly_executed": false,
   "downstream_executed": false,
   "operator_visual_verdict": "ACCEPTED",
@@ -271,7 +271,7 @@
   "retry_attempted": false,
   "workflow_submitted": true,
   "generated_assets": [
-    "combine_v2_v8_quality_locked_shot02_00001_.png"
+    "output/assets/combine_v2_v9_quality_locked_shot02_00001_.png"
   ],
   "asset_readable": true,
   "operator_visual_review_packet_created": true,
@@ -281,7 +281,7 @@
   "generation_allowed_now": false,
   "new_comfyui_submit_executed": true,
   "visual_qa_executed": false,
-  "operator_visual_decision_created": true,
+  "operator_visual_decision_created": false,
   "v8_operator_visual_review_outcome": "combine_v2_v8_operator_visual_review_outcome.json",
   "v8_visual_quality_assessment": "combine_v2_v8_visual_quality_assessment.json",
   "v8_defect_taxonomy": "combine_v2_v8_defect_taxonomy.json",
@@ -304,5 +304,13 @@
   "v9_asset_validation_policy_created": true,
   "v9_generation_gate_created": true,
   "v9_generation_allowed_now": false,
-  "requires_separate_operator_generation_gate": true
+  "requires_separate_operator_generation_gate": true,
+  "v9_operator_generation_authorization_created": true,
+  "v9_quality_locked_package_used": true,
+  "v9_prompt_package_used": true,
+  "v9_pre_submit_validation_contract_verified": true,
+  "v9_post_submit_validation_contract_verified": true,
+  "v9_asset_validation_policy_verified": true,
+  "v9_generation_attempted": true,
+  "v9_operator_visual_review_packet_created": true
 }
