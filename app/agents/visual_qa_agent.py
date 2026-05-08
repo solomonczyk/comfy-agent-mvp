@@ -24,7 +24,31 @@ class VisualQAAgent(BaseRoleAgent):
             "real_visual_qa_preflight_required",
             "real_visual_qa_required",
             "operator_visual_review",
-            "corrective_retry_v4_visual_qa_required"
+            "corrective_retry_v4_visual_qa_required",
+            # V11 photoreal QA recovery stages
+            "v11_correction_plan_required",
+            "v11_corrective_package_build_required",
+            "v11_generation_authorization_required",
+            "v11_result_review_required",
+            "v11_visual_qa_preflight_required",
+            "v11_visual_qa_required",
+            "v11_operator_visual_review_required",
+            # V12 photoreal QA recovery stages
+            "v12_correction_plan_required",
+            "v12_corrective_package_build_required",
+            "v12_generation_authorization_required",
+            "v12_result_review_required",
+            "v12_visual_qa_preflight_required",
+            "v12_visual_qa_required",
+            "v12_operator_visual_review_required",
+            # V13 photoreal QA recovery stages
+            "v13_correction_plan_required",
+            "v13_corrective_package_build_required",
+            "v13_generation_authorization_required",
+            "v13_result_review_required",
+            "v13_visual_qa_preflight_required",
+            "v13_visual_qa_required",
+            "v13_operator_visual_review_required",
         ]
     
     @property

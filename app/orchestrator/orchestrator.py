@@ -75,6 +75,33 @@ class CombineOrchestrator:
         "real_generation_readiness_required": "WorkflowRecipeImplementationAgent",
         "assembly_required": "AssemblyAgent",
         "final_qc_required": "FinalQAAgent",
+        # V11 photoreal QA recovery stages
+        "v11_correction_plan_required": "VisualQAAgent",
+        "v11_corrective_package_build_required": "VisualQAAgent",
+        "v11_generation_authorization_required": "VisualQAAgent",
+        "v11_generate_assets": "GenerationAgent",
+        "v11_result_review_required": "VisualQAAgent",
+        "v11_visual_qa_preflight_required": "VisualQAAgent",
+        "v11_visual_qa_required": "VisualQAAgent",
+        "v11_operator_visual_review_required": "VisualQAAgent",
+        # V12 photoreal QA recovery stages
+        "v12_correction_plan_required": "VisualQAAgent",
+        "v12_corrective_package_build_required": "VisualQAAgent",
+        "v12_generation_authorization_required": "VisualQAAgent",
+        "v12_generate_assets": "GenerationAgent",
+        "v12_result_review_required": "VisualQAAgent",
+        "v12_visual_qa_preflight_required": "VisualQAAgent",
+        "v12_visual_qa_required": "VisualQAAgent",
+        "v12_operator_visual_review_required": "VisualQAAgent",
+        # V13 photoreal QA recovery stages
+        "v13_correction_plan_required": "VisualQAAgent",
+        "v13_corrective_package_build_required": "VisualQAAgent",
+        "v13_generation_authorization_required": "VisualQAAgent",
+        "v13_generate_assets": "GenerationAgent",
+        "v13_result_review_required": "VisualQAAgent",
+        "v13_visual_qa_preflight_required": "VisualQAAgent",
+        "v13_visual_qa_required": "VisualQAAgent",
+        "v13_operator_visual_review_required": "VisualQAAgent",
     }
     
     def __init__(self, project_root: str):

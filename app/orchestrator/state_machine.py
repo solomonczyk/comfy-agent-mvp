@@ -110,14 +110,46 @@ class CombineStateMachine:
         "v10_generation_authorization_required",
         "v10_generation_runtime_blocked",
         "v10_generation_runtime_recovery_required",
-        "v10_operator_visual_review_required"
+        "v10_operator_visual_review_required",
+        # V11 photoreal character QA recovery states
+        "v11_correction_plan_required",
+        "v11_corrective_package_build_required",
+        "v11_generation_authorization_required",
+        "v11_generate_assets",
+        "v11_result_review_required",
+        "v11_visual_qa_preflight_required",
+        "v11_visual_qa_required",
+        "v11_operator_visual_review_required",
+        # V12 photoreal character QA recovery states
+        "v12_correction_plan_required",
+        "v12_corrective_package_build_required",
+        "v12_generation_authorization_required",
+        "v12_generate_assets",
+        "v12_result_review_required",
+        "v12_visual_qa_preflight_required",
+        "v12_visual_qa_required",
+        "v12_operator_visual_review_required",
+        # V13 photoreal character QA recovery states
+        "v13_correction_plan_required",
+        "v13_corrective_package_build_required",
+        "v13_generation_authorization_required",
+        "v13_generate_assets",
+        "v13_result_review_required",
+        "v13_visual_qa_preflight_required",
+        "v13_visual_qa_required",
+        "v13_operator_visual_review_required",
+        # Terminal states for QA recovery
+        "visual_candidate_accepted_for_pipeline",
+        "qa_recovery_blocked_after_max_candidates"
     ]
     
     # Terminal states
     TERMINAL_STATES = {
         "completed",
         "blocked_manual_review",
-        "blocked_generation_route_aborted"
+        "blocked_generation_route_aborted",
+        "visual_candidate_accepted_for_pipeline",
+        "qa_recovery_blocked_after_max_candidates"
     }
     
     # Allowed transitions
@@ -367,7 +399,110 @@ class CombineStateMachine:
             "v10_operator_visual_review_required",  # Self-loop: halted pending operator
             "assembly_preflight_required",  # Approved - proceed to assembly
             "blocked_manual_review",
+            "v11_correction_plan_required",  # V10 visual rejection -> V11 recovery
         },
+        # V11 photoreal character QA recovery loop states
+        "v11_correction_plan_required": {
+            "v11_corrective_package_build_required"
+        },
+        "v11_corrective_package_build_required": {
+            "v11_generation_authorization_required"
+        },
+        "v11_generation_authorization_required": {
+            "v11_generation_authorization_required",  # Self-loop: halted pending operator
+            "v11_generate_assets",  # Authorized -> proceed to generation
+            "blocked_manual_review"
+        },
+        "v11_generate_assets": {
+            "v11_result_review_required"
+        },
+        "v11_result_review_required": {
+            "v11_visual_qa_preflight_required",  # Success: assets collected
+            "v11_correction_plan_required",  # Failure: retry within loop
+            "blocked_manual_review"  # Unrecoverable failure
+        },
+        "v11_visual_qa_preflight_required": {
+            "v11_visual_qa_required"
+        },
+        "v11_visual_qa_required": {
+            "v11_operator_visual_review_required"
+        },
+        "v11_operator_visual_review_required": {
+            "v11_operator_visual_review_required",  # Self-loop: pending operator decision
+            "v11_correction_plan_required",  # Rejected: loop for next candidate (if candidates remain)
+            "visual_candidate_accepted_for_pipeline",  # Accepted: pipeline success
+            "qa_recovery_blocked_after_max_candidates",  # Rejected max candidates -> blocker
+            "blocked_manual_review"
+        },
+        # V12 photoreal character QA recovery loop states
+        "v12_correction_plan_required": {
+            "v12_corrective_package_build_required"
+        },
+        "v12_corrective_package_build_required": {
+            "v12_generation_authorization_required"
+        },
+        "v12_generation_authorization_required": {
+            "v12_generation_authorization_required",  # Self-loop: halted pending operator
+            "v12_generate_assets",  # Authorized -> proceed to generation
+            "blocked_manual_review"
+        },
+        "v12_generate_assets": {
+            "v12_result_review_required"
+        },
+        "v12_result_review_required": {
+            "v12_visual_qa_preflight_required",  # Success: assets collected
+            "v12_correction_plan_required",  # Failure: retry within loop
+            "blocked_manual_review"
+        },
+        "v12_visual_qa_preflight_required": {
+            "v12_visual_qa_required"
+        },
+        "v12_visual_qa_required": {
+            "v12_operator_visual_review_required"
+        },
+        "v12_operator_visual_review_required": {
+            "v12_operator_visual_review_required",  # Self-loop: pending operator decision
+            "v12_correction_plan_required",  # Rejected: loop for next candidate (if remain)
+            "visual_candidate_accepted_for_pipeline",  # Accepted: pipeline success
+            "qa_recovery_blocked_after_max_candidates",  # Rejected max candidates -> blocker
+            "blocked_manual_review"
+        },
+        # V13 photoreal character QA recovery loop states
+        "v13_correction_plan_required": {
+            "v13_corrective_package_build_required"
+        },
+        "v13_corrective_package_build_required": {
+            "v13_generation_authorization_required"
+        },
+        "v13_generation_authorization_required": {
+            "v13_generation_authorization_required",  # Self-loop: halted pending operator
+            "v13_generate_assets",  # Authorized -> proceed to generation
+            "blocked_manual_review"
+        },
+        "v13_generate_assets": {
+            "v13_result_review_required"
+        },
+        "v13_result_review_required": {
+            "v13_visual_qa_preflight_required",  # Success: assets collected
+            "v13_correction_plan_required",  # Failure: retry within loop
+            "blocked_manual_review"
+        },
+        "v13_visual_qa_preflight_required": {
+            "v13_visual_qa_required"
+        },
+        "v13_visual_qa_required": {
+            "v13_operator_visual_review_required"
+        },
+        "v13_operator_visual_review_required": {
+            "v13_operator_visual_review_required",  # Self-loop: pending operator decision
+            "v13_correction_plan_required",  # Rejected: loop for next candidate
+            "visual_candidate_accepted_for_pipeline",  # Accepted: pipeline success
+            "qa_recovery_blocked_after_max_candidates",  # Rejected max candidates -> blocker
+            "blocked_manual_review"
+        },
+        # Terminal states
+        "visual_candidate_accepted_for_pipeline": set(),
+        "qa_recovery_blocked_after_max_candidates": set(),
         "real_generation_readiness_required": {
             "real_generation_preflight_required"
         },
@@ -696,6 +831,116 @@ class CombineStateMachine:
         ("v10_operator_visual_review_required", "production_accepted"),
         ("v10_operator_visual_review_required", "final_qc_required"),
         ("v10_operator_visual_review_required", "final_operator_acceptance"),
+
+        # v11 states: generation authorization cannot skip to downstream
+        ("v11_generation_authorization_required", "generate_assets"),
+        ("v11_generation_authorization_required", "real_generate_assets"),
+        ("v11_generation_authorization_required", "visual_qa_required"),
+        ("v11_generation_authorization_required", "assembly_required"),
+        ("v11_generation_authorization_required", "assembly_preflight_required"),
+        ("v11_generation_authorization_required", "completed"),
+        ("v11_generation_authorization_required", "production_accepted"),
+
+        # v11 generate_assets: cannot skip to downstream
+        ("v11_generate_assets", "assembly_required"),
+        ("v11_generate_assets", "assembly_preflight_required"),
+        ("v11_generate_assets", "completed"),
+        ("v11_generate_assets", "production_accepted"),
+        ("v11_generate_assets", "visual_qa_required"),
+        ("v11_generate_assets", "real_visual_qa_required"),
+        ("v11_generate_assets", "generate_assets"),
+        ("v11_generate_assets", "real_generate_assets"),
+
+        # v11 result review: cannot skip to downstream
+        ("v11_result_review_required", "assembly_required"),
+        ("v11_result_review_required", "completed"),
+        ("v11_result_review_required", "production_accepted"),
+
+        # v11 operator visual review: cannot skip to downstream
+        ("v11_operator_visual_review_required", "completed"),
+        ("v11_operator_visual_review_required", "production_accepted"),
+        ("v11_operator_visual_review_required", "final_qc_required"),
+        ("v11_operator_visual_review_required", "final_operator_acceptance"),
+        ("v11_operator_visual_review_required", "assembly_required"),
+        ("v11_operator_visual_review_required", "assembly_preflight_required"),
+
+        # v12 states: generation authorization cannot skip to downstream
+        ("v12_generation_authorization_required", "generate_assets"),
+        ("v12_generation_authorization_required", "real_generate_assets"),
+        ("v12_generation_authorization_required", "visual_qa_required"),
+        ("v12_generation_authorization_required", "assembly_required"),
+        ("v12_generation_authorization_required", "assembly_preflight_required"),
+        ("v12_generation_authorization_required", "completed"),
+        ("v12_generation_authorization_required", "production_accepted"),
+
+        # v12 generate_assets: cannot skip to downstream
+        ("v12_generate_assets", "assembly_required"),
+        ("v12_generate_assets", "assembly_preflight_required"),
+        ("v12_generate_assets", "completed"),
+        ("v12_generate_assets", "production_accepted"),
+        ("v12_generate_assets", "visual_qa_required"),
+        ("v12_generate_assets", "real_visual_qa_required"),
+        ("v12_generate_assets", "generate_assets"),
+        ("v12_generate_assets", "real_generate_assets"),
+
+        # v12 result review: cannot skip to downstream
+        ("v12_result_review_required", "assembly_required"),
+        ("v12_result_review_required", "completed"),
+        ("v12_result_review_required", "production_accepted"),
+
+        # v12 operator visual review: cannot skip to downstream
+        ("v12_operator_visual_review_required", "completed"),
+        ("v12_operator_visual_review_required", "production_accepted"),
+        ("v12_operator_visual_review_required", "final_qc_required"),
+        ("v12_operator_visual_review_required", "final_operator_acceptance"),
+        ("v12_operator_visual_review_required", "assembly_required"),
+        ("v12_operator_visual_review_required", "assembly_preflight_required"),
+
+        # v13 states: generation authorization cannot skip to downstream
+        ("v13_generation_authorization_required", "generate_assets"),
+        ("v13_generation_authorization_required", "real_generate_assets"),
+        ("v13_generation_authorization_required", "visual_qa_required"),
+        ("v13_generation_authorization_required", "assembly_required"),
+        ("v13_generation_authorization_required", "assembly_preflight_required"),
+        ("v13_generation_authorization_required", "completed"),
+        ("v13_generation_authorization_required", "production_accepted"),
+
+        # v13 generate_assets: cannot skip to downstream
+        ("v13_generate_assets", "assembly_required"),
+        ("v13_generate_assets", "assembly_preflight_required"),
+        ("v13_generate_assets", "completed"),
+        ("v13_generate_assets", "production_accepted"),
+        ("v13_generate_assets", "visual_qa_required"),
+        ("v13_generate_assets", "real_visual_qa_required"),
+        ("v13_generate_assets", "generate_assets"),
+        ("v13_generate_assets", "real_generate_assets"),
+
+        # v13 result review: cannot skip to downstream
+        ("v13_result_review_required", "assembly_required"),
+        ("v13_result_review_required", "completed"),
+        ("v13_result_review_required", "production_accepted"),
+
+        # v13 operator visual review: cannot skip to downstream
+        ("v13_operator_visual_review_required", "completed"),
+        ("v13_operator_visual_review_required", "production_accepted"),
+        ("v13_operator_visual_review_required", "final_qc_required"),
+        ("v13_operator_visual_review_required", "final_operator_acceptance"),
+        ("v13_operator_visual_review_required", "assembly_required"),
+        ("v13_operator_visual_review_required", "assembly_preflight_required"),
+
+        # Terminal QA states: no transitions to downstream
+        ("visual_candidate_accepted_for_pipeline", "assembly_required"),
+        ("visual_candidate_accepted_for_pipeline", "assembly_preflight_required"),
+        ("visual_candidate_accepted_for_pipeline", "completed"),
+        ("visual_candidate_accepted_for_pipeline", "production_accepted"),
+        ("visual_candidate_accepted_for_pipeline", "final_qc_required"),
+        ("visual_candidate_accepted_for_pipeline", "final_operator_acceptance"),
+        ("qa_recovery_blocked_after_max_candidates", "assembly_required"),
+        ("qa_recovery_blocked_after_max_candidates", "assembly_preflight_required"),
+        ("qa_recovery_blocked_after_max_candidates", "completed"),
+        ("qa_recovery_blocked_after_max_candidates", "production_accepted"),
+        ("qa_recovery_blocked_after_max_candidates", "final_qc_required"),
+        ("qa_recovery_blocked_after_max_candidates", "final_operator_acceptance"),
     }
     
     @classmethod
