@@ -1,0 +1,93 @@
+{
+  "task_id": "RC-COMBINE-V2-70001-86000",
+  "discovered_checkpoints": [],
+  "discovered_adapters": [],
+  "discovered_media_reference_files": [
+    {
+      "path": "output\\assets\\combine_v2_00001_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 367208,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_00002_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 367208,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_1777916951_00001_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 321425,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_1777917278_00001_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 1649652,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_baseline_default_sdxl_shot02_00001_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 1423714,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 1460975,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_1777971208_00001_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 1567937,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 8,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_v4_shot02_00001_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 1054825,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_v4_shot02_00002_.png",
+      "asset_type": "existing_output_asset",
+      "size_bytes": 1054825,
+      "sha256": null,
+      "availability_status": "available",
+      "notes": "Pre-existing output asset"
+    }
+  ],
+  "total_discovered": 10,
+  "install_performed": false,
+  "download_performed": false,
+  "no_unapproved_downloads": true,
+  "no_unapproved_installs": true,
+  "created_timestamp": "2026-05-08T15:32:55.580164+00:00"
+}

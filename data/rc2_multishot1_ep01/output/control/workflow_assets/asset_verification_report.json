@@ -1,0 +1,14 @@
+{
+  "task_id": "RC-COMBINE-V2-70001-86000",
+  "required_assets_available": false,
+  "required_assets_blocked": true,
+  "checksum_size_path_validation_policy_defined": true,
+  "invalid_candidate_substitutions_rejected": true,
+  "missing_assets_not_hidden": true,
+  "generation_readiness": false,
+  "errors": [
+    "Required assets missing: ['checkpoint_sdxl_base']"
+  ],
+  "warnings": [],
+  "created_timestamp": "2026-05-08T15:32:55.580164+00:00"
+}

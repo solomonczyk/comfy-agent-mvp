@@ -745,5 +745,23 @@
     "previous_layer": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
     "next_layer": "RC-COMBINE-V2-70001-86000 Workflow-to-Assets Package",
     "timestamp": "2026-05-08T14:55:57.622440+00:00"
+  },
+  {
+    "event": "workflow_assets_layer_completed",
+    "task_id": "RC-COMBINE-V2-70001-86000",
+    "status": "workflow_assets_blocked",
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "visual_qa_executed": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "current_state": "generation_preflight_operator_review_required",
+    "next_allowed_action": "generation_preflight_operator_review_required",
+    "previous_layer": "RC-COMBINE-V2-62001-70000 Director Planning and Shot Contract Layer",
+    "next_layer": "RC-COMBINE-V2-86001-94000 Generation-to-QA Package",
+    "timestamp": "2026-05-08T15:32:55.580164+00:00"
   }
 ]

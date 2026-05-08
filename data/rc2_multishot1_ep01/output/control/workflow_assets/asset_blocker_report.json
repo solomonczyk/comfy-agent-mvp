@@ -1,0 +1,24 @@
+{
+  "blocker_id": "asset_blocker_2026-05-08",
+  "missing_or_invalid_asset": "checkpoint_sdxl_base",
+  "affected_shots": [
+    "shot_001",
+    "shot_002",
+    "shot_003",
+    "shot_004",
+    "shot_005",
+    "shot_006",
+    "shot_007",
+    "shot_008",
+    "shot_009",
+    "shot_010",
+    "shot_011",
+    "shot_012"
+  ],
+  "affected_workflow_contracts": [
+    "submitted_workflow_contract"
+  ],
+  "next_required_operator_manual_gate": "manual_asset_resolution_required",
+  "generation_preflight_allowed": false,
+  "notes": "Missing assets: ['checkpoint_sdxl_base']. Operator must resolve missing assets before generation can proceed."
+}

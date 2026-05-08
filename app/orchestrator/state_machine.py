@@ -17,6 +17,7 @@ class CombineStateMachine:
         "brief_intake_required",
         "brief_operator_review_required",
         "planning_operator_review_required",
+        "generation_preflight_operator_review_required",
         "route_classification_required",
         "production_plan_required",
         "production_plan_review",
@@ -172,6 +173,11 @@ class CombineStateMachine:
         "planning_operator_review_required": {
             "planning_operator_review_required",
             "brief_intake_required",
+            "generation_preflight_operator_review_required",
+        },
+        "generation_preflight_operator_review_required": {
+            "generation_preflight_operator_review_required",
+            "planning_operator_review_required",
         },
         "route_classification_required": {
             "production_plan_required"
@@ -684,6 +690,18 @@ class CombineStateMachine:
         ("planning_operator_review_required", "production_accepted"),
         ("planning_operator_review_required", "final_qc_required"),
         ("planning_operator_review_required", "final_operator_acceptance"),
+
+        # Generation preflight operator review: cannot skip to generation, assembly, QA, or downstream
+        ("generation_preflight_operator_review_required", "generate_assets"),
+        ("generation_preflight_operator_review_required", "real_generate_assets"),
+        ("generation_preflight_operator_review_required", "assembly_required"),
+        ("generation_preflight_operator_review_required", "assembly_preflight_required"),
+        ("generation_preflight_operator_review_required", "visual_qa_required"),
+        ("generation_preflight_operator_review_required", "real_visual_qa_required"),
+        ("generation_preflight_operator_review_required", "completed"),
+        ("generation_preflight_operator_review_required", "production_accepted"),
+        ("generation_preflight_operator_review_required", "final_qc_required"),
+        ("generation_preflight_operator_review_required", "final_operator_acceptance"),
 
         ("route_classification_required", "generate_assets"),
         

@@ -1,0 +1,144 @@
+{
+  "task_id": "RC-COMBINE-V2-70001-86000",
+  "total_shots_mapped": 12,
+  "shot_workflow_bindings": [
+    {
+      "shot_id": "shot_001",
+      "scene_id": "scene_001",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_002",
+      "scene_id": "scene_001",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_003",
+      "scene_id": "scene_002",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_004",
+      "scene_id": "scene_002",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_005",
+      "scene_id": "scene_003",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_006",
+      "scene_id": "scene_003",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_007",
+      "scene_id": "scene_003",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_008",
+      "scene_id": "scene_004",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_009",
+      "scene_id": "scene_004",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_010",
+      "scene_id": "scene_004",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_011",
+      "scene_id": "scene_005",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    },
+    {
+      "shot_id": "shot_012",
+      "scene_id": "scene_005",
+      "selected_workflow_family": "sdxl_txt2img",
+      "selection_reason": "SDXL txt2img \u2014 educational explainer motion graphics / diagrammatic content",
+      "unsupported_requirements": [],
+      "fallback_policy": "no_fallback_needed",
+      "forbidden_fallback_detected": false,
+      "workflow_readiness_status": "ready"
+    }
+  ],
+  "unsupported_shot_requirements": [],
+  "fallback_policies_applied": [
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed",
+    "no_fallback_needed"
+  ],
+  "workflow_execution_performed": false,
+  "comfyui_submit_executed": false,
+  "created_timestamp": "2026-05-08T15:32:55.580164+00:00"
+}

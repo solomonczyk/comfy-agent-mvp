@@ -1,0 +1,200 @@
+{
+  "task_id": "RC-COMBINE-V2-70001-86000",
+  "per_shot_workflow_contracts": [
+    {
+      "shot_id": "shot_001",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_002",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_003",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_004",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_005",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_006",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_007",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_008",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_009",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_010",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_011",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    },
+    {
+      "shot_id": "shot_012",
+      "workflow_family": "sdxl_txt2img",
+      "expected_runtime_executor": "comfyui",
+      "expected_generation_gate": "generation_authorization_required",
+      "max_generations_per_gate": 1,
+      "required_preflight_checks": [
+        "operator_generation_authorization_required",
+        "asset_availability_verified",
+        "workflow_template_available"
+      ],
+      "required_output_collection_contract": "standard_output_manifest",
+      "forbidden_fake_prompt_id": true,
+      "forbidden_fake_asset": true
+    }
+  ],
+  "total_shot_contracts": 12,
+  "expected_runtime_executor": "comfyui",
+  "expected_generation_gate": "generation_authorization_required",
+  "max_generations_per_gate": 1,
+  "required_preflight_checks": [
+    "operator_generation_authorization_required",
+    "asset_availability_verified",
+    "workflow_template_available"
+  ],
+  "required_output_collection_contract": "standard_output_manifest",
+  "forbidden_fake_prompt_id": true,
+  "forbidden_fake_asset": true,
+  "comfyui_submit_executed": false,
+  "workflow_execution_performed": false,
+  "created_timestamp": "2026-05-08T15:32:55.580164+00:00"
+}

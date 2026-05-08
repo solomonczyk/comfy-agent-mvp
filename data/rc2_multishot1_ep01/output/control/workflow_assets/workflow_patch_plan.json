@@ -1,0 +1,138 @@
+{
+  "task_id": "RC-COMBINE-V2-70001-86000",
+  "prompt_injection_strategy": "positive_prompt_injected_via_clip_text_encode",
+  "negative_prompt_strategy": "negative_prompt_from_shot_contract",
+  "resolution_strategy": "1024x1024_enforced",
+  "saveimage_filename_prefix_strategy": "shot_id_based_prefix",
+  "seed_policy": "fixed_seed_per_shot_variation",
+  "model_checkpoint_binding_strategy": "sdxl_base_checkpoint",
+  "adapter_binding_strategy": "none_required_for_educational_explainer",
+  "per_shot_mutation_rules": [
+    {
+      "shot_id": "shot_001",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_001",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_002",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_002",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_003",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_003",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_004",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_004",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_005",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_005",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_006",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_006",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_007",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_007",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_008",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_008",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_009",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_009",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_010",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_010",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_011",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_011",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    },
+    {
+      "shot_id": "shot_012",
+      "prompt_injection": "positive_prompt_from_shot_visual_intent_and_narrative_purpose",
+      "negative_prompt": "from_shot_contract_negative_constraints_if_present",
+      "resolution": "1024x1024",
+      "filename_prefix": "combine_v2_shot_012",
+      "seed": null,
+      "model_checkpoint": "sdxl_base_checkpoint",
+      "adapter_binding": null
+    }
+  ],
+  "legacy_512_workflow_blocked": true,
+  "stub_workflow_blocked": true,
+  "stub_minimal_workflow_blocked": true,
+  "workflow_execution_performed": false,
+  "comfyui_submit_executed": false,
+  "created_timestamp": "2026-05-08T15:32:55.580164+00:00"
+}

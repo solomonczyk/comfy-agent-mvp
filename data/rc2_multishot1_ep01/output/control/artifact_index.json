@@ -1,6 +1,6 @@
 {
-  "current_state": "planning_operator_review_required",
-  "next_allowed_action": "planning_operator_review_required",
+  "current_state": "generation_preflight_operator_review_required",
+  "next_allowed_action": "generation_preflight_operator_review_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -554,11 +554,23 @@
     "output/control/planning/shot_contracts/shot_009.json",
     "output/control/planning/shot_contracts/shot_010.json",
     "output/control/planning/shot_contracts/shot_011.json",
-    "output/control/planning/shot_contracts/shot_012.json"
+    "output/control/planning/shot_contracts/shot_012.json",
+    "workflow_assets/workflow_inventory.json",
+    "workflow_assets/workflow_selection_report.json",
+    "workflow_assets/workflow_patch_plan.json",
+    "workflow_assets/workflow_validation_report.json",
+    "workflow_assets/submitted_workflow_contract.json",
+    "workflow_assets/asset_requirements.json",
+    "workflow_assets/asset_inventory.json",
+    "workflow_assets/asset_resolution_plan.json",
+    "workflow_assets/asset_verification_report.json",
+    "workflow_assets/generation_preflight_operator_review_packet.json",
+    "workflow_assets/workflow_blocker_report.json"
   ],
-  "task_id": "RC-COMBINE-V2-62001-70000",
-  "created_timestamp": "2026-05-08T14:55:57.622440+00:00",
-  "total_artifacts": 36,
+  "task_id": "RC-COMBINE-V2-70001-86000",
+  "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
+  "total_artifacts": 47,
   "brief_intake_layer_completed": true,
-  "planning_layer_completed": true
+  "planning_layer_completed": true,
+  "workflow_assets_layer_completed": false
 }

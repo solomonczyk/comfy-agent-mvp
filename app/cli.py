@@ -16386,6 +16386,40 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-70001-86000 — Workflow-to-Assets Package commands
+    combine_build_workflow_assets_package_parser = subparsers.add_parser(
+        "combine-build-workflow-assets-package",
+        help="Build workflow-to-assets package: workflow inventory, selection, patch plan, validation, contract, asset requirements, inventory, resolution, verification, blocker reports, and preflight operator review",
+    )
+    combine_build_workflow_assets_package_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_workflow_assets_package_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_validate_workflow_assets_package_parser = subparsers.add_parser(
+        "combine-validate-workflow-assets-package",
+        help="Validate existing workflow assets artifacts and regenerate validation report",
+    )
+    combine_validate_workflow_assets_package_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_validate_workflow_assets_package_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_build_generation_preflight_operator_review_parser = subparsers.add_parser(
+        "combine-build-generation-preflight-operator-review",
+        help="Build generation preflight operator review packet summarizing workflow readiness, asset readiness, blockers, and preflight status",
+    )
+    combine_build_generation_preflight_operator_review_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_generation_preflight_operator_review_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -16803,6 +16837,15 @@ def main() -> int:
     elif args.command == "combine-build-planning-operator-review":
         _require_absolute_project_root(args, "combine-build-planning-operator-review")
         return combine_build_planning_operator_review(args)
+    elif args.command == "combine-build-workflow-assets-package":
+        _require_absolute_project_root(args, "combine-build-workflow-assets-package")
+        return combine_build_workflow_assets_package(args)
+    elif args.command == "combine-validate-workflow-assets-package":
+        _require_absolute_project_root(args, "combine-validate-workflow-assets-package")
+        return combine_validate_workflow_assets_package(args)
+    elif args.command == "combine-build-generation-preflight-operator-review":
+        _require_absolute_project_root(args, "combine-build-generation-preflight-operator-review")
+        return combine_build_generation_preflight_operator_review(args)
     else:
         parser.print_help()
         return 0
@@ -38947,6 +38990,167 @@ def combine_build_planning_operator_review(args: argparse.Namespace) -> int:
         print(f"  Generation Performed: {packet.get('generation_performed', False)}")
         print(f"  Production Accepted: {packet.get('production_accepted', False)}")
         print(f"  Next Recommended Layer: {packet.get('next_recommended_layer', 'unknown')}")
+
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-70001-86000 — Workflow-to-Assets Package commands
+# ---------------------------------------------------------------------------
+
+
+def combine_build_workflow_assets_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-70001-86000 — Build workflow-to-assets package.
+
+    Validates planning artifacts and builds the complete workflow-to-assets
+    package including workflow inventory, selection, patch plan, validation,
+    submitted workflow contract, asset requirements, inventory, resolution,
+    verification, blocker reports, and generation preflight operator review packet.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: workflow assets package built successfully
+    - 1: error or blocked
+    """
+    from app.workflow_assets import build_workflow_assets_package as _build_workflow_assets_package
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _build_workflow_assets_package(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        blocked = result.get('blocked', False) or result.get('blocked_path_reached', False)
+        print(f"Workflow-Assets Package Build Status: {'BLOCKED' if blocked else 'OK'}")
+        print(f"  Planning Artifacts Validated: {result.get('planning_artifacts_validated', False)}")
+        print(f"  Workflow Inventory Created: {result.get('workflow_inventory_created', False)}")
+        print(f"  Workflow Selection Report Created: {result.get('workflow_selection_report_created', False)}")
+        print(f"  Workflow Patch Plan Created: {result.get('workflow_patch_plan_created', False)}")
+        print(f"  Workflow Validation Report Created: {result.get('workflow_validation_report_created', False)}")
+        print(f"  Submitted Workflow Contract Created: {result.get('submitted_workflow_contract_created', False)}")
+        print(f"  Asset Requirements Created: {result.get('asset_requirements_created', False)}")
+        print(f"  Asset Inventory Created: {result.get('asset_inventory_created', False)}")
+        print(f"  Asset Resolution Plan Created: {result.get('asset_resolution_plan_created', False)}")
+        print(f"  Asset Verification Report Created: {result.get('asset_verification_report_created', False)}")
+        print(f"  Preflight Operator Review Created: {result.get('generation_preflight_operator_review_packet_created', False)}")
+        print(f"  Shot Contract Binding Verified: {result.get('shot_contract_binding_verified', False)}")
+        print(f"  Legacy 512 Blocked: {result.get('legacy_512_workflow_blocked', False)}")
+        print(f"  Stub Workflow Blocked: {result.get('stub_workflow_blocked', False)}")
+        print(f"  Missing Assets Reported: {result.get('missing_assets_reported_as_blockers', False)}")
+        print(f"  Current State: {result.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        if result.get('blocker_reason'):
+            print(f"  Blocker Reason: {result['blocker_reason']}")
+        if result.get('errors'):
+            print(f"  Errors: {result['errors']}")
+        if result.get('warnings'):
+            print(f"  Warnings: {result['warnings']}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  ComfyUI Submit Executed: {result.get('comfyui_submit_executed', False)}")
+        print(f"  Assembly Executed: {result.get('assembly_executed', False)}")
+        print(f"  Downstream Executed: {result.get('downstream_executed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        print(f"  Next Layer: {result.get('next_layer', 'unknown')}")
+
+    if result.get('blocked', False) or result.get('blocked_path_reached', False):
+        return 1
+    return 0
+
+
+def combine_validate_workflow_assets_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-70001-86000 — Validate existing workflow assets artifacts.
+
+    Reads all workflow_assets artifacts and re-validates completeness and safety.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: validation completed
+    - 1: validation failed (blocked path)
+    """
+    from app.workflow_assets import validate_workflow_assets_package as _validate_workflow_assets_package
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _validate_workflow_assets_package(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Workflow Assets Package Validation Status:")
+        print(f"  Workflow Inventory Created: {result.get('workflow_inventory_created', False)}")
+        print(f"  Workflow Selection Report Created: {result.get('workflow_selection_report_created', False)}")
+        print(f"  Workflow Patch Plan Created: {result.get('workflow_patch_plan_created', False)}")
+        print(f"  Workflow Validation Report Created: {result.get('workflow_validation_report_created', False)}")
+        print(f"  Submitted Workflow Contract Created: {result.get('submitted_workflow_contract_created', False)}")
+        print(f"  Asset Requirements Created: {result.get('asset_requirements_created', False)}")
+        print(f"  Asset Inventory Created: {result.get('asset_inventory_created', False)}")
+        print(f"  Asset Resolution Plan Created: {result.get('asset_resolution_plan_created', False)}")
+        print(f"  Asset Verification Report Created: {result.get('asset_verification_report_created', False)}")
+        print(f"  Preflight Operator Review Created: {result.get('generation_preflight_operator_review_packet_created', False)}")
+        print(f"  Shot Contract Binding Verified: {result.get('shot_contract_binding_verified', False)}")
+        print(f"  KSampler Required: {result.get('ksampler_required', True)}")
+        print(f"  SaveImage Required: {result.get('saveimage_required', True)}")
+        print(f"  Resolution Policy Enforced: {result.get('resolution_policy_enforced', True)}")
+        print(f"  Validation Passed: {result.get('validation_passed', False)}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        if result.get('errors'):
+            print(f"  Errors: {result['errors']}")
+        if result.get('warnings'):
+            print(f"  Warnings: {result['warnings']}")
+
+    is_blocked = result.get('blocked_path_reached', False)
+    return 1 if is_blocked else 0
+
+
+def combine_build_generation_preflight_operator_review(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-70001-86000 — Build generation preflight operator review packet.
+
+    Reads all workflow_assets artifacts and creates a comprehensive operator review
+    packet summarizing workflow readiness, asset readiness, blockers, and preflight status.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: operator review packet built successfully
+    - 1: error
+    """
+    from app.workflow_assets import build_generation_preflight_operator_review as _build_preflight_review
+
+    project_root = args.project_root
+    json_output = args.json
+
+    packet = _build_preflight_review(project_root)
+
+    if json_output:
+        print(json.dumps({"status": "ok", "packet": packet}, indent=2))
+    else:
+        print("Generation Preflight Operator Review Packet Created:")
+        wr = packet.get('workflow_readiness', {})
+        ar = packet.get('asset_readiness', {})
+        print(f"  Workflow Status: {wr.get('status', 'unknown')}")
+        print(f"  Total Shots Mapped: {wr.get('total_shots_mapped', 0)}")
+        print(f"  Shot Contract Binding Verified: {wr.get('shot_contract_binding_verified', False)}")
+        print(f"  Legacy 512 Blocked: {wr.get('legacy_512_workflow_blocked', False)}")
+        print(f"  Stub Blocked: {wr.get('stub_workflow_blocked', False)}")
+        print(f"  Asset Status: {ar.get('status', 'unknown')}")
+        print(f"  Assets Ready: {ar.get('assets_ready', 0)}")
+        print(f"  Assets Missing: {ar.get('assets_missing', 0)}")
+        print(f"  Assets Unknown: {ar.get('assets_unknown', 0)}")
+        print(f"  Blockers: {packet.get('blockers', [])}")
+        print(f"  Generation Preflight Ready: {packet.get('generation_preflight_ready', False)}")
+        print(f"  Current State: {packet.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {packet.get('next_allowed_action', 'unknown')}")
+        print(f"  Generation Performed: {packet.get('generation_performed', False)}")
+        print(f"  Production Accepted: {packet.get('production_accepted', False)}")
 
     return 0
 

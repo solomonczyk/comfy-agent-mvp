@@ -1,0 +1,125 @@
+{
+  "task_id": "RC-COMBINE-V2-70001-86000",
+  "packet_type": "generation_preflight_operator_review",
+  "created_timestamp": "2026-05-08T15:35:17.096133+00:00",
+  "what_was_prepared": "Workflow-to-Assets package: workflow inventory, selection, patch plan, validation, asset requirements, inventory, resolution, and verification.",
+  "workflow_readiness": {
+    "status": "ready",
+    "total_shots_mapped": 12,
+    "shot_contract_binding_verified": true,
+    "ksampler_required": true,
+    "saveimage_required": true,
+    "filename_prefix_policy_defined": true,
+    "resolution_policy_enforced": true,
+    "legacy_512_workflow_blocked": true,
+    "stub_workflow_blocked": true,
+    "errors": [],
+    "warnings": [
+      "Not all required assets are available \u2014 see asset_verification_report"
+    ]
+  },
+  "asset_readiness": {
+    "status": "blocked",
+    "assets_ready": 0,
+    "assets_missing": 1,
+    "assets_unknown": 12,
+    "required_assets_available": false,
+    "errors": [
+      "Required assets missing: ['checkpoint_sdxl_base']"
+    ],
+    "warnings": []
+  },
+  "shot_workflow_bindings": [
+    {
+      "shot_id": "shot_001",
+      "scene_id": "scene_001",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_002",
+      "scene_id": "scene_001",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_003",
+      "scene_id": "scene_002",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_004",
+      "scene_id": "scene_002",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_005",
+      "scene_id": "scene_003",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_006",
+      "scene_id": "scene_003",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_007",
+      "scene_id": "scene_003",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_008",
+      "scene_id": "scene_004",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_009",
+      "scene_id": "scene_004",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_010",
+      "scene_id": "scene_004",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_011",
+      "scene_id": "scene_005",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    },
+    {
+      "shot_id": "shot_012",
+      "scene_id": "scene_005",
+      "workflow_family": "sdxl_txt2img",
+      "readiness": "ready"
+    }
+  ],
+  "blockers": [
+    "Required assets missing: ['checkpoint_sdxl_base']",
+    "checkpoint_sdxl_base"
+  ],
+  "has_asset_blocker": true,
+  "has_workflow_blocker": false,
+  "generation_preflight_ready": false,
+  "operator_review_required": true,
+  "current_state": "generation_preflight_operator_review_required",
+  "next_allowed_action": "generation_preflight_operator_review_required",
+  "production_accepted": false,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "workflow_execution_performed": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "next_recommended_layer": "RC-COMBINE-V2-86001-94000 Generation-to-QA Package",
+  "notes": "Preflight issues detected. Operator must resolve blockers before generation can proceed."
+}

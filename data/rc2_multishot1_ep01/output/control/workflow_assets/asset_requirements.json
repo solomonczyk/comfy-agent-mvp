@@ -1,0 +1,276 @@
+{
+  "task_id": "RC-COMBINE-V2-70001-86000",
+  "total_requirements": 13,
+  "checkpoint_requirements": [
+    {
+      "asset_id": "checkpoint_sdxl_base",
+      "asset_type": "checkpoint",
+      "expected_path": "models/checkpoints/sdxl/sdxl_base.safetensors",
+      "requirement_priority": "required",
+      "required_flag": true,
+      "source_shot": "all",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Base SDXL checkpoint required for all educational explainer shots"
+    }
+  ],
+  "adapter_requirements": [],
+  "lora_requirements": [],
+  "control_reference_image_requirements": [],
+  "media_input_requirements": [
+    {
+      "asset_id": "motion_graphics_shot_001",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_001_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_001",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_001 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_002",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_002_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_002",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_002 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "sample_frames_shot_003",
+      "asset_type": "sample_frame_images",
+      "expected_path": "assets/sample_frames/shot_003_reference.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_003",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Sample frame assets for shot_003 \u2014 can be generated during frame generation if not available"
+    },
+    {
+      "asset_id": "sample_frames_shot_004",
+      "asset_type": "sample_frame_images",
+      "expected_path": "assets/sample_frames/shot_004_reference.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_004",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Sample frame assets for shot_004 \u2014 can be generated during frame generation if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_005",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_005_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_005",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_005 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_006",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_006_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_006",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_006 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_007",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_007_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_007",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_007 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_008",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_008_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_008",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_008 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_009",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_009_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_009",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_009 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "sample_frames_shot_010",
+      "asset_type": "sample_frame_images",
+      "expected_path": "assets/sample_frames/shot_010_reference.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_010",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Sample frame assets for shot_010 \u2014 can be generated during frame generation if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_011",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_011_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_011",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_011 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_012",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_012_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_012",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_012 \u2014 can be generated dynamically if not available"
+    }
+  ],
+  "all_requirements": [
+    {
+      "asset_id": "checkpoint_sdxl_base",
+      "asset_type": "checkpoint",
+      "expected_path": "models/checkpoints/sdxl/sdxl_base.safetensors",
+      "requirement_priority": "required",
+      "required_flag": true,
+      "source_shot": "all",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Base SDXL checkpoint required for all educational explainer shots"
+    },
+    {
+      "asset_id": "motion_graphics_shot_001",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_001_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_001",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_001 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_002",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_002_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_002",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_002 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "sample_frames_shot_003",
+      "asset_type": "sample_frame_images",
+      "expected_path": "assets/sample_frames/shot_003_reference.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_003",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Sample frame assets for shot_003 \u2014 can be generated during frame generation if not available"
+    },
+    {
+      "asset_id": "sample_frames_shot_004",
+      "asset_type": "sample_frame_images",
+      "expected_path": "assets/sample_frames/shot_004_reference.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_004",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Sample frame assets for shot_004 \u2014 can be generated during frame generation if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_005",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_005_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_005",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_005 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_006",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_006_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_006",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_006 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_007",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_007_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_007",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_007 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_008",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_008_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_008",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_008 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_009",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_009_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_009",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_009 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "sample_frames_shot_010",
+      "asset_type": "sample_frame_images",
+      "expected_path": "assets/sample_frames/shot_010_reference.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_010",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Sample frame assets for shot_010 \u2014 can be generated during frame generation if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_011",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_011_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_011",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_011 \u2014 can be generated dynamically if not available"
+    },
+    {
+      "asset_id": "motion_graphics_shot_012",
+      "asset_type": "motion_graphics_template",
+      "expected_path": "assets/motion_graphics/shot_012_template.png",
+      "requirement_priority": "optional",
+      "required_flag": false,
+      "source_shot": "shot_012",
+      "source_workflow": "sdxl_txt2img",
+      "notes": "Motion graphics template assets for shot_012 \u2014 can be generated dynamically if not available"
+    }
+  ],
+  "workflow_execution_performed": false,
+  "comfyui_submit_executed": false,
+  "created_timestamp": "2026-05-08T15:32:55.580164+00:00"
+}
