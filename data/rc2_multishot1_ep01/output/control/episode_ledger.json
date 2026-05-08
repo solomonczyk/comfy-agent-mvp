@@ -1,8 +1,8 @@
 [
   {
-    "event_type": "v9_real_generation_completed",
-    "task_id": "RC-COMBINE-V2-10601-11600",
-    "stage": "v9_real_generation",
+    "event_type": "v10_real_generation_completed",
+    "task_id": "RC-COMBINE-V2-13001-15000",
+    "stage": "v10_real_generation",
     "new_generation_performed": true,
     "generation_count": 1,
     "max_generations": 1,
@@ -11,26 +11,26 @@
     "workflow_submitted": true,
     "comfyui_execution": true,
     "generated_assets": [
-      "output/assets/combine_v2_v9_quality_locked_shot02_00001_.png"
+      "output/assets/combine_v2_v10_photoreal_recovery_shot02_00002_.png"
     ],
     "asset_count": 1,
     "asset_readable": true,
-    "asset_sha256": "b7879bcbf065421a4bd27dfe5bbdb39505a3ebe29f0b2766789c6c01b05b9d81",
+    "asset_sha256": "3abfb34114acd72293a226ea28715b29739e1c8911d504eddb72e6a1be9fbec3",
     "asset_dimensions": {
       "width": 1024,
       "height": 1024
     },
-    "asset_size_bytes": 1516048,
+    "asset_size_bytes": 1465871,
     "failure_code": null,
     "production_accepted": false,
     "visual_qa_executed": false,
     "operator_visual_decision_created": false,
     "assembly_executed": false,
     "downstream_executed": false,
-    "current_state": "v9_operator_visual_review_required",
-    "next_allowed_action": "v9_operator_visual_review_required",
-    "previous_state": "v9_generation_authorization_required",
-    "previous_layer": "RC-COMBINE-V2-9601-10600",
-    "timestamp": "2026-05-08T05:57:52.092963"
+    "current_state": "v10_operator_visual_review_required",
+    "next_allowed_action": "v10_operator_visual_review_required",
+    "previous_state": "v10_generation_authorization_required",
+    "previous_layer": "RC-COMBINE-V2-11601-13000",
+    "timestamp": "2026-05-08T06:52:13.357129"
   }
 ]

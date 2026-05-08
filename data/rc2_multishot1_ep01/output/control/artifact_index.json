@@ -1,6 +1,6 @@
 {
-  "current_state": "v9_operator_visual_review_required",
-  "next_allowed_action": "v9_operator_visual_review_required",
+  "current_state": "v10_operator_visual_review_required",
+  "next_allowed_action": "v10_operator_visual_review_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -250,7 +250,7 @@
       "no_generation_performed": true
     }
   ],
-  "timestamp": "2026-05-08T07:03:17+02:00",
+  "timestamp": "2026-05-08T08:39:36+02:00",
   "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
   "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
   "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
@@ -271,7 +271,7 @@
   "retry_attempted": false,
   "workflow_submitted": true,
   "generated_assets": [
-    "output/assets/combine_v2_v9_quality_locked_shot02_00001_.png"
+    "output/assets/combine_v2_v10_photoreal_recovery_shot02_00002_.png"
   ],
   "asset_readable": true,
   "operator_visual_review_packet_created": true,
@@ -312,5 +312,15 @@
   "v9_post_submit_validation_contract_verified": true,
   "v9_asset_validation_policy_verified": true,
   "v9_generation_attempted": true,
-  "v9_operator_visual_review_packet_created": true
+  "v9_operator_visual_review_packet_created": true,
+  "v10_photoreal_quality_recovery_plan_created": true,
+  "v10_prompt_package_created": true,
+  "v10_workflow_guardrails_created": true,
+  "v10_generation_authorization_created": true,
+  "v10_generation_attempted": true,
+  "v10_operator_generation_authorization_created": true,
+  "v10_photoreal_package_used": true,
+  "v10_prompt_package_used": true,
+  "v10_workflow_guardrails_verified": true,
+  "v10_operator_visual_review_packet_created": true
 }
