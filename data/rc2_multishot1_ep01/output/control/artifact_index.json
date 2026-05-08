@@ -1,6 +1,6 @@
 {
-  "current_state": "v9_corrective_plan_required",
-  "next_allowed_action": "v9_corrective_plan_required",
+  "current_state": "v9_generation_authorization_required",
+  "next_allowed_action": "v9_generation_authorization_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -100,7 +100,6 @@
         "combine_v2_v8_quality_locked_generation_execution.json",
         "combine_v2_v8_quality_locked_outputs_manifest.json",
         "combine_v2_v8_quality_locked_generation_result_review.json",
-        "combine_v2_v8_operator_visual_review_packet.json",
         "combine_v2_v8_generation_timeout_reconciliation.json"
       ],
       "metadata": {
@@ -226,9 +225,32 @@
       },
       "timestamp": "2026-05-08T06:55:00+02:00",
       "no_generation_performed": true
+    },
+    {
+      "stage": "v9_corrective_plan_created",
+      "success": true,
+      "message": "V9 corrective plan, prompt package, workflow package, validation contracts, and generation authorization gate created. All artifacts generated.",
+      "artifacts": [
+        "combine_v2_v9_corrective_plan.json",
+        "combine_v2_v9_prompt_package.json",
+        "combine_v2_v9_quality_locked_workflow_package.json",
+        "combine_v2_v9_pre_submit_validation_contract.json",
+        "combine_v2_v9_post_submit_validation_contract.json",
+        "combine_v2_v9_asset_validation_policy.json",
+        "combine_v2_v9_generation_authorization_required.json"
+      ],
+      "metadata": {
+        "preserve_v8_strengths": true,
+        "use_v8_as_positive_reference": true,
+        "avoid_v7_failure_modes": true,
+        "production_accepted": false,
+        "generation_allowed_now": false
+      },
+      "timestamp": "2026-05-08T07:03:17+02:00",
+      "no_generation_performed": true
     }
   ],
-  "timestamp": "2026-05-08T04:39:36.189590+00:00",
+  "timestamp": "2026-05-08T07:03:17+02:00",
   "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
   "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
   "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
@@ -273,5 +295,14 @@
   "v8_real_generation_outputs_manifest": "combine_v2_v8_real_generation_outputs_manifest.json",
   "v8_operator_visual_review_packet": "combine_v2_v8_quality_locked_operator_visual_review_packet.json",
   "v8_real_generation_success": true,
-  "failure_code": null
+  "failure_code": null,
+  "v9_corrective_plan_created": true,
+  "v9_prompt_package_created": true,
+  "v9_workflow_package_created": true,
+  "v9_pre_submit_validation_contract_created": true,
+  "v9_post_submit_validation_contract_created": true,
+  "v9_asset_validation_policy_created": true,
+  "v9_generation_gate_created": true,
+  "v9_generation_allowed_now": false,
+  "requires_separate_operator_generation_gate": true
 }

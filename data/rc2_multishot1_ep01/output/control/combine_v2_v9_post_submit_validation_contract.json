@@ -1,0 +1,16 @@
+{
+  "validation_type": "post_submit",
+  "requirements": {
+    "prompt_id_required": true,
+    "generated_assets_required": true,
+    "asset_count_min": 1,
+    "asset_readable_required": true,
+    "asset_sha256_required": true,
+    "asset_dimensions_required": true,
+    "asset_size_bytes_required": true,
+    "stub_assets_rejected": true,
+    "visual_review_packet_without_real_asset_forbidden": true,
+    "production_accepted": false
+  },
+  "timestamp": "2026-05-08T07:03:17+02:00"
+}

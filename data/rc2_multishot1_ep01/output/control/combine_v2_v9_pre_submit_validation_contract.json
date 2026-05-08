@@ -1,0 +1,31 @@
+{
+  "validation_type": "pre_submit",
+  "workflow_requirements": {
+    "required_nodes": ["CheckpointLoaderSimple", "CLIPTextEncode", "CLIPTextEncode", "KSampler", "VAEDecode", "SaveImage"],
+    "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "sampler": "dpmpp_2m",
+    "scheduler": "karras",
+    "steps": 30,
+    "cfg_scale": 6.5,
+    "resolution": "1024x1024",
+    "saveimage_prefix": "combine_v2_v9_quality_locked_shot02"
+  },
+  "prompt_package_requirements": {
+    "positive_prompt_required": true,
+    "negative_prompt_required": true,
+    "must_preserve_face_eyes_mouth_clarity": true,
+    "must_preserve_close_up_composition": true,
+    "must_preserve_blue_fantasy_lighting": true,
+    "must_improve_shot_story_relevance": true,
+    "must_forbid_blur_broken_eyes_broken_mouth": true,
+    "must_forbid_small_subject_empty_space": true
+  },
+  "execution_requirements": {
+    "execute_flag_required": true,
+    "max_generations": 1,
+    "no_fallback_allowed": true,
+    "no_hidden_retry_path": true,
+    "no_dry_run_as_success": true
+  },
+  "timestamp": "2026-05-08T07:03:17+02:00"
+}

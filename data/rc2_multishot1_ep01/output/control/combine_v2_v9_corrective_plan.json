@@ -1,0 +1,7 @@
+{
+  "preserve_v8_strengths": true,
+  "use_v8_as_positive_reference": true,
+  "avoid_v7_failure_modes": true,
+  "production_accepted": false,
+  "generation_allowed_now": false
+}

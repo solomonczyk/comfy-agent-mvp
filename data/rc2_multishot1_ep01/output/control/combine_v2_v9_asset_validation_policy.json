@@ -1,0 +1,21 @@
+{
+  "policy_type": "asset_validation",
+  "requirements": {
+    "asset_must_exist": true,
+    "asset_must_be_readable": true,
+    "asset_must_have_valid_sha256": true,
+    "asset_must_have_valid_dimensions": {
+      "width": 1024,
+      "height": 1024
+    },
+    "asset_must_have_valid_size_bytes": {
+      "min": 1000,
+      "max": 50000000
+    },
+    "stub_assets_are_forbidden": true,
+    "zero_byte_assets_are_forbidden": true,
+    "corrupted_assets_are_forbidden": true,
+    "asset_filename_must_match_pattern": "^combine_v2_v9_quality_locked_shot02_\\d+\\.png$"
+  },
+  "timestamp": "2026-05-08T07:03:17+02:00"
+}

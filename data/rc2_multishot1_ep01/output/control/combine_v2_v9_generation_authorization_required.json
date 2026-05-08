@@ -1,0 +1,11 @@
+{
+  "v9_generation_allowed_now": false,
+  "requires_separate_operator_generation_gate": true,
+  "max_generations": 1,
+  "second_generation_allowed": false,
+  "retry_allowed": false,
+  "visual_qa_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false
+}
