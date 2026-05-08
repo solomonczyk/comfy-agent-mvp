@@ -8,7 +8,16 @@
   "vision_response_cases": {
     "valid_json": [],
     "malformed_json": [],
-    "none_or_error": []
+    "none_or_error": [
+      {
+        "path": "f:\\ComfyUI\\comfy-agent-mvp\\test_portrait.png",
+        "error": "Vision judge HTTP error: 401 - {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      },
+      {
+        "path": "f:\\ComfyUI\\comfy-agent-mvp\\test_input_image.png",
+        "error": "Vision judge HTTP error: 401 - {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      }
+    ]
   },
   "summary": {
     "total_tested": 0,

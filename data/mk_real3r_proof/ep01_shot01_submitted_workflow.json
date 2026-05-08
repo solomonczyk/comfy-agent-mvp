@@ -23,7 +23,7 @@
         "7",
         0
       ],
-      "seed": 1068926219
+      "seed": 2947998865
     }
   },
   "4": {
@@ -35,7 +35,7 @@
   "5": {
     "class_type": "LoadImage",
     "inputs": {
-      "image": "C:/Users/taras/AppData/Local/Temp/tmpzemenpra/data/references/alya_clean_reference_480x640.png"
+      "image": "C:/Users/taras/AppData/Local/Temp/tmp2gu3tkhj/data/references/alya_clean_reference_480x640.png"
     }
   },
   "6": {

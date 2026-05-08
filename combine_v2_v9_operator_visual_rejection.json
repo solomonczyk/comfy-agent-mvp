@@ -1,0 +1,9 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "v9_visual_rejected": true,
+  "production_accepted": false,
+  "assembly_blocked": true,
+  "downstream_blocked": true,
+  "reason": "Operator visual rejection due to blur/haze, weak micro-detail, bad arm/hand anatomy, doll/anime/plastic look, low realism, soft face texture, lack of real-human presence.",
+  "timestamp": "2026-05-08T08:08:44+02:00"
+}

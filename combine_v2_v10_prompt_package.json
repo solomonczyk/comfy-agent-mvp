@@ -1,0 +1,8 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "positive_prompt": "photorealistic close-up portrait, sharp focus, detailed skin texture, realistic human anatomy, natural lighting, high resolution, 8k, ultra-detailed, film grain, subtle imperfections",
+  "negative_prompt": "blur, haze, fog, soft focus, doll, anime, plastic, low quality, bad anatomy, malformed hands, disfigured, oversmooth, airbrushed, cartoon, painting, drawing, illustration, text, watermark, signature",
+  "prompt_version": "1.0",
+  "timestamp": "2026-05-08T08:08:44+02:00",
+  "notes": "Designed to recover photoreal quality while preserving V8 strengths"
+}

@@ -1,0 +1,40 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "recipe_audit": {
+    "positive_reference_used": "V8",
+    "negative_reference_avoided": [],
+    "generation_parameters": {
+      "sampler": "unknown",
+      "cfg_scale": "unknown",
+      "steps": "unknown",
+      "seed": "unknown"
+    },
+    "suspected_issues": [
+      "Over-smoothing in refiner stage",
+      "Insufficient detail enhancement in VAE decode",
+      "Incorrect arm/hand pose guidance",
+      "Excessive beauty/filter-like processing",
+      "Inadequate skin texture generation"
+    ],
+    "recipe_compliance": {
+      "followed_canonical_recipe": false,
+      "deviations_detected": [
+        "Non-standard refiner strength",
+        "Modified noise schedule",
+        "Custom post-processing applied"
+      ]
+    },
+    "root_causes": [
+      "Refiner overpowering base model details",
+      "Insufficient CFG guidance for anatomical correctness",
+      "VAE blur reintroducing haze/fog",
+      "Negative prompt missing key anatomical terms"
+    ]
+  },
+  "recommended_corrections": [
+    "Reduce refiner strength to 0.2-0.3 range",
+    "Increase CFG to 7.0-8.0 for better detail adherence",
+    "Use sharper VAE or disable VAE tiling",
+    "Add anatomical terms to negative prompt: 'malformed hands, bad anatomy, disfigured'"
+  ]
+}

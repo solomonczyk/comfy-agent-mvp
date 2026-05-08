@@ -1,0 +1,42 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "defect_categories": [
+    {
+      "category": "blur_haze_foggy_detail",
+      "severity": "high",
+      "description": "Overall image lacks sharpness, appears hazy or foggy, loss of fine detail"
+    },
+    {
+      "category": "weak_micro_detail",
+      "severity": "high",
+      "description": "Insufficient fine detail in skin, hair, clothing textures"
+    },
+    {
+      "category": "bad_arm_hand_anatomy",
+      "severity": "critical",
+      "description": "Malformed limbs, incorrect joint positioning, unrealistic hand/finger structures"
+    },
+    {
+      "category": "doll_anime_plastic_look",
+      "severity": "high",
+      "description": "Overly smooth, artificial appearance lacking human texture and imperfections"
+    },
+    {
+      "category": "low_realism",
+      "severity": "critical",
+      "description": "Overall lack of photorealistic qualities, fails to resemble real human subject"
+    },
+    {
+      "category": "soft_face_texture",
+      "severity": "medium",
+      "description": "Facial skin lacks proper pore structure, texture variation, and subsurface scattering"
+    },
+    {
+      "category": "lack_of_real_human_presence",
+      "severity": "critical",
+      "description": "Subject appears artificial, mannequin-like, or lacking vital human characteristics"
+    }
+  ],
+  "affected_regions": ["face", "eyes", "mouth", "arms", "hands", "skin_texture"],
+  "overall_assessment": "V9 fails to meet photoreal quality standards across multiple critical dimensions"
+}

@@ -1,0 +1,17 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "artifacts": [
+    "combine_v2_v9_operator_visual_rejection.json",
+    "combine_v2_v9_defect_taxonomy.json",
+    "combine_v2_v9_root_cause_recipe_audit.json",
+    "combine_v2_v9_negative_reference_packet.json",
+    "combine_v2_v10_photoreal_quality_recovery_plan.json",
+    "combine_v2_v10_prompt_package.json",
+    "combine_v2_v10_workflow_guardrails.json",
+    "combine_v2_v10_generation_authorization_required.json",
+    "artifact_index.json",
+    "episode_ledger.json"
+  ],
+  "created_timestamp": "2026-05-08T08:08:44+02:00",
+  "total_artifacts": 10
+}

@@ -1,0 +1,29 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "target_improvements": [
+    "Eliminate blur/haze/foggy detail",
+    "Enhance micro-detail in skin, hair, clothing",
+    "Correct arm/hand anatomy",
+    "Remove doll/anime/plastic look",
+    "Increase photorealism",
+    "Improve face texture with pore detail and subsurface scattering",
+    "Enhance real-human presence"
+  ],
+  "specific_targets": {
+    "blur_haze_foggy_detail": "Use sharper sampling steps, reduce VAE blur, increase detail preservation",
+    "weak_micro_detail": "Increase micro-detail via detail-enhanced refiner or auxiliary networks",
+    "bad_arm_hand_anatomy": "Apply anatomical guidance, pose correction, and hand-specific training",
+    "doll_anime_plastic_look": "Reduce over-smoothing, add skin texture variation, subsurface scattering",
+    "low_realism": "Incorporate real-human references, improve texture and lighting",
+    "soft_face_texture": "Enhance facial texture with high-frequency details and proper shading",
+    "lack_of_real_human_presence": "Use real-human embeddings, avoid overly idealized features"
+  },
+  "preservation_targets": [
+    "V8 face clarity",
+    "V8 eye/mouth integrity",
+    "close-up composition",
+    "clean fantasy look only if it does not reduce realism"
+  ],
+  "plan_version": "1.0",
+  "timestamp": "2026-05-08T08:08:44+02:00"
+}

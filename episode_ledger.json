@@ -1,0 +1,62 @@
+{
+  "task_id": "RC-COMBINE-V2-11601-13000",
+  "episode_type": "corrective_decision_layer",
+  "mode": "Macro-feature corrective decision layer. No generation.",
+  "start_time": "2026-05-08T08:08:44+02:00",
+  "events": [
+    {
+      "event": "v9_operator_visual_rejection_recorded",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "V9 marked visual_rejected, production_accepted=false, assembly/downstream blocked"
+    },
+    {
+      "event": "v9_defect_taxonomy_created",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "Defect taxonomy documented with categories: blur/haze, weak micro-detail, bad arm/hand anatomy, doll/anime/plastic look, low realism, soft face texture, lack of real-human presence"
+    },
+    {
+      "event": "v9_root_cause_recipe_audit_created",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "Root cause analysis completed identifying recipe deviations and recommended corrections"
+    },
+    {
+      "event": "v9_negative_reference_packet_created",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "V9 marked as forbidden positive reference, V8 preserved as positive reference"
+    },
+    {
+      "event": "v10_photoreal_quality_recovery_plan_created",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "V10 package targeting photorealism, sharpness, anatomy, skin/detail realism"
+    },
+    {
+      "event": "v10_prompt_package_created",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "Positive and negative prompts crafted for V10 generation"
+    },
+    {
+      "event": "v10_workflow_guardrails_created",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "Workflow guardrails established with V8 as positive reference, V9 as negative reference"
+    },
+    {
+      "event": "v10_generation_authorization_required_created",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "Generation gate closed, authorization required before V10 generation"
+    },
+    {
+      "event": "artifact_index_created",
+      "timestamp": "2026-05-08T08:08:44+02:00",
+      "details": "Index of all 10 required artifacts created"
+    }
+  ],
+  "current_state": "v10_generation_authorization_required",
+  "next_allowed_action": "v10_generation_authorization_required",
+  "v9_visual_rejected": true,
+  "v10_generation_allowed_now": false,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "end_time": null,
+  "duration_seconds": null
+}
