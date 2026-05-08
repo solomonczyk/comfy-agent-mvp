@@ -1,0 +1,13 @@
+{
+  "face_quality": "acceptable",
+  "eye_integrity": "acceptable",
+  "mouth_integrity": "acceptable",
+  "sharpness": "acceptable",
+  "composition": "strong_closeup",
+  "background": "acceptable",
+  "major_artifacts_detected": false,
+  "reject_level_artifacts_detected": false,
+  "technical_asset_valid": true,
+  "visual_candidate_accepted_for_pipeline": true,
+  "production_accepted": false
+}

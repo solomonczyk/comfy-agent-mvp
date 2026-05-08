@@ -1,0 +1,27 @@
+{
+  "v9_generation_allowed_now": false,
+  "requires_separate_operator_generation_gate": true,
+  "use_v8_as_positive_reference": true,
+  "preserve_v8_strengths": [
+    "face clarity",
+    "eye integrity",
+    "mouth integrity",
+    "close-up composition",
+    "blue fantasy lighting"
+  ],
+  "corrective_targets": [
+    "align with final shot intent",
+    "preserve quality while improving scene/story relevance",
+    "avoid returning to blurry V7 failure mode",
+    "avoid low-detail subject scale from earlier failures"
+  ],
+  "forbidden_regressions": [
+    "blurred face",
+    "broken eyes",
+    "broken mouth",
+    "small subject",
+    "excessive empty space",
+    "fake asset registration",
+    "dry-run treated as success"
+  ]
+}

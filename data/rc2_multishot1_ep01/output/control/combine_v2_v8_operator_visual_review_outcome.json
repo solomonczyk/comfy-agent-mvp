@@ -1,0 +1,10 @@
+{
+  "task_id": "RC-COMBINE-V2-8601-9600",
+  "reviewed_asset_sha256": "e551c745e28ad7979f5eb63b206f85f4974cb1227e84121f337f8f81239e90cd",
+  "operator_visual_review_executed": true,
+  "visual_candidate_accepted_for_pipeline": true,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "next_decision": "prepare_v9_corrective_plan_without_generation"
+}

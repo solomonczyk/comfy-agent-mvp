@@ -124,5 +124,25 @@
     "previous_state": "v8_generation_runtime_blocked",
     "previous_layer": "RC-COMBINE-V2-6601-7600",
     "timestamp": "2026-05-08T04:39:36.189590+00:00"
+  },
+  {
+    "event_type": "v8_operator_visual_review_completed",
+    "task_id": "RC-COMBINE-V2-8601-9600",
+    "stage": "v8_operator_visual_review",
+    "v8_asset_verified": true,
+    "sha256_matched": true,
+    "dimensions": "1024x1024",
+    "size_bytes": 1429946,
+    "visual_candidate_accepted_for_pipeline": true,
+    "production_accepted": false,
+    "v9_corrective_plan_created": true,
+    "v9_generation_allowed_now": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "current_state": "v9_corrective_plan_required",
+    "next_allowed_action": "v9_corrective_plan_required",
+    "previous_state": "v8_operator_visual_review_required",
+    "previous_layer": "RC-COMBINE-V2-7601-8600",
+    "timestamp": "2026-05-08T06:55:00+02:00"
   }
 ]

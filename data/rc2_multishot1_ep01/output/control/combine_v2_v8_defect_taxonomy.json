@@ -1,0 +1,13 @@
+{
+  "blocking_defects": [],
+  "non_blocking_improvements": [
+    "image is more fantasy portrait than final production scene",
+    "identity/story continuity still needs explicit downstream review",
+    "style may require alignment with final episode target before assembly"
+  ],
+  "production_acceptance_blockers": [
+    "operator production acceptance not granted",
+    "assembly/downstream gate not opened",
+    "final scene/video context not validated"
+  ]
+}
