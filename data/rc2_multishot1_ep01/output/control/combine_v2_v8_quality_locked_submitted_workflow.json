@@ -1,0 +1,29 @@
+{
+  "task_id": "RC-COMBINE-V2-7601-8600",
+  "workflow_type": "v8_quality_locked_generation",
+  "saveimage_filename_prefix": "combine_v2_v8_quality_locked_shot02",
+  "positive_prompt": "masterpiece, best quality, young adult female fantasy character, ethereal cinematic portrait, beautiful young woman with flowing white hair, elegant white fantasy dress, blue atmospheric magical background with soft bokeh, sharp focus, highly detailed, crisp, sharp facial features, clear definition, high detail face, realistic eyes, detailed iris, clean eye shape, natural eye appearance, detailed eyelashes, natural eyelashes, clean eyelash detail, natural mouth, well-formed teeth, natural smile, natural skin texture, visible skin pores, realistic skin detail, natural skin reflectance, detailed hair strands, individual hair strands, sharp hair detail, cinematic lighting with soft falloff, intricate fantasy details, high fantasy art style, attractive fantasy character identity, close portrait framing, soft clean lighting, intricate hair detail",
+  "negative_prompt": "old, elderly, aged face, wrinkles, aged skin, senior, grandmother, realistic photo, studio portrait, passport photo, documentary, modern clothing, casual wear, plain background, blurry, soft focus, out of focus, soft face, blurry face, undefined features, deformed eyes, bad eyes, unrealistic eyes, distorted eyes, clumpy eyelashes, missing eyelashes, bad eyelashes, deformed mouth, bad teeth, missing teeth, open mouth distortion, smooth skin, plastic skin, wax skin, airbrushed skin, unreal skin, wax skin, plastic face, synthetic skin, doll-like skin, mannequin skin, soft hair, blurry hair, hair blob, undefined hair, glossy plastic skin, over-smoothed face, changing character concept, loss of fantasy styling, loss of blue fantasy environment, replacing fantasy with realism, ugly, deformed, bad anatomy, disfigured, poorly drawn face, extra limbs, cloned face, disgusting, low quality, worst quality, monochrome, grayscale, boring, mundane",
+  "prompt_id": "687a6356-af7f-48c1-b0cb-7bb59ea755ab",
+  "refinement_parameters": {
+    "cfg_scale": 6.5,
+    "steps": 30,
+    "sampler": "dpmpp_2m",
+    "scheduler": "karras",
+    "resolution": "1024x1024",
+    "checkpoint": "realvisxlV50_v50Bakedvae.safetensors",
+    "seed": 94223796
+  },
+  "quality_guardrails_applied": [
+    "QR_V8_001:anti_blur",
+    "QR_V8_002:anti_softness",
+    "QR_V8_003:realistic_eyes",
+    "QR_V8_004:clean_eyelashes",
+    "QR_V8_005:stable_mouth_teeth",
+    "QR_V8_006:visible_skin_micro_detail",
+    "QR_V8_007:no_wax_plastic_skin",
+    "QR_V8_008:hair_strand_detail",
+    "QR_V8_009:sharper_facial_features"
+  ],
+  "timestamp": "2026-05-08T04:39:36.189590+00:00"
+}
