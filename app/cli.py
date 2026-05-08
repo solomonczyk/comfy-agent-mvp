@@ -16420,6 +16420,40 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-86001-94000 — Generation Gate Package commands
+    combine_evaluate_generation_gate_parser = subparsers.add_parser(
+        "combine-evaluate-generation-gate",
+        help="Evaluate generation gate readiness from Workflow-to-Assets artifacts without writing artifacts",
+    )
+    combine_evaluate_generation_gate_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_evaluate_generation_gate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_build_generation_gate_package_parser = subparsers.add_parser(
+        "combine-build-generation-gate-package",
+        help="Build generation gate package artifacts: gate decision, authorization contracts (READY path) or blocker/acquisition packet (BLOCKED path)",
+    )
+    combine_build_generation_gate_package_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_generation_gate_package_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_validate_generation_gate_package_parser = subparsers.add_parser(
+        "combine-validate-generation-gate-package",
+        help="Validate existing generation gate package artifacts for consistency and correctness",
+    )
+    combine_validate_generation_gate_package_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_validate_generation_gate_package_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -16846,6 +16880,15 @@ def main() -> int:
     elif args.command == "combine-build-generation-preflight-operator-review":
         _require_absolute_project_root(args, "combine-build-generation-preflight-operator-review")
         return combine_build_generation_preflight_operator_review(args)
+    elif args.command == "combine-evaluate-generation-gate":
+        _require_absolute_project_root(args, "combine-evaluate-generation-gate")
+        return combine_evaluate_generation_gate(args)
+    elif args.command == "combine-build-generation-gate-package":
+        _require_absolute_project_root(args, "combine-build-generation-gate-package")
+        return combine_build_generation_gate_package(args)
+    elif args.command == "combine-validate-generation-gate-package":
+        _require_absolute_project_root(args, "combine-validate-generation-gate-package")
+        return combine_validate_generation_gate_package(args)
     else:
         parser.print_help()
         return 0
@@ -39153,6 +39196,128 @@ def combine_build_generation_preflight_operator_review(args: argparse.Namespace)
         print(f"  Production Accepted: {packet.get('production_accepted', False)}")
 
     return 0
+
+
+def combine_evaluate_generation_gate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-86001-94000 — Evaluate generation gate readiness.
+
+    Reads all Workflow-to-Assets artifacts and evaluates whether generation
+    can be authorized, must remain blocked, or is invalid.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: evaluation completed (any outcome)
+    - 1: error
+    """
+    from app.generation_gate import evaluate_generation_gate as _evaluate
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _evaluate(project_root)
+
+    if json_output:
+        print(json.dumps({"status": "ok", "evaluation": result}, indent=2))
+    else:
+        print("Generation Gate Evaluation:")
+        print(f"  Decision: {result.get('generation_gate_decision', 'unknown')}")
+        print(f"  Can Be Authorized: {result.get('generation_can_be_authorized', False)}")
+        print(f"  Can Execute Now: {result.get('generation_can_execute_now', False)}")
+        print(f"  ComfyUI Submit Allowed: {result.get('comfyui_submit_allowed', False)}")
+        print(f"  Reason: {result.get('reason', '')}")
+        print(f"  Contract Valid: {result.get('contract_valid', False)}")
+        print(f"  Report Valid: {result.get('report_valid', False)}")
+        print(f"  Asset Verification Valid: {result.get('asset_verification_valid', False)}")
+        print(f"  Asset Blocker Active: {result.get('asset_blocker_active', False)}")
+        if result.get('blockers'):
+            print(f"  Blockers ({len(result['blockers'])}):")
+            for b in result['blockers']:
+                print(f"    - [{b.get('type', 'unknown')}] {b.get('detail', '')}")
+
+    return 0
+
+
+def combine_build_generation_gate_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-86001-94000 — Build generation gate package artifacts.
+
+    Evaluates generation readiness and creates the appropriate gate artifacts:
+    READY path: authorization contracts, execution contracts, etc.
+    BLOCKED path: runtime blocker report, acquisition gate packet, etc.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: package built successfully
+    - 1: error
+    """
+    from app.generation_gate import build_generation_gate_package as _build
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _build(project_root)
+
+    if json_output:
+        print(json.dumps({"status": "ok", "package": result}, indent=2))
+    else:
+        selected = result.get('selected_branch', 'unknown')
+        print(f"Generation Gate Package Build Status:")
+        print(f"  Selected Branch: {selected}")
+        print(f"  Gate Decision Created: {result.get('generation_gate_decision', False)}")
+        print(f"  Authorization Contract: {result.get('generation_authorization_contract', False)}")
+        print(f"  Execution Contract: {result.get('generation_execution_contract', False)}")
+        print(f"  Runtime Blocker Report: {result.get('generation_runtime_blocker_report', False)}")
+        print(f"  Acquisition Gate Packet: {result.get('controlled_asset_acquisition_gate_packet', False)}")
+        print(f"  Blocked Operator Review: {result.get('generation_blocked_operator_review_packet', False)}")
+        print(f"  Current State: {result.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+
+    return 0
+
+
+def combine_validate_generation_gate_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-86001-94000 — Validate generation gate package artifacts.
+
+    Reads all generation gate artifacts and checks internal consistency,
+    correct artifact presence, and forbidden state flags.
+
+    Does NOT perform generation, ComfyUI submit, retry, visual QA, preview render,
+    assembly, or downstream execution.
+
+    Exit codes:
+    - 0: validation passed
+    - 1: validation failed
+    """
+    from app.generation_gate import validate_generation_gate_package as _validate
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = _validate(project_root)
+
+    if json_output:
+        print(json.dumps({"status": "ok" if result.get('validation_passed', False) else "validation_failed",
+                          "validation": result}, indent=2))
+    else:
+        print("Generation Gate Package Validation:")
+        print(f"  Validation Passed: {result.get('validation_passed', False)}")
+        print(f"  Generation Performed: {result.get('generation_performed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        if result.get('errors'):
+            print(f"  Errors ({len(result['errors'])}):")
+            for e in result['errors']:
+                print(f"    - {e}")
+        if result.get('warnings'):
+            print(f"  Warnings ({len(result['warnings'])}):")
+            for w in result['warnings']:
+                print(f"    - {w}")
+
+    return 0 if result.get('validation_passed', False) else 1
 
 
 if __name__ == "__main__":

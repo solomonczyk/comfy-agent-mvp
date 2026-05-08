@@ -763,5 +763,25 @@
     "previous_layer": "RC-COMBINE-V2-62001-70000 Director Planning and Shot Contract Layer",
     "next_layer": "RC-COMBINE-V2-86001-94000 Generation-to-QA Package",
     "timestamp": "2026-05-08T15:32:55.580164+00:00"
+  },
+  {
+    "event": "generation_gate_evaluated",
+    "task_id": "RC-COMBINE-V2-86001-94000",
+    "selected_branch": "blocked_by_missing_assets",
+    "generation_gate_decision": "blocked_by_missing_assets",
+    "generation_authorized": false,
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "workflow_execution_performed": false,
+    "retry_attempted": false,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "controlled_asset_acquisition_required",
+    "next_allowed_action": "controlled_asset_acquisition_required",
+    "previous_layer": "RC-COMBINE-V2-70001-86000 Workflow-to-Assets Package",
+    "next_layer": "generation_operator_authorization_required",
+    "timestamp": "2026-05-08T16:11:42.803411+00:00"
   }
 ]

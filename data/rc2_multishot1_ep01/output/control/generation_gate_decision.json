@@ -1,0 +1,25 @@
+{
+  "task_id": "RC-COMBINE-V2-86001-94000",
+  "generation_gate_decision": "blocked_by_missing_assets",
+  "generation_can_be_authorized": false,
+  "generation_can_execute_now": false,
+  "comfyui_submit_allowed": false,
+  "reason": "Required assets not available: [\"Required assets missing: ['checkpoint_sdxl_base']\"]; Active asset blocker: checkpoint_sdxl_base",
+  "blockers": [
+    {
+      "type": "missing_required_assets",
+      "detail": "Required assets missing: [\"Required assets missing: ['checkpoint_sdxl_base']\"]"
+    },
+    {
+      "type": "active_asset_blocker",
+      "detail": "Asset blocker active for: checkpoint_sdxl_base. Generation preflight not allowed.",
+      "blocker_id": "asset_blocker_2026-05-08",
+      "missing_asset": "checkpoint_sdxl_base"
+    }
+  ],
+  "contract_valid": true,
+  "report_valid": true,
+  "asset_verification_valid": false,
+  "asset_blocker_active": true,
+  "timestamp": "2026-05-08T16:11:42.799412+00:00"
+}

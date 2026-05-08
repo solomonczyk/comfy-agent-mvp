@@ -1,0 +1,32 @@
+{
+  "task_id": "RC-COMBINE-V2-86001-94000",
+  "packet_type": "generation_blocked_operator_review",
+  "decision": "blocked_by_missing_assets",
+  "gate_decision": "blocked_by_missing_assets",
+  "reason": "Required assets not available: [\"Required assets missing: ['checkpoint_sdxl_base']\"]; Active asset blocker: checkpoint_sdxl_base",
+  "blockers": [
+    {
+      "type": "missing_required_assets",
+      "detail": "Required assets missing: [\"Required assets missing: ['checkpoint_sdxl_base']\"]"
+    },
+    {
+      "type": "active_asset_blocker",
+      "detail": "Asset blocker active for: checkpoint_sdxl_base. Generation preflight not allowed.",
+      "blocker_id": "asset_blocker_2026-05-08",
+      "missing_asset": "checkpoint_sdxl_base"
+    }
+  ],
+  "current_state": "controlled_asset_acquisition_required",
+  "next_allowed_action": "controlled_asset_acquisition_required",
+  "generation_authorized": false,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "workflow_execution_performed": false,
+  "retry_attempted": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "operator_review_required": true,
+  "timestamp": "2026-05-08T16:11:42.799412+00:00"
+}

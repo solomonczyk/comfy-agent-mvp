@@ -1,0 +1,14 @@
+{
+  "task_id": "RC-COMBINE-V2-86001-94000",
+  "blocker_type": "generation_runtime_blocker",
+  "decision": "blocked_by_missing_assets",
+  "missing_asset": "Required assets missing: [\"Required assets missing: ['checkpoint_sdxl_base']\"]",
+  "expected_asset_type": "checkpoint",
+  "source_artifact": "asset_blocker_report.json / asset_verification_report.json",
+  "why_generation_forbidden": "Required assets not available: [\"Required assets missing: ['checkpoint_sdxl_base']\"]; Active asset blocker: checkpoint_sdxl_base",
+  "next_safe_action": "Resolve missing asset 'Required assets missing: [\"Required assets missing: ['checkpoint_sdxl_base']\"]' via controlled acquisition gate",
+  "fake_availability_forbidden": true,
+  "runtime_execution_forbidden": true,
+  "generation_authorization_forbidden": true,
+  "timestamp": "2026-05-08T16:11:42.799412+00:00"
+}

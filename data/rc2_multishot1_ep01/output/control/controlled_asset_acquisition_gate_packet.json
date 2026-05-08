@@ -1,0 +1,14 @@
+{
+  "task_id": "RC-COMBINE-V2-86001-94000",
+  "packet_type": "controlled_asset_acquisition_gate",
+  "decision": "blocked_by_missing_assets",
+  "missing_asset": "Required assets missing: [\"Required assets missing: ['checkpoint_sdxl_base']\"]",
+  "acquisition_instructions_path": "output/control/MODEL_ASSET_INSTALL_INSTRUCTIONS.md",
+  "trusted_sources": [
+    "huggingface.co/stabilityai/stable-diffusion-xl-base-1.0"
+  ],
+  "manual_gate_required": true,
+  "generation_forbidden_until_resolved": true,
+  "operator_action_required": "Download and install missing checkpoint, then re-run generation gate evaluation",
+  "timestamp": "2026-05-08T16:11:42.799412+00:00"
+}
