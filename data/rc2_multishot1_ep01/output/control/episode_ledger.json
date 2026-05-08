@@ -577,5 +577,86 @@
     "downstream_executed": false,
     "notes": "V14 controlled candidate execution loop complete. Stopped at operator visual review by task contract.",
     "timestamp": "2026-05-08T12:23:37.564441+00:00"
+  },
+  {
+    "event_type": "editorial_layer_started",
+    "stage": "editorial_plan_required",
+    "editorial_layer_implemented": true,
+    "generation_performed": false,
+    "real_render_executed": false,
+    "production_accepted": false,
+    "current_state": "editorial_dry_run_required",
+    "next_allowed_action": "editorial_dry_run_required",
+    "timestamp": "2026-05-08T13:12:32.293476"
+  },
+  {
+    "event_type": "timeline_model_created",
+    "stage": "editorial_plan_required",
+    "artifact": "editorial/timeline_model.json",
+    "timestamp": "2026-05-08T13:12:32.293476"
+  },
+  {
+    "event_type": "marker_registry_created",
+    "stage": "editorial_plan_required",
+    "artifact": "editorial/marker_registry.json",
+    "timestamp": "2026-05-08T13:12:32.293476"
+  },
+  {
+    "event_type": "edit_decision_list_created",
+    "stage": "editorial_plan_required",
+    "artifact": "editorial/edit_decision_list.json",
+    "timestamp": "2026-05-08T13:12:32.293476"
+  },
+  {
+    "event_type": "subtitle_plan_created",
+    "stage": "editorial_plan_required",
+    "artifact": "editorial/subtitle_plan.json",
+    "timestamp": "2026-05-08T13:12:32.293476"
+  },
+  {
+    "event_type": "transition_policy_created",
+    "stage": "editorial_plan_required",
+    "artifact": "editorial/transition_policy.json",
+    "timestamp": "2026-05-08T13:12:32.293476"
+  },
+  {
+    "event_type": "voice_casting_contract_created",
+    "stage": "editorial_plan_required",
+    "artifact": "editorial/voice_casting_contract.json",
+    "timestamp": "2026-05-08T13:12:32.293476"
+  },
+  {
+    "event_type": "preview_proof_contract_created",
+    "stage": "editorial_plan_required",
+    "artifact": "editorial/preview_proof_contract.json",
+    "timestamp": "2026-05-08T13:12:32.293476"
+  },
+  {
+    "event_type": "editorial_dry_run_completed",
+    "stage": "editorial_dry_run_required",
+    "dry_run_status": "ready_for_operator_review",
+    "dry_run_passed": true,
+    "error_count": 0,
+    "warning_count": 0,
+    "apply_performed": false,
+    "real_render_executed": false,
+    "generation_performed": false,
+    "production_accepted": false,
+    "current_state": "editorial_operator_review_required",
+    "next_allowed_action": "editorial_operator_review_required",
+    "timestamp": "2026-05-08T13:12:37.953703"
+  },
+  {
+    "event_type": "editorial_operator_review_required",
+    "stage": "editorial_operator_review_required",
+    "operator_decision": null,
+    "preview_render_allowed": false,
+    "final_render_allowed": false,
+    "production_accepted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "current_state": "editorial_operator_review_required",
+    "next_allowed_action": "editorial_operator_review_required",
+    "timestamp": "2026-05-08T13:12:43.547160"
   }
 ]

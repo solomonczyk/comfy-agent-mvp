@@ -1,0 +1,15 @@
+[
+  {
+    "subtitle_id": "sub_001",
+    "text": "\u042d\u0442\u043e \u0442\u0435\u0441\u0442\u043e\u0432\u044b\u0439 \u0441\u0443\u0431\u0442\u0438\u0442\u0440",
+    "anchor_type": "timecode",
+    "start_time": "00:00:02",
+    "end_time": "00:00:06",
+    "scene_id": "scene_001",
+    "start_offset": 2.0,
+    "duration": 4.0,
+    "position": "bottom_center",
+    "style": "clean_white",
+    "safe_zone_required": true
+  }
+]

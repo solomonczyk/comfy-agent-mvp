@@ -1,0 +1,52 @@
+{
+  "operator_review_required": true,
+  "operator_decision": null,
+  "allowed_operator_decisions": [
+    "approved_for_preview_render",
+    "needs_changes",
+    "rejected"
+  ],
+  "preview_render_allowed": false,
+  "final_render_allowed": false,
+  "production_accepted": false,
+  "timeline_summary": {
+    "project_id": "rc2_multishot1_ep01",
+    "timeline_version": "mvp_v1",
+    "fps": 24,
+    "resolution": {
+      "width": 1344,
+      "height": 768
+    },
+    "track_count": 6
+  },
+  "scenes_count": 1,
+  "operations_count": 2,
+  "subtitles_count": 1,
+  "transition_policy_summary": {
+    "default": "hard_cut",
+    "forbidden_transitions": [
+      "spin",
+      "excessive_glitch",
+      "random_wipe"
+    ],
+    "max_total_fade_ratio": 0.35
+  },
+  "voice_casting_summary": {
+    "language": "ru",
+    "preferred_gender": "female",
+    "sample_required": true,
+    "operator_review_required": true
+  },
+  "preview_requirements": {
+    "preview_lowres_required": true,
+    "preview_gif_required": true,
+    "subtitle_burnin_preview_required": true,
+    "transition_qa_required": true
+  },
+  "dry_run_result": {
+    "dry_run_status": "ready_for_operator_review",
+    "error_count": 0,
+    "warning_count": 0
+  },
+  "timestamp": "2026-05-08T13:12:43.547160"
+}

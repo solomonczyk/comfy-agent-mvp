@@ -5940,6 +5940,17 @@ def _write_json_file(path: Path, payload: Any) -> None:
         json.dump(payload, handle, indent=2)
 
 
+def _editorial_load_json(path: Path) -> dict:
+    """Load JSON from file, returning empty dict on failure."""
+    if not path.exists():
+        return {}
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            return json.load(f)
+    except (json.JSONDecodeError, IOError):
+        return {}
+
+
 def _force_combine_current_state(project_root: str, state: str) -> None:
     """Force the artifact_index current_state to a specific value.
     
@@ -11914,6 +11925,508 @@ def main() -> int:
     return 0 if is_success else 1
 
 
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-38001-46000 — Editorial layer CLI commands
+# ---------------------------------------------------------------------------
+
+
+def combine_build_editorial_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-38001-46000 — Build editorial plan (timeline, policies, contracts).
+
+    Creates all editorial artifacts without performing any real rendering.
+    """
+    from app.editorial.timeline_model import TimelineModel, SceneContract, ShotContract
+    from app.editorial.marker_registry import MarkerRegistry, Marker
+    from app.editorial.edit_decision_planner import EditDecisionPlanner, EditOperation
+    from app.editorial.subtitle_planner import SubtitlePlanner, SubtitleEntry
+    from app.editorial.transition_policy import TransitionPolicy
+    from app.editorial.voice_casting_policy import VoiceCastingContract
+    from app.editorial.preview_contract import PreviewProofContract
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    editorial_dir = project_root / "output" / "control" / "editorial"
+    editorial_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.utcnow().isoformat()
+
+    # --- Timeline Model ---
+    timeline = TimelineModel(
+        project_id="rc2_multishot1_ep01",
+        timeline_version="mvp_v1",
+        fps=24,
+        resolution={"width": 1344, "height": 768},
+    )
+
+    scene_01 = SceneContract(
+        scene_id="scene_001",
+        duration_sec=30.0,
+        shot_ids=["shot_001", "shot_002"],
+        start_time="00:00:00",
+        end_time="00:00:30",
+        status="planned",
+    )
+    timeline.add_scene(scene_01)
+
+    _write_json_file(
+        editorial_dir / "timeline_model.json",
+        timeline.to_dict(),
+    )
+    timeline_model_path = str(
+        editorial_dir / "timeline_model.json"
+    ).replace("\\", "/")
+
+    # --- Marker Registry ---
+    # We use the timeline scene_ids to resolve anchors
+    registry = MarkerRegistry()
+    registry.set_known_scene_ids({"scene_001"})
+    marker_a = Marker(
+        marker_id="marker_001",
+        scene_id="scene_001",
+        shot_id="shot_001",
+        timecode="00:00:05",
+        description="Chapter 1 start",
+        anchor_type="timecode",
+    )
+    registry.register(marker_a)
+    _write_json_file(
+        editorial_dir / "marker_registry.json",
+        registry.to_dict_list(),
+    )
+
+    # --- Edit Decision List ---
+    planner = EditDecisionPlanner()
+    op1 = EditOperation(
+        operation_id="edl_001",
+        operation="insert_clip",
+        anchor="scene_001/shot_001",
+        mode="ripple",
+        apply_performed=False,
+        requires_preview=True,
+        requires_operator_review=True,
+    )
+    planner.add_operation(op1)
+    op2 = EditOperation(
+        operation_id="edl_002",
+        operation="add_voiceover_placeholder",
+        anchor="scene_001",
+        mode="overlay",
+        apply_performed=False,
+        requires_preview=True,
+        requires_operator_review=True,
+    )
+    planner.add_operation(op2)
+    _write_json_file(
+        editorial_dir / "edit_decision_list.json",
+        planner.to_dict_list(),
+    )
+
+    # --- Subtitle Plan ---
+    sub_planner = SubtitlePlanner()
+    sub1 = SubtitleEntry(
+        subtitle_id="sub_001",
+        text="Это тестовый субтитр",
+        anchor_type="timecode",
+        start_time="00:00:02",
+        end_time="00:00:06",
+        scene_id="scene_001",
+        start_offset=2.0,
+        duration=4.0,
+        position="bottom_center",
+        style="clean_white",
+        safe_zone_required=True,
+    )
+    sub_planner.add_entry(sub1)
+    _write_json_file(
+        editorial_dir / "subtitle_plan.json",
+        sub_planner.to_dict_list(),
+    )
+
+    # --- Transition Policy ---
+    transition_policy = TransitionPolicy.default_policy()
+    _write_json_file(
+        editorial_dir / "transition_policy.json",
+        transition_policy.to_dict(),
+    )
+
+    # --- Voice Casting Contract ---
+    voice_contract = VoiceCastingContract()
+    _write_json_file(
+        editorial_dir / "voice_casting_contract.json",
+        voice_contract.to_dict(),
+    )
+
+    # --- Preview Proof Contract ---
+    preview_contract = PreviewProofContract()
+    _write_json_file(
+        editorial_dir / "preview_proof_contract.json",
+        preview_contract.to_dict(),
+    )
+
+    result = {
+        "status": "ok",
+        "editorial_layer_implemented": True,
+        "artifacts": {
+            "timeline_model": "editorial/timeline_model.json",
+            "marker_registry": "editorial/marker_registry.json",
+            "edit_decision_list": "editorial/edit_decision_list.json",
+            "subtitle_plan": "editorial/subtitle_plan.json",
+            "transition_policy": "editorial/transition_policy.json",
+            "voice_casting_contract": "editorial/voice_casting_contract.json",
+            "preview_proof_contract": "editorial/preview_proof_contract.json",
+        },
+        "real_render_executed": False,
+        "generation_performed": False,
+        "operator_review_required": True,
+        "final_render_allowed": False,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+
+    # Update artifact index
+    _update_artifact_index_for_editorial(project_root, result, timestamp)
+    # Update episode ledger
+    _update_ledger_for_editorial_plan(project_root, timestamp)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Editorial Plan: CREATED")
+        for k, v in result["artifacts"].items():
+            print(f"  {k}: {v}")
+        print("Next Action: editorial_dry_run_required")
+    return 0
+
+
+def combine_run_editorial_dry_run(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-38001-46000 — Run editorial dry-run validation."""
+    from app.editorial.timeline_dry_run import TimelineDryRun
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    editorial_dir = project_root / "output" / "control" / "editorial"
+    editorial_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.utcnow().isoformat()
+
+    # Load all artifacts
+    timeline_dict = _editorial_load_json(editorial_dir / "timeline_model.json")
+    markers = _editorial_load_json(editorial_dir / "marker_registry.json")
+    subtitles = _editorial_load_json(editorial_dir / "subtitle_plan.json")
+    transition_policy = _editorial_load_json(editorial_dir / "transition_policy.json")
+    voice_casting = _editorial_load_json(editorial_dir / "voice_casting_contract.json")
+    preview_contract = _editorial_load_json(editorial_dir / "preview_proof_contract.json")
+
+    if timeline_dict is None:
+        result = {
+            "dry_run_status": "blocked",
+            "errors": ["timeline_model.json not found or invalid"],
+            "warnings": [],
+            "apply_performed": False,
+            "real_render_executed": False,
+            "final_render_allowed": False,
+            "operator_review_required": True,
+            "timestamp": timestamp,
+        }
+        _write_json_file(editorial_dir / "timeline_dry_run_report.json", result)
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print("DRY RUN: BLOCKED — timeline_model.json not found")
+        return 1
+
+    dry_run = TimelineDryRun()
+    report = dry_run.run(
+        timeline_dict=timeline_dict,
+        markers=markers if isinstance(markers, list) else [],
+        subtitles=subtitles if isinstance(subtitles, list) else [],
+        transition_policy=transition_policy if isinstance(transition_policy, dict) else {},
+        voice_casting_contract=voice_casting if isinstance(voice_casting, dict) else {},
+        preview_proof_contract=preview_contract if isinstance(preview_contract, dict) else {},
+    )
+
+    result = report.to_dict()
+    result["timestamp"] = timestamp
+    _write_json_file(editorial_dir / "timeline_dry_run_report.json", result)
+
+    # Update artifact index and ledger
+    _update_artifact_index_for_editorial_dry_run(project_root, result, timestamp)
+    _update_ledger_for_editorial_dry_run(project_root, result, timestamp)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Dry Run: {result['dry_run_status']}")
+        if result["errors"]:
+            for e in result["errors"]:
+                print(f"  ERROR: {e}")
+        if result["warnings"]:
+            for w in result["warnings"]:
+                print(f"  WARN: {w}")
+        print(f"Errors: {len(result['errors'])}  Warnings: {len(result['warnings'])}")
+    return 0 if result["dry_run_status"] != "blocked" else 1
+
+
+def combine_build_editorial_operator_review(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-38001-46000 — Build editorial operator review packet."""
+    from app.editorial.operator_review_gate import OperatorReviewGate
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    editorial_dir = project_root / "output" / "control" / "editorial"
+    timestamp = datetime.utcnow().isoformat()
+
+    # Load all artifacts
+    timeline_dict = _editorial_load_json(editorial_dir / "timeline_model.json") or {}
+    markers_list = _editorial_load_json(editorial_dir / "marker_registry.json") or []
+    ops_list = _editorial_load_json(editorial_dir / "edit_decision_list.json") or []
+    subs_list = _editorial_load_json(editorial_dir / "subtitle_plan.json") or []
+    trans_policy = _editorial_load_json(editorial_dir / "transition_policy.json") or {}
+    voice_cast = _editorial_load_json(editorial_dir / "voice_casting_contract.json") or {}
+    preview_cont = _editorial_load_json(editorial_dir / "preview_proof_contract.json") or {}
+    dry_run = _editorial_load_json(editorial_dir / "timeline_dry_run_report.json") or {}
+
+    gate = OperatorReviewGate()
+    packet = gate.build_packet(
+        timeline_dict=timeline_dict,
+        operation_count=len(ops_list),
+        subtitle_count=len(subs_list),
+        transition_policy_dict=trans_policy,
+        voice_casting_dict=voice_cast,
+        preview_contract_dict=preview_cont,
+        dry_run_dict=dry_run,
+    )
+
+    packet_dict = packet.to_dict()
+    packet_dict["timestamp"] = timestamp
+    _write_json_file(editorial_dir / "editorial_operator_review_packet.json", packet_dict)
+
+    # Update artifact index and ledger
+    _update_artifact_index_for_review_packet(project_root, packet_dict, timestamp)
+    _update_ledger_for_operator_review(project_root, timestamp)
+
+    # Update artifact_index state
+    _update_canonical_state(project_root, timestamp)
+
+    if json_output:
+        print(json.dumps(packet_dict, indent=2))
+    else:
+        decision_str = str(packet.get("operator_decision"))
+        print("Editorial Operator Review Packet: CREATED")
+        print(f"Operator Decision: {decision_str}")
+        print(f"Scenes: {packet.scenes_count}")
+        print(f"Operations: {packet.operations_count}")
+        print(f"Subtitles: {packet.subtitles_count}")
+        print(f"Current State: editorial_operator_review_required")
+        print(f"Next Allowed Action: editorial_operator_review_required")
+    return 0
+
+
+# --- Editorial helpers ---
+
+
+def _update_artifact_index_for_editorial(
+    project_root: Path, result: dict, timestamp: str
+) -> None:
+    """Update artifact_index.json with editorial plan references."""
+    ai_path = project_root / "output" / "control" / "artifact_index.json"
+    index = {}
+    if ai_path.exists():
+        index = _editorial_load_json(ai_path) or {}
+    index["current_state"] = "editorial_dry_run_required"
+    index["next_allowed_action"] = "editorial_dry_run_required"
+    index["editorial_layer_implemented"] = True
+    index["timeline_model"] = "editorial/timeline_model.json"
+    index["marker_registry"] = "editorial/marker_registry.json"
+    index["edit_decision_list"] = "editorial/edit_decision_list.json"
+    index["subtitle_plan"] = "editorial/subtitle_plan.json"
+    index["transition_policy"] = "editorial/transition_policy.json"
+    index["voice_casting_contract"] = "editorial/voice_casting_contract.json"
+    index["preview_proof_contract"] = "editorial/preview_proof_contract.json"
+    index["generation_performed"] = False
+    index["real_render_executed"] = False
+    index["production_accepted"] = False
+    _write_json_file(ai_path, index)
+
+
+def _update_artifact_index_for_editorial_dry_run(
+    project_root: Path, result: dict, timestamp: str
+) -> None:
+    """Update artifact_index.json after dry-run."""
+    ai_path = project_root / "output" / "control" / "artifact_index.json"
+    index = {}
+    if ai_path.exists():
+        index = _editorial_load_json(ai_path) or {}
+    index["current_state"] = (
+        "editorial_operator_review_required"
+        if result.get("dry_run_status") != "blocked"
+        else "editorial_dry_run_blocked"
+    )
+    index["next_allowed_action"] = index["current_state"]
+    index["timeline_dry_run_report"] = "editorial/timeline_dry_run_report.json"
+    index["dry_run_status"] = result.get("dry_run_status")
+    index["dry_run_errors"] = result.get("errors", [])
+    index["dry_run_warnings"] = result.get("warnings", [])
+    _write_json_file(ai_path, index)
+
+
+def _update_artifact_index_for_review_packet(
+    project_root: Path, packet: dict, timestamp: str
+) -> None:
+    """Update artifact_index.json with operator review packet reference."""
+    ai_path = project_root / "output" / "control" / "artifact_index.json"
+    index = {}
+    if ai_path.exists():
+        index = _editorial_load_json(ai_path) or {}
+    index["editorial_operator_review_packet"] = (
+        "editorial/editorial_operator_review_packet.json"
+    )
+    index["operator_decision"] = packet.get("operator_decision")
+    index["preview_render_allowed"] = packet.get("preview_render_allowed", False)
+    index["final_render_allowed"] = packet.get("final_render_allowed", False)
+    _write_json_file(ai_path, index)
+
+
+def _update_canonical_state(project_root: Path, timestamp: str) -> None:
+    """Set canonical state to editorial_operator_review_required."""
+    ai_path = project_root / "output" / "control" / "artifact_index.json"
+    index = {}
+    if ai_path.exists():
+        index = _editorial_load_json(ai_path) or {}
+    index["current_state"] = "editorial_operator_review_required"
+    index["next_allowed_action"] = "editorial_operator_review_required"
+    index["preview_render_allowed"] = False
+    index["final_render_allowed"] = False
+    index["production_accepted"] = False
+    index["assembly_executed"] = False
+    index["downstream_executed"] = False
+    _write_json_file(ai_path, index)
+
+
+def _update_ledger_for_editorial_plan(project_root: Path, timestamp: str) -> None:
+    """Append editorial plan creation events to ledger."""
+    ledger_path = project_root / "output" / "control" / "episode_ledger.json"
+    ledger = _load_ledger(ledger_path)
+    events = [
+        {
+            "event_type": "editorial_layer_started",
+            "stage": "editorial_plan_required",
+            "editorial_layer_implemented": True,
+            "generation_performed": False,
+            "real_render_executed": False,
+            "production_accepted": False,
+            "current_state": "editorial_dry_run_required",
+            "next_allowed_action": "editorial_dry_run_required",
+            "timestamp": timestamp,
+        },
+        {
+            "event_type": "timeline_model_created",
+            "stage": "editorial_plan_required",
+            "artifact": "editorial/timeline_model.json",
+            "timestamp": timestamp,
+        },
+        {
+            "event_type": "marker_registry_created",
+            "stage": "editorial_plan_required",
+            "artifact": "editorial/marker_registry.json",
+            "timestamp": timestamp,
+        },
+        {
+            "event_type": "edit_decision_list_created",
+            "stage": "editorial_plan_required",
+            "artifact": "editorial/edit_decision_list.json",
+            "timestamp": timestamp,
+        },
+        {
+            "event_type": "subtitle_plan_created",
+            "stage": "editorial_plan_required",
+            "artifact": "editorial/subtitle_plan.json",
+            "timestamp": timestamp,
+        },
+        {
+            "event_type": "transition_policy_created",
+            "stage": "editorial_plan_required",
+            "artifact": "editorial/transition_policy.json",
+            "timestamp": timestamp,
+        },
+        {
+            "event_type": "voice_casting_contract_created",
+            "stage": "editorial_plan_required",
+            "artifact": "editorial/voice_casting_contract.json",
+            "timestamp": timestamp,
+        },
+        {
+            "event_type": "preview_proof_contract_created",
+            "stage": "editorial_plan_required",
+            "artifact": "editorial/preview_proof_contract.json",
+            "timestamp": timestamp,
+        },
+    ]
+    ledger.extend(events)
+    _write_json_file(ledger_path, ledger)
+
+
+def _update_ledger_for_editorial_dry_run(
+    project_root: Path, result: dict, timestamp: str
+) -> None:
+    """Append editorial dry-run event to ledger."""
+    ledger_path = project_root / "output" / "control" / "episode_ledger.json"
+    ledger = _load_ledger(ledger_path)
+    status = result.get("dry_run_status", "unknown")
+    passed = status != "blocked"
+    ledger.append({
+        "event_type": "editorial_dry_run_completed",
+        "stage": "editorial_dry_run_required",
+        "dry_run_status": status,
+        "dry_run_passed": passed,
+        "error_count": len(result.get("errors", [])),
+        "warning_count": len(result.get("warnings", [])),
+        "apply_performed": False,
+        "real_render_executed": False,
+        "generation_performed": False,
+        "production_accepted": False,
+        "current_state": (
+            "editorial_operator_review_required" if passed else "editorial_dry_run_blocked"
+        ),
+        "next_allowed_action": (
+            "editorial_operator_review_required" if passed else "editorial_dry_run_blocked"
+        ),
+        "timestamp": timestamp,
+    })
+    _write_json_file(ledger_path, ledger)
+
+
+def _update_ledger_for_operator_review(project_root: Path, timestamp: str) -> None:
+    """Append operator review required event to ledger."""
+    ledger_path = project_root / "output" / "control" / "episode_ledger.json"
+    ledger = _load_ledger(ledger_path)
+    ledger.append({
+        "event_type": "editorial_operator_review_required",
+        "stage": "editorial_operator_review_required",
+        "operator_decision": None,
+        "preview_render_allowed": False,
+        "final_render_allowed": False,
+        "production_accepted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "current_state": "editorial_operator_review_required",
+        "next_allowed_action": "editorial_operator_review_required",
+        "timestamp": timestamp,
+    })
+    _write_json_file(ledger_path, ledger)
+
+
+def _load_ledger(path: Path) -> list:
+    """Load ledger events from JSON file."""
+    if not path.exists():
+        return []
+    try:
+        data = _editorial_load_json(path)
+        return data if isinstance(data, list) else data.get("events", [])
+    except Exception:
+        return []
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -15734,6 +16247,40 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-38001-46000 — Editorial layer CLI commands
+    combine_build_editorial_plan_parser = subparsers.add_parser(
+        "combine-build-editorial-plan",
+        help="Build editorial timeline plan with scenes, markers, EDL, subtitles, policies, and contracts",
+    )
+    combine_build_editorial_plan_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_editorial_plan_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_run_editorial_dry_run_parser = subparsers.add_parser(
+        "combine-run-editorial-dry-run",
+        help="Run editorial dry-run validation on all editorial artifacts",
+    )
+    combine_run_editorial_dry_run_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_run_editorial_dry_run_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_build_editorial_operator_review_parser = subparsers.add_parser(
+        "combine-build-editorial-operator-review",
+        help="Build editorial operator review packet with summaries and null decision",
+    )
+    combine_build_editorial_operator_review_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_editorial_operator_review_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -16115,6 +16662,15 @@ def main() -> int:
     elif args.command == "combine-run-qa-canon-engine":
         _require_absolute_project_root(args, "combine-run-qa-canon-engine")
         return combine_run_qa_canon_engine(args)
+    elif args.command == "combine-build-editorial-plan":
+        _require_absolute_project_root(args, "combine-build-editorial-plan")
+        return combine_build_editorial_plan(args)
+    elif args.command == "combine-run-editorial-dry-run":
+        _require_absolute_project_root(args, "combine-run-editorial-dry-run")
+        return combine_run_editorial_dry_run(args)
+    elif args.command == "combine-build-editorial-operator-review":
+        _require_absolute_project_root(args, "combine-build-editorial-operator-review")
+        return combine_build_editorial_operator_review(args)
     else:
         parser.print_help()
         return 0

@@ -1,0 +1,14 @@
+{
+  "default": "hard_cut",
+  "same_scene_continuation": "hard_cut",
+  "new_topic": "crossfade",
+  "new_chapter": "fade_to_black",
+  "educational_style": "clean_cut",
+  "cinematic_style": "fade_or_dissolve",
+  "forbidden_transitions": [
+    "spin",
+    "excessive_glitch",
+    "random_wipe"
+  ],
+  "max_total_fade_ratio": 0.35
+}
