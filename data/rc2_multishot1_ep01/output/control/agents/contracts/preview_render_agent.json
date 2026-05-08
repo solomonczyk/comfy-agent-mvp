@@ -1,0 +1,26 @@
+{
+  "agent_id": "preview_render_agent",
+  "role": "Preview Render Agent",
+  "responsibility": "Create low-resolution preview renders for operator review. Must not render final production.",
+  "input_contract": {
+    "requires": ["timeline_model", "edit_decision_list", "subtitle_plan", "transition_plan"],
+    "optional": ["voice_casting_decision", "accepted_assets"]
+  },
+  "output_contract": {
+    "produces": ["preview_render_output", "preview_proof", "preview_review_packet"]
+  },
+  "allowed_actions": ["render_preview_lowres", "render_preview_gif", "burn_in_subtitles"],
+  "forbidden_actions": ["final_render", "production_render", "assembly", "downstream", "production_acceptance"],
+  "required_artifacts": ["timeline_model", "subtitle_plan", "transition_plan"],
+  "owned_artifacts": ["preview_render_output", "preview_proof", "preview_review_packet"],
+  "state_inputs": ["editorial_timeline_complete", "subtitle_planning_complete", "transition_planning_complete"],
+  "state_outputs": ["preview_render_complete"],
+  "dry_run_supported": true,
+  "dangerous_actions": ["preview_render"],
+  "operator_gate_required": true,
+  "tests_required": ["test_episode_renderer.py", "test_contact_sheet.py"],
+  "handoff_to_next_agents": ["assembly_agent"],
+  "acceptance_criteria": ["preview_rendered", "preview_proof_created", "review_packet_ready"],
+  "exit_criteria": ["preview_output_written", "proof_documented"],
+  "blocked_conditions": ["no_timeline_model", "no_editorial_approval", "operator_gate_not_passed"]
+}

@@ -1,0 +1,25 @@
+{
+  "agent_id": "transition_agent",
+  "role": "Transition Agent",
+  "responsibility": "Plan shot transitions: cuts, fades, dissolves. Apply transition policy. Does not render.",
+  "input_contract": {
+    "requires": ["timeline_model", "marker_registry", "edit_decision_list", "transition_policy"]
+  },
+  "output_contract": {
+    "produces": ["transition_plan", "transition_policy_enforced"]
+  },
+  "allowed_actions": ["plan_transitions", "apply_transition_policy", "validate_transition_timing"],
+  "forbidden_actions": ["preview_render", "final_render", "assembly", "direct_video_manipulation"],
+  "required_artifacts": ["timeline_model", "transition_policy"],
+  "owned_artifacts": ["transition_plan", "transition_policy_enforced"],
+  "state_inputs": ["editorial_timeline_complete"],
+  "state_outputs": ["transition_planning_complete"],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": ["test_editorial_transition_policy.py"],
+  "handoff_to_next_agents": ["preview_render_agent"],
+  "acceptance_criteria": ["transitions_planned", "policy_enforced", "timing_validated"],
+  "exit_criteria": ["transition_plan_written", "policy_enforcement_recorded"],
+  "blocked_conditions": ["no_timeline_model", "no_transition_policy"]
+}

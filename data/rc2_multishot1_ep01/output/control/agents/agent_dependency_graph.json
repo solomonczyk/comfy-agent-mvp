@@ -1,0 +1,52 @@
+{
+  "version": "1.0.0",
+  "description": "Complete dependency graph for Combine V2 core agents",
+  "production_pipeline_order": [
+    {"order": 1, "agent_id": "brief_intake_agent"},
+    {"order": 2, "agent_id": "director_planner_agent"},
+    {"order": 3, "agent_id": "shot_planner_agent"},
+    {"order": 4, "agent_id": "workflow_authoring_agent"},
+    {"order": 5, "agent_id": "workflow_validation_agent"},
+    {"order": 6, "agent_id": "asset_resolver_agent"},
+    {"order": 7, "agent_id": "generation_executor_agent"},
+    {"order": 8, "agent_id": "output_collector_agent"},
+    {"order": 9, "agent_id": "visual_qa_agent"},
+    {"order": 10, "agent_id": "correction_planner_agent", "conditional": true, "condition": "visual_qa_rejected"},
+    {"order": 11, "agent_id": "editorial_timeline_agent"},
+    {"order": 12, "agent_id": "subtitle_agent"},
+    {"order": 13, "agent_id": "transition_agent"},
+    {"order": 14, "agent_id": "voice_casting_agent"},
+    {"order": 15, "agent_id": "preview_render_agent"},
+    {"order": 16, "agent_id": "assembly_agent"},
+    {"order": 17, "agent_id": "production_acceptance_agent"}
+  ],
+  "edges": [
+    {"from": "brief_intake_agent", "to": "director_planner_agent", "type": "mandatory"},
+    {"from": "director_planner_agent", "to": "shot_planner_agent", "type": "mandatory"},
+    {"from": "shot_planner_agent", "to": "workflow_authoring_agent", "type": "mandatory"},
+    {"from": "workflow_authoring_agent", "to": "workflow_validation_agent", "type": "mandatory"},
+    {"from": "workflow_validation_agent", "to": "asset_resolver_agent", "type": "mandatory"},
+    {"from": "asset_resolver_agent", "to": "generation_executor_agent", "type": "mandatory"},
+    {"from": "generation_executor_agent", "to": "output_collector_agent", "type": "mandatory"},
+    {"from": "output_collector_agent", "to": "visual_qa_agent", "type": "mandatory"},
+    {"from": "visual_qa_agent", "to": "correction_planner_agent", "type": "conditional", "condition": "asset_rejected"},
+    {"from": "visual_qa_agent", "to": "editorial_timeline_agent", "type": "conditional", "condition": "asset_accepted"},
+    {"from": "correction_planner_agent", "to": "generation_executor_agent", "type": "conditional", "condition": "retry_authorized"},
+    {"from": "editorial_timeline_agent", "to": "subtitle_agent", "type": "mandatory"},
+    {"from": "editorial_timeline_agent", "to": "transition_agent", "type": "mandatory"},
+    {"from": "editorial_timeline_agent", "to": "voice_casting_agent", "type": "mandatory"},
+    {"from": "subtitle_agent", "to": "preview_render_agent", "type": "mandatory"},
+    {"from": "transition_agent", "to": "preview_render_agent", "type": "mandatory"},
+    {"from": "voice_casting_agent", "to": "preview_render_agent", "type": "mandatory"},
+    {"from": "preview_render_agent", "to": "assembly_agent", "type": "mandatory"},
+    {"from": "assembly_agent", "to": "production_acceptance_agent", "type": "mandatory"}
+  ],
+  "parallel_groups": [
+    {"group_id": "editorial_parallel", "agents": ["subtitle_agent", "transition_agent", "voice_casting_agent"]}
+  ],
+  "conditional_paths": [
+    {"from": "visual_qa_agent", "branch": "rejected", "to": "correction_planner_agent"},
+    {"from": "visual_qa_agent", "branch": "accepted", "to": "editorial_timeline_agent"},
+    {"from": "correction_planner_agent", "branch": "retry_authorized", "to": "generation_executor_agent"}
+  ]
+}

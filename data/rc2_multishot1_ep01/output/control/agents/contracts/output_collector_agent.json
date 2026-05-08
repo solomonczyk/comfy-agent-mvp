@@ -1,0 +1,25 @@
+{
+  "agent_id": "output_collector_agent",
+  "role": "Output Collector Agent",
+  "responsibility": "Collect, validate, and register generation outputs. Verify file integrity, detect stubs/corruption.",
+  "input_contract": {
+    "requires": ["generation_result", "generation_trace", "outputs_manifest"]
+  },
+  "output_contract": {
+    "produces": ["validated_outputs_manifest", "output_collection_report"]
+  },
+  "allowed_actions": ["collect_outputs", "validate_file_integrity", "register_outputs"],
+  "forbidden_actions": ["generation", "comfyui_submit", "retry_generation", "mask_corruption"],
+  "required_artifacts": ["generation_result", "outputs_manifest"],
+  "owned_artifacts": ["validated_outputs_manifest", "output_collection_report"],
+  "state_inputs": ["generation_executed"],
+  "state_outputs": ["outputs_collected"],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": ["test_persistence_parity.py", "test_artifact_proof.py"],
+  "handoff_to_next_agents": ["visual_qa_agent"],
+  "acceptance_criteria": ["all_outputs_collected", "file_integrity_verified", "no_stubs_or_corruption"],
+  "exit_criteria": ["validated_manifest_written", "collection_report_written"],
+  "blocked_conditions": ["outputs_missing", "file_integrity_failed", "stub_asset_detected"]
+}

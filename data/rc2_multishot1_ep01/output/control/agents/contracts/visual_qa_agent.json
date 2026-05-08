@@ -1,0 +1,26 @@
+{
+  "agent_id": "visual_qa_agent",
+  "role": "Visual QA Agent",
+  "responsibility": "Assess visual quality of generated assets against quality canons. Can reject assets independently. Requires operator gate for final acceptance.",
+  "input_contract": {
+    "requires": ["validated_outputs_manifest", "quality_references"],
+    "optional": ["negative_references"]
+  },
+  "output_contract": {
+    "produces": ["visual_qa_report", "qa_canon_report", "defect_taxonomy"]
+  },
+  "allowed_actions": ["assess_quality", "check_against_canon", "document_defects"],
+  "forbidden_actions": ["generation", "comfyui_submit", "accept_production", "bypass_operator_review"],
+  "required_artifacts": ["validated_outputs_manifest"],
+  "owned_artifacts": ["visual_qa_report", "qa_canon_report", "defect_taxonomy"],
+  "state_inputs": ["outputs_collected"],
+  "state_outputs": ["visual_qa_complete"],
+  "dry_run_supported": true,
+  "dangerous_actions": ["visual_acceptance"],
+  "operator_gate_required": true,
+  "tests_required": ["test_qa_canon_engine.py", "test_visual_qa_gate.py", "test_vision_defect_benchmark.py"],
+  "handoff_to_next_agents": ["correction_planner_agent", "editorial_timeline_agent"],
+  "acceptance_criteria": ["qa_report_created", "defects_documented", "verdict_recorded"],
+  "exit_criteria": ["qa_report_written", "verdict_ready_for_operator"],
+  "blocked_conditions": ["no_outputs_to_assess", "qa_canon_unavailable"]
+}

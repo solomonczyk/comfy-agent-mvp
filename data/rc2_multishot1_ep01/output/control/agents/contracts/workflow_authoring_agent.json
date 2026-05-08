@@ -1,0 +1,61 @@
+{
+  "agent_id": "workflow_authoring_agent",
+  "role": "Workflow Authoring Agent",
+  "responsibility": "Author ComfyUI workflow JSON from shot plans and prompt packs",
+  "input_contract": {
+    "requires": ["shot_plans", "prompt_packs"],
+    "optional": ["workflow_templates"]
+  },
+  "output_contract": {
+    "produces": ["submitted_workflow", "workflow_graph"]
+  },
+  "allowed_actions": [
+    "author_workflow",
+    "bind_prompts",
+    "configure_nodes"
+  ],
+  "forbidden_actions": [
+    "generation",
+    "comfyui_submit",
+    "output_collection",
+    "bypass_validation"
+  ],
+  "required_artifacts": [
+    "shot_plans",
+    "prompt_packs"
+  ],
+  "owned_artifacts": [
+    "submitted_workflow",
+    "workflow_graph"
+  ],
+  "state_inputs": [
+    "shot_planning_complete"
+  ],
+  "state_outputs": [
+    "workflow_authoring_complete"
+  ],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": [
+    "test_workflow_editor.py",
+    "test_workflow_registry.py"
+  ],
+  "handoff_to_next_agents": [
+    "workflow_validation_agent"
+  ],
+  "acceptance_criteria": [
+    "workflow_created",
+    "prompts_bound_to_nodes",
+    "graph_structure_valid"
+  ],
+  "exit_criteria": [
+    "workflow_json_written",
+    "ready_for_validation"
+  ],
+  "blocked_conditions": [
+    "no_shot_plans",
+    "no_prompt_packs",
+    "workflow_authoring_failed"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "agent_id": "correction_planner_agent",
+  "role": "Correction Planner Agent",
+  "responsibility": "Plan corrections for rejected visual assets. Create corrective prompts, workflow patches, quality pipeline patches. Must not retry without authorization.",
+  "input_contract": {
+    "requires": ["visual_qa_report", "defect_taxonomy"],
+    "optional": ["operator_feedback"]
+  },
+  "output_contract": {
+    "produces": ["correction_plan", "prompt_patch", "workflow_patch", "quality_pipeline_patch"]
+  },
+  "allowed_actions": ["analyze_defects", "plan_corrections", "create_patches"],
+  "forbidden_actions": ["generation", "comfyui_submit", "retry_without_authorization", "bypass_operator_gate"],
+  "required_artifacts": ["visual_qa_report", "defect_taxonomy"],
+  "owned_artifacts": ["correction_plan", "prompt_patch", "workflow_patch", "quality_pipeline_patch"],
+  "state_inputs": ["visual_qa_complete", "operator_rejected"],
+  "state_outputs": ["correction_planned"],
+  "dry_run_supported": true,
+  "dangerous_actions": ["retry"],
+  "operator_gate_required": true,
+  "tests_required": ["test_corrective_action_policy.py", "test_mutation_retry_planner.py"],
+  "handoff_to_next_agents": ["generation_executor_agent"],
+  "acceptance_criteria": ["correction_plan_created", "patches_generated", "retry_authorization_requested"],
+  "exit_criteria": ["correction_plan_written", "patches_applied"],
+  "blocked_conditions": ["no_qa_report", "no_defect_taxonomy", "retry_not_authorized"]
+}

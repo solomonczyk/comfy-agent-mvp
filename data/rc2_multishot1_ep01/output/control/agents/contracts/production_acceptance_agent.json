@@ -1,0 +1,26 @@
+{
+  "agent_id": "production_acceptance_agent",
+  "role": "Production Acceptance Agent",
+  "responsibility": "Final gate for production acceptance. Can set production_accepted=true. Requires operator decision.",
+  "input_contract": {
+    "requires": ["assembled_episode", "assembly_manifest", "production_acceptance_authorization"]
+  },
+  "output_contract": {
+    "produces": ["production_acceptance_decision", "production_acceptance_proof"]
+  },
+  "allowed_actions": ["review_final_output", "accept_production", "reject_production"],
+  "forbidden_actions": ["generation", "comfyui_submit", "assembly", "preview_render", "downstream"],
+  "required_artifacts": ["assembled_episode", "assembly_manifest"],
+  "owned_artifacts": ["production_acceptance_decision", "production_acceptance_proof"],
+  "state_inputs": ["assembly_complete"],
+  "state_outputs": ["production_accepted", "production_rejected"],
+  "dry_run_supported": true,
+  "dangerous_actions": ["production_acceptance"],
+  "operator_gate_required": true,
+  "tests_required": ["test_production_card_schemas.py", "test_production_card_validator.py"],
+  "handoff_to_next_agents": [],
+  "handoff_to_next_agents_note": "terminal agent",
+  "acceptance_criteria": ["production_decision_recorded", "proof_documented"],
+  "exit_criteria": ["decision_written", "production_accepted_or_rejected"],
+  "blocked_conditions": ["no_assembled_episode", "no_authorization", "operator_gate_not_passed"]
+}

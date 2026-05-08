@@ -1,0 +1,314 @@
+{
+  "version": "1.0.0",
+  "description": "Artifact ownership and dependency map across all core agents",
+  "artifacts": [
+    {
+      "artifact": "parsed_brief",
+      "created_by": "brief_intake_agent",
+      "consumed_by": ["director_planner_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "brief_intake_agent"
+    },
+    {
+      "artifact": "character_registry",
+      "created_by": "brief_intake_agent",
+      "consumed_by": ["director_planner_agent", "voice_casting_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "brief_intake_agent"
+    },
+    {
+      "artifact": "project_profile",
+      "created_by": "brief_intake_agent",
+      "consumed_by": ["director_planner_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "brief_intake_agent"
+    },
+    {
+      "artifact": "episode_plan",
+      "created_by": "director_planner_agent",
+      "consumed_by": ["shot_planner_agent", "editorial_timeline_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "director_planner_agent"
+    },
+    {
+      "artifact": "shot_list",
+      "created_by": "director_planner_agent",
+      "consumed_by": ["shot_planner_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "director_planner_agent"
+    },
+    {
+      "artifact": "shot_plans",
+      "created_by": "shot_planner_agent",
+      "consumed_by": ["workflow_authoring_agent", "editorial_timeline_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "shot_planner_agent"
+    },
+    {
+      "artifact": "keyframe_plans",
+      "created_by": "shot_planner_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "shot_planner_agent"
+    },
+    {
+      "artifact": "prompt_packs",
+      "created_by": "shot_planner_agent",
+      "consumed_by": ["workflow_authoring_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "shot_planner_agent"
+    },
+    {
+      "artifact": "submitted_workflow",
+      "created_by": "workflow_authoring_agent",
+      "consumed_by": ["workflow_validation_agent", "generation_executor_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "workflow_authoring_agent"
+    },
+    {
+      "artifact": "workflow_graph",
+      "created_by": "workflow_authoring_agent",
+      "consumed_by": ["workflow_validation_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "workflow_authoring_agent"
+    },
+    {
+      "artifact": "workflow_validation_report",
+      "created_by": "workflow_validation_agent",
+      "consumed_by": ["asset_resolver_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "workflow_validation_agent"
+    },
+    {
+      "artifact": "preflight_report",
+      "created_by": "workflow_validation_agent",
+      "consumed_by": ["asset_resolver_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "workflow_validation_agent"
+    },
+    {
+      "artifact": "asset_inventory",
+      "created_by": "asset_resolver_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "asset_resolver_agent"
+    },
+    {
+      "artifact": "asset_resolution_result",
+      "created_by": "asset_resolver_agent",
+      "consumed_by": ["generation_executor_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "asset_resolver_agent"
+    },
+    {
+      "artifact": "acquisition_plan",
+      "created_by": "asset_resolver_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "asset_resolver_agent"
+    },
+    {
+      "artifact": "generation_result",
+      "created_by": "generation_executor_agent",
+      "consumed_by": ["output_collector_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "generation_executor_agent"
+    },
+    {
+      "artifact": "generation_trace",
+      "created_by": "generation_executor_agent",
+      "consumed_by": ["output_collector_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "generation_executor_agent"
+    },
+    {
+      "artifact": "outputs_manifest",
+      "created_by": "generation_executor_agent",
+      "consumed_by": ["output_collector_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "generation_executor_agent"
+    },
+    {
+      "artifact": "validated_outputs_manifest",
+      "created_by": "output_collector_agent",
+      "consumed_by": ["visual_qa_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "output_collector_agent"
+    },
+    {
+      "artifact": "output_collection_report",
+      "created_by": "output_collector_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "output_collector_agent"
+    },
+    {
+      "artifact": "visual_qa_report",
+      "created_by": "visual_qa_agent",
+      "consumed_by": ["correction_planner_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "visual_qa_agent"
+    },
+    {
+      "artifact": "qa_canon_report",
+      "created_by": "visual_qa_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "visual_qa_agent"
+    },
+    {
+      "artifact": "defect_taxonomy",
+      "created_by": "visual_qa_agent",
+      "consumed_by": ["correction_planner_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "visual_qa_agent"
+    },
+    {
+      "artifact": "correction_plan",
+      "created_by": "correction_planner_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "correction_planner_agent"
+    },
+    {
+      "artifact": "prompt_patch",
+      "created_by": "correction_planner_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "correction_planner_agent"
+    },
+    {
+      "artifact": "workflow_patch",
+      "created_by": "correction_planner_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "correction_planner_agent"
+    },
+    {
+      "artifact": "quality_pipeline_patch",
+      "created_by": "correction_planner_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "correction_planner_agent"
+    },
+    {
+      "artifact": "timeline_model",
+      "created_by": "editorial_timeline_agent",
+      "consumed_by": ["subtitle_agent", "transition_agent", "preview_render_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "editorial_timeline_agent"
+    },
+    {
+      "artifact": "marker_registry",
+      "created_by": "editorial_timeline_agent",
+      "consumed_by": ["subtitle_agent", "transition_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "editorial_timeline_agent"
+    },
+    {
+      "artifact": "edit_decision_list",
+      "created_by": "editorial_timeline_agent",
+      "consumed_by": ["subtitle_agent", "transition_agent", "preview_render_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "editorial_timeline_agent"
+    },
+    {
+      "artifact": "subtitle_plan",
+      "created_by": "subtitle_agent",
+      "consumed_by": ["preview_render_agent", "assembly_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "subtitle_agent"
+    },
+    {
+      "artifact": "subtitle_tracks",
+      "created_by": "subtitle_agent",
+      "consumed_by": ["preview_render_agent", "assembly_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "subtitle_agent"
+    },
+    {
+      "artifact": "transition_plan",
+      "created_by": "transition_agent",
+      "consumed_by": ["preview_render_agent", "assembly_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "transition_agent"
+    },
+    {
+      "artifact": "transition_policy_enforced",
+      "created_by": "transition_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "transition_agent"
+    },
+    {
+      "artifact": "voice_casting_decision",
+      "created_by": "voice_casting_agent",
+      "consumed_by": ["preview_render_agent", "assembly_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "voice_casting_agent"
+    },
+    {
+      "artifact": "voice_sample_review_packet",
+      "created_by": "voice_casting_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "voice_casting_agent"
+    },
+    {
+      "artifact": "preview_render_output",
+      "created_by": "preview_render_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "preview_render_agent"
+    },
+    {
+      "artifact": "preview_proof",
+      "created_by": "preview_render_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "preview_render_agent"
+    },
+    {
+      "artifact": "preview_review_packet",
+      "created_by": "preview_render_agent",
+      "consumed_by": ["assembly_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "preview_render_agent"
+    },
+    {
+      "artifact": "assembled_episode",
+      "created_by": "assembly_agent",
+      "consumed_by": ["production_acceptance_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "assembly_agent"
+    },
+    {
+      "artifact": "assembly_manifest",
+      "created_by": "assembly_agent",
+      "consumed_by": ["production_acceptance_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "assembly_agent"
+    },
+    {
+      "artifact": "assembly_proof",
+      "created_by": "assembly_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "assembly_agent"
+    },
+    {
+      "artifact": "production_acceptance_decision",
+      "created_by": "production_acceptance_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "production_acceptance_agent"
+    },
+    {
+      "artifact": "production_acceptance_proof",
+      "created_by": "production_acceptance_agent",
+      "consumed_by": [],
+      "canonical_location": "output/control",
+      "validation_responsibility": "production_acceptance_agent"
+    }
+  ]
+}

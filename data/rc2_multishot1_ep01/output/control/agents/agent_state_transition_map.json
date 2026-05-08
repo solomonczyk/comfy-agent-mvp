@@ -1,0 +1,149 @@
+{
+  "version": "1.0.0",
+  "description": "State transition map for Combine V2 core agents",
+  "current_layer_state": "agent_registry_operator_review_required",
+  "current_layer_next_action": "agent_registry_operator_review_required",
+  "production_accepted": false,
+  "no_generation_transition": true,
+  "no_preview_render_transition": true,
+  "no_assembly_transition": true,
+  "no_downstream_transition": true,
+  "agents": [
+    {
+      "agent_id": "brief_intake_agent",
+      "state_inputs": ["initialized", "brief_provided"],
+      "state_outputs": ["brief_intake_complete"],
+      "next_allowed_action": "brief_intake_complete",
+      "blocked_state_if_missing_input": "no_brief_provided",
+      "blocked_conditions": ["no_brief_provided", "brief_parse_failed", "character_extraction_failed"]
+    },
+    {
+      "agent_id": "director_planner_agent",
+      "state_inputs": ["brief_intake_complete"],
+      "state_outputs": ["director_planning_complete"],
+      "next_allowed_action": "director_planning_complete",
+      "blocked_state_if_missing_input": "no_parsed_brief",
+      "blocked_conditions": ["no_parsed_brief", "no_character_registry", "shot_planning_failed"]
+    },
+    {
+      "agent_id": "shot_planner_agent",
+      "state_inputs": ["director_planning_complete"],
+      "state_outputs": ["shot_planning_complete"],
+      "next_allowed_action": "shot_planning_complete",
+      "blocked_state_if_missing_input": "no_episode_plan",
+      "blocked_conditions": ["no_episode_plan", "no_shot_list", "prompt_pack_generation_failed"]
+    },
+    {
+      "agent_id": "workflow_authoring_agent",
+      "state_inputs": ["shot_planning_complete"],
+      "state_outputs": ["workflow_authoring_complete"],
+      "next_allowed_action": "workflow_authoring_complete",
+      "blocked_state_if_missing_input": "no_shot_plans",
+      "blocked_conditions": ["no_shot_plans", "no_prompt_packs", "workflow_authoring_failed"]
+    },
+    {
+      "agent_id": "workflow_validation_agent",
+      "state_inputs": ["workflow_authoring_complete"],
+      "state_outputs": ["workflow_validation_complete"],
+      "next_allowed_action": "workflow_validation_complete",
+      "blocked_state_if_missing_input": "no_submitted_workflow",
+      "blocked_conditions": ["validation_failed", "incompatible_nodes_detected", "preflight_checks_failed"]
+    },
+    {
+      "agent_id": "asset_resolver_agent",
+      "state_inputs": ["workflow_validation_complete"],
+      "state_outputs": ["asset_resolution_complete"],
+      "next_allowed_action": "asset_resolution_complete",
+      "blocked_state_if_missing_input": "no_validation_report",
+      "blocked_conditions": ["critical_asset_missing_and_cannot_acquire", "asset_paths_unresolvable", "resolution_failed"]
+    },
+    {
+      "agent_id": "generation_executor_agent",
+      "state_inputs": ["asset_resolution_complete", "generation_authorized"],
+      "state_outputs": ["generation_executed"],
+      "next_allowed_action": "generation_executed",
+      "blocked_state_if_missing_input": "no_generation_authorization",
+      "blocked_conditions": ["no_generation_authorization", "comfyui_unavailable", "operator_gate_not_passed"]
+    },
+    {
+      "agent_id": "output_collector_agent",
+      "state_inputs": ["generation_executed"],
+      "state_outputs": ["outputs_collected"],
+      "next_allowed_action": "outputs_collected",
+      "blocked_state_if_missing_input": "no_generation_result",
+      "blocked_conditions": ["outputs_missing", "file_integrity_failed", "stub_asset_detected"]
+    },
+    {
+      "agent_id": "visual_qa_agent",
+      "state_inputs": ["outputs_collected"],
+      "state_outputs": ["visual_qa_complete"],
+      "next_allowed_action": "visual_qa_complete",
+      "blocked_state_if_missing_input": "no_outputs_to_assess",
+      "blocked_conditions": ["no_outputs_to_assess", "qa_canon_unavailable"]
+    },
+    {
+      "agent_id": "correction_planner_agent",
+      "state_inputs": ["visual_qa_complete", "operator_rejected"],
+      "state_outputs": ["correction_planned"],
+      "next_allowed_action": "correction_planned",
+      "blocked_state_if_missing_input": "no_qa_report",
+      "blocked_conditions": ["no_qa_report", "no_defect_taxonomy", "retry_not_authorized"]
+    },
+    {
+      "agent_id": "editorial_timeline_agent",
+      "state_inputs": ["visual_qa_complete"],
+      "state_outputs": ["editorial_timeline_complete"],
+      "next_allowed_action": "editorial_timeline_complete",
+      "blocked_state_if_missing_input": "no_shot_plans",
+      "blocked_conditions": ["no_shot_plans", "no_episode_plan"]
+    },
+    {
+      "agent_id": "subtitle_agent",
+      "state_inputs": ["editorial_timeline_complete"],
+      "state_outputs": ["subtitle_planning_complete"],
+      "next_allowed_action": "subtitle_planning_complete",
+      "blocked_state_if_missing_input": "no_timeline_model",
+      "blocked_conditions": ["no_timeline_model", "subtitle_generation_failed"]
+    },
+    {
+      "agent_id": "transition_agent",
+      "state_inputs": ["editorial_timeline_complete"],
+      "state_outputs": ["transition_planning_complete"],
+      "next_allowed_action": "transition_planning_complete",
+      "blocked_state_if_missing_input": "no_timeline_model",
+      "blocked_conditions": ["no_timeline_model", "no_transition_policy"]
+    },
+    {
+      "agent_id": "voice_casting_agent",
+      "state_inputs": ["editorial_timeline_complete"],
+      "state_outputs": ["voice_casting_complete"],
+      "next_allowed_action": "voice_casting_complete",
+      "blocked_state_if_missing_input": "no_character_registry",
+      "blocked_conditions": ["no_character_registry", "no_voice_contract", "suitable_voice_not_found"]
+    },
+    {
+      "agent_id": "preview_render_agent",
+      "state_inputs": ["editorial_timeline_complete", "subtitle_planning_complete", "transition_planning_complete"],
+      "state_outputs": ["preview_render_complete"],
+      "next_allowed_action": "preview_render_complete",
+      "blocked_state_if_missing_input": "no_timeline_model",
+      "blocked_conditions": ["no_timeline_model", "no_editorial_approval", "operator_gate_not_passed"]
+    },
+    {
+      "agent_id": "assembly_agent",
+      "state_inputs": ["preview_render_complete", "assembly_authorized"],
+      "state_outputs": ["assembly_complete"],
+      "next_allowed_action": "assembly_complete",
+      "blocked_state_if_missing_input": "no_assembly_authorization",
+      "blocked_conditions": ["no_assembly_authorization", "missing_required_artifacts", "operator_gate_not_passed"]
+    },
+    {
+      "agent_id": "production_acceptance_agent",
+      "state_inputs": ["assembly_complete"],
+      "state_outputs": ["production_accepted", "production_rejected"],
+      "next_allowed_action": "production_accepted_or_rejected",
+      "blocked_state_if_missing_input": "no_assembled_episode",
+      "blocked_conditions": ["no_assembled_episode", "no_authorization", "operator_gate_not_passed"]
+    }
+  ]
+}

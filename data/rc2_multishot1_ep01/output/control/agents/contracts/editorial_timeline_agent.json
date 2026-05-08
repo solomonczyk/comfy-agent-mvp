@@ -1,0 +1,26 @@
+{
+  "agent_id": "editorial_timeline_agent",
+  "role": "Editorial Timeline Agent",
+  "responsibility": "Build and manage editorial timeline model: tracks, operations, markers, timing. Does not render.",
+  "input_contract": {
+    "requires": ["shot_plans", "episode_plan"],
+    "optional": ["accepted_assets"]
+  },
+  "output_contract": {
+    "produces": ["timeline_model", "marker_registry", "edit_decision_list"]
+  },
+  "allowed_actions": ["build_timeline_model", "register_markers", "create_edit_decision_list", "run_dry_run"],
+  "forbidden_actions": ["preview_render", "final_render", "assembly", "voice_generation"],
+  "required_artifacts": ["shot_plans", "episode_plan"],
+  "owned_artifacts": ["timeline_model", "marker_registry", "edit_decision_list"],
+  "state_inputs": ["visual_qa_complete"],
+  "state_outputs": ["editorial_timeline_complete"],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": ["test_editorial_timeline_model.py", "test_editorial_marker_registry.py", "test_editorial_edit_decision_planner.py"],
+  "handoff_to_next_agents": ["subtitle_agent", "transition_agent", "voice_casting_agent"],
+  "acceptance_criteria": ["timeline_model_created", "markers_registered", "edit_decision_list_created"],
+  "exit_criteria": ["timeline_model_written", "marker_registry_written", "edit_decision_list_written"],
+  "blocked_conditions": ["no_shot_plans", "no_episode_plan"]
+}

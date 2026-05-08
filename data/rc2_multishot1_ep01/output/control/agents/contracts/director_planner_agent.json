@@ -1,0 +1,60 @@
+{
+  "agent_id": "director_planner_agent",
+  "role": "Director Planner Agent",
+  "responsibility": "Plan episode structure, scene breakdown, shot list from parsed brief",
+  "input_contract": {
+    "requires": ["parsed_brief", "character_registry", "project_profile"]
+  },
+  "output_contract": {
+    "produces": ["episode_plan", "shot_list"]
+  },
+  "allowed_actions": [
+    "plan_episode",
+    "plan_shots",
+    "assign_shot_characteristics"
+  ],
+  "forbidden_actions": [
+    "generation",
+    "comfyui_submit",
+    "workflow_authoring",
+    "direct_workflow_edit"
+  ],
+  "required_artifacts": [
+    "parsed_brief",
+    "character_registry"
+  ],
+  "owned_artifacts": [
+    "episode_plan",
+    "shot_list"
+  ],
+  "state_inputs": [
+    "brief_intake_complete"
+  ],
+  "state_outputs": [
+    "director_planning_complete"
+  ],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": [
+    "test_director_cli.py",
+    "test_director_commands.py"
+  ],
+  "handoff_to_next_agents": [
+    "shot_planner_agent"
+  ],
+  "acceptance_criteria": [
+    "episode_plan_created",
+    "shot_list_generated",
+    "all_shots_have_characteristics"
+  ],
+  "exit_criteria": [
+    "all_shot_plans_written",
+    "shot_list_validated"
+  ],
+  "blocked_conditions": [
+    "no_parsed_brief",
+    "no_character_registry",
+    "shot_planning_failed"
+  ]
+}

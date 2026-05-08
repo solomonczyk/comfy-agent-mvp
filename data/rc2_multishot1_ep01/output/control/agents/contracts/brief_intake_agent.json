@@ -1,0 +1,60 @@
+{
+  "agent_id": "brief_intake_agent",
+  "role": "Brief Intake Agent",
+  "responsibility": "Extract creative intent from operator brief, parse requirements, set project context",
+  "input_contract": {
+    "requires": ["operator_brief_markdown"],
+    "optional": ["reference_images", "style_references"]
+  },
+  "output_contract": {
+    "produces": ["parsed_brief", "character_registry", "project_profile"]
+  },
+  "allowed_actions": [
+    "parse_brief",
+    "extract_characters",
+    "set_project_profile"
+  ],
+  "forbidden_actions": [
+    "generation",
+    "comfyui_submit",
+    "workflow_authoring",
+    "quality_assessment"
+  ],
+  "required_artifacts": [],
+  "owned_artifacts": [
+    "parsed_brief",
+    "character_registry",
+    "project_profile"
+  ],
+  "state_inputs": [
+    "initialized",
+    "brief_provided"
+  ],
+  "state_outputs": [
+    "brief_intake_complete"
+  ],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": [
+    "test_brief_parser.py",
+    "test_character_resolver.py"
+  ],
+  "handoff_to_next_agents": [
+    "director_planner_agent"
+  ],
+  "acceptance_criteria": [
+    "brief_parsed_successfully",
+    "characters_extracted",
+    "project_profile_created"
+  ],
+  "exit_criteria": [
+    "all_output_artifacts_written",
+    "next_agent_can_start"
+  ],
+  "blocked_conditions": [
+    "no_brief_provided",
+    "brief_parse_failed",
+    "character_extraction_failed"
+  ]
+}

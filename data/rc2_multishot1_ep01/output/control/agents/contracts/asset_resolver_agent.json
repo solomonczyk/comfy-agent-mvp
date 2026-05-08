@@ -1,0 +1,25 @@
+{
+  "agent_id": "asset_resolver_agent",
+  "role": "Asset Resolver Agent",
+  "responsibility": "Resolve required generation assets: models, IP adapters, LoRAs, embeddings. Check availability and trigger controlled acquisition.",
+  "input_contract": {
+    "requires": ["workflow_validation_report", "preflight_report"]
+  },
+  "output_contract": {
+    "produces": ["asset_inventory", "asset_resolution_result", "acquisition_plan"]
+  },
+  "allowed_actions": ["check_asset_availability", "resolve_asset_paths", "plan_acquisition"],
+  "forbidden_actions": ["generation", "comfyui_submit", "bypass_asset_check", "install_without_verification"],
+  "required_artifacts": ["workflow_validation_report"],
+  "owned_artifacts": ["asset_inventory", "asset_resolution_result", "acquisition_plan"],
+  "state_inputs": ["workflow_validation_complete"],
+  "state_outputs": ["asset_resolution_complete"],
+  "dry_run_supported": true,
+  "dangerous_actions": ["controlled_acquisition"],
+  "operator_gate_required": false,
+  "tests_required": ["test_combine_asset_resolution.py", "test_checkpoint_resolver.py"],
+  "handoff_to_next_agents": ["generation_executor_agent"],
+  "acceptance_criteria": ["all_required_assets_resolved", "missing_assets_documented", "acquisition_plan_ready"],
+  "exit_criteria": ["asset_inventory_written", "resolution_result_written"],
+  "blocked_conditions": ["critical_asset_missing_and_cannot_acquire", "asset_paths_unresolvable", "resolution_failed"]
+}

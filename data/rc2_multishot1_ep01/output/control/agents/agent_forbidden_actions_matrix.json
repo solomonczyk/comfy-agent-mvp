@@ -1,0 +1,85 @@
+{
+  "version": "1.0.0",
+  "description": "Forbidden actions matrix — maps dangerous operations to their gates and enforcement",
+  "global_forbidden_actions": {
+    "generation": {"gate": "manual_controlled_gate", "enforcement": "blocked_in_registry_layer", "responsible_agents": ["generation_executor_agent"]},
+    "retry": {"gate": "manual_controlled_gate", "enforcement": "requires_operator_authorization", "responsible_agents": ["correction_planner_agent"]},
+    "visual_acceptance": {"gate": "operator_only", "enforcement": "operator_must_approve", "responsible_agents": ["visual_qa_agent"]},
+    "preview_render": {"gate": "manual_controlled_gate", "enforcement": "blocked_in_registry_layer", "responsible_agents": ["preview_render_agent"]},
+    "voice_generation": {"gate": "manual_controlled_gate", "enforcement": "blocked_in_registry_layer", "responsible_agents": ["voice_casting_agent"]},
+    "assembly": {"gate": "manual_controlled_gate", "enforcement": "blocked_in_registry_layer", "responsible_agents": ["assembly_agent"]},
+    "downstream": {"gate": "manual_controlled_gate", "enforcement": "blocked_in_registry_layer", "responsible_agents": ["assembly_agent", "production_acceptance_agent"]},
+    "production_accepted_true": {"gate": "operator_only", "enforcement": "only_production_acceptance_agent_can_set", "responsible_agents": ["production_acceptance_agent"]},
+    "comfyui_submit": {"gate": "manual_controlled_gate", "enforcement": "blocked_in_registry_layer", "responsible_agents": ["generation_executor_agent"]}
+  },
+  "per_agent_forbidden_actions": {
+    "brief_intake_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "workflow_authoring", "quality_assessment"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "director_planner_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "workflow_authoring", "direct_workflow_edit"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "shot_planner_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "workflow_authoring", "workflow_edit"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "workflow_authoring_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "output_collection", "bypass_validation"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "workflow_validation_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "workflow_authoring", "skip_validation"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "asset_resolver_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "bypass_asset_check", "install_without_verification"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "generation_executor_agent": {
+      "forbidden_actions": ["retry_without_authorization", "modify_workflow_during_execution", "skip_output_collection"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "output_collector_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "retry_generation", "mask_corruption"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "visual_qa_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "accept_production", "bypass_operator_review"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "correction_planner_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "retry_without_authorization", "bypass_operator_gate"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "editorial_timeline_agent": {
+      "forbidden_actions": ["preview_render", "final_render", "assembly", "voice_generation"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "subtitle_agent": {
+      "forbidden_actions": ["preview_render", "final_render", "subtitle_burnin", "assembly"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "transition_agent": {
+      "forbidden_actions": ["preview_render", "final_render", "assembly", "direct_video_manipulation"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "voice_casting_agent": {
+      "forbidden_actions": ["voice_generation", "audio_render", "final_audio_assembly", "bypass_operator_review"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "preview_render_agent": {
+      "forbidden_actions": ["final_render", "production_render", "assembly", "downstream", "production_acceptance"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "assembly_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "production_acceptance", "bypass_operator_authorization"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "production_acceptance_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "assembly", "preview_render", "downstream"],
+      "enforcement": "blocked_in_registry_layer"
+    }
+  }
+}

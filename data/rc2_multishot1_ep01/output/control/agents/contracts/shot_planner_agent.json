@@ -1,0 +1,62 @@
+{
+  "agent_id": "shot_planner_agent",
+  "role": "Shot Planner Agent",
+  "responsibility": "Plan individual shot details: composition, framing, subject position, camera, lighting",
+  "input_contract": {
+    "requires": ["episode_plan", "shot_list"],
+    "optional": ["style_references", "reference_images"]
+  },
+  "output_contract": {
+    "produces": ["shot_plans", "keyframe_plans", "prompt_packs"]
+  },
+  "allowed_actions": [
+    "plan_shot_composition",
+    "plan_keyframes",
+    "generate_prompt_pack"
+  ],
+  "forbidden_actions": [
+    "generation",
+    "comfyui_submit",
+    "workflow_authoring",
+    "workflow_edit"
+  ],
+  "required_artifacts": [
+    "episode_plan",
+    "shot_list"
+  ],
+  "owned_artifacts": [
+    "shot_plans",
+    "keyframe_plans",
+    "prompt_packs"
+  ],
+  "state_inputs": [
+    "director_planning_complete"
+  ],
+  "state_outputs": [
+    "shot_planning_complete"
+  ],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": [
+    "test_shot_controller.py",
+    "test_keyframe_planner.py"
+  ],
+  "handoff_to_next_agents": [
+    "workflow_authoring_agent"
+  ],
+  "acceptance_criteria": [
+    "all_shots_have_plans",
+    "keyframes_planned",
+    "prompt_packs_generated"
+  ],
+  "exit_criteria": [
+    "shot_plans_written",
+    "prompt_packs_validated"
+  ],
+  "blocked_conditions": [
+    "no_episode_plan",
+    "no_shot_list",
+    "prompt_pack_generation_failed"
+  ]
+}

@@ -1,0 +1,60 @@
+{
+  "agent_id": "workflow_validation_agent",
+  "role": "Workflow Validation Agent",
+  "responsibility": "Validate ComfyUI workflow correctness, node compatibility, resource requirements",
+  "input_contract": {
+    "requires": ["submitted_workflow", "workflow_graph"]
+  },
+  "output_contract": {
+    "produces": ["workflow_validation_report", "preflight_report"]
+  },
+  "allowed_actions": [
+    "validate_workflow_structure",
+    "check_node_compatibility",
+    "run_preflight_checks"
+  ],
+  "forbidden_actions": [
+    "generation",
+    "comfyui_submit",
+    "workflow_authoring",
+    "skip_validation"
+  ],
+  "required_artifacts": [
+    "submitted_workflow",
+    "workflow_graph"
+  ],
+  "owned_artifacts": [
+    "workflow_validation_report",
+    "preflight_report"
+  ],
+  "state_inputs": [
+    "workflow_authoring_complete"
+  ],
+  "state_outputs": [
+    "workflow_validation_complete"
+  ],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": [
+    "test_preflight_validator.py",
+    "test_workflow_diff.py"
+  ],
+  "handoff_to_next_agents": [
+    "asset_resolver_agent"
+  ],
+  "acceptance_criteria": [
+    "workflow_structure_valid",
+    "all_nodes_compatible",
+    "preflight_passed"
+  ],
+  "exit_criteria": [
+    "validation_report_written",
+    "preflight_report_written"
+  ],
+  "blocked_conditions": [
+    "validation_failed",
+    "incompatible_nodes_detected",
+    "preflight_checks_failed"
+  ]
+}

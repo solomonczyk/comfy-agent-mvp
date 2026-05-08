@@ -1,0 +1,83 @@
+{
+  "operator_review_required": true,
+  "operator_decision": null,
+  "allowed_operator_decisions": [
+    "approved_for_next_layer",
+    "needs_changes",
+    "rejected"
+  ],
+  "layer_id": "RC-COMBINE-V2-46001-54000",
+  "layer_name": "Agent Contracts & Registry Completion Layer",
+  "registry_summary": {
+    "total_agents_registered": 17,
+    "total_contracts_created": 17,
+    "agents_ready": [
+      "brief_intake_agent",
+      "director_planner_agent",
+      "shot_planner_agent",
+      "workflow_authoring_agent",
+      "workflow_validation_agent",
+      "asset_resolver_agent",
+      "generation_executor_agent",
+      "output_collector_agent",
+      "visual_qa_agent",
+      "correction_planner_agent",
+      "editorial_timeline_agent",
+      "subtitle_agent",
+      "transition_agent",
+      "voice_casting_agent",
+      "preview_render_agent",
+      "assembly_agent",
+      "production_acceptance_agent"
+    ],
+    "agents_requiring_operator_gate": [
+      "generation_executor_agent",
+      "visual_qa_agent",
+      "preview_render_agent",
+      "assembly_agent",
+      "production_acceptance_agent"
+    ]
+  },
+  "dangerous_actions_gated": {
+    "generation": "manual_controlled_gate",
+    "retry": "operator_authorization_required",
+    "visual_acceptance": "operator_only",
+    "preview_render": "manual_controlled_gate",
+    "voice_generation": "manual_controlled_gate",
+    "assembly": "manual_controlled_gate",
+    "downstream": "manual_controlled_gate",
+    "production_accepted_true": "operator_only"
+  },
+  "future_layers_unblocked": [
+    {
+      "layer_id": "RC-COMBINE-V2-54001-62000",
+      "name": "Brief Intake Contract Layer",
+      "dependency": "agent_registry_operator_review_required"
+    }
+  ],
+  "readiness": {
+    "all_core_agents_registered": true,
+    "all_agents_have_contracts": true,
+    "dangerous_actions_mapped": true,
+    "ready_agents_count": 17,
+    "gated_agents_count": 5,
+    "ready_for_next_layer": true
+  },
+  "layer_sufficient_for_next": true,
+  "non_blocking_backlog_items": [
+    "Detailed integration test for each agent contract",
+    "Agent runtime execution plan generation",
+    "Operator UI dashboard for registry visualization",
+    "Automated contract field migration on agent update",
+    "Cross-registry consistency checks with existing role contracts"
+  ],
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "visual_acceptance_executed": false,
+  "preview_render_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T13:48:44.618724+00:00"
+}

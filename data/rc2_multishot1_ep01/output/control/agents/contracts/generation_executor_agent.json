@@ -1,0 +1,25 @@
+{
+  "agent_id": "generation_executor_agent",
+  "role": "Generation Executor Agent",
+  "responsibility": "Execute authorized ComfyUI generation. Must NOT run without authorization. Requires operator gate.",
+  "input_contract": {
+    "requires": ["submitted_workflow", "asset_resolution_result", "generation_authorization"]
+  },
+  "output_contract": {
+    "produces": ["generation_result", "generation_trace", "outputs_manifest"]
+  },
+  "allowed_actions": ["execute_generation", "collect_outputs"],
+  "forbidden_actions": ["retry_without_authorization", "modify_workflow_during_execution", "skip_output_collection"],
+  "required_artifacts": ["submitted_workflow", "generation_authorization"],
+  "owned_artifacts": ["generation_result", "generation_trace", "outputs_manifest"],
+  "state_inputs": ["asset_resolution_complete", "generation_authorized"],
+  "state_outputs": ["generation_executed"],
+  "dry_run_supported": false,
+  "dangerous_actions": ["generation", "comfyui_submit"],
+  "operator_gate_required": true,
+  "tests_required": ["test_comfy_submitter.py", "test_generate_frames_handler.py"],
+  "handoff_to_next_agents": ["output_collector_agent"],
+  "acceptance_criteria": ["generation_completed", "outputs_manifest_created", "trace_recorded"],
+  "exit_criteria": ["generation_result_written", "outputs_manifest_written"],
+  "blocked_conditions": ["no_generation_authorization", "comfyui_unavailable", "operator_gate_not_passed"]
+}

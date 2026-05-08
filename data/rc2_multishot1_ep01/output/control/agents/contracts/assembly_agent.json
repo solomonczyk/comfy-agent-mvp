@@ -1,0 +1,25 @@
+{
+  "agent_id": "assembly_agent",
+  "role": "Assembly Agent",
+  "responsibility": "Assemble final episode from accepted assets, voice, subtitles, transitions. Requires operator authorization.",
+  "input_contract": {
+    "requires": ["preview_review_packet", "accepted_assets", "transition_plan", "subtitle_plan", "voice_casting_decision"]
+  },
+  "output_contract": {
+    "produces": ["assembled_episode", "assembly_manifest", "assembly_proof"]
+  },
+  "allowed_actions": ["assemble_episode", "create_assembly_manifest"],
+  "forbidden_actions": ["generation", "comfyui_submit", "production_acceptance", "bypass_operator_authorization"],
+  "required_artifacts": ["preview_review_packet", "accepted_assets", "assembly_authorization"],
+  "owned_artifacts": ["assembled_episode", "assembly_manifest", "assembly_proof"],
+  "state_inputs": ["preview_render_complete", "assembly_authorized"],
+  "state_outputs": ["assembly_complete"],
+  "dry_run_supported": true,
+  "dangerous_actions": ["assembly"],
+  "operator_gate_required": true,
+  "tests_required": ["test_episode_assembler.py", "test_frame_assembler.py", "test_scene_builder.py"],
+  "handoff_to_next_agents": ["production_acceptance_agent"],
+  "acceptance_criteria": ["episode_assembled", "manifest_created", "integrity_verified"],
+  "exit_criteria": ["assembled_episode_written", "assembly_proof_written"],
+  "blocked_conditions": ["no_assembly_authorization", "missing_required_artifacts", "operator_gate_not_passed"]
+}

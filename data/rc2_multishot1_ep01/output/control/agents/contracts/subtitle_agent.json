@@ -1,0 +1,25 @@
+{
+  "agent_id": "subtitle_agent",
+  "role": "Subtitle Agent",
+  "responsibility": "Plan and generate subtitle tracks for the episode. Does not burn in or render.",
+  "input_contract": {
+    "requires": ["timeline_model", "marker_registry", "edit_decision_list"]
+  },
+  "output_contract": {
+    "produces": ["subtitle_plan", "subtitle_tracks"]
+  },
+  "allowed_actions": ["plan_subtitles", "generate_subtitle_tracks", "sync_to_timeline"],
+  "forbidden_actions": ["preview_render", "final_render", "subtitle_burnin", "assembly"],
+  "required_artifacts": ["timeline_model", "edit_decision_list"],
+  "owned_artifacts": ["subtitle_plan", "subtitle_tracks"],
+  "state_inputs": ["editorial_timeline_complete"],
+  "state_outputs": ["subtitle_planning_complete"],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": false,
+  "tests_required": ["test_editorial_subtitle_planner.py"],
+  "handoff_to_next_agents": ["preview_render_agent"],
+  "acceptance_criteria": ["subtitle_plan_created", "tracks_generated", "synced_to_timeline"],
+  "exit_criteria": ["subtitle_plan_written", "tracks_written"],
+  "blocked_conditions": ["no_timeline_model", "subtitle_generation_failed"]
+}

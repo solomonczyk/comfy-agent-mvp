@@ -1,0 +1,27 @@
+{
+  "agent_id": "voice_casting_agent",
+  "role": "Voice Casting Agent",
+  "responsibility": "Cast voices for characters, generate voice samples, manage voice contracts. Does not generate final audio.",
+  "input_contract": {
+    "requires": ["character_registry", "voice_casting_contract"],
+    "optional": ["voice_samples"]
+  },
+  "output_contract": {
+    "produces": ["voice_casting_decision", "voice_sample_review_packet"]
+  },
+  "allowed_actions": ["cast_voices", "select_voice_samples", "create_voice_contracts"],
+  "forbidden_actions": ["voice_generation", "audio_render", "final_audio_assembly", "bypass_operator_review"],
+  "required_artifacts": ["character_registry", "voice_casting_contract"],
+  "owned_artifacts": ["voice_casting_decision", "voice_sample_review_packet"],
+  "state_inputs": ["editorial_timeline_complete"],
+  "state_outputs": ["voice_casting_complete"],
+  "dry_run_supported": true,
+  "dangerous_actions": [],
+  "operator_gate_required": true,
+  "operator_gate_reason": "for voice selection approval",
+  "tests_required": ["test_editorial_voice_casting_policy.py", "test_voice_resolver.py"],
+  "handoff_to_next_agents": ["preview_render_agent"],
+  "acceptance_criteria": ["voices_cast", "voice_contracts_created", "sample_review_ready"],
+  "exit_criteria": ["casting_decision_written", "review_packet_written"],
+  "blocked_conditions": ["no_character_registry", "no_voice_contract", "suitable_voice_not_found"]
+}
