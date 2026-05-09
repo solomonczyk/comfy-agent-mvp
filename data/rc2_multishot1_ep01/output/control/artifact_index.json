@@ -1,6 +1,6 @@
 {
-  "current_state": "operator_visual_review_required",
-  "next_allowed_action": "operator_visual_review_required",
+  "current_state": "visual_asset_operator_accepted",
+  "next_allowed_action": "timeline_to_preview_package_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -16,7 +16,7 @@
   "visual_acceptance_executed": false,
   "assembly_executed": false,
   "downstream_executed": false,
-  "operator_visual_verdict": "ACCEPTED",
+  "operator_visual_verdict": "accepted",
   "v6_targeted_refinement_operator_visual_review": "combine_v2_v6_targeted_refinement_operator_visual_review.json",
   "v6_quality_reference_traits": "combine_v2_v6_quality_reference_traits.json",
   "v6_concept_fidelity_drift_taxonomy": "combine_v2_v6_concept_fidelity_drift_taxonomy.json",
@@ -373,6 +373,33 @@
       },
       "timestamp": "2026-05-09T06:24:10.763758+00:00",
       "no_generation_performed": true
+    },
+    {
+      "stage": "operator_visual_decision_gate",
+      "success": true,
+      "message": "Operator visual decision gate executed. Verdict: accepted. Branch: accepted. No agent visual acceptance. production_accepted remains False.",
+      "artifacts": [
+        "operator_visual_decision.json",
+        "visual_asset_acceptance_record.json",
+        "approved_visual_assets_manifest.json",
+        "operator_visual_decision_routing_report.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001",
+        "operator_verdict": "accepted",
+        "verdict_provided": true,
+        "branch_taken": "accepted",
+        "production_accepted": false,
+        "visual_acceptance_executed": false,
+        "new_generation_performed": false,
+        "comfyui_submit_executed": false,
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "downstream_executed": false,
+        "preview_render_executed": false
+      },
+      "timestamp": "2026-05-09T06:45:43.536036+00:00",
+      "no_generation_performed": true
     }
   ],
   "timestamp": "2026-05-09T05:31:52.022342+00:00",
@@ -455,7 +482,7 @@
   "candidate_generated": false,
   "candidate_accepted_for_pipeline": false,
   "blind_retry_allowed": false,
-  "operator_visual_decision_recorded": false,
+  "operator_visual_decision_recorded": true,
   "v11_correction_package_created": true,
   "prompt_patch_v11_created": true,
   "workflow_patch_v11_created": true,
@@ -682,5 +709,8 @@
   "next_layer_allowed": true,
   "next_layer": "RC-COMBINE-V2-99001-102000 Controlled Generation Authorization and Single Execution Gate",
   "prompt_id": "7aa1994f-8ccb-4aa9-9f92-b77f7727e89b",
-  "technical_verdict": "PASS"
+  "technical_verdict": "PASS",
+  "operator_visual_review_executed": true,
+  "operator_visual_decision_gate_executed": true,
+  "technical_pass_not_treated_as_visual_pass": true
 }

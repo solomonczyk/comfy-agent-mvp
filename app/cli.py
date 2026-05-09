@@ -353,13 +353,64 @@ def combine_authorize_generation(args: argparse.Namespace) -> int:
 
 
 
+def combine_record_operator_visual_decision(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001 — Record operator visual decision.
+
+    Records an explicit operator verdict and routes the pipeline.
+    Does NOT accept/reject visually, generate, retry, assemble, or downstream.
+    production_accepted always remains False.
+
+    If --verdict is omitted, creates a pending artifact and does not advance state.
+
+    Exit codes:
+    - 0: decision recorded successfully
+    - 1: error or invalid args
+    """
+    import json as json_lib
+    from app.qa.operator_visual_decision import record_operator_visual_decision
+
+    project_root = args.project_root
+    verdict = args.verdict
+    reason = args.reason
+    json_output = args.json
+
+    result = record_operator_visual_decision(
+        project_root=project_root,
+        verdict=verdict,
+        reason=reason,
+        asset_rel_path=args.asset,
+    )
+
+    if json_output:
+        print(json_lib.dumps(result, indent=2))
+    else:
+        verdict_display = result.get("operator_verdict", "missing")
+        branch = result.get("next_task_recommendation", "none")
+        state = result.get("current_state", "unknown")
+        next_action = result.get("next_allowed_action", "unknown")
+
+        print(f"Operator Visual Decision Gate: {'EXECUTED' if result['full_feature_loop_executed'] else 'FAILED'}")
+        print(f"  Verdict: {verdict_display}")
+        print(f"  Production Accepted: {result['production_accepted']}")
+        print(f"  Current State: {state}")
+        print(f"  Next Allowed Action: {next_action}")
+        print(f"  Next Task Recommendation: {branch}")
+
+        blockers = result.get("blockers", [])
+        if blockers:
+            print(f"  Blockers: {blockers}")
+            return 1
+
+    return 0
+
+
 def combine_operator_visual_decision(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-9 — Operator Visual Review Decision Gate.
-    
+
     This command records the operator's visual review decision and
     transitions the system from operator_visual_review to the next stage.
     It does NOT trigger real assembly or retry.
-    
+
     Exit codes:
     - 0: decision recorded successfully
     - 1: error or invalid args
@@ -12847,6 +12898,36 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001 — combine-record-operator-visual-decision subcommand
+    combine_record_operator_visual_decision_parser = subparsers.add_parser(
+        "combine-record-operator-visual-decision",
+        help="Record operator visual decision and route pipeline by verdict (accepted|rejected|needs_fix)"
+    )
+    combine_record_operator_visual_decision_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_record_operator_visual_decision_parser.add_argument(
+        "--verdict",
+        choices=["accepted", "rejected", "needs_fix"],
+        help="Operator visual verdict. If omitted, creates pending artifact without advancing state.",
+    )
+    combine_record_operator_visual_decision_parser.add_argument(
+        "--reason",
+        help="Operator reason for the verdict",
+    )
+    combine_record_operator_visual_decision_parser.add_argument(
+        "--asset",
+        default="data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+        help="Path to the asset being reviewed (relative to project root)",
+    )
+    combine_record_operator_visual_decision_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-9 — combine-operator-visual-decision subcommand
     combine_operator_visual_decision_parser = subparsers.add_parser("combine-operator-visual-decision", help="Record operator visual review decision")
     combine_operator_visual_decision_parser.add_argument(
@@ -16659,6 +16740,8 @@ def main() -> int:
         return combine_validate_output_path_contract(args)
     elif args.command == "combine-run-rebuilt-asset-visual-qa":
         return combine_run_rebuilt_asset_visual_qa(args)
+    elif args.command == "combine-record-operator-visual-decision":
+        return combine_record_operator_visual_decision(args)
     elif args.command == "combine-operator-visual-decision":
         sys.exit(combine_operator_visual_decision(args))
     elif args.command == "combine-operator-visual-decision-v2":

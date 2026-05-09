@@ -147,6 +147,11 @@ class CombineStateMachine:
 
         # RC-COMBINE-V2-102001-106000: Controlled generation asset review states
         "generation_result_review_required",
+
+        # RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001: Operator visual decision routing
+        "visual_asset_operator_accepted",
+        "visual_correction_required",
+        "visual_review_needs_fix",
     ]
     
     # Terminal states
@@ -377,7 +382,11 @@ class CombineStateMachine:
             "operator_visual_review_required",  # Self-loop: halted pending operator
             "assembly_preflight_required",  # Approved - proceed to assembly
             "blocked_manual_review",
-            "v8_quality_locked_generation_authorization_required"  # V7 rejected -> V8 quality lock
+            "v8_quality_locked_generation_authorization_required",  # V7 rejected -> V8 quality lock
+            # RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001: Operator visual decision routing
+            "visual_asset_operator_accepted",  # Accepted branch
+            "visual_correction_required",  # Rejected branch
+            "visual_review_needs_fix",  # Needs-fix branch
         },
         "v8_operator_visual_review_required": {
             "v8_operator_visual_review_required",  # Self-loop: halted pending operator
@@ -531,6 +540,20 @@ class CombineStateMachine:
         # Terminal states
         "visual_candidate_accepted_for_pipeline": set(),
         "qa_recovery_blocked_after_max_candidates": set(),
+
+        # RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001: new routing states
+        "visual_asset_operator_accepted": {
+            "timeline_to_preview_package_required",
+            "blocked_manual_review",
+        },
+        "visual_correction_required": {
+            "qa_to_correction_package_required",
+            "blocked_manual_review",
+        },
+        "visual_review_needs_fix": {
+            "visual_issue_triage_required",
+            "blocked_manual_review",
+        },
         "real_generation_readiness_required": {
             "real_generation_preflight_required"
         },
@@ -1002,6 +1025,29 @@ class CombineStateMachine:
         ("generation_result_review_required", "visual_acceptance_executed"),
         ("generation_result_review_required", "corrective_retry_plan_required"),
         ("generation_result_review_required", "retry_correction_required"),
+
+        # RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001: visual_asset_operator_accepted forbidden
+        ("visual_asset_operator_accepted", "generate_assets"),
+        ("visual_asset_operator_accepted", "real_generate_assets"),
+        ("visual_asset_operator_accepted", "visual_qa_required"),
+        ("visual_asset_operator_accepted", "completed"),
+        ("visual_asset_operator_accepted", "production_accepted"),
+        ("visual_asset_operator_accepted", "final_qc_required"),
+        ("visual_asset_operator_accepted", "final_operator_acceptance"),
+        ("visual_correction_required", "generate_assets"),
+        ("visual_correction_required", "real_generate_assets"),
+        ("visual_correction_required", "visual_qa_required"),
+        ("visual_correction_required", "completed"),
+        ("visual_correction_required", "production_accepted"),
+        ("visual_correction_required", "assembly_required"),
+        ("visual_correction_required", "assembly_preflight_required"),
+        ("visual_review_needs_fix", "generate_assets"),
+        ("visual_review_needs_fix", "real_generate_assets"),
+        ("visual_review_needs_fix", "visual_qa_required"),
+        ("visual_review_needs_fix", "completed"),
+        ("visual_review_needs_fix", "production_accepted"),
+        ("visual_review_needs_fix", "assembly_required"),
+        ("visual_review_needs_fix", "assembly_preflight_required"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),

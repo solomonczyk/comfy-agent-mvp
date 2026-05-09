@@ -1,0 +1,12 @@
+{
+  "task_id": "RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001",
+  "record_type": "visual_asset_acceptance",
+  "operator_verdict": "accepted",
+  "operator_reason": "Operator accepted the generated asset. Visual quality meets production standards.",
+  "asset_path": "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+  "asset_sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "timestamp": "2026-05-09T06:45:43.537038+00:00"
+}
