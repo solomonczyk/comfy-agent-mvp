@@ -143,7 +143,10 @@ class CombineStateMachine:
         "v13_operator_visual_review_required",
         # Terminal states for QA recovery
         "visual_candidate_accepted_for_pipeline",
-        "qa_recovery_blocked_after_max_candidates"
+        "qa_recovery_blocked_after_max_candidates",
+
+        # RC-COMBINE-V2-102001-106000: Controlled generation asset review states
+        "generation_result_review_required",
     ]
     
     # Terminal states
@@ -327,6 +330,13 @@ class CombineStateMachine:
         },
         "corrective_retry_v5_visual_recovery_required": {
             "operator_visual_review_required"
+        },
+
+        # RC-COMBINE-V2-102001-106000: generation_result_review_required transitions
+        "generation_result_review_required": {
+            "operator_visual_review_required",  # After Visual QA technical package
+            "generation_result_review_required",  # Self-loop: stays here pending QA
+            "blocked_manual_review",  # If QA reveals fatal issues
         },
         "corrective_retry_v5_generation_runtime_blocked": {
             "corrective_retry_v5_generation_runtime_blocked",  # Self-loop: blocked until ComfyUI available
@@ -978,6 +988,20 @@ class CombineStateMachine:
         ("v13_operator_visual_review_required", "final_operator_acceptance"),
         ("v13_operator_visual_review_required", "assembly_required"),
         ("v13_operator_visual_review_required", "assembly_preflight_required"),
+
+        # RC-COMBINE-V2-102001-106000: generation_result_review_required forbidden transitions
+        ("generation_result_review_required", "generate_assets"),
+        ("generation_result_review_required", "real_generate_assets"),
+        ("generation_result_review_required", "visual_qa_required"),
+        ("generation_result_review_required", "assembly_required"),
+        ("generation_result_review_required", "assembly_preflight_required"),
+        ("generation_result_review_required", "completed"),
+        ("generation_result_review_required", "production_accepted"),
+        ("generation_result_review_required", "final_qc_required"),
+        ("generation_result_review_required", "final_operator_acceptance"),
+        ("generation_result_review_required", "visual_acceptance_executed"),
+        ("generation_result_review_required", "corrective_retry_plan_required"),
+        ("generation_result_review_required", "retry_correction_required"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),

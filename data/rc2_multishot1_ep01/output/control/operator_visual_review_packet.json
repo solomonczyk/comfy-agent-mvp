@@ -1,0 +1,58 @@
+{
+  "task_id": "RC-COMBINE-V2-102001-106000",
+  "packet_type": "operator_visual_review",
+  "timestamp": "2026-05-09T06:24:11.284112+00:00",
+  "asset": {
+    "path": "output/assets/rc2_controlled_1778304712_00001_.png",
+    "full_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\rc2_controlled_1778304712_00001_.png",
+    "sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+    "width": 1024,
+    "height": 1024,
+    "size_bytes": 1446127
+  },
+  "technical_metrics": {
+    "blur_score": 366.4464668395507,
+    "brightness": 91.07816696166992,
+    "contrast": 49.030803483810324,
+    "warnings": [],
+    "opencv_available": true
+  },
+  "visual_inspection_checklist": [
+    "1. Overall composition: Is the subject fully visible and well-composed?",
+    "2. Subject quality: Is the subject realistic, with proper skin/texture detail?",
+    "3. Facial features (if applicable): Are eyes, mouth, teeth natural-looking?",
+    "4. Lighting: Is the lighting consistent and natural?",
+    "5. Background: Is the background appropriate and free of artifacts?",
+    "6. Color: Are colors accurate and consistent?",
+    "7. Sharpness: Is the image appropriately sharp (not oversharpened or too soft)?",
+    "8. Artifacts: Any visible artifacts (glitches, doubling, seams, noise)?",
+    "9. Prompt alignment: Does the image match the intended prompt/concept?",
+    "10. Production quality: Is this image acceptable for production use?"
+  ],
+  "decision_required": "operator_visual_review_decision",
+  "decision_options": {
+    "accept": "Accept the asset for pipeline (proceed to assembly)",
+    "reject": "Reject the asset and request corrective retry",
+    "reject_with_defects": "Reject and document specific visual defects"
+  },
+  "rules": {
+    "production_accepted_must_remain_false": true,
+    "agent_must_not_accept_visually": true,
+    "agent_must_not_retry_or_regenerate": true,
+    "agent_must_not_assemble_or_downstream": true
+  },
+  "current_state": "generation_result_review_required",
+  "target_state": "operator_visual_review_required",
+  "production_accepted": false,
+  "visual_acceptance_executed": false,
+  "new_generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "operator_decision": null,
+  "operator_verdict": null,
+  "operator_review_date": null,
+  "technical_verdict": "PASS",
+  "next_allowed_action": "operator_visual_review_required"
+}

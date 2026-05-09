@@ -894,5 +894,43 @@
     "stage": "generation_result_review_required",
     "current_state": "generation_result_review_required",
     "asset_count": 1
+  },
+  {
+    "event_type": "generated_asset_visual_qa_package_executed",
+    "task_id": "RC-COMBINE-V2-102001-106000",
+    "stage": "generated_asset_visual_qa_package",
+    "technical_verdict": "PASS",
+    "has_blockers": false,
+    "visual_qa_executed": true,
+    "visual_acceptance_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "previous_state": "generation_result_review_required",
+    "timestamp": "2026-05-09T06:15:22.756366+00:00"
+  },
+  {
+    "event_type": "generated_asset_visual_qa_package_executed",
+    "task_id": "RC-COMBINE-V2-102001-106000",
+    "stage": "generated_asset_visual_qa_package",
+    "technical_verdict": "PASS",
+    "has_blockers": false,
+    "visual_qa_executed": true,
+    "visual_acceptance_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "previous_state": "generation_result_review_required",
+    "timestamp": "2026-05-09T06:24:10.763758+00:00"
   }
 ]

@@ -7671,6 +7671,7 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'combine-review-real-generation-result',
         'combine-review-generation-result',
         'combine-recover-real-generation-result',
+        'combine-visual-qa-package',
         'decide-controlled-retry',
         'inspect-production-decision-state',
         'repair-production-decision-state',
@@ -11233,6 +11234,57 @@ def combine_execute_v10_real_generation(args: argparse.Namespace) -> int:
         print(f"Next Allowed Action: {next_action}")
 
     return 0 if is_success else 1
+
+
+def combine_generated_asset_visual_qa_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-102001-106000 — Run Generated Asset Visual QA Package.
+
+    Executes the full visual QA technical package for a generated asset:
+    1. Validates input artifacts (generation_result_review, visual_qa_input_packet, canonical_manifest)
+    2. Validates the generated asset technically (exists, readable, sha256, dimensions, size)
+    3. Computes technical Visual QA metrics (blur, brightness, contrast)
+    4. Creates Visual QA report (technical pass != visual acceptance)
+    5. Creates Operator Visual Review packet (for human visual inspection)
+    6. Updates artifact_index.json and episode_ledger.json
+    7. Transitions state to operator_visual_review_required
+
+    Forbidden: new generation, retry, ComfyUI submit, visual acceptance,
+    operator visual decision, preview render, assembly, downstream.
+
+    Exit codes:
+    - 0: Visual QA package executed successfully
+    - 1: error or invalid args
+    """
+    from app.qa.visual_qa_package import run_generated_asset_visual_qa_package
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+
+    result = run_generated_asset_visual_qa_package(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Generated Asset Visual QA Package ({result.get('task_id', 'unknown')})")
+        print(f"  Feature Completed: {result.get('feature_completed', False)}")
+        print(f"  Current State: {result.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        print(f"  Input Artifacts Validated: {result.get('input_generation_result_review_validated', False)}")
+        print(f"  Asset Validated: {result.get('generated_asset_validated', False)}")
+        print(f"  SHA-256 Verified: {result.get('sha256_verified', False)}")
+        print(f"  Technical Visual QA Executed: {result.get('technical_visual_qa_executed', False)}")
+        print(f"  Visual QA Report Created: {result.get('visual_qa_report_created', False)}")
+        print(f"  Operator Review Packet Created: {result.get('operator_visual_review_packet_created', False)}")
+        print(f"  Artifact Index Updated: {result.get('artifact_index_updated', False)}")
+        print(f"  Episode Ledger Updated: {result.get('episode_ledger_updated', False)}")
+        print(f"  State Updated: {result.get('state_updated', False)}")
+        print(f"  New Generation Performed: {result.get('new_generation_performed', False)}")
+        print(f"  Visual Acceptance Executed: {result.get('visual_acceptance_executed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        print(f"  Blockers: {result.get('blockers', [])}")
+        print(f"  Next Task: {result.get('next_task_recommendation', 'none')}")
+
+    return 0
 
 
 def combine_run_qa_canon_engine(args: argparse.Namespace) -> int:
@@ -16248,6 +16300,18 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-102001-106000 — Generated Asset Visual QA Package
+    combine_visual_qa_package_parser = subparsers.add_parser(
+        "combine-visual-qa-package",
+        help="Run full Generated Asset Visual QA Package"
+    )
+    combine_visual_qa_package_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_visual_qa_package_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-38001-46000 — Editorial layer CLI commands
     combine_build_editorial_plan_parser = subparsers.add_parser(
         "combine-build-editorial-plan",
@@ -16873,6 +16937,9 @@ def main() -> int:
     elif args.command == "combine-run-qa-canon-engine":
         _require_absolute_project_root(args, "combine-run-qa-canon-engine")
         return combine_run_qa_canon_engine(args)
+    elif args.command == "combine-visual-qa-package":
+        _require_absolute_project_root(args, "combine-visual-qa-package")
+        return combine_generated_asset_visual_qa_package(args)
     elif args.command == "combine-build-editorial-plan":
         _require_absolute_project_root(args, "combine-build-editorial-plan")
         return combine_build_editorial_plan(args)

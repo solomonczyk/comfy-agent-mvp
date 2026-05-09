@@ -1,0 +1,75 @@
+{
+  "task_id": "RC-COMBINE-V2-102001-106000",
+  "timestamp": "2026-05-09T06:24:10.763758+00:00",
+  "metrics": {
+    "metrics_computed": true,
+    "opencv_available": true,
+    "blur_score": 366.4464668395507,
+    "brightness": 91.07816696166992,
+    "contrast": 49.030803483810324,
+    "warnings": [],
+    "automatic_visual_pass": false,
+    "notes": [],
+    "opencv_detail": {
+      "opencv_available": true,
+      "checks_executed": true,
+      "blur_score": 366.4464668395507,
+      "brightness": 91.07816696166992,
+      "contrast": 49.030803483810324,
+      "is_blurry": false,
+      "mouth_analysis": {
+        "opencv_available": true,
+        "checks_executed": true,
+        "face_detected": false,
+        "note": "No face detected in image"
+      }
+    }
+  },
+  "asset_validation": {
+    "validation_performed": true,
+    "asset_path": "output/assets/rc2_controlled_1778304712_00001_.png",
+    "exists": true,
+    "readable": true,
+    "sha256_matches": true,
+    "dimensions_match": true,
+    "size_valid": true,
+    "stub_asset": false,
+    "not_stub": true,
+    "blocker": null,
+    "technical_validation_pass": true,
+    "full_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\rc2_controlled_1778304712_00001_.png",
+    "actual_sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+    "width": 1024,
+    "height": 1024,
+    "size_bytes": 1446127,
+    "solid_color_detected": false
+  },
+  "input_validation": {
+    "validation_performed": true,
+    "generation_result_review_valid": true,
+    "visual_qa_input_packet_valid": true,
+    "canonical_manifest_valid": true,
+    "assets_match_across_artifacts": true,
+    "blocker": null,
+    "referenced_sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+    "referenced_path": "output/assets/rc2_controlled_1778304712_00001_.png",
+    "referenced_width": 1024,
+    "referenced_height": 1024,
+    "referenced_size_bytes": 1446127
+  },
+  "manifest_filesystem_match": {
+    "validation_performed": true,
+    "manifest_count": 1,
+    "filesystem_matches": true,
+    "entries": [
+      {
+        "path": "output/assets/rc2_controlled_1778304712_00001_.png",
+        "exists": true,
+        "sha256_matches": true,
+        "manifest_sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+        "actual_sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb"
+      }
+    ],
+    "mismatches": []
+  }
+}
