@@ -790,9 +790,16 @@
     "voice_generation_authorization_packet.json",
     "post_preview_stage_proof.json",
     "post_preview_operator_decision_reconciliation.json",
-    "post_preview_stage_blocker.json"
+    "post_preview_stage_blocker.json",
+    "post_preview_operator_review_repair_proof.json",
+    "preview_operator_review_required_packet.json"
   ],
   "post_preview_reconciliation_performed": true,
   "post_preview_reconciliation_task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
+  "post_preview_repair_completed": true,
+  "post_preview_repair_task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
+  "post_preview_fix_task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001-FIX",
+  "preview_operator_review_required_packet": "preview_operator_review_required_packet.json",
+  "post_preview_repair_proof": "post_preview_operator_review_repair_proof.json",
   "voice_generation_ready": false
 }

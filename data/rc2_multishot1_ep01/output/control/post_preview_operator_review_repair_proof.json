@@ -92,6 +92,10 @@
   "new_artifacts_created": [
     "post_preview_operator_review_repair_proof.json"
   ],
+  "fix_task_artifacts_created": [
+    "preview_operator_review_required_packet.json"
+  ],
+  "fix_task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001-FIX",
   "regression_tests_created": [
     "tests/test_agent_may_not_choose_verdict.py"
   ],
