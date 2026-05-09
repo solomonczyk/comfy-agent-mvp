@@ -9,7 +9,7 @@
   "operator_decision_contract_created": true,
   "operator_decision_processed_or_blocked_honestly": false,
   "operator_decision_invalidated": true,
-  "operator_decision_invalidation_reason": "Operator verdict was agent-created for CLI verification. Not a human operator decision. See post_preview_operator_decision_reconciliation.json.",
+  "operator_decision_invalidation_reason": "Operator verdict was agent-created for CLI verification. Not a human operator decision. Repaired by RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
   "selected_branch": "invalid_agent_generated_decision",
   "voice_generation_readiness_package_created": true,
   "voice_script_package_created": true,
@@ -23,7 +23,7 @@
   "targeted_fix_plan_created_if_needs_fix": false,
   "blocker_created_if_missing_decision": true,
   "repair_task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
-  "repair_timestamp": "2026-05-09T00:00:00+00:00",
+  "repair_timestamp": "2026-05-09T13:14:05.027144+00:00",
   "new_generation_performed": false,
   "retry_attempted": false,
   "comfyui_submit_executed": false,
@@ -47,5 +47,7 @@
   "post_preview_reconciliation_artifact": "post_preview_operator_decision_reconciliation.json",
   "post_preview_blocker_artifact": "post_preview_stage_blocker.json",
   "post_preview_repair_proof_artifact": "post_preview_operator_review_repair_proof.json",
-  "reconciliation_timestamp": "2026-05-09T00:00:00+00:00"
+  "reconciliation_timestamp": "2026-05-09T00:00:00+00:00",
+  "assembly_allowed": false,
+  "downstream_allowed": false
 }

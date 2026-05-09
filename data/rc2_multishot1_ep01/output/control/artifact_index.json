@@ -746,7 +746,8 @@
     "post_preview_operator_decision_reconciliation.json",
     "post_preview_stage_blocker.json",
     "post_preview_operator_review_repair_proof.json",
-    "preview_operator_review_required_packet.json"
+    "preview_operator_review_required_packet.json",
+    "post_preview_operator_review_gate_validation.json"
   ],
   "post_preview_reconciliation_performed": true,
   "post_preview_reconciliation_task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
@@ -769,5 +770,7 @@
   "preview_manual_review_required_blocker": "preview_manual_review_required_blocker.json",
   "preview_operator_decision_validation_report": "preview_operator_decision_validation_report.json",
   "preview_operator_decision_result": "preview_operator_decision_result.json",
-  "preview_operator_decision_gate_proof": "preview_operator_decision_gate_proof.json"
+  "preview_operator_decision_gate_proof": "preview_operator_decision_gate_proof.json",
+  "post_preview_gate_validation": "post_preview_operator_review_gate_validation.json",
+  "post_preview_gate_validation_timestamp": "2026-05-09T13:14:05.064146+00:00"
 }

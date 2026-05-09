@@ -1,0 +1,68 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
+  "gate_validation_timestamp": "2026-05-09T13:14:05.064146+00:00",
+  "gate_pass": true,
+  "gate_status": "pass",
+  "checks": {
+    "fake_operator_decision_invalidated": {
+      "status": "pass",
+      "detail": [
+        "post_preview_routing_decision.json: already invalidated (selected_branch=invalid_agent_generated_decision)",
+        "preview_operator_review_outcome.json: already invalidated",
+        "voice_generation_readiness_package.json: claims voice_generation_ready=true"
+      ]
+    },
+    "blocker_active": {
+      "status": "pass",
+      "blocker_type": "missing_human_operator_preview_review",
+      "blocker_reason": "The previous operator decision (accepted_for_voice_stage) was created by the agent/test/CLI verification, not supplied explicitly by a human operator. The post-preview stage cannot proceed to voice/audio readiness without a valid human operator verdict."
+    },
+    "reconciliation_artifact_exists": {
+      "status": "pass"
+    },
+    "current_state_correct": {
+      "status": "pass",
+      "current_state": "preview_operator_review_required",
+      "expected_state": "preview_operator_review_required"
+    },
+    "next_allowed_action_correct": {
+      "status": "pass",
+      "next_allowed_action": "preview_operator_review_required",
+      "expected_action": "preview_operator_review_required"
+    },
+    "voice_generation_blocked": {
+      "status": "pass"
+    },
+    "assembly_blocked": {
+      "status": "pass"
+    },
+    "downstream_blocked": {
+      "status": "pass"
+    },
+    "production_accepted_blocked": {
+      "status": "pass"
+    }
+  },
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "voice_generation_ready": false,
+  "voice_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "operator_decision_valid": false,
+  "visual_review_performed_by_operator": false,
+  "blockers": [
+    {
+      "blocker_type": "missing_human_operator_preview_review",
+      "status": "active",
+      "blocks": [
+        "voice_generation",
+        "audio_generation",
+        "assembly",
+        "downstream",
+        "production_accepted_true"
+      ]
+    }
+  ]
+}

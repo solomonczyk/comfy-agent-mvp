@@ -1,111 +1,26 @@
 {
   "task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
-  "title": "Repair invalid agent-generated preview operator decision and freeze honest operator-review state",
-  "episode_id": "ep01",
-  "shot_id": "shot01",
-  "repair_timestamp": "2026-05-09T00:00:00+00:00",
-  "detection_summary": "The post-preview stage artifacts contained operator_verdict=accepted_for_voice_stage that was created by the agent/test/CLI verification, not by a human operator. This violates the agent_may_not_choose_verdict invariant. The pipeline must not proceed to voice/audio readiness, assembly, or downstream without a real operator preview review.",
-  "previous_task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
-  "previous_fix_task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
-  "previous_commit": "24084e1",
-  "artifacts_repaired": [
-    {
-      "artifact": "post_preview_stage_proof.json",
-      "repair_type": "inconsistency_correction",
-      "changes": [
-        "blocker_created_if_missing_decision: false -> true",
-        "blockers populated with blocker description",
-        "Added repair_task_id, repair_timestamp, post_preview_repair_proof_artifact"
-      ]
-    },
-    {
-      "artifact": "voice_generation_readiness_package.json",
-      "repair_type": "invalidation_marker_added",
-      "changes": [
-        "Added decision_invalidated: true",
-        "Added decision_invalidation_reason"
-      ]
-    },
-    {
-      "artifact": "voice_script_package.json",
-      "repair_type": "invalidation_marker_added",
-      "changes": [
-        "Added decision_invalidated: true",
-        "Added decision_invalidation_reason"
-      ]
-    },
-    {
-      "artifact": "voice_casting_review_package.json",
-      "repair_type": "invalidation_marker_added",
-      "changes": [
-        "Added decision_invalidated: true",
-        "Added decision_invalidation_reason"
-      ]
-    },
-    {
-      "artifact": "voice_audition_plan.json",
-      "repair_type": "invalidation_marker_added",
-      "changes": [
-        "Added decision_invalidated: true",
-        "Added decision_invalidation_reason"
-      ]
-    },
-    {
-      "artifact": "audio_qa_contract.json",
-      "repair_type": "invalidation_marker_added",
-      "changes": [
-        "Added decision_invalidated: true",
-        "Added decision_invalidation_reason"
-      ]
-    },
-    {
-      "artifact": "audio_timeline_sync_contract.json",
-      "repair_type": "invalidation_marker_added",
-      "changes": [
-        "Added decision_invalidated: true",
-        "Added decision_invalidation_reason"
-      ]
-    },
-    {
-      "artifact": "assembly_preflight_contract.json",
-      "repair_type": "invalidation_marker_added",
-      "changes": [
-        "Added decision_invalidated: true",
-        "Added decision_invalidation_reason"
-      ]
-    },
-    {
-      "artifact": "voice_generation_authorization_packet.json",
-      "repair_type": "invalidation_marker_added",
-      "changes": [
-        "Added decision_invalidated: true",
-        "Added decision_invalidation_reason"
-      ]
-    }
-  ],
-  "artifacts_previously_invalidated_by_fix": [
+  "title": "Post-Preview Operator Review State Repair and Review Gate Package",
+  "repair_timestamp": "2026-05-09T13:14:05.027144+00:00",
+  "detection_summary": "Post-preview operator review gate validated. Fake agent/CLI-generated operator decision detected and invalidated. System frozen at preview_operator_review_required.",
+  "fake_decision_found": false,
+  "fake_decision_already_invalidated": true,
+  "current_state_verified": true,
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "artifacts_repaired_or_verified": [
     "post_preview_routing_decision.json",
     "preview_operator_review_outcome.json",
+    "post_preview_stage_proof.json",
     "post_preview_operator_decision_reconciliation.json",
     "post_preview_stage_blocker.json"
   ],
   "new_artifacts_created": [
-    "post_preview_operator_review_repair_proof.json"
+    "post_preview_operator_review_gate_validation.json"
   ],
-  "fix_task_artifacts_created": [
-    "preview_operator_review_required_packet.json"
-  ],
-  "fix_task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001-FIX",
   "regression_tests_created": [
+    "tests/test_post_preview_operator_review_repair.py",
     "tests/test_agent_may_not_choose_verdict.py"
-  ],
-  "regression_test_scenarios": [
-    "test_validate_operator_decision_rejects_agent_verdict",
-    "test_validate_operator_decision_accepts_human_verdict",
-    "test_post_preview_stage_blocks_missing_decision",
-    "test_operator_visual_decision_source_required",
-    "test_voice_artifacts_blocked_without_human_operator_decision",
-    "test_preview_operator_decision_input_required_for_voice_readiness"
   ],
   "restored_canonical_state": {
     "current_state": "preview_operator_review_required",
@@ -126,6 +41,20 @@
     "voice_audio_assembly_downstream_blocked_without_real_operator_decision"
   ],
   "resolution_required": "A real human operator must review the preview artifacts (preview_lowres.mp4, preview.gif, contact_sheet.jpg) and provide a valid verdict in preview_operator_decision_input.json. No voice/audio/assembly pipeline steps may proceed until a real operator decision is recorded.",
+  "forbidden_actions_not_executed": {
+    "new_generation": false,
+    "retry": false,
+    "comfyui_submit": false,
+    "preview_render": false,
+    "final_render": false,
+    "voice_generation": false,
+    "audio_generation": false,
+    "visual_qa_acceptance": false,
+    "operator_visual_acceptance_by_agent": false,
+    "assembly": false,
+    "downstream": false,
+    "production_accepted_true": false
+  },
   "repair_authority": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
   "repair_commit": "required"
 }

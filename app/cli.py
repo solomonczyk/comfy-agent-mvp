@@ -12776,6 +12776,90 @@ def combine_build_post_preview_next_stage_package(args: argparse.Namespace) -> i
     return 0 if result.get("status") in ("ok", "accepted_with_blockers") else 1
 
 
+def combine_repair_post_preview_operator_review(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001 — Repair operator review gate.
+
+    Invalidates fake agent/CLI-generated operator decisions and freezes the
+    pipeline at preview_operator_review_required.
+    """
+    from app.post_preview.operator_review_repair import repair_post_preview_operator_review
+
+    project_root = args.project_root
+    dry_run = args.dry_run
+    json_output = args.json
+
+    result = repair_post_preview_operator_review(
+        project_root=project_root,
+        dry_run=dry_run,
+    )
+
+    if json_output:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        status = result.get("status", "error")
+        print(f"Post-Preview Operator Review Repair: {status.upper()}")
+        print(f"  Fake Decision Invalidated: {result.get('fake_operator_decision_invalidated', False)}")
+        print(f"  Real Operator Review Required: {result.get('real_human_operator_review_required', False)}")
+        print(f"  Voice Generation Ready: {result.get('voice_generation_ready', False)}")
+        print(f"  Assembly Allowed: {result.get('assembly_allowed', False)}")
+        print(f"  Downstream Allowed: {result.get('downstream_allowed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        print(f"  State: {result.get('current_state')}")
+        print(f"  Next Action: {result.get('next_allowed_action')}")
+        if dry_run:
+            print(f"  DRY RUN: No artifacts written")
+        print()
+        print("Artifacts:")
+        for a in result.get("artifacts_written", []):
+            print(f"  - {a}")
+        print()
+        for b in result.get("blockers", []):
+            print(f"  Blocker: {b['blocker_type']} — {'active' if b.get('status') == 'active' else 'inactive'}")
+            for blocked in b.get("blocks", []):
+                print(f"    Blocks: {blocked}")
+
+    return 0 if result.get("status") == "ok" else 1
+
+
+def combine_validate_post_preview_operator_review_gate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001 — Validate operator review gate.
+
+    Validates that the post-preview operator review gate is properly frozen
+    and no fake decisions remain active.
+    """
+    from app.post_preview.operator_review_repair import (
+        validate_post_preview_operator_review_gate,
+    )
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = validate_post_preview_operator_review_gate(project_root=project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        status = result.get("status", "fail")
+        print(f"Post-Preview Operator Review Gate Validation: {status.upper()}")
+        print(f"  Fake Operator Decision Invalidated: {result.get('fake_operator_decision_invalidated', False)}")
+        print(f"  Real Operator Review Required: {result.get('real_operator_review_required', False)}")
+        print(f"  Voice Generation Ready: {result.get('voice_generation_ready', False)}")
+        print(f"  Assembly Allowed: {result.get('assembly_allowed', False)}")
+        print(f"  Downstream Allowed: {result.get('downstream_allowed', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        print(f"  Current State: {result.get('current_state')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action')}")
+
+        gate = result.get("gate_validation", {})
+        checks = gate.get("checks", {})
+        print()
+        print("Gate Checks:")
+        for check_name, check in checks.items():
+            print(f"  {check_name}: {check.get('status', 'unknown')}")
+
+    return 0 if result.get("status") == "pass" else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -16738,6 +16822,32 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001 — Post-Preview Operator Review Repair
+    combine_repair_post_preview_operator_review_parser = subparsers.add_parser(
+        "combine-repair-post-preview-operator-review",
+        help="Repair post-preview operator review state: invalidate fake operator decisions and freeze gate",
+    )
+    combine_repair_post_preview_operator_review_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_repair_post_preview_operator_review_parser.add_argument(
+        "--dry-run", action="store_true", help="Validate and report without writing artifacts",
+    )
+    combine_repair_post_preview_operator_review_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_validate_post_preview_operator_review_gate_parser = subparsers.add_parser(
+        "combine-validate-post-preview-operator-review-gate",
+        help="Validate that the post-preview operator review gate is properly frozen",
+    )
+    combine_validate_post_preview_operator_review_gate_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_validate_post_preview_operator_review_gate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-46001-54000 — Agent Registry CLI commands
     combine_build_agent_registry_parser = subparsers.add_parser(
         "combine-build-agent-registry",
@@ -17358,6 +17468,12 @@ def main() -> int:
     elif args.command == "combine-build-post-preview-next-stage-package":
         _require_absolute_project_root(args, "combine-build-post-preview-next-stage-package")
         return combine_build_post_preview_next_stage_package(args)
+    elif args.command == "combine-repair-post-preview-operator-review":
+        _require_absolute_project_root(args, "combine-repair-post-preview-operator-review")
+        return combine_repair_post_preview_operator_review(args)
+    elif args.command == "combine-validate-post-preview-operator-review-gate":
+        _require_absolute_project_root(args, "combine-validate-post-preview-operator-review-gate")
+        return combine_validate_post_preview_operator_review_gate(args)
     elif args.command == "combine-build-agent-registry":
         _require_absolute_project_root(args, "combine-build-agent-registry")
         return combine_build_agent_registry(args)

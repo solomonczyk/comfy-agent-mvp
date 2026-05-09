@@ -1,0 +1,112 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
+  "reconciliation_type": "operator_decision_invalidation",
+  "episode_id": "ep01",
+  "shot_id": "shot01",
+  "previous_task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "previous_commit": "24084e1",
+  "reconciliation_timestamp": "2026-05-09T00:00:00+00:00",
+  "detection": {
+    "operator_decision_found": true,
+    "operator_decision_agent_created": true,
+    "operator_decision_human_created": false,
+    "decision_valid_claimed": true,
+    "visual_review_performed_by_operator_claimed": true,
+    "agent_may_not_choose_verdict_violation": true,
+    "detection_evidence": "The post_preview_routing_decision.json file contains operator_verdict='accepted_for_voice_stage' with decision_valid=true and visual_review_performed_by_operator=true. These fields were set during CLI verification/test execution of the post-preview stage, not via an actual human operator reviewing preview artifacts. The preview_operator_decision_input.json file was never created by a human operator. The verdict was injected by the agent/test harness as a verification step."
+  },
+  "invalidated_artifact": "post_preview_routing_decision.json",
+  "invalidated_fields": {
+    "selected_branch": {
+      "previous_value": "accepted_for_voice_stage",
+      "corrected_value": "invalid_agent_generated_decision",
+      "reason": "Branch selection was made by agent/test, not by operator"
+    },
+    "decision_valid": {
+      "previous_value": true,
+      "corrected_value": false,
+      "reason": "No real operator provided a decision"
+    },
+    "visual_review_performed_by_operator": {
+      "previous_value": true,
+      "corrected_value": false,
+      "reason": "No visual review was performed by a human operator"
+    }
+  },
+  "downstream_artifacts_affected": [
+    {
+      "artifact": "voice_generation_readiness_package.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Created based on agent-generated acceptance verdict"
+    },
+    {
+      "artifact": "voice_script_package.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Created based on agent-generated acceptance verdict"
+    },
+    {
+      "artifact": "voice_casting_review_package.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Created based on agent-generated acceptance verdict"
+    },
+    {
+      "artifact": "voice_audition_plan.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Created based on agent-generated acceptance verdict"
+    },
+    {
+      "artifact": "audio_qa_contract.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Created based on agent-generated acceptance verdict"
+    },
+    {
+      "artifact": "audio_timeline_sync_contract.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Created based on agent-generated acceptance verdict"
+    },
+    {
+      "artifact": "assembly_preflight_contract.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Created based on agent-generated acceptance verdict"
+    },
+    {
+      "artifact": "voice_generation_authorization_packet.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Created based on agent-generated acceptance verdict"
+    },
+    {
+      "artifact": "post_preview_stage_proof.json",
+      "created": true,
+      "invalidated": true,
+      "reason": "Proof record claims selected_branch=accepted_for_voice_stage based on agent-generated acceptance"
+    }
+  ],
+  "blocking_action_taken": {
+    "blocker_created": true,
+    "blocker_artifact": "post_preview_stage_blocker.json",
+    "blocker_type": "invalid_agent_generated_operator_decision"
+  },
+  "restored_canonical_state": {
+    "current_state": "preview_operator_review_required",
+    "next_allowed_action": "preview_operator_review_required",
+    "production_accepted": false,
+    "voice_generation_executed": false,
+    "voice_generation_authorized": false,
+    "voice_generation_ready": false,
+    "assembly_executed": false,
+    "downstream_executed": false
+  },
+  "resolution_required": "A real human operator must review the preview artifacts (preview_lowres.mp4, preview.gif, contact_sheet.jpg) and provide a valid verdict in preview_operator_decision_input.json. No voice/audio/assembly pipeline steps may proceed until a real operator decision is recorded.",
+  "repair_authority": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
+  "repair_commit_required": true,
+  "repair_verified_by": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
+  "repair_verification_timestamp": "2026-05-09T13:14:05.027144+00:00"
+}
