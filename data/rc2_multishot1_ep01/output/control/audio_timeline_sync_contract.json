@@ -5,6 +5,8 @@
   "sync_required": true,
   "sync_method": "timecode_alignment",
   "drift_tolerance_frames": 2,
+  "decision_invalidated": true,
+  "decision_invalidation_reason": "Created based on agent-generated operator verdict (accepted_for_voice_stage). No human operator reviewed the preview artifacts. Invalidated by RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001.",
   "voice_generation_executed": false,
   "assembly_allowed": false,
   "downstream_allowed": false,

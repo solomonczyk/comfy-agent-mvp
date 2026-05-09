@@ -1,6 +1,6 @@
 {
-  "current_state": "voice_generation_authorization_required",
-  "next_allowed_action": "voice_generation_authorization_required",
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -773,7 +773,9 @@
   "preview_gif_created": true,
   "contact_sheet_created": true,
   "post_preview_stage_executed": true,
-  "selected_branch": "accepted_for_voice_stage",
+  "post_preview_decision_invalidated": true,
+  "post_preview_decision_invalidation_reason": "Operator verdict was agent-created during CLI verification, not supplied by a human operator.",
+  "selected_branch": "invalid_agent_generated_decision",
   "post_preview_artifacts": [
     "post_preview_stage_validation_report.json",
     "preview_operator_review_outcome.json",
@@ -786,7 +788,11 @@
     "audio_timeline_sync_contract.json",
     "assembly_preflight_contract.json",
     "voice_generation_authorization_packet.json",
-    "post_preview_stage_proof.json"
+    "post_preview_stage_proof.json",
+    "post_preview_operator_decision_reconciliation.json",
+    "post_preview_stage_blocker.json"
   ],
-  "voice_generation_ready": true
+  "post_preview_reconciliation_performed": true,
+  "post_preview_reconciliation_task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
+  "voice_generation_ready": false
 }

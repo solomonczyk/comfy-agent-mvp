@@ -7,8 +7,10 @@
   "post_preview_stage_implemented": true,
   "preview_artifacts_validated": true,
   "operator_decision_contract_created": true,
-  "operator_decision_processed_or_blocked_honestly": true,
-  "selected_branch": "accepted_for_voice_stage",
+  "operator_decision_processed_or_blocked_honestly": false,
+  "operator_decision_invalidated": true,
+  "operator_decision_invalidation_reason": "Operator verdict was agent-created for CLI verification. Not a human operator decision. See post_preview_operator_decision_reconciliation.json.",
+  "selected_branch": "invalid_agent_generated_decision",
   "voice_generation_readiness_package_created": true,
   "voice_script_package_created": true,
   "voice_casting_review_package_created": true,
@@ -19,7 +21,9 @@
   "voice_generation_authorization_packet_created": true,
   "corrective_plan_created_if_rejected": false,
   "targeted_fix_plan_created_if_needs_fix": false,
-  "blocker_created_if_missing_decision": false,
+  "blocker_created_if_missing_decision": true,
+  "repair_task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
+  "repair_timestamp": "2026-05-09T00:00:00+00:00",
   "new_generation_performed": false,
   "retry_attempted": false,
   "comfyui_submit_executed": false,
@@ -33,7 +37,15 @@
   "artifact_index_updated": true,
   "episode_ledger_updated": true,
   "state_updated": true,
-  "current_state": "voice_generation_authorization_required",
-  "next_allowed_action": "voice_generation_authorization_required",
-  "blockers": []
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "blockers": [
+    "Agent-generated operator decision (accepted_for_voice_stage) detected and invalidated. No human operator reviewed the preview artifacts. Pipeline blocked at preview_operator_review_required. See post_preview_operator_decision_reconciliation.json and post_preview_stage_blocker.json."
+  ],
+  "post_preview_reconciliation_performed": true,
+  "post_preview_reconciliation_task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
+  "post_preview_reconciliation_artifact": "post_preview_operator_decision_reconciliation.json",
+  "post_preview_blocker_artifact": "post_preview_stage_blocker.json",
+  "post_preview_repair_proof_artifact": "post_preview_operator_review_repair_proof.json",
+  "reconciliation_timestamp": "2026-05-09T00:00:00+00:00"
 }

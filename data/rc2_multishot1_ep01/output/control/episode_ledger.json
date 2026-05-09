@@ -1392,5 +1392,57 @@
     "downstream_allowed": false,
     "production_accepted": false,
     "timestamp": "2026-05-09T08:53:20.506424+00:00"
+  },
+  {
+    "event_type": "operator_decision_invalidated",
+    "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
+    "stage": "preview_operator_review_required",
+    "invalidated_verdict": "accepted_for_voice_stage",
+    "invalidated_branch": "accepted_for_voice_stage",
+    "invalid_reason": "Operator verdict was created by the agent for CLI verification, not supplied explicitly by a human operator. The accepted branch is invalid. Pipeline must not proceed to voice/audio readiness until a real explicit operator verdict is provided.",
+    "previous_verdict_valid": false,
+    "visual_review_performed_by_operator": false,
+    "agent_may_not_choose_verdict_violation": true,
+    "previous_commit": "24084e1",
+    "voice_generation_executed": false,
+    "voice_generation_authorized": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "reconciled_state": "preview_operator_review_required",
+    "reconciliation_artifact": "post_preview_operator_decision_reconciliation.json",
+    "blocker_artifact": "post_preview_stage_blocker.json",
+    "timestamp": "2026-05-09T00:00:00+00:00"
+  },
+  {
+    "event_type": "post_preview_operator_review_repair",
+    "task_id": "RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001",
+    "stage": "preview_operator_review_required",
+    "repair_type": "invalidation_marker_addition_and_inconsistency_correction",
+    "artifacts_repaired": [
+      "post_preview_stage_proof.json",
+      "voice_generation_readiness_package.json",
+      "voice_script_package.json",
+      "voice_casting_review_package.json",
+      "voice_audition_plan.json",
+      "audio_qa_contract.json",
+      "audio_timeline_sync_contract.json",
+      "assembly_preflight_contract.json",
+      "voice_generation_authorization_packet.json"
+    ],
+    "new_artifacts_created": [
+      "post_preview_operator_review_repair_proof.json"
+    ],
+    "regression_tests_created": [
+      "tests/test_agent_may_not_choose_verdict.py"
+    ],
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "production_accepted": false,
+    "current_state": "preview_operator_review_required",
+    "next_allowed_action": "preview_operator_review_required",
+    "timestamp": "2026-05-09T00:00:00+00:00"
   }
 ]
