@@ -1,0 +1,31 @@
+{
+  "report_type": "static_preview_root_cause",
+  "analysis_timestamp": "2026-05-09T17:25:39.169035+00:00",
+  "possible_causes_checked": {
+    "timeline_has_single_repeated_asset": true,
+    "edl_reuses_same_frame_or_asset": true,
+    "preview_renderer_samples_same_source": true,
+    "frame_sequence_not_progressing": true,
+    "contact_sheet_sampling_invalid": true,
+    "path_mismatch_affects_preview_collection": false
+  },
+  "primary_root_cause": "timeline_empty_no_assets_placed: Timeline model contains a single empty scene (scene_001) with no asset_refs, no video_main/video_overlay clips, and 2 unapplied EDL operations. The ffmpeg renderer had no visual variety to produce.",
+  "confidence": "high",
+  "evidence": [
+    "Timeline has 1 scene(s) with all empty asset_refs and empty video tracks — no visual content to render",
+    "EDL has 2 operation(s), all unapplied (apply_performed=false) — no clip insertions executed",
+    "Frame duplicate ratio is 93.1% (670 duplicate out of 720 total)",
+    "Contact sheet does not prove timeline progression (contact_sheet_useful=false)",
+    "Only 1 marker(s) defined — insufficient time reference points for scene progression"
+  ],
+  "artifacts_analyzed": {
+    "timeline_model": true,
+    "marker_registry": true,
+    "edit_decision_list": true,
+    "transition_policy": true,
+    "preview_proof_contract": true,
+    "preview_render_report": true,
+    "preview_result_review": true,
+    "script_supervisor_audit": true
+  }
+}

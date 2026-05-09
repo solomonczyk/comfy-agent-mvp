@@ -165,6 +165,9 @@ class CombineStateMachine:
         # RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001: Post-preview routing states
         "voice_generation_authorization_required",
         "preview_correction_plan_required",
+
+        # RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-001: Preview correction plan and re-render gate
+        "controlled_preview_rerender_authorization_required",
     ]
     
     # Terminal states
@@ -588,6 +591,10 @@ class CombineStateMachine:
             "blocked_manual_review",
         },
         "preview_correction_plan_required": {
+            "blocked_manual_review",
+            "controlled_preview_rerender_authorization_required",
+        },
+        "controlled_preview_rerender_authorization_required": {
             "blocked_manual_review",
         },
         "visual_correction_required": {
@@ -1152,6 +1159,15 @@ class CombineStateMachine:
         ("preview_correction_plan_required", "assembly_preflight_required"),
         ("preview_correction_plan_required", "final_qc_required"),
         ("preview_correction_plan_required", "final_operator_acceptance"),
+        ("controlled_preview_rerender_authorization_required", "generate_assets"),
+        ("controlled_preview_rerender_authorization_required", "real_generate_assets"),
+        ("controlled_preview_rerender_authorization_required", "visual_qa_required"),
+        ("controlled_preview_rerender_authorization_required", "completed"),
+        ("controlled_preview_rerender_authorization_required", "production_accepted"),
+        ("controlled_preview_rerender_authorization_required", "assembly_required"),
+        ("controlled_preview_rerender_authorization_required", "assembly_preflight_required"),
+        ("controlled_preview_rerender_authorization_required", "final_qc_required"),
+        ("controlled_preview_rerender_authorization_required", "final_operator_acceptance"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),

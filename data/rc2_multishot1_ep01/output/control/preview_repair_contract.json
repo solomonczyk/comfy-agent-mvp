@@ -1,0 +1,22 @@
+{
+  "contract_type": "preview_repair_contract",
+  "governs_render_type": "controlled_preview_rerender",
+  "render_must_prove": {
+    "non_static_visual_progression": "The rendered preview must show visual change across the timeline — duplicate frame ratio must be below 0.85 or justified by explicit still-scene contract",
+    "valid_frame_sampling": "Frames must be sampled at regular intervals across the full timeline duration",
+    "useful_contact_sheet": "The contact sheet must show visually distinct frames that prove timeline progression",
+    "canonical_preview_path": "All preview outputs must use the canonical path output/preview/ (singular), not output/previews/ (plural)"
+  },
+  "duplicate_frame_justification": {
+    "max_allowed_ratio": 0.85,
+    "above_threshold_requires_explicit_still_scene_contract": true
+  },
+  "blocked_downstream_stages": {
+    "voice_generation": false,
+    "audio_generation": false,
+    "assembly": false,
+    "downstream": false,
+    "production_acceptance": false
+  },
+  "contract_timestamp": "2026-05-09T17:25:39.169035+00:00"
+}

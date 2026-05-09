@@ -1,0 +1,23 @@
+{
+  "plan_type": "preview_correction_plan",
+  "correction_goal": "produce a non-static preview that proves real timeline/scene progression",
+  "root_cause_summary": "timeline_empty_no_assets_placed: Timeline model contains a single empty scene (scene_001) with no asset_refs, no video_main/video_overlay clips, and 2 unapplied EDL operations. The ffmpeg renderer had no visual variety to produce.",
+  "required_repairs": [
+    "ensure timeline has multiple distinct visual segments or intentional stillness is declared",
+    "ensure EDL references correct assets/clips per scene and operations are applied",
+    "ensure preview renderer samples frames across timeline progression",
+    "ensure contact_sheet samples meaningful timeline positions",
+    "canonicalize output/previews path to output/preview",
+    "block preview acceptance if duplicate ratio exceeds threshold"
+  ],
+  "duplicate_frame_policy": {
+    "max_duplicate_ratio": 0.85,
+    "static_preview_blocker_required": true
+  },
+  "contact_sheet_policy": {
+    "must_prove_timeline_progression": true,
+    "technical_file_exists_is_not_enough": true
+  },
+  "next_gate_required": "controlled_preview_rerender_authorization_required",
+  "plan_timestamp": "2026-05-09T17:25:39.169035+00:00"
+}

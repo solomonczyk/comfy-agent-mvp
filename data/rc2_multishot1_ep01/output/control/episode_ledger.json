@@ -1630,5 +1630,41 @@
     "visual_acceptance_executed": false,
     "assembly_executed": false,
     "downstream_executed": false
+  },
+  {
+    "event_type": "preview_correction_plan_executed",
+    "agent_id": "preview_correction_planner",
+    "task_id": "RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-001",
+    "timestamp": "2026-05-09T17:25:39.176929+00:00",
+    "previous_state": "preview_correction_plan_required",
+    "current_state": "controlled_preview_rerender_authorization_required",
+    "next_allowed_action": "controlled_preview_rerender_authorization_required",
+    "primary_root_cause": "timeline_empty_no_assets_placed: Timeline model contains a single empty scene (scene_001) with no asset_refs, no video_main/video_overlay clips, and 2 unapplied EDL operations. The ffmpeg renderer had no visual variety to produce.",
+    "root_cause_confidence": "high",
+    "duplicate_static_ratio": true,
+    "render_authorized_now": false,
+    "requires_operator_authorization": true,
+    "voice_generation_allowed": false,
+    "voice_generation_ready": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "production_accepted": false,
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "visual_qa_executed": false,
+    "visual_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "artifacts_created": [
+      "static_preview_root_cause_report.json",
+      "preview_correction_plan.json",
+      "preview_repair_contract.json",
+      "static_preview_prevention_policy.json",
+      "controlled_preview_rerender_gate_package.json"
+    ],
+    "notes": "Static preview correction plan completed. Next render requires explicit operator authorization via controlled_preview_rerender_authorization_required gate."
   }
 ]

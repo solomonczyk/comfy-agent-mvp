@@ -13556,6 +13556,26 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-001 — combine-build-preview-correction-plan subcommand
+    combine_correction_plan_parser = subparsers.add_parser(
+        "combine-build-preview-correction-plan",
+        help=(
+            "Build static preview correction plan, repair contract, "
+            "prevention policy, and re-render gate package — "
+            "does NOT execute any render"
+        )
+    )
+    combine_correction_plan_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_correction_plan_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-0 — combine-run-stage subcommand
     combine_run_stage_parser = subparsers.add_parser("combine-run-stage", help="Run a Combine V2 orchestrator stage")
     combine_run_stage_parser.add_argument(
@@ -17520,6 +17540,8 @@ def main() -> int:
         return combine_status(args)
     elif args.command == "combine-run-script-supervisor-audit":
         return combine_run_script_supervisor_audit(args)
+    elif args.command == "combine-build-preview-correction-plan":
+        return combine_build_preview_correction_plan(args)
     elif args.command == "combine-run":
         return combine_run(args)
     elif args.command == "combine-run-stage":
@@ -40723,6 +40745,83 @@ def combine_run_script_supervisor_audit(args: argparse.Namespace) -> int:
         print(f"  Blocking Details:")
         for detail in blocker.get("blocking_details", []):
             print(f"    - {detail}")
+
+    return 0
+
+
+def combine_build_preview_correction_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-001 — Build static preview correction plan.
+
+    This command:
+      - Reads Script Supervisor audit and all preview/timeline artifacts
+      - Builds root cause report, correction plan, repair contract,
+        prevention policy, and re-render gate package
+      - Updates artifact_index, episode_ledger, and state
+      - NEVER renders, generates, or submits any production action
+
+    Exit codes:
+      - 0: correction plan built successfully
+      - 1: error or invalid args
+    """
+    from app.agents.film_crew.preview_correction_planner import (
+        PreviewCorrectionPlanner,
+    )
+
+    project_root = args.project_root
+    json_output = args.json
+
+    planner = PreviewCorrectionPlanner(project_root)
+
+    # Run the full correction pipeline
+    pipeline_result = planner.run_correction_pipeline()
+
+    # Write canonical artifacts
+    written = planner.write_all_artifacts(pipeline_result)
+
+    # Update index and ledger
+    planner.update_artifact_index(pipeline_result, written)
+    planner.update_episode_ledger(pipeline_result)
+
+    if json_output:
+        pipeline_result["artifacts_written"] = {
+            k: v for k, v in written.items()
+        }
+        print(json.dumps(pipeline_result, indent=2))
+    else:
+        root_cause = pipeline_result.get(
+            "static_preview_root_cause_report", {}
+        )
+        correction_plan = pipeline_result.get("preview_correction_plan", {})
+        gate = pipeline_result.get(
+            "controlled_preview_rerender_gate_package", {}
+        )
+        forbidden = pipeline_result.get(
+            "forbidden_actions_not_executed", {}
+        )
+
+        print("Preview Correction Plan")
+        print(f"  Pipeline Timestamp: {pipeline_result.get('pipeline_timestamp', 'unknown')}")
+        print(f"  Primary Root Cause: {root_cause.get('primary_root_cause', 'unknown')}")
+        print(f"  Confidence: {root_cause.get('confidence', 'unknown')}")
+        print(f"  Evidence:")
+        for ev in root_cause.get("evidence", []):
+            print(f"    - {ev}")
+        print(f"  Correction Goal: {correction_plan.get('correction_goal', 'unknown')}")
+        print(f"  Required Repairs:")
+        for repair in correction_plan.get("required_repairs", []):
+            print(f"    - {repair}")
+        print(f"  Max Duplicate Ratio: {correction_plan.get('duplicate_frame_policy', {}).get('max_duplicate_ratio', 'N/A')}")
+        print(f"  Render Authorized Now: {gate.get('render_authorized_now', False)}")
+        print(f"  Requires Operator Authorization: {gate.get('requires_operator_authorization', True)}")
+        print(f"  Voice Generation Allowed: {gate.get('voice_generation_allowed', False)}")
+        print(f"  Assembly Allowed: {gate.get('assembly_allowed', False)}")
+        print(f"  Forbidden Actions Not Executed:")
+        for action, value in forbidden.items():
+            print(f"    - {action}: {value}")
+        print(f"  Next State: controlled_preview_rerender_authorization_required")
+        print(f"  Artifacts Written:")
+        for name, path in written.items():
+            print(f"    - {name}: {path}")
 
     return 0
 

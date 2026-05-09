@@ -1,0 +1,16 @@
+{
+  "policy_type": "static_preview_prevention_policy",
+  "static_preview_detection_required": true,
+  "duplicate_frame_threshold": 0.85,
+  "contact_sheet_must_show_progression": true,
+  "preview_result_review_must_include_motion_or_variation_metrics": true,
+  "technical_preview_success_is_not_operator_acceptance": true,
+  "voice_stage_blocked_until_real_operator_preview_approval": true,
+  "prevention_rules": [
+    "Before any preview render, verify the timeline contains at least 2 visually distinct segments or an explicit still-scene declaration",
+    "After render, measure frame-to-frame variance. If duplicate ratio > 0.85, block acceptance and route to correction plan",
+    "Contact sheet must be evaluated for visual progression, not just file existence",
+    "Operator preview acceptance must come from a real human operator, never from an agent"
+  ],
+  "policy_timestamp": "2026-05-09T17:25:39.169035+00:00"
+}

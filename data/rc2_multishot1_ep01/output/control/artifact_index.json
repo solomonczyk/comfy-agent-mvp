@@ -1,6 +1,6 @@
 {
-  "current_state": "preview_operator_review_required",
-  "next_allowed_action": "preview_correction_plan_required",
+  "current_state": "controlled_preview_rerender_authorization_required",
+  "next_allowed_action": "controlled_preview_rerender_authorization_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -800,5 +800,21 @@
   "agent_responsibility_matrix_created": true,
   "agent_mcp_tool_access_matrix_created": true,
   "film_crew_roles_created": true,
-  "film_crew_layer_implemented": true
+  "film_crew_layer_implemented": true,
+  "preview_correction_plan_executed": true,
+  "preview_correction_plan_task_id": "RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-001",
+  "preview_correction_plan_timestamp": "2026-05-09T17:25:39.169035+00:00",
+  "static_preview_root_cause": "timeline_empty_no_assets_placed: Timeline model contains a single empty scene (scene_001) with no asset_refs, no video_main/video_overlay clips, and 2 unapplied EDL operations. The ffmpeg renderer had no visual variety to produce.",
+  "static_preview_confidence": "high",
+  "correction_goal": "produce a non-static preview that proves real timeline/scene progression",
+  "next_gate_required": "controlled_preview_rerender_authorization_required",
+  "render_authorized_now": false,
+  "requires_operator_authorization": true,
+  "correction_plan_artifacts": [
+    "static_preview_root_cause_report",
+    "preview_correction_plan",
+    "preview_repair_contract",
+    "static_preview_prevention_policy",
+    "controlled_preview_rerender_gate_package"
+  ]
 }
