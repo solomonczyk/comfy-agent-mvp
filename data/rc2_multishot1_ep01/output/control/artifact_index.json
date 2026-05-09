@@ -782,5 +782,11 @@
   "post_preview_human_decision_timestamp": "2026-05-09T14:10:23.379520+00:00",
   "post_preview_human_decision_verdict": "missing",
   "operator_decision_valid": false,
-  "post_preview_human_decision_blocker_type": "missing_human_operator_preview_review"
+  "post_preview_human_decision_blocker_type": "missing_human_operator_preview_review",
+  "preview_operator_delivery_checked": true,
+  "preview_operator_delivery_bundle_created": true,
+  "preview_operator_delivery_blocker_created": false,
+  "preview_artifact_delivery_reconciliation_created": true,
+  "operator_review_ready": true,
+  "preview_artifacts_found": true
 }

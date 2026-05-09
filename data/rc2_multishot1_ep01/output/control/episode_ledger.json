@@ -1571,5 +1571,23 @@
     "reason": "missing_real_human_operator_decision",
     "production_accepted": false,
     "timestamp": "2026-05-09T14:10:23.389490+00:00"
+  },
+  {
+    "event": "preview_artifacts_operator_delivery_checked",
+    "task_id": "RC-COMBINE-V2-PREVIEW-ARTIFACTS-OPERATOR-DELIVERY-001",
+    "operator_review_ready": true,
+    "state_after": "preview_operator_review_required",
+    "next_allowed_action": "preview_operator_review_required",
+    "production_accepted": false,
+    "timestamp": "2026-05-09T14:40:29.313522"
+  },
+  {
+    "event": "preview_artifacts_operator_delivery_checked",
+    "task_id": "RC-COMBINE-V2-PREVIEW-ARTIFACTS-OPERATOR-DELIVERY-001",
+    "operator_review_ready": true,
+    "state_after": "preview_operator_review_required",
+    "next_allowed_action": "preview_operator_review_required",
+    "production_accepted": false,
+    "timestamp": "2026-05-09T14:52:09.083857+00:00"
   }
 ]

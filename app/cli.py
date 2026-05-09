@@ -12776,6 +12776,307 @@ def combine_build_post_preview_next_stage_package(args: argparse.Namespace) -> i
     return 0 if result.get("status") in ("ok", "accepted_with_blockers") else 1
 
 
+def combine_build_preview_operator_delivery(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-PREVIEW-ARTIFACTS-OPERATOR-DELIVERY-001 — Build operator delivery bundle.
+
+    Locates, verifies, and packages preview artifacts for real human operator review.
+    Does NOT generate, render, or create fake operator verdicts.
+
+    Exit codes:
+    - 0: delivery bundle created successfully (or blocker created if files missing)
+    - 1: error
+    """
+    control_dir = Path(args.project_root) / "output" / "control"
+    preview_dir = Path(args.project_root) / "output" / "preview"
+    json_output = args.json
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # 1. Define claimed artifacts with both claimed and actual paths
+    claimed_artifacts = {
+        "preview_lowres.mp4": {
+            "claimed_paths": [
+                str(Path(args.project_root) / "output" / "previews" / "preview_lowres.mp4"),
+                str(Path(args.project_root) / "output" / "preview" / "preview_lowres.mp4"),
+            ],
+            "expected_type": "video/mp4",
+            "expected_type_hint": "ISO Media, MP4",
+        },
+        "preview.gif": {
+            "claimed_paths": [
+                str(Path(args.project_root) / "output" / "previews" / "preview.gif"),
+                str(Path(args.project_root) / "output" / "preview" / "preview.gif"),
+            ],
+            "expected_type": "image/gif",
+            "expected_type_hint": "GIF image data",
+        },
+        "contact_sheet.jpg": {
+            "claimed_paths": [
+                str(Path(args.project_root) / "output" / "previews" / "contact_sheet.jpg"),
+                str(Path(args.project_root) / "output" / "preview" / "contact_sheet.jpg"),
+            ],
+            "expected_type": "image/jpeg",
+            "expected_type_hint": "JPEG image data",
+        },
+    }
+
+    file_hasher = hashlib.sha256
+    artifacts = []
+    all_found = True
+    path_discrepancies = []
+
+    for name, info in claimed_artifacts.items():
+        artifact_entry = {
+            "name": name,
+            "claimed_paths": info["claimed_paths"],
+            "exists": False,
+            "resolved_path": None,
+            "size_bytes": 0,
+            "sha256": None,
+        }
+
+        found_path = None
+        for cp in info["claimed_paths"]:
+            if Path(cp).exists():
+                found_path = cp
+                break
+
+        if found_path and Path(found_path).is_file() and Path(found_path).stat().st_size > 0:
+            fpath = Path(found_path)
+            data_bytes = fpath.read_bytes()
+            actual_sha256 = file_hasher(data_bytes).hexdigest()
+            artifact_entry["exists"] = True
+            artifact_entry["resolved_path"] = str(fpath.resolve())
+            artifact_entry["size_bytes"] = fpath.stat().st_size
+            artifact_entry["sha256"] = actual_sha256
+
+            # Check path discrepancy: found in preview/ not previews/
+            if "previews" in found_path:
+                artifact_entry["canonical_path_match"] = True
+            else:
+                artifact_entry["canonical_path_match"] = False
+                path_discrepancies.append({
+                    "artifact": name,
+                    "claimed_dir": "previews/",
+                    "actual_dir": "preview/",
+                    "note": "Canonical directory is preview/ (singular), not previews/ (plural)",
+                })
+        else:
+            all_found = False
+            artifact_entry["exists"] = False
+            artifact_entry["size_bytes"] = 0
+            artifact_entry["sha256"] = None
+
+        artifacts.append(artifact_entry)
+
+    # 2. Cross-reference with preview_render_report.json claims
+    render_report_path = control_dir / "preview_render_report.json"
+    render_report_claims = {}
+    if render_report_path.exists():
+        with open(render_report_path, 'r') as f:
+            rr = json.load(f)
+        for out_name, out_info in rr.get("outputs", {}).items():
+            render_report_claims[out_name] = {
+                "size_bytes": out_info.get("size_bytes"),
+                "sha256": out_info.get("sha256"),
+            }
+
+    # 3. Cross-reference with preview_result_review.json claims
+    result_review_path = control_dir / "preview_result_review.json"
+    result_review_valid = False
+    if result_review_path.exists():
+        with open(result_review_path, 'r') as f:
+            rv = json.load(f)
+        result_review_valid = rv.get("preview_artifacts_valid", False)
+
+    # 4. Build reconciliation
+    reconciliation = {
+        "task_id": "RC-COMBINE-V2-PREVIEW-ARTIFACTS-OPERATOR-DELIVERY-001",
+        "reconciliation_timestamp": timestamp,
+        "previous_proof_claims": {
+            "preview_render_report": {
+                "present": render_report_path.exists(),
+                "preview_artifacts_claimed": list(render_report_claims.keys()),
+            },
+            "preview_result_review": {
+                "present": result_review_path.exists(),
+                "preview_artifacts_valid_claimed": result_review_valid,
+            },
+        },
+        "artifact_verification": artifacts,
+        "path_discrepancies": path_discrepancies,
+        "all_artifacts_found": all_found,
+        "all_sha256_match_render_report": True,
+    }
+
+    # Verify sha256 matches render report claims
+    sha256_mismatches = []
+    for a in artifacts:
+        if a["exists"] and a["name"] in render_report_claims:
+            claimed_sha = render_report_claims[a["name"]]["sha256"]
+            if a["sha256"] != claimed_sha:
+                sha256_mismatches.append({
+                    "artifact": a["name"],
+                    "computed_sha256": a["sha256"],
+                    "render_report_sha256": claimed_sha,
+                })
+
+    reconciliation["all_sha256_match_render_report"] = len(sha256_mismatches) == 0
+    reconciliation["sha256_mismatches"] = sha256_mismatches
+
+    # 5. Decision: operator_review_ready
+    operator_review_ready = all_found and len(sha256_mismatches) == 0
+
+    # 6. Create delivery bundle
+    delivery_bundle = {
+        "task_id": "RC-COMBINE-V2-PREVIEW-ARTIFACTS-OPERATOR-DELIVERY-001",
+        "operator_review_ready": operator_review_ready,
+        "preview_artifacts_found": all_found,
+        "artifacts": [
+            {
+                "name": a["name"],
+                "path": a["resolved_path"],
+                "exists": a["exists"],
+                "size_bytes": a["size_bytes"],
+                "sha256": a["sha256"],
+            }
+            for a in artifacts
+        ],
+        "operator_instruction": "Open these files manually before providing human verdict.",
+        "human_verdict_required": True,
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    bundle_path = control_dir / "preview_operator_delivery_bundle.json"
+    with open(bundle_path, 'w') as f:
+        json.dump(delivery_bundle, f, indent=2, ensure_ascii=False)
+
+    # 7. Write reconciliation artifact
+    reconciliation_path = control_dir / "preview_artifact_delivery_reconciliation.json"
+    with open(reconciliation_path, 'w') as f:
+        json.dump(reconciliation, f, indent=2, ensure_ascii=False)
+
+    # 8. Write blocker if artifacts missing
+    blocker_created = False
+    blocker_path = None
+    if not operator_review_ready:
+        blocker = {
+            "blocker_type": "preview_artifacts_not_available_for_operator_review",
+            "claimed_preview_render_exists": True,
+            "physical_preview_files_verified": False,
+            "operator_review_possible": False,
+            "next_allowed_action": "preview_artifact_reconciliation_required",
+            "production_accepted": False,
+            "voice_generation_ready": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "reason": "One or more preview artifacts are missing or corrupted.",
+            "artifacts_found": all_found,
+            "sha256_mismatches_found": len(sha256_mismatches) > 0,
+            "timestamp": timestamp,
+        }
+        blocker_path = control_dir / "preview_operator_delivery_blocker.json"
+        with open(blocker_path, 'w') as f:
+            json.dump(blocker, f, indent=2, ensure_ascii=False)
+        blocker_created = True
+
+    # 9. Update artifact_index.json
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, 'r') as f:
+            artifact_index = json.load(f)
+
+    artifact_index["preview_operator_delivery_checked"] = True
+    artifact_index["preview_operator_delivery_bundle_created"] = True
+    artifact_index["preview_operator_delivery_blocker_created"] = blocker_created
+    artifact_index["preview_artifact_delivery_reconciliation_created"] = True
+    artifact_index["operator_review_ready"] = operator_review_ready
+    artifact_index["preview_artifacts_found"] = all_found
+    # Do NOT change state — still preview_operator_review_required until real operator verdict
+    artifact_index["current_state"] = "preview_operator_review_required"
+    artifact_index["next_allowed_action"] = "preview_operator_review_required"
+    artifact_index["production_accepted"] = False
+
+    with open(artifact_index_path, 'w') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # 10. Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, 'r') as f:
+            try:
+                data = json.load(f)
+                if isinstance(data, list):
+                    ledger = data
+                elif isinstance(data, dict):
+                    ledger = data.get('events', data.get('records', []))
+            except json.JSONDecodeError:
+                ledger = []
+
+    ledger_entry = {
+        "event": "preview_artifacts_operator_delivery_checked",
+        "task_id": "RC-COMBINE-V2-PREVIEW-ARTIFACTS-OPERATOR-DELIVERY-001",
+        "operator_review_ready": operator_review_ready,
+        "state_after": "preview_operator_review_required",
+        "next_allowed_action": "preview_operator_review_required"
+        if operator_review_ready
+        else "preview_artifact_reconciliation_required",
+        "production_accepted": False,
+        "timestamp": timestamp,
+    }
+    ledger.append(ledger_entry)
+
+    with open(ledger_path, 'w') as f:
+        json.dump(ledger, f, indent=2)
+
+    # 11. Output
+    if json_output:
+        result = {
+            "status": "ok" if operator_review_ready else "accepted_with_blockers",
+            "operator_review_ready": operator_review_ready,
+            "preview_artifacts_found": all_found,
+            "delivery_bundle": str(bundle_path.relative_to(Path(args.project_root))),
+            "reconciliation": str(reconciliation_path.relative_to(Path(args.project_root))),
+            "blocker_created": blocker_created,
+            "blocker_path": str(blocker_path.relative_to(Path(args.project_root))) if blocker_path else None,
+            "artifacts": [
+                {"name": a["name"], "exists": a["exists"], "size_bytes": a["size_bytes"]}
+                for a in artifacts
+            ],
+            "current_state": "preview_operator_review_required",
+            "next_allowed_action": "preview_operator_review_required"
+            if operator_review_ready
+            else "preview_artifact_reconciliation_required",
+            "production_accepted": False,
+            "generation_performed": False,
+            "comfyui_execution": False,
+            "downstream_executed": False,
+        }
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        print("Preview Operator Delivery:")
+        print(f"  Operator Review Ready: {operator_review_ready}")
+        print(f"  Preview Artifacts Found: {all_found}")
+        print(f"  Delivery Bundle: {bundle_path}")
+        print(f"  Reconciliation: {reconciliation_path}")
+        if blocker_created:
+            print(f"  Blocker: {blocker_path}")
+        print(f"  State: preview_operator_review_required")
+        print(f"  Next Action: {'preview_operator_review_required' if operator_review_ready else 'preview_artifact_reconciliation_required'}")
+        print(f"  Production Accepted: False")
+        print()
+        print("Artifacts:")
+        for a in artifacts:
+            status = "FOUND" if a["exists"] else "MISSING"
+            print(f"  {a['name']}: {status} ({a['size_bytes']} bytes)")
+
+    return 0 if operator_review_ready else 0  # Both success paths return 0
+
+
 def combine_repair_post_preview_operator_review(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001 — Repair operator review gate.
 
@@ -16906,6 +17207,18 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-PREVIEW-ARTIFACTS-OPERATOR-DELIVERY-001 — Preview Artifacts Operator Delivery
+    combine_build_preview_operator_delivery_parser = subparsers.add_parser(
+        "combine-build-preview-operator-delivery",
+        help="Locate, verify, and package preview artifacts for real human operator review",
+    )
+    combine_build_preview_operator_delivery_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_preview_operator_delivery_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-POST-PREVIEW-OPERATOR-REVIEW-REPAIR-001 — Post-Preview Operator Review Repair
     combine_repair_post_preview_operator_review_parser = subparsers.add_parser(
         "combine-repair-post-preview-operator-review",
@@ -17575,6 +17888,9 @@ def main() -> int:
     elif args.command == "combine-build-post-preview-next-stage-package":
         _require_absolute_project_root(args, "combine-build-post-preview-next-stage-package")
         return combine_build_post_preview_next_stage_package(args)
+    elif args.command == "combine-build-preview-operator-delivery":
+        _require_absolute_project_root(args, "combine-build-preview-operator-delivery")
+        return combine_build_preview_operator_delivery(args)
     elif args.command == "combine-repair-post-preview-operator-review":
         _require_absolute_project_root(args, "combine-repair-post-preview-operator-review")
         return combine_repair_post_preview_operator_review(args)
