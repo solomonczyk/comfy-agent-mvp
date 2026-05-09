@@ -1,0 +1,24 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "audition_required": true,
+  "sample_count": 1,
+  "sample_text_source": "subtitle_plan",
+  "sample_generated": false,
+  "sample_approved": false,
+  "evaluation_criteria": [
+    "clarity",
+    "tone_match",
+    "pace_match",
+    "emotion_match",
+    "language_accent"
+  ],
+  "preferred_gender": "female",
+  "age_range": "30-45",
+  "language": "ru",
+  "full_voiceover_allowed_after_sample_approval": true,
+  "voice_generation_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-09T08:53:20.493331+00:00"
+}

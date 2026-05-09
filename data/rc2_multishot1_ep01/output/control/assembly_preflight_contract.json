@@ -1,0 +1,20 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "assembly_preflight_checked": true,
+  "assembly_allowed": false,
+  "final_render_allowed": false,
+  "voice_generation_executed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "preconditions": {
+    "voice_script_ready": true,
+    "voice_casting_approved": false,
+    "voice_sample_approved": false,
+    "audio_qa_passed": false,
+    "audio_timeline_sync_validated": false,
+    "operator_voice_review_completed": false
+  },
+  "source_timeline_version": "mvp_v1",
+  "language": "ru",
+  "timestamp": "2026-05-09T08:53:20.494350+00:00"
+}

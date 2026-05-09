@@ -1,0 +1,12 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "operator_verdict": "accepted_for_voice_stage",
+  "operator_notes": "Preview quality is acceptable. Proceeding to voice stage preparation.",
+  "visual_review_performed_by_operator": true,
+  "preview_lowres_reviewed": true,
+  "preview_gif_reviewed": true,
+  "contact_sheet_reviewed": true,
+  "production_accepted": false,
+  "agent_may_not_override": true,
+  "timestamp": "2026-05-09T08:53:20.470350+00:00"
+}

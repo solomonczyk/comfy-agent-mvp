@@ -1,0 +1,26 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "voice_generation_ready": true,
+  "voice_generation_executed": false,
+  "script_source": "subtitle_plan",
+  "language": "ru",
+  "voice_candidates_required": true,
+  "sample_generation_required_before_full_voiceover": true,
+  "operator_voice_review_required": true,
+  "audio_qa_required": true,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "source_timeline": "mvp_v1",
+  "subtitle_count": 3,
+  "preferred_gender": "female",
+  "tone": [
+    "calm",
+    "clear",
+    "expert",
+    "friendly"
+  ],
+  "pace": "medium",
+  "sample_required": true,
+  "timestamp": "2026-05-09T08:53:20.492351+00:00"
+}

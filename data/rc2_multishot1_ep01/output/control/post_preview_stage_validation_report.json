@@ -1,0 +1,31 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "validation": {
+    "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+    "valid": true,
+    "errors": [],
+    "warnings": [],
+    "timestamp": "2026-05-09T08:53:20.470350+00:00",
+    "preview_lowres_mp4_exists": true,
+    "preview_gif_exists": true,
+    "contact_sheet_jpg_exists": true,
+    "preview_render_report_json_exists": true,
+    "preview_result_review_json_exists": true,
+    "preview_operator_review_packet_json_exists": true,
+    "timeline_model_json_exists": true,
+    "timeline_model_json_valid": true,
+    "marker_registry_json_exists": true,
+    "marker_registry_json_valid": true,
+    "edit_decision_list_json_exists": true,
+    "edit_decision_list_json_valid": true,
+    "subtitle_plan_json_exists": true,
+    "subtitle_plan_json_valid": true,
+    "transition_policy_json_exists": true,
+    "transition_policy_json_valid": true,
+    "voice_casting_contract_json_exists": true,
+    "voice_casting_contract_json_valid": true,
+    "voice_casting_contract_does_not_authorize_voice_generation": true,
+    "operator_decision_input_already_exists": true
+  },
+  "timestamp": "2026-05-09T08:53:20.470350+00:00"
+}

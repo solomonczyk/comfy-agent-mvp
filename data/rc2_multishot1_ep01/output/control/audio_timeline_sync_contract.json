@@ -1,0 +1,13 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "timeline_fps": 24,
+  "subtitle_count": 3,
+  "sync_required": true,
+  "sync_method": "timecode_alignment",
+  "drift_tolerance_frames": 2,
+  "voice_generation_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-09T08:53:20.493331+00:00"
+}

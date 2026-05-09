@@ -12638,6 +12638,144 @@ def combine_controlled_preview_render(args: argparse.Namespace) -> int:
     return 0 if result.get("status") == "ok" else 1
 
 
+def combine_validate_post_preview_stage(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001 — Validate post-preview stage artifacts.
+
+    Validates all preview artifacts and editorial contracts required for the
+    post-preview workflow stage.
+    """
+    from app.post_preview.post_preview_stage import validate_post_preview_stage
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = validate_post_preview_stage(project_root=project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        valid = result.get("valid", False)
+        errors = result.get("errors", [])
+        warnings = result.get("warnings", [])
+
+        if valid:
+            print("Post-Preview Stage Validation: PASS")
+        else:
+            print("Post-Preview Stage Validation: FAIL")
+
+        print(f"  Errors: {len(errors)}")
+        for e in errors:
+            print(f"    - {e}")
+        print(f"  Warnings: {len(warnings)}")
+        for w in warnings:
+            print(f"    - {w}")
+
+    return 0 if result.get("valid", False) else 1
+
+
+def combine_record_post_preview_operator_decision(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001 — Record operator preview decision.
+
+    Reads and validates the operator decision from the specified decision file.
+    Does NOT build the next stage package — use combine-build-post-preview-next-stage-package for that.
+    """
+    from app.post_preview.post_preview_stage import read_operator_decision, _resolve_project_root
+
+    project_root = args.project_root
+    decision_file = args.decision_file
+    json_output = args.json
+
+    root = _resolve_project_root(project_root)
+    control_dir = root / "output" / "control"
+
+    found, decision, msg = read_operator_decision(control_dir, decision_file)
+
+    if json_output:
+        result = {
+            "decision_found": found,
+            "decision_valid": found and decision is not None,
+            "decision": decision,
+            "message": msg,
+        }
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        if found:
+            verdict = decision.get("operator_verdict", "unknown") if decision else "unknown"
+            print(f"Operator Decision: FOUND")
+            print(f"  Verdict: {verdict}")
+            print(f"  Notes: {decision.get('operator_notes', '') if decision else 'N/A'}")
+            print(f"  Production Accepted: {decision.get('production_accepted', False) if decision else 'N/A'}")
+        else:
+            print(f"Operator Decision: NOT FOUND")
+            print(f"  Message: {msg}")
+            return 0  # Not an error, just no decision yet
+
+    return 0
+
+
+def combine_build_post_preview_next_stage_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001 — Build next stage package.
+
+    Validates preview artifacts, reads operator decision, routes to correct branch,
+    and creates the full next stage package. Supports --dry-run.
+    """
+    from app.post_preview.post_preview_stage import run_post_preview_stage
+
+    project_root = args.project_root
+    dry_run = args.dry_run
+    json_output = args.json
+
+    result = run_post_preview_stage(
+        project_root=project_root,
+        dry_run=dry_run,
+    )
+
+    if json_output:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        status = result.get("status", "error")
+        branch = result.get("selected_branch", "unknown")
+
+        if status == "accepted_with_blockers":
+            print(f"Post-Preview Stage: ACCEPTED WITH BLOCKERS")
+            print(f"  Branch: {branch}")
+            print(f"  Message: {result.get('message', '')}")
+            print(f"  State: {result.get('current_state')}")
+            print(f"  Next Action: {result.get('next_allowed_action')}")
+            print(f"  Fake Visual Acceptance Prevented: {result.get('fake_visual_acceptance_prevented', False)}")
+            return 0
+
+        if status == "error":
+            print(f"ERROR: {result.get('message', 'Post-preview stage failed')}")
+            print(f"  Branch: {branch}")
+            print(f"  State: {result.get('current_state')}")
+            return 1
+
+        print("Post-Preview Stage: OK")
+        print(f"  Branch: {branch}")
+        print(f"  Operator Verdict: {result.get('operator_verdict', 'N/A')}")
+        print(f"  Stage Implemented: {result.get('stage_implemented', False)}")
+        print(f"  Preview Artifacts Validated: {result.get('preview_artifacts_validated', False)}")
+        print(f"  Voice Generation Ready: {result.get('voice_generation_ready', False)}")
+        print(f"  Corrective Plan Created: {result.get('corrective_plan_created', False)}")
+        print(f"  Targeted Fix Plan Created: {result.get('targeted_fix_plan_created', False)}")
+        print(f"  State: {result.get('current_state')}")
+        print(f"  Next Action: {result.get('next_allowed_action')}")
+        print(f"  Production Accepted: {result.get('production_accepted')}")
+        if dry_run:
+            print(f"  DRY RUN: No artifacts written")
+        print()
+        print("Artifacts:")
+        for a in result.get("artifacts", []):
+            print(f"  - {a}")
+        print()
+        print("Forbidden Actions:")
+        for action, allowed in result.get("forbidden_actions", {}).items():
+            print(f"  {action}: {allowed}")
+
+    return 0 if result.get("status") in ("ok", "accepted_with_blockers") else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -16558,6 +16696,48 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001 — Post-Preview Workflow Stage
+    combine_validate_post_preview_stage_parser = subparsers.add_parser(
+        "combine-validate-post-preview-stage",
+        help="Validate post-preview stage artifacts: preview outputs, editorial contracts, and operator decision readiness",
+    )
+    combine_validate_post_preview_stage_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_validate_post_preview_stage_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_record_post_preview_operator_decision_parser = subparsers.add_parser(
+        "combine-record-post-preview-operator-decision",
+        help="Record operator preview decision from decision file. Validates and ingests the operator verdict.",
+    )
+    combine_record_post_preview_operator_decision_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_record_post_preview_operator_decision_parser.add_argument(
+        "--decision-file",
+        required=True,
+        help="Path to operator decision input JSON file (preview_operator_decision_input.json)",
+    )
+    combine_record_post_preview_operator_decision_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_build_post_preview_next_stage_package_parser = subparsers.add_parser(
+        "combine-build-post-preview-next-stage-package",
+        help="Build the next stage package after operator preview decision: voice readiness, corrective plan, or targeted fix",
+    )
+    combine_build_post_preview_next_stage_package_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_build_post_preview_next_stage_package_parser.add_argument(
+        "--dry-run", action="store_true", help="Validate and report without writing artifacts",
+    )
+    combine_build_post_preview_next_stage_package_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-46001-54000 — Agent Registry CLI commands
     combine_build_agent_registry_parser = subparsers.add_parser(
         "combine-build-agent-registry",
@@ -17169,6 +17349,15 @@ def main() -> int:
     elif args.command == "combine-controlled-preview-render":
         _require_absolute_project_root(args, "combine-controlled-preview-render")
         return combine_controlled_preview_render(args)
+    elif args.command == "combine-validate-post-preview-stage":
+        _require_absolute_project_root(args, "combine-validate-post-preview-stage")
+        return combine_validate_post_preview_stage(args)
+    elif args.command == "combine-record-post-preview-operator-decision":
+        _require_absolute_project_root(args, "combine-record-post-preview-operator-decision")
+        return combine_record_post_preview_operator_decision(args)
+    elif args.command == "combine-build-post-preview-next-stage-package":
+        _require_absolute_project_root(args, "combine-build-post-preview-next-stage-package")
+        return combine_build_post_preview_next_stage_package(args)
     elif args.command == "combine-build-agent-registry":
         _require_absolute_project_root(args, "combine-build-agent-registry")
         return combine_build_agent_registry(args)

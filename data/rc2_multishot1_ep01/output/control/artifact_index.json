@@ -1,6 +1,6 @@
 {
-  "current_state": "preview_operator_review_required",
-  "next_allowed_action": "preview_operator_review_required",
+  "current_state": "voice_generation_authorization_required",
+  "next_allowed_action": "voice_generation_authorization_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -429,7 +429,7 @@
       "no_generation_performed": true
     }
   ],
-  "timestamp": "2026-05-09T07:06:02.905325+00:00",
+  "timestamp": "2026-05-09T08:53:20.503459+00:00",
   "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
   "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
   "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
@@ -681,7 +681,7 @@
     "workflow_assets/generation_preflight_operator_review_packet.json",
     "workflow_assets/workflow_blocker_report.json"
   ],
-  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RENDER-001",
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
   "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
   "total_artifacts": 47,
   "brief_intake_layer_completed": true,
@@ -771,5 +771,22 @@
   "preview_operator_review_packet_created": true,
   "preview_lowres_created": true,
   "preview_gif_created": true,
-  "contact_sheet_created": true
+  "contact_sheet_created": true,
+  "post_preview_stage_executed": true,
+  "selected_branch": "accepted_for_voice_stage",
+  "post_preview_artifacts": [
+    "post_preview_stage_validation_report.json",
+    "preview_operator_review_outcome.json",
+    "post_preview_routing_decision.json",
+    "voice_generation_readiness_package.json",
+    "voice_script_package.json",
+    "voice_casting_review_package.json",
+    "voice_audition_plan.json",
+    "audio_qa_contract.json",
+    "audio_timeline_sync_contract.json",
+    "assembly_preflight_contract.json",
+    "voice_generation_authorization_packet.json",
+    "post_preview_stage_proof.json"
+  ],
+  "voice_generation_ready": true
 }

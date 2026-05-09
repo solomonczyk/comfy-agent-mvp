@@ -1,0 +1,22 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "audio_qa_required": true,
+  "qa_checks": [
+    "silence_detection",
+    "clipping_detection",
+    "volume_level_consistency",
+    "background_noise_check",
+    "sync_with_timeline",
+    "subtitle_alignment"
+  ],
+  "min_sample_rate_hz": 44100,
+  "max_sample_rate_hz": 48000,
+  "volume_target_dbfs": -16.0,
+  "volume_tolerance_dbfs": 2.0,
+  "operator_review_required": true,
+  "voice_generation_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-09T08:53:20.493331+00:00"
+}

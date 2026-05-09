@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Preview Operator Decision Input",
+  "description": "Operator decision on preview render quality. Must be provided by a human operator. Agent must never choose the visual verdict.",
+  "type": "object",
+  "required": [
+    "operator_verdict",
+    "operator_notes",
+    "visual_review_performed_by_operator",
+    "preview_lowres_reviewed",
+    "preview_gif_reviewed",
+    "contact_sheet_reviewed",
+    "production_accepted"
+  ],
+  "properties": {
+    "operator_verdict": {
+      "type": "string",
+      "enum": ["accepted_for_voice_stage", "rejected", "needs_fix"],
+      "description": "Operator verdict on preview quality. accepted_for_voice_stage enables voice readiness preparation but does NOT equal production_accepted."
+    },
+    "operator_notes": {
+      "type": "string",
+      "description": "Free-text notes from the operator about the preview quality, issues, or required changes."
+    },
+    "visual_review_performed_by_operator": {
+      "type": "boolean",
+      "description": "Must be true. Indicates a human operator performed the visual review of preview artifacts."
+    },
+    "preview_lowres_reviewed": {
+      "type": "boolean",
+      "description": "Operator reviewed the low-resolution MP4 preview."
+    },
+    "preview_gif_reviewed": {
+      "type": "boolean",
+      "description": "Operator reviewed the GIF preview."
+    },
+    "contact_sheet_reviewed": {
+      "type": "boolean",
+      "description": "Operator reviewed the contact sheet."
+    },
+    "production_accepted": {
+      "type": "boolean",
+      "const": false,
+      "description": "MUST be false. Production acceptance is a separate downstream gate and must not be set here."
+    }
+  },
+  "additionalProperties": false
+}

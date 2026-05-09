@@ -1355,5 +1355,42 @@
     "current_state": "preview_operator_review_required",
     "next_allowed_action": "preview_operator_review_required",
     "timestamp": "2026-05-09T08:12:16.067600+00:00"
+  },
+  {
+    "event_type": "post_preview_stage_executed",
+    "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+    "stage": "voice_generation_authorization_required",
+    "selected_branch": "accepted_for_voice_stage",
+    "operator_verdict": "accepted_for_voice_stage",
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "artifacts_created": [
+      "post_preview_stage_validation_report.json",
+      "preview_operator_review_outcome.json",
+      "post_preview_routing_decision.json",
+      "voice_generation_readiness_package.json",
+      "voice_script_package.json",
+      "voice_casting_review_package.json",
+      "voice_audition_plan.json",
+      "audio_qa_contract.json",
+      "audio_timeline_sync_contract.json",
+      "assembly_preflight_contract.json",
+      "voice_generation_authorization_packet.json",
+      "post_preview_stage_proof.json"
+    ],
+    "timestamp": "2026-05-09T08:53:20.506424+00:00"
+  },
+  {
+    "event_type": "voice_readiness_package_created",
+    "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+    "stage": "voice_generation_authorization_required",
+    "voice_generation_ready": true,
+    "voice_generation_executed": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "production_accepted": false,
+    "timestamp": "2026-05-09T08:53:20.506424+00:00"
   }
 ]

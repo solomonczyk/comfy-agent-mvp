@@ -1,0 +1,29 @@
+{
+  "task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001",
+  "casting_contract_loaded": true,
+  "language": "ru",
+  "preferred_gender": "female",
+  "age_range": "30-45",
+  "tone": [
+    "calm",
+    "clear",
+    "expert",
+    "friendly"
+  ],
+  "pace": "medium",
+  "emotion": "confident_warm",
+  "avoid": [
+    "robotic",
+    "too_fast",
+    "overdramatic",
+    "aggressive_sales_tone"
+  ],
+  "sample_required": true,
+  "operator_review_required": true,
+  "operator_voice_review_required": true,
+  "voice_generation_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-09T08:53:20.493331+00:00"
+}
