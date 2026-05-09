@@ -1,0 +1,19 @@
+{
+  "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-DECISION-PROCESS-001",
+  "blocker_type": "operator_requested_manual_review",
+  "reason": "Human operator selected needs_manual_review. Pipeline remains blocked before voice stage pending manual review resolution.",
+  "self_loop_applied": true,
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "voice_generation_ready": false,
+  "voice_generation_allowed": false,
+  "voice_generation_executed": false,
+  "audio_generation_executed": false,
+  "assembly_allowed": false,
+  "assembly_executed": false,
+  "downstream_allowed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "resolution": "Manual preview review by operator. Corrected operator verdict input (accepted_for_voice_stage or rejected_needs_preview_fix).",
+  "blocker_timestamp": "2026-05-09T12:05:08.674130+00:00"
+}

@@ -1,0 +1,24 @@
+{
+  "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-DECISION-PROCESS-001",
+  "feature_completed": true,
+  "gate_executed": true,
+  "decision_input_validated": true,
+  "gate_processor_result": "ok",
+  "operator_verdict": "needs_manual_review",
+  "decision_source": "human_operator",
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "self_loop_applied": true,
+  "self_loop_reason": "Human operator selected needs_manual_review — pipeline remains blocked before voice stage.",
+  "artifacts_created": [
+    "preview_operator_decision_validation_report.json",
+    "preview_operator_decision_result.json",
+    "preview_operator_decision_gate_proof.json",
+    "preview_manual_review_required_blocker.json"
+  ],
+  "gate_proof_timestamp": "2026-05-09T12:05:08.674130+00:00"
+}

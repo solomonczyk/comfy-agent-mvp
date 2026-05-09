@@ -1494,5 +1494,45 @@
       "human_preview_review_gate_fix_proof.json"
     ],
     "timestamp": "2026-05-09T12:59:00+00:00"
+  },
+  {
+    "event_type": "human_preview_review_gate_executed",
+    "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001",
+    "stage": "preview_operator_review_required",
+    "operator_verdict": "needs_manual_review",
+    "decision_valid": true,
+    "agent_did_not_choose_verdict": true,
+    "agent_did_not_accept_preview": true,
+    "agent_did_not_override": true,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "artifacts_created": [
+      "human_preview_review_gate_proof.json"
+    ],
+    "timestamp": "2026-05-09T11:59:28.511343+00:00"
+  },
+  {
+    "event_type": "human_preview_decision_processed",
+    "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-DECISION-PROCESS-001",
+    "stage": "preview_operator_review_required",
+    "operator_verdict": "needs_manual_review",
+    "decision_source": "human_operator",
+    "self_loop_applied": true,
+    "agent_did_not_choose_verdict": true,
+    "agent_did_not_accept_preview": true,
+    "agent_did_not_override": true,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "artifacts_created": [
+      "preview_operator_decision_validation_report.json",
+      "preview_operator_decision_result.json",
+      "preview_operator_decision_gate_proof.json",
+      "preview_manual_review_required_blocker.json"
+    ],
+    "ledger_timestamp": "2026-05-09T12:05:08.674130+00:00"
   }
 ]

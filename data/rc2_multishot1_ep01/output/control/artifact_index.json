@@ -429,7 +429,7 @@
       "no_generation_performed": true
     }
   ],
-  "timestamp": "2026-05-09T10:58:36.409865+00:00",
+  "timestamp": "2026-05-09T11:59:28.507343+00:00",
   "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
   "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
   "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
@@ -633,9 +633,7 @@
   "agent_operator_review_required": true,
   "next_layer_ready": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
   "artifacts": [
-    "human_preview_review_gate_proof.json",
-    "human_preview_review_gate_blocker.json",
-    "human_preview_review_gate_fix_proof.json"
+    "human_preview_review_gate_proof.json"
   ],
   "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001",
   "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
@@ -759,7 +757,17 @@
   "post_preview_repair_proof": "post_preview_operator_review_repair_proof.json",
   "voice_generation_ready": false,
   "human_preview_review_gate_executed": true,
-  "operator_verdict": null,
-  "gate_blocked": true,
-  "human_preview_review_gate_fix_proof": "human_preview_review_gate_fix_proof.json"
+  "operator_verdict": "needs_manual_review",
+  "gate_blocked": false,
+  "human_preview_review_gate_fix_proof": "human_preview_review_gate_fix_proof.json",
+  "human_preview_decision_process_executed": true,
+  "operator_verdict_processed": "needs_manual_review",
+  "decision_process_task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-DECISION-PROCESS-001",
+  "self_loop_applied": true,
+  "voice_generation_allowed": false,
+  "audio_generation_executed": false,
+  "preview_manual_review_required_blocker": "preview_manual_review_required_blocker.json",
+  "preview_operator_decision_validation_report": "preview_operator_decision_validation_report.json",
+  "preview_operator_decision_result": "preview_operator_decision_result.json",
+  "preview_operator_decision_gate_proof": "preview_operator_decision_gate_proof.json"
 }

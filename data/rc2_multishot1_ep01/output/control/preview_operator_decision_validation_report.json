@@ -1,0 +1,30 @@
+{
+  "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-DECISION-PROCESS-001",
+  "decision_input_found": true,
+  "decision_input_path": "preview_operator_decision_input.json",
+  "decision_source": "human_operator",
+  "schema_valid": true,
+  "schema_version": "draft-07",
+  "operator_verdict": "needs_manual_review",
+  "visual_review_performed_by_operator": true,
+  "production_accepted": false,
+  "required_fields_present": [
+    "operator_verdict",
+    "operator_notes",
+    "visual_review_performed_by_operator",
+    "preview_lowres_reviewed",
+    "preview_gif_reviewed",
+    "contact_sheet_reviewed",
+    "production_accepted"
+  ],
+  "verdict_in_allowlist": true,
+  "allowlist": [
+    "accepted_for_voice_stage",
+    "rejected_needs_preview_fix",
+    "needs_manual_review"
+  ],
+  "agent_did_not_choose_verdict": true,
+  "agent_did_not_accept_preview": true,
+  "agent_did_not_override": true,
+  "validation_timestamp": "2026-05-09T12:05:08.674130+00:00"
+}

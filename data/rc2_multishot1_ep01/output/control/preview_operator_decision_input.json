@@ -8,6 +8,10 @@
     "preview.gif",
     "contact_sheet.jpg"
   ],
+  "preview_lowres_reviewed": true,
+  "preview_gif_reviewed": true,
+  "contact_sheet_reviewed": true,
+  "production_accepted": false,
   "operator_notes": "Preview ep01_shot01 потребує додаткового ручного аналізу для окремих елементів.",
   "decision_timestamp": "2026-05-09T13:44:43+02:00"
 }
