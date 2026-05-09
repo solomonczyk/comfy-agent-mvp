@@ -1,0 +1,38 @@
+[
+  {
+    "operation_id": "edl_place_hero",
+    "operation": "insert_clip",
+    "anchor": "scene_001/shot_001",
+    "mode": "ripple",
+    "apply_performed": false,
+    "requires_preview": true,
+    "requires_operator_review": true
+  },
+  {
+    "operation_id": "edl_add_voiceover_placeholder",
+    "operation": "add_voiceover_placeholder",
+    "anchor": "scene_001",
+    "mode": "overlay",
+    "apply_performed": false,
+    "requires_preview": true,
+    "requires_operator_review": true
+  },
+  {
+    "operation_id": "edl_fade_to_black",
+    "operation": "apply_transition",
+    "anchor": "marker_scene_001_end",
+    "mode": "overwrite",
+    "apply_performed": false,
+    "requires_preview": true,
+    "requires_operator_review": true
+  },
+  {
+    "operation_id": "edl_subtitle_intro_burnin",
+    "operation": "add_subtitle",
+    "anchor": "marker_subtitle_intro",
+    "mode": "overlay",
+    "apply_performed": false,
+    "requires_preview": true,
+    "requires_operator_review": true
+  }
+]

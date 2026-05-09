@@ -1,0 +1,42 @@
+[
+  {
+    "marker_id": "marker_scene_001_start",
+    "scene_id": "scene_001",
+    "shot_id": "shot_001",
+    "timecode": "00:00:00",
+    "description": "Scene 001 start — approved visual asset intro",
+    "anchor_type": "scene_id"
+  },
+  {
+    "marker_id": "marker_scene_001_mid",
+    "scene_id": "scene_001",
+    "shot_id": "shot_001",
+    "timecode": "00:00:15",
+    "description": "Mid-point of hero shot — transition / subtitle anchor",
+    "anchor_type": "timecode"
+  },
+  {
+    "marker_id": "marker_scene_001_end",
+    "scene_id": "scene_001",
+    "shot_id": "shot_001",
+    "timecode": "00:00:30",
+    "description": "Scene 001 end — fade to black point",
+    "anchor_type": "timecode"
+  },
+  {
+    "marker_id": "marker_subtitle_intro",
+    "scene_id": "scene_001",
+    "shot_id": "shot_001",
+    "timecode": "00:00:02",
+    "description": "Subtitle entry point — intro text",
+    "anchor_type": "timecode"
+  },
+  {
+    "marker_id": "marker_voiceover_start",
+    "scene_id": "scene_001",
+    "shot_id": "shot_001",
+    "timecode": "00:00:01",
+    "description": "Voiceover start anchor",
+    "anchor_type": "timecode"
+  }
+]

@@ -1,6 +1,6 @@
 {
-  "current_state": "visual_asset_operator_accepted",
-  "next_allowed_action": "timeline_to_preview_package_required",
+  "current_state": "preview_render_authorization_required",
+  "next_allowed_action": "preview_render_authorization_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -429,7 +429,7 @@
       "no_generation_performed": true
     }
   ],
-  "timestamp": "2026-05-09T05:31:52.022342+00:00",
+  "timestamp": "2026-05-09T07:06:02.905325+00:00",
   "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
   "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
   "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
@@ -681,7 +681,7 @@
     "workflow_assets/generation_preflight_operator_review_packet.json",
     "workflow_assets/workflow_blocker_report.json"
   ],
-  "task_id": "RC-COMBINE-V2-99001-102000",
+  "task_id": "RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001",
   "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
   "total_artifacts": 47,
   "brief_intake_layer_completed": true,
@@ -739,5 +739,21 @@
   "technical_verdict": "PASS",
   "operator_visual_review_executed": true,
   "operator_visual_decision_gate_executed": true,
-  "technical_pass_not_treated_as_visual_pass": true
+  "technical_pass_not_treated_as_visual_pass": true,
+  "approved_asset_consumed": true,
+  "approved_asset_path": "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+  "approved_asset_sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+  "timeline_model_created": true,
+  "marker_registry_created": true,
+  "edit_decision_list_created": true,
+  "subtitle_plan_created": true,
+  "transition_policy_created": true,
+  "voice_casting_contract_created": true,
+  "preview_proof_contract_created": true,
+  "timeline_preview_dry_run_report_created": true,
+  "preview_render_authorization_packet_created": true,
+  "voice_generation_executed": false,
+  "timeline_dry_run_status": "ready_for_operator_review",
+  "timeline_dry_run_errors": [],
+  "timeline_dry_run_warnings": []
 }

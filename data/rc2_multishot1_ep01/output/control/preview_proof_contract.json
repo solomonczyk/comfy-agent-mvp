@@ -1,0 +1,12 @@
+{
+  "preview_lowres_required": true,
+  "preview_gif_required": true,
+  "contact_sheet_required": true,
+  "subtitle_burnin_preview_required": true,
+  "timeline_report_required": true,
+  "transition_qa_required": true,
+  "subtitle_qa_required": true,
+  "audio_qa_required": true,
+  "operator_review_required": true,
+  "final_render_allowed": false
+}

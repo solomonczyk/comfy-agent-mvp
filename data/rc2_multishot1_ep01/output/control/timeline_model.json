@@ -1,0 +1,49 @@
+{
+  "project_id": "rc2_multishot1_ep01",
+  "timeline_version": "mvp_v1",
+  "fps": 24,
+  "resolution": {
+    "width": 1344,
+    "height": 768
+  },
+  "tracks": {
+    "video_main": [],
+    "video_overlay": [],
+    "audio_voice": [],
+    "audio_music": [],
+    "subtitles": [],
+    "effects": []
+  },
+  "scenes": [
+    {
+      "scene_id": "scene_001",
+      "duration_sec": 30.0,
+      "shot_ids": [
+        "shot_001"
+      ],
+      "asset_refs": [
+        "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png"
+      ],
+      "start_time": "00:00:00",
+      "end_time": "00:00:30",
+      "status": "planned"
+    }
+  ],
+  "markers": [],
+  "operations": [
+    {
+      "operation_id": "place_hero_asset",
+      "operation": "insert_clip",
+      "asset_ref": "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+      "track": "video_main",
+      "start_time": "00:00:00",
+      "end_time": "00:00:30",
+      "duration_sec": 30.0,
+      "fit_policy": "contain_or_cover",
+      "apply_performed": false,
+      "requires_operator_review": true
+    }
+  ],
+  "operator_review_required": true,
+  "final_render_allowed": false
+}

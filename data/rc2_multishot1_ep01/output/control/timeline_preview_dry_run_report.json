@@ -1,0 +1,10 @@
+{
+  "dry_run_status": "ready_for_operator_review",
+  "apply_performed": false,
+  "real_render_executed": false,
+  "final_render_allowed": false,
+  "operator_review_required": true,
+  "errors": [],
+  "warnings": [],
+  "timestamp": "2026-05-09T07:06:02.905325+00:00"
+}

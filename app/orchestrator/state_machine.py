@@ -152,6 +152,10 @@ class CombineStateMachine:
         "visual_asset_operator_accepted",
         "visual_correction_required",
         "visual_review_needs_fix",
+
+        # RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001: Timeline-to-Preview package
+        "timeline_to_preview_package_required",
+        "preview_render_authorization_required",
     ]
     
     # Terminal states
@@ -544,6 +548,15 @@ class CombineStateMachine:
         # RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001: new routing states
         "visual_asset_operator_accepted": {
             "timeline_to_preview_package_required",
+            "blocked_manual_review",
+        },
+
+        # RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001: Timeline-to-Preview package
+        "timeline_to_preview_package_required": {
+            "preview_render_authorization_required",
+            "blocked_manual_review",
+        },
+        "preview_render_authorization_required": {
             "blocked_manual_review",
         },
         "visual_correction_required": {
@@ -1048,6 +1061,26 @@ class CombineStateMachine:
         ("visual_review_needs_fix", "production_accepted"),
         ("visual_review_needs_fix", "assembly_required"),
         ("visual_review_needs_fix", "assembly_preflight_required"),
+
+        # RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001: timeline_to_preview forbidden
+        ("timeline_to_preview_package_required", "generate_assets"),
+        ("timeline_to_preview_package_required", "real_generate_assets"),
+        ("timeline_to_preview_package_required", "visual_qa_required"),
+        ("timeline_to_preview_package_required", "completed"),
+        ("timeline_to_preview_package_required", "production_accepted"),
+        ("timeline_to_preview_package_required", "assembly_required"),
+        ("timeline_to_preview_package_required", "assembly_preflight_required"),
+        ("timeline_to_preview_package_required", "final_qc_required"),
+        ("timeline_to_preview_package_required", "final_operator_acceptance"),
+        ("preview_render_authorization_required", "generate_assets"),
+        ("preview_render_authorization_required", "real_generate_assets"),
+        ("preview_render_authorization_required", "visual_qa_required"),
+        ("preview_render_authorization_required", "completed"),
+        ("preview_render_authorization_required", "production_accepted"),
+        ("preview_render_authorization_required", "assembly_required"),
+        ("preview_render_authorization_required", "assembly_preflight_required"),
+        ("preview_render_authorization_required", "final_qc_required"),
+        ("preview_render_authorization_required", "final_operator_acceptance"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),

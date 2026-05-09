@@ -1,0 +1,22 @@
+{
+  "language": "ru",
+  "preferred_gender": "female",
+  "age_range": "30-45",
+  "tone": [
+    "calm",
+    "clear",
+    "expert",
+    "friendly"
+  ],
+  "pace": "medium",
+  "emotion": "confident_warm",
+  "avoid": [
+    "robotic",
+    "too_fast",
+    "overdramatic",
+    "aggressive_sales_tone"
+  ],
+  "sample_required": true,
+  "operator_review_required": true,
+  "full_voiceover_generation_allowed": false
+}

@@ -1,0 +1,41 @@
+[
+  {
+    "subtitle_id": "sub_intro_001",
+    "text": "Оператор утвердил визуальный актив. Начинаем монтаж.",
+    "anchor_type": "timecode",
+    "start_time": "00:00:02",
+    "end_time": "00:00:06",
+    "scene_id": "scene_001",
+    "start_offset": 2.0,
+    "duration": 4.0,
+    "position": "bottom_center",
+    "style": "clean_white",
+    "safe_zone_required": true
+  },
+  {
+    "subtitle_id": "sub_mid_001",
+    "text": "Сцена 1: основной кадр. Длительность 30 секунд.",
+    "anchor_type": "timecode",
+    "start_time": "00:00:08",
+    "end_time": "00:00:12",
+    "scene_id": "scene_001",
+    "start_offset": 8.0,
+    "duration": 4.0,
+    "position": "bottom_center",
+    "style": "clean_white",
+    "safe_zone_required": true
+  },
+  {
+    "subtitle_id": "sub_outro_001",
+    "text": "Конец сцены. Переход к следующему эпизоду.",
+    "anchor_type": "timecode",
+    "start_time": "00:00:26",
+    "end_time": "00:00:30",
+    "scene_id": "scene_001",
+    "start_offset": 26.0,
+    "duration": 4.0,
+    "position": "bottom_center",
+    "style": "clean_white",
+    "safe_zone_required": true
+  }
+]

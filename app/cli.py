@@ -12531,6 +12531,59 @@ def _load_ledger(path: Path) -> list:
         return []
 
 
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001 — Timeline-to-Preview Package CLI
+# ---------------------------------------------------------------------------
+
+
+def combine_timeline_to_preview_package(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001 — Build timeline-to-preview package.
+
+    Creates timeline model, marker registry, edit decision list, subtitle plan,
+    transition policy, voice casting contract, preview proof contract,
+    runs dry-run validation, and creates the preview render authorization packet.
+
+    No preview render, voice generation, or assembly is executed.
+    """
+    from app.timeline.timeline_to_preview_package import build_timeline_to_preview_package
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = build_timeline_to_preview_package(project_root=project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        if result.get("status") == "error":
+            print(f"ERROR: {result.get('message', 'Unknown error')}")
+            return 1
+
+        print("Timeline-to-Preview Package: CREATED")
+        print(f"  State: {result.get('current_state')}")
+        print(f"  Next Action: {result.get('next_allowed_action')}")
+        print(f"  Dry-Run Status: {result.get('dry_run_status')}")
+        print(f"  Production Accepted: {result.get('production_accepted')}")
+        print()
+        print("Artifacts:")
+        for name, path in result.get("artifacts", {}).items():
+            print(f"  {name}: {path}")
+        if result.get("dry_run_errors"):
+            print(f"\nDry-Run Errors ({len(result['dry_run_errors'])}):")
+            for e in result["dry_run_errors"]:
+                print(f"  ERROR: {e}")
+        if result.get("dry_run_warnings"):
+            print(f"\nDry-Run Warnings ({len(result['dry_run_warnings'])}):")
+            for w in result["dry_run_warnings"]:
+                print(f"  WARN: {w}")
+        print()
+        print("Forbidden Actions:")
+        for action, allowed in result.get("forbidden_actions", {}).items():
+            print(f"  {action}: {allowed}")
+
+    return 0 if result.get("status") == "ok" else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -16427,6 +16480,18 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001 — Timeline-to-Preview Package
+    combine_timeline_to_preview_package_parser = subparsers.add_parser(
+        "combine-timeline-to-preview-package",
+        help="Build timeline-to-preview package: model, markers, EDL, subtitles, policies, contracts, dry-run, and authorization packet",
+    )
+    combine_timeline_to_preview_package_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_timeline_to_preview_package_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-46001-54000 — Agent Registry CLI commands
     combine_build_agent_registry_parser = subparsers.add_parser(
         "combine-build-agent-registry",
@@ -17032,6 +17097,9 @@ def main() -> int:
     elif args.command == "combine-build-editorial-operator-review":
         _require_absolute_project_root(args, "combine-build-editorial-operator-review")
         return combine_build_editorial_operator_review(args)
+    elif args.command == "combine-timeline-to-preview-package":
+        _require_absolute_project_root(args, "combine-timeline-to-preview-package")
+        return combine_timeline_to_preview_package(args)
     elif args.command == "combine-build-agent-registry":
         _require_absolute_project_root(args, "combine-build-agent-registry")
         return combine_build_agent_registry(args)

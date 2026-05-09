@@ -978,5 +978,317 @@
     "next_allowed_action": "timeline_to_preview_package_required",
     "previous_state": "operator_visual_review_required",
     "timestamp": "2026-05-09T06:49:50.607363+00:00"
+  },
+  {
+    "event_type": "timeline_to_preview_package_started",
+    "task_id": "RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001",
+    "stage": "timeline_to_preview_package_required",
+    "approved_asset": "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+    "production_accepted": false,
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "timeline_model_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "timeline_model.json",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "marker_registry_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "marker_registry.json",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "edit_decision_list_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "edit_decision_list.json",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "subtitle_plan_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "subtitle_plan.json",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "transition_policy_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "transition_policy.json",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "voice_casting_contract_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "voice_casting_contract.json",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "preview_proof_contract_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "preview_proof_contract.json",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "timeline_preview_dry_run_completed",
+    "stage": "timeline_to_preview_package_required",
+    "dry_run_status": "ready_for_operator_review",
+    "dry_run_passed": true,
+    "error_count": 0,
+    "warning_count": 0,
+    "apply_performed": false,
+    "real_render_executed": false,
+    "generation_performed": false,
+    "production_accepted": false,
+    "current_state": "preview_render_authorization_required",
+    "next_allowed_action": "preview_render_authorization_required",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "preview_render_authorization_required",
+    "stage": "preview_render_authorization_required",
+    "operator_decision": null,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "preview_render_authorization_required",
+    "next_allowed_action": "preview_render_authorization_required",
+    "timestamp": "2026-05-09T06:59:19.482189+00:00"
+  },
+  {
+    "event_type": "timeline_to_preview_package_started",
+    "task_id": "RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001",
+    "stage": "timeline_to_preview_package_required",
+    "approved_asset": "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+    "production_accepted": false,
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "timeline_model_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "timeline_model.json",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "marker_registry_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "marker_registry.json",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "edit_decision_list_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "edit_decision_list.json",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "subtitle_plan_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "subtitle_plan.json",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "transition_policy_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "transition_policy.json",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "voice_casting_contract_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "voice_casting_contract.json",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "preview_proof_contract_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "preview_proof_contract.json",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "timeline_preview_dry_run_completed",
+    "stage": "timeline_to_preview_package_required",
+    "dry_run_status": "ready_for_operator_review",
+    "dry_run_passed": true,
+    "error_count": 0,
+    "warning_count": 0,
+    "apply_performed": false,
+    "real_render_executed": false,
+    "generation_performed": false,
+    "production_accepted": false,
+    "current_state": "preview_render_authorization_required",
+    "next_allowed_action": "preview_render_authorization_required",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "preview_render_authorization_required",
+    "stage": "preview_render_authorization_required",
+    "operator_decision": null,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "preview_render_authorization_required",
+    "next_allowed_action": "preview_render_authorization_required",
+    "timestamp": "2026-05-09T06:59:56.702060+00:00"
+  },
+  {
+    "event_type": "timeline_to_preview_package_started",
+    "task_id": "RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001",
+    "stage": "timeline_to_preview_package_required",
+    "approved_asset": "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+    "production_accepted": false,
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "timeline_model_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "timeline_model.json",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "marker_registry_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "marker_registry.json",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "edit_decision_list_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "edit_decision_list.json",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "subtitle_plan_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "subtitle_plan.json",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "transition_policy_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "transition_policy.json",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "voice_casting_contract_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "voice_casting_contract.json",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "preview_proof_contract_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "preview_proof_contract.json",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "timeline_preview_dry_run_completed",
+    "stage": "timeline_to_preview_package_required",
+    "dry_run_status": "ready_for_operator_review",
+    "dry_run_passed": true,
+    "error_count": 0,
+    "warning_count": 0,
+    "apply_performed": false,
+    "real_render_executed": false,
+    "generation_performed": false,
+    "production_accepted": false,
+    "current_state": "preview_render_authorization_required",
+    "next_allowed_action": "preview_render_authorization_required",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "preview_render_authorization_required",
+    "stage": "preview_render_authorization_required",
+    "operator_decision": null,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "preview_render_authorization_required",
+    "next_allowed_action": "preview_render_authorization_required",
+    "timestamp": "2026-05-09T07:05:05.507902+00:00"
+  },
+  {
+    "event_type": "timeline_to_preview_package_started",
+    "task_id": "RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001",
+    "stage": "timeline_to_preview_package_required",
+    "approved_asset": "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+    "production_accepted": false,
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "timeline_model_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "timeline_model.json",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "marker_registry_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "marker_registry.json",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "edit_decision_list_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "edit_decision_list.json",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "subtitle_plan_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "subtitle_plan.json",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "transition_policy_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "transition_policy.json",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "voice_casting_contract_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "voice_casting_contract.json",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "preview_proof_contract_created",
+    "stage": "timeline_to_preview_package_required",
+    "artifact": "preview_proof_contract.json",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "timeline_preview_dry_run_completed",
+    "stage": "timeline_to_preview_package_required",
+    "dry_run_status": "ready_for_operator_review",
+    "dry_run_passed": true,
+    "error_count": 0,
+    "warning_count": 0,
+    "apply_performed": false,
+    "real_render_executed": false,
+    "generation_performed": false,
+    "production_accepted": false,
+    "current_state": "preview_render_authorization_required",
+    "next_allowed_action": "preview_render_authorization_required",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
+  },
+  {
+    "event_type": "preview_render_authorization_required",
+    "stage": "preview_render_authorization_required",
+    "operator_decision": null,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "preview_render_authorization_required",
+    "next_allowed_action": "preview_render_authorization_required",
+    "timestamp": "2026-05-09T07:06:02.905325+00:00"
   }
 ]

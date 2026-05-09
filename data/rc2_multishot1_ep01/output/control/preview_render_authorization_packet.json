@@ -1,0 +1,77 @@
+{
+  "task_id": "RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001",
+  "packet_type": "preview_render_authorization",
+  "authorization_required": true,
+  "authorization_granted": false,
+  "operator_decision": null,
+  "timestamp": "2026-05-09T07:06:02.905325+00:00",
+  "approved_asset": {
+    "path": "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png",
+    "sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+    "approval_stage": "operator_visual_acceptance"
+  },
+  "timeline_summary": {
+    "project_id": "rc2_multishot1_ep01",
+    "timeline_version": "mvp_v1",
+    "fps": 24,
+    "resolution": {
+      "width": 1344,
+      "height": 768
+    },
+    "scene_count": 1,
+    "operation_count": 1
+  },
+  "editorial_summary": {
+    "marker_count": 5,
+    "edl_operation_count": 4,
+    "subtitle_count": 3,
+    "transition_policy": {
+      "default": "hard_cut",
+      "forbidden_count": 6,
+      "max_fade_ratio": 0.35
+    },
+    "voice_casting": {
+      "language": "ru",
+      "sample_required": true,
+      "operator_review_required": true
+    },
+    "preview_requirements": {
+      "preview_lowres_required": true,
+      "preview_gif_required": true,
+      "contact_sheet_required": true,
+      "subtitle_burnin_required": true,
+      "transition_qa_required": true,
+      "subtitle_qa_required": true,
+      "audio_qa_required": true
+    }
+  },
+  "dry_run_status": "ready_for_operator_review",
+  "dry_run_errors": [],
+  "dry_run_warnings": [],
+  "preview_render_executed": false,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "forbidden_actions": {
+    "new_generation": false,
+    "retry": false,
+    "comfyui_submit": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  },
+  "artifacts": [
+    "timeline_model.json",
+    "marker_registry.json",
+    "edit_decision_list.json",
+    "subtitle_plan.json",
+    "transition_policy.json",
+    "voice_casting_contract.json",
+    "preview_proof_contract.json",
+    "timeline_preview_dry_run_report.json",
+    "preview_render_authorization_packet.json"
+  ]
+}
