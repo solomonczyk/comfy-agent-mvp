@@ -955,5 +955,28 @@
     "next_allowed_action": "timeline_to_preview_package_required",
     "previous_state": "operator_visual_review_required",
     "timestamp": "2026-05-09T06:45:43.536036+00:00"
+  },
+  {
+    "event_type": "operator_visual_decision_gate_executed",
+    "task_id": "RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001",
+    "stage": "operator_visual_decision_gate",
+    "operator_verdict": "accepted",
+    "verdict_provided": true,
+    "branch_taken": "accepted",
+    "operator_reason": "Operator inspected asset /rc2_controlled_1778304712_00001_.png. Visual quality passes production standards. No defects detected. Proceeding to timeline-to-preview.",
+    "decision_artifact": "operator_visual_decision.json",
+    "routing_report": "operator_visual_decision_routing_report.json",
+    "production_accepted": false,
+    "visual_acceptance_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "preview_render_executed": false,
+    "current_state": "visual_asset_operator_accepted",
+    "next_allowed_action": "timeline_to_preview_package_required",
+    "previous_state": "operator_visual_review_required",
+    "timestamp": "2026-05-09T06:49:50.607363+00:00"
   }
 ]

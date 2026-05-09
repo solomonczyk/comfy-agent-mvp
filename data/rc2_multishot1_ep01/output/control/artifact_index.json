@@ -400,6 +400,33 @@
       },
       "timestamp": "2026-05-09T06:45:43.536036+00:00",
       "no_generation_performed": true
+    },
+    {
+      "stage": "operator_visual_decision_gate",
+      "success": true,
+      "message": "Operator visual decision gate executed. Verdict: accepted. Branch: accepted. No agent visual acceptance. production_accepted remains False.",
+      "artifacts": [
+        "operator_visual_decision.json",
+        "visual_asset_acceptance_record.json",
+        "approved_visual_assets_manifest.json",
+        "operator_visual_decision_routing_report.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-OPERATOR-VISUAL-DECISION-001",
+        "operator_verdict": "accepted",
+        "verdict_provided": true,
+        "branch_taken": "accepted",
+        "production_accepted": false,
+        "visual_acceptance_executed": false,
+        "new_generation_performed": false,
+        "comfyui_submit_executed": false,
+        "retry_attempted": false,
+        "assembly_executed": false,
+        "downstream_executed": false,
+        "preview_render_executed": false
+      },
+      "timestamp": "2026-05-09T06:49:50.607363+00:00",
+      "no_generation_performed": true
     }
   ],
   "timestamp": "2026-05-09T05:31:52.022342+00:00",
