@@ -1,6 +1,43 @@
 {
   "version": "1.0.0",
   "description": "Artifact ownership and dependency map across all core agents",
+  "film_crew_artifacts": [
+    {
+      "artifact": "script_supervisor_agent_contract",
+      "created_by": "script_supervisor_continuity_guard",
+      "consumed_by": ["orchestrator_pipeline_controller"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "script_supervisor_continuity_guard"
+    },
+    {
+      "artifact": "script_supervisor_preview_audit_report",
+      "created_by": "script_supervisor_continuity_guard",
+      "consumed_by": ["orchestrator_pipeline_controller"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "script_supervisor_continuity_guard"
+    },
+    {
+      "artifact": "script_supervisor_blocker_report",
+      "created_by": "script_supervisor_continuity_guard",
+      "consumed_by": ["orchestrator_pipeline_controller"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "script_supervisor_continuity_guard"
+    },
+    {
+      "artifact": "voice_rejection_record",
+      "created_by": "script_supervisor_continuity_guard",
+      "consumed_by": ["orchestrator_pipeline_controller", "voice_casting_agent"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "script_supervisor_continuity_guard"
+    },
+    {
+      "artifact": "post_preview_reconciliation_report",
+      "created_by": "script_supervisor_continuity_guard",
+      "consumed_by": ["orchestrator_pipeline_controller"],
+      "canonical_location": "output/control",
+      "validation_responsibility": "script_supervisor_continuity_guard"
+    }
+  ],
   "artifacts": [
     {
       "artifact": "parsed_brief",

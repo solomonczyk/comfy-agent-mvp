@@ -1,6 +1,9 @@
 {
   "version": "1.0.0",
   "description": "Complete dependency graph for Combine V2 core agents",
+  "film_crew_agents": [
+    {"order": 0, "agent_id": "script_supervisor_continuity_guard", "audit_layer": true, "parallel_with_pipeline": true}
+  ],
   "production_pipeline_order": [
     {"order": 1, "agent_id": "brief_intake_agent"},
     {"order": 2, "agent_id": "director_planner_agent"},

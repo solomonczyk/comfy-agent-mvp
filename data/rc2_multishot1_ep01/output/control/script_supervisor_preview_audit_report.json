@@ -1,0 +1,23 @@
+{
+  "preview_found": true,
+  "preview_path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01\\output\\preview\\preview_lowres.mp4",
+  "preview_gif_found": true,
+  "preview_gif_path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01\\output\\preview\\preview.gif",
+  "contact_sheet_found": true,
+  "contact_sheet_path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01\\output\\preview\\contact_sheet.jpg",
+  "frames_dir_found": true,
+  "frames_dir_path": "F:/ComfyUI/comfy-agent-mvp/data/rc2_multishot1_ep01\\output\\preview\\frames",
+  "total_frame_count": 720,
+  "unique_frame_count": 50,
+  "duplicate_frame_count": 670,
+  "duplicate_static_ratio": 0.9305555555555556,
+  "preview_duplicate_static_frames_detected": true,
+  "preview_continuity_passed": false,
+  "contact_sheet_useful": false,
+  "timeline_progression_proven": false,
+  "preview_path_mismatch_detected": false,
+  "expected_preview_path": "output/preview",
+  "actual_preview_path": "output/preview",
+  "blocker_required": true,
+  "audit_timestamp": "2026-05-09T16:41:17.083459+00:00"
+}

@@ -8,6 +8,22 @@
   "no_preview_render_transition": true,
   "no_assembly_transition": true,
   "no_downstream_transition": true,
+  "supervisory_agents": [
+    {
+      "agent_id": "script_supervisor_continuity_guard",
+      "state_inputs": ["preview_operator_review_required", "preview_artifacts_exist"],
+      "state_outputs": ["script_supervisor_audit_complete", "script_supervisor_blocker_active"],
+      "next_allowed_action": "script_supervisor_blocker_review_required",
+      "blocked_state_if_missing_input": "no_preview_artifacts",
+      "blocked_conditions": [
+        "no_preview_frames",
+        "no_operator_decision_artifacts",
+        "preview_continuity_failed"
+      ],
+      "blocker_can_block_pipeline": true,
+      "read_only_auditor": true
+    }
+  ],
   "agents": [
     {
       "agent_id": "brief_intake_agent",

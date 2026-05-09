@@ -3,6 +3,28 @@
   "description": "Execution behavior matrix for Combine V2 core agents — registry layer (no execution)",
   "agents": [
     {
+      "agent_id": "script_supervisor_continuity_guard",
+      "safe_dry_run_actions": [
+        "audit_preview_continuity",
+        "detect_duplicate_frames",
+        "validate_contact_sheet",
+        "check_operator_decision_authenticity",
+        "record_voice_rejection",
+        "build_blocker_report"
+      ],
+      "apply_actions": [],
+      "dangerous_actions": [],
+      "runtime_execution_allowed": false,
+      "operator_gate_required": false,
+      "external_system_interaction_allowed": false,
+      "generation_forbidden": true,
+      "render_forbidden": true,
+      "voice_generation_forbidden": true,
+      "assembly_forbidden": true,
+      "downstream_forbidden": true
+    },
+
+    {
       "agent_id": "brief_intake_agent",
       "safe_dry_run_actions": ["parse_brief", "extract_characters", "set_project_profile"],
       "apply_actions": [],

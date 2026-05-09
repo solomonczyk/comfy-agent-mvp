@@ -3,6 +3,21 @@
   "description": "Master agent registry for the Combine V2 pipeline — all 17 core agents with metadata, gates, and integration dependencies.",
   "created_at": "2026-05-08T00:00:00Z",
   "production_accepted": false,
+  "film_crew_agents": [
+    {
+      "agent_id": "script_supervisor_continuity_guard",
+      "name": "ScriptSupervisorAgent",
+      "role": "Script Supervisor / Continuity Guard Agent",
+      "responsibility": "Read-only continuity auditor: detects duplicate/static frames, validates contact sheets, guards operator decisions, records voice rejection, blocks invalid pipeline progression",
+      "pipeline_order": 0,
+      "dry_run_supported": true,
+      "dangerous_actions": [],
+      "operator_gate_required": false,
+      "readiness_status": "registered",
+      "pipeline_layer": "film_crew_agent",
+      "next_integration_dependency": null
+    }
+  ],
   "agents": [
     {
       "agent_id": "brief_intake_agent",

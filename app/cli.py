@@ -13540,6 +13540,22 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-SCRIPT-SUPERVISOR-AGENT-INFRA-001 — combine-run-script-supervisor-audit subcommand
+    combine_script_supervisor_parser = subparsers.add_parser(
+        "combine-run-script-supervisor-audit",
+        help="Run Script Supervisor / Continuity Guard audit — safe read-only preview continuity check"
+    )
+    combine_script_supervisor_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_script_supervisor_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-0 — combine-run-stage subcommand
     combine_run_stage_parser = subparsers.add_parser("combine-run-stage", help="Run a Combine V2 orchestrator stage")
     combine_run_stage_parser.add_argument(
@@ -17502,6 +17518,8 @@ def main() -> int:
         return init_project(args)
     elif args.command == "combine-status":
         return combine_status(args)
+    elif args.command == "combine-run-script-supervisor-audit":
+        return combine_run_script_supervisor_audit(args)
     elif args.command == "combine-run":
         return combine_run(args)
     elif args.command == "combine-run-stage":
@@ -40649,6 +40667,62 @@ def combine_revalidate_generation_gate(args: argparse.Namespace) -> int:
         print(f"  Reason: {result.get('reason', '')}")
         print(f"  Generation Performed: {result.get('generation_performed', False)}")
         print(f"  Production Accepted: {result.get('production_accepted', False)}")
+
+    return 0
+
+
+def combine_run_script_supervisor_audit(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-SCRIPT-SUPERVISOR-AGENT-INFRA-001 — Run Script Supervisor continuity audit.
+
+    This command performs a read-only audit of preview continuity, operator decision
+    authenticity, and voice rejection state. It never renders, generates, or modifies
+    production artifacts.
+
+    Exit codes:
+    - 0: audit completed successfully
+    - 1: error or invalid args
+    """
+    from app.agents.film_crew.script_supervisor import ScriptSupervisorAgent
+
+    project_root = args.project_root
+    json_output = args.json
+
+    agent = ScriptSupervisorAgent(project_root)
+    audit_result = agent.run_audit()
+
+    # Write canonical artifacts
+    written = agent.write_all_artifacts(audit_result)
+
+    # Update index and ledger
+    agent.update_artifact_index(audit_result)
+    agent.update_episode_ledger(audit_result)
+
+    if json_output:
+        audit_result["artifacts_written"] = {k: v for k, v in written.items()}
+        print(json.dumps(audit_result, indent=2))
+    else:
+        preview = audit_result.get("preview_audit", {})
+        blocker = audit_result.get("blocker", {})
+        print("Script Supervisor / Continuity Guard Audit")
+        print(f"  Audit Timestamp: {audit_result.get('audit_timestamp', 'unknown')}")
+        print(f"  Preview Frames: {preview.get('total_frame_count', 0)}")
+        print(f"  Duplicate Frames: {preview.get('duplicate_frame_count', 0)}")
+        print(f"  Duplicate Ratio: {preview.get('duplicate_static_ratio', 0):.1%}")
+        print(f"  Contact Sheet Useful: {preview.get('contact_sheet_useful', False)}")
+        print(f"  Path Mismatch Detected: {preview.get('preview_path_mismatch_detected', False)}")
+        print(f"  Blocker Detected: {blocker.get('blocker_detected', False)}")
+        print(f"  Blocker Type: {blocker.get('blocker_type', 'none')}")
+        print(f"  Voice Generation Allowed: {blocker.get('voice_generation_allowed', False)}")
+        print(f"  Assembly Allowed: {blocker.get('assembly_allowed', False)}")
+        print(f"  Downstream Allowed: {blocker.get('downstream_allowed', False)}")
+        print(f"  Production Accepted: {blocker.get('production_accepted', False)}")
+        print(f"  Next Allowed Action: {blocker.get('recommended_next_allowed_action', 'unknown')}")
+        print(f"  Artifacts Written:")
+        for name, path in written.items():
+            print(f"    - {name}: {path}")
+        print(f"  Blocking Details:")
+        for detail in blocker.get("blocking_details", []):
+            print(f"    - {detail}")
 
     return 0
 

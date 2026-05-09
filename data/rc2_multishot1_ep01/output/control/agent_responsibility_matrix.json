@@ -1,0 +1,92 @@
+{
+  "version": "1.0.0",
+  "description": "Agent Responsibility Matrix — maps responsibilities to agent ownership",
+  "responsibilities": [
+    {
+      "responsibility": "pipeline state machine control and enforcement",
+      "primary_owner": "orchestrator_pipeline_controller",
+      "allowed_agents": ["orchestrator_pipeline_controller"]
+    },
+    {
+      "responsibility": "creative brief intake and character extraction",
+      "primary_owner": "brief_intake_agent",
+      "allowed_agents": ["brief_intake_agent"]
+    },
+    {
+      "responsibility": "episode and shot planning",
+      "primary_owner": "shot_planner_agent",
+      "allowed_agents": ["shot_planner_agent", "director_planner_agent"]
+    },
+    {
+      "responsibility": "workflow authoring and validation",
+      "primary_owner": "workflow_authoring_agent",
+      "allowed_agents": ["workflow_authoring_agent", "workflow_validation_agent"]
+    },
+    {
+      "responsibility": "asset resolution and acquisition",
+      "primary_owner": "asset_resolver_agent",
+      "allowed_agents": ["asset_resolver_agent"]
+    },
+    {
+      "responsibility": "generation execution",
+      "primary_owner": "generation_executor_agent",
+      "allowed_agents": ["generation_executor_agent"],
+      "operator_gate_required": true
+    },
+    {
+      "responsibility": "visual quality assessment",
+      "primary_owner": "visual_qa_agent",
+      "allowed_agents": ["visual_qa_agent"],
+      "operator_gate_required": true
+    },
+    {
+      "responsibility": "correction and retry planning",
+      "primary_owner": "correction_planner_agent",
+      "allowed_agents": ["correction_planner_agent"]
+    },
+    {
+      "responsibility": "editorial timeline and asset preparation",
+      "primary_owner": "editorial_timeline_agent",
+      "allowed_agents": ["editorial_timeline_agent", "subtitle_agent", "transition_agent"]
+    },
+    {
+      "responsibility": "voice casting and preparation",
+      "primary_owner": "voice_casting_agent",
+      "allowed_agents": ["voice_casting_agent"]
+    },
+    {
+      "responsibility": "preview render and proof",
+      "primary_owner": "preview_render_agent",
+      "allowed_agents": ["preview_render_agent"],
+      "operator_gate_required": true
+    },
+    {
+      "responsibility": "assembly and production acceptance",
+      "primary_owner": "assembly_agent",
+      "allowed_agents": ["assembly_agent", "production_acceptance_agent"],
+      "operator_gate_required": true
+    },
+    {
+      "responsibility": "preview continuity audit and static frame detection",
+      "primary_owner": "script_supervisor_continuity_guard",
+      "allowed_agents": ["script_supervisor_continuity_guard"]
+    },
+    {
+      "responsibility": "operator decision authenticity guard",
+      "primary_owner": "script_supervisor_continuity_guard",
+      "allowed_agents": ["script_supervisor_continuity_guard"]
+    },
+    {
+      "responsibility": "voice rejection reconciliation and blocking",
+      "primary_owner": "script_supervisor_continuity_guard",
+      "allowed_agents": ["script_supervisor_continuity_guard"]
+    },
+    {
+      "responsibility": "pipeline blocker detection and reporting",
+      "primary_owner": "script_supervisor_continuity_guard",
+      "allowed_agents": ["script_supervisor_continuity_guard", "orchestrator_pipeline_controller"]
+    }
+  ],
+  "created_timestamp": "2026-05-09T00:00:00+00:00",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-AGENT-INFRA-001"
+}

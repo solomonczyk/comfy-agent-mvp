@@ -1,0 +1,25 @@
+{
+  "voice_status": "operator_rejected",
+  "voice_generation_ready": false,
+  "voice_generation_allowed": false,
+  "voice_stage_allowed": false,
+  "audio_stage_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "operator_decision_verified": false,
+  "operator_decision_source": "no_real_operator_decision",
+  "rejection_timestamp": "2026-05-09T16:41:17.745462+00:00",
+  "blocking_artifacts": [
+    "post_preview_routing_decision.json",
+    "post_preview_operator_decision_reconciliation.json",
+    "post_preview_stage_blocker.json",
+    "post_preview_stage_proof.json"
+  ],
+  "notes": [
+    "Voice generation is blocked: no valid human operator decision exists",
+    "accepted_for_voice_stage was agent-generated and has been invalidated",
+    "voice_generation_ready flag remains false",
+    "All downstream voice/audio/assembly steps are blocked until a real operator decision is recorded"
+  ]
+}

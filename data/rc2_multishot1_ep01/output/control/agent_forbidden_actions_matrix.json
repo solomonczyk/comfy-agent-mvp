@@ -1,0 +1,66 @@
+{
+  "version": "1.0.0",
+  "description": "Forbidden actions matrix for ALL agents — core + film crew. Script Supervisor is the first vertical film crew agent.",
+  "global_forbidden_actions": {
+    "generation": {"gate": "manual_controlled_gate", "enforcement": "blocked_for_audit_agents", "responsible_agents": ["generation_executor_agent"]},
+    "retry": {"gate": "manual_controlled_gate", "enforcement": "requires_operator_authorization", "responsible_agents": ["correction_planner_agent"]},
+    "visual_acceptance": {"gate": "operator_only", "enforcement": "operator_must_approve", "responsible_agents": ["visual_qa_agent"]},
+    "preview_render": {"gate": "manual_controlled_gate", "enforcement": "blocked_for_audit_agents", "responsible_agents": ["preview_render_agent"]},
+    "voice_generation": {"gate": "manual_controlled_gate", "enforcement": "blocked_for_audit_agents", "responsible_agents": ["voice_casting_agent"]},
+    "assembly": {"gate": "manual_controlled_gate", "enforcement": "blocked_for_audit_agents", "responsible_agents": ["assembly_agent"]},
+    "downstream": {"gate": "manual_controlled_gate", "enforcement": "blocked_for_audit_agents", "responsible_agents": ["assembly_agent", "production_acceptance_agent"]},
+    "production_accepted_true": {"gate": "operator_only", "enforcement": "only_production_acceptance_agent_can_set", "responsible_agents": ["production_acceptance_agent"]},
+    "comfyui_submit": {"gate": "manual_controlled_gate", "enforcement": "blocked_for_audit_agents", "responsible_agents": ["generation_executor_agent"]}
+  },
+  "per_agent_forbidden_actions": {
+    "script_supervisor_continuity_guard": {
+      "forbidden_actions": [
+        "generation", "retry", "comfyui_submit", "preview_render",
+        "voice_generation", "visual_acceptance", "operator_acceptance",
+        "assembly", "downstream", "production_accepted_true", "model_download_install"
+      ],
+      "enforcement": "blocked_in_agent_contract — agent may never generate, render, submit, accept, or assemble",
+      "additional_rules": [
+        "agent must NOT create accepted_for_voice_stage as operator decision",
+        "agent must NOT set voice_generation_ready=true without real operator decision",
+        "agent must NOT set production_accepted=true",
+        "agent must NOT execute ComfyUI submit",
+        "agent must NOT render preview or generate voice"
+      ]
+    },
+    "brief_intake_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "workflow_authoring", "quality_assessment"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "visual_qa_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "accept_production", "bypass_operator_review"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "generation_executor_agent": {
+      "forbidden_actions": ["retry_without_authorization", "modify_workflow_during_execution", "skip_output_collection"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "editorial_timeline_agent": {
+      "forbidden_actions": ["preview_render", "final_render", "assembly", "voice_generation"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "voice_casting_agent": {
+      "forbidden_actions": ["voice_generation", "audio_render", "final_audio_assembly", "bypass_operator_review"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "preview_render_agent": {
+      "forbidden_actions": ["final_render", "production_render", "assembly", "downstream", "production_acceptance"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "assembly_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "production_acceptance", "bypass_operator_authorization"],
+      "enforcement": "blocked_in_registry_layer"
+    },
+    "production_acceptance_agent": {
+      "forbidden_actions": ["generation", "comfyui_submit", "assembly", "preview_render", "downstream"],
+      "enforcement": "blocked_in_registry_layer"
+    }
+  },
+  "created_timestamp": "2026-05-09T00:00:00+00:00",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-AGENT-INFRA-001"
+}

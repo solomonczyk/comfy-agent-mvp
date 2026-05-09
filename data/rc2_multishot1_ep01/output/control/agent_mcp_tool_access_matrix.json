@@ -1,0 +1,80 @@
+{
+  "version": "1.0.0",
+  "description": "MCP Tool Access Matrix — maps agents to MCP tool access levels (allowed, denied, allowed_readonly)",
+  "agents": {
+    "script_supervisor_continuity_guard": {
+      "filesystem.read": "allowed",
+      "filesystem.write": "denied",
+      "json.parse": "allowed",
+      "json.write": "denied",
+      "preview.read_metadata": "allowed",
+      "preview.read_frames": "allowed",
+      "timeline.read": "allowed",
+      "cli.execute_safe": "allowed",
+      "cli.execute_unsafe": "denied",
+      "comfyui.submit": "denied",
+      "comfyui.status": "allowed_readonly",
+      "voice.generate": "denied",
+      "audio.render": "denied",
+      "assembly.execute": "denied",
+      "downstream.execute": "denied",
+      "operator.decision_read": "allowed",
+      "operator.decision_write": "denied",
+      "production.accept": "denied",
+      "model.install": "denied",
+      "model.download": "denied"
+    },
+    "orchestrator_pipeline_controller": {
+      "filesystem.read": "allowed",
+      "filesystem.write": "allowed",
+      "json.parse": "allowed",
+      "json.write": "allowed",
+      "comfyui.status": "allowed_readonly",
+      "cli.execute_safe": "allowed",
+      "cli.execute_unsafe": "denied",
+      "comfyui.submit": "denied",
+      "voice.generate": "denied",
+      "assembly.execute": "denied",
+      "downstream.execute": "denied",
+      "production.accept": "denied"
+    },
+    "brief_intake_agent": {
+      "filesystem.read": "allowed",
+      "filesystem.write": "allowed",
+      "json.parse": "allowed",
+      "json.write": "allowed",
+      "cli.execute_safe": "allowed",
+      "cli.execute_unsafe": "denied",
+      "comfyui.submit": "denied",
+      "voice.generate": "denied",
+      "assembly.execute": "denied",
+      "downstream.execute": "denied",
+      "production.accept": "denied"
+    },
+    "visual_qa_agent": {
+      "filesystem.read": "allowed",
+      "filesystem.write": "allowed",
+      "json.parse": "allowed",
+      "json.write": "allowed",
+      "preview.read_frames": "allowed",
+      "cli.execute_safe": "allowed",
+      "cli.execute_unsafe": "denied",
+      "comfyui.submit": "denied",
+      "production.accept": "denied"
+    },
+    "generation_executor_agent": {
+      "filesystem.read": "allowed",
+      "filesystem.write": "allowed",
+      "json.parse": "allowed",
+      "json.write": "allowed",
+      "comfyui.submit": "allowed",
+      "comfyui.status": "allowed",
+      "cli.execute_safe": "allowed",
+      "cli.execute_unsafe": "denied",
+      "production.accept": "denied"
+    }
+  },
+  "global_default": "denied",
+  "created_timestamp": "2026-05-09T00:00:00+00:00",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-AGENT-INFRA-001"
+}

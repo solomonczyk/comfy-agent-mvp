@@ -24,8 +24,21 @@
   "assembly_executed": false,
   "downstream_executed": false,
   "production_accepted": false,
-  "total_agents_registered": 17,
-  "total_contracts_created": 17,
+  "film_crew_layer_implemented": true,
+  "film_crew_agents_registered": [
+    "script_supervisor_continuity_guard"
+  ],
+  "script_supervisor_agent_created": true,
+  "script_supervisor_contract_created": true,
+  "script_supervisor_preview_audit_implemented": true,
+  "script_supervisor_operator_decision_guard_implemented": true,
+  "script_supervisor_voice_rejection_recorded": true,
+  "script_supervisor_blocker_implemented": true,
+  "film_crew_agent_contracts_created": [
+    "script_supervisor_agent_contract.json"
+  ],
+  "total_agents_registered": 18,
+  "total_contracts_created": 18,
   "total_agents_with_operator_gate": 5,
   "total_dangerous_actions_mapped": 9,
   "registered_agents": [
@@ -45,7 +58,8 @@
     "voice_casting_agent",
     "preview_render_agent",
     "assembly_agent",
-    "production_acceptance_agent"
+    "production_acceptance_agent",
+    "script_supervisor_continuity_guard"
   ],
   "gated_agents": [
     "generation_executor_agent",
@@ -90,7 +104,15 @@
     "agents/contracts/voice_casting_agent.json",
     "agents/contracts/preview_render_agent.json",
     "agents/contracts/assembly_agent.json",
-    "agents/contracts/production_acceptance_agent.json"
+    "agents/contracts/production_acceptance_agent.json",
+    "script_supervisor_agent_contract.json",
+    "script_supervisor_preview_audit_report.json",
+    "script_supervisor_blocker_report.json",
+    "voice_rejection_record.json",
+    "post_preview_reconciliation_report.json",
+    "agent_responsibility_matrix.json",
+    "agent_mcp_tool_access_matrix.json",
+    "film_crew_roles.json"
   ],
   "current_state": "agent_registry_operator_review_required",
   "next_allowed_action": "agent_registry_operator_review_required",

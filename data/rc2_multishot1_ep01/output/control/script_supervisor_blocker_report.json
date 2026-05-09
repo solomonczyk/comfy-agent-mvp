@@ -1,0 +1,23 @@
+{
+  "blocker_detected": true,
+  "blocker_type": "invalid_static_preview_and_rejected_voice",
+  "preview_valid": false,
+  "preview_reason": "duplicate_static_frames_detected",
+  "contact_sheet_useful": false,
+  "voice_status": "operator_rejected",
+  "fake_operator_decision_valid": false,
+  "voice_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "fake_success_prevented": true,
+  "recommended_next_allowed_action": "preview_correction_plan_required",
+  "blocking_details": [
+    "Preview contains 670 duplicate/static frames (93.1% duplication rate)",
+    "Contact sheet does not prove timeline progression (duplicate frames)",
+    "Agent-generated operator decision has been invalidated",
+    "Voice stage was rejected by operator context; no re-authorization",
+    "All voice/assembly/downstream steps are blocked"
+  ],
+  "timestamp": "2026-05-09T16:41:17.745462+00:00"
+}

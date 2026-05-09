@@ -1,6 +1,6 @@
 {
   "current_state": "preview_operator_review_required",
-  "next_allowed_action": "preview_operator_review_required",
+  "next_allowed_action": "preview_correction_plan_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -788,5 +788,17 @@
   "preview_operator_delivery_blocker_created": false,
   "preview_artifact_delivery_reconciliation_created": true,
   "operator_review_ready": true,
-  "preview_artifacts_found": true
+  "preview_artifacts_found": true,
+  "script_supervisor_agent_created": true,
+  "script_supervisor_audit_executed": true,
+  "script_supervisor_audit_timestamp": "2026-05-09T16:41:17.745462+00:00",
+  "script_supervisor_blocker_active": true,
+  "script_supervisor_blocker_type": "invalid_static_preview_and_rejected_voice",
+  "preview_valid": false,
+  "contact_sheet_useful": false,
+  "fake_success_prevented": true,
+  "agent_responsibility_matrix_created": true,
+  "agent_mcp_tool_access_matrix_created": true,
+  "film_crew_roles_created": true,
+  "film_crew_layer_implemented": true
 }

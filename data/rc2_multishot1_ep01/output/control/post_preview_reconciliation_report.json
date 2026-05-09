@@ -1,0 +1,23 @@
+{
+  "reconciliation_type": "post_preview_state_reconciliation",
+  "preview_valid": false,
+  "preview_reason": "duplicate_static_frames_detected",
+  "contact_sheet_useful": false,
+  "contact_sheet_reason": "static_or_identical_frames",
+  "preview_path_mismatched": false,
+  "preview_path_mismatch_detail": "no mismatch",
+  "fake_operator_decision_detected": true,
+  "fake_operator_decision_invalidated": true,
+  "operator_decision_source": null,
+  "voice_rejected": true,
+  "voice_rejection_recorded": true,
+  "voice_generation_allowed": false,
+  "voice_generation_ready": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "next_safe_action": "preview_correction_plan_required",
+  "blocker_detected": true,
+  "blocker_type": "invalid_static_preview_and_rejected_voice",
+  "timestamp": "2026-05-09T16:41:17.745462+00:00"
+}
