@@ -12584,6 +12584,60 @@ def combine_timeline_to_preview_package(args: argparse.Namespace) -> int:
     return 0 if result.get("status") == "ok" else 1
 
 
+def combine_controlled_preview_render(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-CONTROLLED-PREVIEW-RENDER-001 — Controlled Preview Render Gate.
+
+    Validates preview render authorization, executes exactly one preview render
+    creating preview_lowres.mp4, preview.gif, and contact_sheet.jpg, validates
+    all artifacts, and routes to operator preview review.
+
+    No voice generation, assembly, downstream, or production acceptance.
+    """
+    from app.timeline.controlled_preview_render import run_controlled_preview_render
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = run_controlled_preview_render(project_root=project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        status = result.get("status", "error")
+        branch = result.get("selected_branch", "unknown")
+
+        if status == "accepted_with_blockers":
+            print(f"Preview Render Gate: BLOCKED")
+            print(f"  Reason: {result.get('message', 'Authorization missing or invalid')}")
+            print(f"  State: {result.get('current_state')}")
+            print(f"  Next Action: {result.get('next_allowed_action')}")
+            return 0  # Honest blocker, not an error
+
+        if status == "error":
+            print(f"ERROR: {result.get('message', 'Preview render failed')}")
+            print(f"  Branch: {branch}")
+            print(f"  State: {result.get('current_state')}")
+            return 1
+
+        print("Controlled Preview Render: OK")
+        print(f"  Branch: {branch}")
+        print(f"  State: {result.get('current_state')}")
+        print(f"  Next Action: {result.get('next_allowed_action')}")
+        print(f"  Preview Render Executed: {result.get('preview_render_executed')}")
+        print(f"  Preview Render Count: {result.get('preview_render_count')}")
+        print(f"  Production Accepted: {result.get('production_accepted')}")
+        print()
+        print("Preview Artifacts:")
+        for name, path in result.get("artifacts", {}).items():
+            print(f"  {name}: {path}")
+        print()
+        print("Forbidden Actions:")
+        for action, allowed in result.get("forbidden_actions", {}).items():
+            print(f"  {action}: {allowed}")
+
+    return 0 if result.get("status") == "ok" else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -16492,6 +16546,18 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-CONTROLLED-PREVIEW-RENDER-001 — Controlled Preview Render Gate
+    combine_controlled_preview_render_parser = subparsers.add_parser(
+        "combine-controlled-preview-render",
+        help="Controlled preview render gate: authorization, render, validate, and route to operator review",
+    )
+    combine_controlled_preview_render_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_controlled_preview_render_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-46001-54000 — Agent Registry CLI commands
     combine_build_agent_registry_parser = subparsers.add_parser(
         "combine-build-agent-registry",
@@ -17100,6 +17166,9 @@ def main() -> int:
     elif args.command == "combine-timeline-to-preview-package":
         _require_absolute_project_root(args, "combine-timeline-to-preview-package")
         return combine_timeline_to_preview_package(args)
+    elif args.command == "combine-controlled-preview-render":
+        _require_absolute_project_root(args, "combine-controlled-preview-render")
+        return combine_controlled_preview_render(args)
     elif args.command == "combine-build-agent-registry":
         _require_absolute_project_root(args, "combine-build-agent-registry")
         return combine_build_agent_registry(args)

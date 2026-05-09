@@ -1,0 +1,12 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RENDER-001",
+  "preview_artifacts_valid": true,
+  "preview_lowres_valid": true,
+  "preview_gif_valid": true,
+  "contact_sheet_valid": true,
+  "operator_review_required": true,
+  "production_accepted": false,
+  "errors": [],
+  "warnings": [],
+  "timestamp": "2026-05-09T08:12:16.057635+00:00"
+}

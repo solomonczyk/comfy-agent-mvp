@@ -156,6 +156,11 @@ class CombineStateMachine:
         # RC-COMBINE-V2-TIMELINE-TO-PREVIEW-001: Timeline-to-Preview package
         "timeline_to_preview_package_required",
         "preview_render_authorization_required",
+
+        # RC-COMBINE-V2-CONTROLLED-PREVIEW-RENDER-001: Controlled Preview Render
+        "preview_operator_review_required",
+        "preview_render_blocked",
+        "preview_render_blocker_review_required",
     ]
     
     # Terminal states
@@ -557,6 +562,18 @@ class CombineStateMachine:
             "blocked_manual_review",
         },
         "preview_render_authorization_required": {
+            "blocked_manual_review",
+            "preview_operator_review_required",
+            "preview_render_blocked",
+        },
+        "preview_operator_review_required": {
+            "blocked_manual_review",
+        },
+        "preview_render_blocked": {
+            "preview_render_blocker_review_required",
+            "blocked_manual_review",
+        },
+        "preview_render_blocker_review_required": {
             "blocked_manual_review",
         },
         "visual_correction_required": {
@@ -1081,6 +1098,26 @@ class CombineStateMachine:
         ("preview_render_authorization_required", "assembly_preflight_required"),
         ("preview_render_authorization_required", "final_qc_required"),
         ("preview_render_authorization_required", "final_operator_acceptance"),
+
+        # RC-COMBINE-V2-CONTROLLED-PREVIEW-RENDER-001: Forbidden transitions from preview states
+        ("preview_operator_review_required", "generate_assets"),
+        ("preview_operator_review_required", "real_generate_assets"),
+        ("preview_operator_review_required", "visual_qa_required"),
+        ("preview_operator_review_required", "completed"),
+        ("preview_operator_review_required", "production_accepted"),
+        ("preview_operator_review_required", "assembly_required"),
+        ("preview_operator_review_required", "assembly_preflight_required"),
+        ("preview_operator_review_required", "final_qc_required"),
+        ("preview_operator_review_required", "final_operator_acceptance"),
+        ("preview_render_blocked", "generate_assets"),
+        ("preview_render_blocked", "real_generate_assets"),
+        ("preview_render_blocked", "visual_qa_required"),
+        ("preview_render_blocked", "completed"),
+        ("preview_render_blocked", "production_accepted"),
+        ("preview_render_blocked", "assembly_required"),
+        ("preview_render_blocked", "assembly_preflight_required"),
+        ("preview_render_blocked", "final_qc_required"),
+        ("preview_render_blocked", "final_operator_acceptance"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),

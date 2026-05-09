@@ -1,0 +1,14 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RENDER-001",
+  "operator_authorized": true,
+  "preview_render_authorized": true,
+  "max_preview_renders": 1,
+  "source_timeline": "data/rc2_multishot1_ep01/output/control/timeline_model.json",
+  "preview_proof_contract": "data/rc2_multishot1_ep01/output/control/preview_proof_contract.json",
+  "voice_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "final_render_allowed": false,
+  "stop_after_preview_result_review": true
+}
