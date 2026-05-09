@@ -1,0 +1,13 @@
+{
+  "decision_source": "human_operator",
+  "operator_review_performed": true,
+  "visual_review_performed_by_operator": true,
+  "operator_verdict": "needs_manual_review",
+  "reviewed_artifacts": [
+    "preview_lowres.mp4",
+    "preview.gif",
+    "contact_sheet.jpg"
+  ],
+  "operator_notes": "Preview ep01_shot01 потребує додаткового ручного аналізу для окремих елементів.",
+  "decision_timestamp": "2026-05-09T13:44:43+02:00"
+}
