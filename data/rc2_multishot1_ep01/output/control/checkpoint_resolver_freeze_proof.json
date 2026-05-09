@@ -1,0 +1,31 @@
+{
+  "task_id": "RC-COMBINE-V2-98001-99000-FREEZE",
+  "previous_task_id": "RC-COMBINE-V2-98001-99000",
+  "freeze_verified": true,
+  "resolver_scan_paths_fixed": true,
+  "real_comfyui_portable_path_checked": true,
+  "local_checkpoints_found": true,
+  "found_checkpoints": [
+    "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+    "juggernautXL_version2.safetensors",
+    "realvisxlV50_v50Bakedvae.safetensors",
+    "sd_xl_base_1.0_0.9vae.safetensors"
+  ],
+  "checkpoint_sdxl_base_mapping_checked": true,
+  "sd_xl_base_1.0_0.9vae_candidate_detected": true,
+  "previous_acquisition_required_retracted_or_corrected": true,
+  "generation_gate_revalidated": true,
+  "download_performed": false,
+  "install_performed": false,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "commit_hash": "f8fa1131096f1c4348cb093c989e300a6386dbfc",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": false,
+  "next_layer": "RC-COMBINE-V2-99001-102000 Controlled Generation Authorization and Single Execution Gate",
+  "timestamp": "2026-05-09T05:07:49.162348+00:00"
+}

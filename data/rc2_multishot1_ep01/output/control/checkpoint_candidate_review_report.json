@@ -1,13 +1,68 @@
 {
   "task_id": "RC-COMBINE-V2-94001-98000",
   "candidate_assets_reviewed": true,
-  "candidates": [],
+  "candidates": [
+    {
+      "file_name": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "file_size_bytes": 6938040866,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "juggernautXL_version2.safetensors",
+      "file_size_bytes": 6938040706,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "realvisxlV50_v50Bakedvae.safetensors",
+      "file_size_bytes": 6938065488,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "sd_xl_base_1.0_0.9vae.safetensors",
+      "file_size_bytes": 6938078334,
+      "detected_type": "sdxl"
+    }
+  ],
   "rejected_candidates": [],
-  "valid_candidates": [],
+  "valid_candidates": [
+    {
+      "file_name": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "file_size_bytes": 6938040866,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "juggernautXL_version2.safetensors",
+      "file_size_bytes": 6938040706,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "realvisxlV50_v50Bakedvae.safetensors",
+      "file_size_bytes": 6938065488,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "sd_xl_base_1.0_0.9vae.safetensors",
+      "file_size_bytes": 6938078334,
+      "detected_type": "sdxl"
+    }
+  ],
   "requires_operator_review": false,
-  "exact_match_available": false,
+  "exact_match_available": true,
+  "exact_match": {
+    "file_name": "sd_xl_base_1.0_0.9vae.safetensors",
+    "file_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\models\\checkpoints\\sd_xl_base_1.0_0.9vae.safetensors",
+    "file_size_bytes": 6938078334,
+    "match_type": "acceptable_local_candidate_found"
+  },
+  "acceptable_match_available": true,
+  "acceptable_match": {
+    "file_name": "sd_xl_base_1.0_0.9vae.safetensors",
+    "file_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\models\\checkpoints\\sd_xl_base_1.0_0.9vae.safetensors",
+    "file_size_bytes": 6938078334,
+    "match_type": "acceptable_local_candidate_found"
+  },
   "substitution_candidate_available": false,
-  "no_candidates_found": true,
-  "reason": "No SDXL-compatible checkpoints found in local inventory",
-  "timestamp": "2026-05-08T16:33:59.236167+00:00"
+  "no_candidates_found": false,
+  "reason": "Acceptable SDXL checkpoint candidate found: sd_xl_base_1.0_0.9vae.safetensors (mapped via checkpoint_sdxl_base)",
+  "timestamp": "2026-05-08T16:55:08.493729+00:00"
 }

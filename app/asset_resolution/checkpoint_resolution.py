@@ -149,6 +149,28 @@ RESOLUTION_LOCAL_CANDIDATE = "local_candidate_operator_review_required"
 RESOLUTION_ACQUISITION_REQUIRED = "acquisition_required"
 RESOLUTION_UNRESOLVED_BLOCKER = "unresolved_blocker"
 
+# Fine-grained status values (RC-COMBINE-V2-98001-99000)
+STATUS_EXACT_MATCH_FOUND = "exact_match_found"
+STATUS_ACCEPTABLE_LOCAL_CANDIDATE = "acceptable_local_candidate_found"
+STATUS_CANDIDATE_REQUIRES_REVIEW = "candidate_requires_operator_review"
+STATUS_ACQUISITION_REQUIRED = "acquisition_required"
+
+# Canonical exact-match filenames for checkpoint_sdxl_base
+# RC-COMBINE-V2-98001-99000: strict exact match = file named sd_xl_base_1.0
+CANONICAL_CHECKPOINT_NAMES = [
+    "sd_xl_base_1.0.safetensors",
+    "sd_xl_base_1.0_fp16.safetensors",
+]
+
+# Acceptable local candidates — files that can resolve checkpoint_sdxl_base
+# even when they are not the canonical exact name.
+# RC-COMBINE-V2-98001-99000: mapping logical_asset_id → known acceptable files
+ACCEPTABLE_CANDIDATE_NAMES = {
+    "checkpoint_sdxl_base": [
+        "sd_xl_base_1.0_0.9vae.safetensors",
+    ],
+}
+
 
 def _read_blocker_artifacts(project_root: str) -> Dict[str, Any]:
     """Read existing blocker-related artifacts.
@@ -220,8 +242,16 @@ def _find_missing_checkpoint(artifacts: Dict[str, Any]) -> Optional[str]:
 
 def _find_comfyui_root() -> Optional[Path]:
     """Try to locate ComfyUI root relative to the project or common locations."""
+    # Known portable ComfyUI installation path (RC-COMBINE-V2-98001-99000)
+    portable_root = (
+        Path("F:/ComfyUI/comfyUI_portable_inst/ComfyUI_windows_portable_nvidia_cu126")
+        / "ComfyUI_windows_portable"
+        / "ComfyUI"
+    )
+
     # Check common relative paths
     candidates = [
+        portable_root,
         Path("F:/ComfyUI"),
         Path("C:/ComfyUI"),
         Path("D:/ComfyUI"),
@@ -364,14 +394,45 @@ def scan_local_checkpoint_inventory(project_root: str) -> Dict[str, Any]:
         elif ckpt_type in ("sdxl", "sdxl_suspect"):
             valid_candidates.append(entry)
 
-    # Check for exact match — must be named sd_xl_base (not just any sd_xl variant)
+    # Check for exact match and acceptable match (RC-COMBINE-V2-98001-99000)
+    # Use canonical name list first, then acceptable mapping
     exact_match = None
-    for c in sdxl_found:
-        name = c.get("file_name", "").lower().replace("_", " ").replace("-", " ")
-        tokens = name.split()
-        if "sd" in tokens and "xl" in tokens and "base" in tokens:
-            exact_match = c
+    acceptable_match = None
+    for sdxl_entry in sdxl_found:
+        fname = sdxl_entry.get("file_name", "").lower()
+        if fname in [n.lower() for n in CANONICAL_CHECKPOINT_NAMES]:
+            exact_match = sdxl_entry
             break
+
+    if exact_match is None:
+        acceptable_names = [
+            n.lower() for n in ACCEPTABLE_CANDIDATE_NAMES.get("checkpoint_sdxl_base", [])
+        ]
+        for sdxl_entry in sdxl_found:
+            fname = sdxl_entry.get("file_name", "").lower()
+            if fname in acceptable_names:
+                acceptable_match = sdxl_entry
+                break
+
+    # Fallback: token-based heuristic for any file containing sd/xl/base
+    if exact_match is None and acceptable_match is None:
+        for c in sdxl_found:
+            name = c.get("file_name", "").lower().replace("_", " ").replace("-", " ")
+            tokens = name.split()
+            if "sd" in tokens and "xl" in tokens and "base" in tokens:
+                exact_match = c
+                break
+
+    # Build the match entry shown in the inventory
+    match_entry = exact_match or acceptable_match
+
+    # Determine fine-grained resolution_status
+    if exact_match:
+        sdxl_match_status = STATUS_EXACT_MATCH_FOUND
+    elif acceptable_match:
+        sdxl_match_status = STATUS_ACCEPTABLE_LOCAL_CANDIDATE
+    else:
+        sdxl_match_status = None  # determined later in resolution decision
 
     inventory = {
         "task_id": TASK_ID,
@@ -390,11 +451,19 @@ def scan_local_checkpoint_inventory(project_root: str) -> Dict[str, Any]:
             for c in sdxl_found
         ],
         "sdxl_exact_match_found": exact_match is not None,
+        "sdxl_acceptable_match_found": acceptable_match is not None,
         "sdxl_exact_match": {
             "file_name": exact_match["file_name"],
             "file_path": exact_match["file_path"],
             "file_size_bytes": exact_match["file_size_bytes"],
+            "match_type": STATUS_EXACT_MATCH_FOUND,
         } if exact_match else None,
+        "sdxl_acceptable_match": {
+            "file_name": acceptable_match["file_name"],
+            "file_path": acceptable_match["file_path"],
+            "file_size_bytes": acceptable_match["file_size_bytes"],
+            "match_type": STATUS_ACCEPTABLE_LOCAL_CANDIDATE,
+        } if acceptable_match else None,
         "sd15_found": [
             {"file_name": c["file_name"], "file_size_bytes": c["file_size_bytes"]}
             for c in sd15_found
@@ -416,6 +485,12 @@ def scan_local_checkpoint_inventory(project_root: str) -> Dict[str, Any]:
         "total_checkpoints_found": len(found_checkpoints),
         "total_valid_candidates": len(valid_candidates),
         "total_rejected": len(rejected),
+        "sdxl_match_status": sdxl_match_status,
+        "checkpoint_mapping": {
+            "logical_asset_id": EXPECTED_CHECKPOINT_ASSET,
+            "canonical_filenames": CANONICAL_CHECKPOINT_NAMES,
+            "acceptable_candidates": ACCEPTABLE_CANDIDATE_NAMES.get(EXPECTED_CHECKPOINT_ASSET, []),
+        },
         "timestamp": _utcnow(),
     }
 
@@ -452,8 +527,11 @@ def evaluate_checkpoint_candidates(
             "timestamp": _utcnow(),
         }
 
-    # Check for exact match
+    # Check for exact or acceptable match
+    # RC-COMBINE-V2-98001-99000: acceptable_local_candidate_found resolves without review
     exact_match = inventory.get("sdxl_exact_match")
+    acceptable_match = inventory.get("sdxl_acceptable_match")
+
     if exact_match:
         return {
             "task_id": TASK_ID,
@@ -464,9 +542,28 @@ def evaluate_checkpoint_candidates(
             "requires_operator_review": False,
             "exact_match_available": True,
             "exact_match": exact_match,
+            "acceptable_match_available": False,
             "substitution_candidate_available": False,
             "no_candidates_found": False,
             "reason": f"Exact SDXL checkpoint found: {exact_match['file_name']}",
+            "timestamp": _utcnow(),
+        }
+
+    if acceptable_match:
+        return {
+            "task_id": TASK_ID,
+            "candidate_assets_reviewed": True,
+            "candidates": candidates,
+            "rejected_candidates": rejected,
+            "valid_candidates": candidates,
+            "requires_operator_review": False,
+            "exact_match_available": True,  # treat as resolved
+            "exact_match": acceptable_match,
+            "acceptable_match_available": True,
+            "acceptable_match": acceptable_match,
+            "substitution_candidate_available": False,
+            "no_candidates_found": False,
+            "reason": f"Acceptable SDXL checkpoint candidate found: {acceptable_match['file_name']} (mapped via checkpoint_sdxl_base)",
             "timestamp": _utcnow(),
         }
 
@@ -657,20 +754,49 @@ def _build_resolution_decision(
     requires_operator: bool,
 ) -> Dict[str, Any]:
     """Build the checkpoint resolution decision artifact."""
+    # Determine fine-grained status (RC-COMBINE-V2-98001-99000)
+    if branch == RESOLUTION_EXACT_AVAILABLE:
+        # Check if it is a canonical exact match or acceptable candidate
+        matched_entry = inventory.get("sdxl_exact_match") or inventory.get("sdxl_acceptable_match")
+        matched_name = (matched_entry or {}).get("file_name", "")
+        is_acceptable = bool(inventory.get("sdxl_acceptable_match"))
+        if is_acceptable:
+            resolution_status = STATUS_ACCEPTABLE_LOCAL_CANDIDATE
+        else:
+            resolution_status = STATUS_EXACT_MATCH_FOUND
+    elif branch == RESOLUTION_LOCAL_CANDIDATE:
+        resolution_status = STATUS_CANDIDATE_REQUIRES_REVIEW
+    else:
+        resolution_status = STATUS_ACQUISITION_REQUIRED
+
     return {
         "task_id": TASK_ID,
         "resolution_branch": branch,
+        "resolution_status": resolution_status,
         "missing_checkpoint": missing_checkpoint,
         "checkpoint_resolved": branch == RESOLUTION_EXACT_AVAILABLE,
         "local_candidate_found": substitution_available and not no_candidates,
         "operator_review_required": requires_operator or branch == RESOLUTION_LOCAL_CANDIDATE,
         "acquisition_required": branch == RESOLUTION_ACQUISITION_REQUIRED,
+        "exact_match_found": resolution_status == STATUS_EXACT_MATCH_FOUND,
+        "acceptable_local_candidate_found": resolution_status == STATUS_ACCEPTABLE_LOCAL_CANDIDATE,
+        "candidate_requires_operator_review": resolution_status == STATUS_CANDIDATE_REQUIRES_REVIEW,
+        "acquisition_required_status": resolution_status == STATUS_ACQUISITION_REQUIRED,
         "exact_match_available": exact_match_available,
         "exact_match": inventory.get("sdxl_exact_match"),
+        "acceptable_match": inventory.get("sdxl_acceptable_match"),
         "total_valid_candidates": inventory.get("total_valid_candidates", 0),
         "valid_candidates": candidate_review.get("valid_candidates", []),
         "rejected_candidates_count": inventory.get("total_rejected", 0),
         "total_checkpoints_found": inventory.get("total_checkpoints_found", 0),
+        "checkpoint_mapping": {
+            "logical_asset_id": EXPECTED_CHECKPOINT_ASSET,
+            "canonical_filenames": CANONICAL_CHECKPOINT_NAMES,
+            "acceptable_candidates": ACCEPTABLE_CANDIDATE_NAMES.get(EXPECTED_CHECKPOINT_ASSET, []),
+            "matched_file": (
+                (inventory.get("sdxl_exact_match") or inventory.get("sdxl_acceptable_match") or {}).get("file_name")
+            ),
+        },
         "acquisition_required_reason": (
             "No SDXL-compatible checkpoints found in local inventory"
             if branch == RESOLUTION_ACQUISITION_REQUIRED else None
@@ -1000,10 +1126,15 @@ def _build_result(
         "resolution_decision_created": True,
         "generation_gate_revalidated": True,
         "selected_branch": branch,
+        "resolution_status": resolution_decision.get("resolution_status"),
         "checkpoint_resolved": branch == RESOLUTION_EXACT_AVAILABLE,
         "local_candidate_found": branch == RESOLUTION_LOCAL_CANDIDATE,
         "operator_review_required": branch in (RESOLUTION_LOCAL_CANDIDATE,),
         "acquisition_required": branch == RESOLUTION_ACQUISITION_REQUIRED,
+        "exact_match_found": resolution_decision.get("exact_match_found", False),
+        "acceptable_local_candidate_found": resolution_decision.get("acceptable_local_candidate_found", False),
+        "candidate_requires_operator_review": resolution_decision.get("candidate_requires_operator_review", False),
+        "acquisition_required_status": resolution_decision.get("acquisition_required_status", False),
         "download_authorized": False,
         "download_performed": False,
         "install_authorized": False,

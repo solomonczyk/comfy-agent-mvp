@@ -1,6 +1,6 @@
 {
-  "current_state": "controlled_asset_acquisition_required",
-  "next_allowed_action": "controlled_asset_acquisition_required",
+  "current_state": "generation_operator_authorization_required",
+  "next_allowed_action": "generation_operator_authorization_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -315,7 +315,7 @@
       "no_generation_performed": true
     }
   ],
-  "timestamp": "2026-05-08T16:33:59.242167+00:00",
+  "timestamp": "2026-05-08T16:55:08.496731+00:00",
   "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
   "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
   "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
@@ -590,8 +590,8 @@
   "preview_render_executed": false,
   "checkpoint_resolution_executed": true,
   "checkpoint_resolution_task_id": "RC-COMBINE-V2-94001-98000",
-  "checkpoint_resolution_branch": "acquisition_required",
-  "checkpoint_resolved": false,
+  "checkpoint_resolution_branch": "exact_checkpoint_available",
+  "checkpoint_resolved": true,
   "checkpoint_resolution_decision_created": true,
   "checkpoint_resolution_decision": "checkpoint_resolution_decision.json",
   "checkpoint_local_inventory_report_created": true,
@@ -611,5 +611,15 @@
   "download_authorized": false,
   "download_performed": false,
   "install_authorized": false,
-  "install_performed": false
+  "install_performed": false,
+
+  "checkpoint_resolver_freeze_proof_created": true,
+  "checkpoint_resolver_freeze_proof": "checkpoint_resolver_freeze_proof.json",
+  "checkpoint_resolver_freeze_proof_task_id": "RC-COMBINE-V2-98001-99000-FREEZE",
+  "freeze_proof_verified": true,
+  "resolver_scan_paths_fixed": true,
+  "previous_acquisition_required_retracted": true,
+  "local_checkpoint_candidate_verified": true,
+  "next_layer_allowed": true,
+  "next_layer": "RC-COMBINE-V2-99001-102000 Controlled Generation Authorization and Single Execution Gate"
 }

@@ -1,18 +1,61 @@
 {
   "task_id": "RC-COMBINE-V2-94001-98000",
-  "resolution_branch": "acquisition_required",
+  "resolution_branch": "exact_checkpoint_available",
+  "resolution_status": "acceptable_local_candidate_found",
   "missing_checkpoint": "checkpoint_sdxl_base",
-  "checkpoint_resolved": false,
+  "checkpoint_resolved": true,
   "local_candidate_found": false,
   "operator_review_required": false,
-  "acquisition_required": true,
-  "exact_match_available": false,
+  "acquisition_required": false,
+  "exact_match_found": false,
+  "acceptable_local_candidate_found": true,
+  "candidate_requires_operator_review": false,
+  "acquisition_required_status": false,
+  "exact_match_available": true,
   "exact_match": null,
-  "total_valid_candidates": 0,
-  "valid_candidates": [],
+  "acceptable_match": {
+    "file_name": "sd_xl_base_1.0_0.9vae.safetensors",
+    "file_path": "F:\\ComfyUI\\comfyUI_portable_inst\\ComfyUI_windows_portable_nvidia_cu126\\ComfyUI_windows_portable\\ComfyUI\\models\\checkpoints\\sd_xl_base_1.0_0.9vae.safetensors",
+    "file_size_bytes": 6938078334,
+    "match_type": "acceptable_local_candidate_found"
+  },
+  "total_valid_candidates": 4,
+  "valid_candidates": [
+    {
+      "file_name": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "file_size_bytes": 6938040866,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "juggernautXL_version2.safetensors",
+      "file_size_bytes": 6938040706,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "realvisxlV50_v50Bakedvae.safetensors",
+      "file_size_bytes": 6938065488,
+      "detected_type": "sdxl_suspect"
+    },
+    {
+      "file_name": "sd_xl_base_1.0_0.9vae.safetensors",
+      "file_size_bytes": 6938078334,
+      "detected_type": "sdxl"
+    }
+  ],
   "rejected_candidates_count": 0,
-  "total_checkpoints_found": 0,
-  "acquisition_required_reason": "No SDXL-compatible checkpoints found in local inventory",
+  "total_checkpoints_found": 4,
+  "checkpoint_mapping": {
+    "logical_asset_id": "checkpoint_sdxl_base",
+    "canonical_filenames": [
+      "sd_xl_base_1.0.safetensors",
+      "sd_xl_base_1.0_fp16.safetensors"
+    ],
+    "acceptable_candidates": [
+      "sd_xl_base_1.0_0.9vae.safetensors"
+    ],
+    "matched_file": "sd_xl_base_1.0_0.9vae.safetensors"
+  },
+  "acquisition_required_reason": null,
   "operator_review_required_reason": null,
   "download_authorized": false,
   "download_performed": false,
@@ -21,5 +64,5 @@
   "fake_checkpoint_availability_created": false,
   "generation_performed": false,
   "comfyui_submit_executed": false,
-  "timestamp": "2026-05-08T16:33:59.238167+00:00"
+  "timestamp": "2026-05-08T16:55:08.495728+00:00"
 }

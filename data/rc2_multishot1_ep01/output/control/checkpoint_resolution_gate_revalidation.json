@@ -1,14 +1,14 @@
 {
   "task_id": "RC-COMBINE-V2-94001-98000",
   "revalidation_type": "checkpoint_resolution_gate_revalidation",
-  "resolution_branch": "acquisition_required",
-  "gate_status": "checkpoint_acquisition_required_gate_blocked",
+  "resolution_branch": "exact_checkpoint_available",
+  "gate_status": "checkpoint_resolved_generation_ready",
   "generation_authorized": false,
-  "generation_gate_blocked": true,
-  "checkpoint_resolved": false,
+  "generation_gate_blocked": false,
+  "checkpoint_resolved": true,
   "operator_review_required": false,
-  "acquisition_required": true,
-  "reason": "No SDXL-compatible checkpoint found. Controlled acquisition required before generation.",
+  "acquisition_required": false,
+  "reason": "Checkpoint checkpoint_sdxl_base resolved locally. Generation gate ready for operator authorization.",
   "download_authorized": false,
   "download_performed": false,
   "install_authorized": false,
@@ -21,5 +21,5 @@
   "assembly_executed": false,
   "downstream_executed": false,
   "production_accepted": false,
-  "timestamp": "2026-05-08T16:34:06.623520+00:00"
+  "timestamp": "2026-05-09T05:11:45.460570+00:00"
 }
