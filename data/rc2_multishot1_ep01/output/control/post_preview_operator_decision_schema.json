@@ -1,0 +1,177 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Real Human Operator Preview Decision Schema",
+  "description": "Canonical schema for a real human operator preview decision. The decision must come from a human operator, not an agent/CLI/automation. This schema defines the required fields and validation rules.",
+  "task_id": "RC-COMBINE-V2-REAL-HUMAN-PREVIEW-REVIEW-DECISION-001",
+  "created_timestamp": "2026-05-09T14:10:23.379520+00:00",
+  "schema_definition": {
+    "required_fields": [
+      "decision_source",
+      "operator_verdict"
+    ],
+    "field_definitions": {
+      "decision_id": {
+        "type": "string",
+        "description": "Unique identifier for this decision. Optional at intake, assigned on processing.",
+        "required_at_intake": false
+      },
+      "decision_source": {
+        "type": "string",
+        "enum": [
+          "human_operator"
+        ],
+        "description": "Must be 'human_operator'. Any other source (agent, cli, automation, test) is rejected.",
+        "required_at_intake": true
+      },
+      "operator_verdict": {
+        "type": "string",
+        "enum": [
+          "accepted_for_next_stage",
+          "rejected",
+          "needs_manual_review"
+        ],
+        "description": "accepted_for_next_stage: preview accepted, route to voice generation authorization. rejected: preview rejected, route to corrective plan. needs_manual_review: decision unclear, stay at preview operator review.",
+        "required_at_intake": true
+      },
+      "operator_name_or_id": {
+        "type": "string",
+        "description": "Name or ID of the human operator who reviewed the preview. Optional at intake.",
+        "required_at_intake": false
+      },
+      "reviewed_preview_artifacts": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "enum": [
+            "preview_lowres.mp4",
+            "preview.gif",
+            "contact_sheet.jpg"
+          ]
+        },
+        "description": "List of preview artifacts the operator reviewed. Must include all three artifacts.",
+        "required_at_intake": true
+      },
+      "review_notes": {
+        "type": "string",
+        "description": "Free-text notes from the operator about the preview quality. Required for rejected verdicts.",
+        "required_at_intake": false
+      },
+      "review_timestamp": {
+        "type": "string",
+        "format": "ISO-8601",
+        "description": "Timestamp when the operator performed the review. Recommended.",
+        "required_at_intake": false
+      },
+      "acceptance_scope": {
+        "type": "string",
+        "enum": [
+          "preview_stage_only"
+        ],
+        "description": "Scope of acceptance. Must be 'preview_stage_only' if provided.",
+        "required_at_intake": false
+      },
+      "production_accepted": {
+        "type": "boolean",
+        "const": false,
+        "description": "Must be false. Production acceptance is a separate downstream gate.",
+        "required_at_intake": true
+      },
+      "voice_generation_authorized": {
+        "type": "boolean",
+        "const": false,
+        "description": "Must be false. Voice generation authorization is a separate gate.",
+        "required_at_intake": true
+      },
+      "assembly_authorized": {
+        "type": "boolean",
+        "const": false,
+        "description": "Must be false. Assembly authorization is a separate downstream gate.",
+        "required_at_intake": true
+      },
+      "downstream_authorized": {
+        "type": "boolean",
+        "const": false,
+        "description": "Must be false. Downstream authorization is a separate gate.",
+        "required_at_intake": true
+      },
+      "visual_or_editorial_issues": {
+        "type": "array",
+        "description": "List of visual or editorial issues. Required for rejected verdicts.",
+        "required_at_intake": false
+      },
+      "next_required_action": {
+        "type": "string",
+        "description": "Next required action. Required for rejected and needs_manual_review verdicts.",
+        "required_at_intake": false
+      }
+    },
+    "allowed_verdicts": [
+      "accepted_for_next_stage",
+      "rejected",
+      "needs_manual_review"
+    ],
+    "required_preview_artifacts": [
+      "preview_lowres.mp4",
+      "preview.gif",
+      "contact_sheet.jpg"
+    ],
+    "forbidden_sources": [
+      "agent",
+      "cli",
+      "automation",
+      "test"
+    ]
+  },
+  "routing_rules": {
+    "accepted_for_next_stage": {
+      "current_state": "voice_generation_authorization_required",
+      "next_allowed_action": "voice_generation_authorization_required",
+      "production_accepted": false,
+      "voice_generation_ready": false,
+      "voice_generation_executed": false,
+      "assembly_allowed": false,
+      "downstream_allowed": false
+    },
+    "rejected": {
+      "current_state": "post_preview_corrective_plan_required",
+      "next_allowed_action": "post_preview_corrective_plan_required",
+      "production_accepted": false,
+      "voice_generation_ready": false,
+      "assembly_allowed": false,
+      "downstream_allowed": false
+    },
+    "needs_manual_review": {
+      "current_state": "preview_operator_review_required",
+      "next_allowed_action": "preview_operator_review_required",
+      "production_accepted": false,
+      "voice_generation_ready": false,
+      "assembly_allowed": false,
+      "downstream_allowed": false
+    },
+    "missing": {
+      "current_state": "preview_operator_review_required",
+      "next_allowed_action": "preview_operator_review_required",
+      "production_accepted": false,
+      "voice_generation_ready": false,
+      "assembly_allowed": false,
+      "downstream_allowed": false
+    }
+  },
+  "forbidden_actions": {
+    "generation": false,
+    "retry": false,
+    "comfyui_submit": false,
+    "preview_render": false,
+    "final_render": false,
+    "voice_generation": false,
+    "audio_generation": false,
+    "visual_qa_acceptance_by_agent": false,
+    "operator_visual_acceptance_by_agent": false,
+    "assembly": false,
+    "downstream": false,
+    "production_accepted_true": false,
+    "fake_operator_decision": false,
+    "fake_prompt_id": false,
+    "fake_asset": false
+  }
+}

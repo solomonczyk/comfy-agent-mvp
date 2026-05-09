@@ -747,7 +747,12 @@
     "post_preview_stage_blocker.json",
     "post_preview_operator_review_repair_proof.json",
     "preview_operator_review_required_packet.json",
-    "post_preview_operator_review_gate_validation.json"
+    "post_preview_operator_review_gate_validation.json",
+    "post_preview_operator_decision_schema.json",
+    "post_preview_operator_decision_validation_report.json",
+    "post_preview_operator_decision_routing_result.json",
+    "post_preview_operator_decision_proof.json",
+    "post_preview_operator_decision_blocker.json"
   ],
   "post_preview_reconciliation_performed": true,
   "post_preview_reconciliation_task_id": "RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001-FIX",
@@ -772,5 +777,10 @@
   "preview_operator_decision_result": "preview_operator_decision_result.json",
   "preview_operator_decision_gate_proof": "preview_operator_decision_gate_proof.json",
   "post_preview_gate_validation": "post_preview_operator_review_gate_validation.json",
-  "post_preview_gate_validation_timestamp": "2026-05-09T13:14:05.064146+00:00"
+  "post_preview_gate_validation_timestamp": "2026-05-09T13:14:05.064146+00:00",
+  "post_preview_human_decision_task_id": "RC-COMBINE-V2-REAL-HUMAN-PREVIEW-REVIEW-DECISION-001",
+  "post_preview_human_decision_timestamp": "2026-05-09T14:10:23.379520+00:00",
+  "post_preview_human_decision_verdict": "missing",
+  "operator_decision_valid": false,
+  "post_preview_human_decision_blocker_type": "missing_human_operator_preview_review"
 }

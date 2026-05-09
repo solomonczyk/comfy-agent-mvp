@@ -1,0 +1,17 @@
+{
+  "task_id": "RC-COMBINE-V2-REAL-HUMAN-PREVIEW-REVIEW-DECISION-001",
+  "processing_timestamp": "2026-05-09T14:10:23.379520+00:00",
+  "decision_found": false,
+  "operator_verdict": "missing",
+  "decision_valid": false,
+  "validation_message": "Human operator decision file not found at expected path: post_preview_human_operator_decision.json. Status: blocked_waiting_for_human_operator_decision.",
+  "routing_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "production_accepted": false,
+  "voice_generation_ready": false,
+  "voice_generation_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "routing_rule_applied": "missing",
+  "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01"
+}

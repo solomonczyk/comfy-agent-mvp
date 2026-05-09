@@ -12860,6 +12860,90 @@ def combine_validate_post_preview_operator_review_gate(args: argparse.Namespace)
     return 0 if result.get("status") == "pass" else 1
 
 
+def combine_validate_post_preview_human_decision(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-REAL-HUMAN-PREVIEW-REVIEW-DECISION-001 — Validate human operator decision.
+
+    Validates the post-preview human operator decision file without writing artifacts.
+    Returns status: blocked_waiting_for_human_operator_decision, blocked_invalid_operator_decision, or valid.
+    """
+    from app.post_preview.operator_decision_intake import (
+        combine_validate_post_preview_human_decision as validate_fn,
+    )
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = validate_fn(project_root=project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        status = result.get("status", "error")
+        found = result.get("decision_found", False)
+        valid = result.get("decision_valid", False)
+        report = result.get("validation_report", {})
+
+        print(f"Post-Preview Human Decision Validation: {status.upper()}")
+        print(f"  Decision Found: {found}")
+        print(f"  Decision Valid: {valid}")
+        print(f"  Message: {report.get('validation_message', '')}")
+        if report.get("operator_verdict"):
+            print(f"  Verdict: {report['operator_verdict']}")
+        print(f"  No artifacts written (validate-only mode)")
+
+    return 0
+
+
+def combine_process_post_preview_human_decision(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-REAL-HUMAN-PREVIEW-REVIEW-DECISION-001 — Process human operator decision.
+
+    Validates the human operator decision, routes to correct next state,
+    and creates all canonical artifacts (schema, validation report, routing result,
+    blocker if needed, proof).
+    """
+    from app.post_preview.operator_decision_intake import (
+        process_human_operator_decision,
+    )
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = process_human_operator_decision(project_root=project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        status = result.get("status", "error")
+        verdict = result.get("operator_verdict", "unknown")
+        found = result.get("decision_found", False)
+        valid = result.get("decision_valid", False)
+        state = result.get("current_state", "unknown")
+        action = result.get("next_allowed_action", "unknown")
+
+        print(f"Post-Preview Human Decision Processing: {status.upper()}")
+        print(f"  Decision Found: {found}")
+        print(f"  Decision Valid: {valid}")
+        print(f"  Operator Verdict: {verdict}")
+        print(f"  Current State: {state}")
+        print(f"  Next Allowed Action: {action}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        print(f"  Voice Generation Executed: {result.get('voice_generation_executed', False)}")
+        print(f"  Assembly Allowed: {result.get('assembly_allowed', False)}")
+        print(f"  Downstream Allowed: {result.get('downstream_allowed', False)}")
+        print(f"  Message: {result.get('validation_message', '')}")
+
+        blockers = result.get("blockers", [])
+        if blockers:
+            print()
+            print("Blockers:")
+            for b in blockers:
+                print(f"  - {b['blocker_type']} ({b.get('status', 'active')})")
+                for blocked in b.get("blocks", []):
+                    print(f"    Blocks: {blocked}")
+
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -16848,6 +16932,29 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-REAL-HUMAN-PREVIEW-REVIEW-DECISION-001 — Post-Preview Human Decision Intake
+    combine_validate_post_preview_human_decision_parser = subparsers.add_parser(
+        "combine-validate-post-preview-human-decision",
+        help="Validate the post-preview human operator decision file without writing artifacts",
+    )
+    combine_validate_post_preview_human_decision_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_validate_post_preview_human_decision_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_process_post_preview_human_decision_parser = subparsers.add_parser(
+        "combine-process-post-preview-human-decision",
+        help="Process the human operator decision: validate, route, and create all canonical artifacts",
+    )
+    combine_process_post_preview_human_decision_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_process_post_preview_human_decision_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-46001-54000 — Agent Registry CLI commands
     combine_build_agent_registry_parser = subparsers.add_parser(
         "combine-build-agent-registry",
@@ -17474,6 +17581,12 @@ def main() -> int:
     elif args.command == "combine-validate-post-preview-operator-review-gate":
         _require_absolute_project_root(args, "combine-validate-post-preview-operator-review-gate")
         return combine_validate_post_preview_operator_review_gate(args)
+    elif args.command == "combine-validate-post-preview-human-decision":
+        _require_absolute_project_root(args, "combine-validate-post-preview-human-decision")
+        return combine_validate_post_preview_human_decision(args)
+    elif args.command == "combine-process-post-preview-human-decision":
+        _require_absolute_project_root(args, "combine-process-post-preview-human-decision")
+        return combine_process_post_preview_human_decision(args)
     elif args.command == "combine-build-agent-registry":
         _require_absolute_project_root(args, "combine-build-agent-registry")
         return combine_build_agent_registry(args)

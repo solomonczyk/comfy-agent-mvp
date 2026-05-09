@@ -1,0 +1,30 @@
+{
+  "task_id": "RC-COMBINE-V2-REAL-HUMAN-PREVIEW-REVIEW-DECISION-001",
+  "blocker_type": "missing_human_operator_preview_review",
+  "stage_blocked": true,
+  "reason": "No real human operator preview decision file found at post_preview_human_operator_decision.json. A human operator must review the preview artifacts and provide a verdict.",
+  "resolution": "Create post_preview_human_operator_decision.json at the control directory with a valid human operator verdict. Allowed verdicts: ['accepted_for_next_stage', 'rejected', 'needs_manual_review']. decision_source must be 'human_operator'. production_accepted must be false.",
+  "decision_file_expected": "post_preview_human_operator_decision.json",
+  "allowed_verdicts": [
+    "accepted_for_next_stage",
+    "rejected",
+    "needs_manual_review"
+  ],
+  "required_preview_artifacts": [
+    "preview_lowres.mp4",
+    "preview.gif",
+    "contact_sheet.jpg"
+  ],
+  "preview_review_required": true,
+  "visual_review_performed_by_operator": false,
+  "fake_visual_acceptance_prevented": true,
+  "agent_may_not_choose_verdict": true,
+  "voice_generation_executed": false,
+  "voice_generation_authorized": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "timestamp": "2026-05-09T14:10:23.379520+00:00"
+}
