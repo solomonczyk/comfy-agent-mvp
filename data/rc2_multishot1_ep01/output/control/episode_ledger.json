@@ -1460,5 +1460,39 @@
     "current_state": "preview_operator_review_required",
     "next_allowed_action": "preview_operator_review_required",
     "timestamp": "2026-05-09T00:00:00+00:00"
+  },
+  {
+    "event_type": "human_preview_review_gate_blocked",
+    "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001",
+    "stage": "preview_operator_review_required",
+    "blocker_type": "missing_operator_decision",
+    "fake_visual_acceptance_prevented": true,
+    "agent_may_not_choose_verdict": true,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "artifacts_created": [
+      "human_preview_review_gate_proof.json",
+      "human_preview_review_gate_blocker.json"
+    ],
+    "timestamp": "2026-05-09T10:58:36.412867+00:00"
+  },
+  {
+    "event_type": "human_preview_review_gate_fix_completed",
+    "fix_task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001-FIX",
+    "stage": "preview_operator_review_required",
+    "state_mapping_contract_verified": true,
+    "verdict_names_corrected": true,
+    "test_file_renamed": true,
+    "canonical_artifacts_created": true,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "artifacts_created": [
+      "human_preview_review_gate_fix_proof.json"
+    ],
+    "timestamp": "2026-05-09T12:59:00+00:00"
   }
 ]

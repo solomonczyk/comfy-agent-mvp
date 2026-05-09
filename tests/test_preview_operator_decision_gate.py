@@ -98,7 +98,7 @@ def _make_accepted_decision() -> Dict[str, Any]:
 
 def _make_rejected_decision() -> Dict[str, Any]:
     return {
-        "operator_verdict": "rejected",
+        "operator_verdict": "rejected_needs_preview_fix",
         "operator_notes": "Major pacing issues, needs re-edit.",
         "visual_review_performed_by_operator": True,
         "preview_lowres_reviewed": True,
@@ -108,9 +108,9 @@ def _make_rejected_decision() -> Dict[str, Any]:
     }
 
 
-def _make_needs_fix_decision() -> Dict[str, Any]:
+def _make_needs_manual_review_decision() -> Dict[str, Any]:
     return {
-        "operator_verdict": "needs_fix",
+        "operator_verdict": "needs_manual_review",
         "operator_notes": "Subtitle timing is slightly off on sub_002.",
         "visual_review_performed_by_operator": True,
         "preview_lowres_reviewed": True,
@@ -165,13 +165,13 @@ class TestValidateOperatorDecision:
         assert valid is True
 
     def test_accepts_valid_rejected(self) -> None:
-        """Valid rejected verdict."""
+        """Valid rejected_needs_preview_fix verdict."""
         valid, msg = validate_operator_decision(_make_rejected_decision())
         assert valid is True
 
-    def test_accepts_valid_needs_fix(self) -> None:
-        """Valid needs_fix verdict."""
-        valid, msg = validate_operator_decision(_make_needs_fix_decision())
+    def test_accepts_valid_needs_manual_review(self) -> None:
+        """Valid needs_manual_review verdict."""
+        valid, msg = validate_operator_decision(_make_needs_manual_review_decision())
         assert valid is True
 
     def test_rejects_non_dict_input(self) -> None:
@@ -231,7 +231,7 @@ class TestReadOperatorDecision:
         )
         assert found is True
         assert data is not None
-        assert data["operator_verdict"] == "rejected"
+        assert data["operator_verdict"] == "rejected_needs_preview_fix"
 
 
 # ---------------------------------------------------------------------------
@@ -247,16 +247,16 @@ class TestResolveTargetState:
         assert state == "voice_generation_authorization_required"
 
     def test_rejected_resolves_to_correction_auth(self) -> None:
-        """rejected -> preview_correction_authorization_required."""
-        valid, state, msg = resolve_target_state("rejected")
+        """rejected -> preview_correction_plan_required."""
+        valid, state, msg = resolve_target_state("rejected_needs_preview_fix")
         assert valid is True
-        assert state == "preview_correction_authorization_required"
+        assert state == "preview_correction_plan_required"
 
-    def test_needs_fix_resolves_to_targeted_fix_auth(self) -> None:
-        """needs_fix -> targeted_preview_fix_authorization_required."""
-        valid, state, msg = resolve_target_state("needs_fix")
+    def test_needs_manual_review_resolves_to_self_loop(self) -> None:
+        """needs_manual_review -> preview_operator_review_required (self-loop)."""
+        valid, state, msg = resolve_target_state("needs_manual_review")
         assert valid is True
-        assert state == "targeted_preview_fix_authorization_required"
+        assert state == "preview_operator_review_required"
 
     def test_unknown_verdict_fails(self) -> None:
         """Unknown verdict returns invalid."""
@@ -273,9 +273,16 @@ class TestResolveTargetState:
             )
 
     def test_all_transitions_allowed_by_state_machine(self) -> None:
-        """Every verdict transition is allowed by the state machine."""
+        """Every verdict transition is allowed by the state machine.
+
+        Self-loop (needs_manual_review -> preview_operator_review_required)
+        is handled by the gate processor directly and does not need a
+        state machine transition.
+        """
         from_state = "preview_operator_review_required"
         for verdict, target_state in VERDICT_TO_TARGET_STATE.items():
+            if from_state == target_state:
+                continue  # Self-loop, no state machine transition needed
             assert CombineStateMachine.can_transition(from_state, target_state), (
                 f"Transition '{from_state}' -> '{target_state}' "
                 f"(verdict '{verdict}') is not allowed by the state machine."
@@ -412,8 +419,8 @@ class TestGateRejected:
 
         result = run_human_preview_review_gate(project_root=str(tmp_episode))
         assert result["status"] == "ok"
-        assert result["selected_branch"] == "rejected"
-        assert result["current_state"] == "preview_correction_authorization_required"
+        assert result["selected_branch"] == "rejected_needs_preview_fix"
+        assert result["current_state"] == "preview_correction_plan_required"
 
     def test_proof_records_rejected_verdict(self, tmp_episode: Path) -> None:
         """Gate proof records the rejected verdict."""
@@ -427,8 +434,8 @@ class TestGateRejected:
         proof = json.loads(
             (control_dir / "human_preview_review_gate_proof.json").read_text()
         )
-        assert proof["operator_verdict"] == "rejected"
-        assert proof["target_state"] == "preview_correction_authorization_required"
+        assert proof["operator_verdict"] == "rejected_needs_preview_fix"
+        assert proof["target_state"] == "preview_correction_plan_required"
 
 
 # ---------------------------------------------------------------------------
@@ -436,34 +443,34 @@ class TestGateRejected:
 # ---------------------------------------------------------------------------
 
 
-class TestGateNeedsFix:
-    def test_passes_with_needs_fix_verdict(self, tmp_episode: Path) -> None:
-        """Gate passes for needs_fix verdict."""
+class TestGateNeedsManualReview:
+    def test_passes_with_needs_manual_review_verdict(self, tmp_episode: Path) -> None:
+        """Gate passes for needs_manual_review verdict (self-loop)."""
         control_dir = tmp_episode / "output" / "control"
         _write_json_file(
             control_dir / "preview_operator_decision_input.json",
-            _make_needs_fix_decision(),
+            _make_needs_manual_review_decision(),
         )
 
         result = run_human_preview_review_gate(project_root=str(tmp_episode))
         assert result["status"] == "ok"
-        assert result["selected_branch"] == "needs_fix"
-        assert result["current_state"] == "targeted_preview_fix_authorization_required"
+        assert result["selected_branch"] == "needs_manual_review"
+        assert result["current_state"] == "preview_operator_review_required"
 
-    def test_proof_records_needs_fix_verdict(self, tmp_episode: Path) -> None:
-        """Gate proof records the needs_fix verdict."""
+    def test_proof_records_needs_manual_review_verdict(self, tmp_episode: Path) -> None:
+        """Gate proof records the needs_manual_review verdict."""
         control_dir = tmp_episode / "output" / "control"
         _write_json_file(
             control_dir / "preview_operator_decision_input.json",
-            _make_needs_fix_decision(),
+            _make_needs_manual_review_decision(),
         )
 
         run_human_preview_review_gate(project_root=str(tmp_episode))
         proof = json.loads(
             (control_dir / "human_preview_review_gate_proof.json").read_text()
         )
-        assert proof["operator_verdict"] == "needs_fix"
-        assert proof["target_state"] == "targeted_preview_fix_authorization_required"
+        assert proof["operator_verdict"] == "needs_manual_review"
+        assert proof["target_state"] == "preview_operator_review_required"
 
 
 # ---------------------------------------------------------------------------
@@ -479,8 +486,8 @@ class TestStateMachineIntegration:
         from_state = "preview_operator_review_required"
         for target_state in [
             "voice_generation_authorization_required",
-            "preview_correction_authorization_required",
-            "targeted_preview_fix_authorization_required",
+            "preview_correction_plan_required",
+            "blocked_manual_review",
         ]:
             assert CombineStateMachine.can_transition(from_state, target_state), (
                 f"State machine must allow {from_state} -> {target_state}"
@@ -490,8 +497,7 @@ class TestStateMachineIntegration:
         """Post-preview routing states cannot skip to generation/assembly/downstream."""
         for state in [
             "voice_generation_authorization_required",
-            "preview_correction_authorization_required",
-            "targeted_preview_fix_authorization_required",
+            "preview_correction_plan_required",
         ]:
             for forbidden_to in [
                 "generate_assets",
@@ -509,8 +515,7 @@ class TestStateMachineIntegration:
         """All new states can fall back to blocked_manual_review."""
         for state in [
             "voice_generation_authorization_required",
-            "preview_correction_authorization_required",
-            "targeted_preview_fix_authorization_required",
+            "preview_correction_plan_required",
         ]:
             assert CombineStateMachine.can_transition(
                 state, "blocked_manual_review"
@@ -614,8 +619,8 @@ class TestDryRun:
         result = run_human_preview_review_gate(
             project_root=str(tmp_episode), dry_run=True
         )
-        assert result["selected_branch"] == "rejected"
-        assert result["to_state"] == "preview_correction_authorization_required"
+        assert result["selected_branch"] == "rejected_needs_preview_fix"
+        assert result["to_state"] == "preview_correction_plan_required"
 
     def test_dry_run_blocker_no_files_written(self, tmp_episode: Path) -> None:
         """Dry-run for missing decision does not write blocker files."""
@@ -690,7 +695,7 @@ class TestForbiddenActions:
         for decision_factory in [
             _make_accepted_decision,
             _make_rejected_decision,
-            _make_needs_fix_decision,
+            _make_needs_manual_review_decision,
         ]:
             _write_json_file(
                 control_dir / "preview_operator_decision_input.json",
@@ -728,7 +733,7 @@ class TestProductionAccepted:
         for decision_factory in [
             _make_accepted_decision,
             _make_rejected_decision,
-            _make_needs_fix_decision,
+            _make_needs_manual_review_decision,
         ]:
             _write_json_file(
                 control_dir / "preview_operator_decision_input.json",

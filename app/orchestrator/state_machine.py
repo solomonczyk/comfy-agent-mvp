@@ -164,8 +164,7 @@ class CombineStateMachine:
 
         # RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001: Post-preview routing states
         "voice_generation_authorization_required",
-        "preview_correction_authorization_required",
-        "targeted_preview_fix_authorization_required",
+        "preview_correction_plan_required",
     ]
     
     # Terminal states
@@ -574,8 +573,7 @@ class CombineStateMachine:
         "preview_operator_review_required": {
             "blocked_manual_review",
             "voice_generation_authorization_required",
-            "preview_correction_authorization_required",
-            "targeted_preview_fix_authorization_required",
+            "preview_correction_plan_required",
         },
         "preview_render_blocked": {
             "preview_render_blocker_review_required",
@@ -589,10 +587,7 @@ class CombineStateMachine:
         "voice_generation_authorization_required": {
             "blocked_manual_review",
         },
-        "preview_correction_authorization_required": {
-            "blocked_manual_review",
-        },
-        "targeted_preview_fix_authorization_required": {
+        "preview_correction_plan_required": {
             "blocked_manual_review",
         },
         "visual_correction_required": {
@@ -1148,24 +1143,15 @@ class CombineStateMachine:
         ("voice_generation_authorization_required", "assembly_preflight_required"),
         ("voice_generation_authorization_required", "final_qc_required"),
         ("voice_generation_authorization_required", "final_operator_acceptance"),
-        ("preview_correction_authorization_required", "generate_assets"),
-        ("preview_correction_authorization_required", "real_generate_assets"),
-        ("preview_correction_authorization_required", "visual_qa_required"),
-        ("preview_correction_authorization_required", "completed"),
-        ("preview_correction_authorization_required", "production_accepted"),
-        ("preview_correction_authorization_required", "assembly_required"),
-        ("preview_correction_authorization_required", "assembly_preflight_required"),
-        ("preview_correction_authorization_required", "final_qc_required"),
-        ("preview_correction_authorization_required", "final_operator_acceptance"),
-        ("targeted_preview_fix_authorization_required", "generate_assets"),
-        ("targeted_preview_fix_authorization_required", "real_generate_assets"),
-        ("targeted_preview_fix_authorization_required", "visual_qa_required"),
-        ("targeted_preview_fix_authorization_required", "completed"),
-        ("targeted_preview_fix_authorization_required", "production_accepted"),
-        ("targeted_preview_fix_authorization_required", "assembly_required"),
-        ("targeted_preview_fix_authorization_required", "assembly_preflight_required"),
-        ("targeted_preview_fix_authorization_required", "final_qc_required"),
-        ("targeted_preview_fix_authorization_required", "final_operator_acceptance"),
+        ("preview_correction_plan_required", "generate_assets"),
+        ("preview_correction_plan_required", "real_generate_assets"),
+        ("preview_correction_plan_required", "visual_qa_required"),
+        ("preview_correction_plan_required", "completed"),
+        ("preview_correction_plan_required", "production_accepted"),
+        ("preview_correction_plan_required", "assembly_required"),
+        ("preview_correction_plan_required", "assembly_preflight_required"),
+        ("preview_correction_plan_required", "final_qc_required"),
+        ("preview_correction_plan_required", "final_operator_acceptance"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),

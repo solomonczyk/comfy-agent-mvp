@@ -70,7 +70,7 @@ def _write_ledger(ledger_path: Path, events: list) -> None:
 # Operator Decision Schema (canonical, gate-owned)
 # ---------------------------------------------------------------------------
 
-VALID_VERDICTS = ["accepted_for_voice_stage", "rejected", "needs_fix"]
+VALID_VERDICTS = ["accepted_for_voice_stage", "rejected_needs_preview_fix", "needs_manual_review"]
 
 OPERATOR_DECISION_SCHEMA: Dict[str, Any] = {
     "$schema": "http://json-schema.org/draft-07/schema#",
@@ -90,7 +90,7 @@ OPERATOR_DECISION_SCHEMA: Dict[str, Any] = {
         "operator_verdict": {
             "type": "string",
             "enum": VALID_VERDICTS,
-            "description": "Operator verdict on preview quality.",
+            "description": "Operator verdict on preview quality. accepted_for_voice_stage enables voice readiness; rejected_needs_preview_fix triggers correction plan; needs_manual_review keeps state pending operator manual review.",
         },
         "operator_notes": {
             "type": "string",
@@ -127,8 +127,8 @@ OPERATOR_DECISION_SCHEMA: Dict[str, Any] = {
 
 VERDICT_TO_TARGET_STATE: Dict[str, str] = {
     "accepted_for_voice_stage": "voice_generation_authorization_required",
-    "rejected": "preview_correction_authorization_required",
-    "needs_fix": "targeted_preview_fix_authorization_required",
+    "rejected_needs_preview_fix": "preview_correction_plan_required",
+    "needs_manual_review": "preview_operator_review_required",
 }
 
 # ---------------------------------------------------------------------------
@@ -630,7 +630,15 @@ def run_human_preview_review_gate(
     # ------------------------------------------------------------------
     from_state = default_state
     to_state = target_state
-    transition_valid = CombineStateMachine.can_transition(from_state, to_state)
+
+    # Self-loop (needs_manual_review): no state machine transition needed,
+    # state stays the same. Skip transition validation.
+    is_self_loop = (from_state == to_state)
+
+    if is_self_loop:
+        transition_valid = True
+    else:
+        transition_valid = CombineStateMachine.can_transition(from_state, to_state)
 
     if not transition_valid:
         # State machine says no — safety block
