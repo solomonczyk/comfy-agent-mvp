@@ -44,6 +44,9 @@ pytest_output*.txt
 pipeline_output.log
 smoke*.log
 
+# Local scratch scripts directory
+scripts/
+
 # One-off scripts (cleanup candidates)
 _ep01_timed.py
 _pre_check.py
