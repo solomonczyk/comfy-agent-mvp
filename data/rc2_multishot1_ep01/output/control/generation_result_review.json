@@ -1,0 +1,41 @@
+{
+  "task_id": "RC-COMBINE-V2-99001-102000",
+  "stage": "generation_result_review",
+  "status": "generation_result_review_required",
+  "generation_count": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "comfyui_submit_executed": true,
+  "comfyui_execution": true,
+  "generated_assets_count": 1,
+  "generated_assets": [
+    {
+      "path": "output/assets/rc2_controlled_1778304712_00001_.png",
+      "exists": true,
+      "readable": true,
+      "width": 1024,
+      "height": 1024,
+      "size_bytes": 1446127,
+      "sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb"
+    }
+  ],
+  "assets_exist": true,
+  "assets_readable": true,
+  "sha256_valid": true,
+  "dimensions_valid": true,
+  "prompt_id_present": true,
+  "prompt_id": "7aa1994f-8ccb-4aa9-9f92-b77f7727e89b",
+  "second_generation_attempted": false,
+  "blind_retry_attempted": false,
+  "fake_prompt_id_detected": false,
+  "fake_assets_detected": false,
+  "legacy_512_workflow_detected": false,
+  "stub_workflow_detected": false,
+  "next_allowed_action": "generation_result_review_required",
+  "visual_qa_executed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-09T05:51:01.994626"
+}

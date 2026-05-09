@@ -1,0 +1,14 @@
+{
+  "task_id": "RC-COMBINE-V2-99001-102000",
+  "operator_authorized": true,
+  "generation_authorized": true,
+  "max_generations": 1,
+  "target": "generation-to-qa controlled candidate",
+  "resolved_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+  "visual_qa_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "stop_after_generation": true,
+  "timestamp": "2026-05-09T05:30:00.000000+00:00"
+}

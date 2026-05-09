@@ -1,0 +1,15 @@
+{
+  "task_id": "RC-COMBINE-V2-99001-102000",
+  "prompt_id": "7aa1994f-8ccb-4aa9-9f92-b77f7727e89b",
+  "native_output_collected": true,
+  "native_output_count": 1,
+  "history_item_keys": [
+    "prompt",
+    "outputs",
+    "status",
+    "meta"
+  ],
+  "generation_performed": true,
+  "comfyui_execution": true,
+  "timestamp": "2026-05-09T05:31:52.022342+00:00"
+}

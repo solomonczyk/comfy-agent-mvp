@@ -1,0 +1,25 @@
+{
+  "task_id": "RC-COMBINE-V2-99001-102000",
+  "validation_type": "generation_pre_submit_validation",
+  "validation_checks": {
+    "authorization_artifact_present": true,
+    "operator_authorized": true,
+    "max_generations_equals_one": true,
+    "checkpoint_resolved": true,
+    "resolved_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+    "checkpoint_exists_in_comfyui": true,
+    "workflow_contains_ksampler": true,
+    "workflow_contains_saveimage": true,
+    "legacy_512_workflow_blocked": true,
+    "stub_workflow_blocked": true,
+    "resolution_is_sdxl_compatible": true,
+    "no_fake_prompt_id": true,
+    "no_fake_assets": true
+  },
+  "all_checks_passed": true,
+  "generation_authorized": true,
+  "max_generations": 1,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "timestamp": "2026-05-09T05:30:00.000000+00:00"
+}

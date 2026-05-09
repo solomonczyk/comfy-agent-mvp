@@ -7669,6 +7669,7 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'combine-authorize-real-generation',
         'combine-real-generate-assets',
         'combine-review-real-generation-result',
+        'combine-review-generation-result',
         'combine-recover-real-generation-result',
         'decide-controlled-retry',
         'inspect-production-decision-state',
@@ -16477,6 +16478,17 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    combine_review_generation_result_parser = subparsers.add_parser(
+        "combine-review-generation-result",
+        help="Review controlled generation result and validate output assets",
+    )
+    combine_review_generation_result_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_review_generation_result_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -16554,6 +16566,9 @@ def main() -> int:
         return combine_real_generate_assets(args)
     elif args.command == "combine-review-real-generation-result":
         return combine_review_real_generation_result(args)
+    elif args.command == "combine-review-generation-result":
+        _require_absolute_project_root(args, "combine-review-generation-result")
+        return combine_review_generation_result(args)
     elif args.command == "combine-recover-real-generation-result":
         return combine_recover_real_generation_result(args)
     elif args.command == "combine-review-failed-real-generation":
@@ -39397,6 +39412,187 @@ def combine_resolve_checkpoint_asset(args: argparse.Namespace) -> int:
             print(f"  Acquisition Contracts Created: {acq}")
 
     return 0
+
+
+def combine_review_generation_result(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-99001-102000 — Review controlled generation result.
+
+    Reads generation execution artifacts and validates the generation output.
+    Does NOT execute visual QA, assembly, downstream, or production acceptance.
+
+    Exit codes:
+    - 0: review completed successfully (result may be blocked or ready)
+    - 1: error
+    """
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    exec_report_path = control_dir / "generation_execution_report.json"
+    manifest_path = control_dir / "canonical_outputs_manifest.json"
+    prompt_id_report_path = control_dir / "prompt_id_report.json"
+    native_output_report_path = control_dir / "native_output_report.json"
+    review_path = control_dir / "generation_result_review.json"
+
+    exec_report = _read_json_file(exec_report_path)
+    manifest = _read_json_file(manifest_path)
+    prompt_id_report = _read_json_file(prompt_id_report_path)
+    native_report = _read_json_file(native_output_report_path)
+
+    generated_assets = manifest.get("generated_assets", [])
+    if not isinstance(generated_assets, list):
+        generated_assets = []
+    generated_assets_count = len(generated_assets)
+
+    prompt_id = prompt_id_report.get("prompt_id", "") or exec_report.get("prompt_id", "")
+    generation_performed = exec_report.get("generation_performed", False)
+    comfyui_submit = exec_report.get("comfyui_submit_executed", False)
+    workflow_submitted = exec_report.get("workflow_submitted", False)
+
+    # Validate assets on filesystem
+    assets_exist = True
+    assets_readable = True
+    sha256_valid = True
+    dimensions_valid = True
+    validated_assets = []
+
+    for asset in generated_assets:
+        path_str = str(asset.get("path", ""))
+        abs_path = project_root / path_str if path_str else None
+        exists = bool(abs_path and abs_path.exists() and abs_path.is_file())
+        if not exists:
+            assets_exist = False
+
+        readable_result = {"readable": False, "width": None, "height": None}
+        if exists and abs_path:
+            try:
+                with Image.open(abs_path) as img:
+                    width, height = img.size
+                    img.verify()
+                readable_result = {"readable": True, "width": int(width), "height": int(height)}
+            except (UnidentifiedImageError, OSError, ValueError):
+                pass
+        readable = bool(readable_result["readable"])
+        if not readable:
+            assets_readable = False
+
+        declared_sha = str(asset.get("sha256", ""))
+        if exists and abs_path and len(declared_sha) == 64:
+            computed_sha = _file_sha256(abs_path)
+            if declared_sha != computed_sha:
+                sha256_valid = False
+        elif exists and abs_path:
+            sha256_valid = False
+
+        declared_w = asset.get("width")
+        declared_h = asset.get("height")
+        if isinstance(readable_result["width"], int) and isinstance(readable_result["height"], int):
+            if readable_result["width"] != declared_w or readable_result["height"] != declared_h:
+                dimensions_valid = False
+        else:
+            dimensions_valid = False
+
+        validated_assets.append({
+            **asset,
+            "exists": exists,
+            "readable": readable,
+            "width": readable_result["width"],
+            "height": readable_result["height"],
+        })
+
+    prompt_id_present = bool(prompt_id) and prompt_id != "fake_prompt_id"
+    fake_prompt = bool(prompt_id) and prompt_id == "fake_prompt_id"
+
+    all_valid = (
+        generation_performed
+        and comfyui_submit
+        and workflow_submitted
+        and generated_assets_count > 0
+        and assets_exist
+        and assets_readable
+        and sha256_valid
+        and dimensions_valid
+        and prompt_id_present
+        and not fake_prompt
+    )
+
+    if all_valid:
+        review_status = "generation_result_review_required"
+        next_action = "generation_result_review_required"
+    else:
+        review_status = "generation_result_review_blocked"
+        next_action = "generation_result_review_required"
+        reasons = []
+        if not generation_performed:
+            reasons.append("generation_not_performed")
+        if not comfyui_submit:
+            reasons.append("comfyui_not_submitted")
+        if generated_assets_count == 0:
+            reasons.append("zero_assets")
+        if not assets_exist:
+            reasons.append("assets_missing_on_filesystem")
+        if not assets_readable:
+            reasons.append("assets_not_readable")
+        if not sha256_valid:
+            reasons.append("sha256_mismatch")
+        if not dimensions_valid:
+            reasons.append("dimensions_mismatch")
+        if not prompt_id_present:
+            reasons.append("prompt_id_missing_or_fake")
+        if fake_prompt:
+            reasons.append("fake_prompt_id_detected")
+
+    review_payload = {
+        "task_id": "RC-COMBINE-V2-99001-102000",
+        "stage": "generation_result_review",
+        "status": review_status,
+        "generation_count": exec_report.get("generation_count", 0),
+        "max_generations": exec_report.get("max_generations", 1),
+        "workflow_submitted": workflow_submitted,
+        "comfyui_submit_executed": comfyui_submit,
+        "comfyui_execution": exec_report.get("comfyui_execution", False),
+        "generated_assets_count": generated_assets_count,
+        "generated_assets": validated_assets,
+        "assets_exist": assets_exist,
+        "assets_readable": assets_readable,
+        "sha256_valid": sha256_valid,
+        "dimensions_valid": dimensions_valid,
+        "prompt_id_present": prompt_id_present,
+        "prompt_id": prompt_id,
+        "second_generation_attempted": exec_report.get("second_generation_attempted", False),
+        "blind_retry_attempted": exec_report.get("blind_retry_attempted", False),
+        "fake_prompt_id_detected": fake_prompt,
+        "fake_assets_detected": exec_report.get("fake_assets_attempted", False),
+        "legacy_512_workflow_detected": exec_report.get("legacy_512_workflow_detected", False),
+        "stub_workflow_detected": exec_report.get("stub_workflow_detected", False),
+        "next_allowed_action": next_action,
+        "visual_qa_executed": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.utcnow().isoformat(),
+    }
+    if not all_valid and not review_payload.get("blocked_reasons"):
+        review_payload["blocked_reasons"] = reasons if not all_valid else []
+
+    _write_json_file(review_path, review_payload)
+
+    if json_output:
+        print(json.dumps(review_payload, indent=2))
+    else:
+        print(f"Generation Result Review: {review_status.upper()}")
+        print(f"  Generation Performed: {generation_performed}")
+        print(f"  Assets: {generated_assets_count} ({'OK' if assets_exist and assets_readable else 'ISSUES'})")
+        print(f"  SHA256: {'OK' if sha256_valid else 'MISMATCH'}")
+        print(f"  Prompt ID: {prompt_id if prompt_id_present else 'MISSING/FAKE'}")
+        print(f"  Next Allowed Action: {next_action}")
+        print(f"  Visual QA: NOT executed")
+        print(f"  Assembly: NOT executed")
+        print(f"  Downstream: NOT executed")
+        print(f"  Production Accepted: False")
+    return 0 if all_valid else 1
 
 
 def combine_revalidate_generation_gate(args: argparse.Namespace) -> int:

@@ -1,0 +1,13 @@
+{
+  "task_id": "RC-COMBINE-V2-99001-102000",
+  "revalidation_type": "generation_gate_revalidation_for_execution",
+  "previous_freeze_commit": "fcd4de9660b9fa5755e08281b7ad60f1783841f4",
+  "checkpoint_sdxl_base_resolved": true,
+  "resolved_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+  "generation_gate_ready": true,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "production_accepted": false,
+  "reason": "Checkpoint resolved and freeze proved. Generation gate ready for authorized execution.",
+  "timestamp": "2026-05-09T05:30:00.000000+00:00"
+}

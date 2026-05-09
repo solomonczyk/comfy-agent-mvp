@@ -1,0 +1,22 @@
+{
+  "task_id": "RC-COMBINE-V2-99001-102000",
+  "generated_assets_count": 1,
+  "generated_assets": [
+    {
+      "path": "output/assets/rc2_controlled_1778304712_00001_.png",
+      "exists": true,
+      "readable": true,
+      "width": 1024,
+      "height": 1024,
+      "size_bytes": 1446127,
+      "sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb"
+    }
+  ],
+  "assets_root": "output/assets",
+  "output_control_root": "output/control",
+  "generation_performed": true,
+  "comfyui_execution": true,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-09T05:31:52.022342+00:00"
+}

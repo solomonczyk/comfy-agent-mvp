@@ -1,0 +1,22 @@
+{
+  "task_id": "RC-COMBINE-V2-99001-102000",
+  "generation_count": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "comfyui_submit_executed": true,
+  "generation_performed": true,
+  "second_generation_attempted": false,
+  "blind_retry_attempted": false,
+  "fake_prompt_id_attempted": false,
+  "fake_assets_attempted": false,
+  "prompt_id": "7aa1994f-8ccb-4aa9-9f92-b77f7727e89b",
+  "generated_assets_count": 1,
+  "next_allowed_action": "generation_result_review_required",
+  "visual_qa_executed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-09T05:31:52.022342+00:00"
+}

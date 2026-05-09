@@ -876,5 +876,23 @@
     "current_state": "generation_operator_authorization_required",
     "next_allowed_action": "generation_operator_authorization_required",
     "timestamp": "2026-05-09T05:07:49.162348+00:00"
+  },
+  {
+    "task_id": "RC-COMBINE-V2-99001-102000",
+    "event": "controlled_generation_executed",
+    "generation_performed": true,
+    "comfyui_submit_executed": true,
+    "prompt_id": "7aa1994f-8ccb-4aa9-9f92-b77f7727e89b",
+    "generated_assets_count": 1,
+    "next_allowed_action": "generation_result_review_required",
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "timestamp": "2026-05-09T05:31:52.022342+00:00",
+    "event_type": "controlled_generation_executed",
+    "stage": "generation_result_review_required",
+    "current_state": "generation_result_review_required",
+    "asset_count": 1
   }
 ]

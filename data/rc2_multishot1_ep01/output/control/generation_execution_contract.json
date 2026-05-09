@@ -1,0 +1,27 @@
+{
+  "task_id": "RC-COMBINE-V2-99001-102000",
+  "contract_type": "generation_execution_contract",
+  "resolved_checkpoint": "sd_xl_base_1.0_0.9vae.safetensors",
+  "resolution_policy": {
+    "width": 1024,
+    "height": 1024,
+    "batch_size": 1,
+    "resolution_class": "sdxl_default"
+  },
+  "ksmapler_policy": {
+    "sampler_name": "euler",
+    "scheduler": "normal",
+    "steps": 20,
+    "cfg": 7.0,
+    "denoise": 1.0
+  },
+  "filename_prefix_policy": "rc2_controlled_",
+  "max_generations": 1,
+  "workflow_submitted": false,
+  "generation_performed": false,
+  "comfyui_execution": false,
+  "workflow_type": "standard_sdxl_txt2img",
+  "legacy_512_blocked": true,
+  "stub_workflow_blocked": true,
+  "timestamp": "2026-05-09T05:30:00.000000+00:00"
+}
