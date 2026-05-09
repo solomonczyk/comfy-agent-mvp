@@ -12638,6 +12638,82 @@ def combine_controlled_preview_render(args: argparse.Namespace) -> int:
     return 0 if result.get("status") == "ok" else 1
 
 
+def combine_controlled_preview_rerender(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001 — Controlled Preview Re-render.
+
+    Executes exactly one controlled preview re-render based on the correction package.
+    Preflight checks, operator authorization, corrected timeline input, render,
+    static detection, and routing to operator review or correction plan.
+
+    No voice generation, assembly, downstream, or production acceptance.
+    """
+    from app.timeline.controlled_preview_rerender import run_controlled_preview_rerender
+
+    project_root = args.project_root
+    json_output = args.json
+    execute = args.execute
+    max_renders = args.max_renders
+
+    result = run_controlled_preview_rerender(
+        project_root=project_root,
+        execute=execute,
+        max_renders=max_renders,
+    )
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        status = result.get("status", "error")
+        branch = result.get("selected_branch", "unknown")
+
+        if status == "blocked":
+            print(f"Controlled Preview Re-render: BLOCKED")
+            print(f"  Reason: {result.get('message', 'Preflight or authorization failed')}")
+            print(f"  State: {result.get('current_state')}")
+            print(f"  Next Action: {result.get('next_allowed_action')}")
+            if result.get("preflight_errors"):
+                print(f"  Preflight Errors: {result['preflight_errors']}")
+            if result.get("authorization_errors"):
+                print(f"  Authorization Errors: {result['authorization_errors']}")
+            return 0
+
+        if status == "error":
+            print(f"ERROR: {result.get('message', 'Preview re-render failed')}")
+            print(f"  Branch: {branch}")
+            print(f"  State: {result.get('current_state')}")
+            return 1
+
+        if status == "accepted_with_blockers":
+            print(f"Controlled Preview Re-render: BLOCKED (static preview)")
+            print(f"  Reason: {result.get('message', 'Static preview detected')}")
+            print(f"  Duplicate Ratio: {result.get('duplicate_ratio', 1.0):.1%}")
+            print(f"  State: {result.get('current_state')}")
+            print(f"  Next Action: {result.get('next_allowed_action')}")
+            print(f"  Preview Render Executed: {result.get('preview_render_executed')}")
+            print(f"  Preview Render Count: {result.get('preview_render_count')}")
+            return 0
+
+        print("Controlled Preview Re-render: OK")
+        print(f"  Branch: {branch}")
+        print(f"  State: {result.get('current_state')}")
+        print(f"  Next Action: {result.get('next_allowed_action')}")
+        print(f"  Preview Render Executed: {result.get('preview_render_executed')}")
+        print(f"  Preview Render Count: {result.get('preview_render_count')}")
+        print(f"  Duplicate Ratio: {result.get('duplicate_ratio', 'N/A')}")
+        print(f"  Static Blocker: {result.get('preview_static_blocker', False)}")
+        print(f"  Production Accepted: {result.get('production_accepted')}")
+        print()
+        print("Preview Artifacts:")
+        for name, path in result.get("artifacts", {}).items():
+            print(f"  {name}: {path}")
+        print()
+        print("Forbidden Actions:")
+        for action, allowed in result.get("forbidden_actions", {}).items():
+            print(f"  {action}: {allowed}")
+
+    return 0 if result.get("status") == "ok" else 1
+
+
 def combine_validate_post_preview_stage(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001 — Validate post-preview stage artifacts.
 
@@ -17201,6 +17277,24 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001 — Controlled Preview Re-render
+    combine_controlled_preview_rerender_parser = subparsers.add_parser(
+        "combine-controlled-preview-rerender",
+        help="Controlled preview re-render: correction plan preflight, authorization, render, static detection, and routing",
+    )
+    combine_controlled_preview_rerender_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_controlled_preview_rerender_parser.add_argument(
+        "--execute", action="store_true", help="Actually execute the preview re-render",
+    )
+    combine_controlled_preview_rerender_parser.add_argument(
+        "--max-renders", type=int, default=1, help="Maximum preview renders (default: 1)",
+    )
+    combine_controlled_preview_rerender_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-POST-PREVIEW-WORKFLOW-STAGE-001 — Post-Preview Workflow Stage
     combine_validate_post_preview_stage_parser = subparsers.add_parser(
         "combine-validate-post-preview-stage",
@@ -17919,6 +18013,9 @@ def main() -> int:
     elif args.command == "combine-controlled-preview-render":
         _require_absolute_project_root(args, "combine-controlled-preview-render")
         return combine_controlled_preview_render(args)
+    elif args.command == "combine-controlled-preview-rerender":
+        _require_absolute_project_root(args, "combine-controlled-preview-rerender")
+        return combine_controlled_preview_rerender(args)
     elif args.command == "combine-validate-post-preview-stage":
         _require_absolute_project_root(args, "combine-validate-post-preview-stage")
         return combine_validate_post_preview_stage(args)

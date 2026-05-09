@@ -1,6 +1,6 @@
 {
-  "current_state": "controlled_preview_rerender_authorization_required",
-  "next_allowed_action": "controlled_preview_rerender_authorization_required",
+  "current_state": "preview_correction_plan_required",
+  "next_allowed_action": "preview_correction_plan_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -436,7 +436,7 @@
   "v7_identity_fidelity_result": "combine_v2_v7_identity_fidelity_result.json",
   "v7_identity_fidelity_operator_review_packet": "combine_v2_v7_identity_fidelity_operator_review_packet.json",
   "generation_allowed": false,
-  "generation_performed": true,
+  "generation_performed": false,
   "comfyui_execution": true,
   "generation_count": 1,
   "second_generation_attempted": false,
@@ -635,7 +635,7 @@
   "artifacts": [
     "human_preview_review_gate_proof.json"
   ],
-  "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001",
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
   "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
   "total_artifacts": 47,
   "brief_intake_layer_completed": true,
@@ -816,5 +816,24 @@
     "preview_repair_contract",
     "static_preview_prevention_policy",
     "controlled_preview_rerender_gate_package"
-  ]
+  ],
+  "corrected_timeline_input_created": true,
+  "timeline_empty_before_repair": true,
+  "timeline_empty_after_repair": false,
+  "asset_refs_present": true,
+  "video_tracks_present": false,
+  "edl_operations_applied": true,
+  "correction_plan_consumed": true,
+  "repair_contract_consumed": true,
+  "static_preview_prevention_policy_consumed": true,
+  "controlled_preview_rerender_gate_used": true,
+  "operator_authorization_verified": true,
+  "static_detection_executed": true,
+  "duplicate_ratio": 1.0,
+  "preview_static_blocker": true,
+  "controlled_preview_rerender_report_created": true,
+  "controlled_preview_rerender_result_review_created": true,
+  "controlled_preview_rerender_static_detection_report_created": true,
+  "controlled_preview_rerender_operator_review_packet_created": true,
+  "correction_goal_achieved": false
 }
