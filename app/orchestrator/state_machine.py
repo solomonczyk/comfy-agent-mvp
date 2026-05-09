@@ -161,6 +161,11 @@ class CombineStateMachine:
         "preview_operator_review_required",
         "preview_render_blocked",
         "preview_render_blocker_review_required",
+
+        # RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001: Post-preview routing states
+        "voice_generation_authorization_required",
+        "preview_correction_authorization_required",
+        "targeted_preview_fix_authorization_required",
     ]
     
     # Terminal states
@@ -568,12 +573,26 @@ class CombineStateMachine:
         },
         "preview_operator_review_required": {
             "blocked_manual_review",
+            "voice_generation_authorization_required",
+            "preview_correction_authorization_required",
+            "targeted_preview_fix_authorization_required",
         },
         "preview_render_blocked": {
             "preview_render_blocker_review_required",
             "blocked_manual_review",
         },
         "preview_render_blocker_review_required": {
+            "blocked_manual_review",
+        },
+
+        # RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001: Post-preview routing state transitions
+        "voice_generation_authorization_required": {
+            "blocked_manual_review",
+        },
+        "preview_correction_authorization_required": {
+            "blocked_manual_review",
+        },
+        "targeted_preview_fix_authorization_required": {
             "blocked_manual_review",
         },
         "visual_correction_required": {
@@ -1118,6 +1137,35 @@ class CombineStateMachine:
         ("preview_render_blocked", "assembly_preflight_required"),
         ("preview_render_blocked", "final_qc_required"),
         ("preview_render_blocked", "final_operator_acceptance"),
+
+        # RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001: Forbidden transitions from post-preview routing states
+        ("voice_generation_authorization_required", "generate_assets"),
+        ("voice_generation_authorization_required", "real_generate_assets"),
+        ("voice_generation_authorization_required", "visual_qa_required"),
+        ("voice_generation_authorization_required", "completed"),
+        ("voice_generation_authorization_required", "production_accepted"),
+        ("voice_generation_authorization_required", "assembly_required"),
+        ("voice_generation_authorization_required", "assembly_preflight_required"),
+        ("voice_generation_authorization_required", "final_qc_required"),
+        ("voice_generation_authorization_required", "final_operator_acceptance"),
+        ("preview_correction_authorization_required", "generate_assets"),
+        ("preview_correction_authorization_required", "real_generate_assets"),
+        ("preview_correction_authorization_required", "visual_qa_required"),
+        ("preview_correction_authorization_required", "completed"),
+        ("preview_correction_authorization_required", "production_accepted"),
+        ("preview_correction_authorization_required", "assembly_required"),
+        ("preview_correction_authorization_required", "assembly_preflight_required"),
+        ("preview_correction_authorization_required", "final_qc_required"),
+        ("preview_correction_authorization_required", "final_operator_acceptance"),
+        ("targeted_preview_fix_authorization_required", "generate_assets"),
+        ("targeted_preview_fix_authorization_required", "real_generate_assets"),
+        ("targeted_preview_fix_authorization_required", "visual_qa_required"),
+        ("targeted_preview_fix_authorization_required", "completed"),
+        ("targeted_preview_fix_authorization_required", "production_accepted"),
+        ("targeted_preview_fix_authorization_required", "assembly_required"),
+        ("targeted_preview_fix_authorization_required", "assembly_preflight_required"),
+        ("targeted_preview_fix_authorization_required", "final_qc_required"),
+        ("targeted_preview_fix_authorization_required", "final_operator_acceptance"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),
