@@ -17,8 +17,8 @@
   "git_verification": {
     "git_status_clean": true,
     "git_status_output": "clean",
-    "commit_hash_before": null,
-    "commit_hash_after": null
+    "commit_hash": "90de73c1463e692df74a0e04adea69da670f7e8b",
+    "push_status": "pushed_origin_main"
   },
   "preview_correction_plan_accepted": true,
   "preview_rerender_executed": false,
@@ -56,8 +56,10 @@
   },
   "verification": {
     "py_compile_pass": true,
-    "tests_status": "pending",
-    "cli_validation_pass": true
+    "tests_status": "completed_with_failures",
+    "tests_summary": "Some pre-existing test failures in test_artifact_proof.py (unrelated to freeze fix)",
+    "cli_validation_pass": true,
+    "git_clean_after_commit": true
   },
   "timestamp": "2026-05-10T16:47:00+00:00",
   "final_verdict": "ACCEPTED"
