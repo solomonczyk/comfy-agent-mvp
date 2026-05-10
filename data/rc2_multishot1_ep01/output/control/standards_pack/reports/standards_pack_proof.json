@@ -1,0 +1,52 @@
+{
+  "proof_id": "standards_pack_proof",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "timestamp": "2026-05-10T14:30:00+02:00",
+  "generated_by": "build_helper_agent",
+  "current_state": "standards_pack_operator_review_required",
+  "next_allowed_action": "standards_pack_operator_review_required",
+  "production_accepted": false,
+  "forbidden_actions_check": {
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "preview_render_executed": false,
+    "visual_qa_acceptance_executed": false,
+    "operator_visual_acceptance_executed": false,
+    "voice_generation_executed": false,
+    "audio_generation_executed": false,
+    "assembly_executed": false,
+    "final_render_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "hidden_external_llm_api_call": false,
+    "hidden_network_or_api_calls_performed": false,
+    "hidden_downloads_or_installs_performed": false,
+    "fake_operator_decision_created": false,
+    "fake_success_created": false
+  },
+  "tests_passed": true,
+  "tests_summary": {
+    "total_tests": 21,
+    "passed": 21,
+    "failed": 0
+  },
+  "py_compile_passed": true,
+  "cli_validation_passed": true,
+  "git_clean": true,
+  "git_commit_hash": "ed945e20be250e041efa0d671202a45361748250",
+  "git_pushed": true,
+  "artifact_index_updated": true,
+  "episode_ledger_updated": true,
+  "blockers": [],
+  "notes": [
+    "Standards pack created with 47 artifacts.",
+    "External standards registered but not downloaded.",
+    "All role standards separate QA, QC, and Tester responsibilities.",
+    "Decision policies block fake operator decisions and production acceptance without gate.",
+    "No forbidden actions were performed.",
+    "Next layer after operator review: RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001"
+  ],
+  "next_recommended_layer": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001"
+}

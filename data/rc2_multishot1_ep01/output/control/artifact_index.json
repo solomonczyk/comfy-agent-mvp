@@ -1073,5 +1073,7 @@
   "standards_pack_validation_report": "standards_pack/reports/standards_pack_validation_report.json",
   "standards_pack_readiness_report": "standards_pack/reports/standards_pack_readiness_report.json",
   "standards_pack_operator_review_packet": "standards_pack/reports/standards_pack_operator_review_packet.json",
-  "standards_pack_task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001"
+  "standards_pack_task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "standards_pack_proof": "standards_pack/reports/standards_pack_proof.json",
+  "standards_pack_proof_created": true
 }
