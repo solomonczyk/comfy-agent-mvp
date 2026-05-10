@@ -1,6 +1,6 @@
 {
-  "current_state": "controlled_preview_rerender_authorization_required",
-  "next_allowed_action": "operator_preview_rerender_authorization_required",
+  "current_state": "controlled_preview_rerender_execute_required",
+  "next_allowed_action": "controlled_preview_rerender_execute_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -451,6 +451,31 @@
         "production_accepted": false
       },
       "timestamp": "2026-05-10T05:55:04.780091+00:00",
+      "no_generation_performed": true
+    },
+    {
+      "stage": "controlled_preview_rerender_authorization_gate",
+      "success": true,
+      "message": "Controlled preview rerender authorization gate built. Valid human operator authorization confirmed. Ready for execute.",
+      "artifacts": [
+        "controlled_preview_rerender_operator_authorization_request.json",
+        "controlled_preview_rerender_execution_contract.json",
+        "controlled_preview_rerender_preflight_report.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002",
+        "operator_authorization_required": true,
+        "agent_may_authorize": false,
+        "max_preview_renders": 1,
+        "stop_after_preview_render": true,
+        "preview_render_executed": false,
+        "generation_performed": false,
+        "voice_generation_executed": false,
+        "assembly_executed": false,
+        "downstream_executed": false,
+        "production_accepted": false
+      },
+      "timestamp": "2026-05-10T06:09:34.455159+00:00",
       "no_generation_performed": true
     }
   ],

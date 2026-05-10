@@ -41144,6 +41144,18 @@ def combine_build_controlled_preview_rerender_authorization(args: argparse.Names
     with open(preflight_path, "w") as f:
         json.dump(preflight_report, f, indent=2)
 
+    # Determine state branch based on operator authorization validity
+    if operator_authorization_exists and operator_authorization_valid:
+        target_state = "controlled_preview_rerender_execute_required"
+        target_next_action = "controlled_preview_rerender_execute_required"
+        next_task_rec = "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-EXECUTE-002"
+        stage_message = "Controlled preview rerender authorization gate built. Valid human operator authorization confirmed. Ready for execute."
+    else:
+        target_state = "controlled_preview_rerender_authorization_required"
+        target_next_action = "operator_preview_rerender_authorization_required"
+        next_task_rec = "operator_must_provide_preview_rerender_authorization"
+        stage_message = "Controlled preview rerender authorization gate built. Operator authorization required."
+
     # Update artifact_index
     index_path = control_dir / "artifact_index.json"
     if index_path.is_file():
@@ -41152,8 +41164,8 @@ def combine_build_controlled_preview_rerender_authorization(args: argparse.Names
     else:
         index = {}
 
-    index["current_state"] = "controlled_preview_rerender_authorization_required"
-    index["next_allowed_action"] = "operator_preview_rerender_authorization_required"
+    index["current_state"] = target_state
+    index["next_allowed_action"] = target_next_action
     index["controlled_preview_rerender_authorization_gate_built"] = True
     index["controlled_preview_rerender_authorization_gate_task_id"] = "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002"
     index["operator_authorization_request_created"] = True
@@ -41171,7 +41183,7 @@ def combine_build_controlled_preview_rerender_authorization(args: argparse.Names
     index["stage_results"].append({
         "stage": "controlled_preview_rerender_authorization_gate",
         "success": True,
-        "message": "Controlled preview rerender authorization gate built. Operator authorization required.",
+        "message": stage_message,
         "artifacts": [
             "controlled_preview_rerender_operator_authorization_request.json",
             "controlled_preview_rerender_execution_contract.json",
@@ -41211,8 +41223,8 @@ def combine_build_controlled_preview_rerender_authorization(args: argparse.Names
         "version": "002",
         "stage": "controlled_preview_rerender_authorization_gate",
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "current_state": "controlled_preview_rerender_authorization_required",
-        "next_allowed_action": "operator_preview_rerender_authorization_required",
+        "current_state": target_state,
+        "next_allowed_action": target_next_action,
         "generation_attempts": 0,
         "max_generations": 0,
         "workflow_submitted": False,
@@ -41243,7 +41255,7 @@ def combine_build_controlled_preview_rerender_authorization(args: argparse.Names
         "operator_authorization_request_created": True,
         "rerender_execution_contract_created": True,
         "preflight_report_created": True,
-        "operator_authorization_required": True,
+        "operator_authorization_required": not (operator_authorization_exists and operator_authorization_valid),
         "agent_authorization_blocked": True,
         "max_preview_renders": 1,
         "stop_after_preview_render": True,
@@ -41261,12 +41273,12 @@ def combine_build_controlled_preview_rerender_authorization(args: argparse.Names
         "artifact_index_updated": True,
         "episode_ledger_updated": True,
         "state_updated": True,
-        "current_state": "controlled_preview_rerender_authorization_required",
-        "next_allowed_action": "operator_preview_rerender_authorization_required",
+        "current_state": target_state,
+        "next_allowed_action": target_next_action,
         "operator_authorization_exists": operator_authorization_exists,
         "operator_authorization_valid": operator_authorization_valid if operator_authorization_exists else None,
         "blockers": [],
-        "next_task_recommendation": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-EXECUTE-002",
+        "next_task_recommendation": next_task_rec,
     }
 
     if json_output:

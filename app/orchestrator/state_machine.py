@@ -169,6 +169,10 @@ class CombineStateMachine:
         # RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-001: Preview correction plan and re-render gate
         "controlled_preview_rerender_authorization_required",
 
+        # RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002-FIX:
+        # Controlled preview rerender execute state (post-authorization)
+        "controlled_preview_rerender_execute_required",
+
         # RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001
         "asset_diversity_blocker_required",
     ]
@@ -599,6 +603,10 @@ class CombineStateMachine:
             "asset_diversity_blocker_required",
         },
         "controlled_preview_rerender_authorization_required": {
+            "blocked_manual_review",
+            "controlled_preview_rerender_execute_required",
+        },
+        "controlled_preview_rerender_execute_required": {
             "blocked_manual_review",
         },
         "asset_diversity_blocker_required": {
@@ -1175,6 +1183,19 @@ class CombineStateMachine:
         ("controlled_preview_rerender_authorization_required", "assembly_preflight_required"),
         ("controlled_preview_rerender_authorization_required", "final_qc_required"),
         ("controlled_preview_rerender_authorization_required", "final_operator_acceptance"),
+
+        # RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002-FIX:
+        # Controlled preview rerender execute state cannot skip to generation, assembly, QA, or downstream
+        ("controlled_preview_rerender_execute_required", "generate_assets"),
+        ("controlled_preview_rerender_execute_required", "real_generate_assets"),
+        ("controlled_preview_rerender_execute_required", "visual_qa_required"),
+        ("controlled_preview_rerender_execute_required", "completed"),
+        ("controlled_preview_rerender_execute_required", "production_accepted"),
+        ("controlled_preview_rerender_execute_required", "assembly_required"),
+        ("controlled_preview_rerender_execute_required", "assembly_preflight_required"),
+        ("controlled_preview_rerender_execute_required", "final_qc_required"),
+        ("controlled_preview_rerender_execute_required", "final_operator_acceptance"),
+        ("controlled_preview_rerender_execute_required", "voice_generation_authorization_required"),
 
         # RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001:
         # Asset diversity blocker state cannot skip to generation, assembly, QA, or downstream
