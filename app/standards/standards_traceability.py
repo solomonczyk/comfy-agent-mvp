@@ -69,7 +69,8 @@ class StandardsTraceability:
         for key, artifact in artifacts.items():
             if isinstance(artifact, dict):
                 for rule in artifact.get("rules", []):
-                    rid = rule.get("rule_id", "")
-                    if decision in rid or role.replace("_", "") in rid.lower():
-                        refs.append({"policy_id": key, "rule_id": rid})
+                    if isinstance(rule, dict):
+                        rid = rule.get("rule_id", "")
+                        if decision in rid or role.replace("_", "") in rid.lower():
+                            refs.append({"policy_id": key, "rule_id": rid})
         return refs

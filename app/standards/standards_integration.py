@@ -83,7 +83,7 @@ class StandardsIntegration:
             if isinstance(artifact, dict):
                 rules = artifact.get("rules", [])
                 for rule in rules:
-                    if rule.get("rule_id") == rule_id:
+                    if isinstance(rule, dict) and rule.get("rule_id") == rule_id:
                         return {
                             "found": True,
                             "policy_key": key,
@@ -198,12 +198,13 @@ class StandardsIntegration:
                 rules = artifact.get("rules", [])
                 for rule in rules:
                     # Simple heuristic: role appears in rule or policy applies
-                    rule_id = rule.get("rule_id", "")
-                    if role.replace("_", "") in rule_id.lower() or role in rule_id.lower():
-                        rule_refs.append({
-                            "rule_id": rule_id,
-                            "policy_key": key,
-                        })
+                    if isinstance(rule, dict):
+                        rule_id = rule.get("rule_id", "")
+                        if role.replace("_", "") in rule_id.lower() or role in rule_id.lower():
+                            rule_refs.append({
+                                "rule_id": rule_id,
+                                "policy_key": key,
+                            })
 
         return {
             "standards_pack_version": self._pack_version,
@@ -216,6 +217,22 @@ class StandardsIntegration:
             "source_artifact": source_artifact,
             "traceable": True,
             "rule_references": rule_refs,
+        }
+
+    def build_validation_report(self) -> Dict[str, Any]:
+        """Validation report for the integration layer itself."""
+        load_result = self.load_standards_pack()
+        valid = load_result.get("success", False)
+        categories = self.validate_required_categories()
+        return {
+            "report_id": "standards_integration_validation_report",
+            "version": "1.0.0",
+            "task_id": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+            "valid": valid and categories.get("valid", False),
+            "standards_pack_loaded": valid,
+            "required_categories_present": categories.get("valid", False),
+            "missing_categories": categories.get("missing", []),
+            "traceable": True,
         }
 
     @staticmethod
