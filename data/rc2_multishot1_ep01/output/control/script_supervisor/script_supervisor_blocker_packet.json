@@ -1,0 +1,53 @@
+{
+  "report_id": "script_supervisor_blocker_packet",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "blocker_type": "invalid_or_static_preview",
+  "blocker_detected": true,
+  "blocker_reasons": [
+    "Fake operator decision detected"
+  ],
+  "next_allowed_action": "preview_correction_plan_required",
+  "production_accepted": false,
+  "voice_generation_ready": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "traceable_finding": {
+    "standards_pack_version": "1.0.0",
+    "standard_id": "script_supervisor_standard",
+    "policy_id": "production_acceptance_policy",
+    "rule_id": "production_accepted_blocked_without_operator_gate",
+    "role": "script_supervisor",
+    "severity": "blocker",
+    "decision": "blocked",
+    "source_artifact": "roles/script_supervisor_standard.json",
+    "traceable": true,
+    "rule_references": [
+      {
+        "policy_id": "production_acceptance_policy",
+        "rule_id": "production_accepted_blocked_without_operator_gate"
+      },
+      {
+        "policy_id": "production_acceptance_policy",
+        "rule_id": "production_blocked_if_any_prerequisite_missing"
+      },
+      {
+        "policy_id": "no_blind_retry_policy",
+        "rule_id": "blind_retry_blocked"
+      },
+      {
+        "policy_id": "no_blind_retry_policy",
+        "rule_id": "retry_without_operator_auth_blocked"
+      },
+      {
+        "policy_id": "no_blind_retry_policy",
+        "rule_id": "max_retry_exceeded_blocked"
+      }
+    ],
+    "detail": "Fake operator decision detected"
+  },
+  "timestamp": "2026-05-10T14:18:03.943681+00:00",
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

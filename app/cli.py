@@ -18272,6 +18272,42 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001 — combine-script-supervisor-audit
+    combine_script_supervisor_audit_parser = subparsers.add_parser(
+        "combine-script-supervisor-audit",
+        help="Run standards-driven Script Supervisor continuity audit",
+    )
+    combine_script_supervisor_audit_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_script_supervisor_audit_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001 — combine-script-supervisor-report
+    combine_script_supervisor_report_parser = subparsers.add_parser(
+        "combine-script-supervisor-report",
+        help="Generate all standards-driven Script Supervisor reports",
+    )
+    combine_script_supervisor_report_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_script_supervisor_report_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001 — combine-script-supervisor-readiness
+    combine_script_supervisor_readiness_parser = subparsers.add_parser(
+        "combine-script-supervisor-readiness",
+        help="Check standards-driven Script Supervisor readiness",
+    )
+    combine_script_supervisor_readiness_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_script_supervisor_readiness_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -18797,6 +18833,15 @@ def main() -> int:
     elif args.command == "combine-standards-policy-check":
         _require_absolute_project_root(args, "combine-standards-policy-check")
         return combine_standards_policy_check(args)
+    elif args.command == "combine-script-supervisor-audit":
+        _require_absolute_project_root(args, "combine-script-supervisor-audit")
+        return combine_script_supervisor_audit(args)
+    elif args.command == "combine-script-supervisor-report":
+        _require_absolute_project_root(args, "combine-script-supervisor-report")
+        return combine_script_supervisor_report(args)
+    elif args.command == "combine-script-supervisor-readiness":
+        _require_absolute_project_root(args, "combine-script-supervisor-readiness")
+        return combine_script_supervisor_readiness(args)
     else:
         parser.print_help()
         return 0
@@ -42837,6 +42882,112 @@ def combine_standards_policy_check(args: argparse.Namespace) -> int:
             print(f"Policy: {policy_id} — NOT FOUND")
 
     return 0 if policy.get("found") else 1
+
+
+def combine_script_supervisor_audit(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001 — Run standards-driven audit.
+
+    Performs a full standards-driven continuity audit and writes all artifacts.
+    Never renders, generates, or modifies production artifacts.
+
+    Exit codes:
+    - 0: audit completed successfully
+    - 1: error or invalid args
+    """
+    from app.agents.script_supervisor import ScriptSupervisorStandardsAgent
+
+    project_root = args.project_root
+    json_output = args.json
+
+    agent = ScriptSupervisorStandardsAgent(project_root)
+    audit_result = agent.run_full_audit()
+    written = agent.write_all_artifacts(audit_result)
+    agent.update_artifact_index(audit_result)
+    agent.update_episode_ledger(audit_result)
+
+    if json_output:
+        audit_result["artifacts_written"] = written
+        print(json.dumps(audit_result, indent=2))
+    else:
+        print("Script Supervisor / Continuity Guard Standards Audit")
+        print(f"  Timestamp: {audit_result.get('timestamp', 'unknown')}")
+        print(f"  Blocker Detected: {audit_result.get('blocker_detected', False)}")
+        print(f"  Operator Review Required: {audit_result.get('operator_review_required', True)}")
+        print(f"  Production Accepted: {audit_result.get('production_accepted', False)}")
+        print(f"  Voice Generation Ready: {audit_result.get('voice_generation_ready', False)}")
+        print(f"  Assembly Allowed: {audit_result.get('assembly_allowed', False)}")
+        print(f"  Downstream Allowed: {audit_result.get('downstream_allowed', False)}")
+        print(f"  Artifacts Written:")
+        for name, path in written.items():
+            print(f"    - {name}: {path}")
+
+    return 0
+
+
+def combine_script_supervisor_report(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001 — Generate all reports.
+
+    Generates and writes all standards-driven Script Supervisor reports.
+
+    Exit codes:
+    - 0: reports generated successfully
+    - 1: error
+    """
+    from app.agents.script_supervisor import ScriptSupervisorStandardsAgent
+
+    project_root = args.project_root
+    json_output = args.json
+
+    agent = ScriptSupervisorStandardsAgent(project_root)
+    audit_result = agent.run_full_audit()
+    written = agent.write_all_artifacts(audit_result)
+
+    if json_output:
+        print(json.dumps({
+            "status": "ok",
+            "reports_written": written,
+            "project_root": project_root,
+        }, indent=2))
+    else:
+        print("Script Supervisor Reports Generated")
+        for name, path in written.items():
+            print(f"  - {name}: {path}")
+
+    return 0
+
+
+def combine_script_supervisor_readiness(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001 — Check readiness.
+
+    Returns the readiness state without writing artifacts (unless --json is used).
+
+    Exit codes:
+    - 0: readiness check completed
+    - 1: error
+    """
+    from app.agents.script_supervisor import ScriptSupervisorStandardsAgent
+
+    project_root = args.project_root
+    json_output = args.json
+
+    agent = ScriptSupervisorStandardsAgent(project_root)
+    audit_result = agent.run_full_audit()
+    readiness = audit_result.get("readiness_report", {})
+
+    if json_output:
+        print(json.dumps(readiness, indent=2))
+    else:
+        print("Script Supervisor Readiness")
+        print(f"  Current State: {readiness.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {readiness.get('next_allowed_action', 'unknown')}")
+        print(f"  Blocker Detected: {readiness.get('blocker_detected', False)}")
+        print(f"  Operator Review Required: {readiness.get('operator_review_required', True)}")
+        print(f"  Production Accepted: {readiness.get('production_accepted', False)}")
+        print(f"  Voice Generation Ready: {readiness.get('voice_generation_ready', False)}")
+        print(f"  Assembly Allowed: {readiness.get('assembly_allowed', False)}")
+        print(f"  Downstream Allowed: {readiness.get('downstream_allowed', False)}")
+
+    return 0
 
 
 if __name__ == "__main__":

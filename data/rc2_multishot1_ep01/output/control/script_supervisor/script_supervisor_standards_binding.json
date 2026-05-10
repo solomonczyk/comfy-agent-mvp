@@ -1,0 +1,20 @@
+{
+  "report_id": "script_supervisor_standards_binding",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "standards_pack_version": "1.0.0",
+  "canons_available": [
+    {
+      "canon_id": "timeline_quality_canon",
+      "available": true
+    },
+    {
+      "canon_id": "preview_quality_canon",
+      "available": true
+    }
+  ],
+  "preview_render_not_executed": true,
+  "visual_acceptance_not_performed": true,
+  "traceable": true
+}

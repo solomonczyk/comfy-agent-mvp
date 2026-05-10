@@ -1,0 +1,151 @@
+{
+  "report_id": "script_supervisor_timeline_consistency_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "timeline_model_present": true,
+  "marker_registry_present": true,
+  "edit_decision_list_present": true,
+  "timeline_preview_dry_run_present": true,
+  "overall_pass": true,
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "timeline_model.json present"
+    },
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "marker_registry.json present"
+    },
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "edit_decision_list.json present"
+    },
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "timeline_preview_dry_run_report.json present"
+    }
+  ],
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

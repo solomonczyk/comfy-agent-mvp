@@ -1,0 +1,28 @@
+{
+  "report_id": "script_supervisor_contact_sheet_audit_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "contact_sheet_found": false,
+  "contact_sheet_useful": false,
+  "contact_sheet_usefulness_checked": true,
+  "contact_sheet_source_map_present": true,
+  "duplicate_static_ratio_at_audit": 0.0,
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "script_supervisor_decision_policy",
+      "rule_id": "default",
+      "role": "script_supervisor",
+      "severity": "warning",
+      "decision": "operator_review_required",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [],
+      "detail": "Contact sheet not found — cannot validate scene development visually"
+    }
+  ],
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

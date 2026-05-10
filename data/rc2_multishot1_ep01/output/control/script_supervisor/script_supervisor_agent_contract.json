@@ -1,0 +1,41 @@
+{
+  "agent_id": "script_supervisor_continuity_guard_standards",
+  "role": "script_supervisor",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001",
+  "responsibilities": [
+    "timeline continuity",
+    "preview continuity",
+    "duplicate/static frame detection",
+    "contact sheet usefulness validation",
+    "path consistency validation",
+    "operator decision authenticity guard",
+    "downstream blocked state validation"
+  ],
+  "allowed_tools": [
+    "filesystem_read",
+    "json_artifact_read",
+    "preview_media_read",
+    "timeline_artifact_read",
+    "safe_cli_validation",
+    "pytest",
+    "git_status"
+  ],
+  "forbidden_actions": [
+    "generation",
+    "retry",
+    "comfyui_submit",
+    "preview_render",
+    "voice_generation",
+    "visual_acceptance",
+    "operator_acceptance",
+    "assembly",
+    "downstream",
+    "production_accepted_true",
+    "model_download_install"
+  ],
+  "may_block_pipeline": true,
+  "may_accept_preview": false,
+  "may_accept_voice": false,
+  "may_set_production_accepted": false,
+  "traceable": true
+}

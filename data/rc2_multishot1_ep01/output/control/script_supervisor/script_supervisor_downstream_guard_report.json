@@ -1,0 +1,153 @@
+{
+  "report_id": "script_supervisor_downstream_guard_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "downstream_guard_checked": true,
+  "voice_generation_blocked_checked": true,
+  "production_accepted_false_checked": true,
+  "production_accepted": false,
+  "voice_generation_ready": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "production_accepted is false — correct"
+    },
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "voice_generation_ready is false — blocked as expected"
+    },
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "assembly_allowed is false — blocked as expected"
+    },
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "downstream_allowed is false — blocked as expected"
+    }
+  ],
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}
