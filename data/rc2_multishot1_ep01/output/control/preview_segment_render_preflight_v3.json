@@ -1,0 +1,50 @@
+{
+  "preflight_type": "preview_segment_render_preflight_v3",
+  "preflight_pass": true,
+  "errors": [],
+  "segment_validations": [
+    {
+      "segment_index": 0,
+      "has_asset_path": true,
+      "asset_exists": true,
+      "asset_readable": true,
+      "frame_range_valid": true
+    },
+    {
+      "segment_index": 1,
+      "has_asset_path": true,
+      "asset_exists": true,
+      "asset_readable": true,
+      "frame_range_valid": true
+    },
+    {
+      "segment_index": 2,
+      "has_asset_path": true,
+      "asset_exists": true,
+      "asset_readable": true,
+      "frame_range_valid": true
+    },
+    {
+      "segment_index": 3,
+      "has_asset_path": true,
+      "asset_exists": true,
+      "asset_readable": true,
+      "frame_range_valid": true
+    },
+    {
+      "segment_index": 4,
+      "has_asset_path": true,
+      "asset_exists": true,
+      "asset_readable": true,
+      "frame_range_valid": true
+    },
+    {
+      "segment_index": 5,
+      "has_asset_path": true,
+      "asset_exists": true,
+      "asset_readable": true,
+      "frame_range_valid": true
+    }
+  ],
+  "timestamp": "2026-05-10T07:54:52.428939+00:00"
+}

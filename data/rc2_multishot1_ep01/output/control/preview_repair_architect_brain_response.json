@@ -1,0 +1,11 @@
+{
+  "response_type": "preview_repair_architect_brain_response",
+  "brain_call_executed": false,
+  "brain_call_blocked_by": "brain_provider_validation_blocker",
+  "brain_response_used_as_advisory": true,
+  "deterministic_validation_required": true,
+  "brain_may_not_update_state_directly": true,
+  "brain_may_not_accept_visual_result": true,
+  "deterministic_fallback_message": "Brain provider unavailable (deepseek-v4-flash not configured). Using deterministic fallback: segment-based multi-asset renderer.",
+  "response_timestamp": "2026-05-10T07:54:42.449867+00:00"
+}

@@ -1,0 +1,15 @@
+{
+  "decision_type": "preview_repair_architect_decision_record",
+  "task_id": "RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001",
+  "brain_request_consumed": true,
+  "brain_response_used_as_advisory": true,
+  "brain_available": false,
+  "deterministic_fallback_used": true,
+  "decision": "proceed with deterministic segment-based renderer implementation",
+  "rationale": "Brain provider validation: blocked — using deterministic fallback. Segment-based renderer is the required fix regardless.",
+  "segment_renderer_required": true,
+  "minimum_unique_sources": 3,
+  "single_source_fallback_blocked": true,
+  "hidden_api_calls_performed": false,
+  "decision_timestamp": "2026-05-10T07:54:42.449867+00:00"
+}

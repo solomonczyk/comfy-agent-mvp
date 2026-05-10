@@ -1,0 +1,88 @@
+{
+  "plan_type": "preview_segment_render_plan_v3",
+  "plan_valid": true,
+  "total_segments": 6,
+  "unique_asset_count": 6,
+  "minimum_unique_sources_met": true,
+  "single_source_fallback_blocked": true,
+  "single_source_repeat_prevented": true,
+  "total_frames": 720,
+  "segments": [
+    {
+      "segment_index": 0,
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\rc2_controlled_1778304712_00001_.png",
+      "asset_sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+      "frame_start": 0,
+      "frame_end": 120,
+      "frame_count": 120
+    },
+    {
+      "segment_index": 1,
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+      "asset_sha256": "9e40f5a2bf8e83341541839980ccbae0ff71dc5678e81acb3538dc8f6a65f617",
+      "frame_start": 120,
+      "frame_end": 240,
+      "frame_count": 120
+    },
+    {
+      "segment_index": 2,
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_v6_targeted_refinement_shot02_00001_.png",
+      "asset_sha256": "ce1c3c03c7753e4ef6e5c6b43b290c2f12f39efa2d7563a4b7fec2e8ca38ca36",
+      "frame_start": 240,
+      "frame_end": 360,
+      "frame_count": 120
+    },
+    {
+      "segment_index": 3,
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
+      "asset_sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427",
+      "frame_start": 360,
+      "frame_end": 480,
+      "frame_count": 120
+    },
+    {
+      "segment_index": 4,
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_1777916951_00001_.png",
+      "asset_sha256": "3bb332bdebc55dcfce491fe43c6102d169908ac0bad88bf01690d112558b199a",
+      "frame_start": 480,
+      "frame_end": 600,
+      "frame_count": 120
+    },
+    {
+      "segment_index": 5,
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_1777917278_00001_.png",
+      "asset_sha256": "710be0fd7d1110086fbadae5d7f0a4ba14f9fde9747622e2579ee6526a5c9808",
+      "frame_start": 600,
+      "frame_end": 720,
+      "frame_count": 120
+    }
+  ],
+  "asset_allocation": [
+    {
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\rc2_controlled_1778304712_00001_.png",
+      "asset_sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb"
+    },
+    {
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+      "asset_sha256": "9e40f5a2bf8e83341541839980ccbae0ff71dc5678e81acb3538dc8f6a65f617"
+    },
+    {
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_v6_targeted_refinement_shot02_00001_.png",
+      "asset_sha256": "ce1c3c03c7753e4ef6e5c6b43b290c2f12f39efa2d7563a4b7fec2e8ca38ca36"
+    },
+    {
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_00001_.png",
+      "asset_sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427"
+    },
+    {
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_1777916951_00001_.png",
+      "asset_sha256": "3bb332bdebc55dcfce491fe43c6102d169908ac0bad88bf01690d112558b199a"
+    },
+    {
+      "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_1777917278_00001_.png",
+      "asset_sha256": "710be0fd7d1110086fbadae5d7f0a4ba14f9fde9747622e2579ee6526a5c9808"
+    }
+  ],
+  "known_problem_pattern_blocked": "asset = assets[0]; repeat asset for all frames",
+  "timestamp": "2026-05-10T07:54:52.428939+00:00"
+}

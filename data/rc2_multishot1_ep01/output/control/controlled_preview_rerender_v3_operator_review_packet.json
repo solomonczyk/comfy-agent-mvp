@@ -1,0 +1,26 @@
+{
+  "packet_type": "controlled_preview_rerender_v3_operator_review_packet",
+  "operator_preview_review_required": true,
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "segment_based_renderer_used": true,
+  "unique_asset_sources": 6,
+  "preview_static_blocker": true,
+  "duplicate_ratio": 0.9167,
+  "review_items": [
+    "segment asset diversity",
+    "timeline visual progression",
+    "duplicate frame ratio",
+    "contact sheet multi-source sampling",
+    "preview visual acceptability"
+  ],
+  "allowed_operator_verdicts": [
+    "accepted",
+    "rejected",
+    "needs_fix",
+    "requires_correction"
+  ],
+  "agent_may_accept_preview": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-10T07:55:45.309458+00:00"
+}

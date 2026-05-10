@@ -1,0 +1,41 @@
+{
+  "report_type": "brain_runtime_gate_validation_report",
+  "task_id": "RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001",
+  "brain_config": {
+    "primary_model_id": "deepseek-v4-flash",
+    "provider": "configurable",
+    "api_key_source": "env",
+    "fallback_model_id": "configurable",
+    "max_calls_per_task": 2,
+    "max_tokens_per_call": 4096,
+    "runtime_call_authorized": false,
+    "hardcode_forbidden": true,
+    "provider_validation_required": true,
+    "exact_model_id_validation_required": true,
+    "availability_validation_required": true,
+    "pricing_limits_validation_required": true,
+    "fallback_model_required": true,
+    "hidden_api_calls_forbidden": true,
+    "budget_limit_defined": false,
+    "max_budget_per_task": 0.0
+  },
+  "provider_validation": {
+    "provider_available": false,
+    "model_id_validated": true,
+    "api_key_present": false,
+    "provider_config_present": false,
+    "budget_limit_defined": false,
+    "fallback_available": false,
+    "errors": [
+      "Provider not configured (provider='configurable'). Set BRAIN_PROVIDER env var or configure provider.",
+      "No API key found in environment (checked OPENROUTER_API_KEY, BRAIN_API_KEY)",
+      "Fallback model required but not configured (fallback_model_id is 'configurable')",
+      "Brain provider validation failed: one or more checks did not pass. Routing to brain_provider_validation_blocker_required."
+    ],
+    "validation_passed": false
+  },
+  "brain_available": false,
+  "brain_output_is_advisory_only": true,
+  "deterministic_validation_required": true,
+  "timestamp": "2026-05-10T07:54:42.449867+00:00"
+}

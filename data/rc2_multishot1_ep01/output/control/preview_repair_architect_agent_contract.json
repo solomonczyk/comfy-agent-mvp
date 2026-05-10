@@ -1,0 +1,27 @@
+{
+  "agent_id": "preview_repair_architect",
+  "role": "diagnose and design repair for static/duplicate preview failures",
+  "task_id": "RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001",
+  "brain_model": {
+    "primary_model_id": "deepseek-v4-flash",
+    "runtime_call_authorized_in_this_task": true,
+    "provider_validation_required": true,
+    "fallback_model_required": true,
+    "hardcode_forbidden": true
+  },
+  "allowed_tools": [
+    "read_canonical_artifacts",
+    "analyze_preview_reports",
+    "propose_repair_plan",
+    "write_repair_artifacts"
+  ],
+  "forbidden_tools": [
+    "comfyui_submit",
+    "image_generation",
+    "voice_generation",
+    "assembly",
+    "downstream",
+    "production_acceptance"
+  ],
+  "contract_timestamp": "2026-05-10T07:54:42.449867+00:00"
+}

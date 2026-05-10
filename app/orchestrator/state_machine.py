@@ -175,6 +175,9 @@ class CombineStateMachine:
 
         # RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001
         "asset_diversity_blocker_required",
+
+        # RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001
+        "brain_provider_validation_blocker_required",
     ]
     
     # Terminal states
@@ -601,6 +604,7 @@ class CombineStateMachine:
             "blocked_manual_review",
             "controlled_preview_rerender_authorization_required",
             "asset_diversity_blocker_required",
+            "brain_provider_validation_blocker_required",
         },
         "controlled_preview_rerender_authorization_required": {
             "blocked_manual_review",
@@ -613,6 +617,12 @@ class CombineStateMachine:
         },
         "asset_diversity_blocker_required": {
             "blocked_manual_review",
+        },
+
+        # RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001
+        "brain_provider_validation_blocker_required": {
+            "blocked_manual_review",
+            "preview_correction_plan_required",
         },
         "visual_correction_required": {
             "qa_to_correction_package_required",
@@ -1211,6 +1221,19 @@ class CombineStateMachine:
         ("asset_diversity_blocker_required", "final_qc_required"),
         ("asset_diversity_blocker_required", "final_operator_acceptance"),
         ("asset_diversity_blocker_required", "voice_generation_authorization_required"),
+
+        # RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001:
+        # Brain provider validation blocker cannot skip to generation, assembly, QA, or downstream
+        ("brain_provider_validation_blocker_required", "generate_assets"),
+        ("brain_provider_validation_blocker_required", "real_generate_assets"),
+        ("brain_provider_validation_blocker_required", "visual_qa_required"),
+        ("brain_provider_validation_blocker_required", "assembly_required"),
+        ("brain_provider_validation_blocker_required", "assembly_preflight_required"),
+        ("brain_provider_validation_blocker_required", "completed"),
+        ("brain_provider_validation_blocker_required", "production_accepted"),
+        ("brain_provider_validation_blocker_required", "final_qc_required"),
+        ("brain_provider_validation_blocker_required", "final_operator_acceptance"),
+        ("brain_provider_validation_blocker_required", "voice_generation_authorization_required"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),

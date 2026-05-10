@@ -1,0 +1,14 @@
+{
+  "report_type": "controlled_preview_rerender_v3_static_detection_report",
+  "static_detection_executed": true,
+  "total_frame_count": 720,
+  "sampled_frame_count": 61,
+  "unique_frame_count": 5,
+  "duplicate_frame_count": 55,
+  "duplicate_ratio": 0.9167,
+  "duplicate_threshold": 0.85,
+  "preview_static_blocker": true,
+  "segment_based_renderer_used": true,
+  "single_source_fallback_attempted": false,
+  "timestamp": "2026-05-10T07:55:45.308457+00:00"
+}

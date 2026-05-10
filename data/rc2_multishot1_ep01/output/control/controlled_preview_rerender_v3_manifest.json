@@ -1,0 +1,52 @@
+{
+  "manifest_type": "controlled_preview_rerender_v3_manifest",
+  "render_suffix": "v3",
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "segment_render_plan_used": true,
+  "minimum_unique_sources_met": true,
+  "single_source_fallback_blocked": true,
+  "unique_asset_count": 6,
+  "segments_in_plan": 6,
+  "preview_files": {
+    "preview_lowres": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_lowres_rerender_v3.mp4",
+      "size_bytes": 1806275,
+      "sha256": "9685bfd1d456be1a079309b2d78154af64cb73cc9fcbf5ee13f95778b9b0b7fa"
+    },
+    "preview_gif": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_rerender_v3.gif",
+      "size_bytes": 9582356,
+      "sha256": "9ba893df657bdfa0210d462c7a8021bdf3427d6a4c892c6ebb51a96f39f07405"
+    },
+    "contact_sheet": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\contact_sheet_rerender_v3.jpg",
+      "size_bytes": 717748,
+      "sha256": "b98e03aa68bee785eabb0e11a24ca515d318c3e114e26741dd675c25b398371b"
+    }
+  },
+  "control_files": {
+    "preview_segment_render_plan_v3": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\preview_segment_render_plan_v3.json",
+      "size_bytes": 3985,
+      "sha256": "f575e24e2da47064f49069e72490377a8ccf11b2356199544ca6cdfc2718ebdb"
+    },
+    "preview_segment_render_preflight_v3": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\preview_segment_render_preflight_v3.json",
+      "size_bytes": 1188,
+      "sha256": "2f229605d80bc3cea5097c03e6b3ea4a15d38dce5565b223204d06a50ec0811c"
+    },
+    "contact_sheet_source_map_v3": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\contact_sheet_source_map_v3.json",
+      "size_bytes": 1553,
+      "sha256": "d1af47894722e548aafbe4875f04fd481fcbb782efff9c5e18863a50c1cd565c"
+    }
+  },
+  "duplicate_ratio": 0.9167,
+  "preview_static_blocker": true,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-10T07:55:45.399455+00:00"
+}

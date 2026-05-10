@@ -1,0 +1,15 @@
+{
+  "request_type": "preview_repair_architect_brain_request",
+  "task_id": "RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001",
+  "brain_model_id": "deepseek-v4-flash",
+  "brain_call_advisory_only": true,
+  "problem_context": {
+    "static_preview_failure": true,
+    "duplicate_ratio": 1.0,
+    "known_problem": "renderer still produces one effective visual source despite asset diversity plan",
+    "corrected_timeline_plan_exists": true,
+    "requirement": "concrete code-level fix: replace single-source renderer with segment-based multi-asset renderer",
+    "not_another_json_only_plan": true
+  },
+  "request_timestamp": "2026-05-10T07:54:42.449867+00:00"
+}

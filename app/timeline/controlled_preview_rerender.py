@@ -1608,3 +1608,928 @@ def run_controlled_preview_rerender(
         "message": message,
         "timestamp": timestamp,
     }
+
+
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001
+# Segment-Based Preview Renderer (v3)
+#
+# Replaces the single-source renderer with a multi-segment renderer that
+# uses at least 3 unique visual sources. Hard-blocks the pattern:
+#   asset = assets[0]; repeat asset for all frames
+# ---------------------------------------------------------------------------
+
+V3_MIN_UNIQUE_SOURCES = 3
+V3_SINGLE_SOURCE_FALLBACK_ALLOWED = False
+V3_SEGMENT_DIVISOR = 6
+
+
+# ---------------------------------------------------------------------------
+# Multi-asset source resolver (replaces single-asset _resolve_asset_path)
+# ---------------------------------------------------------------------------
+
+
+def resolve_multi_asset_sources(root: Path) -> list:
+    """Resolve at least 3 unique visual assets for segment-based rendering.
+
+    Sources (in priority order):
+      1. Approved visual assets manifest
+      2. Artifact index best-candidate references
+      3. All valid PNG files in output/assets/
+
+    Returns list of dicts with path/sha256/size. Minimum 3 entries.
+    Returns empty list if fewer than 3 valid unique assets found.
+    """
+    seen_sha: set = set()
+    assets: list = []
+
+    def _add(p: Path) -> None:
+        if not p.exists() or not p.is_file():
+            return
+        if p.stat().st_size < 100:
+            return
+        try:
+            sha = _sha256(p)
+        except Exception:
+            return
+        if sha in seen_sha:
+            return
+        seen_sha.add(sha)
+        assets.append({
+            "path": str(p.resolve()),
+            "sha256": sha,
+            "size_bytes": p.stat().st_size,
+        })
+
+    control_dir = root / "output" / "control"
+    assets_dir = root / "output" / "assets"
+
+    # 1. Approved assets manifest
+    manifest_path = control_dir / "approved_visual_assets_manifest.json"
+    manifest = _read_json(manifest_path)
+    if manifest:
+        for entry in manifest.get("approved_assets", []):
+            raw = entry.get("path", "")
+            if raw:
+                p = Path(raw)
+                if not p.exists():
+                    p = root / raw
+                _add(p)
+
+    # 2. Artifact index: best concept candidate and quality reference
+    index_path = control_dir / "artifact_index.json"
+    idx = _read_json(index_path)
+    if idx:
+        for key in ("current_best_concept_candidate_asset",
+                     "current_best_quality_reference_asset"):
+            val = idx.get(key)
+            if val:
+                p = Path(val)
+                if not p.exists():
+                    p = root / val
+                _add(p)
+
+    # 3. All valid PNGs from assets directory
+    if assets_dir.exists():
+        for png in sorted(assets_dir.glob("*.png")):
+            _add(png)
+
+    # Deduplicate by path
+    seen_paths: set = set()
+    deduped = []
+    for a in assets:
+        if a["path"] not in seen_paths:
+            seen_paths.add(a["path"])
+            deduped.append(a)
+
+    return deduped
+
+
+# ---------------------------------------------------------------------------
+# Segment render plan
+# ---------------------------------------------------------------------------
+
+
+def build_preview_segment_render_plan_v3(root: Path) -> dict:
+    """Build segment render plan with minimum 3 unique visual sources.
+
+    Returns plan dict. If < 3 assets, plan_valid=false with error.
+    If valid, each segment maps to a different asset.
+    """
+    assets = resolve_multi_asset_sources(root)
+
+    if len(assets) < V3_MIN_UNIQUE_SOURCES:
+        return {
+            "plan_type": "preview_segment_render_plan_v3",
+            "plan_valid": False,
+            "error": (
+                f"Only {len(assets)} unique asset(s) found, "
+                f"minimum {V3_MIN_UNIQUE_SOURCES} required"
+            ),
+            "asset_count": len(assets),
+            "single_source_fallback_blocked": V3_SINGLE_SOURCE_FALLBACK_ALLOWED,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+    num_frames = int(PREVIEW_DURATION_SEC * PREVIEW_FPS)
+    num_segments = min(len(assets), V3_SEGMENT_DIVISOR)
+    frames_per_segment = num_frames // num_segments
+
+    segments = []
+    used_assets = assets[:num_segments]
+
+    for i in range(num_segments):
+        start_frame = i * frames_per_segment
+        if i < num_segments - 1:
+            end_frame = (i + 1) * frames_per_segment
+        else:
+            end_frame = num_frames
+        segments.append({
+            "segment_index": i,
+            "asset_path": used_assets[i]["path"],
+            "asset_sha256": used_assets[i]["sha256"],
+            "frame_start": start_frame,
+            "frame_end": end_frame,
+            "frame_count": end_frame - start_frame,
+        })
+
+    return {
+        "plan_type": "preview_segment_render_plan_v3",
+        "plan_valid": True,
+        "total_segments": len(segments),
+        "unique_asset_count": len(used_assets),
+        "minimum_unique_sources_met": len(used_assets) >= V3_MIN_UNIQUE_SOURCES,
+        "single_source_fallback_blocked": True,
+        "single_source_repeat_prevented": True,
+        "total_frames": num_frames,
+        "segments": segments,
+        "asset_allocation": [
+            {
+                "asset_path": a["path"],
+                "asset_sha256": a["sha256"],
+            }
+            for a in used_assets
+        ],
+        "known_problem_pattern_blocked": (
+            "asset = assets[0]; repeat asset for all frames"
+        ),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Segment render preflight
+# ---------------------------------------------------------------------------
+
+
+def build_preview_segment_render_preflight_v3(plan: dict) -> dict:
+    """Validate segment render plan before execution.
+
+    Checks:
+      - plan_valid == true
+      - >= 3 unique visual sources
+      - each segment has an asset_path
+      - each asset_path exists and is readable
+      - manifest maps segment to asset
+    """
+    result = {
+        "preflight_type": "preview_segment_render_preflight_v3",
+        "preflight_pass": False,
+        "errors": [],
+        "segment_validations": [],
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+    if not plan.get("plan_valid"):
+        result["errors"].append("Segment render plan is not valid")
+        return result
+
+    segments = plan.get("segments", [])
+    if len(segments) < V3_MIN_UNIQUE_SOURCES:
+        result["errors"].append(
+            f"Only {len(segments)} segments, minimum {V3_MIN_UNIQUE_SOURCES} required"
+        )
+
+    unique_assets = plan.get("unique_asset_count", 0)
+    if unique_assets < V3_MIN_UNIQUE_SOURCES:
+        result["errors"].append(
+            f"Only {unique_assets} unique assets, minimum {V3_MIN_UNIQUE_SOURCES} required"
+        )
+
+    # Validate each segment
+    all_valid = True
+    for seg in segments:
+        validation = {
+            "segment_index": seg.get("segment_index"),
+            "has_asset_path": bool(seg.get("asset_path")),
+            "asset_exists": False,
+            "asset_readable": False,
+            "frame_range_valid": False,
+        }
+
+        ap = seg.get("asset_path", "")
+        if ap:
+            p = Path(ap)
+            validation["asset_exists"] = p.exists()
+            validation["asset_readable"] = os.access(p, os.R_OK) if p.exists() else False
+
+        fs = seg.get("frame_start", 0)
+        fe = seg.get("frame_end", 0)
+        validation["frame_range_valid"] = fe > fs
+
+        if not validation["has_asset_path"]:
+            all_valid = False
+            result["errors"].append(
+                f"Segment {seg.get('segment_index')}: no asset_path"
+            )
+        if not validation["asset_exists"]:
+            all_valid = False
+            result["errors"].append(
+                f"Segment {seg.get('segment_index')}: asset does not exist: {ap}"
+            )
+        if not validation["asset_readable"]:
+            all_valid = False
+            result["errors"].append(
+                f"Segment {seg.get('segment_index')}: asset not readable: {ap}"
+            )
+        if not validation["frame_range_valid"]:
+            all_valid = False
+            result["errors"].append(
+                f"Segment {seg.get('segment_index')}: invalid frame range {fs}-{fe}"
+            )
+
+        result["segment_validations"].append(validation)
+
+    # Hard-block single source pattern
+    if not plan.get("single_source_fallback_blocked", False):
+        result["errors"].append(
+            "Single source fallback is not blocked — this is forbidden"
+        )
+
+    if not plan.get("single_source_repeat_prevented", False):
+        result["errors"].append(
+            "Single source repeat was not prevented — this is forbidden"
+        )
+
+    result["preflight_pass"] = all_valid and len(result["errors"]) == 0
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Contact sheet source map
+# ---------------------------------------------------------------------------
+
+
+def build_contact_sheet_source_map_v3(plan: dict) -> dict:
+    """Map contact sheet samples to different segment sources.
+
+    Ensures the contact sheet samples at least one frame from each
+    unique segment source, proving visual diversity.
+    """
+    segments = plan.get("segments", [])
+    if not segments:
+        return {
+            "map_type": "contact_sheet_source_map_v3",
+            "map_valid": False,
+            "error": "No segments in plan",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+    samples_per_segment = []
+    total_unique_sources = set()
+
+    for seg in segments:
+        fs = seg.get("frame_start", 0)
+        fe = seg.get("frame_end", 0)
+        mid_frame = (fs + fe) // 2
+        ap = seg.get("asset_path", "")
+        total_unique_sources.add(ap)
+        samples_per_segment.append({
+            "segment_index": seg.get("segment_index"),
+            "asset_path": ap,
+            "sampled_frame": mid_frame,
+        })
+
+    return {
+        "map_type": "contact_sheet_source_map_v3",
+        "map_valid": True,
+        "total_segments": len(segments),
+        "total_unique_asset_sources_sampled": len(total_unique_sources),
+        "samples_per_segment": samples_per_segment,
+        "contact_sheet_requires_multi_source": True,
+        "single_source_contact_sheet_prevented": len(total_unique_sources) >= 2,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Segment-based frame generation
+# ---------------------------------------------------------------------------
+
+
+def _create_segment_preview_frames(
+    segments: list, frames_dir: Path
+) -> list:
+    """Generate preview frames per segment, each from its own asset.
+
+    Each segment's frames are generated from the segment's assigned asset,
+    with a Ken Burns pan/zoom effect applied per segment.
+    """
+    _ensure_dir(frames_dir)
+    frames: list = []
+
+    for seg in segments:
+        asset_path = Path(seg.get("asset_path", ""))
+        if not asset_path.exists():
+            continue
+
+        try:
+            img = Image.open(asset_path)
+        except Exception:
+            continue
+
+        start = seg.get("frame_start", 0)
+        end = seg.get("frame_end", 0)
+        count = end - start
+
+        for i in range(start, end):
+            progress = (i - start) / max(count - 1, 1)
+
+            zoom = 1.0 + 0.05 * progress
+            crop_w = int(img.width / zoom)
+            crop_h = int(img.height / zoom)
+
+            left = (img.width - crop_w) // 2
+            top = (img.height - crop_h) // 2
+            if crop_w <= 0 or crop_h <= 0:
+                continue
+
+            cropped = img.crop((left, top, left + crop_w, top + crop_h))
+            resized = cropped.resize(
+                (PREVIEW_WIDTH, PREVIEW_HEIGHT), Image.LANCZOS
+            )
+
+            frame_path = frames_dir / f"frame_{i:04d}.png"
+            resized.save(frame_path, "PNG")
+            frames.append(frame_path)
+
+    return frames
+
+
+# ---------------------------------------------------------------------------
+# Execute segment-based preview re-render (v3)
+# ---------------------------------------------------------------------------
+
+
+def execute_segment_based_preview_rerender(
+    plan: dict,
+    preview_dir: Path,
+    render_suffix: str = "v3",
+) -> dict:
+    """Execute exactly one segment-based preview re-render.
+
+    Each segment renders from its own unique asset source.
+    Hard-blocks the single-source pattern.
+
+    Returns render result dict.
+    """
+    _ensure_dir(preview_dir)
+    _ensure_dir(preview_dir / "frames")
+
+    segments = plan.get("segments", [])
+    if not segments:
+        return {
+            "preview_render_executed": False,
+            "preview_render_count": 0,
+            "error": "No segments to render",
+        }
+
+    frames_dir = preview_dir / "frames"
+
+    # Generate frames per segment
+    frames = _create_segment_preview_frames(segments, frames_dir)
+
+    # Render MP4
+    mp4_path = preview_dir / f"preview_lowres_rerender_{render_suffix}.mp4"
+    has_ffmpeg = _which_ffmpeg() is not None
+    mp4_ok = False
+    if has_ffmpeg and len(frames) > 0:
+        pattern = str(frames_dir / "frame_%04d.png")
+        mp4_ok = _render_mp4_ffmpeg(pattern, mp4_path, PREVIEW_FPS)
+
+    # Render GIF
+    gif_path = preview_dir / f"preview_rerender_{render_suffix}.gif"
+    gif_imgs = []
+    for f in frames[::PREVIEW_GIF_SKIP_FRAMES]:
+        try:
+            gif_imgs.append(Image.open(f))
+        except Exception:
+            continue
+    if gif_imgs:
+        gif_imgs[0].save(
+            gif_path,
+            save_all=True,
+            append_images=gif_imgs[1:],
+            duration=1000 * PREVIEW_GIF_SKIP_FRAMES // PREVIEW_FPS,
+            loop=0,
+        )
+
+    # Render contact sheet (samples from all segments)
+    sheet_path = (
+        preview_dir / f"contact_sheet_rerender_{render_suffix}.jpg"
+    )
+    _create_contact_sheet(frames, sheet_path, cols=4, rows=6)
+
+    renderer = "ffmpeg" if has_ffmpeg and mp4_ok else "pillow_fallback"
+
+    def _fi(name: str) -> dict:
+        p = preview_dir / name
+        if p.exists() and p.stat().st_size > 0:
+            return {"path": str(p), "size_bytes": p.stat().st_size, "sha256": _sha256(p)}
+        return {"path": str(p), "size_bytes": 0, "sha256": None}
+
+    return {
+        "preview_render_executed": True,
+        "preview_render_count": 1,
+        "render_suffix": render_suffix,
+        "renderer": renderer,
+        "has_ffmpeg": has_ffmpeg,
+        "mp4_rendered": mp4_ok,
+        "gif_rendered": gif_path.exists() and gif_path.stat().st_size > 0,
+        "contact_sheet_rendered": sheet_path.exists() and sheet_path.stat().st_size > 0,
+        "mp4_path": str(mp4_path),
+        "gif_path": str(gif_path),
+        "sheet_path": str(sheet_path),
+        "files": {
+            "preview_lowres": _fi(
+                f"preview_lowres_rerender_{render_suffix}.mp4"
+            ),
+            "preview_gif": _fi(f"preview_rerender_{render_suffix}.gif"),
+            "contact_sheet": _fi(
+                f"contact_sheet_rerender_{render_suffix}.jpg"
+            ),
+        },
+        "frame_count": len(frames),
+        "segments_rendered": len(segments),
+        "fps": PREVIEW_FPS,
+        "resolution": {"width": PREVIEW_WIDTH, "height": PREVIEW_HEIGHT},
+        "duration_sec": PREVIEW_DURATION_SEC,
+        "voice_generation_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# V3 Report builders
+# ---------------------------------------------------------------------------
+
+
+def build_v3_manifest(
+    plan: dict,
+    render_result: dict,
+    static_report: dict,
+    root: Path,
+    render_suffix: str = "v3",
+) -> dict:
+    """Build controlled_preview_rerender_v3_manifest.json."""
+    preview_dir = root / "output" / "previews"
+    control_dir = root / "output" / "control"
+
+    def _af(name: str) -> dict:
+        p = control_dir / name
+        if p.exists() and p.stat().st_size > 0:
+            return {"path": str(p), "size_bytes": p.stat().st_size, "sha256": _sha256(p)}
+        return {"path": str(p), "size_bytes": 0, "sha256": None}
+
+    def _pf(name: str) -> dict:
+        p = preview_dir / name
+        if p.exists() and p.stat().st_size > 0:
+            return {"path": str(p), "size_bytes": p.stat().st_size, "sha256": _sha256(p)}
+        return {"path": str(p), "size_bytes": 0, "sha256": None}
+
+    return {
+        "manifest_type": "controlled_preview_rerender_v3_manifest",
+        "render_suffix": render_suffix,
+        "preview_render_executed": render_result.get("preview_render_executed", False),
+        "preview_render_count": render_result.get("preview_render_count", 0),
+        "segment_render_plan_used": True,
+        "minimum_unique_sources_met": plan.get("minimum_unique_sources_met", False),
+        "single_source_fallback_blocked": plan.get("single_source_fallback_blocked", True),
+        "unique_asset_count": plan.get("unique_asset_count", 0),
+        "segments_in_plan": len(plan.get("segments", [])),
+        "preview_files": {
+            "preview_lowres": _pf(
+                f"preview_lowres_rerender_{render_suffix}.mp4"
+            ),
+            "preview_gif": _pf(f"preview_rerender_{render_suffix}.gif"),
+            "contact_sheet": _pf(
+                f"contact_sheet_rerender_{render_suffix}.jpg"
+            ),
+        },
+        "control_files": {
+            "preview_segment_render_plan_v3": _af(
+                "preview_segment_render_plan_v3.json"
+            ),
+            "preview_segment_render_preflight_v3": _af(
+                "preview_segment_render_preflight_v3.json"
+            ),
+            "contact_sheet_source_map_v3": _af(
+                "contact_sheet_source_map_v3.json"
+            ),
+        },
+        "duplicate_ratio": static_report.get("duplicate_ratio", 1.0),
+        "preview_static_blocker": static_report.get("preview_static_blocker", True),
+        "voice_generation_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def build_v3_static_detection_report(static_report: dict) -> dict:
+    """Build controlled_preview_rerender_v3_static_detection_report.json."""
+    return {
+        "report_type": "controlled_preview_rerender_v3_static_detection_report",
+        "static_detection_executed": static_report.get(
+            "static_detection_executed", False
+        ),
+        "total_frame_count": static_report.get("total_frame_count", 0),
+        "sampled_frame_count": static_report.get("sampled_frame_count", 0),
+        "unique_frame_count": static_report.get("unique_frame_count", 0),
+        "duplicate_frame_count": static_report.get("duplicate_frame_count", 0),
+        "duplicate_ratio": static_report.get("duplicate_ratio", 1.0),
+        "duplicate_threshold": DUPLICATE_THRESHOLD,
+        "preview_static_blocker": static_report.get("preview_static_blocker", True),
+        "segment_based_renderer_used": True,
+        "single_source_fallback_attempted": False,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def build_v3_result_review(
+    render_result: dict,
+    artifact_validation: dict,
+    static_report: dict,
+    contact_sheet_map: dict,
+) -> dict:
+    """Build controlled_preview_rerender_v3_result_review.json."""
+    duplicate_ratio = static_report.get("duplicate_ratio", 1.0)
+    preview_static_blocker = static_report.get("preview_static_blocker", True)
+    source_count = contact_sheet_map.get(
+        "total_unique_asset_sources_sampled", 0
+    )
+
+    return {
+        "review_type": "controlled_preview_rerender_v3_result_review",
+        "preview_render_executed": render_result.get("preview_render_executed", False),
+        "preview_render_count": render_result.get("preview_render_count", 0),
+        "preview_artifacts_valid": artifact_validation.get("valid", False),
+        "static_detection_executed": static_report.get(
+            "static_detection_executed", False
+        ),
+        "duplicate_ratio": duplicate_ratio,
+        "duplicate_threshold": DUPLICATE_THRESHOLD,
+        "preview_static_blocker": preview_static_blocker,
+        "effective_unique_visual_sources": source_count,
+        "minimum_unique_sources_met": source_count >= V3_MIN_UNIQUE_SOURCES,
+        "preview_valid_for_operator_review": (
+            not preview_static_blocker and source_count >= V3_MIN_UNIQUE_SOURCES
+        ),
+        "operator_review_required": (
+            not preview_static_blocker and source_count >= V3_MIN_UNIQUE_SOURCES
+        ),
+        "single_source_static_preview_detected": (
+            preview_static_blocker or source_count < V3_MIN_UNIQUE_SOURCES
+        ),
+        "timeline_visual_progression_passed": not preview_static_blocker,
+        "contact_sheet_proves_progression": (
+            not preview_static_blocker and source_count >= V3_MIN_UNIQUE_SOURCES
+        ),
+        "voice_generation_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "errors": artifact_validation.get("errors", []),
+        "warnings": artifact_validation.get("warnings", []),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def build_v3_operator_review_packet(
+    render_result: dict,
+    result_review: dict,
+    static_report: dict,
+    contact_sheet_map: dict,
+    root: Path,
+) -> dict:
+    """Build controlled_preview_rerender_v3_operator_review_packet.json."""
+    return {
+        "packet_type": "controlled_preview_rerender_v3_operator_review_packet",
+        "operator_preview_review_required": True,
+        "preview_render_executed": render_result.get("preview_render_executed", False),
+        "preview_render_count": render_result.get("preview_render_count", 0),
+        "segment_based_renderer_used": True,
+        "unique_asset_sources": contact_sheet_map.get(
+            "total_unique_asset_sources_sampled", 0
+        ),
+        "preview_static_blocker": static_report.get("preview_static_blocker", True),
+        "duplicate_ratio": static_report.get("duplicate_ratio", 1.0),
+        "review_items": [
+            "segment asset diversity",
+            "timeline visual progression",
+            "duplicate frame ratio",
+            "contact sheet multi-source sampling",
+            "preview visual acceptability",
+        ],
+        "allowed_operator_verdicts": [
+            "accepted",
+            "rejected",
+            "needs_fix",
+            "requires_correction",
+        ],
+        "agent_may_accept_preview": False,
+        "production_accepted": False,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+# ---------------------------------------------------------------------------
+# Main entry point for segment-based preview rerender
+# ---------------------------------------------------------------------------
+
+
+def run_segment_based_preview_rerender(
+    project_root: Optional[str] = None,
+    execute: bool = True,
+    render_suffix: str = "v3",
+) -> dict:
+    """Run the segment-based v3 preview re-render pipeline.
+
+    1. Build segment render plan (minimum 3 unique sources)
+    2. Run preflight validation
+    3. Execute segment-based render
+    4. Validate artifacts
+    5. Static detection
+    6. Create reports and review packet
+    7. Update artifact index and ledger
+    8. Route state based on results
+    """
+    root = _resolve_project_root(project_root)
+    control_dir = root / "output" / "control"
+    preview_dir = root / "output" / "previews"
+    timestamp = datetime.now(timezone.utc).isoformat()
+
+    # ------------------------------------------------------------------
+    # Step 1: Build segment render plan
+    # ------------------------------------------------------------------
+    plan = build_preview_segment_render_plan_v3(root)
+    _write_json(
+        control_dir / "preview_segment_render_plan_v3.json", plan
+    )
+
+    if not plan.get("plan_valid"):
+        return {
+            "status": "blocked",
+            "selected_branch": "segment_plan_invalid",
+            "error": plan.get("error", "Segment render plan invalid"),
+            "asset_count": plan.get("asset_count", 0),
+            "preview_render_executed": False,
+            "preview_render_count": 0,
+            "current_state": "preview_correction_plan_required",
+            "next_allowed_action": "preview_correction_plan_required",
+            "message": "Segment render plan invalid — not enough unique assets",
+            "timestamp": timestamp,
+        }
+
+    # ------------------------------------------------------------------
+    # Step 2: Preflight validation
+    # ------------------------------------------------------------------
+    preflight = build_preview_segment_render_preflight_v3(plan)
+    _write_json(
+        control_dir / "preview_segment_render_preflight_v3.json", preflight
+    )
+
+    if not preflight.get("preflight_pass"):
+        return {
+            "status": "blocked",
+            "selected_branch": "segment_preflight_blocked",
+            "errors": preflight.get("errors", []),
+            "preview_render_executed": False,
+            "preview_render_count": 0,
+            "current_state": "preview_correction_plan_required",
+            "next_allowed_action": "preview_correction_plan_required",
+            "message": "Segment render preflight blocked",
+            "timestamp": timestamp,
+        }
+
+    # ------------------------------------------------------------------
+    # Step 3: Build contact sheet source map
+    # ------------------------------------------------------------------
+    contact_sheet_map = build_contact_sheet_source_map_v3(plan)
+    _write_json(
+        control_dir / "contact_sheet_source_map_v3.json", contact_sheet_map
+    )
+
+    # ------------------------------------------------------------------
+    # Step 4: Execute render (if execute=True)
+    # ------------------------------------------------------------------
+    if not execute:
+        return {
+            "status": "ok",
+            "selected_branch": "segment_render_prepared_not_executed",
+            "preview_render_executed": False,
+            "preview_render_count": 0,
+            "segment_plan_created": True,
+            "current_state": "preview_correction_plan_required",
+            "next_allowed_action": "preview_correction_plan_required",
+            "message": "Segment render plan prepared. Pass --execute to render.",
+            "timestamp": timestamp,
+        }
+
+    render_result = execute_segment_based_preview_rerender(
+        plan, preview_dir, render_suffix=render_suffix
+    )
+
+    # ------------------------------------------------------------------
+    # Step 5: Validate artifacts
+    # ------------------------------------------------------------------
+    artifact_validation = validate_preview_artifacts(
+        preview_dir, render_suffix=render_suffix
+    )
+
+    # ------------------------------------------------------------------
+    # Step 6: Static detection
+    # ------------------------------------------------------------------
+    static_report = detect_static_frames(preview_dir / "frames")
+    duplicate_ratio = static_report.get("duplicate_ratio", 1.0)
+    preview_static_blocker = static_report.get("preview_static_blocker", True)
+
+    # ------------------------------------------------------------------
+    # Step 7: Create reports and review packet
+    # ------------------------------------------------------------------
+    result_review = build_v3_result_review(
+        render_result, artifact_validation, static_report, contact_sheet_map
+    )
+    _write_json(
+        control_dir / "controlled_preview_rerender_v3_result_review.json",
+        result_review,
+    )
+
+    static_detection_report = build_v3_static_detection_report(static_report)
+    _write_json(
+        control_dir
+        / "controlled_preview_rerender_v3_static_detection_report.json",
+        static_detection_report,
+    )
+
+    operator_packet = build_v3_operator_review_packet(
+        render_result, result_review, static_report, contact_sheet_map, root
+    )
+    _write_json(
+        control_dir
+        / "controlled_preview_rerender_v3_operator_review_packet.json",
+        operator_packet,
+    )
+
+    v3_manifest = build_v3_manifest(
+        plan, render_result, static_report, root, render_suffix=render_suffix
+    )
+    _write_json(
+        control_dir / "controlled_preview_rerender_v3_manifest.json",
+        v3_manifest,
+    )
+
+    # ------------------------------------------------------------------
+    # Step 8: Determine target state
+    # ------------------------------------------------------------------
+    source_count = contact_sheet_map.get(
+        "total_unique_asset_sources_sampled", 0
+    )
+    multi_source_valid = source_count >= V3_MIN_UNIQUE_SOURCES
+
+    if preview_static_blocker or not multi_source_valid:
+        target_state = "preview_correction_plan_required"
+        target_action = "preview_correction_plan_required"
+        branch = "segment_render_static_or_insufficient_sources"
+        status = "accepted_with_blockers"
+        message = (
+            f"Segment render completed but still static "
+            f"(ratio={duplicate_ratio:.1%}, sources={source_count}). "
+            "Routed to correction plan."
+        )
+    else:
+        target_state = "preview_operator_review_required"
+        target_action = "preview_operator_review_required"
+        branch = "segment_render_valid"
+        status = "ok"
+        message = (
+            f"Segment render executed successfully. "
+            f"Duplicate ratio {duplicate_ratio:.1%}, "
+            f"{source_count} unique sources. "
+            "Routed to operator review."
+        )
+
+    # ------------------------------------------------------------------
+    # Step 9: Update artifact index and ledger
+    # ------------------------------------------------------------------
+    existing_index = _read_json(control_dir / "artifact_index.json") or {}
+    existing_index.update({
+        "current_state": target_state,
+        "next_allowed_action": target_action,
+        "preview_render_executed": True,
+        "preview_render_count": 1,
+        "segment_based_renderer_used": True,
+        "effective_unique_visual_sources": source_count,
+        "minimum_unique_sources_met": multi_source_valid,
+        "single_source_static_preview_detected": preview_static_blocker,
+        "duplicate_ratio": duplicate_ratio,
+        "preview_static_blocker": preview_static_blocker,
+        "timeline_visual_progression_passed": not preview_static_blocker,
+        "contact_sheet_proves_progression": (
+            not preview_static_blocker and multi_source_valid
+        ),
+        "preview_valid_for_operator_review": (
+            not preview_static_blocker and multi_source_valid
+        ),
+        "operator_review_required": not preview_static_blocker,
+        "production_accepted": False,
+        "voice_generation_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "preview_segment_render_plan_created": True,
+        "preview_segment_render_preflight_passed": True,
+        "contact_sheet_source_map_created": True,
+        "controlled_preview_rerender_v3_manifest_created": True,
+        "controlled_preview_rerender_v3_result_review_created": True,
+        "controlled_preview_rerender_v3_static_detection_report_created": True,
+        "controlled_preview_rerender_v3_operator_review_packet_created": True,
+    })
+    _write_json(control_dir / "artifact_index.json", existing_index)
+
+    ledger_path = control_dir / "episode_ledger.json"
+    existing_ledger = _read_ledger(ledger_path)
+    existing_ledger.extend([
+        {
+            "event_type": "segment_based_preview_rerender_executed",
+            "task_id": "RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001",
+            "stage": target_state,
+            "preview_render_count": 1,
+            "unique_asset_sources": source_count,
+            "duplicate_ratio": duplicate_ratio,
+            "preview_static_blocker": preview_static_blocker,
+            "timestamp": timestamp,
+        },
+        {
+            "event_type": "segment_based_preview_rerender_completed",
+            "current_state": target_state,
+            "next_allowed_action": target_action,
+            "production_accepted": False,
+            "voice_generation_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "timestamp": timestamp,
+        },
+    ])
+    _write_ledger(ledger_path, existing_ledger)
+
+    # ------------------------------------------------------------------
+    # Step 10: Return result
+    # ------------------------------------------------------------------
+    return {
+        "status": status,
+        "selected_branch": branch,
+        "task_id": "RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001",
+        "preview_render_executed": True,
+        "preview_render_count": 1,
+        "second_preview_render_attempted": False,
+        "segment_based_renderer_used": True,
+        "effective_unique_visual_sources": source_count,
+        "minimum_unique_sources_met": multi_source_valid,
+        "single_source_fallback_blocked": True,
+        "single_source_static_preview_detected": preview_static_blocker,
+        "duplicate_ratio": duplicate_ratio,
+        "duplicate_threshold": DUPLICATE_THRESHOLD,
+        "preview_static_blocker": preview_static_blocker,
+        "timeline_visual_progression_passed": not preview_static_blocker,
+        "contact_sheet_proves_progression": (
+            not preview_static_blocker and multi_source_valid
+        ),
+        "current_state": target_state,
+        "next_allowed_action": target_action,
+        "production_accepted": False,
+        "voice_generation_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "generation_performed": False,
+        "retry_attempted": False,
+        "comfyui_submit_executed": False,
+        "visual_acceptance_executed": False,
+        "operator_acceptance_faked": False,
+        "operator_review_required": not preview_static_blocker,
+        "message": message,
+        "timestamp": timestamp,
+    }
