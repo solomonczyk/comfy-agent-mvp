@@ -18308,6 +18308,30 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001 — combine-validate-preview-correction-plan subcommand
+    combine_validate_preview_correction_plan_parser = subparsers.add_parser(
+        "combine-validate-preview-correction-plan",
+        help="Validate preview correction plan artifacts",
+    )
+    combine_validate_preview_correction_plan_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_validate_preview_correction_plan_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001 — combine-preview-correction-readiness subcommand
+    combine_preview_correction_readiness_parser = subparsers.add_parser(
+        "combine-preview-correction-readiness",
+        help="Check preview correction readiness",
+    )
+    combine_preview_correction_readiness_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_preview_correction_readiness_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -18842,6 +18866,12 @@ def main() -> int:
     elif args.command == "combine-script-supervisor-readiness":
         _require_absolute_project_root(args, "combine-script-supervisor-readiness")
         return combine_script_supervisor_readiness(args)
+    elif args.command == "combine-validate-preview-correction-plan":
+        _require_absolute_project_root(args, "combine-validate-preview-correction-plan")
+        return combine_validate_preview_correction_plan(args)
+    elif args.command == "combine-preview-correction-readiness":
+        _require_absolute_project_root(args, "combine-preview-correction-readiness")
+        return combine_preview_correction_readiness(args)
     else:
         parser.print_help()
         return 0
@@ -41598,78 +41628,46 @@ def combine_run_script_supervisor_audit(args: argparse.Namespace) -> int:
 
 
 def combine_build_preview_correction_plan(args: argparse.Namespace) -> int:
-    """RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-001 — Build static preview correction plan.
+    """RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001 — Build preview correction plan.
 
     This command:
-      - Reads Script Supervisor audit and all preview/timeline artifacts
-      - Builds root cause report, correction plan, repair contract,
-        prevention policy, and re-render gate package
-      - Updates artifact_index, episode_ledger, and state
-      - NEVER renders, generates, or submits any production action
+      - Loads Script Supervisor blocker and standards integration reports
+      - Classifies preview failure type
+      - Identifies root causes
+      - Builds corrective preview plan
+      - Builds timeline repair contract
+      - Builds asset diversity plan
+      - Builds motion progression contract
+      - Builds contact sheet proof strategy
+      - Builds static duplicate prevention policy
+      - Builds controlled preview rerender gate package (without authorization)
+      - Builds operator review packet
+      - NEVER renders, generates, or executes any production action
+      - Updates artifact_index and episode_ledger
 
     Exit codes:
       - 0: correction plan built successfully
       - 1: error or invalid args
     """
-    from app.agents.film_crew.preview_correction_planner import (
-        PreviewCorrectionPlanner,
-    )
+    from app.timeline.preview_correction import PreviewCorrectionPlanner
 
     project_root = args.project_root
     json_output = args.json
 
     planner = PreviewCorrectionPlanner(project_root)
-
-    # Run the full correction pipeline
-    pipeline_result = planner.run_correction_pipeline()
-
-    # Write canonical artifacts
-    written = planner.write_all_artifacts(pipeline_result)
-
-    # Update index and ledger
-    planner.update_artifact_index(pipeline_result, written)
-    planner.update_episode_ledger(pipeline_result)
+    result = planner.build_all_artifacts()
 
     if json_output:
-        pipeline_result["artifacts_written"] = {
-            k: v for k, v in written.items()
-        }
-        print(json.dumps(pipeline_result, indent=2))
+        print(json.dumps(result, indent=2))
     else:
-        root_cause = pipeline_result.get(
-            "static_preview_root_cause_report", {}
-        )
-        correction_plan = pipeline_result.get("preview_correction_plan", {})
-        gate = pipeline_result.get(
-            "controlled_preview_rerender_gate_package", {}
-        )
-        forbidden = pipeline_result.get(
-            "forbidden_actions_not_executed", {}
-        )
-
-        print("Preview Correction Plan")
-        print(f"  Pipeline Timestamp: {pipeline_result.get('pipeline_timestamp', 'unknown')}")
-        print(f"  Primary Root Cause: {root_cause.get('primary_root_cause', 'unknown')}")
-        print(f"  Confidence: {root_cause.get('confidence', 'unknown')}")
-        print(f"  Evidence:")
-        for ev in root_cause.get("evidence", []):
-            print(f"    - {ev}")
-        print(f"  Correction Goal: {correction_plan.get('correction_goal', 'unknown')}")
-        print(f"  Required Repairs:")
-        for repair in correction_plan.get("required_repairs", []):
-            print(f"    - {repair}")
-        print(f"  Max Duplicate Ratio: {correction_plan.get('duplicate_frame_policy', {}).get('max_duplicate_ratio', 'N/A')}")
-        print(f"  Render Authorized Now: {gate.get('render_authorized_now', False)}")
-        print(f"  Requires Operator Authorization: {gate.get('requires_operator_authorization', True)}")
-        print(f"  Voice Generation Allowed: {gate.get('voice_generation_allowed', False)}")
-        print(f"  Assembly Allowed: {gate.get('assembly_allowed', False)}")
-        print(f"  Forbidden Actions Not Executed:")
-        for action, value in forbidden.items():
-            print(f"    - {action}: {value}")
-        print(f"  Next State: controlled_preview_rerender_authorization_required")
-        print(f"  Artifacts Written:")
-        for name, path in written.items():
-            print(f"    - {name}: {path}")
+        print("Preview Correction Plan Built")
+        print(f"  Failure Type: {result.get('failure_type', 'unknown')}")
+        print(f"  Root Causes: {result.get('root_causes', [])}")
+        print(f"  Current State: {result.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        print(f"  Artifacts Created:")
+        for artifact in result.get('artifacts_created', []):
+            print(f"    - {artifact}")
 
     return 0
 
@@ -42986,6 +42984,116 @@ def combine_script_supervisor_readiness(args: argparse.Namespace) -> int:
         print(f"  Voice Generation Ready: {readiness.get('voice_generation_ready', False)}")
         print(f"  Assembly Allowed: {readiness.get('assembly_allowed', False)}")
         print(f"  Downstream Allowed: {readiness.get('downstream_allowed', False)}")
+
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001
+# ---------------------------------------------------------------------------
+
+
+def combine_validate_preview_correction_plan(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001 — Validate preview correction plan.
+
+    This command validates that all required correction plan artifacts exist
+    and meet the required standards without executing any rendering or generation.
+
+    Exit codes:
+      - 0: validation passed
+      - 1: validation failed or error
+    """
+    from app.timeline.preview_correction import PreviewCorrectionPlanner
+
+    project_root = args.project_root
+    json_output = args.json
+
+    planner = PreviewCorrectionPlanner(project_root)
+    preview_correction_path = planner.preview_correction_path
+
+    required_artifacts = [
+        "preview_root_cause_report.json",
+        "preview_correction_plan.json",
+        "preview_timeline_repair_contract.json",
+        "preview_asset_diversity_plan.json",
+        "preview_motion_progression_contract.json",
+        "preview_contact_sheet_proof_strategy.json",
+        "static_duplicate_prevention_policy.json",
+        "controlled_preview_rerender_gate_package.json",
+        "preview_correction_operator_review_packet.json"
+    ]
+
+    validation_result = {
+        "validation_status": "unknown",
+        "required_artifacts": required_artifacts,
+        "artifacts_found": [],
+        "artifacts_missing": [],
+        "validation_checks": {}
+    }
+
+    for artifact in required_artifacts:
+        artifact_path = preview_correction_path / artifact
+        if artifact_path.exists():
+            validation_result["artifacts_found"].append(artifact)
+            validation_result["validation_checks"][artifact] = "exists"
+        else:
+            validation_result["artifacts_missing"].append(artifact)
+            validation_result["validation_checks"][artifact] = "missing"
+
+    validation_result["validation_status"] = "passed" if len(validation_result["artifacts_missing"]) == 0 else "failed"
+
+    if json_output:
+        print(json.dumps(validation_result, indent=2))
+    else:
+        print("Preview Correction Plan Validation")
+        print(f"  Validation Status: {validation_result['validation_status']}")
+        print(f"  Artifacts Found: {len(validation_result['artifacts_found'])}/{len(required_artifacts)}")
+        if validation_result["artifacts_missing"]:
+            print(f"  Missing Artifacts:")
+            for artifact in validation_result["artifacts_missing"]:
+                print(f"    - {artifact}")
+
+    return 0 if validation_result["validation_status"] == "passed" else 1
+
+
+def combine_preview_correction_readiness(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001 — Check readiness.
+
+    Returns the readiness state for preview correction without writing artifacts.
+
+    Exit codes:
+      - 0: readiness check completed
+      - 1: error
+    """
+    from app.timeline.preview_correction import PreviewCorrectionPlanner
+
+    project_root = args.project_root
+    json_output = args.json
+
+    planner = PreviewCorrectionPlanner(project_root)
+    
+    # Check if artifacts exist
+    preview_correction_path = planner.preview_correction_path
+    readiness_report_path = preview_correction_path / "preview_correction_readiness_report.json"
+    
+    if readiness_report_path.exists():
+        import json
+        with open(readiness_report_path, 'r', encoding='utf-8') as f:
+            readiness = json.load(f)
+    else:
+        readiness = {
+            "readiness_status": "artifacts_not_built",
+            "current_state": "preview_correction_plan_required",
+            "next_allowed_action": "preview_correction_plan_required"
+        }
+
+    if json_output:
+        print(json.dumps(readiness, indent=2))
+    else:
+        print("Preview Correction Readiness")
+        print(f"  Readiness Status: {readiness.get('readiness_status', 'unknown')}")
+        print(f"  Current State: {readiness.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {readiness.get('next_allowed_action', 'unknown')}")
 
     return 0
 

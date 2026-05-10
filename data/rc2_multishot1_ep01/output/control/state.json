@@ -1,0 +1,18 @@
+{
+  "current_state": "preview_correction_plan_required",
+  "next_allowed_action": "preview_correction_plan_required",
+  "production_accepted": false,
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "motion_progression_layer_created": true,
+  "legacy_static_hold_blocked": true,
+  "new_image_generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "voice_generation_executed": false,
+  "audio_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "timestamp": "2026-05-10T16:45:00+00:00"
+}
