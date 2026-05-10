@@ -4,10 +4,13 @@
   "task_id": "RC-COMBINE-V2-BRAIN-ENABLED-PREVIEW-REPAIR-ARCHITECT-001",
   "brain_model": {
     "primary_model_id": "deepseek-v4-flash",
-    "runtime_call_authorized_in_this_task": true,
+    "provider": "deepseek",
+    "api_key_source": "env:DEEPSEEK_V4_FLASH_API_KEY",
     "provider_validation_required": true,
+    "runtime_call_authorized_in_this_task": false,
     "fallback_model_required": true,
-    "hardcode_forbidden": true
+    "hardcode_forbidden": true,
+    "hidden_api_calls_forbidden": true
   },
   "allowed_tools": [
     "read_canonical_artifacts",

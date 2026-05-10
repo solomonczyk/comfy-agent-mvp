@@ -34,6 +34,12 @@ class BrainCallContract:
     deterministic_validation_required: bool = True
     brain_may_not_update_state_directly: bool = True
     brain_may_not_accept_visual_result: bool = True
+    brain_may_not_accept_audio_result: bool = True
+    brain_may_not_trigger_generation: bool = True
+    brain_may_not_trigger_preview_render: bool = True
+    brain_may_not_trigger_voice_generation: bool = True
+    brain_may_not_trigger_assembly: bool = True
+    brain_may_not_trigger_downstream: bool = True
     max_tokens: int = 4096
     request_timestamp: str = ""
     response_timestamp: str = ""
@@ -50,6 +56,12 @@ class BrainCallContract:
             "deterministic_validation_required": self.deterministic_validation_required,
             "brain_may_not_update_state_directly": self.brain_may_not_update_state_directly,
             "brain_may_not_accept_visual_result": self.brain_may_not_accept_visual_result,
+            "brain_may_not_accept_audio_result": self.brain_may_not_accept_audio_result,
+            "brain_may_not_trigger_generation": self.brain_may_not_trigger_generation,
+            "brain_may_not_trigger_preview_render": self.brain_may_not_trigger_preview_render,
+            "brain_may_not_trigger_voice_generation": self.brain_may_not_trigger_voice_generation,
+            "brain_may_not_trigger_assembly": self.brain_may_not_trigger_assembly,
+            "brain_may_not_trigger_downstream": self.brain_may_not_trigger_downstream,
             "max_tokens": self.max_tokens,
             "request_timestamp": self.request_timestamp,
             "response_timestamp": self.response_timestamp,

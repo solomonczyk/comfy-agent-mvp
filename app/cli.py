@@ -13322,6 +13322,79 @@ def combine_process_post_preview_human_decision(args: argparse.Namespace) -> int
     return 0
 
 
+def combine_validate_brain_provider(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-BRAIN-PROVIDER-VALIDATION-001 — Validate brain provider config.
+
+    Checks:
+    - DEEPSEEK_V4_FLASH_API_KEY is present in .env (never logs the value)
+    - Brain config reads key from env/config, not hardcode
+    - deepseek-v4-flash is configurable model id
+    - Fallback policy exists
+    - Provider base URL is configurable
+
+    Does NOT perform runtime API calls.
+
+    Exit codes:
+    - 0: config validation passed
+    - 1: config validation failed or error
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+    from app.agents.brain.brain_config import BrainProviderConfig
+    from app.agents.brain.brain_provider import validate_brain_provider, ENV_KEY_NAME
+    from app.agents.brain.brain_runtime_gate import BrainRuntimeGate
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    config = BrainProviderConfig.default()
+    provider_result = validate_brain_provider(config)
+
+    gate = BrainRuntimeGate(
+        operator_authorization_exists=False,
+        provider_config_present=provider_result.provider_config_present,
+        api_key_present=provider_result.api_key_present,
+        model_id_validated=provider_result.model_id_validated,
+        budget_limit_defined=config.budget_limit_defined,
+        brain_calls_used=0,
+        brain_output_advisory_only=True,
+    )
+    gate_result = gate.check()
+
+    # Build CLI output
+    output = {
+        "status": "pass" if provider_result.validation_status == "config_valid_runtime_not_executed" else "fail",
+        "provider": config.provider,
+        "primary_model_id": config.primary_model_id,
+        "env_key_name": ENV_KEY_NAME,
+        "api_key_present": provider_result.api_key_present,
+        "api_key_value_logged": False,
+        "model_id_config_driven": provider_result.model_id_config_driven,
+        "runtime_call_executed": False,
+        "runtime_smoke_test_authorization_required": True,
+        "production_accepted": False,
+    }
+
+    if json_output:
+        print(json.dumps(output, indent=2))
+    else:
+        print(f"Brain Provider Validation: {output['status'].upper()}")
+        print(f"  Provider: {output['provider']}")
+        print(f"  Primary Model ID: {output['primary_model_id']}")
+        print(f"  Env Key Name: {output['env_key_name']}")
+        print(f"  API Key Present: {output['api_key_present']}")
+        print(f"  API Key Value Logged: {output['api_key_value_logged']}")
+        print(f"  Model ID Config Driven: {output['model_id_config_driven']}")
+        print(f"  Runtime Call Executed: {output['runtime_call_executed']}")
+        print(f"  Runtime Smoke Test Authorization Required: {output['runtime_smoke_test_authorization_required']}")
+        print(f"  Production Accepted: {output['production_accepted']}")
+
+    return 0 if output["status"] == "pass" else 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -13612,6 +13685,22 @@ def main() -> int:
         help="Project root directory",
     )
     combine_status_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-BRAIN-PROVIDER-VALIDATION-001 — combine-validate-brain-provider subcommand
+    combine_validate_brain_provider_parser = subparsers.add_parser(
+        "combine-validate-brain-provider",
+        help="Validate brain provider config without runtime API calls",
+    )
+    combine_validate_brain_provider_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_brain_provider_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -17693,6 +17782,8 @@ def main() -> int:
         return init_project(args)
     elif args.command == "combine-status":
         return combine_status(args)
+    elif args.command == "combine-validate-brain-provider":
+        return combine_validate_brain_provider(args)
     elif args.command == "combine-run-script-supervisor-audit":
         return combine_run_script_supervisor_audit(args)
     elif args.command == "combine-build-preview-correction-plan":

@@ -1,0 +1,17 @@
+{
+  "authorization_type": "brain_runtime_smoke_test",
+  "operator_authorization_required": true,
+  "authorized_now": false,
+  "max_brain_calls_after_authorization": 1,
+  "allowed_prompt": "Return a short JSON healthcheck response for provider validation only.",
+  "brain_output_is_advisory_only": true,
+  "state_update_allowed": false,
+  "visual_acceptance_allowed": false,
+  "generation_allowed": false,
+  "preview_render_allowed": false,
+  "voice_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted_allowed": false,
+  "timestamp": "2026-05-10T09:08:17.535835+00:00"
+}

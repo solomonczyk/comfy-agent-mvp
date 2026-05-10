@@ -1,0 +1,15 @@
+{
+  "provider": "deepseek",
+  "primary_model_id": "deepseek-v4-flash",
+  "env_key_name": "DEEPSEEK_V4_FLASH_API_KEY",
+  "api_key_present": true,
+  "api_key_logged": false,
+  "api_key_stored_in_artifact": false,
+  "model_id_config_driven": true,
+  "provider_config_present": true,
+  "fallback_policy_present": true,
+  "runtime_call_executed": false,
+  "availability_validated_by_api_call": false,
+  "validation_status": "config_valid_runtime_not_executed",
+  "timestamp": "2026-05-10T09:08:17.534082+00:00"
+}

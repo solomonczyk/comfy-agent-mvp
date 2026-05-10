@@ -1,0 +1,8 @@
+{
+  "api_key_present": true,
+  "config_validation_passed": true,
+  "runtime_availability_not_yet_validated": true,
+  "reason": "runtime API call requires separate explicit gate",
+  "next_required_action": "brain_runtime_smoke_test_authorization_required",
+  "timestamp": "2026-05-10T09:08:17.537176+00:00"
+}

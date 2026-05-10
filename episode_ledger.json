@@ -48,6 +48,12 @@
       "event": "artifact_index_created",
       "timestamp": "2026-05-08T08:08:44+02:00",
       "details": "Index of all 10 required artifacts created"
+    },
+    {
+      "event": "brain_provider_config_validated",
+      "timestamp": "2026-05-10T09:09:59.041953+00:00",
+      "details": "RC-COMBINE-V2-BRAIN-PROVIDER-VALIDATION-001: DeepSeek V4 Flash brain provider config validated. API key present. Runtime smoke test authorization required. No API call executed.",
+      "task_id": "RC-COMBINE-V2-BRAIN-PROVIDER-VALIDATION-001"
     }
   ],
   "current_state": "v10_generation_authorization_required",
@@ -58,5 +64,10 @@
   "assembly_allowed": false,
   "downstream_allowed": false,
   "end_time": null,
-  "duration_seconds": null
+  "duration_seconds": null,
+  "brain_provider_config_validated": true,
+  "runtime_smoke_test_pending": true,
+  "preview_pipeline_state_unchanged": true,
+  "brain_runtime_call_executed": false,
+  "brain_hidden_api_calls_forbidden": true
 }

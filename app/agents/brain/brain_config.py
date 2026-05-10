@@ -22,12 +22,13 @@ class BrainProviderConfig:
     """
 
     primary_model_id: str = "deepseek-v4-flash"
-    provider: str = "configurable"
-    api_key_source: str = "env"
+    provider: str = "deepseek"
+    api_key_source: str = "env:DEEPSEEK_V4_FLASH_API_KEY"
     fallback_model_id: str = "configurable"
     max_calls_per_task: int = 2
     max_tokens_per_call: int = 4096
     runtime_call_authorized: bool = False
+    runtime_call_authorized_by_default: bool = False
 
     # Hardcode prevention
     hardcode_forbidden: bool = True
@@ -37,6 +38,9 @@ class BrainProviderConfig:
     pricing_limits_validation_required: bool = True
     fallback_model_required: bool = True
     hidden_api_calls_forbidden: bool = True
+
+    # Configurability
+    provider_base_url_configurable: bool = True
 
     # Budget
     budget_limit_defined: bool = False
@@ -53,8 +57,10 @@ class BrainProviderConfig:
             primary_model_id=os.environ.get(
                 "BRAIN_PRIMARY_MODEL_ID", "deepseek-v4-flash"
             ),
-            provider=os.environ.get("BRAIN_PROVIDER", "configurable"),
-            api_key_source=os.environ.get("BRAIN_API_KEY_SOURCE", "env"),
+            provider=os.environ.get("BRAIN_PROVIDER", "deepseek"),
+            api_key_source=os.environ.get(
+                "BRAIN_API_KEY_SOURCE", "env:DEEPSEEK_V4_FLASH_API_KEY"
+            ),
             fallback_model_id=os.environ.get(
                 "BRAIN_FALLBACK_MODEL_ID", "configurable"
             ),
@@ -65,6 +71,8 @@ class BrainProviderConfig:
                 os.environ.get("BRAIN_MAX_TOKENS_PER_CALL", "4096")
             ),
             runtime_call_authorized=False,
+            runtime_call_authorized_by_default=False,
+            provider_base_url_configurable=True,
         )
 
     def to_dict(self) -> dict:
@@ -76,6 +84,7 @@ class BrainProviderConfig:
             "max_calls_per_task": self.max_calls_per_task,
             "max_tokens_per_call": self.max_tokens_per_call,
             "runtime_call_authorized": self.runtime_call_authorized,
+            "runtime_call_authorized_by_default": self.runtime_call_authorized_by_default,
             "hardcode_forbidden": self.hardcode_forbidden,
             "provider_validation_required": self.provider_validation_required,
             "exact_model_id_validation_required": self.exact_model_id_validation_required,
@@ -83,6 +92,7 @@ class BrainProviderConfig:
             "pricing_limits_validation_required": self.pricing_limits_validation_required,
             "fallback_model_required": self.fallback_model_required,
             "hidden_api_calls_forbidden": self.hidden_api_calls_forbidden,
+            "provider_base_url_configurable": self.provider_base_url_configurable,
             "budget_limit_defined": self.budget_limit_defined,
             "max_budget_per_task": self.max_budget_per_task,
         }

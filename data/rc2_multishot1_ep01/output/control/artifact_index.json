@@ -936,5 +936,15 @@
   "controlled_preview_rerender_v3_manifest_created": true,
   "controlled_preview_rerender_v3_result_review_created": true,
   "controlled_preview_rerender_v3_static_detection_report_created": true,
-  "controlled_preview_rerender_v3_operator_review_packet_created": true
+  "controlled_preview_rerender_v3_operator_review_packet_created": true,
+  "brain_provider_validation_report": "brain_provider_validation_report.json",
+  "brain_runtime_gate_validation_report": "brain_runtime_gate_validation_report.json",
+  "brain_runtime_smoke_test_authorization_request": "brain_runtime_smoke_test_authorization_request.json",
+  "brain_provider_resolution_decision": "brain_provider_resolution_decision.json",
+  "preview_repair_architect_agent_contract": "preview_repair_architect_agent_contract.json",
+  "brain_provider_config_validated": true,
+  "runtime_smoke_test_pending": true,
+  "preview_pipeline_state_unchanged": true,
+  "brain_runtime_call_executed": false,
+  "brain_hidden_api_calls_forbidden": true
 }

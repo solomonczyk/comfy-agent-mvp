@@ -1920,5 +1920,19 @@
     "assembly_executed": false,
     "downstream_executed": false,
     "timestamp": "2026-05-10T07:54:52.340941+00:00"
+  },
+  {
+    "event_type": "brain_provider_config_validated",
+    "task_id": "RC-COMBINE-V2-BRAIN-PROVIDER-VALIDATION-001",
+    "stage": "brain_provider_config_validation",
+    "brain_provider_config_validated": true,
+    "runtime_smoke_test_pending": true,
+    "preview_pipeline_state_unchanged": true,
+    "brain_runtime_call_executed": false,
+    "brain_hidden_api_calls_forbidden": true,
+    "production_accepted": false,
+    "current_state": "preview_correction_plan_required",
+    "next_allowed_action": "brain_runtime_smoke_test_authorization_required",
+    "timestamp": "2026-05-10T09:21:50.231429+00:00"
   }
 ]
