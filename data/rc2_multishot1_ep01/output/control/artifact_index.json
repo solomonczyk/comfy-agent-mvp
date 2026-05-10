@@ -955,7 +955,7 @@
   "preview_artifacts_found": true,
   "script_supervisor_agent_created": true,
   "script_supervisor_audit_executed": true,
-  "script_supervisor_audit_timestamp": "2026-05-10T14:18:03.959682+00:00",
+  "script_supervisor_audit_timestamp": "2026-05-10T15:23:23.072186+00:00",
   "script_supervisor_blocker_active": true,
   "script_supervisor_blocker_type": "invalid_static_preview_and_rejected_voice",
   "preview_valid": false,

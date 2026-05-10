@@ -22,6 +22,167 @@ from typing import Any, Dict, List
 from PIL import Image, UnidentifiedImageError
 
 
+def combine_qa_repairability_inspect(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001 — Inspect defect repairability.
+
+    This command inspects repairability information for specific defects
+    or lists all repair tools in the registry. Does NOT execute generation,
+    QA, or downstream operations.
+
+    Exit codes:
+    - 0: success
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from app.qa.repairability_gate import load_qa_repairability_gate
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    defect_id = getattr(args, "defect_id", None)
+    tool_id = getattr(args, "tool_id", None)
+    standards_pack_dir = project_root / "output" / "control" / "standards_pack"
+
+    try:
+        gate = load_qa_repairability_gate(standards_pack_dir)
+
+        if defect_id:
+            result = gate.inspect_defect_repairability(defect_id)
+        elif tool_id:
+            result = gate.inspect_repair_tool(tool_id)
+        else:
+            tools = gate.list_all_repair_tools()
+            result = {"repair_tools": tools, "count": len(tools)}
+
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            if defect_id:
+                print(f"Defect Repairability: {defect_id}")
+                print(json.dumps(result, indent=2))
+            elif tool_id:
+                print(f"Repair Tool: {tool_id}")
+                print(json.dumps(result, indent=2))
+            else:
+                print(f"Available Repair Tools: {len(tools)}")
+                for tool in tools:
+                    print(f"  - {tool['tool_id']}: {tool.get('description', 'N/A')}")
+        return 0
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
+def combine_qa_repairability_validate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001 — Validate repairability assessment.
+
+    This command validates repairability assessment for a list of defects
+    without applying blocking rules. Does NOT execute generation, QA, or downstream.
+
+    Exit codes:
+    - 0: all defects repairable
+    - 1: some defects not repairable or error
+    """
+    import json
+    from pathlib import Path
+    from app.qa.repairability_gate import load_qa_repairability_gate
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    defects = getattr(args, "defects", [])
+    available_tools = getattr(args, "available_tools", None)
+    standards_pack_dir = project_root / "output" / "control" / "standards_pack"
+
+    try:
+        gate = load_qa_repairability_gate(standards_pack_dir)
+        assessment = gate.validate_repairability_assessment(
+            defects=defects,
+            available_tools=available_tools
+        )
+
+        all_repairable = assessment.get("all_defects_repairable_before_next_stage", False)
+
+        if json_output:
+            print(json.dumps(assessment, indent=2))
+        else:
+            print("Repairability Validation:")
+            print(f"  Defects: {defects}")
+            print(f"  All Repairable: {all_repairable}")
+            if not all_repairable:
+                print(f"  Unrepairable: {assessment.get('unrepairable_defects', [])}")
+                print(f"  Unknown: {assessment.get('unknown_repairability_defects', [])}")
+            print(f"  Required Fix Stage: {assessment.get('required_fix_stage', 'N/A')}")
+
+        return 0 if all_repairable else 1
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
+def combine_qa_repairability_decision(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001 — Get QA repairability decision.
+
+    This command evaluates QA decision with repairability assessment and
+    applies hard blocking rules. Does NOT execute generation, QA, or downstream.
+
+    Exit codes:
+    - 0: pass (defects repairable)
+    - 1: blocked or error
+    """
+    import json
+    from pathlib import Path
+    from app.qa.repairability_gate import load_qa_repairability_gate
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    defects = getattr(args, "defects", [])
+    technical_pass = getattr(args, "technical_pass", True)
+    visual_acceptance = getattr(args, "visual_acceptance", False)
+    generation_gate_open = getattr(args, "generation_gate_open", False)
+    standards_pack_dir = project_root / "output" / "control" / "standards_pack"
+
+    try:
+        gate = load_qa_repairability_gate(standards_pack_dir)
+        result = gate.evaluate(
+            defects=defects,
+            technical_checks_passed=technical_pass,
+            visual_or_editorial_acceptance=visual_acceptance,
+            generation_gate_open=generation_gate_open
+        )
+
+        decision = result.get("qa_decision", "unknown")
+        blocked = decision in ["blocked", "requires_corrective_plan"]
+
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print("QA Repairability Decision:")
+            print(f"  Decision: {decision}")
+            print(f"  Defects: {defects}")
+            print(f"  Technical Pass: {technical_pass}")
+            print(f"  Visual Acceptance: {visual_acceptance}")
+            print(f"  Generation Gate Open: {generation_gate_open}")
+            print(f"  Production Accepted: {result.get('production_accepted', False)}")
+            print(f"  Next Action: {result.get('next_allowed_action', 'N/A')}")
+
+        return 0 if not blocked else 1
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
 def combine_status(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-0 — Get Combine V2 orchestrator status.
     
@@ -14195,6 +14356,111 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001 — combine-qa-repairability-inspect subcommand
+    combine_qa_repairability_inspect_parser = subparsers.add_parser(
+        "combine-qa-repairability-inspect",
+        help="Inspect defect repairability information"
+    )
+    combine_qa_repairability_inspect_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_qa_repairability_inspect_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_qa_repairability_inspect_parser.add_argument(
+        "--defect-id",
+        type=str,
+        default=None,
+        help="Specific defect ID to inspect",
+    )
+    combine_qa_repairability_inspect_parser.add_argument(
+        "--tool-id",
+        type=str,
+        default=None,
+        help="Specific repair tool ID to inspect",
+    )
+    combine_qa_repairability_inspect_parser.set_defaults(
+        func=combine_qa_repairability_inspect
+    )
+
+    # RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001 — combine-qa-repairability-validate subcommand
+    combine_qa_repairability_validate_parser = subparsers.add_parser(
+        "combine-qa-repairability-validate",
+        help="Validate repairability assessment for defects"
+    )
+    combine_qa_repairability_validate_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_qa_repairability_validate_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_qa_repairability_validate_parser.add_argument(
+        "--defects",
+        nargs="+",
+        default=[],
+        help="List of defect IDs to validate",
+    )
+    combine_qa_repairability_validate_parser.add_argument(
+        "--available-tools",
+        nargs="+",
+        default=None,
+        help="List of available repair tool IDs",
+    )
+    combine_qa_repairability_validate_parser.set_defaults(
+        func=combine_qa_repairability_validate
+    )
+
+    # RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001 — combine-qa-repairability-decision subcommand
+    combine_qa_repairability_decision_parser = subparsers.add_parser(
+        "combine-qa-repairability-decision",
+        help="Get QA repairability decision with blocking rules"
+    )
+    combine_qa_repairability_decision_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_qa_repairability_decision_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_qa_repairability_decision_parser.add_argument(
+        "--defects",
+        nargs="+",
+        default=[],
+        help="List of defect IDs to evaluate",
+    )
+    combine_qa_repairability_decision_parser.add_argument(
+        "--technical-pass",
+        action="store_true",
+        default=True,
+        help="Technical checks passed",
+    )
+    combine_qa_repairability_decision_parser.add_argument(
+        "--visual-acceptance",
+        action="store_true",
+        default=False,
+        help="Visual/editorial acceptance status",
+    )
+    combine_qa_repairability_decision_parser.add_argument(
+        "--generation-gate-open",
+        action="store_true",
+        default=False,
+        help="Generation gate open status",
+    )
+    combine_qa_repairability_decision_parser.set_defaults(
+        func=combine_qa_repairability_decision
+    )
+
     # RC-COMBINE-V2-0 — combine-run-stage subcommand
     combine_run_stage_parser = subparsers.add_parser("combine-run-stage", help="Run a Combine V2 orchestrator stage")
     combine_run_stage_parser.add_argument(
@@ -18359,6 +18625,12 @@ def main() -> int:
         return init_project(args)
     elif args.command == "combine-status":
         return combine_status(args)
+    elif args.command == "combine-qa-repairability-inspect":
+        return combine_qa_repairability_inspect(args)
+    elif args.command == "combine-qa-repairability-validate":
+        return combine_qa_repairability_validate(args)
+    elif args.command == "combine-qa-repairability-decision":
+        return combine_qa_repairability_decision(args)
     elif args.command == "combine-validate-brain-provider":
         return combine_validate_brain_provider(args)
     elif args.command == "combine-run-brain-runtime-smoke-test":
