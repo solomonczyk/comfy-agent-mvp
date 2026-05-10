@@ -1128,5 +1128,14 @@
   "standards_integration_script_supervisor_binding_report": "standards_integration/script_supervisor_standards_binding_report.json",
   "standards_integration_state_audit_binding_report": "standards_integration/state_audit_standards_binding_report.json",
   "standards_integration_operator_review_packet": "standards_integration/operator_review_standards_packet.json",
-  "script_supervisor_standards_driven": true
+  "script_supervisor_standards_driven": true,
+  "preview_correction_plan_freeze_fix_002_report": "preview_correction_plan_freeze_fix_002_report.json",
+  "preview_correction_plan_freeze_fix_002_report_created": true,
+  "preview_correction_plan_freeze_fix_002_task_id": "RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-FREEZE-FIX-002",
+  "preview_correction_plan_freeze_fix_002_previous_task": "RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-FREEZE-FIX-001",
+  "preview_correction_plan_freeze_fix_002_git_dirty_fixed": true,
+  "preview_correction_plan_freeze_fix_002_artifact_index_updated": true,
+  "preview_correction_plan_freeze_fix_002_episode_ledger_updated": true,
+  "preview_correction_plan_freeze_fix_002_prompt_pack_restored_safely": true,
+  "preview_correction_plan_freeze_fix_002_verdict": "ACCEPTED"
 }

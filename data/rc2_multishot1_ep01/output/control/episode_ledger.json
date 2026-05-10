@@ -2419,5 +2419,36 @@
     "visual_acceptance_executed": false,
     "assembly_executed": false,
     "downstream_executed": false
+  },
+  {
+    "event_type": "freeze_proof_contradiction_fix",
+    "task_id": "RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-FREEZE-FIX-002",
+    "previous_task": "RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-FREEZE-FIX-001",
+    "previous_verdict": "NEEDS_FIX",
+    "timestamp": "2026-05-10T16:47:00+00:00",
+    "contradictions_fixed": {
+      "git_dirty_vs_git_status_clean_fixed": true,
+      "artifact_index_updated_false_resolved": true,
+      "episode_ledger_updated_false_resolved": true
+    },
+    "prompt_pack_handling": {
+      "path": "data/artifact_proofs/prompt_pack.json",
+      "was_modified": true,
+      "resolution": "restored_safely",
+      "destructive_git_used": false
+    },
+    "git_status_clean": true,
+    "preview_correction_plan_accepted": true,
+    "preview_rerender_executed": false,
+    "generation_performed": false,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "artifact_index_updated": true,
+    "episode_ledger_updated": true,
+    "current_state": "preview_correction_plan_required",
+    "next_allowed_action": "controlled_preview_rerender_authorization_required",
+    "verdict": "ACCEPTED"
   }
 ]
