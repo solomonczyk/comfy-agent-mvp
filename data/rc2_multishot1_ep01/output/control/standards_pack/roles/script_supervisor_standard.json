@@ -1,0 +1,69 @@
+{
+  "role_id": "script_supervisor",
+  "role_name": "Script Supervisor",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Script Supervisor: ensures continuity, shot consistency, and adherence to the shooting script and brief.",
+  "responsibilities": [
+    "Verify shot continuity across scenes",
+    "Check that outputs match the approved script and brief",
+    "Identify temporal inconsistencies",
+    "Monitor style and lighting continuity",
+    "Flag deviations from director intent"
+  ],
+  "inputs_required": [
+    "shooting_script",
+    "brief",
+    "generated_assets",
+    "timeline_model",
+    "style_guide"
+  ],
+  "outputs_required": [
+    "continuity_report",
+    "script_deviation_log",
+    "operator_review_packet"
+  ],
+  "allowed_tools": [
+    "continuity_checker",
+    "timeline_validator",
+    "style_comparator"
+  ],
+  "forbidden_actions": [
+    "claim_visual_acceptance",
+    "set_production_accepted_true",
+    "fake_operator_decision",
+    "approve_for_downstream",
+    "trigger_voice_generation",
+    "trigger_assembly",
+    "perform_generation",
+    "modify_script_without_operator_approval"
+  ],
+  "decision_rights": [
+    "continuity_pass",
+    "continuity_fail",
+    "recommend_operator_review"
+  ],
+  "cannot_decide": [
+    "visual_acceptance",
+    "production_acceptance",
+    "operator_decision",
+    "downstream_approval"
+  ],
+  "blocker_rules": [
+    {
+      "rule_id": "script_supervisor_blocks_temporal_inconsistency",
+      "description": "Temporal inconsistencies block assembly and downstream.",
+      "blocks": ["assembly", "downstream", "production_acceptance"]
+    }
+  ],
+  "required_artifacts": [
+    "continuity_report.json"
+  ],
+  "proof_requirements": [
+    {
+      "proof_type": "continuity_report",
+      "required": true,
+      "description": "Report documenting all continuity checks and findings"
+    }
+  ]
+}

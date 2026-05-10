@@ -1,0 +1,57 @@
+{
+  "policy_id": "production_acceptance_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Policy governing final production acceptance. Only operator can set production_accepted=true.",
+  "applies_to_roles": ["operator_review"],
+  "prerequisites": [
+    "operator_visual_review_completed_with_accepted_verdict",
+    "qa_technical_pass_recorded",
+    "qc_process_compliance_passed",
+    "tester_validation_passed",
+    "script_supervisor_continuity_passed",
+    "state_audit_clean",
+    "git_clean_with_commit_and_push",
+    "no_blocker_defects_remaining",
+    "no_forbidden_actions_in_history"
+  ],
+  "rules": [
+    {
+      "rule_id": "production_accepted_blocked_without_operator_gate",
+      "condition": {
+        "operator_final_approval": false
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "operator_final_approval_required"
+    },
+    {
+      "rule_id": "production_accepted_true_requires_explicit_operator",
+      "condition": {
+        "operator_final_approval": true,
+        "decision_source": "human_operator"
+      },
+      "decision": "pass",
+      "production_accepted": true,
+      "next_allowed_action": "downstream_allowed"
+    },
+    {
+      "rule_id": "agent_cannot_set_production_accepted",
+      "condition": {
+        "decision_source": "agent_or_cli"
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "operator_final_approval_required"
+    },
+    {
+      "rule_id": "production_blocked_if_any_prerequisite_missing",
+      "condition": {
+        "any_prerequisite_missing": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "prerequisite_completion_required"
+    }
+  ]
+}

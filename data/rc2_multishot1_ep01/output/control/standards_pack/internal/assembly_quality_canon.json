@@ -1,0 +1,42 @@
+{
+  "canon_id": "assembly_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Assembly quality canon for scene and episode assembly from component assets.",
+  "scope": "assembly",
+  "quality_dimensions": [
+    {
+      "dimension_id": "asset_completeness",
+      "name": "Asset Completeness",
+      "description": "All required assets must be present and valid.",
+      "acceptance_criteria": "Every asset referenced in assembly plan exists and passes validation.",
+      "rejection_criteria": "Missing assets, stub files, or validation failures in required components.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "codec_compliance",
+      "name": "Codec Compliance",
+      "description": "Output must use approved codecs and containers.",
+      "acceptance_criteria": "Video codec from approved list. Container matches delivery spec.",
+      "rejection_criteria": "Unapproved codec or container format.",
+      "severity_if_failed": "critical"
+    },
+    {
+      "dimension_id": "resolution_framerate",
+      "name": "Resolution and Framerate",
+      "description": "Output must match approved resolution and framerate.",
+      "acceptance_criteria": "Resolution and fps match delivery spec exactly.",
+      "rejection_criteria": "Wrong resolution, fps, or aspect ratio.",
+      "severity_if_failed": "critical"
+    },
+    {
+      "dimension_id": "subtitle_integrity",
+      "name": "Subtitle Integrity",
+      "description": "Subtitles must be present, readable, and timed correctly.",
+      "acceptance_criteria": "Subtitles match script. Timing within +/- 200ms. Readable styling.",
+      "rejection_criteria": "Missing subtitles, wrong text, or unreadable styling.",
+      "severity_if_failed": "major"
+    }
+  ],
+  "references": []
+}

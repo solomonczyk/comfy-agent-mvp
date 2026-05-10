@@ -1,0 +1,34 @@
+{
+  "canon_id": "anatomy_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Anatomy quality canon for full-body and partial-body figures.",
+  "scope": "anatomy",
+  "quality_dimensions": [
+    {
+      "dimension_id": "limb_count",
+      "name": "Limb Count",
+      "description": "Correct number of limbs for the species or character type.",
+      "acceptance_criteria": "Humans: 2 arms, 2 legs, 10 fingers, 10 toes.",
+      "rejection_criteria": "Extra or missing limbs, fingers, or toes.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "joint_plausibility",
+      "name": "Joint Plausibility",
+      "description": "Joints must bend in anatomically possible directions.",
+      "acceptance_criteria": "Elbows and knees bend in one primary direction. Shoulder and hip rotation natural.",
+      "rejection_criteria": "Joints bend backwards or rotate impossibly.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "proportion",
+      "name": "Proportion",
+      "description": "Body proportions must be within human variance unless stylized.",
+      "acceptance_criteria": "Head-to-body ratio appropriate. Limbs proportional to torso.",
+      "rejection_criteria": "Giraffe neck, t-rex arms, or other gross proportion errors.",
+      "severity_if_failed": "critical"
+    }
+  ],
+  "references": []
+}

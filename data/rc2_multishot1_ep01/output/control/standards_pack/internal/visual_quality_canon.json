@@ -1,0 +1,77 @@
+{
+  "canon_id": "visual_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Visual quality canon defining acceptance and rejection criteria for static images.",
+  "scope": "visual",
+  "quality_dimensions": [
+    {
+      "dimension_id": "sharpness",
+      "name": "Sharpness",
+      "description": "Image edges and fine details must be crisp and well-defined.",
+      "acceptance_criteria": "No visible blur in subject focal areas. Texture detail readable at 100% zoom.",
+      "rejection_criteria": "Subject focal area shows motion blur, defocus, or compression artifacts masking detail.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "anatomy_correctness",
+      "name": "Anatomy Correctness",
+      "description": "Human and creature anatomy must be physically plausible.",
+      "acceptance_criteria": "Correct limb count, joint placement, and proportions. Hands have 5 fingers with natural spacing.",
+      "rejection_criteria": "Extra limbs, fused fingers, impossible joints, or gross proportion errors.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "face_integrity",
+      "name": "Face Integrity",
+      "description": "Face must be natural, symmetric within human variance, and identity-consistent.",
+      "acceptance_criteria": "Eyes match in gaze and shape. Mouth and teeth are natural. No distortion.",
+      "rejection_criteria": "Mismatched eyes, distorted mouth, bad teeth, or face warping.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "identity_fidelity",
+      "name": "Identity Fidelity",
+      "description": "Character identity must match the approved reference within acceptable drift.",
+      "acceptance_criteria": "Character is recognizable as the approved reference. Key traits preserved.",
+      "rejection_criteria": "Character appears as a different person or core identity traits are lost.",
+      "severity_if_failed": "critical"
+    },
+    {
+      "dimension_id": "style_adherence",
+      "name": "Style Adherence",
+      "description": "Visual style must match the approved style guide.",
+      "acceptance_criteria": "Style matches brief and reference images (photoreal, painterly, etc.).",
+      "rejection_criteria": "Style drifts into unapproved territory (anime, cartoon, stock-photo look when not requested).",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "composition",
+      "name": "Composition",
+      "description": "Shot framing and subject placement must follow director intent.",
+      "acceptance_criteria": "Subject properly framed. Head not cropped unless intentional. Rule of thirds respected.",
+      "rejection_criteria": "Bad framing, unintended cropping, subject too small or off-center without reason.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "color_accuracy",
+      "name": "Color Accuracy",
+      "description": "Color palette must align with approved color script.",
+      "acceptance_criteria": "Dominant colors match color script. No unintended color casts.",
+      "rejection_criteria": "Severe color shift that contradicts mood or continuity.",
+      "severity_if_failed": "warning"
+    },
+    {
+      "dimension_id": "lighting_consistency",
+      "name": "Lighting Consistency",
+      "description": "Light direction, quality, and mood must be consistent within the scene.",
+      "acceptance_criteria": "Light source direction consistent. Shadows plausible. Mood matches scene.",
+      "rejection_criteria": "Conflicting light sources, impossible shadows, or mood-breaking lighting errors.",
+      "severity_if_failed": "warning"
+    }
+  ],
+  "references": [
+    "positive_reference_registry.json",
+    "negative_reference_registry.json"
+  ]
+}

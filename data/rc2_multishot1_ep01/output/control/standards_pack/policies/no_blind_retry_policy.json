@@ -1,0 +1,52 @@
+{
+  "policy_id": "no_blind_retry_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Policy prohibiting blind retries. Every retry must include explicit corrective changes.",
+  "applies_to_roles": ["qa_agent", "qc_agent", "operator_review"],
+  "prohibited_actions": [
+    "identical_parameter_retry_without_changes",
+    "retry_without_correction_plan",
+    "retry_without_operator_authorization",
+    "retry_without_documented_reason",
+    "auto_retry_on_failure"
+  ],
+  "required_for_retry": [
+    "correction_plan_documented",
+    "parameter_changes_specified",
+    "operator_authorization_recorded",
+    "previous_failure_analyzed",
+    "max_retry_count_not_exceeded"
+  ],
+  "rules": [
+    {
+      "rule_id": "blind_retry_blocked",
+      "condition": {
+        "retry_attempted": true,
+        "correction_plan_exists": false
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "correction_plan_required"
+    },
+    {
+      "rule_id": "retry_without_operator_auth_blocked",
+      "condition": {
+        "retry_attempted": true,
+        "operator_authorization": false
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "operator_authorization_required"
+    },
+    {
+      "rule_id": "max_retry_exceeded_blocked",
+      "condition": {
+        "retry_count": "> max_retries"
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "operator_strategy_review_required"
+    }
+  ]
+}

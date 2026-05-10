@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Standard Artifact Schema",
+  "type": "object",
+  "required": ["standard_id", "version", "applies_to"],
+  "properties": {
+    "standard_id": {
+      "type": "string",
+      "description": "Unique identifier for this standard artifact"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$",
+      "description": "SemVer version of the standard"
+    },
+    "applies_to": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["qa", "qc", "tester", "visual_qa", "script_supervisor", "state_audit_guard", "operator_review"]
+      },
+      "description": "Roles this standard applies to"
+    },
+    "description": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "created_at": {
+      "type": "string"
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "rule_type"],
+        "properties": {
+          "rule_id": { "type": "string" },
+          "rule_type": {
+            "type": "string",
+            "enum": ["must", "must_not", "should", "should_not", "non_negotiable"]
+          },
+          "description": { "type": "string" },
+          "scope": { "type": "string" },
+          "severity_if_broken": {
+            "type": "string",
+            "enum": ["info", "warning", "major", "critical", "blocker"]
+          }
+        }
+      }
+    }
+  }
+}

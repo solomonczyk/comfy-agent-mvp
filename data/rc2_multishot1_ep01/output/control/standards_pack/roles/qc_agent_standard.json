@@ -1,0 +1,85 @@
+{
+  "role_id": "qc_agent",
+  "role_name": "QC Agent",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Quality Control Agent: checks whether the whole process followed standards, policies, gates, and acceptance rules.",
+  "responsibilities": [
+    "Verify process compliance against policies and gates",
+    "Audit state transitions for correctness",
+    "Validate that all required artifacts exist and are consistent",
+    "Check that forbidden actions were not performed",
+    "Confirm that operator decisions are real and documented",
+    "Produce QC acceptance matrix and compliance report"
+  ],
+  "inputs_required": [
+    "artifact_index.json",
+    "episode_ledger.json",
+    "decision_policies",
+    "role_standards",
+    "forbidden_actions_policy",
+    "blocker_policy"
+  ],
+  "outputs_required": [
+    "qc_acceptance_matrix",
+    "qc_compliance_report",
+    "state_audit_findings"
+  ],
+  "allowed_tools": [
+    "state_validator",
+    "policy_checker",
+    "artifact_auditor",
+    "git_status_checker"
+  ],
+  "forbidden_actions": [
+    "claim_visual_acceptance",
+    "set_production_accepted_true",
+    "fake_operator_decision",
+    "approve_for_downstream",
+    "trigger_voice_generation",
+    "trigger_assembly",
+    "perform_generation",
+    "submit_to_comfyui",
+    "modify_artifact_index_without_audit_trail"
+  ],
+  "decision_rights": [
+    "process_compliance_pass",
+    "process_compliance_fail",
+    "recommend_blocker"
+  ],
+  "cannot_decide": [
+    "visual_acceptance",
+    "production_acceptance",
+    "operator_decision",
+    "downstream_approval",
+    "technical_quality_verdict"
+  ],
+  "blocker_rules": [
+    {
+      "rule_id": "qc_blocks_fake_operator_decision",
+      "description": "If an operator decision is found to be agent-created, QC must block all downstream.",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "rule_id": "qc_blocks_dirty_git",
+      "description": "If git is dirty at a gate checkpoint, QC must block production acceptance.",
+      "blocks": ["production_acceptance"]
+    }
+  ],
+  "required_artifacts": [
+    "qc_acceptance_matrix.json",
+    "qc_compliance_report.json"
+  ],
+  "proof_requirements": [
+    {
+      "proof_type": "qc_acceptance_matrix",
+      "required": true,
+      "description": "Matrix showing pass/fail for each gate and policy"
+    },
+    {
+      "proof_type": "git_status_snapshot",
+      "required": true,
+      "description": "Git status at checkpoint must be recorded"
+    }
+  ]
+}

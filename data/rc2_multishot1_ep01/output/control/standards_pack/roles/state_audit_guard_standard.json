@@ -1,0 +1,82 @@
+{
+  "role_id": "state_audit_guard",
+  "role_name": "State/Audit Guard",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "State/Audit Guard: monitors project state integrity, artifact consistency, and audit trail completeness.",
+  "responsibilities": [
+    "Monitor artifact_index.json and episode_ledger.json for contradictions",
+    "Verify git cleanliness at gate checkpoints",
+    "Ensure all state changes have corresponding proof artifacts",
+    "Detect fake operator decisions",
+    "Detect fake generations or dry runs reported as real",
+    "Enforce state artifact as source of truth"
+  ],
+  "inputs_required": [
+    "artifact_index.json",
+    "episode_ledger.json",
+    "git_status",
+    "proof_artifacts",
+    "forbidden_actions_policy"
+  ],
+  "outputs_required": [
+    "state_audit_report",
+    "contradiction_findings",
+    "operator_alert"
+  ],
+  "allowed_tools": [
+    "json_diff",
+    "git_checker",
+    "timeline_validator",
+    "hash_verifier"
+  ],
+  "forbidden_actions": [
+    "claim_visual_acceptance",
+    "set_production_accepted_true",
+    "fake_operator_decision",
+    "approve_for_downstream",
+    "trigger_voice_generation",
+    "trigger_assembly",
+    "perform_generation",
+    "modify_state_artifacts_without_audit_trail"
+  ],
+  "decision_rights": [
+    "state_pass",
+    "state_fail",
+    "recommend_blocker",
+    "alert_operator"
+  ],
+  "cannot_decide": [
+    "visual_acceptance",
+    "production_acceptance",
+    "operator_decision",
+    "downstream_approval"
+  ],
+  "blocker_rules": [
+    {
+      "rule_id": "audit_guard_blocks_fake_decision",
+      "description": "Any fake operator decision blocks all downstream.",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "rule_id": "audit_guard_blocks_state_contradiction",
+      "description": "Contradictory state artifacts block downstream.",
+      "blocks": ["downstream", "production_acceptance"]
+    },
+    {
+      "rule_id": "audit_guard_blocks_dirty_git",
+      "description": "Dirty git at checkpoint blocks production acceptance.",
+      "blocks": ["production_acceptance"]
+    }
+  ],
+  "required_artifacts": [
+    "state_audit_report.json"
+  ],
+  "proof_requirements": [
+    {
+      "proof_type": "state_audit_report",
+      "required": true,
+      "description": "Report with all findings and alerts"
+    }
+  ]
+}

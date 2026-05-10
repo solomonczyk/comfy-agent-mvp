@@ -1,0 +1,128 @@
+{
+  "taxonomy_id": "blocker_taxonomy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Taxonomy of conditions that are absolute blockers for downstream pipeline stages.",
+  "blockers": [
+    {
+      "blocker_id": "fake_operator_decision",
+      "category": "state",
+      "description": "Any operator decision created by agent or CLI rather than real human.",
+      "blocks_all": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "operator_must_provide_real_decision"
+    },
+    {
+      "blocker_id": "fake_generation_reported",
+      "category": "state",
+      "description": "Generation reported as real but was dry run, stub, or missing.",
+      "blocks_all": ["downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "re_execute_real_generation_or_correct_state"
+    },
+    {
+      "blocker_id": "duplicate_preview_frames",
+      "category": "preview",
+      "description": "Preview contains repeated or static frames above threshold.",
+      "blocks_all": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "preview_correction_plan_required"
+    },
+    {
+      "blocker_id": "static_preview",
+      "category": "preview",
+      "description": "Preview shows no visual progression.",
+      "blocks_all": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "preview_correction_plan_required"
+    },
+    {
+      "blocker_id": "bad_anatomy",
+      "category": "visual",
+      "description": "Anatomically impossible or severely broken anatomy in visual output.",
+      "blocks_all": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "preview_correction_plan_required"
+    },
+    {
+      "blocker_id": "bad_hands",
+      "category": "visual",
+      "description": "Severe hand defects in visual output.",
+      "blocks_all": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "preview_correction_plan_required"
+    },
+    {
+      "blocker_id": "bad_eyes",
+      "category": "visual",
+      "description": "Severe eye defects in visual output.",
+      "blocks_all": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "preview_correction_plan_required"
+    },
+    {
+      "blocker_id": "bad_mouth",
+      "category": "visual",
+      "description": "Severe mouth/teeth defects in visual output.",
+      "blocks_all": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "preview_correction_plan_required"
+    },
+    {
+      "blocker_id": "face_distortion",
+      "category": "visual",
+      "description": "Face is distorted or unrecognizable.",
+      "blocks_all": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "preview_correction_plan_required"
+    },
+    {
+      "blocker_id": "production_accepted_without_gate",
+      "category": "state",
+      "description": "production_accepted is true without documented final operator gate approval.",
+      "blocks_all": ["downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "operator_must_approve_explicitly"
+    },
+    {
+      "blocker_id": "state_artifact_contradiction",
+      "category": "state",
+      "description": "artifact_index.json and episode_ledger.json contradict each other.",
+      "blocks_all": ["downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "state_repair_required"
+    },
+    {
+      "blocker_id": "dirty_git",
+      "category": "proof",
+      "description": "Uncommitted changes at a gate checkpoint.",
+      "blocks_all": ["production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "commit_required"
+    },
+    {
+      "blocker_id": "missing_tests",
+      "category": "proof",
+      "description": "Required tests missing for a feature layer.",
+      "blocks_all": ["production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "tests_required"
+    },
+    {
+      "blocker_id": "bad_sync",
+      "category": "audio",
+      "description": "Audio is not synchronized with visual.",
+      "blocks_all": ["assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "audio_resync_required"
+    },
+    {
+      "blocker_id": "rejected_voice_sample",
+      "category": "voice",
+      "description": "Voice sample was explicitly rejected.",
+      "blocks_all": ["assembly", "downstream", "production_acceptance"],
+      "resolution_required": true,
+      "resolution_action": "voice_recast_required"
+    }
+  ]
+}

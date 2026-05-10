@@ -1,0 +1,55 @@
+{
+  "policy_id": "visual_rejection_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Policy defining when a visual output must be rejected and what happens next.",
+  "applies_to_roles": ["visual_qa_agent", "qa_agent", "operator_review"],
+  "rejection_triggers": [
+    {
+      "trigger_id": "blocker_defect_present",
+      "description": "Any blocker-level defect automatically triggers rejection.",
+      "applies_to": ["visual_qa_agent", "qa_agent"],
+      "next_action": "operator_review_required"
+    },
+    {
+      "trigger_id": "operator_visual_rejection",
+      "description": "Operator explicitly rejects the visual output.",
+      "applies_to": ["operator_review"],
+      "next_action": "correction_plan_required"
+    },
+    {
+      "trigger_id": "identity_drift_critical",
+      "description": "Character identity has drifted beyond acceptable threshold.",
+      "applies_to": ["visual_qa_agent", "qa_agent", "operator_review"],
+      "next_action": "correction_plan_required"
+    },
+    {
+      "trigger_id": "style_mismatch_major",
+      "description": "Style does not match approved guide and cannot be corrected in post.",
+      "applies_to": ["operator_review"],
+      "next_action": "correction_plan_required"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "rejection_stops_downstream",
+      "condition": {
+        "visual_rejection": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "next_allowed_action": "correction_plan_required"
+    },
+    {
+      "rule_id": "rejection_requires_correction_plan",
+      "condition": {
+        "visual_rejection": true,
+        "correction_plan_exists": false
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "correction_plan_required"
+    }
+  ]
+}

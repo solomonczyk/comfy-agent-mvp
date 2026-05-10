@@ -1,0 +1,42 @@
+{
+  "canon_id": "face_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Face quality canon with specific focus on facial features for photoreal and stylized outputs.",
+  "scope": "face",
+  "quality_dimensions": [
+    {
+      "dimension_id": "eye_quality",
+      "name": "Eye Quality",
+      "description": "Eyes must be natural, matched, and correctly placed.",
+      "acceptance_criteria": "Both eyes same size and shape. Gaze direction natural. Pupils round and aligned.",
+      "rejection_criteria": "Mismatched eyes, cross-eyed, milky pupils, or impossible gaze.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "mouth_teeth_quality",
+      "name": "Mouth and Teeth Quality",
+      "description": "Mouth and teeth must be anatomically correct and natural.",
+      "acceptance_criteria": "Teeth count and spacing natural. Lip boundary clean. No gum overexposure.",
+      "rejection_criteria": "Merged teeth, extra teeth, unnatural gum line, or lip boundary artifacts.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "skin_texture",
+      "name": "Skin Texture",
+      "description": "Skin must have appropriate texture without plastic or wax appearance.",
+      "acceptance_criteria": "Pores, fine lines, and natural skin variation present. No over-smoothing.",
+      "rejection_criteria": "Plastic, wax, or porcelain skin. Over-smoothed to loss of humanity.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "facial_symmetry",
+      "name": "Facial Symmetry",
+      "description": "Face must have natural symmetry within human variance.",
+      "acceptance_criteria": "Minor asymmetry acceptable. No grossly unbalanced features.",
+      "rejection_criteria": "Severe facial asymmetry indicating distortion or generation failure.",
+      "severity_if_failed": "critical"
+    }
+  ],
+  "references": []
+}

@@ -1,0 +1,34 @@
+{
+  "canon_id": "identity_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Identity quality canon for character consistency across shots and scenes.",
+  "scope": "identity",
+  "quality_dimensions": [
+    {
+      "dimension_id": "reference_match",
+      "name": "Reference Match",
+      "description": "Character must match the approved identity reference.",
+      "acceptance_criteria": "Facial structure, hair, and key identifying traits match reference.",
+      "rejection_criteria": "Character appears as a different person.",
+      "severity_if_failed": "critical"
+    },
+    {
+      "dimension_id": "cross_shot_consistency",
+      "name": "Cross-Shot Consistency",
+      "description": "Character must be recognizable across different shots and angles.",
+      "acceptance_criteria": "Same character recognizable in wide, medium, and close shots.",
+      "rejection_criteria": "Character identity breaks across shots.",
+      "severity_if_failed": "critical"
+    },
+    {
+      "dimension_id": "age_consistency",
+      "name": "Age Consistency",
+      "description": "Character age must remain consistent.",
+      "acceptance_criteria": "No unintended aging or de-aging between shots.",
+      "rejection_criteria": "Character looks significantly older or younger without narrative cause.",
+      "severity_if_failed": "major"
+    }
+  ],
+  "references": []
+}

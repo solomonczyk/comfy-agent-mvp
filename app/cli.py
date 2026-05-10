@@ -18167,6 +18167,57 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001 — combine-standards-list
+    combine_standards_list_parser = subparsers.add_parser(
+        "combine-standards-list",
+        help="List all standards in the standards pack",
+    )
+    combine_standards_list_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_standards_list_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001 — combine-standards-validate
+    combine_standards_validate_parser = subparsers.add_parser(
+        "combine-standards-validate",
+        help="Validate the standards pack artifacts and schemas",
+    )
+    combine_standards_validate_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_standards_validate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001 — combine-standards-inspect
+    combine_standards_inspect_parser = subparsers.add_parser(
+        "combine-standards-inspect",
+        help="Inspect a specific standard artifact by ID",
+    )
+    combine_standards_inspect_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_standards_inspect_parser.add_argument(
+        "--standard-id", required=True, help="Standard artifact ID to inspect",
+    )
+    combine_standards_inspect_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001 — combine-standards-readiness-report
+    combine_standards_readiness_parser = subparsers.add_parser(
+        "combine-standards-readiness-report",
+        help="Generate or return the standards pack readiness report",
+    )
+    combine_standards_readiness_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_standards_readiness_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -18668,6 +18719,18 @@ def main() -> int:
     elif args.command == "combine-revalidate-generation-gate":
         _require_absolute_project_root(args, "combine-revalidate-generation-gate")
         return combine_revalidate_generation_gate(args)
+    elif args.command == "combine-standards-list":
+        _require_absolute_project_root(args, "combine-standards-list")
+        return combine_standards_list(args)
+    elif args.command == "combine-standards-validate":
+        _require_absolute_project_root(args, "combine-standards-validate")
+        return combine_standards_validate(args)
+    elif args.command == "combine-standards-inspect":
+        _require_absolute_project_root(args, "combine-standards-inspect")
+        return combine_standards_inspect(args)
+    elif args.command == "combine-standards-readiness-report":
+        _require_absolute_project_root(args, "combine-standards-readiness-report")
+        return combine_standards_readiness_report(args)
     else:
         parser.print_help()
         return 0
@@ -42425,6 +42488,133 @@ def combine_build_asset_diversity_timeline_repair(args: argparse.Namespace) -> i
         print(f"    - Preview Render Executed: {result.get('preview_render_executed', False)}")
         print(f"    - Assembly Executed: {result.get('assembly_executed', False)}")
         print(f"    - Production Accepted: {result.get('production_accepted', False)}")
+
+    return 0
+
+
+def combine_standards_list(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001 — List all standards in the pack.
+
+    Lists all standards artifacts from the standards pack.
+
+    Exit codes:
+    - 0: list retrieved successfully
+    - 1: error or invalid args
+    """
+    from app.standards import StandardsPackLoader
+
+    project_root = args.project_root
+    json_output = args.json
+
+    control_dir = Path(project_root) / "output" / "control"
+    standards_pack_dir = control_dir / "standards_pack"
+
+    loader = StandardsPackLoader(standards_pack_dir)
+    standards = loader.list_standards()
+
+    if json_output:
+        print(json.dumps({"status": "ok", "standards": standards}, indent=2))
+    else:
+        print(f"Standards Pack ({len(standards)} artifacts)")
+        for s in standards:
+            print(f"  - {s['standard_id']} (v{s.get('version', 'unknown')})")
+
+    return 0
+
+
+def combine_standards_validate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001 — Validate the standards pack.
+
+    Validates all JSON files, schemas, and policy consistency.
+
+    Exit codes:
+    - 0: validation passed
+    - 1: validation failed
+    """
+    from app.standards import StandardsPackValidator
+
+    project_root = args.project_root
+    json_output = args.json
+
+    control_dir = Path(project_root) / "output" / "control"
+    standards_pack_dir = control_dir / "standards_pack"
+
+    validator = StandardsPackValidator(standards_pack_dir)
+    result = validator.validate()
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Standards Pack Validation: {'PASS' if result['valid'] else 'FAIL'}")
+        if result["errors"]:
+            print("Errors:")
+            for err in result["errors"]:
+                print(f"  - {err}")
+        if result["warnings"]:
+            print("Warnings:")
+            for warn in result["warnings"]:
+                print(f"  - {warn}")
+
+    return 0 if result["valid"] else 1
+
+
+def combine_standards_inspect(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001 — Inspect a specific standard.
+
+    Returns the full content of a single standard artifact.
+
+    Exit codes:
+    - 0: inspect retrieved successfully
+    - 1: error or not found
+    """
+    from app.standards import StandardsPackLoader
+
+    project_root = args.project_root
+    standard_id = args.standard_id
+    json_output = args.json
+
+    control_dir = Path(project_root) / "output" / "control"
+    standards_pack_dir = control_dir / "standards_pack"
+
+    loader = StandardsPackLoader(standards_pack_dir)
+    data = loader.inspect_standard(standard_id)
+
+    if json_output:
+        print(json.dumps({"status": "ok", "standard_id": standard_id, "data": data}, indent=2))
+    else:
+        print(f"Standard: {standard_id}")
+        print(json.dumps(data, indent=2))
+
+    return 0 if "error" not in data else 1
+
+
+def combine_standards_readiness_report(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001 — Generate standards pack readiness report.
+
+    Returns the readiness report artifact if it exists, or a basic one.
+
+    Exit codes:
+    - 0: report generated
+    - 1: error
+    """
+    import json
+
+    project_root = args.project_root
+    json_output = args.json
+
+    control_dir = Path(project_root) / "output" / "control"
+    report_path = control_dir / "standards_pack" / "reports" / "standards_pack_readiness_report.json"
+
+    if report_path.exists():
+        with open(report_path, "r", encoding="utf-8") as f:
+            report = json.load(f)
+    else:
+        report = {"error": "Readiness report not found"}
+
+    if json_output:
+        print(json.dumps(report, indent=2))
+    else:
+        print(f"Readiness Report: {report.get('readiness', {}).get('standards_pack_created', False)}")
 
     return 0
 

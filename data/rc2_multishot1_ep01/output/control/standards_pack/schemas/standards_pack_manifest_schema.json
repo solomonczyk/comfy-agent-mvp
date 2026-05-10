@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Standards Pack Manifest Schema",
+  "type": "object",
+  "required": ["manifest_id", "version", "task_id", "directories", "artifacts"],
+  "properties": {
+    "manifest_id": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "task_id": { "type": "string" },
+    "created_at": { "type": "string" },
+    "created_by": { "type": "string" },
+    "project": { "type": "string" },
+    "project_root": { "type": "string" },
+    "control_path": { "type": "string" },
+    "assets_path": { "type": "string" },
+    "directories": {
+      "type": "object",
+      "properties": {
+        "external_registry": { "type": "string" },
+        "schemas": { "type": "string" },
+        "internal": { "type": "string" },
+        "roles": { "type": "string" },
+        "policies": { "type": "string" },
+        "references": { "type": "string" },
+        "reports": { "type": "string" }
+      }
+    },
+    "artifacts": {
+      "type": "object",
+      "additionalProperties": { "type": "string" }
+    },
+    "validation": {
+      "type": "object",
+      "properties": {
+        "schemas_validated": { "type": "boolean" },
+        "all_artifacts_present": { "type": "boolean" },
+        "all_json_valid": { "type": "boolean" }
+      }
+    },
+    "next_recommended_layer": { "type": "string" }
+  }
+}

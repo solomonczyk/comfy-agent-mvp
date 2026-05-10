@@ -1,0 +1,62 @@
+{
+  "plan_id": "external_standards_acquisition_plan",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Controlled acquisition plan for external standards. No acquisition performed in this task.",
+  "phases": [
+    {
+      "phase": 1,
+      "name": "operator_authorization",
+      "description": "Operator must explicitly authorize download of each external standard",
+      "required": true,
+      "completed": false
+    },
+    {
+      "phase": 2,
+      "name": "source_verification",
+      "description": "Verify official source URLs, checksums, and licenses before download",
+      "required": true,
+      "completed": false
+    },
+    {
+      "phase": 3,
+      "name": "controlled_download",
+      "description": "Download external standards in a sandboxed, auditable manner",
+      "required": true,
+      "completed": false
+    },
+    {
+      "phase": 4,
+      "name": "checksum_validation",
+      "description": "Validate downloaded artifacts against known checksums",
+      "required": true,
+      "completed": false
+    },
+    {
+      "phase": 5,
+      "name": "schema_adaptation",
+      "description": "Map external standard fields to Combine V2 internal schemas where applicable",
+      "required": false,
+      "completed": false
+    },
+    {
+      "phase": 6,
+      "name": "registry_update",
+      "description": "Update external_standards_sources.json with acquisition results",
+      "required": true,
+      "completed": false
+    }
+  ],
+  "acquisition_triggers": [
+    "operator_explicit_authorization",
+    "security_audit_requirement",
+    "compliance_milestone"
+  ],
+  "forbidden_actions": [
+    "auto_download_without_operator_approval",
+    "hidden_network_call",
+    "fake_download_status",
+    "skip_checksum_validation"
+  ],
+  "next_recommended_action": "operator_authorization_required_for_external_standards_acquisition"
+}

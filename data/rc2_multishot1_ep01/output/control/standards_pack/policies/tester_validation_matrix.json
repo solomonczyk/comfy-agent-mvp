@@ -1,0 +1,74 @@
+{
+  "policy_id": "tester_validation_matrix",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Tester validation matrix defining what must be tested and validated.",
+  "applies_to_roles": ["tester"],
+  "validation_areas": [
+    {
+      "area_id": "schema_validation",
+      "description": "All JSON schemas must validate their target artifacts",
+      "required": true,
+      "test_command": "python -m py_compile + pytest schema tests"
+    },
+    {
+      "area_id": "cli_behavior",
+      "description": "CLI commands must output deterministic JSON and not perform forbidden actions",
+      "required": true,
+      "test_command": "pytest tests/test_standards_cli.py"
+    },
+    {
+      "area_id": "decision_policy",
+      "description": "Decision policies must correctly evaluate conditions",
+      "required": true,
+      "test_command": "pytest tests/test_standards_decision_policy.py"
+    },
+    {
+      "area_id": "role_separation",
+      "description": "QA, QC, and Tester roles must have distinct responsibilities",
+      "required": true,
+      "test_command": "pytest tests/test_standards_role_contracts.py"
+    },
+    {
+      "area_id": "forbidden_actions",
+      "description": "No role standard may allow forbidden actions",
+      "required": true,
+      "test_command": "pytest tests/test_standards_role_contracts.py"
+    },
+    {
+      "area_id": "regression_coverage",
+      "description": "New feature layers must have corresponding regression tests",
+      "required": true,
+      "test_command": "pytest tests/test_standards_pack_loader.py tests/test_standards_pack_validator.py"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "tester_blocks_on_schema_failure",
+      "condition": {
+        "schema_validation_passed": false
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "schema_fix_required"
+    },
+    {
+      "rule_id": "tester_blocks_on_test_failure",
+      "condition": {
+        "required_tests_passed": false
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "test_fix_required"
+    },
+    {
+      "rule_id": "tester_passes_when_all_clear",
+      "condition": {
+        "all_validation_areas_passed": true
+      },
+      "decision": "pass",
+      "production_accepted": false,
+      "next_allowed_action": "operator_review_required"
+    }
+  ]
+}

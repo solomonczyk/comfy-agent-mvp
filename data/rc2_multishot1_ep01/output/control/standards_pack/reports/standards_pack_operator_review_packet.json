@@ -1,0 +1,67 @@
+{
+  "packet_id": "standards_pack_operator_review_packet",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "generated_at": "2026-05-10T14:03:00+02:00",
+  "generated_by": "build_helper_agent",
+  "purpose": "Operator review packet for the machine-readable standards pack layer.",
+  "what_was_created": {
+    "standards_pack_manifest": "Canonical manifest listing all standards artifacts",
+    "external_registry": "Registered 7 external standards (OWASP, MITRE, NIST, CycloneDX, SPDX, OpenSSF) — not downloaded",
+    "schemas": "8 JSON schemas for validating standards artifacts",
+    "internal_canons": "12 quality canons covering visual, motion, face, anatomy, identity, timeline, preview, audio, voice, assembly, state audit",
+    "role_standards": "7 role standards (QA, QC, Tester, Visual QA, Script Supervisor, State Audit Guard, Operator Review)",
+    "decision_policies": "10 decision policies (QA, QC, Tester, visual rejection, preview, production, blocker, fake success, no blind retry, forbidden actions)",
+    "reference_registries": "Positive and negative reference registries with usage policy",
+    "reports": "Validation report, readiness report, and this operator review packet"
+  },
+  "operator_decision_required": true,
+  "operator_can_approve": [
+    "Approve standards pack for integration into QA/QC/Tester agents",
+    "Request modifications to specific standards or policies",
+    "Authorize external standards acquisition in future task"
+  ],
+  "operator_can_reject": [
+    "Reject standards pack and request corrections",
+    "Block integration until modifications are made"
+  ],
+  "key_policies_to_review": [
+    {
+      "policy": "production_acceptance_policy",
+      "note": "Explicitly states only operator can set production_accepted=true"
+    },
+    {
+      "policy": "forbidden_actions_policy",
+      "note": "Lists 10 forbidden actions with blocker/critical severity"
+    },
+    {
+      "policy": "fake_success_policy",
+      "note": "Detects dry runs reported as real, fake prompt_ids, fake assets"
+    },
+    {
+      "policy": "no_blind_retry_policy",
+      "note": "Requires explicit corrective changes for every retry"
+    }
+  ],
+  "forbidden_actions_check": {
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "preview_render_executed": false,
+    "visual_qa_acceptance_executed": false,
+    "operator_visual_acceptance_executed": false,
+    "voice_generation_executed": false,
+    "audio_generation_executed": false,
+    "assembly_executed": false,
+    "final_render_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "hidden_external_llm_api_call": false,
+    "hidden_network_or_api_calls_performed": false,
+    "hidden_downloads_or_installs_performed": false,
+    "fake_operator_decision_created": false,
+    "fake_success_created": false
+  },
+  "recommended_verdict": "Operator review of standards pack contents recommended before integration layer.",
+  "next_allowed_action": "standards_pack_operator_review_required"
+}

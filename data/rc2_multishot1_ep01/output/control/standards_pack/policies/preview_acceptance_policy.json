@@ -1,0 +1,59 @@
+{
+  "policy_id": "preview_acceptance_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Policy governing preview render acceptance and blocking conditions.",
+  "applies_to_roles": ["operator_review", "script_supervisor", "tester"],
+  "acceptance_criteria": [
+    "preview_frame_uniqueness_ratio_above_90_percent",
+    "preview_shows_scene_progression",
+    "all_referenced_asset_paths_resolve",
+    "preview_proof_contract_completed",
+    "no_duplicate_frames_above_threshold"
+  ],
+  "rejection_criteria": [
+    "duplicate_frame_ratio_above_10_percent",
+    "static_preview_no_progression",
+    "broken_asset_references_in_preview",
+    "preview_render_not_authorized_by_operator"
+  ],
+  "rules": [
+    {
+      "rule_id": "duplicate_preview_blocks_voice",
+      "condition": {
+        "duplicate_frame_ratio_above_threshold": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "preview_correction_plan_required"
+    },
+    {
+      "rule_id": "static_preview_blocks_downstream",
+      "condition": {
+        "static_preview": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "blocks": ["voice_generation", "assembly", "downstream"],
+      "next_allowed_action": "preview_correction_plan_required"
+    },
+    {
+      "rule_id": "preview_requires_operator_authorization",
+      "condition": {
+        "preview_render_authorized_by_operator": false
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "operator_authorization_required"
+    },
+    {
+      "rule_id": "preview_pass_does_not_mean_production_pass",
+      "condition": {
+        "preview_accepted": true
+      },
+      "decision": "pass_with_warnings",
+      "production_accepted": false,
+      "next_allowed_action": "operator_final_approval_required"
+    }
+  ]
+}

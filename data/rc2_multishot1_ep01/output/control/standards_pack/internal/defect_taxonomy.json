@@ -1,0 +1,378 @@
+{
+  "taxonomy_id": "defect_taxonomy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Comprehensive defect taxonomy for visual, preview, motion, audio, voice, timeline, state, and proof defects.",
+  "defects": [
+    {
+      "defect_id": "blur",
+      "category": "visual",
+      "severity_default": "major",
+      "description": "Image lacks sharpness or fine detail beyond acceptable threshold.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "tester"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "low_detail",
+      "category": "visual",
+      "severity_default": "major",
+      "description": "Image has insufficient fine-grained texture or detail for intended quality level.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "bad_anatomy",
+      "category": "visual",
+      "severity_default": "blocker",
+      "description": "Anatomically incorrect body proportions, extra limbs, missing limbs, or impossible joints.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "script_supervisor"],
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "bad_hands",
+      "category": "visual",
+      "severity_default": "blocker",
+      "description": "Hands with incorrect number of fingers, fused fingers, or impossible hand structure.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent"],
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "bad_eyes",
+      "category": "visual",
+      "severity_default": "blocker",
+      "description": "Eyes with mismatched gaze, unnatural shape, or incorrect number.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent"],
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "bad_mouth",
+      "category": "visual",
+      "severity_default": "blocker",
+      "description": "Mouth with incorrect teeth, unnatural lip boundary, or distorted oral cavity.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "operator_review"],
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "face_distortion",
+      "category": "visual",
+      "severity_default": "blocker",
+      "description": "Face structure is warped, asymmetric, or inconsistent with expected identity.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "operator_review"],
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "identity_drift",
+      "category": "visual",
+      "severity_default": "critical",
+      "description": "Generated character deviates from established identity reference beyond acceptable threshold.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "script_supervisor"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "wrong_style",
+      "category": "visual",
+      "severity_default": "major",
+      "description": "Visual style does not match the approved style guide or brief.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "script_supervisor"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "bad_composition",
+      "category": "visual",
+      "severity_default": "major",
+      "description": "Frame composition violates shot rules: bad framing, cropping, or subject placement.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "script_supervisor"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "color_mismatch",
+      "category": "visual",
+      "severity_default": "warning",
+      "description": "Color palette deviates from approved color script or reference.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent"],
+      "blocks": [],
+      "requires_operator_review": false,
+      "recommended_next_action": "note_for_operator"
+    },
+    {
+      "defect_id": "lighting_mismatch",
+      "category": "visual",
+      "severity_default": "warning",
+      "description": "Lighting direction or quality does not match scene continuity requirements.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "script_supervisor"],
+      "blocks": [],
+      "requires_operator_review": false,
+      "recommended_next_action": "note_for_operator"
+    },
+    {
+      "defect_id": "reference_mismatch",
+      "category": "visual",
+      "severity_default": "major",
+      "description": "Output does not match the approved reference image, pose, or concept.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "temporal_inconsistency",
+      "category": "visual",
+      "severity_default": "major",
+      "description": "Visual elements change unexpectedly between frames in a sequence.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent", "script_supervisor"],
+      "blocks": ["assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "timeline_correction_required"
+    },
+    {
+      "defect_id": "duplicate_frames",
+      "category": "preview",
+      "severity_default": "blocker",
+      "description": "Preview contains repeated or static frames above allowed threshold.",
+      "detected_by_roles": ["script_supervisor", "visual_qa_agent", "tester"],
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "static_preview",
+      "category": "preview",
+      "severity_default": "blocker",
+      "description": "Preview shows no meaningful visual progression across its duration.",
+      "detected_by_roles": ["script_supervisor", "visual_qa_agent", "tester"],
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "no_scene_progression",
+      "category": "preview",
+      "severity_default": "blocker",
+      "description": "Preview fails to convey scene progression or narrative development.",
+      "detected_by_roles": ["script_supervisor", "visual_qa_agent"],
+      "blocks": ["assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "useless_contact_sheet",
+      "category": "preview",
+      "severity_default": "major",
+      "description": "Contact sheet provides no useful comparative or review value.",
+      "detected_by_roles": ["visual_qa_agent", "qa_agent"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "timeline_mismatch",
+      "category": "preview",
+      "severity_default": "critical",
+      "description": "Preview duration or content does not match approved timeline model.",
+      "detected_by_roles": ["script_supervisor", "tester", "qa_agent"],
+      "blocks": ["assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "timeline_correction_required"
+    },
+    {
+      "defect_id": "path_mismatch",
+      "category": "preview",
+      "severity_default": "critical",
+      "description": "Asset paths referenced in preview do not exist or are incorrect.",
+      "detected_by_roles": ["tester", "qc_agent"],
+      "blocks": ["assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "asset_resolution_required"
+    },
+    {
+      "defect_id": "invalid_preview_proof",
+      "category": "preview",
+      "severity_default": "critical",
+      "description": "Preview proof artifacts are missing, corrupted, or self-contradictory.",
+      "detected_by_roles": ["tester", "qc_agent", "state_audit_guard"],
+      "blocks": ["downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "proof_repair_required"
+    },
+    {
+      "defect_id": "wrong_voice_fit",
+      "category": "voice",
+      "severity_default": "major",
+      "description": "Selected voice does not match character profile or casting contract.",
+      "detected_by_roles": ["qa_agent", "script_supervisor"],
+      "blocks": ["assembly", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "voice_recast_required"
+    },
+    {
+      "defect_id": "bad_sync",
+      "category": "audio",
+      "severity_default": "blocker",
+      "description": "Audio is not synchronized with visual events or lip movements.",
+      "detected_by_roles": ["qa_agent", "tester"],
+      "blocks": ["assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "audio_resync_required"
+    },
+    {
+      "defect_id": "noisy_audio",
+      "category": "audio",
+      "severity_default": "major",
+      "description": "Audio contains unwanted noise, hiss, or artifacts.",
+      "detected_by_roles": ["qa_agent", "tester"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "audio_reprocessing_required"
+    },
+    {
+      "defect_id": "bad_loudness",
+      "category": "audio",
+      "severity_default": "major",
+      "description": "Audio loudness is outside acceptable range or inconsistent across scenes.",
+      "detected_by_roles": ["qa_agent", "tester"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "audio_reprocessing_required"
+    },
+    {
+      "defect_id": "wrong_pacing",
+      "category": "voice",
+      "severity_default": "warning",
+      "description": "Voice delivery speed does not match scene timing or emotional tone.",
+      "detected_by_roles": ["qa_agent", "script_supervisor"],
+      "blocks": [],
+      "requires_operator_review": false,
+      "recommended_next_action": "voice_retiming_required"
+    },
+    {
+      "defect_id": "rejected_voice_sample",
+      "category": "voice",
+      "severity_default": "blocker",
+      "description": "Voice sample was explicitly rejected by operator or casting contract.",
+      "detected_by_roles": ["qa_agent", "operator_review"],
+      "blocks": ["assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "voice_recast_required"
+    },
+    {
+      "defect_id": "fake_operator_decision",
+      "category": "state",
+      "severity_default": "blocker",
+      "description": "An operator decision was created by an agent, script, or CLI without real human input.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "state_audit_required"
+    },
+    {
+      "defect_id": "fake_prompt_id",
+      "category": "state",
+      "severity_default": "blocker",
+      "description": "A prompt_id was fabricated or reused without actual ComfyUI submission.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "state_audit_required"
+    },
+    {
+      "defect_id": "fake_asset",
+      "category": "state",
+      "severity_default": "blocker",
+      "description": "An asset path references a file that was not actually generated or is a stub.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "state_audit_required"
+    },
+    {
+      "defect_id": "fake_generation",
+      "category": "state",
+      "severity_default": "blocker",
+      "description": "Generation was reported as performed when it was actually a dry run or skipped.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "state_audit_required"
+    },
+    {
+      "defect_id": "dry_run_reported_as_real_execution",
+      "category": "state",
+      "severity_default": "blocker",
+      "description": "A dry-run operation was logged or reported as real execution.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "state_audit_required"
+    },
+    {
+      "defect_id": "state_artifact_contradiction",
+      "category": "state",
+      "severity_default": "blocker",
+      "description": "artifact_index.json and episode_ledger.json contain contradictory information.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["downstream", "production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "state_repair_required"
+    },
+    {
+      "defect_id": "dirty_git",
+      "category": "proof",
+      "severity_default": "critical",
+      "description": "Git working directory has uncommitted changes at a gate checkpoint.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "commit_required"
+    },
+    {
+      "defect_id": "missing_commit",
+      "category": "proof",
+      "severity_default": "critical",
+      "description": "Expected git commit for a state change is missing.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "commit_required"
+    },
+    {
+      "defect_id": "missing_push",
+      "category": "proof",
+      "severity_default": "critical",
+      "description": "Expected git push for a state change is missing.",
+      "detected_by_roles": ["state_audit_guard", "qc_agent", "tester"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "push_required"
+    },
+    {
+      "defect_id": "missing_tests",
+      "category": "proof",
+      "severity_default": "major",
+      "description": "Required regression or validation tests are missing for a feature layer.",
+      "detected_by_roles": ["tester", "qc_agent"],
+      "blocks": ["production_acceptance"],
+      "requires_operator_review": true,
+      "recommended_next_action": "tests_required"
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "role_id": "qa_agent",
+  "role_name": "QA Agent",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Quality Assurance Agent: checks whether outputs meet defined quality rules.",
+  "responsibilities": [
+    "Evaluate outputs against defined quality canons and defect taxonomy",
+    "Record technical metrics (blur, brightness, contrast, dimensions)",
+    "Report defects with severity and category",
+    "Recommend operator_review_required when visual defects are found",
+    "Maintain QA reports and technical metrics artifacts"
+  ],
+  "inputs_required": [
+    "generated_assets",
+    "asset_manifest",
+    "quality_canons",
+    "defect_taxonomy",
+    "reference_images"
+  ],
+  "outputs_required": [
+    "qa_report",
+    "technical_metrics",
+    "defect_list",
+    "operator_review_packet"
+  ],
+  "allowed_tools": [
+    "image_analysis",
+    "metric_calculation",
+    "defect_classifier",
+    "report_generator"
+  ],
+  "forbidden_actions": [
+    "claim_visual_acceptance",
+    "set_production_accepted_true",
+    "fake_operator_decision",
+    "approve_for_downstream",
+    "trigger_voice_generation",
+    "trigger_assembly",
+    "perform_generation",
+    "submit_to_comfyui"
+  ],
+  "decision_rights": [
+    "technical_pass",
+    "technical_fail",
+    "recommend_operator_review"
+  ],
+  "cannot_decide": [
+    "visual_acceptance",
+    "production_acceptance",
+    "operator_decision",
+    "downstream_approval"
+  ],
+  "blocker_rules": [
+    {
+      "rule_id": "qa_cannot_approve_visual",
+      "description": "QA Agent technical pass is not visual pass. Visual pass requires operator review.",
+      "blocks": ["visual_acceptance", "production_acceptance"]
+    },
+    {
+      "rule_id": "qa_cannot_trigger_downstream",
+      "description": "QA Agent may not trigger voice, assembly, or downstream processing.",
+      "blocks": ["voice_generation", "assembly", "downstream"]
+    }
+  ],
+  "required_artifacts": [
+    "qa_report.json",
+    "technical_metrics.json",
+    "operator_visual_review_packet.json"
+  ],
+  "proof_requirements": [
+    {
+      "proof_type": "qa_report",
+      "required": true,
+      "description": "QA report must be written and referenced in artifact_index"
+    },
+    {
+      "proof_type": "technical_metrics",
+      "required": true,
+      "description": "Objective metrics must be recorded"
+    }
+  ]
+}

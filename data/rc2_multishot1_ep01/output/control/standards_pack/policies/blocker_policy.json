@@ -1,0 +1,70 @@
+{
+  "policy_id": "blocker_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Policy defining absolute blockers that stop downstream pipeline stages.",
+  "applies_to_roles": ["qc_agent", "state_audit_guard", "tester"],
+  "blocker_conditions": [
+    {
+      "condition_id": "fake_operator_decision",
+      "description": "Any operator decision created by agent or CLI",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "fake_generation",
+      "description": "Generation reported as real but was dry run or missing",
+      "blocks": ["downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "state_contradiction",
+      "description": "artifact_index and episode_ledger contradict",
+      "blocks": ["downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "duplicate_preview_frames",
+      "description": "Preview contains excessive duplicate or static frames",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "bad_anatomy",
+      "description": "Anatomically impossible or severely broken anatomy",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "bad_hands",
+      "description": "Severe hand defects",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "bad_eyes",
+      "description": "Severe eye defects",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "bad_mouth",
+      "description": "Severe mouth/teeth defects",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "face_distortion",
+      "description": "Face is distorted or unrecognizable",
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "condition_id": "production_accepted_without_gate",
+      "description": "production_accepted=true without operator final gate",
+      "blocks": ["downstream", "production_acceptance"]
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "any_blocker_blocks_all_downstream",
+      "condition": {
+        "any_blocker_present": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "blocker_resolution_required"
+    }
+  ]
+}

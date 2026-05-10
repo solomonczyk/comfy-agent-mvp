@@ -1,0 +1,80 @@
+{
+  "policy_id": "forbidden_actions_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Master policy enumerating actions that no agent may perform under any circumstances.",
+  "applies_to_roles": ["all"],
+  "forbidden_actions": [
+    {
+      "action_id": "fake_operator_decision",
+      "description": "Creating, emulating, or pre-filling an operator decision",
+      "severity_if_violated": "blocker",
+      "detection_by": ["state_audit_guard", "qc_agent", "tester"]
+    },
+    {
+      "action_id": "set_production_accepted_without_operator",
+      "description": "Setting production_accepted=true without human operator final gate",
+      "severity_if_violated": "blocker",
+      "detection_by": ["state_audit_guard", "qc_agent", "tester"]
+    },
+    {
+      "action_id": "claim_visual_acceptance",
+      "description": "Any agent claiming visual acceptance on behalf of operator",
+      "severity_if_violated": "blocker",
+      "detection_by": ["qc_agent", "tester"]
+    },
+    {
+      "action_id": "hidden_generation",
+      "description": "Performing generation without explicit authorization and logging",
+      "severity_if_violated": "blocker",
+      "detection_by": ["state_audit_guard", "qc_agent"]
+    },
+    {
+      "action_id": "hidden_download",
+      "description": "Downloading external assets or standards without operator authorization",
+      "severity_if_violated": "critical",
+      "detection_by": ["state_audit_guard", "qc_agent", "tester"]
+    },
+    {
+      "action_id": "hidden_api_call",
+      "description": "Making hidden external API or LLM calls",
+      "severity_if_violated": "critical",
+      "detection_by": ["state_audit_guard", "qc_agent", "tester"]
+    },
+    {
+      "action_id": "modify_state_artifacts_without_audit",
+      "description": "Changing artifact_index.json or episode_ledger.json without audit trail",
+      "severity_if_violated": "critical",
+      "detection_by": ["state_audit_guard", "qc_agent"]
+    },
+    {
+      "action_id": "skip_tests",
+      "description": "Skipping or faking required regression tests",
+      "severity_if_violated": "major",
+      "detection_by": ["tester", "qc_agent"]
+    },
+    {
+      "action_id": "blind_retry",
+      "description": "Retrying generation without corrective changes",
+      "severity_if_violated": "major",
+      "detection_by": ["qc_agent", "tester"]
+    },
+    {
+      "action_id": "downstream_without_gate",
+      "description": "Triggering voice, assembly, or downstream without passing all gates",
+      "severity_if_violated": "blocker",
+      "detection_by": ["qc_agent", "state_audit_guard", "tester"]
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "any_forbidden_action_blocks_production",
+      "condition": {
+        "forbidden_action_detected": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "violation_investigation_required"
+    }
+  ]
+}

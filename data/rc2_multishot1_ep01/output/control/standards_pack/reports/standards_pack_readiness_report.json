@@ -1,0 +1,57 @@
+{
+  "report_id": "standards_pack_readiness_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "generated_at": "2026-05-10T14:03:00+02:00",
+  "generated_by": "build_helper_agent",
+  "actual_project_state": {
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "note": "Actual state differs from task starting context. Standards pack built against actual state."
+  },
+  "readiness": {
+    "standards_pack_created": true,
+    "schemas_created": true,
+    "internal_canons_created": true,
+    "role_standards_created": true,
+    "decision_policies_created": true,
+    "reference_registries_created": true,
+    "external_standards_registered": true,
+    "external_download_performed": false,
+    "hidden_network_or_api_calls_performed": false,
+    "ready_for_integration_layer": true,
+    "next_recommended_layer": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001"
+  },
+  "artifact_inventory": {
+    "total_artifacts": 47,
+    "all_present": true,
+    "all_json_valid": true
+  },
+  "forbidden_actions_check": {
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "preview_render_executed": false,
+    "visual_qa_acceptance_executed": false,
+    "operator_visual_acceptance_executed": false,
+    "voice_generation_executed": false,
+    "audio_generation_executed": false,
+    "assembly_executed": false,
+    "final_render_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "hidden_external_llm_api_call": false,
+    "hidden_network_or_api_calls_performed": false,
+    "hidden_downloads_or_installs_performed": false,
+    "fake_operator_decision_created": false,
+    "fake_success_created": false
+  },
+  "blockers": [],
+  "notes": [
+    "Standards pack is complete and machine-readable.",
+    "External standards are registered but not downloaded.",
+    "All role standards clearly separate QA, QC, and Tester responsibilities.",
+    "Decision policies explicitly block fake operator decisions and production acceptance without gate.",
+    "No forbidden actions were performed during standards pack creation."
+  ]
+}

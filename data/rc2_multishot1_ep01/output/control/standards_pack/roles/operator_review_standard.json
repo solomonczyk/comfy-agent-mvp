@@ -1,0 +1,78 @@
+{
+  "role_id": "operator_review",
+  "role_name": "Operator Review",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Operator Review: human-only visual/audio/production decision owner. Agent may prepare packet, but cannot decide for operator.",
+  "responsibilities": [
+    "Review operator_visual_review_packet prepared by agents",
+    "Make final visual acceptance or rejection decision",
+    "Make final production acceptance decision",
+    "Authorize or block generation, retry, preview render, voice, assembly",
+    "Override agent recommendations when necessary"
+  ],
+  "inputs_required": [
+    "operator_visual_review_packet",
+    "qa_report",
+    "visual_qa_technical_metrics",
+    "continuity_report",
+    "state_audit_report",
+    "generated_assets"
+  ],
+  "outputs_required": [
+    "operator_visual_decision",
+    "operator_acceptance_record",
+    "operator_rejection_record"
+  ],
+  "allowed_tools": [
+    "visual_inspection",
+    "audio_playback",
+    "asset_viewer"
+  ],
+  "forbidden_actions": [
+    "delegate_decision_to_agent",
+    "auto_approve_all",
+    "skip_review",
+    "fake_decision_source"
+  ],
+  "decision_rights": [
+    "visual_acceptance",
+    "visual_rejection",
+    "production_acceptance",
+    "production_rejection",
+    "generation_authorization",
+    "retry_authorization",
+    "preview_render_authorization",
+    "voice_generation_authorization",
+    "assembly_authorization",
+    "downstream_authorization"
+  ],
+  "cannot_decide": [
+    "technical_quality_verdict",
+    "process_compliance_verdict",
+    "continuity_verdict"
+  ],
+  "blocker_rules": [
+    {
+      "rule_id": "operator_decision_is_final",
+      "description": "Operator decisions are binding. No agent may override.",
+      "blocks": ["agent_override"]
+    }
+  ],
+  "required_artifacts": [
+    "operator_visual_decision.json",
+    "operator_acceptance_record.json"
+  ],
+  "proof_requirements": [
+    {
+      "proof_type": "operator_visual_decision",
+      "required": true,
+      "description": "Decision must be recorded with timestamp and operator identity"
+    },
+    {
+      "proof_type": "decision_source",
+      "required": true,
+      "description": "Decision source must be 'human_operator', never 'agent' or 'cli_auto'"
+    }
+  ]
+}

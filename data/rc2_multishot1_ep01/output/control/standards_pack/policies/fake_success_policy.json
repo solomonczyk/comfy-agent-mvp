@@ -1,0 +1,49 @@
+{
+  "policy_id": "fake_success_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Policy detecting and blocking fake success states, dry runs reported as real, and fabricated artifacts.",
+  "applies_to_roles": ["qc_agent", "state_audit_guard", "tester"],
+  "fake_success_indicators": [
+    "dry_run_reported_as_real_execution",
+    "fake_prompt_id",
+    "fake_asset_path",
+    "fake_generation_record",
+    "fake_operator_decision",
+    "success_without_corresponding_artifacts",
+    "success_without_git_commit",
+    "tests_reported_passed_but_not_run"
+  ],
+  "rules": [
+    {
+      "rule_id": "fake_success_blocks_pipeline",
+      "condition": {
+        "any_fake_success_indicator": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "blocks": ["downstream", "production_acceptance"],
+      "next_allowed_action": "state_audit_and_repair_required"
+    },
+    {
+      "rule_id": "dry_run_must_be_explicitly_tagged",
+      "condition": {
+        "dry_run": true,
+        "dry_run_tag_missing": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "add_dry_run_tag_required"
+    },
+    {
+      "rule_id": "success_requires_artifact_evidence",
+      "condition": {
+        "success_claimed": true,
+        "required_artifacts_missing": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "artifact_reconstruction_required"
+    }
+  ]
+}

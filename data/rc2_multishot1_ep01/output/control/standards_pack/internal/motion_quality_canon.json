@@ -1,0 +1,34 @@
+{
+  "canon_id": "motion_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Motion quality canon for animated or sequential visual outputs.",
+  "scope": "motion",
+  "quality_dimensions": [
+    {
+      "dimension_id": "temporal_coherence",
+      "name": "Temporal Coherence",
+      "description": "Visual elements must remain consistent across frames.",
+      "acceptance_criteria": "Character appearance, clothing, and environment stable across frames.",
+      "rejection_criteria": "Sudden changes in clothing, features, or environment without narrative cause.",
+      "severity_if_failed": "critical"
+    },
+    {
+      "dimension_id": "motion_smoothness",
+      "name": "Motion Smoothness",
+      "description": "Movement must appear smooth and physically plausible.",
+      "acceptance_criteria": "No jitter, stutter, or unnatural speed changes in motion.",
+      "rejection_criteria": "Jittery, robotic, or physically impossible motion trajectories.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "camera_motion_plausibility",
+      "name": "Camera Motion Plausibility",
+      "description": "Camera movements must feel intentional and cinematic.",
+      "acceptance_criteria": "Camera moves follow cinematic conventions. No accidental shake.",
+      "rejection_criteria": "Unintentional camera shake, jarring cuts, or disorienting motion.",
+      "severity_if_failed": "major"
+    }
+  ],
+  "references": []
+}

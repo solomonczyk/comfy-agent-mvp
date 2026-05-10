@@ -1,0 +1,42 @@
+{
+  "canon_id": "preview_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Preview quality canon for contact sheets, preview renders, and review artifacts.",
+  "scope": "preview",
+  "quality_dimensions": [
+    {
+      "dimension_id": "frame_uniqueness",
+      "name": "Frame Uniqueness",
+      "description": "Preview frames must show meaningful variation.",
+      "acceptance_criteria": "Duplicate frame ratio below 10%. Each frame adds review value.",
+      "rejection_criteria": "Duplicate frame ratio above 10%. Static or near-static preview.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "scene_progression",
+      "name": "Scene Progression",
+      "description": "Preview must convey narrative or visual progression.",
+      "acceptance_criteria": "Preview shows change, movement, or story development.",
+      "rejection_criteria": "Preview is a single static image or shows no progression.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "contact_sheet_usefulness",
+      "name": "Contact Sheet Usefulness",
+      "description": "Contact sheet must aid operator review and selection.",
+      "acceptance_criteria": "Thumbnails readable. Layout aids comparison. Labels present.",
+      "rejection_criteria": "Thumbnails too small to evaluate. Layout confusing. Missing labels.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "path_validity",
+      "name": "Path Validity",
+      "description": "All paths referenced in preview metadata must resolve.",
+      "acceptance_criteria": "Every referenced asset path exists on disk.",
+      "rejection_criteria": "Broken asset references in preview metadata.",
+      "severity_if_failed": "critical"
+    }
+  ],
+  "references": []
+}

@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Role Standard Schema",
+  "type": "object",
+  "required": ["role_id", "role_name", "responsibilities", "inputs_required", "outputs_required", "allowed_tools", "forbidden_actions", "decision_rights", "cannot_decide", "blocker_rules", "required_artifacts", "proof_requirements"],
+  "properties": {
+    "role_id": { "type": "string" },
+    "role_name": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "task_id": { "type": "string" },
+    "description": { "type": "string" },
+    "responsibilities": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "inputs_required": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "outputs_required": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "allowed_tools": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "decision_rights": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "cannot_decide": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "blocker_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "description"],
+        "properties": {
+          "rule_id": { "type": "string" },
+          "description": { "type": "string" },
+          "blocks": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    },
+    "required_artifacts": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "proof_requirements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["proof_type", "required"],
+        "properties": {
+          "proof_type": { "type": "string" },
+          "required": { "type": "boolean" },
+          "description": { "type": "string" }
+        }
+      }
+    }
+  }
+}

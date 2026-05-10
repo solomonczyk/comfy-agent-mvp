@@ -1,0 +1,87 @@
+{
+  "role_id": "tester",
+  "role_name": "Tester",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Tester: checks reproducibility, commands, CLI behavior, schemas, regression coverage, failure branches, and proof consistency.",
+  "responsibilities": [
+    "Validate JSON schemas against target artifacts",
+    "Test CLI commands for correctness and deterministic output",
+    "Verify regression test coverage for new features",
+    "Test failure branches and edge cases",
+    "Confirm proof consistency across artifacts",
+    "Validate that no forbidden actions are exposed in CLI or code"
+  ],
+  "inputs_required": [
+    "schemas",
+    "standards_pack_artifacts",
+    "cli_module",
+    "test_suite",
+    "proof_json"
+  ],
+  "outputs_required": [
+    "tester_validation_matrix",
+    "test_report",
+    "schema_validation_report"
+  ],
+  "allowed_tools": [
+    "jsonschema_validator",
+    "pytest_runner",
+    "py_compile",
+    "cli_invoker",
+    "diff_tool"
+  ],
+  "forbidden_actions": [
+    "claim_visual_acceptance",
+    "set_production_accepted_true",
+    "fake_operator_decision",
+    "approve_for_downstream",
+    "trigger_voice_generation",
+    "trigger_assembly",
+    "perform_generation",
+    "submit_to_comfyui"
+  ],
+  "decision_rights": [
+    "tests_pass",
+    "tests_fail",
+    "schema_valid",
+    "schema_invalid",
+    "cli_outputs_deterministic_json"
+  ],
+  "cannot_decide": [
+    "visual_acceptance",
+    "production_acceptance",
+    "operator_decision",
+    "downstream_approval",
+    "technical_quality_verdict",
+    "process_compliance_verdict"
+  ],
+  "blocker_rules": [
+    {
+      "rule_id": "tester_blocks_on_schema_failure",
+      "description": "If any schema validation fails, tester must block integration.",
+      "blocks": ["production_acceptance"]
+    },
+    {
+      "rule_id": "tester_blocks_on_test_failure",
+      "description": "If required tests fail, tester must block production acceptance.",
+      "blocks": ["production_acceptance"]
+    }
+  ],
+  "required_artifacts": [
+    "tester_validation_matrix.json",
+    "test_report.json"
+  ],
+  "proof_requirements": [
+    {
+      "proof_type": "tester_validation_matrix",
+      "required": true,
+      "description": "Matrix showing all tested items and results"
+    },
+    {
+      "proof_type": "pytest_output",
+      "required": true,
+      "description": "Pytest output showing pass/fail for all tests"
+    }
+  ]
+}

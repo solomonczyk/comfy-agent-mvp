@@ -1,0 +1,57 @@
+{
+  "model_id": "severity_model",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Severity model mapping severity levels to decision outcomes and required actions.",
+  "levels": [
+    {
+      "level": "info",
+      "description": "Informational observation. No action required.",
+      "default_decision": "pass",
+      "requires_operator_review": false,
+      "blocks": []
+    },
+    {
+      "level": "warning",
+      "description": "Minor issue. Should be noted but does not block.",
+      "default_decision": "pass_with_warnings",
+      "requires_operator_review": false,
+      "blocks": []
+    },
+    {
+      "level": "major",
+      "description": "Significant quality issue. Requires correction plan.",
+      "default_decision": "operator_review_required",
+      "requires_operator_review": true,
+      "blocks": ["production_acceptance"]
+    },
+    {
+      "level": "critical",
+      "description": "Serious defect that blocks downstream and production.",
+      "default_decision": "blocked",
+      "requires_operator_review": true,
+      "blocks": ["assembly", "downstream", "production_acceptance"]
+    },
+    {
+      "level": "blocker",
+      "description": "Absolute stop. No downstream action permitted without resolution.",
+      "default_decision": "blocked",
+      "requires_operator_review": true,
+      "blocks": ["voice_generation", "assembly", "downstream", "production_acceptance"]
+    }
+  ],
+  "escalation_rules": [
+    {
+      "rule_id": "warning_count_escalation",
+      "description": "If more than 5 warnings exist in the same category, escalate to major.",
+      "trigger": "warning_count > 5 in same_category",
+      "escalated_level": "major"
+    },
+    {
+      "rule_id": "duplicate_major_escalation",
+      "description": "If the same major defect appears in 3+ consecutive iterations, escalate to critical.",
+      "trigger": "same_major_defect_count >= 3 consecutive",
+      "escalated_level": "critical"
+    }
+  ]
+}

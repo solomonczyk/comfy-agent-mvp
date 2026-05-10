@@ -1,0 +1,49 @@
+{
+  "policy_id": "qa_decision_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Decision policy governing QA Agent evaluations and allowed decisions.",
+  "applies_to_roles": ["qa_agent", "visual_qa_agent"],
+  "rules": [
+    {
+      "rule_id": "technical_pass_not_visual_pass",
+      "condition": {
+        "technical_checks_passed": true,
+        "operator_visual_review_executed": false
+      },
+      "decision": "operator_review_required",
+      "production_accepted": false
+    },
+    {
+      "rule_id": "technical_fail_blocks_pipeline",
+      "condition": {
+        "technical_checks_passed": false,
+        "critical_defects_found": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "preview_correction_plan_required"
+    },
+    {
+      "rule_id": "warnings_allow_pass_with_note",
+      "condition": {
+        "technical_checks_passed": true,
+        "warnings_present": true,
+        "no_major_or_blocker_defects": true
+      },
+      "decision": "pass_with_warnings",
+      "production_accepted": false,
+      "next_allowed_action": "operator_visual_review_required"
+    },
+    {
+      "rule_id": "qa_agent_cannot_approve_production",
+      "condition": {
+        "source_role": "qa_agent",
+        "requested_decision": "production_acceptance"
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "operator_review_required"
+    }
+  ]
+}

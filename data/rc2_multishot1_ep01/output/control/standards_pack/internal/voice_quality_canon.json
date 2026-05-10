@@ -1,0 +1,42 @@
+{
+  "canon_id": "voice_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Voice quality canon for character voice acting and TTS outputs.",
+  "scope": "voice",
+  "quality_dimensions": [
+    {
+      "dimension_id": "voice_fit",
+      "name": "Voice Fit",
+      "description": "Voice must match character profile and casting contract.",
+      "acceptance_criteria": "Voice gender, age, tone, and accent match casting contract.",
+      "rejection_criteria": "Voice does not match character description or was rejected by operator.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "pacing",
+      "name": "Pacing",
+      "description": "Delivery speed must match scene timing and emotional intent.",
+      "acceptance_criteria": "Pacing appropriate for scene emotion. Not rushed or unnaturally slow.",
+      "rejection_criteria": "Pacing breaks scene rhythm or emotional delivery.",
+      "severity_if_failed": "warning"
+    },
+    {
+      "dimension_id": "pronunciation_clarity",
+      "name": "Pronunciation Clarity",
+      "description": "Words must be intelligible and correctly pronounced.",
+      "acceptance_criteria": "All words intelligible at normal playback. Proper names correct.",
+      "rejection_criteria": "Mumbled, garbled, or mispronounced words.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "emotional_delivery",
+      "name": "Emotional Delivery",
+      "description": "Voice must convey the intended emotion of the scene.",
+      "acceptance_criteria": "Emotional tone matches script direction.",
+      "rejection_criteria": "Flat, inappropriate, or contradictory emotional tone.",
+      "severity_if_failed": "major"
+    }
+  ],
+  "references": []
+}

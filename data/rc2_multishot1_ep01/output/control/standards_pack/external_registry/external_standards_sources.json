@@ -1,0 +1,96 @@
+{
+  "registry_id": "external_standards_sources",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Registry of official external standards sources for QA/QC/Tester use. No downloads performed in this task.",
+  "sources": [
+    {
+      "standard_id": "owasp_asvs",
+      "name": "OWASP ASVS",
+      "purpose": "application security verification controls",
+      "expected_machine_readable_formats": ["json", "xml", "csv", "yaml"],
+      "source_url": "https://github.com/OWASP/ASVS",
+      "license_or_usage_note": "Creative Commons Attribution-ShareAlike 4.0 International",
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_available": false,
+      "status": "registered_for_future_controlled_acquisition"
+    },
+    {
+      "standard_id": "mitre_cwe",
+      "name": "MITRE CWE",
+      "purpose": "common weakness enumeration for software security",
+      "expected_machine_readable_formats": ["json", "xml", "csv"],
+      "source_url": "https://cwe.mitre.org/",
+      "license_or_usage_note": "MITRE license, free for non-commercial and commercial use",
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_available": false,
+      "status": "registered_for_future_controlled_acquisition"
+    },
+    {
+      "standard_id": "mitre_capec",
+      "name": "MITRE CAPEC",
+      "purpose": "common attack pattern enumeration and classification",
+      "expected_machine_readable_formats": ["json", "xml", "csv"],
+      "source_url": "https://capec.mitre.org/",
+      "license_or_usage_note": "MITRE license, free for non-commercial and commercial use",
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_available": false,
+      "status": "registered_for_future_controlled_acquisition"
+    },
+    {
+      "standard_id": "nist_oscal",
+      "name": "NIST OSCAL",
+      "purpose": "open security controls assessment language for system security plans",
+      "expected_machine_readable_formats": ["json", "xml", "yaml"],
+      "source_url": "https://pages.nist.gov/OSCAL/",
+      "license_or_usage_note": "Public domain (US Government work)",
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_available": false,
+      "status": "registered_for_future_controlled_acquisition"
+    },
+    {
+      "standard_id": "cyclonedx",
+      "name": "CycloneDX",
+      "purpose": "software bill of materials (SBOM) standard for supply chain security",
+      "expected_machine_readable_formats": ["json", "xml"],
+      "source_url": "https://cyclonedx.org/",
+      "license_or_usage_note": "Apache License 2.0",
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_available": false,
+      "status": "registered_for_future_controlled_acquisition"
+    },
+    {
+      "standard_id": "spdx",
+      "name": "SPDX",
+      "purpose": "software package data exchange for license and component identification",
+      "expected_machine_readable_formats": ["json", "xml", "rdf", "yaml", "tag-value"],
+      "source_url": "https://spdx.dev/",
+      "license_or_usage_note": "Community specification under Linux Foundation",
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_available": false,
+      "status": "registered_for_future_controlled_acquisition"
+    },
+    {
+      "standard_id": "openssf_scorecard",
+      "name": "OpenSSF Scorecard",
+      "purpose": "automated tool to evaluate open source project security posture",
+      "expected_machine_readable_formats": ["json"],
+      "source_url": "https://github.com/ossf/scorecard",
+      "license_or_usage_note": "Apache License 2.0",
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_available": false,
+      "status": "registered_for_future_controlled_acquisition"
+    }
+  ],
+  "total_registered": 7,
+  "total_downloaded": 0,
+  "acquisition_plan_artifact": "external_standards_acquisition_plan.json",
+  "acquisition_status_artifact": "external_standards_acquisition_status.json"
+}

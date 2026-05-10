@@ -1,0 +1,20 @@
+{
+  "registry_id": "positive_reference_registry",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Registry of positive references for quality comparison. Only operator-approved sources allowed.",
+  "references": [],
+  "rules": {
+    "acceptance_criteria_for_positive_reference": [
+      "source_artifact_must_be_operator_approved",
+      "linked_commit_hash_must_exist_in_repo",
+      "reason_must_document_why_this_is_positive"
+    ],
+    "forbidden_sources": [
+      "rejected_visual_outputs",
+      "failed_generation_attempts",
+      "operator_rejected_candidates",
+      "unverified_external_downloads"
+    ]
+  }
+}

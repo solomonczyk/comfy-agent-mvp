@@ -1,0 +1,49 @@
+{
+  "status_id": "external_standards_acquisition_status",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "external_download_performed": false,
+  "reason": "not_authorized_in_this_task",
+  "external_standards_registered": true,
+  "internal_standards_pack_created": true,
+  "future_controlled_acquisition_required": true,
+  "sources": {
+    "owasp_asvs": {
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_validated": false
+    },
+    "mitre_cwe": {
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_validated": false
+    },
+    "mitre_capec": {
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_validated": false
+    },
+    "nist_oscal": {
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_validated": false
+    },
+    "cyclonedx": {
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_validated": false
+    },
+    "spdx": {
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_validated": false
+    },
+    "openssf_scorecard": {
+      "download_performed": false,
+      "local_copy_available": false,
+      "checksum_validated": false
+    }
+  },
+  "next_allowed_action": "operator_authorization_required_for_external_standards_acquisition",
+  "operator_review_required": true
+}

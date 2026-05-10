@@ -1,0 +1,40 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Decision Policy Schema",
+  "type": "object",
+  "required": ["policy_id", "version", "rules"],
+  "properties": {
+    "policy_id": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "task_id": { "type": "string" },
+    "description": { "type": "string" },
+    "applies_to_roles": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["rule_id", "condition", "decision"],
+        "properties": {
+          "rule_id": { "type": "string" },
+          "condition": {
+            "type": "object",
+            "description": "Key-value conditions that trigger this rule"
+          },
+          "decision": {
+            "type": "string",
+            "enum": ["pass", "pass_with_warnings", "operator_review_required", "blocked", "fail"]
+          },
+          "production_accepted": { "type": "boolean" },
+          "blocks": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "next_allowed_action": { "type": "string" }
+        }
+      }
+    }
+  }
+}

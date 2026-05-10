@@ -1,0 +1,74 @@
+{
+  "policy_id": "qc_acceptance_matrix",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "QC acceptance matrix defining process compliance gates and their required states.",
+  "applies_to_roles": ["qc_agent"],
+  "gates": [
+    {
+      "gate_id": "generation_gate",
+      "description": "Generation was properly authorized and executed",
+      "required_checks": [
+        "generation_authorization_exists",
+        "prompt_id_valid_or_dry_run_documented",
+        "output_assets_match_manifest"
+      ],
+      "acceptance_criteria": "all_required_checks_pass",
+      "rejection_criteria": "any_required_check_fails"
+    },
+    {
+      "gate_id": "operator_visual_review_gate",
+      "description": "Operator visual review was performed and documented",
+      "required_checks": [
+        "operator_visual_review_packet_exists",
+        "operator_decision_recorded",
+        "decision_source_is_human_operator"
+      ],
+      "acceptance_criteria": "all_required_checks_pass",
+      "rejection_criteria": "operator_decision_missing_or_faked"
+    },
+    {
+      "gate_id": "state_consistency_gate",
+      "description": "State artifacts are consistent and clean",
+      "required_checks": [
+        "artifact_index_matches_ledger",
+        "no_contradictory_flags",
+        "git_clean_or_documented_exception"
+      ],
+      "acceptance_criteria": "all_required_checks_pass",
+      "rejection_criteria": "any_required_check_fails"
+    },
+    {
+      "gate_id": "forbidden_actions_gate",
+      "description": "No forbidden actions were performed",
+      "required_checks": [
+        "no_fake_operator_decision",
+        "no_hidden_generation",
+        "no_hidden_download",
+        "no_production_accepted_without_operator_gate"
+      ],
+      "acceptance_criteria": "all_required_checks_pass",
+      "rejection_criteria": "any_required_check_fails"
+    }
+  ],
+  "rules": [
+    {
+      "rule_id": "qc_blocks_on_any_gate_failure",
+      "condition": {
+        "any_gate_failed": true
+      },
+      "decision": "blocked",
+      "production_accepted": false,
+      "next_allowed_action": "qc_remediation_required"
+    },
+    {
+      "rule_id": "qc_passes_when_all_gates_clear",
+      "condition": {
+        "all_gates_passed": true
+      },
+      "decision": "pass",
+      "production_accepted": false,
+      "next_allowed_action": "operator_final_approval_required"
+    }
+  ]
+}

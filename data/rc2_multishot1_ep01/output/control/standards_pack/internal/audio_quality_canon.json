@@ -1,0 +1,42 @@
+{
+  "canon_id": "audio_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Audio quality canon for background music, sound effects, and mixed audio.",
+  "scope": "audio",
+  "quality_dimensions": [
+    {
+      "dimension_id": "sync_accuracy",
+      "name": "Sync Accuracy",
+      "description": "Audio must be synchronized with corresponding visual events.",
+      "acceptance_criteria": "Audio events align with visual within +/- 40ms.",
+      "rejection_criteria": "Visible lip-sync mismatch or offset sound effects.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "noise_floor",
+      "name": "Noise Floor",
+      "description": "Background noise must be below acceptable threshold.",
+      "acceptance_criteria": "No audible hiss, hum, or digital artifacts in silent passages.",
+      "rejection_criteria": "Persistent noise or artifacts audible at normal playback level.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "loudness_consistency",
+      "name": "Loudness Consistency",
+      "description": "Perceived loudness must be consistent across scenes.",
+      "acceptance_criteria": "Loudness within +/- 2 LU of target across all scenes.",
+      "rejection_criteria": "Scene-to-scene loudness jumps are jarring.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "dynamic_range",
+      "name": "Dynamic Range",
+      "description": "Audio must preserve appropriate dynamic range.",
+      "acceptance_criteria": "Quiet moments audible. Loud moments not clipped.",
+      "rejection_criteria": "Over-compressed or clipped audio.",
+      "severity_if_failed": "warning"
+    }
+  ],
+  "references": []
+}

@@ -1,0 +1,42 @@
+{
+  "canon_id": "timeline_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Timeline quality canon for editorial and assembly timelines.",
+  "scope": "timeline",
+  "quality_dimensions": [
+    {
+      "dimension_id": "track_integrity",
+      "name": "Track Integrity",
+      "description": "All timeline tracks must contain valid, non-empty media.",
+      "acceptance_criteria": "Video, audio, and effect tracks populated with correct media.",
+      "rejection_criteria": "Empty tracks, placeholder media, or broken references.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "duration_accuracy",
+      "name": "Duration Accuracy",
+      "description": "Shot and scene durations must match approved timing.",
+      "acceptance_criteria": "Each shot duration within +/- 0.5s of approved timing.",
+      "rejection_criteria": "Shot durations deviate significantly from approved plan.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "transition_quality",
+      "name": "Transition Quality",
+      "description": "Transitions must follow approved transition policy.",
+      "acceptance_criteria": "Transitions match policy. No jarring or unintended transitions.",
+      "rejection_criteria": "Forbidden transition types used or transitions break continuity.",
+      "severity_if_failed": "major"
+    },
+    {
+      "dimension_id": "marker_accuracy",
+      "name": "Marker Accuracy",
+      "description": "Timeline markers must accurately reflect scene boundaries and beats.",
+      "acceptance_criteria": "All required markers present at correct timecodes.",
+      "rejection_criteria": "Missing markers or markers at wrong positions.",
+      "severity_if_failed": "warning"
+    }
+  ],
+  "references": []
+}

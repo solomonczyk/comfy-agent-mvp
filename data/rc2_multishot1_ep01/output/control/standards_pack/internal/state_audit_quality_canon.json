@@ -1,0 +1,42 @@
+{
+  "canon_id": "state_audit_quality_canon",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "State and audit quality canon for ensuring project state integrity.",
+  "scope": "state_audit",
+  "quality_dimensions": [
+    {
+      "dimension_id": "artifact_index_consistency",
+      "name": "Artifact Index Consistency",
+      "description": "artifact_index.json must be internally consistent and match filesystem.",
+      "acceptance_criteria": "All referenced artifacts exist. No contradictory flags.",
+      "rejection_criteria": "Missing artifacts, contradictory state flags, or stale references.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "ledger_consistency",
+      "name": "Ledger Consistency",
+      "description": "episode_ledger.json events must form a coherent timeline.",
+      "acceptance_criteria": "Events in chronological order. State transitions logical.",
+      "rejection_criteria": "Impossible state transitions or missing events.",
+      "severity_if_failed": "blocker"
+    },
+    {
+      "dimension_id": "git_cleanliness",
+      "name": "Git Cleanliness",
+      "description": "Git working directory must be clean at gate checkpoints.",
+      "acceptance_criteria": "No uncommitted changes. All expected files committed.",
+      "rejection_criteria": "Dirty working tree at checkpoint.",
+      "severity_if_failed": "critical"
+    },
+    {
+      "dimension_id": "proof_completeness",
+      "name": "Proof Completeness",
+      "description": "Required proof artifacts must be present for each completed layer.",
+      "acceptance_criteria": "Every completed layer has corresponding proof JSON.",
+      "rejection_criteria": "Missing proof for a completed layer.",
+      "severity_if_failed": "major"
+    }
+  ],
+  "references": []
+}

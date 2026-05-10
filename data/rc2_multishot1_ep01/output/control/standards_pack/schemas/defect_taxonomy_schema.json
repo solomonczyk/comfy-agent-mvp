@@ -1,0 +1,41 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Defect Taxonomy Schema",
+  "type": "object",
+  "required": ["taxonomy_id", "version", "defects"],
+  "properties": {
+    "taxonomy_id": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "task_id": { "type": "string" },
+    "description": { "type": "string" },
+    "defects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["defect_id", "category", "severity_default", "description", "detected_by_roles", "blocks", "requires_operator_review", "recommended_next_action"],
+        "properties": {
+          "defect_id": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": ["visual", "preview", "motion", "audio", "voice", "timeline", "state", "proof", "assembly"]
+          },
+          "severity_default": {
+            "type": "string",
+            "enum": ["info", "warning", "major", "critical", "blocker"]
+          },
+          "description": { "type": "string" },
+          "detected_by_roles": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "blocks": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "requires_operator_review": { "type": "boolean" },
+          "recommended_next_action": { "type": "string" }
+        }
+      }
+    }
+  }
+}

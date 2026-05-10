@@ -1,0 +1,32 @@
+{
+  "policy_id": "reference_usage_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "description": "Policy governing how positive and negative references may be used.",
+  "rules": [
+    {
+      "rule_id": "positive_requires_operator_approval",
+      "description": "Positive references require explicit operator approval of source.",
+      "applies_to": ["all_agents"],
+      "enforcement": "block_usage_without_approval"
+    },
+    {
+      "rule_id": "negative_blocks_repeated_patterns",
+      "description": "Negative references may be used to block repeated failure patterns.",
+      "applies_to": ["qa_agent", "visual_qa_agent", "script_supervisor"],
+      "enforcement": "warn_if_pattern_repeats"
+    },
+    {
+      "rule_id": "no_learning_from_negative_as_positive",
+      "description": "Agents must not learn from bad outputs as positive examples.",
+      "applies_to": ["all_agents"],
+      "enforcement": "block_and_log"
+    },
+    {
+      "rule_id": "reference_registry_must_be_auditable",
+      "description": "All reference additions must be committed and logged in episode_ledger.",
+      "applies_to": ["all_agents"],
+      "enforcement": "qc_audit"
+    }
+  ]
+}

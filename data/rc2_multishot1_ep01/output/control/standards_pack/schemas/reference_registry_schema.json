@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reference Registry Schema",
+  "type": "object",
+  "required": ["registry_id", "version", "references"],
+  "properties": {
+    "registry_id": { "type": "string" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "task_id": { "type": "string" },
+    "description": { "type": "string" },
+    "references": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["reference_id", "reference_type", "scope"],
+        "properties": {
+          "reference_id": { "type": "string" },
+          "reference_type": {
+            "type": "string",
+            "enum": ["positive", "negative"]
+          },
+          "scope": {
+            "type": "string",
+            "enum": ["visual", "audio", "timeline", "preview", "state", "proof"]
+          },
+          "source_artifact_path": { "type": "string" },
+          "linked_task_id": { "type": "string" },
+          "linked_commit_hash": { "type": "string" },
+          "reason": { "type": "string" },
+          "allowed_usage": {
+            "type": "array",
+            "items": { "type": "string" }
+          },
+          "forbidden_usage": {
+            "type": "array",
+            "items": { "type": "string" }
+          }
+        }
+      }
+    }
+  }
+}
