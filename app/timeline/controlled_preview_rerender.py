@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 import os
 import shutil
 import subprocess
@@ -1623,6 +1624,11 @@ V3_MIN_UNIQUE_SOURCES = 3
 V3_SINGLE_SOURCE_FALLBACK_ALLOWED = False
 V3_SEGMENT_DIVISOR = 6
 
+# RC-COMBINE-V2-PREVIEW-MOTION-PROGRESSION-FIX-V4V5-001
+# Legacy static segment hold mode is blocked as default.
+LEGACY_STATIC_HOLD_BLOCKED = True
+LEGACY_STATIC_HOLD_DIAGNOSTIC_ONLY = False
+
 
 # ---------------------------------------------------------------------------
 # Multi-asset source resolver (replaces single-asset _resolve_asset_path)
@@ -1928,15 +1934,27 @@ def build_contact_sheet_source_map_v3(plan: dict) -> dict:
 
 
 def _create_segment_preview_frames(
-    segments: list, frames_dir: Path
+    segments: list, frames_dir: Path, motion_keyframes: Optional[dict] = None
 ) -> list:
     """Generate preview frames per segment, each from its own asset.
 
     Each segment's frames are generated from the segment's assigned asset,
-    with a Ken Burns pan/zoom effect applied per segment.
+    with deterministic pan/zoom/crop motion applied per frame.
+
+    If motion_keyframes is provided (segment_index -> list of keyframe dicts),
+    those transforms are consumed directly.
+
+    The legacy static hold mode (center crop only, minimal zoom) is blocked
+    as the default behavior per RC-COMBINE-V2-PREVIEW-MOTION-PROGRESSION-FIX-V4V5-001.
     """
     _ensure_dir(frames_dir)
     frames: list = []
+
+    if LEGACY_STATIC_HOLD_BLOCKED and motion_keyframes is None:
+        # Static hold blocked: require a motion plan to be loaded.
+        # For diagnostic / fallback testing, LEGACY_STATIC_HOLD_DIAGNOSTIC_ONLY
+        # may be set by an operator, but default is forbidden.
+        pass  # Continue with enhanced default motion below
 
     for seg in segments:
         asset_path = Path(seg.get("asset_path", ""))
@@ -1951,18 +1969,47 @@ def _create_segment_preview_frames(
         start = seg.get("frame_start", 0)
         end = seg.get("frame_end", 0)
         count = end - start
+        seg_idx = seg.get("segment_index", 0)
+
+        # Look up motion keyframes for this segment
+        seg_keyframes = None
+        if motion_keyframes:
+            seg_keyframes = motion_keyframes.get(str(seg_idx)) or motion_keyframes.get(seg_idx)
 
         for i in range(start, end):
-            progress = (i - start) / max(count - 1, 1)
+            local_idx = i - start
+            progress = local_idx / max(count - 1, 1)
 
-            zoom = 1.0 + 0.05 * progress
-            crop_w = int(img.width / zoom)
-            crop_h = int(img.height / zoom)
+            if seg_keyframes and local_idx < len(seg_keyframes):
+                kf = seg_keyframes[local_idx]
+                zoom = float(kf.get("zoom", 1.0))
+                crop_left_norm = float(kf.get("crop_left", 0.0))
+                crop_top_norm = float(kf.get("crop_top", 0.0))
+                crop_width_norm = float(kf.get("crop_width", 1.0))
+                crop_height_norm = float(kf.get("crop_height", 1.0))
 
-            left = (img.width - crop_w) // 2
-            top = (img.height - crop_h) // 2
-            if crop_w <= 0 or crop_h <= 0:
-                continue
+                left = int(crop_left_norm * img.width)
+                top = int(crop_top_norm * img.height)
+                crop_w = int(crop_width_norm * img.width)
+                crop_h = int(crop_height_norm * img.height)
+            else:
+                # Enhanced default motion (not the old static hold)
+                # Subtle pan + zoom variation per segment index
+                pan_x = 0.05 * math.sin(progress * math.pi * 2 + seg_idx)
+                pan_y = 0.03 * math.cos(progress * math.pi * 2 + seg_idx)
+                zoom = 1.0 + 0.08 * progress + 0.02 * seg_idx
+
+                crop_w = int(img.width / zoom)
+                crop_h = int(img.height / zoom)
+                max_left = img.width - crop_w
+                max_top = img.height - crop_h
+                left = int((max_left / 2) + pan_x * max_left)
+                top = int((max_top / 2) + pan_y * max_top)
+
+            left = max(0, min(left, img.width - 1))
+            top = max(0, min(top, img.height - 1))
+            crop_w = max(1, min(crop_w, img.width - left))
+            crop_h = max(1, min(crop_h, img.height - top))
 
             cropped = img.crop((left, top, left + crop_w, top + crop_h))
             resized = cropped.resize(

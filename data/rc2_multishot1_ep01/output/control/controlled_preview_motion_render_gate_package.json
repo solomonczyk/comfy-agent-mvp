@@ -1,0 +1,30 @@
+{
+  "package_type": "controlled_preview_motion_render_gate_package",
+  "task_id": "RC-COMBINE-V2-PREVIEW-MOTION-PROGRESSION-FIX-V4V5-001",
+  "version": "v4v5",
+  "current_state": "controlled_preview_motion_render_authorization_required",
+  "next_allowed_action": "controlled_preview_motion_render_authorization_required",
+  "requires_operator_authorization": true,
+  "agent_may_authorize": false,
+  "max_preview_renders": 1,
+  "motion_progression_plan_ready": true,
+  "segment_keyframes_ready": true,
+  "duplicate_reduction_qa_ready": true,
+  "renderer_contract_ready": true,
+  "preview_render_executed": false,
+  "new_image_generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "blocked_until": "operator_authorization_for_controlled_preview_motion_render",
+  "gate_artifacts": {
+    "progression_plan": "preview_motion_progression_plan_v4v5",
+    "segment_keyframes": "preview_motion_segment_keyframes_v4v5",
+    "duplicate_reduction_qa": "preview_motion_duplicate_reduction_qa",
+    "renderer_contract": "preview_motion_renderer_contract_v4v5"
+  },
+  "timestamp": "2026-05-10T10:54:43.705783+00:00"
+}

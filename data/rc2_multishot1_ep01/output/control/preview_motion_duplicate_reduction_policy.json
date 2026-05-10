@@ -1,0 +1,36 @@
+{
+  "policy_type": "preview_motion_duplicate_reduction_policy_v4v5",
+  "task_id": "RC-COMBINE-V2-PREVIEW-MOTION-PROGRESSION-FIX-V4V5-001",
+  "version": "v4v5",
+  "frame_level_duplicate_ratio": {
+    "target_max": 0.3,
+    "hard_fail_threshold": 0.85,
+    "measurement_method": "perceptual_mae_32x32_thumbnail"
+  },
+  "per_segment_motion_score": {
+    "min_acceptable": 0.01,
+    "target_average": 0.05,
+    "measurement": "zoom_delta + pan_delta * 2.0"
+  },
+  "static_hold_detection": {
+    "enabled": true,
+    "threshold": 0.8,
+    "action": "block_and_route_to_motion_plan_rebuild"
+  },
+  "contact_sheet_usefulness_check": {
+    "enabled": true,
+    "require_distinct_samples_per_segment": true,
+    "minimum_distinct_sources": 3
+  },
+  "fail_thresholds": {
+    "duplicate_ratio_above_0.85": "BLOCK preview acceptance",
+    "static_hold_detected": "BLOCK preview acceptance",
+    "contact_sheet_fails_progression_proof": "BLOCK preview acceptance"
+  },
+  "dry_run_mode": {
+    "supported": true,
+    "default_for_unrendered_plans": true,
+    "honest_render_executed_flag": true
+  },
+  "timestamp": "2026-05-10T10:54:43.705783+00:00"
+}

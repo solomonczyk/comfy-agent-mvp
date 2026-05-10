@@ -1,0 +1,37 @@
+{
+  "contract_type": "preview_motion_renderer_contract_v4v5",
+  "task_id": "RC-COMBINE-V2-PREVIEW-MOTION-PROGRESSION-FIX-V4V5-001",
+  "version": "v4v5",
+  "legacy_static_hold_mode": {
+    "allowed": false,
+    "default": false,
+    "fallback_forbidden": true,
+    "diagnostic_mode_only": false
+  },
+  "required_renderer_features": [
+    "per_frame_crop_transform",
+    "per_frame_zoom_transform",
+    "per_frame_pan_transform",
+    "segment_transition_padding",
+    "deterministic_keyframe_consumption"
+  ],
+  "motion_policy": {
+    "slow_push_in_enabled": true,
+    "slow_pull_out_enabled": true,
+    "pan_left_enabled": true,
+    "pan_right_enabled": true,
+    "pan_up_enabled": true,
+    "pan_down_enabled": true,
+    "zoom_drift_enabled": true,
+    "subtle_parallax_enabled": true,
+    "transition_padding_frames": 6
+  },
+  "blocked_behaviors": [
+    "asset = assets[0]; repeat asset for all frames",
+    "single_source_repeat_for_all_segments",
+    "zero_crop_variation_across_frames",
+    "zero_zoom_variation_across_frames",
+    "static_hold_without_explicit_still_scene_contract"
+  ],
+  "timestamp": "2026-05-10T10:54:43.705783+00:00"
+}

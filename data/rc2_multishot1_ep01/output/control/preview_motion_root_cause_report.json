@@ -1,0 +1,24 @@
+{
+  "artifact_type": "preview_motion_root_cause_report",
+  "task_id": "RC-COMBINE-V2-PREVIEW-MOTION-PROGRESSION-FIX-V4V5-001",
+  "previous_duplicate_ratio": 0.917,
+  "duplicate_ratio_source": "segment_based_preview_rerender_v3_static_detection_report",
+  "root_cause": "static_still_image_segment_holds",
+  "root_cause_detail": "The v3 segment renderer used 6 unique visual sources, but each segment rendered as a static still-image hold with no frame-level motion (pan, zoom, crop drift). The Ken Burns zoom was minimal and uniform, resulting in 91.7% duplicate frames. No new image generation is required — motion must be added at the timeline/segment renderer level.",
+  "requires_new_generation": false,
+  "affected_segments": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "evidence": [
+    "segment_based_preview_rerender duplicate_ratio=0.9167",
+    "6 unique assets assigned to 6 segments",
+    "frame-level motion absent in v3 renderer",
+    "contact_sheet shows 6 identical-looking samples (same crop region)"
+  ],
+  "timestamp": "2026-05-10T10:54:43.705783+00:00"
+}
