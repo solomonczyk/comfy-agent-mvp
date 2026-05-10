@@ -1843,5 +1843,51 @@
     "max_preview_renders": 1,
     "stop_after_preview_render": true,
     "previous_state": "controlled_preview_rerender_authorization_required"
+  },
+  {
+    "event_type": "controlled_preview_rerender_started",
+    "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+    "stage": "preview_correction_plan_required",
+    "corrected_timeline_input_created": true,
+    "timeline_empty_after_repair": false,
+    "asset_refs_present": true,
+    "edl_operations_applied": true,
+    "timestamp": "2026-05-10T06:55:25.650511+00:00"
+  },
+  {
+    "event_type": "preview_rerender_executed",
+    "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+    "stage": "preview_correction_plan_required",
+    "preview_render_count": 1,
+    "renderer": "ffmpeg",
+    "mp4_rendered": true,
+    "gif_rendered": true,
+    "contact_sheet_rendered": true,
+    "timestamp": "2026-05-10T06:55:25.650511+00:00"
+  },
+  {
+    "event_type": "static_detection_completed",
+    "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+    "stage": "preview_correction_plan_required",
+    "duplicate_ratio": 1.0,
+    "duplicate_threshold": 0.85,
+    "preview_static_blocker": true,
+    "timestamp": "2026-05-10T06:55:25.650511+00:00"
+  },
+  {
+    "event_type": "controlled_preview_rerender_completed",
+    "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+    "stage": "preview_correction_plan_required",
+    "preview_render_executed": true,
+    "preview_render_count": 1,
+    "second_preview_render_attempted": false,
+    "preview_static_blocker": true,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "preview_correction_plan_required",
+    "next_allowed_action": "preview_correction_plan_required",
+    "timestamp": "2026-05-10T06:55:25.650511+00:00"
   }
 ]

@@ -26,6 +26,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from PIL import Image, UnidentifiedImageError
 
 TASK_ID = "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001"
+TASK_ID_EXECUTE = "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-EXECUTE-002"
 
 # Re-export rendering constants from controlled_preview_render
 PREVIEW_FPS = 24
@@ -488,11 +489,16 @@ def _create_contact_sheet(
 # ---------------------------------------------------------------------------
 
 
-def execute_preview_rerender(asset_path: Path, preview_dir: Path) -> Dict[str, Any]:
+def execute_preview_rerender(asset_path: Path, preview_dir: Path, render_suffix: str = "001") -> Dict[str, Any]:
     """Execute exactly one preview re-render.
 
-    Creates preview_lowres_rerender_001.mp4, preview_rerender_001.gif,
-    contact_sheet_rerender_001.jpg from the approved asset.
+    Creates preview_lowres_rerender_{suffix}.mp4, preview_rerender_{suffix}.gif,
+    contact_sheet_rerender_{suffix}.jpg from the approved asset.
+
+    Args:
+        asset_path: Path to the source asset image.
+        preview_dir: Directory for preview outputs.
+        render_suffix: Output file suffix (default "001").
 
     Returns render result dict.
     """
@@ -505,16 +511,16 @@ def execute_preview_rerender(asset_path: Path, preview_dir: Path) -> Dict[str, A
     # Generate frames
     frames = _create_preview_frames(asset_path, num_frames, frames_dir)
 
-    # Render preview_lowres_rerender_001.mp4
-    mp4_path = preview_dir / "preview_lowres_rerender_001.mp4"
+    # Render preview_lowres_rerender_{suffix}.mp4
+    mp4_path = preview_dir / f"preview_lowres_rerender_{render_suffix}.mp4"
     has_ffmpeg = _which_ffmpeg() is not None
     mp4_ok = False
     if has_ffmpeg:
         pattern = str(frames_dir / "frame_%04d.png")
         mp4_ok = _render_mp4_ffmpeg(pattern, mp4_path, PREVIEW_FPS)
 
-    # Render preview_rerender_001.gif (always with Pillow)
-    gif_path = preview_dir / "preview_rerender_001.gif"
+    # Render preview_rerender_{suffix}.gif (always with Pillow)
+    gif_path = preview_dir / f"preview_rerender_{render_suffix}.gif"
     gif_frames = frames[::PREVIEW_GIF_SKIP_FRAMES]
     if gif_frames:
         gif_imgs = [Image.open(f) for f in gif_frames]
@@ -526,15 +532,23 @@ def execute_preview_rerender(asset_path: Path, preview_dir: Path) -> Dict[str, A
             loop=0,
         )
 
-    # Render contact_sheet_rerender_001.jpg
-    sheet_path = preview_dir / "contact_sheet_rerender_001.jpg"
+    # Render contact_sheet_rerender_{suffix}.jpg
+    sheet_path = preview_dir / f"contact_sheet_rerender_{render_suffix}.jpg"
     _create_contact_sheet(frames, sheet_path, cols=4, rows=6)
 
     renderer = "ffmpeg" if has_ffmpeg and mp4_ok else "pillow_fallback"
 
+    # File info helpers
+    def _render_file_info(name: str) -> Dict[str, Any]:
+        p = preview_dir / name
+        if p.exists() and p.stat().st_size > 0:
+            return {"path": str(p), "size_bytes": p.stat().st_size, "sha256": _sha256(p)}
+        return {"path": str(p), "size_bytes": 0, "sha256": None}
+
     return {
         "preview_render_executed": True,
         "preview_render_count": 1,
+        "render_suffix": render_suffix,
         "renderer": renderer,
         "has_ffmpeg": has_ffmpeg,
         "mp4_rendered": mp4_ok,
@@ -543,6 +557,11 @@ def execute_preview_rerender(asset_path: Path, preview_dir: Path) -> Dict[str, A
         "mp4_path": str(mp4_path),
         "gif_path": str(gif_path),
         "sheet_path": str(sheet_path),
+        "files": {
+            "preview_lowres": _render_file_info(f"preview_lowres_rerender_{render_suffix}.mp4"),
+            "preview_gif": _render_file_info(f"preview_rerender_{render_suffix}.gif"),
+            "contact_sheet": _render_file_info(f"contact_sheet_rerender_{render_suffix}.jpg"),
+        },
         "frame_count": len(frames),
         "gif_frame_count": len(gif_frames),
         "fps": PREVIEW_FPS,
@@ -681,15 +700,19 @@ def validate_preview_artifact(path: Path, artifact_type: str) -> Dict[str, bool]
     return result
 
 
-def validate_preview_artifacts(preview_dir: Path) -> Dict[str, Any]:
+def validate_preview_artifacts(preview_dir: Path, render_suffix: str = "001") -> Dict[str, Any]:
     """Validate all preview re-render artifacts.
+
+    Args:
+        preview_dir: Directory for preview outputs.
+        render_suffix: Output file suffix (default "001").
 
     Returns validation result dict.
     """
     artifacts = {
-        "preview_lowres_rerender_001.mp4": "video",
-        "preview_rerender_001.gif": "gif",
-        "contact_sheet_rerender_001.jpg": "image",
+        f"preview_lowres_rerender_{render_suffix}.mp4": "video",
+        f"preview_rerender_{render_suffix}.gif": "gif",
+        f"contact_sheet_rerender_{render_suffix}.jpg": "image",
     }
 
     results: Dict[str, Any] = {
@@ -739,6 +762,7 @@ def build_rerender_report(
     render_result: Dict[str, Any],
     corrected_input: Dict[str, Any],
     root: Path,
+    render_suffix: str = "001",
 ) -> Dict[str, Any]:
     """Build controlled_preview_rerender_report.json."""
     preview_dir = root / "output" / "previews"
@@ -758,6 +782,7 @@ def build_rerender_report(
         "report_type": "controlled_preview_rerender_report",
         "preview_render_executed": True,
         "preview_render_count": 1,
+        "render_suffix": render_suffix,
         "renderer": render_result.get("renderer", "unknown"),
         "corrected_timeline_input_consumed": True,
         "timeline_empty_after_repair": corrected_input.get("timeline_empty", True),
@@ -770,9 +795,9 @@ def build_rerender_report(
         "duration_sec": render_result.get("duration_sec"),
         "frame_count": render_result.get("frame_count"),
         "outputs": {
-            "preview_lowres": _file_info("preview_lowres_rerender_001.mp4"),
-            "preview_gif": _file_info("preview_rerender_001.gif"),
-            "contact_sheet": _file_info("contact_sheet_rerender_001.jpg"),
+            "preview_lowres": _file_info(f"preview_lowres_rerender_{render_suffix}.mp4"),
+            "preview_gif": _file_info(f"preview_rerender_{render_suffix}.gif"),
+            "contact_sheet": _file_info(f"contact_sheet_rerender_{render_suffix}.jpg"),
         },
         "voice_generation_executed": False,
         "assembly_executed": False,
@@ -879,6 +904,126 @@ def build_operator_review_packet(
             "duplicate_ratio": static_report.get("duplicate_ratio", 1.0),
             "preview_static_blocker": static_report.get("preview_static_blocker", True),
         },
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def build_execution_report(
+    render_result: Dict[str, Any],
+    corrected_input: Dict[str, Any],
+    artifact_validation: Dict[str, Any],
+    static_report: Dict[str, Any],
+    result_review: Dict[str, Any],
+    target_state: str,
+    render_suffix: str = "001",
+) -> Dict[str, Any]:
+    """Build controlled_preview_rerender_execution_report.json.
+
+    Provides a comprehensive execution summary for the controlled
+    preview re-render run.
+    """
+    duplicate_ratio = static_report.get("duplicate_ratio", 1.0)
+    preview_static_blocker = static_report.get("preview_static_blocker", True)
+
+    return {
+        "task_id": TASK_ID_EXECUTE,
+        "report_type": "controlled_preview_rerender_execution_report",
+        "preview_render_executed": True,
+        "preview_render_count": 1,
+        "render_suffix": render_suffix,
+        "renderer": render_result.get("renderer", "unknown"),
+        "has_ffmpeg": render_result.get("has_ffmpeg", False),
+        "mp4_rendered": render_result.get("mp4_rendered", False),
+        "gif_rendered": render_result.get("gif_rendered", False),
+        "contact_sheet_rendered": render_result.get("contact_sheet_rendered", False),
+        "frame_count": render_result.get("frame_count", 0),
+        "gif_frame_count": render_result.get("gif_frame_count", 0),
+        "fps": render_result.get("fps", 24),
+        "resolution": render_result.get("resolution", {"width": 672, "height": 384}),
+        "duration_sec": render_result.get("duration_sec", 30.0),
+        "corrected_timeline_input_consumed": True,
+        "timeline_empty_after_repair": corrected_input.get("timeline_empty", True),
+        "asset_refs_present": corrected_input.get("asset_refs_present", False),
+        "video_tracks_present": not corrected_input.get("video_tracks_empty", True),
+        "edl_operations_applied": corrected_input.get("edl_operations_applied", False),
+        "expected_visual_segments": corrected_input.get("expected_visual_segments", 0),
+        "preview_artifacts_valid": artifact_validation.get("valid", False),
+        "static_detection_executed": static_report.get("static_detection_executed", False),
+        "duplicate_ratio": duplicate_ratio,
+        "duplicate_threshold": DUPLICATE_THRESHOLD,
+        "preview_static_blocker": preview_static_blocker,
+        "preview_valid_for_operator_review": not preview_static_blocker,
+        "target_state": target_state,
+        "operator_review_required": not preview_static_blocker,
+        "voice_generation_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "second_preview_render_attempted": False,
+        "errors": artifact_validation.get("errors", []),
+        "warnings": artifact_validation.get("warnings", []),
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+
+def build_execution_manifest(
+    render_result: Dict[str, Any],
+    static_report: Dict[str, Any],
+    root: Path,
+    render_suffix: str = "001",
+) -> Dict[str, Any]:
+    """Build controlled_preview_rerender_manifest.json.
+
+    Lists all artifacts produced by the controlled preview re-render
+    execution, including preview files and control artifacts.
+    """
+    preview_dir = root / "output" / "previews"
+    control_dir = root / "output" / "control"
+
+    def _af(name: str) -> Dict[str, Any]:
+        p = control_dir / name
+        if p.exists() and p.stat().st_size > 0:
+            return {"path": str(p), "size_bytes": p.stat().st_size, "sha256": _sha256(p)}
+        return {"path": str(p), "size_bytes": 0, "sha256": None}
+
+    def _pf(name: str) -> Dict[str, Any]:
+        p = preview_dir / name
+        if p.exists() and p.stat().st_size > 0:
+            return {"path": str(p), "size_bytes": p.stat().st_size, "sha256": _sha256(p)}
+        return {"path": str(p), "size_bytes": 0, "sha256": None}
+
+    preview_files = {
+        "preview_lowres": _pf(f"preview_lowres_rerender_{render_suffix}.mp4"),
+        "preview_gif": _pf(f"preview_rerender_{render_suffix}.gif"),
+        "contact_sheet": _pf(f"contact_sheet_rerender_{render_suffix}.jpg"),
+    }
+    control_files = {
+        "corrected_preview_timeline_input": _af("corrected_preview_timeline_input.json"),
+        "controlled_preview_rerender_report": _af("controlled_preview_rerender_report.json"),
+        "controlled_preview_rerender_result_review": _af("controlled_preview_rerender_result_review.json"),
+        "controlled_preview_rerender_static_detection_report": _af("controlled_preview_rerender_static_detection_report.json"),
+        "controlled_preview_rerender_operator_review_packet": _af("controlled_preview_rerender_operator_review_packet.json"),
+        "controlled_preview_rerender_execution_report": _af("controlled_preview_rerender_execution_report.json"),
+        "controlled_preview_rerender_manifest": _af("controlled_preview_rerender_manifest.json"),
+    }
+
+    return {
+        "task_id": TASK_ID_EXECUTE,
+        "manifest_type": "controlled_preview_rerender_manifest",
+        "render_suffix": render_suffix,
+        "preview_render_executed": True,
+        "preview_render_count": 1,
+        "preview_files": preview_files,
+        "control_files": control_files,
+        "total_artifacts": len(preview_files) + len(control_files),
+        "preview_artifacts_count": len(preview_files),
+        "control_artifacts_count": len(control_files),
+        "duplicate_ratio": static_report.get("duplicate_ratio", 1.0),
+        "preview_static_blocker": static_report.get("preview_static_blocker", True),
+        "voice_generation_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
         "timestamp": datetime.now(timezone.utc).isoformat(),
     }
 
@@ -1081,6 +1226,7 @@ def run_controlled_preview_rerender(
     project_root: Optional[str] = None,
     execute: bool = True,
     max_renders: int = 1,
+    render_suffix: str = "001",
 ) -> Dict[str, Any]:
     """Run the full controlled preview re-render pipeline.
 
@@ -1091,6 +1237,7 @@ def run_controlled_preview_rerender(
         project_root: Path to the project root (default: cwd).
         execute: If True, actually execute the preview render (default: True).
         max_renders: Maximum number of preview renders allowed (default: 1).
+        render_suffix: Output file suffix (default "001").
 
     Returns:
         A result dict with status, artifact paths, and state info.
@@ -1246,12 +1393,12 @@ def run_controlled_preview_rerender(
     asset_path = Path(asset_path_str)
 
     # Execute preview re-render
-    render_result = execute_preview_rerender(asset_path, preview_dir)
+    render_result = execute_preview_rerender(asset_path, preview_dir, render_suffix=render_suffix)
 
     # ------------------------------------------------------------------
     # Step 5: Validate artifacts
     # ------------------------------------------------------------------
-    artifact_validation = validate_preview_artifacts(preview_dir)
+    artifact_validation = validate_preview_artifacts(preview_dir, render_suffix=render_suffix)
 
     # ------------------------------------------------------------------
     # Step 6: Run static/duplicate detection
@@ -1263,7 +1410,7 @@ def run_controlled_preview_rerender(
     # ------------------------------------------------------------------
     # Step 7: Create reports and review packet
     # ------------------------------------------------------------------
-    render_report = build_rerender_report(render_result, corrected_input, root)
+    render_report = build_rerender_report(render_result, corrected_input, root, render_suffix=render_suffix)
     _write_json(
         control_dir / "controlled_preview_rerender_report.json",
         render_report,
@@ -1315,6 +1462,32 @@ def run_controlled_preview_rerender(
             "Routed to operator review."
         )
 
+    # Create execution report and manifest (new artifacts for EXECUTE-002)
+    execution_report = build_execution_report(
+        render_result=render_result,
+        corrected_input=corrected_input,
+        artifact_validation=artifact_validation,
+        static_report=static_report,
+        result_review=result_review,
+        target_state=target_state,
+        render_suffix=render_suffix,
+    )
+    _write_json(
+        control_dir / "controlled_preview_rerender_execution_report.json",
+        execution_report,
+    )
+
+    execution_manifest = build_execution_manifest(
+        render_result=render_result,
+        static_report=static_report,
+        root=root,
+        render_suffix=render_suffix,
+    )
+    _write_json(
+        control_dir / "controlled_preview_rerender_manifest.json",
+        execution_manifest,
+    )
+
     # ------------------------------------------------------------------
     # Step 9: Update artifact index and ledger
     # ------------------------------------------------------------------
@@ -1332,6 +1505,8 @@ def run_controlled_preview_rerender(
         "controlled_preview_rerender_result_review_created": True,
         "controlled_preview_rerender_static_detection_report_created": True,
         "controlled_preview_rerender_operator_review_packet_created": True,
+        "controlled_preview_rerender_execution_report_created": True,
+        "controlled_preview_rerender_manifest_created": True,
         "preview_lowres_created": render_result["mp4_rendered"],
         "preview_gif_created": render_result["gif_rendered"],
         "contact_sheet_created": render_result["contact_sheet_rendered"],
@@ -1391,21 +1566,27 @@ def run_controlled_preview_rerender(
         "comfyui_submit_executed": False,
         "visual_acceptance_executed": False,
         "operator_acceptance_faked": False,
+        "execution_report_created": True,
+        "manifest_created": True,
         "operator_review_packet_created": True,
         "operator_review_required": not preview_static_blocker,
         "render_report": "controlled_preview_rerender_report.json",
         "result_review": "controlled_preview_rerender_result_review.json",
         "static_detection_report": "controlled_preview_rerender_static_detection_report.json",
         "operator_review_packet": "controlled_preview_rerender_operator_review_packet.json",
+        "execution_report": "controlled_preview_rerender_execution_report.json",
+        "manifest": "controlled_preview_rerender_manifest.json",
         "artifacts": {
             "corrected_preview_timeline_input": "corrected_preview_timeline_input.json",
             "controlled_preview_rerender_report": "controlled_preview_rerender_report.json",
             "controlled_preview_rerender_result_review": "controlled_preview_rerender_result_review.json",
             "controlled_preview_rerender_static_detection_report": "controlled_preview_rerender_static_detection_report.json",
             "controlled_preview_rerender_operator_review_packet": "controlled_preview_rerender_operator_review_packet.json",
-            "preview_lowres": "previews/preview_lowres_rerender_001.mp4",
-            "preview_gif": "previews/preview_rerender_001.gif",
-            "contact_sheet": "previews/contact_sheet_rerender_001.jpg",
+            "controlled_preview_rerender_execution_report": "controlled_preview_rerender_execution_report.json",
+            "controlled_preview_rerender_manifest": "controlled_preview_rerender_manifest.json",
+            "preview_lowres": f"previews/preview_lowres_rerender_{render_suffix}.mp4",
+            "preview_gif": f"previews/preview_rerender_{render_suffix}.gif",
+            "contact_sheet": f"previews/contact_sheet_rerender_{render_suffix}.jpg",
         },
         "forbidden_actions": {
             "generation_performed": False,

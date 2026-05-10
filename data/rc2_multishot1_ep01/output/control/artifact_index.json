@@ -1,6 +1,6 @@
 {
-  "current_state": "controlled_preview_rerender_execute_required",
-  "next_allowed_action": "controlled_preview_rerender_execute_required",
+  "current_state": "preview_correction_plan_required",
+  "next_allowed_action": "preview_correction_plan_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -685,7 +685,7 @@
   "artifacts": [
     "human_preview_review_gate_proof.json"
   ],
-  "task_id": "RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001",
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
   "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
   "total_artifacts": 47,
   "brief_intake_layer_completed": true,
@@ -705,7 +705,7 @@
   "generation_authorized": true,
   "comfyui_submit_executed": false,
   "workflow_execution_performed": false,
-  "preview_render_executed": false,
+  "preview_render_executed": true,
   "checkpoint_resolution_executed": true,
   "checkpoint_resolution_task_id": "RC-COMBINE-V2-94001-98000",
   "checkpoint_resolution_branch": "exact_checkpoint_available",
@@ -913,5 +913,7 @@
   "preflight_report_created": true,
   "asset_diversity_repair_validated": true,
   "corrected_timeline_visual_progression_plan_validated": true,
-  "operator_authorization_validated": true
+  "operator_authorization_validated": true,
+  "controlled_preview_rerender_execution_report_created": true,
+  "controlled_preview_rerender_manifest_created": true
 }

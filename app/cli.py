@@ -40971,6 +40971,168 @@ def combine_build_preview_correction_plan(args: argparse.Namespace) -> int:
     return 0
 
 
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-EXECUTE-002
+# ---------------------------------------------------------------------------
+
+
+def combine_controlled_preview_rerender(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-EXECUTE-002 — Execute controlled preview re-render.
+
+    This command:
+      - Validates pre-state (must be controlled_preview_rerender_execute_required)
+      - Validates operator authorization and input artifacts
+      - Executes exactly one controlled preview re-render (if --execute)
+      - Runs static/duplicate frame detection
+      - Creates execution report, manifest, result review, operator review packet
+      - Routes to preview_operator_review_required or preview_correction_plan_required
+      - Updates artifact_index, episode_ledger, and state
+      - NEVER processes human preview decision, voice, assembly, downstream, or production
+
+    Exit codes:
+      - 0: execution completed successfully (or valid preview result)
+      - 1: error, invalid pre-state, or missing artifacts
+    """
+    from app.timeline.controlled_preview_rerender import (
+        run_controlled_preview_rerender,
+    )
+
+    project_root = args.project_root
+    json_output = args.json
+    execute = args.execute
+    max_renders = getattr(args, "max_renders", 1)
+
+    control_dir = Path(project_root) / "output" / "control"
+    if not control_dir.is_dir():
+        print(f"Error: control directory not found: {control_dir}", file=sys.stderr)
+        return 1
+
+    # ------------------------------------------------------------------
+    # Step 1: Validate pre-state
+    # ------------------------------------------------------------------
+    index_path = control_dir / "artifact_index.json"
+    if not index_path.is_file():
+        print("Error: artifact_index.json not found", file=sys.stderr)
+        return 1
+
+    try:
+        with open(index_path, "r") as f:
+            index = json.load(f)
+    except (json.JSONDecodeError, OSError) as e:
+        print(f"Error: cannot read artifact_index.json: {e}", file=sys.stderr)
+        return 1
+
+    current_state = index.get("current_state", "")
+    next_allowed_action = index.get("next_allowed_action", "")
+
+    expected_state = "controlled_preview_rerender_execute_required"
+
+    if current_state != expected_state:
+        print(
+            f"Error: invalid pre-state. Expected '{expected_state}', "
+            f"got '{current_state}'",
+            file=sys.stderr,
+        )
+        return 1
+
+    if next_allowed_action != expected_state:
+        print(
+            f"Error: invalid next_allowed_action. Expected '{expected_state}', "
+            f"got '{next_allowed_action}'",
+            file=sys.stderr,
+        )
+        return 1
+
+    # Validate operator authorization was confirmed
+    operator_authorization_validated = index.get("operator_authorization_validated", False)
+    if not operator_authorization_validated:
+        print(
+            "Error: operator_authorization_validated is False. "
+            "Human operator authorization must be confirmed before execution.",
+            file=sys.stderr,
+        )
+        return 1
+
+    # Validate max_preview_renders
+    op_auth_path = control_dir / "controlled_preview_rerender_operator_authorization.json"
+    if op_auth_path.is_file():
+        try:
+            with open(op_auth_path, "r") as f:
+                op_auth = json.load(f)
+            if op_auth.get("max_preview_renders") != 1:
+                print(
+                    f"Error: max_preview_renders must be 1, "
+                    f"got {op_auth.get('max_preview_renders')}",
+                    file=sys.stderr,
+                )
+                return 1
+        except (json.JSONDecodeError, OSError):
+            print("Error: cannot read operator authorization", file=sys.stderr)
+            return 1
+    else:
+        print("Error: operator authorization file not found", file=sys.stderr)
+        return 1
+
+    # ------------------------------------------------------------------
+    # Step 2: Validate required input artifacts
+    # ------------------------------------------------------------------
+    required_artifacts = [
+        "controlled_preview_rerender_authorization_reconciliation.json",
+        "controlled_preview_rerender_execution_contract.json",
+        "controlled_preview_rerender_preflight_report.json",
+        "asset_diversity_plan.json",
+        "timeline_visual_progression_contract.json",
+        "corrected_timeline_visual_progression_plan.json",
+        "asset_diversity_timeline_repair_dry_run.json",
+    ]
+
+    missing = []
+    for name in required_artifacts:
+        path = control_dir / name
+        if not path.is_file():
+            missing.append(name)
+
+    if missing:
+        print(
+            f"Error: missing required input artifacts: {', '.join(missing)}",
+            file=sys.stderr,
+        )
+        return 1
+
+    # ------------------------------------------------------------------
+    # Step 3: Execute preview re-render
+    # ------------------------------------------------------------------
+    result = run_controlled_preview_rerender(
+        project_root=project_root,
+        execute=execute,
+        max_renders=max_renders,
+        render_suffix="v2",
+    )
+
+    # ------------------------------------------------------------------
+    # Step 4: Output result
+    # ------------------------------------------------------------------
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        status = result.get("status", "unknown")
+        branch = result.get("selected_branch", "unknown")
+        print("Controlled Preview Re-render Execute")
+        print(f"  Task ID: {result.get('task_id', 'unknown')}")
+        print(f"  Status: {status}")
+        print(f"  Branch: {branch}")
+        print(f"  Preview Render Executed: {result.get('preview_render_executed', False)}")
+        print(f"  Preview Render Count: {result.get('preview_render_count', 0)}")
+        print(f"  Duplicate Ratio: {result.get('duplicate_ratio', 'N/A')}")
+        print(f"  Preview Static Blocker: {result.get('preview_static_blocker', 'N/A')}")
+        print(f"  Current State: {result.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        print(f"  Production Accepted: {result.get('production_accepted', False)}")
+        print(f"  Message: {result.get('message', '')}")
+
+    return 0 if result.get("status") in ("ok", "accepted_with_blockers") else 1
+
+
 def combine_build_controlled_preview_rerender_authorization(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002 — Build controlled preview re-render authorization gate.
 

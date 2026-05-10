@@ -608,6 +608,8 @@ class CombineStateMachine:
         },
         "controlled_preview_rerender_execute_required": {
             "blocked_manual_review",
+            "preview_operator_review_required",
+            "preview_correction_plan_required",
         },
         "asset_diversity_blocker_required": {
             "blocked_manual_review",

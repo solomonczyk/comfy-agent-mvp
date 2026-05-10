@@ -1,0 +1,71 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-EXECUTE-002",
+  "manifest_type": "controlled_preview_rerender_manifest",
+  "render_suffix": "v2",
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "preview_files": {
+    "preview_lowres": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_lowres_rerender_v2.mp4",
+      "size_bytes": 739135,
+      "sha256": "8af724a8429b3fb098c050284d10d0b5b052952afdcab5b42ca88631da9b2a27"
+    },
+    "preview_gif": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_rerender_v2.gif",
+      "size_bytes": 5376587,
+      "sha256": "90ae431337b36e7da8ca6b912edf4a014c7039dbb3de07bea43e633fdcff0af8"
+    },
+    "contact_sheet": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\contact_sheet_rerender_v2.jpg",
+      "size_bytes": 603492,
+      "sha256": "6ffac0a6c8f91dbdf0a4b713ef4e01debc9cd9ce3f3b0ada859eec8a1066884c"
+    }
+  },
+  "control_files": {
+    "corrected_preview_timeline_input": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\corrected_preview_timeline_input.json",
+      "size_bytes": 1108,
+      "sha256": "e578de616295344b00d51de090e456daf5aa9c8b52e1749c78f65faa6f24c9db"
+    },
+    "controlled_preview_rerender_report": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\controlled_preview_rerender_report.json",
+      "size_bytes": 1593,
+      "sha256": "2ab99820252b93ea3ddf1960e59ad042d7bf279e6e99bbaf5c3ec5ef641609f4"
+    },
+    "controlled_preview_rerender_result_review": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\controlled_preview_rerender_result_review.json",
+      "size_bytes": 669,
+      "sha256": "88c46e9030d283b09979075378f3e54a5475bc220083b95f0acf429ae37bd4f5"
+    },
+    "controlled_preview_rerender_static_detection_report": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\controlled_preview_rerender_static_detection_report.json",
+      "size_bytes": 565,
+      "sha256": "5222043b1b611ab1087681e1e7708a411a5fac7b9c4bab062047a32c8bfab34f"
+    },
+    "controlled_preview_rerender_operator_review_packet": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\controlled_preview_rerender_operator_review_packet.json",
+      "size_bytes": 1208,
+      "sha256": "585f8f660c21242ec61e649ede03794a6e657fcccbed3e502029003dd8d91c9b"
+    },
+    "controlled_preview_rerender_execution_report": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\controlled_preview_rerender_execution_report.json",
+      "size_bytes": 1314,
+      "sha256": "aaa794e4f535253f32fa0ba99551ec66e9e37100e80d5db3907a2c440f2abe95"
+    },
+    "controlled_preview_rerender_manifest": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\controlled_preview_rerender_manifest.json",
+      "size_bytes": 0,
+      "sha256": null
+    }
+  },
+  "total_artifacts": 10,
+  "preview_artifacts_count": 3,
+  "control_artifacts_count": 7,
+  "duplicate_ratio": 1.0,
+  "preview_static_blocker": true,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-10T06:55:25.646647+00:00"
+}
