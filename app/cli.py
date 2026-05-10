@@ -18218,6 +18218,60 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001 — combine-standards-integration-validate
+    combine_standards_integration_validate_parser = subparsers.add_parser(
+        "combine-standards-integration-validate",
+        help="Validate standards integration layer",
+    )
+    combine_standards_integration_validate_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_standards_integration_validate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001 — combine-standards-integration-report
+    combine_standards_integration_report_parser = subparsers.add_parser(
+        "combine-standards-integration-report",
+        help="Generate all standards integration reports",
+    )
+    combine_standards_integration_report_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_standards_integration_report_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001 — combine-standards-role-check
+    combine_standards_role_check_parser = subparsers.add_parser(
+        "combine-standards-role-check",
+        help="Check standards binding for a specific role",
+    )
+    combine_standards_role_check_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_standards_role_check_parser.add_argument(
+        "--role", required=True, help="Role to check (qa|qc|tester|visual_qa|script_supervisor|state_audit|operator_review)",
+    )
+    combine_standards_role_check_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001 — combine-standards-policy-check
+    combine_standards_policy_check_parser = subparsers.add_parser(
+        "combine-standards-policy-check",
+        help="Check a specific standards policy",
+    )
+    combine_standards_policy_check_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_standards_policy_check_parser.add_argument(
+        "--policy", required=True, help="Policy ID to check",
+    )
+    combine_standards_policy_check_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -18731,6 +18785,18 @@ def main() -> int:
     elif args.command == "combine-standards-readiness-report":
         _require_absolute_project_root(args, "combine-standards-readiness-report")
         return combine_standards_readiness_report(args)
+    elif args.command == "combine-standards-integration-validate":
+        _require_absolute_project_root(args, "combine-standards-integration-validate")
+        return combine_standards_integration_validate(args)
+    elif args.command == "combine-standards-integration-report":
+        _require_absolute_project_root(args, "combine-standards-integration-report")
+        return combine_standards_integration_report(args)
+    elif args.command == "combine-standards-role-check":
+        _require_absolute_project_root(args, "combine-standards-role-check")
+        return combine_standards_role_check(args)
+    elif args.command == "combine-standards-policy-check":
+        _require_absolute_project_root(args, "combine-standards-policy-check")
+        return combine_standards_policy_check(args)
     else:
         parser.print_help()
         return 0
@@ -42617,6 +42683,160 @@ def combine_standards_readiness_report(args: argparse.Namespace) -> int:
         print(f"Readiness Report: {report.get('readiness', {}).get('standards_pack_created', False)}")
 
     return 0
+
+
+def combine_standards_integration_validate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001 — Validate standards integration layer.
+
+    Validates that the standards pack is loadable, required categories exist,
+    and the integration layer is ready.
+
+    Exit codes:
+    - 0: validation passed
+    - 1: validation failed
+    """
+    from app.standards import StandardsIntegration
+
+    project_root = args.project_root
+    json_output = args.json
+
+    integration = StandardsIntegration(project_root)
+    load_result = integration.load_standards_pack()
+    cat_result = integration.validate_required_categories()
+    validation_report = integration.build_validation_report()
+
+    result = {
+        "valid": validation_report.get("valid", False),
+        "standards_pack_loaded": load_result.get("success", False),
+        "required_categories_present": cat_result.get("valid", False),
+        "missing_categories": cat_result.get("missing", []),
+        "standards_pack_version": integration._pack_version,
+        "errors": [],
+    }
+    if not load_result.get("success"):
+        result["errors"].append(load_result.get("error", "standards pack load failed"))
+    if not cat_result.get("valid"):
+        result["errors"].append(f"missing categories: {cat_result.get('missing', [])}")
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Standards Integration Validation: {'PASS' if result['valid'] else 'FAIL'}")
+        if result["errors"]:
+            print("Errors:")
+            for err in result["errors"]:
+                print(f"  - {err}")
+
+    return 0 if result["valid"] else 1
+
+
+def combine_standards_integration_report(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001 — Generate all integration reports.
+
+    Generates and writes all role-specific standards binding reports and the
+    integration manifest, validation report, readiness report, and proof.
+
+    Exit codes:
+    - 0: reports generated successfully
+    - 1: error
+    """
+    from app.standards import StandardsBinding
+
+    project_root = args.project_root
+    json_output = args.json
+
+    binding = StandardsBinding(project_root)
+    paths = binding.build_all_reports()
+
+    result = {
+        "status": "ok",
+        "reports_written": {name: str(path) for name, path in paths.items()},
+        "integration_dir": str(binding.integration.ensure_integration_dir()),
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Standards Integration Reports Generated")
+        for name, path in paths.items():
+            print(f"  - {name}: {path}")
+
+    return 0
+
+
+def combine_standards_role_check(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001 — Check standards binding for a role.
+
+    Generates the binding report for a single role.
+
+    Exit codes:
+    - 0: report generated
+    - 1: invalid role or error
+    """
+    from app.standards import StandardsBinding
+
+    project_root = args.project_root
+    role = args.role
+    json_output = args.json
+
+    binding = StandardsBinding(project_root)
+    builders = {
+        "qa": binding.build_qa_binding_report,
+        "qc": binding.build_qc_binding_report,
+        "tester": binding.build_tester_binding_report,
+        "visual_qa": binding.build_visual_qa_binding_report,
+        "script_supervisor": binding.build_script_supervisor_binding_report,
+        "state_audit": binding.build_state_audit_binding_report,
+        "operator_review": binding.build_operator_review_packet,
+    }
+
+    if role not in builders:
+        result = {"error": f"Unknown role '{role}'. Allowed: {list(builders.keys())}"}
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print(result["error"])
+        return 1
+
+    report = builders[role]()
+    if json_output:
+        print(json.dumps(report, indent=2))
+    else:
+        print(f"Role Check: {role}")
+        print(f"  Valid: {report.get('valid', False)}")
+        print(f"  Version: {report.get('standards_pack_version', 'unknown')}")
+
+    return 0
+
+
+def combine_standards_policy_check(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001 — Check a specific standards policy.
+
+    Resolves a policy by ID and returns its availability and basic metadata.
+
+    Exit codes:
+    - 0: policy found
+    - 1: policy not found or error
+    """
+    from app.standards import StandardsIntegration
+
+    project_root = args.project_root
+    policy_id = args.policy
+    json_output = args.json
+
+    integration = StandardsIntegration(project_root)
+    integration.load_standards_pack()
+    policy = integration.resolve_policy_by_id(policy_id)
+
+    if json_output:
+        print(json.dumps(policy, indent=2))
+    else:
+        if policy.get("found"):
+            print(f"Policy: {policy_id} — FOUND")
+        else:
+            print(f"Policy: {policy_id} — NOT FOUND")
+
+    return 0 if policy.get("found") else 1
 
 
 if __name__ == "__main__":

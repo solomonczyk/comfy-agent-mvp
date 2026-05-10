@@ -1,6 +1,6 @@
 {
-  "current_state": "standards_pack_operator_review_required",
-  "next_allowed_action": "standards_pack_operator_review_required",
+  "current_state": "standards_integration_operator_review_required",
+  "next_allowed_action": "standards_integration_operator_review_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -552,9 +552,45 @@
       },
       "timestamp": "2026-05-10T14:03:00+02:00",
       "no_generation_performed": true
+    },
+    {
+      "stage": "standards_integration",
+      "success": true,
+      "message": "Standards pack integrated into QA/QC/Tester/Visual QA/Script Supervisor/State Audit/Operator Review controls.",
+      "artifacts": [
+        "standards_integration/standards_integration_manifest.json",
+        "standards_integration/qa_standards_binding_report.json",
+        "standards_integration/qc_standards_binding_report.json",
+        "standards_integration/tester_standards_binding_report.json",
+        "standards_integration/visual_qa_standards_binding_report.json",
+        "standards_integration/script_supervisor_standards_binding_report.json",
+        "standards_integration/state_audit_standards_binding_report.json",
+        "standards_integration/operator_review_standards_packet.json",
+        "standards_integration/standards_integration_validation_report.json",
+        "standards_integration/standards_integration_readiness_report.json",
+        "standards_integration/standards_integration_proof.json"
+      ],
+      "metadata": {
+        "task_id": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+        "generation_performed": false,
+        "comfyui_submit_executed": false,
+        "retry_attempted": false,
+        "preview_render_executed": false,
+        "visual_qa_acceptance_executed": false,
+        "operator_visual_acceptance_executed": false,
+        "voice_generation_executed": false,
+        "audio_generation_executed": false,
+        "assembly_executed": false,
+        "downstream_executed": false,
+        "production_accepted": false,
+        "hidden_network_or_api_calls_performed": false,
+        "external_download_performed": false
+      },
+      "timestamp": "2026-05-10T15:00:00+02:00",
+      "no_generation_performed": true
     }
   ],
-  "timestamp": "2026-05-09T11:59:28.507343+00:00",
+  "timestamp": "2026-05-10T15:00:00+02:00",
   "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
   "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
   "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
@@ -1075,5 +1111,18 @@
   "standards_pack_operator_review_packet": "standards_pack/reports/standards_pack_operator_review_packet.json",
   "standards_pack_task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
   "standards_pack_proof": "standards_pack/reports/standards_pack_proof.json",
-  "standards_pack_proof_created": true
+  "standards_pack_proof_created": true,
+  "standards_integration_created": true,
+  "standards_integration_manifest": "standards_integration/standards_integration_manifest.json",
+  "standards_integration_validation_report": "standards_integration/standards_integration_validation_report.json",
+  "standards_integration_readiness_report": "standards_integration/standards_integration_readiness_report.json",
+  "standards_integration_proof": "standards_integration/standards_integration_proof.json",
+  "standards_integration_task_id": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+  "standards_integration_qa_binding_report": "standards_integration/qa_standards_binding_report.json",
+  "standards_integration_qc_binding_report": "standards_integration/qc_standards_binding_report.json",
+  "standards_integration_tester_binding_report": "standards_integration/tester_standards_binding_report.json",
+  "standards_integration_visual_qa_binding_report": "standards_integration/visual_qa_standards_binding_report.json",
+  "standards_integration_script_supervisor_binding_report": "standards_integration/script_supervisor_standards_binding_report.json",
+  "standards_integration_state_audit_binding_report": "standards_integration/state_audit_standards_binding_report.json",
+  "standards_integration_operator_review_packet": "standards_integration/operator_review_standards_packet.json"
 }

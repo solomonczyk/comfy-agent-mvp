@@ -9,6 +9,10 @@ from .standards_pack_validator import StandardsPackValidator
 from .standards_registry import StandardsRegistry
 from .decision_policy_engine import DecisionPolicyEngine
 from .role_standard_validator import RoleStandardValidator
+from .standards_integration import StandardsIntegration
+from .standards_binding import StandardsBinding
+from .standards_decision_adapter import StandardsDecisionAdapter
+from .standards_traceability import StandardsTraceability
 
 __all__ = [
     "StandardsPackLoader",
@@ -16,4 +20,8 @@ __all__ = [
     "StandardsRegistry",
     "DecisionPolicyEngine",
     "RoleStandardValidator",
+    "StandardsIntegration",
+    "StandardsBinding",
+    "StandardsDecisionAdapter",
+    "StandardsTraceability",
 ]
