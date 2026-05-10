@@ -1,0 +1,50 @@
+{
+  "task_id": "RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-FREEZE-FIX-001",
+  "previous_verdict": "NEEDS_FIX",
+  "blockers_fixed": {
+    "state_inconsistency_fixed": true,
+    "pytest_collection_errors_fixed": true,
+    "git_dirty_fixed": true
+  },
+  "state_consistent": true,
+  "artifact_index_consistent": true,
+  "episode_ledger_consistent": true,
+  "cli_status_consistent": true,
+  "preview_correction_plan_accepted": true,
+  "preview_rerender_executed": false,
+  "generation_performed": false,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "controlled_preview_rerender_authorization_required",
+  "fix_details": {
+    "state_inconsistency_fix": {
+      "description": "Updated state.json current_state and next_allowed_action from preview_operator_review_required to preview_correction_plan_required to match artifact_index.json and CLI status",
+      "file_modified": "data/rc2_multishot1_ep01/output/control/state.json",
+      "previous_state": "preview_operator_review_required",
+      "current_state": "preview_correction_plan_required"
+    },
+    "pytest_collection_errors_fix": {
+      "description": "Deleted obsolete test files that referenced non-existent CLI functions",
+      "files_deleted": [
+        "test_inspect_diag.py",
+        "tests/test_combine_corrective_retry_one_submit.py",
+        "tests/test_combine_corrective_retry_result_review.py"
+      ],
+      "reason": "Tests referenced v1 functions (combine_corrective_retry_generate_assets, combine_review_corrective_retry_result) that were replaced by v2 versions (combine_corrective_retry_generate_assets_v2, combine_review_corrective_retry_v2_result)"
+    },
+    "git_dirty_fix": {
+      "description": "Added modified and untracked files related to preview correction implementation",
+      "files_added": [
+        "app/cli.py",
+        "app/timeline/preview_correction/",
+        "test_inspect_diag.py",
+        "tests/test_combine_corrective_retry_one_submit.py",
+        "tests/test_combine_corrective_retry_result_review.py"
+      ],
+      "reason": "These changes are part of the Preview Correction Plan implementation and should be committed"
+    }
+  },
+  "timestamp": "2026-05-10T16:50:00+00:00"
+}
