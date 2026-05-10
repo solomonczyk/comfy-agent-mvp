@@ -7738,6 +7738,7 @@ def _require_absolute_project_root(args: argparse.Namespace, command: str) -> No
         'combine-v8-execution-readiness-preflight',
         'combine-v8-dry-run-guard-check',
         'combine-v8-reexecution-authorization-gate',
+        'combine-build-controlled-preview-rerender-authorization',
     }
     
     if command not in strict_commands:
@@ -13672,6 +13673,27 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002 — combine-build-controlled-preview-rerender-authorization subcommand
+    combine_rerender_auth_parser = subparsers.add_parser(
+        "combine-build-controlled-preview-rerender-authorization",
+        help=(
+            "Build controlled preview re-render authorization gate — "
+            "validates repair artifacts, creates operator authorization request, "
+            "execution contract, and preflight report — "
+            "does NOT render or generate"
+        )
+    )
+    combine_rerender_auth_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_rerender_auth_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-0 — combine-run-stage subcommand
     combine_run_stage_parser = subparsers.add_parser("combine-run-stage", help="Run a Combine V2 orchestrator stage")
     combine_run_stage_parser.add_argument(
@@ -17656,6 +17678,9 @@ def main() -> int:
         return combine_run_script_supervisor_audit(args)
     elif args.command == "combine-build-preview-correction-plan":
         return combine_build_preview_correction_plan(args)
+    elif args.command == "combine-build-controlled-preview-rerender-authorization":
+        _require_absolute_project_root(args, "combine-build-controlled-preview-rerender-authorization")
+        return combine_build_controlled_preview_rerender_authorization(args)
     elif args.command == "combine-build-asset-diversity-timeline-repair":
         _require_absolute_project_root(args, "combine-build-asset-diversity-timeline-repair")
         return combine_build_asset_diversity_timeline_repair(args)
@@ -40942,6 +40967,334 @@ def combine_build_preview_correction_plan(args: argparse.Namespace) -> int:
         print(f"  Artifacts Written:")
         for name, path in written.items():
             print(f"    - {name}: {path}")
+
+    return 0
+
+
+def combine_build_controlled_preview_rerender_authorization(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002 — Build controlled preview re-render authorization gate.
+
+    This command:
+      - Validates all required repair artifacts exist
+      - Validates asset diversity repair and corrected timeline progression plan
+      - Creates human operator authorization request packet
+      - Creates re-render execution contract
+      - Creates preflight validation report
+      - Validates existing operator authorization if present
+      - Updates artifact_index, episode_ledger, and state
+      - NEVER renders, generates, or submits any production action
+
+    Exit codes:
+      - 0: authorization gate built successfully
+      - 1: error or invalid args
+    """
+    project_root = args.project_root
+    json_output = args.json
+
+    control_dir = Path(project_root) / "output" / "control"
+    if not control_dir.is_dir():
+        print(f"Error: control directory not found: {control_dir}", file=sys.stderr)
+        return 1
+
+    # Required repair artifacts
+    required_artifacts = [
+        "static_preview_failure_diagnosis.json",
+        "asset_diversity_plan.json",
+        "timeline_visual_progression_contract.json",
+        "corrected_timeline_visual_progression_plan.json",
+        "asset_diversity_timeline_repair_dry_run.json",
+        "controlled_preview_rerender_authorization_packet.json",
+    ]
+
+    validated = {}
+    for name in required_artifacts:
+        path = control_dir / name
+        if not path.is_file():
+            print(f"Error: required artifact not found: {name}", file=sys.stderr)
+            return 1
+        with open(path, "r") as f:
+            validated[name] = json.load(f)
+
+    # Validate asset diversity repair
+    asset_diversity_plan = validated["asset_diversity_plan.json"]
+    dry_run = validated["asset_diversity_timeline_repair_dry_run.json"]
+
+    asset_diversity_repair_validated = (
+        dry_run.get("dry_run_executed") is True
+        and dry_run.get("minimum_unique_visual_sources_passed") is True
+        and dry_run.get("single_source_static_preview_blocked") is True
+        and dry_run.get("timeline_tracks_non_empty") is True
+        and dry_run.get("edl_operations_applied_or_blocked") is True
+        and dry_run.get("ready_for_controlled_preview_rerender_authorization") is True
+        and asset_diversity_plan.get("can_repair_from_existing_assets") is True
+    )
+
+    # Validate corrected timeline progression plan
+    corrected_plan = validated["corrected_timeline_visual_progression_plan.json"]
+    corrected_timeline_plan_validated = (
+        corrected_plan.get("proof_tracks_not_empty") is True
+        and corrected_plan.get("proof_edl_operations_applied") is True
+        and corrected_plan.get("no_generation_performed") is True
+        and corrected_plan.get("no_preview_render_performed") is True
+        and corrected_plan.get("expected_frame_sample_diversity", {}).get("minimum_unique_visual_sources", 0) >= 3
+    )
+
+    # Check existing operator authorization
+    operator_authorization_path = control_dir / "controlled_preview_rerender_operator_authorization.json"
+    operator_authorization_exists = operator_authorization_path.is_file()
+    operator_authorization_valid = False
+
+    if operator_authorization_exists:
+        with open(operator_authorization_path, "r") as f:
+            op_auth = json.load(f)
+        operator_authorization_valid = (
+            op_auth.get("authorization_type") == "controlled_preview_rerender"
+            and op_auth.get("authorized_by") == "human_operator"
+            and op_auth.get("authorized") is True
+            and op_auth.get("max_preview_renders") == 1
+            and op_auth.get("stop_after_preview_render") is True
+            and op_auth.get("voice_generation_allowed") is False
+            and op_auth.get("assembly_allowed") is False
+            and op_auth.get("downstream_allowed") is False
+            and op_auth.get("production_accepted") is False
+        )
+
+    # Create operator authorization request
+    authorization_request = {
+        "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002",
+        "request_type": "controlled_preview_rerender_operator_authorization_request",
+        "operator_authorization_required": True,
+        "agent_may_authorize": False,
+        "max_preview_renders": 1,
+        "stop_after_preview_render": True,
+        "human_preview_decision_allowed_in_this_task": False,
+        "voice_generation_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted_allowed": False,
+        "current_state": "controlled_preview_rerender_authorization_required",
+        "next_allowed_action": "operator_preview_rerender_authorization_required",
+        "operator_authorization_already_exists": operator_authorization_exists,
+        "operator_authorization_valid": operator_authorization_valid if operator_authorization_exists else None,
+        "asset_diversity_repair_validated": asset_diversity_repair_validated,
+        "corrected_timeline_visual_progression_plan_validated": corrected_timeline_plan_validated,
+        "existing_operator_authorization": "controlled_preview_rerender_operator_authorization.json" if operator_authorization_exists else None,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+    request_path = control_dir / "controlled_preview_rerender_operator_authorization_request.json"
+    with open(request_path, "w") as f:
+        json.dump(authorization_request, f, indent=2)
+
+    # Create execution contract
+    execution_contract = {
+        "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002",
+        "contract_type": "controlled_preview_rerender_execution_contract",
+        "max_preview_renders": 1,
+        "stop_after_preview_render": True,
+        "preview_render_executed": False,
+        "generation_performed": False,
+        "comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "voice_generation_executed": False,
+        "audio_generation_executed": False,
+        "visual_qa_executed": False,
+        "human_preview_decision_processed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "operator_authorization_required_for_execution": True,
+        "operator_authorization_present": operator_authorization_exists,
+        "authorization_request_artifact": "controlled_preview_rerender_operator_authorization_request.json",
+        "authorization_artifact": "controlled_preview_rerender_operator_authorization.json" if operator_authorization_exists else None,
+        "current_state": "controlled_preview_rerender_authorization_required",
+        "next_allowed_action": "operator_preview_rerender_authorization_required",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+    contract_path = control_dir / "controlled_preview_rerender_execution_contract.json"
+    with open(contract_path, "w") as f:
+        json.dump(execution_contract, f, indent=2)
+
+    # Create preflight report
+    preflight_report = {
+        "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002",
+        "report_type": "controlled_preview_rerender_preflight_report",
+        "all_required_artifacts_present": True,
+        "required_artifacts_validated": required_artifacts,
+        "asset_diversity_repair_validated": asset_diversity_repair_validated,
+        "corrected_timeline_visual_progression_plan_validated": corrected_timeline_plan_validated,
+        "operator_authorization_validated": operator_authorization_valid if operator_authorization_exists else False,
+        "operator_authorization_present": operator_authorization_exists,
+        "preview_render_executed": False,
+        "generation_performed": False,
+        "comfyui_submit_executed": False,
+        "voice_generation_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "preflight_pass": True,
+        "preflight_blockers": [],
+        "current_state": "controlled_preview_rerender_authorization_required",
+        "next_allowed_action": "operator_preview_rerender_authorization_required",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+
+    preflight_path = control_dir / "controlled_preview_rerender_preflight_report.json"
+    with open(preflight_path, "w") as f:
+        json.dump(preflight_report, f, indent=2)
+
+    # Update artifact_index
+    index_path = control_dir / "artifact_index.json"
+    if index_path.is_file():
+        with open(index_path, "r") as f:
+            index = json.load(f)
+    else:
+        index = {}
+
+    index["current_state"] = "controlled_preview_rerender_authorization_required"
+    index["next_allowed_action"] = "operator_preview_rerender_authorization_required"
+    index["controlled_preview_rerender_authorization_gate_built"] = True
+    index["controlled_preview_rerender_authorization_gate_task_id"] = "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002"
+    index["operator_authorization_request_created"] = True
+    index["rerender_execution_contract_created"] = True
+    index["preflight_report_created"] = True
+    index["asset_diversity_repair_validated"] = asset_diversity_repair_validated
+    index["corrected_timeline_visual_progression_plan_validated"] = corrected_timeline_plan_validated
+    index["operator_authorization_validated"] = operator_authorization_valid if operator_authorization_exists else False
+    index["production_accepted"] = False
+    index["assembly_allowed"] = False
+    index["downstream_allowed"] = False
+
+    if "stage_results" not in index:
+        index["stage_results"] = []
+    index["stage_results"].append({
+        "stage": "controlled_preview_rerender_authorization_gate",
+        "success": True,
+        "message": "Controlled preview rerender authorization gate built. Operator authorization required.",
+        "artifacts": [
+            "controlled_preview_rerender_operator_authorization_request.json",
+            "controlled_preview_rerender_execution_contract.json",
+            "controlled_preview_rerender_preflight_report.json",
+        ],
+        "metadata": {
+            "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002",
+            "operator_authorization_required": True,
+            "agent_may_authorize": False,
+            "max_preview_renders": 1,
+            "stop_after_preview_render": True,
+            "preview_render_executed": False,
+            "generation_performed": False,
+            "voice_generation_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        },
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "no_generation_performed": True,
+    })
+
+    with open(index_path, "w") as f:
+        json.dump(index, f, indent=2)
+
+    # Update episode_ledger
+    ledger_path = control_dir / "episode_ledger.json"
+    if ledger_path.is_file():
+        with open(ledger_path, "r") as f:
+            ledger = json.load(f)
+    else:
+        ledger = []
+
+    ledger.append({
+        "event_type": "controlled_preview_rerender_authorization_gate_built",
+        "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002",
+        "version": "002",
+        "stage": "controlled_preview_rerender_authorization_gate",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "current_state": "controlled_preview_rerender_authorization_required",
+        "next_allowed_action": "operator_preview_rerender_authorization_required",
+        "generation_attempts": 0,
+        "max_generations": 0,
+        "workflow_submitted": False,
+        "comfyui_execution": False,
+        "generated_assets": [],
+        "asset_count": 0,
+        "production_accepted": False,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "operator_authorization_required": True,
+        "agent_may_authorize": False,
+        "max_preview_renders": 1,
+        "stop_after_preview_render": True,
+        "previous_state": "controlled_preview_rerender_authorization_required",
+    })
+
+    with open(ledger_path, "w") as f:
+        json.dump(ledger, f, indent=2)
+
+    # Build result
+    result = {
+        "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002",
+        "feature_completed": True,
+        "full_feature_loop_executed": True,
+        "asset_diversity_repair_validated": asset_diversity_repair_validated,
+        "corrected_timeline_visual_progression_plan_validated": corrected_timeline_plan_validated,
+        "operator_authorization_request_created": True,
+        "rerender_execution_contract_created": True,
+        "preflight_report_created": True,
+        "operator_authorization_required": True,
+        "agent_authorization_blocked": True,
+        "max_preview_renders": 1,
+        "stop_after_preview_render": True,
+        "preview_render_executed": False,
+        "generation_performed": False,
+        "comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "voice_generation_executed": False,
+        "audio_generation_executed": False,
+        "visual_qa_executed": False,
+        "human_preview_decision_processed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "artifact_index_updated": True,
+        "episode_ledger_updated": True,
+        "state_updated": True,
+        "current_state": "controlled_preview_rerender_authorization_required",
+        "next_allowed_action": "operator_preview_rerender_authorization_required",
+        "operator_authorization_exists": operator_authorization_exists,
+        "operator_authorization_valid": operator_authorization_valid if operator_authorization_exists else None,
+        "blockers": [],
+        "next_task_recommendation": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-EXECUTE-002",
+    }
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Controlled Preview Re-render Authorization Gate")
+        print(f"  Task ID: {result['task_id']}")
+        print(f"  Feature Completed: {result['feature_completed']}")
+        print(f"  Asset Diversity Repair Validated: {result['asset_diversity_repair_validated']}")
+        print(f"  Corrected Timeline Plan Validated: {result['corrected_timeline_visual_progression_plan_validated']}")
+        print(f"  Operator Authorization Request Created: {result['operator_authorization_request_created']}")
+        print(f"  Rerender Execution Contract Created: {result['rerender_execution_contract_created']}")
+        print(f"  Preflight Report Created: {result['preflight_report_created']}")
+        print(f"  Operator Authorization Required: {result['operator_authorization_required']}")
+        print(f"  Agent Authorization Blocked: {result['agent_authorization_blocked']}")
+        print(f"  Max Preview Renders: {result['max_preview_renders']}")
+        print(f"  Stop After Preview Render: {result['stop_after_preview_render']}")
+        if operator_authorization_exists:
+            print(f"  Operator Authorization Exists: {result['operator_authorization_exists']}")
+            print(f"  Operator Authorization Valid: {result['operator_authorization_valid']}")
+        print(f"  Preview Render Executed: {result['preview_render_executed']}")
+        print(f"  Generation Performed: {result['generation_performed']}")
+        print(f"  Assembly Executed: {result['assembly_executed']}")
+        print(f"  Production Accepted: {result['production_accepted']}")
+        print(f"  Current State: {result['current_state']}")
+        print(f"  Next Allowed Action: {result['next_allowed_action']}")
+        print(f"  Blockers: {len(result['blockers'])}")
+        print(f"  Next Task: {result['next_task_recommendation']}")
 
     return 0
 

@@ -1795,5 +1795,29 @@
     "generation_performed": false,
     "preview_render_executed": false,
     "timestamp": "2026-05-10T05:35:14.926112+00:00"
+  },
+  {
+    "event_type": "controlled_preview_rerender_authorization_gate_built",
+    "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-AUTHORIZATION-002",
+    "version": "002",
+    "stage": "controlled_preview_rerender_authorization_gate",
+    "timestamp": "2026-05-10T05:55:04.783093+00:00",
+    "current_state": "controlled_preview_rerender_authorization_required",
+    "next_allowed_action": "operator_preview_rerender_authorization_required",
+    "generation_attempts": 0,
+    "max_generations": 0,
+    "workflow_submitted": false,
+    "comfyui_execution": false,
+    "generated_assets": [],
+    "asset_count": 0,
+    "production_accepted": false,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "operator_authorization_required": true,
+    "agent_may_authorize": false,
+    "max_preview_renders": 1,
+    "stop_after_preview_render": true,
+    "previous_state": "controlled_preview_rerender_authorization_required"
   }
 ]
