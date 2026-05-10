@@ -1,0 +1,169 @@
+{
+  "task_id": "RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001",
+  "plan_type": "asset_diversity_plan",
+  "diagnosis_consumed": true,
+  "existing_assets_summary": {
+    "total_asset_files_found": 20,
+    "approved_asset_count": 1,
+    "approved_asset_paths": [
+      "data/rc2_multishot1_ep01/output/assets/rc2_controlled_1778304712_00001_.png"
+    ],
+    "unique_visual_sources_current": 0
+  },
+  "existing_usable_assets": [
+    {
+      "path": "output\\assets\\combine_v2_00001_.png",
+      "filename": "combine_v2_00001_.png",
+      "size_bytes": 367208,
+      "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_00002_.png",
+      "filename": "combine_v2_00002_.png",
+      "size_bytes": 367208,
+      "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_1777916951_00001_.png",
+      "filename": "combine_v2_1777916951_00001_.png",
+      "size_bytes": 321425,
+      "sha256": "3bb332bdebc55dcfce491fe43c6102d169908ac0bad88bf01690d112558b199a",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_1777917278_00001_.png",
+      "filename": "combine_v2_1777917278_00001_.png",
+      "size_bytes": 1649652,
+      "sha256": "710be0fd7d1110086fbadae5d7f0a4ba14f9fde9747622e2579ee6526a5c9808",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_baseline_default_sdxl_shot02_00001_.png",
+      "filename": "combine_v2_baseline_default_sdxl_shot02_00001_.png",
+      "size_bytes": 1423714,
+      "sha256": "ea247ed833c3672e7e475e6568a856f11f78a27c47ef83e324061d0d521581e3",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+      "filename": "combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+      "size_bytes": 1460975,
+      "sha256": "9e40f5a2bf8e83341541839980ccbae0ff71dc5678e81acb3538dc8f6a65f617",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_1777971208_00001_.png",
+      "filename": "combine_v2_corrective_retry_1777971208_00001_.png",
+      "size_bytes": 1567937,
+      "sha256": "63b8184f6fd80cec7c1d3851b150eae9f6520c9a32b00d8b7b4b4c56a532fad4",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+      "filename": "combine_v2_corrective_retry_v3_generated_1778043247_00001_.png",
+      "size_bytes": 8,
+      "sha256": "4c4b6a3be1314ab86138bef4314dde022e600960d8689a2c8f8631802d20dab6",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_v4_shot02_00001_.png",
+      "filename": "combine_v2_corrective_retry_v4_shot02_00001_.png",
+      "size_bytes": 1054825,
+      "sha256": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_v4_shot02_00002_.png",
+      "filename": "combine_v2_corrective_retry_v4_shot02_00002_.png",
+      "size_bytes": 1054825,
+      "sha256": "78cc34d62c7f29faaccdcb136e5b84118df350cd0c6b4bdbe2ed940a697d58cd",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_corrective_retry_v5_shot02_00001_.png",
+      "filename": "combine_v2_corrective_retry_v5_shot02_00001_.png",
+      "size_bytes": 1383828,
+      "sha256": "fb39407afbfdaefdc0fbf6f784c09ed648d313ca9c89e9376fa4302bed306c26",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_v10_photoreal_recovery_shot02_00002_.png",
+      "filename": "combine_v2_v10_photoreal_recovery_shot02_00002_.png",
+      "size_bytes": 1465871,
+      "sha256": "3abfb34114acd72293a226ea28715b29739e1c8911d504eddb72e6a1be9fbec3",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_v12_candidate_1778235995_00001_.png",
+      "filename": "combine_v2_v12_candidate_1778235995_00001_.png",
+      "size_bytes": 1622135,
+      "sha256": "71c9856451336fca9bc98daf6c6b103f4c64c754dd934e6cd50b819ff50adc22",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_v13_candidate_1778239698_00001_.png",
+      "filename": "combine_v2_v13_candidate_1778239698_00001_.png",
+      "size_bytes": 1651697,
+      "sha256": "40174c8d355f888496287befa8fbbad07ac0f2bf8b352990a558a5e409fbb0b8",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_v14_candidate_1778242939_00001_.png",
+      "filename": "combine_v2_v14_candidate_1778242939_00001_.png",
+      "size_bytes": 1265373,
+      "sha256": "77c90218a09839f1d4305a51e85909087ebd9d8bfd6b82d2c3847ab2be44fbb9",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_v6_targeted_refinement_shot02_00001_.png",
+      "filename": "combine_v2_v6_targeted_refinement_shot02_00001_.png",
+      "size_bytes": 1546304,
+      "sha256": "ce1c3c03c7753e4ef6e5c6b43b290c2f12f39efa2d7563a4b7fec2e8ca38ca36",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png",
+      "filename": "combine_v2_v7_identity_fidelity_shot02_1778157706_00001_.png",
+      "size_bytes": 1455036,
+      "sha256": "8f96d59c6f47179443a73e1d5ec42657b0a7932ad35a3b4458d48efd8fc1beb1",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_v8_quality_locked_shot02_00001_.png",
+      "filename": "combine_v2_v8_quality_locked_shot02_00001_.png",
+      "size_bytes": 1429946,
+      "sha256": "e551c745e28ad7979f5eb63b206f85f4974cb1227e84121f337f8f81239e90cd",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\combine_v2_v9_quality_locked_shot02_00001_.png",
+      "filename": "combine_v2_v9_quality_locked_shot02_00001_.png",
+      "size_bytes": 1516048,
+      "sha256": "b7879bcbf065421a4bd27dfe5bbdb39505a3ebe29f0b2766789c6c01b05b9d81",
+      "usable_as_unique_source": true
+    },
+    {
+      "path": "output\\assets\\rc2_controlled_1778304712_00001_.png",
+      "filename": "rc2_controlled_1778304712_00001_.png",
+      "size_bytes": 1446127,
+      "sha256": "5b4627ce26c9ab9490c99f2077a15afac43d001d9711cc56c7919343541c15bb",
+      "usable_as_unique_source": true
+    }
+  ],
+  "missing_diversity_requirements": {
+    "minimum_unique_visual_sources_required": 3,
+    "current_unique_visual_sources": 0,
+    "additional_sources_needed": 3,
+    "min_expected_visual_segments_for_preview": 3
+  },
+  "can_repair_from_existing_assets": true,
+  "would_require_future_generation_or_acquisition": false,
+  "future_generation_requirements": {
+    "generation_performed_in_this_task": false,
+    "number_of_additional_assets_needed": 0
+  },
+  "no_generation_performed": true,
+  "timestamp": "2026-05-10T05:35:14.919111+00:00"
+}

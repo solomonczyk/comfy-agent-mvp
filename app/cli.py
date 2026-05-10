@@ -13652,6 +13652,26 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001 — combine-build-asset-diversity-timeline-repair subcommand
+    combine_asset_diversity_repair_parser = subparsers.add_parser(
+        "combine-build-asset-diversity-timeline-repair",
+        help=(
+            "Build asset diversity / timeline visual progression repair layer — "
+            "diagnoses static preview, builds progression contract, "
+            "does NOT render or generate"
+        )
+    )
+    combine_asset_diversity_repair_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_asset_diversity_repair_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-0 — combine-run-stage subcommand
     combine_run_stage_parser = subparsers.add_parser("combine-run-stage", help="Run a Combine V2 orchestrator stage")
     combine_run_stage_parser.add_argument(
@@ -17636,6 +17656,9 @@ def main() -> int:
         return combine_run_script_supervisor_audit(args)
     elif args.command == "combine-build-preview-correction-plan":
         return combine_build_preview_correction_plan(args)
+    elif args.command == "combine-build-asset-diversity-timeline-repair":
+        _require_absolute_project_root(args, "combine-build-asset-diversity-timeline-repair")
+        return combine_build_asset_diversity_timeline_repair(args)
     elif args.command == "combine-run":
         return combine_run(args)
     elif args.command == "combine-run-stage":
@@ -40919,6 +40942,59 @@ def combine_build_preview_correction_plan(args: argparse.Namespace) -> int:
         print(f"  Artifacts Written:")
         for name, path in written.items():
             print(f"    - {name}: {path}")
+
+    return 0
+
+
+def combine_build_asset_diversity_timeline_repair(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001 — Build asset diversity / timeline visual progression repair layer.
+
+    This command:
+      - Reads all prior preview, timeline, and editorial artifacts
+      - Diagnoses static preview failure as single-source-asset-repeated
+      - Builds timeline visual progression contract, asset diversity plan,
+        corrected timeline proposal, and dry-run report
+      - Updates artifact_index, episode_ledger, and state
+      - NEVER renders, generates, or submits any production action
+
+    Exit codes:
+      - 0: repair package built successfully
+      - 1: error or invalid args
+    """
+    from app.timeline.asset_diversity_timeline_repair import (
+        run_asset_diversity_timeline_repair,
+    )
+
+    project_root = args.project_root
+    json_output = args.json
+
+    result = run_asset_diversity_timeline_repair(project_root)
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print("Asset Diversity / Timeline Visual Progression Repair")
+        print(f"  Task ID: {result.get('task_id', 'unknown')}")
+        print(f"  Status: {result.get('status', 'unknown')}")
+        print(f"  Branch: {result.get('selected_branch', 'unknown')}")
+        print(f"  Static Preview Failure Confirmed: {result.get('static_preview_failure_confirmed', False)}")
+        print(f"  Duplicate Frame Ratio: {result.get('duplicate_frame_ratio', 'N/A')}")
+        print(f"  Root Cause: {result.get('root_cause', 'unknown')}")
+        print(f"  Minimum Unique Visual Sources Passed: {result.get('minimum_unique_visual_sources_passed', False)}")
+        print(f"  Single Source Static Preview Blocked: {result.get('single_source_static_preview_blocked', False)}")
+        print(f"  Timeline Tracks Non-Empty: {result.get('timeline_tracks_non_empty', False)}")
+        print(f"  Existing Usable Assets: {result.get('existing_usable_assets_count', 0)}")
+        print(f"  Ready for Rerender Authorization: {result.get('ready_for_controlled_preview_rerender_authorization', False)}")
+        print(f"  Current State: {result.get('current_state', 'unknown')}")
+        print(f"  Next Allowed Action: {result.get('next_allowed_action', 'unknown')}")
+        print(f"  Artifacts Written:")
+        for name, path in result.get('artifacts_written', {}).items():
+            print(f"    - {name}: {path}")
+        print(f"  Forbidden Actions:")
+        print(f"    - Generation Performed: {result.get('generation_performed', False)}")
+        print(f"    - Preview Render Executed: {result.get('preview_render_executed', False)}")
+        print(f"    - Assembly Executed: {result.get('assembly_executed', False)}")
+        print(f"    - Production Accepted: {result.get('production_accepted', False)}")
 
     return 0
 

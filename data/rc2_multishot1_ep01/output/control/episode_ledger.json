@@ -1758,5 +1758,42 @@
     "current_state": "preview_correction_plan_required",
     "next_allowed_action": "preview_correction_plan_required",
     "timestamp": "2026-05-09T17:52:11.995558+00:00"
+  },
+  {
+    "event_type": "asset_diversity_repair_executed",
+    "task_id": "RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001",
+    "stage": "controlled_preview_rerender_authorization_required",
+    "static_preview_failure_confirmed": true,
+    "duplicate_frame_ratio": 1.0,
+    "root_cause": "single_source_asset_repeated",
+    "minimum_unique_visual_sources_passed": true,
+    "single_source_static_preview_blocked": true,
+    "timeline_tracks_non_empty": true,
+    "edl_operations_applied_or_blocked": true,
+    "ready_for_rerender_authorization": true,
+    "generation_performed": false,
+    "preview_render_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "controlled_preview_rerender_authorization_required",
+    "next_allowed_action": "controlled_preview_rerender_authorization_required",
+    "timestamp": "2026-05-10T05:35:14.926112+00:00"
+  },
+  {
+    "event_type": "asset_diversity_repair_artifacts_created",
+    "task_id": "RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001",
+    "stage": "controlled_preview_rerender_authorization_required",
+    "artifacts": [
+      "static_preview_failure_diagnosis",
+      "timeline_visual_progression_contract",
+      "asset_diversity_plan",
+      "corrected_timeline_visual_progression_plan",
+      "asset_diversity_timeline_repair_dry_run",
+      "controlled_preview_rerender_authorization_packet"
+    ],
+    "generation_performed": false,
+    "preview_render_executed": false,
+    "timestamp": "2026-05-10T05:35:14.926112+00:00"
   }
 ]

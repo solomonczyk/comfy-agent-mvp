@@ -1,0 +1,37 @@
+{
+  "task_id": "RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001",
+  "contract_type": "timeline_visual_progression_contract",
+  "correction_goal": "produce a non-static preview that proves real timeline/scene progression",
+  "minimum_unique_visual_sources": 3,
+  "max_allowed_duplicate_ratio": 0.5,
+  "required_per_scene_segment_visual_change": {
+    "each_scene_must_have_unique_asset_ref": true,
+    "consecutive_scenes_must_differ": true,
+    "same_asset_across_all_scenes_prohibited": true
+  },
+  "asset_to_timeline_mapping": {
+    "asset_refs_must_map_to_specific_scenes": true,
+    "single_asset_mapped_to_all_scenes_prohibited": true,
+    "no_asset_ref_scene_is_invalid": true
+  },
+  "required_contact_sheet_sampling_points": {
+    "minimum_samples": 24,
+    "must_span_timeline_progression": true,
+    "first_frame_second_frame_must_differ": true,
+    "midpoint_must_differ_from_start": true,
+    "endpoint_must_differ_from_midpoint": true
+  },
+  "prohibited_patterns": [
+    "single_still_repeated_as_full_preview",
+    "single_asset_ref_placed_across_all_scenes",
+    "no_asset_refs_in_any_scene",
+    "empty_video_tracks",
+    "unapplied_edl_operations_leaving_timeline_empty"
+  ],
+  "duplicate_frame_policy": {
+    "max_duplicate_ratio": 0.85,
+    "static_preview_blocker_required": true
+  },
+  "preview_correction_plan_consumed": true,
+  "timestamp": "2026-05-10T05:35:14.561004+00:00"
+}

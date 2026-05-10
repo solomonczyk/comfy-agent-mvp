@@ -1,0 +1,43 @@
+{
+  "dry_run_executed": true,
+  "apply_performed": false,
+  "preview_render_executed": false,
+  "minimum_unique_visual_sources_passed": true,
+  "single_source_static_preview_blocked": true,
+  "timeline_tracks_non_empty": true,
+  "edl_operations_applied_or_blocked": true,
+  "ready_for_controlled_preview_rerender_authorization": true,
+  "diagnosis_summary": {
+    "failure_type": "timeline_visual_progression_failure",
+    "duplicate_frame_ratio": 1.0,
+    "root_cause": "single_source_asset_repeated"
+  },
+  "diversity_plan_summary": {
+    "can_repair_from_existing_assets": true,
+    "existing_usable_assets_count": 20,
+    "would_require_future_generation": false
+  },
+  "corrected_plan_summary": {
+    "timeline_after_scenes": 1,
+    "segment_level_asset_refs": 3,
+    "visual_progression_anchors": 3
+  },
+  "forbidden_actions_not_executed": {
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "audio_generation_executed": false,
+    "visual_qa_executed": false,
+    "visual_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "human_preview_decision_processed": false,
+    "fake_operator_decision": false,
+    "hidden_downloads_or_installs": false,
+    "hidden_external_api_calls": false
+  },
+  "timestamp": "2026-05-10T05:35:14.919111+00:00"
+}

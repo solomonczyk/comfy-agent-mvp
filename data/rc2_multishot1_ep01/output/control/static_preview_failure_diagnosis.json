@@ -1,0 +1,18 @@
+{
+  "task_id": "RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001",
+  "diagnosis_type": "static_preview_failure_diagnosis",
+  "failure_type": "timeline_visual_progression_failure",
+  "duplicate_frame_ratio": 1.0,
+  "duplicate_threshold": 0.85,
+  "root_cause": "single_source_asset_repeated",
+  "root_cause_detail": "Timeline has 0 unique asset ref(s) across 1 scene(s). All 0 video_main and 0 video_overlay clips reference the same source. Duplicate ratio 100% confirms zero visual progression.",
+  "unique_visual_sources": 0,
+  "total_scenes": 1,
+  "video_main_clips": 0,
+  "video_overlay_clips": 0,
+  "edl_operations_total": 2,
+  "edl_operations_applied": true,
+  "human_preview_decision_allowed": false,
+  "preview_correction_plan_consumed": true,
+  "timestamp": "2026-05-10T05:35:14.561004+00:00"
+}

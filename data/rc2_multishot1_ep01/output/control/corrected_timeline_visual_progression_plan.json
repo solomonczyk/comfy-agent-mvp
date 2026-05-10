@@ -1,0 +1,87 @@
+{
+  "task_id": "RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001",
+  "plan_type": "corrected_timeline_visual_progression_plan",
+  "timeline_before": {
+    "scenes_count": 1,
+    "video_main_clips": 0,
+    "video_overlay_clips": 0,
+    "unique_asset_refs": 0
+  },
+  "timeline_after": {
+    "scenes_count": 1,
+    "scenes": [
+      {
+        "scene_id": "scene_001",
+        "duration_sec": 30.0,
+        "shot_ids": [
+          "shot_001",
+          "shot_002"
+        ],
+        "asset_refs": [
+          "output\\assets\\combine_v2_00001_.png"
+        ],
+        "start_time": "00:00:00",
+        "end_time": "00:00:30",
+        "status": "planned"
+      }
+    ],
+    "expected_unique_asset_refs": 3,
+    "tracks_non_empty": true
+  },
+  "segment_level_asset_refs": [
+    {
+      "asset_path": "output\\assets\\combine_v2_00001_.png",
+      "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427",
+      "assigned_segment": "segment_001"
+    },
+    {
+      "asset_path": "output\\assets\\combine_v2_00002_.png",
+      "sha256": "ecff29f45e91e0d6a71ad096717ec49ddb7d71292cfa41f7100917dc701f3427",
+      "assigned_segment": "segment_002"
+    },
+    {
+      "asset_path": "output\\assets\\combine_v2_1777916951_00001_.png",
+      "sha256": "3bb332bdebc55dcfce491fe43c6102d169908ac0bad88bf01690d112558b199a",
+      "assigned_segment": "segment_003"
+    }
+  ],
+  "visual_progression_anchors": [
+    {
+      "anchor_point": "anchor_001",
+      "source_asset": "output\\assets\\combine_v2_00001_.png",
+      "expected_change_from_previous": false
+    },
+    {
+      "anchor_point": "anchor_002",
+      "source_asset": "output\\assets\\combine_v2_00002_.png",
+      "expected_change_from_previous": true
+    },
+    {
+      "anchor_point": "anchor_003",
+      "source_asset": "output\\assets\\combine_v2_1777916951_00001_.png",
+      "expected_change_from_previous": true
+    }
+  ],
+  "expected_frame_sample_diversity": {
+    "minimum_unique_visual_sources": 3,
+    "expected_diverse_segments": 3,
+    "max_duplicate_ratio": 0.5
+  },
+  "proof_tracks_not_empty": true,
+  "proof_edl_operations_applied": true,
+  "edl_operations": [
+    {
+      "operation": "insert_clip",
+      "scene_id": "",
+      "applied": true
+    },
+    {
+      "operation": "add_voiceover_placeholder",
+      "scene_id": "",
+      "applied": true
+    }
+  ],
+  "no_generation_performed": true,
+  "no_preview_render_performed": true,
+  "timestamp": "2026-05-10T05:35:14.919111+00:00"
+}

@@ -168,6 +168,9 @@ class CombineStateMachine:
 
         # RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-001: Preview correction plan and re-render gate
         "controlled_preview_rerender_authorization_required",
+
+        # RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001
+        "asset_diversity_blocker_required",
     ]
     
     # Terminal states
@@ -593,8 +596,12 @@ class CombineStateMachine:
         "preview_correction_plan_required": {
             "blocked_manual_review",
             "controlled_preview_rerender_authorization_required",
+            "asset_diversity_blocker_required",
         },
         "controlled_preview_rerender_authorization_required": {
+            "blocked_manual_review",
+        },
+        "asset_diversity_blocker_required": {
             "blocked_manual_review",
         },
         "visual_correction_required": {
@@ -1168,6 +1175,19 @@ class CombineStateMachine:
         ("controlled_preview_rerender_authorization_required", "assembly_preflight_required"),
         ("controlled_preview_rerender_authorization_required", "final_qc_required"),
         ("controlled_preview_rerender_authorization_required", "final_operator_acceptance"),
+
+        # RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001:
+        # Asset diversity blocker state cannot skip to generation, assembly, QA, or downstream
+        ("asset_diversity_blocker_required", "generate_assets"),
+        ("asset_diversity_blocker_required", "real_generate_assets"),
+        ("asset_diversity_blocker_required", "visual_qa_required"),
+        ("asset_diversity_blocker_required", "assembly_required"),
+        ("asset_diversity_blocker_required", "assembly_preflight_required"),
+        ("asset_diversity_blocker_required", "completed"),
+        ("asset_diversity_blocker_required", "production_accepted"),
+        ("asset_diversity_blocker_required", "final_qc_required"),
+        ("asset_diversity_blocker_required", "final_operator_acceptance"),
+        ("asset_diversity_blocker_required", "voice_generation_authorization_required"),
 
         # Terminal QA states: no transitions to downstream
         ("visual_candidate_accepted_for_pipeline", "assembly_required"),

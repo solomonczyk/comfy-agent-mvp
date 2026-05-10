@@ -1,6 +1,6 @@
 {
-  "current_state": "preview_correction_plan_required",
-  "next_allowed_action": "preview_correction_plan_required",
+  "current_state": "controlled_preview_rerender_authorization_required",
+  "next_allowed_action": "controlled_preview_rerender_authorization_required",
   "generation_runtime_blocked": false,
   "blocker": null,
   "blocker_summary": null,
@@ -635,7 +635,7 @@
   "artifacts": [
     "human_preview_review_gate_proof.json"
   ],
-  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+  "task_id": "RC-COMBINE-V2-ASSET-DIVERSITY-TIMELINE-PROGRESSION-REPAIR-001",
   "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
   "total_artifacts": 47,
   "brief_intake_layer_completed": true,
@@ -655,7 +655,7 @@
   "generation_authorized": true,
   "comfyui_submit_executed": false,
   "workflow_execution_performed": false,
-  "preview_render_executed": true,
+  "preview_render_executed": false,
   "checkpoint_resolution_executed": true,
   "checkpoint_resolution_task_id": "RC-COMBINE-V2-94001-98000",
   "checkpoint_resolution_branch": "exact_checkpoint_available",
@@ -835,5 +835,25 @@
   "controlled_preview_rerender_result_review_created": true,
   "controlled_preview_rerender_static_detection_report_created": true,
   "controlled_preview_rerender_operator_review_packet_created": true,
-  "correction_goal_achieved": false
+  "correction_goal_achieved": false,
+  "asset_diversity_repair_executed": true,
+  "static_preview_failure_confirmed": true,
+  "duplicate_frame_ratio": 1.0,
+  "root_cause": "single_source_asset_repeated",
+  "minimum_unique_visual_sources_required": 3,
+  "minimum_unique_visual_sources_passed": true,
+  "single_source_static_preview_blocked": true,
+  "timeline_tracks_non_empty": true,
+  "edl_operations_applied_or_blocked": true,
+  "timeline_visual_progression_contract_created": true,
+  "asset_diversity_plan_created": true,
+  "corrected_timeline_visual_progression_plan_created": true,
+  "dry_run_executed": true,
+  "apply_performed": false,
+  "ready_for_controlled_preview_rerender_authorization": true,
+  "can_repair_from_existing_assets": true,
+  "human_preview_decision_processed": false,
+  "static_preview_failure_diagnosis_created": true,
+  "asset_diversity_timeline_repair_dry_run_created": true,
+  "controlled_preview_rerender_authorization_packet_created": true
 }
