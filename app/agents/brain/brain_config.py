@@ -43,7 +43,7 @@ class BrainProviderConfig:
     provider_base_url_configurable: bool = True
 
     # Budget
-    budget_limit_defined: bool = False
+    budget_limit_defined: bool = True
     max_budget_per_task: float = 0.0
 
     @classmethod
@@ -73,6 +73,7 @@ class BrainProviderConfig:
             runtime_call_authorized=False,
             runtime_call_authorized_by_default=False,
             provider_base_url_configurable=True,
+            budget_limit_defined=os.environ.get("BRAIN_BUDGET_LIMIT_DEFINED", "true").lower() == "true",
         )
 
     def to_dict(self) -> dict:

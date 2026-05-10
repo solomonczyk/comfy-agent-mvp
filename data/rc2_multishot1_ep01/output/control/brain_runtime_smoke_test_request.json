@@ -1,0 +1,17 @@
+{
+  "task": "provider_healthcheck",
+  "response_format": "json",
+  "required_fields": [
+    "ok",
+    "model",
+    "provider",
+    "message"
+  ],
+  "message_max_words": 12,
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "max_brain_calls": 1,
+  "purpose": "runtime_provider_healthcheck_only",
+  "brain_output_advisory_only": true,
+  "timestamp": "2026-05-10T10:22:39.343464+00:00"
+}

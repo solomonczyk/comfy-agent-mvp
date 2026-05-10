@@ -1,0 +1,10 @@
+{
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "provider_runtime_available": true,
+  "model_runtime_available": true,
+  "last_check_timestamp": "2026-05-10T10:22:43.017191+00:00",
+  "api_key_present": true,
+  "api_key_logged": false,
+  "validation_status": "config_valid_runtime_not_executed"
+}

@@ -13395,6 +13395,391 @@ def combine_validate_brain_provider(args: argparse.Namespace) -> int:
     return 0 if output["status"] == "pass" else 1
 
 
+def combine_run_brain_runtime_smoke_test(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-BRAIN-RUNTIME-SMOKE-TEST-001 — DeepSeek brain runtime smoke test.
+
+    Executes exactly one harmless DeepSeek runtime API call after validating
+    operator authorization artifact. All forbidden actions are enforced.
+
+    Exit codes:
+    - 0: smoke test passed (exactly 1 call, no secrets leaked, advisory only)
+    - 1: blocked by missing/invalid authorization or config
+    - 2: runtime API call failed honestly (provider unavailable)
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime, timezone
+    from app.agents.brain.brain_config import BrainProviderConfig
+    from app.agents.brain.brain_provider import (
+        validate_brain_provider,
+        run_brain_runtime_smoke_test,
+        ENV_KEY_NAME,
+        _sanitize_request_payload,
+    )
+    from app.agents.brain.brain_runtime_gate import BrainRuntimeGate
+
+    project_root = Path(args.project_root)
+    json_output = getattr(args, "json", False)
+    execute_flag = getattr(args, "execute", False)
+    max_brain_calls = getattr(args, "max_brain_calls", 1)
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    # Validate operator authorization artifact
+    auth_path = control_dir / "brain_runtime_smoke_test_operator_authorization.json"
+    if not auth_path.exists():
+        output = {
+            "status": "blocked",
+            "blocker_type": "missing_operator_authorization",
+            "message": "Operator authorization artifact missing. No API call allowed.",
+            "brain_call_count": 0,
+            "runtime_call_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print("BLOCKED: Missing operator authorization artifact.")
+        return 1
+
+    with open(auth_path, "r", encoding="utf-8") as f:
+        auth_data = json.load(f)
+
+    required_auth_fields = [
+        "authorization_type",
+        "authorized",
+        "authorized_by",
+        "target_provider",
+        "target_model",
+        "max_brain_calls",
+    ]
+    for field_name in required_auth_fields:
+        if field_name not in auth_data:
+            output = {
+                "status": "blocked",
+                "blocker_type": "invalid_operator_authorization",
+                "message": f"Operator authorization missing required field: {field_name}",
+                "brain_call_count": 0,
+                "runtime_call_executed": False,
+                "production_accepted": False,
+            }
+            if json_output:
+                print(json.dumps(output, indent=2))
+            else:
+                print(f"BLOCKED: Invalid operator authorization (missing {field_name}).")
+            return 1
+
+    if auth_data.get("authorized") is not True:
+        output = {
+            "status": "blocked",
+            "blocker_type": "operator_not_authorized",
+            "message": "Operator authorization is not granted (authorized != true).",
+            "brain_call_count": 0,
+            "runtime_call_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print("BLOCKED: Operator authorization not granted.")
+        return 1
+
+    if auth_data.get("target_provider") != "deepseek":
+        output = {
+            "status": "blocked",
+            "blocker_type": "provider_mismatch",
+            "message": f"Provider mismatch: expected deepseek, got {auth_data.get('target_provider')}",
+            "brain_call_count": 0,
+            "runtime_call_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print("BLOCKED: Provider mismatch.")
+        return 1
+
+    if auth_data.get("target_model") != "deepseek-v4-flash":
+        output = {
+            "status": "blocked",
+            "blocker_type": "model_mismatch",
+            "message": f"Model mismatch: expected deepseek-v4-flash, got {auth_data.get('target_model')}",
+            "brain_call_count": 0,
+            "runtime_call_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print("BLOCKED: Model mismatch.")
+        return 1
+
+    if auth_data.get("max_brain_calls", 0) != 1:
+        output = {
+            "status": "blocked",
+            "blocker_type": "max_brain_calls_invalid",
+            "message": f"max_brain_calls must be 1, got {auth_data.get('max_brain_calls')}",
+            "brain_call_count": 0,
+            "runtime_call_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print("BLOCKED: max_brain_calls must be 1.")
+        return 1
+
+    # Forbidden action checks from authorization
+    forbidden_checks = [
+        ("state_update_allowed", "state update"),
+        ("visual_acceptance_allowed", "visual acceptance"),
+        ("audio_acceptance_allowed", "audio acceptance"),
+        ("generation_allowed", "generation"),
+        ("preview_render_allowed", "preview render"),
+        ("voice_generation_allowed", "voice generation"),
+        ("assembly_allowed", "assembly"),
+        ("downstream_allowed", "downstream"),
+        ("production_accepted_allowed", "production acceptance"),
+    ]
+    for field_name, label in forbidden_checks:
+        if auth_data.get(field_name) is True:
+            output = {
+                "status": "blocked",
+                "blocker_type": "forbidden_action_in_authorization",
+                "message": f"Authorization illegally allows {label} ({field_name}=true).",
+                "brain_call_count": 0,
+                "runtime_call_executed": False,
+                "production_accepted": False,
+            }
+            if json_output:
+                print(json.dumps(output, indent=2))
+            else:
+                print(f"BLOCKED: Authorization illegally allows {label}.")
+            return 1
+
+    # --execute flag is required
+    if not execute_flag:
+        output = {
+            "status": "blocked",
+            "blocker_type": "execute_flag_missing",
+            "message": "--execute flag is required to perform the runtime API call.",
+            "brain_call_count": 0,
+            "runtime_call_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print("BLOCKED: --execute flag required.")
+        return 1
+
+    # Validate provider config
+    config = BrainProviderConfig.default()
+    provider_result = validate_brain_provider(config)
+
+    gate = BrainRuntimeGate(
+        operator_authorization_exists=True,
+        provider_config_present=provider_result.provider_config_present,
+        api_key_present=provider_result.api_key_present,
+        model_id_validated=provider_result.model_id_validated,
+        budget_limit_defined=config.budget_limit_defined,
+        brain_calls_used=0,
+        brain_output_advisory_only=True,
+    )
+    gate_result = gate.check()
+
+    if not gate_result.runtime_call_authorized:
+        output = {
+            "status": "blocked",
+            "blocker_type": "runtime_gate_denied",
+            "message": "Runtime gate denied the call. " + "; ".join(gate_result.errors),
+            "brain_call_count": 0,
+            "runtime_call_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print("BLOCKED: Runtime gate denied.")
+            for err in gate_result.errors:
+                print(f"  - {err}")
+        return 1
+
+    # Build smoke test request artifact (sanitized — no API key)
+    request_timestamp = datetime.now(timezone.utc).isoformat()
+    smoke_request = {
+        "task": "provider_healthcheck",
+        "response_format": "json",
+        "required_fields": ["ok", "model", "provider", "message"],
+        "message_max_words": 12,
+        "provider": config.provider,
+        "model": config.primary_model_id,
+        "max_brain_calls": max_brain_calls,
+        "purpose": "runtime_provider_healthcheck_only",
+        "brain_output_advisory_only": True,
+        "timestamp": request_timestamp,
+    }
+    request_path = control_dir / "brain_runtime_smoke_test_request.json"
+    with open(request_path, "w", encoding="utf-8") as f:
+        json.dump(smoke_request, f, indent=2)
+
+    # Execute exactly one runtime API call
+    smoke_result = run_brain_runtime_smoke_test(config, max_brain_calls=max_brain_calls)
+
+    # Write response artifact (sanitized — no secrets)
+    response_artifact = {
+        "ok": smoke_result.ok,
+        "provider": smoke_result.provider,
+        "model": smoke_result.model,
+        "message": smoke_result.message,
+        "error": smoke_result.error,
+        "runtime_call_executed": smoke_result.runtime_call_executed,
+        "brain_call_count": smoke_result.brain_call_count,
+        "http_status_code": smoke_result.http_status_code,
+        "request_timestamp": smoke_result.request_timestamp,
+        "response_timestamp": smoke_result.response_timestamp,
+        "raw_response": smoke_result.raw_response,
+        "api_key_logged": False,
+        "api_key_written_to_artifacts": False,
+    }
+    response_path = control_dir / "brain_runtime_smoke_test_response.json"
+    with open(response_path, "w", encoding="utf-8") as f:
+        json.dump(response_artifact, f, indent=2)
+
+    # Write result artifact
+    result_artifact = {
+        "task_id": "RC-COMBINE-V2-BRAIN-RUNTIME-SMOKE-TEST-001",
+        "status": "pass" if smoke_result.provider_runtime_available and smoke_result.model_runtime_available else "fail",
+        "provider": smoke_result.provider,
+        "model": smoke_result.model,
+        "runtime_call_executed": smoke_result.runtime_call_executed,
+        "brain_call_count": smoke_result.brain_call_count,
+        "max_brain_calls": smoke_result.max_brain_calls,
+        "second_brain_call_attempted": False,
+        "provider_runtime_available": smoke_result.provider_runtime_available,
+        "model_runtime_available": smoke_result.model_runtime_available,
+        "api_key_logged": False,
+        "api_key_written_to_artifacts": False,
+        "brain_output_used_as_advisory_only": True,
+        "brain_output_updated_state_directly": False,
+        "generation_performed": False,
+        "comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "preview_render_executed": False,
+        "voice_generation_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "error": smoke_result.error,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    }
+    result_path = control_dir / "brain_runtime_smoke_test_result.json"
+    with open(result_path, "w", encoding="utf-8") as f:
+        json.dump(result_artifact, f, indent=2)
+
+    # Write provider status artifact
+    provider_status = {
+        "provider": smoke_result.provider,
+        "model": smoke_result.model,
+        "provider_runtime_available": smoke_result.provider_runtime_available,
+        "model_runtime_available": smoke_result.model_runtime_available,
+        "last_check_timestamp": datetime.now(timezone.utc).isoformat(),
+        "api_key_present": provider_result.api_key_present,
+        "api_key_logged": False,
+        "validation_status": provider_result.validation_status,
+    }
+    provider_status_path = control_dir / "brain_runtime_provider_status.json"
+    with open(provider_status_path, "w", encoding="utf-8") as f:
+        json.dump(provider_status, f, indent=2)
+
+    # Update artifact_index.json
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        with open(artifact_index_path, "r", encoding="utf-8") as f:
+            artifact_index = json.load(f)
+    artifact_index["brain_runtime_smoke_test_operator_authorization"] = "brain_runtime_smoke_test_operator_authorization.json"
+    artifact_index["brain_runtime_smoke_test_request"] = "brain_runtime_smoke_test_request.json"
+    artifact_index["brain_runtime_smoke_test_response"] = "brain_runtime_smoke_test_response.json"
+    artifact_index["brain_runtime_smoke_test_result"] = "brain_runtime_smoke_test_result.json"
+    artifact_index["brain_runtime_provider_status"] = "brain_runtime_provider_status.json"
+    artifact_index["brain_runtime_smoke_test_executed"] = True
+    artifact_index["brain_runtime_smoke_test_passed"] = smoke_result.provider_runtime_available and smoke_result.model_runtime_available
+    artifact_index["brain_call_count"] = smoke_result.brain_call_count
+    artifact_index["runtime_call_executed"] = True
+    with open(artifact_index_path, "w", encoding="utf-8") as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Update episode_ledger.json
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger = []
+    if ledger_path.exists():
+        with open(ledger_path, "r", encoding="utf-8") as f:
+            ledger = json.load(f)
+    if not isinstance(ledger, list):
+        ledger = [ledger] if isinstance(ledger, dict) else []
+    ledger.append({
+        "event_type": "brain_runtime_smoke_test",
+        "task_id": "RC-COMBINE-V2-BRAIN-RUNTIME-SMOKE-TEST-001",
+        "provider": smoke_result.provider,
+        "model": smoke_result.model,
+        "runtime_call_executed": smoke_result.runtime_call_executed,
+        "brain_call_count": smoke_result.brain_call_count,
+        "max_brain_calls": smoke_result.max_brain_calls,
+        "provider_runtime_available": smoke_result.provider_runtime_available,
+        "model_runtime_available": smoke_result.model_runtime_available,
+        "api_key_logged": False,
+        "api_key_written_to_artifacts": False,
+        "brain_output_advisory_only": True,
+        "generation_performed": False,
+        "comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "preview_render_executed": False,
+        "voice_generation_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+    })
+    with open(ledger_path, "w", encoding="utf-8") as f:
+        json.dump(ledger, f, indent=2)
+
+    # Build CLI output
+    output = {
+        "status": "pass" if smoke_result.provider_runtime_available and smoke_result.model_runtime_available else "fail",
+        "provider": smoke_result.provider,
+        "model": smoke_result.model,
+        "runtime_call_executed": smoke_result.runtime_call_executed,
+        "brain_call_count": smoke_result.brain_call_count,
+        "max_brain_calls": smoke_result.max_brain_calls,
+        "provider_runtime_available": smoke_result.provider_runtime_available,
+        "model_runtime_available": smoke_result.model_runtime_available,
+        "api_key_logged": False,
+        "api_key_written_to_artifacts": False,
+        "brain_output_advisory_only": True,
+        "error": smoke_result.error,
+    }
+
+    if json_output:
+        print(json.dumps(output, indent=2))
+    else:
+        print(f"Brain Runtime Smoke Test: {output['status'].upper()}")
+        print(f"  Provider: {output['provider']}")
+        print(f"  Model: {output['model']}")
+        print(f"  Runtime Call Executed: {output['runtime_call_executed']}")
+        print(f"  Brain Calls: {output['brain_call_count']} / {output['max_brain_calls']}")
+        print(f"  Provider Available: {output['provider_runtime_available']}")
+        print(f"  Model Available: {output['model_runtime_available']}")
+        print(f"  API Key Logged: {output['api_key_logged']}")
+        print(f"  Advisory Only: {output['brain_output_advisory_only']}")
+        if output["error"]:
+            print(f"  Error: {output['error']}")
+
+    if smoke_result.provider_runtime_available and smoke_result.model_runtime_available:
+        return 0
+    return 2
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -13701,6 +14086,33 @@ def main() -> int:
         help="Project root directory",
     )
     combine_validate_brain_provider_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-BRAIN-RUNTIME-SMOKE-TEST-001 — combine-run-brain-runtime-smoke-test subcommand
+    combine_run_brain_runtime_smoke_test_parser = subparsers.add_parser(
+        "combine-run-brain-runtime-smoke-test",
+        help="Run exactly one harmless DeepSeek brain runtime smoke test API call",
+    )
+    combine_run_brain_runtime_smoke_test_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_run_brain_runtime_smoke_test_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute the runtime API call (required)",
+    )
+    combine_run_brain_runtime_smoke_test_parser.add_argument(
+        "--max-brain-calls",
+        type=int,
+        default=1,
+        help="Maximum brain calls allowed (default: 1)",
+    )
+    combine_run_brain_runtime_smoke_test_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -17784,6 +18196,8 @@ def main() -> int:
         return combine_status(args)
     elif args.command == "combine-validate-brain-provider":
         return combine_validate_brain_provider(args)
+    elif args.command == "combine-run-brain-runtime-smoke-test":
+        return combine_run_brain_runtime_smoke_test(args)
     elif args.command == "combine-run-script-supervisor-audit":
         return combine_run_script_supervisor_audit(args)
     elif args.command == "combine-build-preview-correction-plan":

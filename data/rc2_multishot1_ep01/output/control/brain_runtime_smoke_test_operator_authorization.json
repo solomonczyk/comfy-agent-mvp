@@ -1,0 +1,19 @@
+{
+  "authorization_type": "brain_runtime_smoke_test",
+  "authorized": true,
+  "authorized_by": "human_operator",
+  "target_provider": "deepseek",
+  "target_model": "deepseek-v4-flash",
+  "max_brain_calls": 1,
+  "allowed_prompt": "Return a compact JSON healthcheck response only.",
+  "state_update_allowed": false,
+  "visual_acceptance_allowed": false,
+  "audio_acceptance_allowed": false,
+  "generation_allowed": false,
+  "preview_render_allowed": false,
+  "voice_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted_allowed": false,
+  "timestamp": "2026-05-10T10:07:00+02:00"
+}

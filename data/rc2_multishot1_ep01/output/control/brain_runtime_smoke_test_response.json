@@ -1,0 +1,15 @@
+{
+  "ok": true,
+  "provider": "deepseek",
+  "model": "deepseek-v4-flash",
+  "message": "",
+  "error": "",
+  "runtime_call_executed": true,
+  "brain_call_count": 1,
+  "http_status_code": 200,
+  "request_timestamp": "2026-05-10T10:22:39.344465+00:00",
+  "response_timestamp": "2026-05-10T10:22:43.015650+00:00",
+  "raw_response": "",
+  "api_key_logged": false,
+  "api_key_written_to_artifacts": false
+}

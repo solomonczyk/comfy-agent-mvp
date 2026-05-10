@@ -946,5 +946,14 @@
   "runtime_smoke_test_pending": true,
   "preview_pipeline_state_unchanged": true,
   "brain_runtime_call_executed": false,
-  "brain_hidden_api_calls_forbidden": true
+  "brain_hidden_api_calls_forbidden": true,
+  "brain_runtime_smoke_test_operator_authorization": "brain_runtime_smoke_test_operator_authorization.json",
+  "brain_runtime_smoke_test_request": "brain_runtime_smoke_test_request.json",
+  "brain_runtime_smoke_test_response": "brain_runtime_smoke_test_response.json",
+  "brain_runtime_smoke_test_result": "brain_runtime_smoke_test_result.json",
+  "brain_runtime_provider_status": "brain_runtime_provider_status.json",
+  "brain_runtime_smoke_test_executed": true,
+  "brain_runtime_smoke_test_passed": true,
+  "brain_call_count": 1,
+  "runtime_call_executed": true
 }

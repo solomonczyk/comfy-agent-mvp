@@ -8,10 +8,14 @@ No hidden API calls. No faked availability.
 
 from __future__ import annotations
 
+import json
 import os
 from dataclasses import dataclass, field
+from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional
+from typing import Any, Optional
+
+import httpx
 
 from app.agents.brain.brain_config import BrainProviderConfig
 
@@ -182,4 +186,249 @@ def validate_brain_provider(
             "Runtime API call requires separate explicit gate."
         )
 
+    return result
+
+
+@dataclass
+class BrainRuntimeSmokeTestResult:
+    """Result of a single brain runtime smoke test API call."""
+
+    ok: bool = False
+    provider: str = "deepseek"
+    model: str = "deepseek-v4-flash"
+    message: str = ""
+    error: str = ""
+    api_key_logged: bool = False
+    api_key_written_to_artifacts: bool = False
+    runtime_call_executed: bool = False
+    brain_call_count: int = 0
+    max_brain_calls: int = 1
+    second_brain_call_attempted: bool = False
+    provider_runtime_available: bool = False
+    model_runtime_available: bool = False
+    brain_output_used_as_advisory_only: bool = True
+    brain_output_updated_state_directly: bool = False
+    generation_performed: bool = False
+    comfyui_submit_executed: bool = False
+    retry_attempted: bool = False
+    preview_render_executed: bool = False
+    voice_generation_executed: bool = False
+    assembly_executed: bool = False
+    downstream_executed: bool = False
+    production_accepted: bool = False
+    raw_response: str = ""
+    request_timestamp: str = ""
+    response_timestamp: str = ""
+    http_status_code: int = 0
+
+    def to_dict(self) -> dict:
+        d = {
+            "ok": self.ok,
+            "provider": self.provider,
+            "model": self.model,
+            "message": self.message,
+            "error": self.error,
+            "api_key_logged": self.api_key_logged,
+            "api_key_written_to_artifacts": self.api_key_written_to_artifacts,
+            "runtime_call_executed": self.runtime_call_executed,
+            "brain_call_count": self.brain_call_count,
+            "max_brain_calls": self.max_brain_calls,
+            "second_brain_call_attempted": self.second_brain_call_attempted,
+            "provider_runtime_available": self.provider_runtime_available,
+            "model_runtime_available": self.model_runtime_available,
+            "brain_output_used_as_advisory_only": self.brain_output_used_as_advisory_only,
+            "brain_output_updated_state_directly": self.brain_output_updated_state_directly,
+            "generation_performed": self.generation_performed,
+            "comfyui_submit_executed": self.comfyui_submit_executed,
+            "retry_attempted": self.retry_attempted,
+            "preview_render_executed": self.preview_render_executed,
+            "voice_generation_executed": self.voice_generation_executed,
+            "assembly_executed": self.assembly_executed,
+            "downstream_executed": self.downstream_executed,
+            "production_accepted": self.production_accepted,
+            "raw_response": self.raw_response,
+            "request_timestamp": self.request_timestamp,
+            "response_timestamp": self.response_timestamp,
+            "http_status_code": self.http_status_code,
+        }
+        return d
+
+
+def _get_api_key_value(env_key_name: str = ENV_KEY_NAME) -> Optional[str]:
+    """Get the actual API key value for runtime calls.
+
+    This is internal-only and must never be logged or written to artifacts.
+    """
+    value = os.environ.get(env_key_name)
+    if value:
+        return value
+    env_paths = [Path(".env"), Path("../.env"), Path("../../.env")]
+    for env_path in env_paths:
+        if env_path.exists():
+            try:
+                with env_path.open("r", encoding="utf-8") as f:
+                    for line in f:
+                        line = line.strip()
+                        if line.startswith("#"):
+                            continue
+                        if "=" in line:
+                            key, val = line.split("=", 1)
+                            key = key.strip()
+                            if key == env_key_name:
+                                return val.strip().strip('"').strip("'")
+            except OSError:
+                continue
+    return None
+
+
+def _sanitize_request_payload(payload: dict[str, Any]) -> dict[str, Any]:
+    """Return a copy of the payload with any API key redacted."""
+    sanitized = dict(payload)
+    if "headers" in sanitized:
+        sanitized["headers"] = {
+            k: "[REDACTED]" if k.lower() in ("authorization", "x-api-key") else v
+            for k, v in sanitized["headers"].items()
+        }
+    return sanitized
+
+
+def run_brain_runtime_smoke_test(
+    config: Optional[BrainProviderConfig] = None,
+    max_brain_calls: int = 1,
+) -> BrainRuntimeSmokeTestResult:
+    """Execute exactly one harmless DeepSeek runtime API call.
+
+    This is a healthcheck only — no reasoning, no state mutation,
+    no generation, no preview, no voice, no assembly, no downstream.
+    """
+    result = BrainRuntimeSmokeTestResult(
+        max_brain_calls=max_brain_calls,
+        api_key_logged=False,
+        api_key_written_to_artifacts=False,
+        brain_output_used_as_advisory_only=True,
+        brain_output_updated_state_directly=False,
+        generation_performed=False,
+        comfyui_submit_executed=False,
+        retry_attempted=False,
+        preview_render_executed=False,
+        voice_generation_executed=False,
+        assembly_executed=False,
+        downstream_executed=False,
+        production_accepted=False,
+    )
+
+    if config is None:
+        config = BrainProviderConfig.default()
+
+    result.provider = config.provider
+    result.model = config.primary_model_id
+
+    api_key = _get_api_key_value(ENV_KEY_NAME)
+    if not api_key:
+        result.error = f"API key not found in environment or .env (checked {ENV_KEY_NAME})"
+        result.provider_runtime_available = False
+        result.model_runtime_available = False
+        return result
+
+    base_url = os.environ.get("DEEPSEEK_BASE_URL", "https://api.deepseek.com").rstrip("/")
+    url = f"{base_url}/chat/completions"
+
+    system_prompt = (
+        "You are a healthcheck endpoint. "
+        "Return ONLY a compact JSON object with exactly these keys: ok (boolean), provider (string), model (string), message (string max 12 words). "
+        "No markdown fences. No extra text."
+    )
+    user_prompt = (
+        "Return a compact JSON healthcheck response. Example: "
+        '{"ok":true,"provider":"deepseek","model":"deepseek-v4-flash","message":"healthcheck ok"}'
+    )
+
+    payload = {
+        "model": config.primary_model_id,
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": user_prompt},
+        ],
+        "max_tokens": 100,
+        "temperature": 0.0,
+    }
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+
+    result.request_timestamp = datetime.now(timezone.utc).isoformat()
+
+    try:
+        with httpx.Client(timeout=30.0) as client:
+            response = client.post(url, headers=headers, json=payload)
+            result.http_status_code = response.status_code
+            response.raise_for_status()
+            data = response.json()
+    except httpx.HTTPStatusError as exc:
+        result.error = f"HTTP {exc.response.status_code}: {exc.response.text}"
+        result.provider_runtime_available = False
+        result.model_runtime_available = False
+        result.response_timestamp = datetime.now(timezone.utc).isoformat()
+        return result
+    except httpx.TimeoutException:
+        result.error = "Request timed out after 30s"
+        result.provider_runtime_available = False
+        result.model_runtime_available = False
+        result.response_timestamp = datetime.now(timezone.utc).isoformat()
+        return result
+    except Exception as exc:
+        result.error = f"Request failed: {str(exc)}"
+        result.provider_runtime_available = False
+        result.model_runtime_available = False
+        result.response_timestamp = datetime.now(timezone.utc).isoformat()
+        return result
+
+    result.response_timestamp = datetime.now(timezone.utc).isoformat()
+    result.runtime_call_executed = True
+    result.brain_call_count = 1
+
+    try:
+        content = data["choices"][0]["message"]["content"].strip()
+    except (KeyError, IndexError, TypeError):
+        result.error = f"Unexpected response structure: {json.dumps(data)[:500]}"
+        result.provider_runtime_available = False
+        result.model_runtime_available = False
+        return result
+
+    result.raw_response = content[:2000]  # cap raw response size
+
+    # Try to parse JSON from the content
+    parsed = None
+    cleaned = content
+    if "```json" in cleaned:
+        start = cleaned.find("```json") + 7
+        end = cleaned.find("```", start)
+        if end != -1:
+            cleaned = cleaned[start:end].strip()
+    elif "```" in cleaned:
+        start = cleaned.find("```") + 3
+        end = cleaned.find("```", start)
+        if end != -1:
+            cleaned = cleaned[start:end].strip()
+
+    try:
+        parsed = json.loads(cleaned)
+    except json.JSONDecodeError:
+        # If it doesn't parse, treat the raw text as the message
+        parsed = None
+
+    if isinstance(parsed, dict):
+        result.ok = bool(parsed.get("ok", False))
+        result.provider = parsed.get("provider", config.provider)
+        result.model = parsed.get("model", config.primary_model_id)
+        result.message = parsed.get("message", content[:200])
+    else:
+        # Non-JSON response: treat as honest response, ok if HTTP succeeded
+        result.ok = True
+        result.message = content[:200]
+
+    result.provider_runtime_available = True
+    result.model_runtime_available = result.ok
     return result

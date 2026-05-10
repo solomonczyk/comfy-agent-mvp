@@ -1934,5 +1934,28 @@
     "current_state": "preview_correction_plan_required",
     "next_allowed_action": "brain_runtime_smoke_test_authorization_required",
     "timestamp": "2026-05-10T09:21:50.231429+00:00"
+  },
+  {
+    "event_type": "brain_runtime_smoke_test",
+    "task_id": "RC-COMBINE-V2-BRAIN-RUNTIME-SMOKE-TEST-001",
+    "provider": "deepseek",
+    "model": "deepseek-v4-flash",
+    "runtime_call_executed": true,
+    "brain_call_count": 1,
+    "max_brain_calls": 1,
+    "provider_runtime_available": true,
+    "model_runtime_available": true,
+    "api_key_logged": false,
+    "api_key_written_to_artifacts": false,
+    "brain_output_advisory_only": true,
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "timestamp": "2026-05-10T10:22:43.022112+00:00"
   }
 ]
