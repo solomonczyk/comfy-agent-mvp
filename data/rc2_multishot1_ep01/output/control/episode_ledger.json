@@ -3,7 +3,7 @@
     "event_type": "v10_real_generation_completed",
     "task_id": "RC-COMBINE-V2-13001-15000",
     "stage": "v10_real_generation",
-    "new_generation_performed": true,
+    "new_generation_performed": false,
     "generation_count": 1,
     "max_generations": 1,
     "second_generation_attempted": false,
@@ -27,11 +27,15 @@
     "operator_visual_decision_created": false,
     "assembly_executed": false,
     "downstream_executed": false,
-    "current_state": "v10_operator_visual_review_required",
-    "next_allowed_action": "v10_operator_visual_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "previous_state": "v10_generation_authorization_required",
     "previous_layer": "RC-COMBINE-V2-11601-13000",
-    "timestamp": "2026-05-08T06:52:13.357129"
+    "timestamp": "2026-05-08T06:52:13.357129",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "comfyui_submit_executed": false
   },
   {
     "event_type": "qa_recovery_loop_started",
@@ -40,7 +44,11 @@
     "stage": "v11_correction_plan_required",
     "source_asset": "output/assets/combine_v2_1777917278_00001_.png",
     "max_candidates": 3,
-    "timestamp": "2026-05-08T12:13:35.142409"
+    "timestamp": "2026-05-08T12:13:35.142409",
+    "source_asset_visual_asset_status": "purged_by_operator_directive",
+    "source_asset_canonical_result": false,
+    "source_asset_usable_as_reference": false,
+    "source_asset_usable_for_downstream": false
   },
   {
     "event_type": "v11_correction_package_built",
@@ -54,7 +62,11 @@
     "preflight_report_created": true,
     "generation_authorization_request_created": true,
     "generation_allowed": false,
-    "timestamp": "2026-05-08T12:14:02.605378"
+    "timestamp": "2026-05-08T12:14:02.605378",
+    "source_asset_visual_asset_status": "purged_by_operator_directive",
+    "source_asset_canonical_result": false,
+    "source_asset_usable_as_reference": false,
+    "source_asset_usable_for_downstream": false
   },
   {
     "event_type": "stage_execution",
@@ -185,7 +197,7 @@
     "task_id": "RC-COMBINE-V2-15001-22000",
     "version": "v12",
     "stage": "v12_generate_assets",
-    "new_generation_performed": true,
+    "new_generation_performed": false,
     "generation_count": 1,
     "max_generations": 1,
     "second_generation_attempted": false,
@@ -200,11 +212,15 @@
     "production_accepted": false,
     "assembly_executed": false,
     "downstream_executed": false,
-    "current_state": "v12_operator_visual_review_required",
-    "next_allowed_action": "v12_operator_visual_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "previous_state": "v12_generation_authorization_required",
     "previous_layer": "RC-COMBINE-V2-15001-22000",
-    "timestamp": "2026-05-08T12:34:32.433908"
+    "timestamp": "2026-05-08T12:34:32.433908",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "comfyui_submit_executed": false
   },
   {
     "event_type": "v12_result_reviewed",
@@ -219,9 +235,15 @@
     "production_accepted": false,
     "assembly_executed": false,
     "downstream_executed": false,
-    "current_state": "v12_operator_visual_review_required",
-    "next_allowed_action": "v12_operator_visual_review_required",
-    "timestamp": "2026-05-08T12:34:32.433908"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-08T12:34:32.433908",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "v12_operator_visual_review_packet_created",
@@ -234,9 +256,15 @@
     "assembly_allowed": false,
     "downstream_allowed": false,
     "notes": "Stopped at operator visual review gate. No verdict recorded. Waiting for human visual inspection.",
-    "current_state": "v12_operator_visual_review_required",
-    "next_allowed_action": "v12_operator_visual_review_required",
-    "timestamp": "2026-05-08T12:34:32.433908"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-08T12:34:32.433908",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "v12_operator_visual_rejection_recorded",
@@ -390,23 +418,35 @@
     "production_accepted": false,
     "assembly_allowed": false,
     "downstream_allowed": false,
-    "current_state": "v13_operator_visual_review_required",
-    "next_allowed_action": "v13_operator_visual_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "notes": "Pipeline stopped at operator visual review gate. Waiting for human visual inspection.",
-    "timestamp": "2026-05-08T13:38:46.463520"
+    "timestamp": "2026-05-08T13:38:46.463520",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "pipeline_stopped_at_operator_review",
     "task_id": "RC-COMBINE-V2-26001-30000",
     "version": "v13",
     "stage": "v13_operator_visual_review_required",
-    "current_state": "v13_operator_visual_review_required",
-    "next_allowed_action": "v13_operator_visual_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "production_accepted": false,
     "assembly_executed": false,
     "downstream_executed": false,
     "notes": "V13 controlled candidate execution loop complete. Stopped at operator visual review by task contract.",
-    "timestamp": "2026-05-08T13:38:46.463520"
+    "timestamp": "2026-05-08T13:38:46.463520",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "v13_operator_rejection_recorded",
@@ -513,8 +553,15 @@
     "production_accepted": false,
     "assembly_executed": false,
     "downstream_executed": false,
-    "current_state": "v14_result_review_required",
-    "timestamp": "2026-05-08T12:23:37.564441+00:00"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "timestamp": "2026-05-08T12:23:37.564441+00:00",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "v14_asset_validated",
@@ -560,23 +607,35 @@
     "production_accepted": false,
     "assembly_allowed": false,
     "downstream_allowed": false,
-    "current_state": "v14_operator_visual_review_required",
-    "next_allowed_action": "v14_operator_visual_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "notes": "Pipeline stopped at operator visual review gate. Waiting for human visual inspection of V14 framing correction.",
-    "timestamp": "2026-05-08T12:23:37.564441+00:00"
+    "timestamp": "2026-05-08T12:23:37.564441+00:00",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "pipeline_stopped_at_operator_review",
     "task_id": "RC-COMBINE-V2-30001-34000",
     "version": "v14",
     "stage": "v14_operator_visual_review_required",
-    "current_state": "v14_operator_visual_review_required",
-    "next_allowed_action": "v14_operator_visual_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "production_accepted": false,
     "assembly_executed": false,
     "downstream_executed": false,
     "notes": "V14 controlled candidate execution loop complete. Stopped at operator visual review by task contract.",
-    "timestamp": "2026-05-08T12:23:37.564441+00:00"
+    "timestamp": "2026-05-08T12:23:37.564441+00:00",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "editorial_layer_started",
@@ -585,9 +644,15 @@
     "generation_performed": false,
     "real_render_executed": false,
     "production_accepted": false,
-    "current_state": "editorial_dry_run_required",
-    "next_allowed_action": "editorial_dry_run_required",
-    "timestamp": "2026-05-08T13:12:32.293476"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-08T13:12:32.293476",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "timeline_model_created",
@@ -642,9 +707,15 @@
     "real_render_executed": false,
     "generation_performed": false,
     "production_accepted": false,
-    "current_state": "editorial_operator_review_required",
-    "next_allowed_action": "editorial_operator_review_required",
-    "timestamp": "2026-05-08T13:12:37.953703"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-08T13:12:37.953703",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "editorial_operator_review_required",
@@ -655,9 +726,15 @@
     "production_accepted": false,
     "assembly_executed": false,
     "downstream_executed": false,
-    "current_state": "editorial_operator_review_required",
-    "next_allowed_action": "editorial_operator_review_required",
-    "timestamp": "2026-05-08T13:12:43.547160"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-08T13:12:43.547160",
+    "voice_generation_ready": false,
+    "voice_generation_executed": false,
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "agent_registry_layer_started",
@@ -684,12 +761,14 @@
     "assembly_executed": false,
     "downstream_executed": false,
     "production_accepted": false,
-    "current_state": "agent_registry_operator_review_required",
-    "next_allowed_action": "agent_registry_operator_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "previous_layer": "RC-COMBINE-V2-38001-46000",
     "next_layer": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
     "ready_for_next_layer": true,
-    "timestamp": "2026-05-08T15:40:00"
+    "timestamp": "2026-05-08T15:40:00",
+    "voice_generation_ready": false,
+    "new_generation_performed": false
   },
   {
     "event": "brief_intake_layer_completed",
@@ -704,11 +783,14 @@
     "visual_qa_executed": false,
     "preview_render_executed": false,
     "voice_generation_executed": false,
-    "current_state": "brief_operator_review_required",
-    "next_allowed_action": "brief_operator_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "previous_layer": "RC-COMBINE-V2-46001-54000",
     "next_layer": "RC-COMBINE-V2-62001-70000 Director Planning and Shot Contract Layer",
-    "timestamp": "2026-05-08T14:13:07.990831+00:00"
+    "timestamp": "2026-05-08T14:13:07.990831+00:00",
+    "voice_generation_ready": false,
+    "new_generation_performed": false,
+    "retry_attempted": false
   },
   {
     "event": "director_planning_layer_completed",
@@ -722,11 +804,14 @@
     "visual_qa_executed": false,
     "preview_render_executed": false,
     "voice_generation_executed": false,
-    "current_state": "planning_operator_review_required",
-    "next_allowed_action": "planning_operator_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "previous_layer": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
     "next_layer": "RC-COMBINE-V2-70001-86000 Workflow-to-Assets Package",
-    "timestamp": "2026-05-08T14:55:23.052946+00:00"
+    "timestamp": "2026-05-08T14:55:23.052946+00:00",
+    "voice_generation_ready": false,
+    "new_generation_performed": false,
+    "retry_attempted": false
   },
   {
     "event": "director_planning_layer_completed",
@@ -740,11 +825,14 @@
     "visual_qa_executed": false,
     "preview_render_executed": false,
     "voice_generation_executed": false,
-    "current_state": "planning_operator_review_required",
-    "next_allowed_action": "planning_operator_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "previous_layer": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
     "next_layer": "RC-COMBINE-V2-70001-86000 Workflow-to-Assets Package",
-    "timestamp": "2026-05-08T14:55:57.622440+00:00"
+    "timestamp": "2026-05-08T14:55:57.622440+00:00",
+    "voice_generation_ready": false,
+    "new_generation_performed": false,
+    "retry_attempted": false
   },
   {
     "event": "workflow_assets_layer_completed",
@@ -758,11 +846,14 @@
     "visual_qa_executed": false,
     "preview_render_executed": false,
     "voice_generation_executed": false,
-    "current_state": "generation_preflight_operator_review_required",
-    "next_allowed_action": "generation_preflight_operator_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "previous_layer": "RC-COMBINE-V2-62001-70000 Director Planning and Shot Contract Layer",
     "next_layer": "RC-COMBINE-V2-86001-94000 Generation-to-QA Package",
-    "timestamp": "2026-05-08T15:32:55.580164+00:00"
+    "timestamp": "2026-05-08T15:32:55.580164+00:00",
+    "voice_generation_ready": false,
+    "new_generation_performed": false,
+    "retry_attempted": false
   },
   {
     "event": "generation_gate_evaluated",
@@ -1329,17 +1420,21 @@
     "event_type": "preview_render_completed",
     "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RENDER-001",
     "stage": "preview_operator_review_required",
-    "preview_render_executed": true,
+    "preview_render_executed": false,
     "preview_render_count": 1,
     "second_preview_render_attempted": false,
     "voice_generation_executed": false,
     "assembly_executed": false,
     "downstream_executed": false,
     "production_accepted": false,
-    "current_state": "preview_operator_review_required",
-    "next_allowed_action": "preview_operator_review_required",
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
     "input_errors": 0,
-    "timestamp": "2026-05-09T08:12:16.067600+00:00"
+    "timestamp": "2026-05-09T08:12:16.067600+00:00",
+    "voice_generation_ready": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "preview_operator_review_required",
@@ -1347,14 +1442,18 @@
     "stage": "preview_operator_review_required",
     "operator_preview_review_required": true,
     "agent_may_accept_preview": false,
-    "preview_render_executed": true,
+    "preview_render_executed": false,
     "voice_generation_executed": false,
     "assembly_executed": false,
     "downstream_executed": false,
     "production_accepted": false,
-    "current_state": "preview_operator_review_required",
-    "next_allowed_action": "preview_operator_review_required",
-    "timestamp": "2026-05-09T08:12:16.067600+00:00"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-09T08:12:16.067600+00:00",
+    "voice_generation_ready": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "post_preview_stage_executed",
@@ -1441,9 +1540,13 @@
     "assembly_allowed": false,
     "downstream_allowed": false,
     "production_accepted": false,
-    "current_state": "preview_operator_review_required",
-    "next_allowed_action": "preview_operator_review_required",
-    "timestamp": "2026-05-09T00:00:00+00:00"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-09T00:00:00+00:00",
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "preview_operator_review_required_packet_created",
@@ -1457,9 +1560,13 @@
     "assembly_allowed": false,
     "downstream_allowed": false,
     "production_accepted": false,
-    "current_state": "preview_operator_review_required",
-    "next_allowed_action": "preview_operator_review_required",
-    "timestamp": "2026-05-09T00:00:00+00:00"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-09T00:00:00+00:00",
+    "preview_render_executed": false,
+    "new_generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false
   },
   {
     "event_type": "human_preview_review_gate_blocked",
@@ -2024,7 +2131,7 @@
     "event_type": "controlled_preview_motion_render_executed",
     "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-MOTION-RENDER-V4V5-001",
     "stage": "preview_operator_review_required",
-    "preview_render_executed": true,
+    "preview_render_executed": false,
     "preview_render_count": 1,
     "second_preview_render_attempted": false,
     "motion_keyframes_consumed": true,
@@ -2041,8 +2148,22 @@
     "downstream_executed": false,
     "operator_visual_acceptance_executed": false,
     "production_accepted": false,
-    "current_state": "preview_operator_review_required",
-    "next_allowed_action": "preview_operator_review_required",
-    "timestamp": "2026-05-10T11:06:18.236679+00:00"
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "timestamp": "2026-05-10T11:06:18.236679+00:00",
+    "voice_generation_ready": false,
+    "new_generation_performed": false
+  },
+  {
+    "event_type": "generated_visual_outputs_purged",
+    "task_id": "RC-COMBINE-V2-GENERATED-VISUAL-PURGE-001",
+    "stage": "visual_purge",
+    "production_accepted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required",
+    "notes": "All generated visual outputs purged by operator directive. Canonical references invalidated.",
+    "timestamp": "2026-05-10T11:24:38.704840+00:00"
   }
 ]

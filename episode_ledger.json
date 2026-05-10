@@ -54,10 +54,16 @@
       "timestamp": "2026-05-10T09:09:59.041953+00:00",
       "details": "RC-COMBINE-V2-BRAIN-PROVIDER-VALIDATION-001: DeepSeek V4 Flash brain provider config validated. API key present. Runtime smoke test authorization required. No API call executed.",
       "task_id": "RC-COMBINE-V2-BRAIN-PROVIDER-VALIDATION-001"
+    },
+    {
+      "event": "generated_visual_outputs_purged",
+      "timestamp": "2026-05-10T11:24:38.704840+00:00",
+      "details": "RC-COMBINE-V2-GENERATED-VISUAL-PURGE-001: All generated visual outputs purged. Canonical references invalidated.",
+      "task_id": "RC-COMBINE-V2-GENERATED-VISUAL-PURGE-001"
     }
   ],
-  "current_state": "v10_generation_authorization_required",
-  "next_allowed_action": "v10_generation_authorization_required",
+  "current_state": "visual_outputs_purged_rebuild_required",
+  "next_allowed_action": "fresh_visual_strategy_required",
   "v9_visual_rejected": true,
   "v10_generation_allowed_now": false,
   "production_accepted": false,
@@ -69,5 +75,6 @@
   "runtime_smoke_test_pending": true,
   "preview_pipeline_state_unchanged": true,
   "brain_runtime_call_executed": false,
-  "brain_hidden_api_calls_forbidden": true
+  "brain_hidden_api_calls_forbidden": true,
+  "voice_generation_ready": false
 }

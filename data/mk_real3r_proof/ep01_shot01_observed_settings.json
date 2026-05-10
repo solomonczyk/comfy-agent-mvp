@@ -22,7 +22,7 @@
       "vae_encode_node": "8"
     },
     "generation_mode": "reference_locked",
-    "reference_image_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmp2gu3tkhj\\data\\references\\alya_clean_reference_480x640.png",
-    "staged_reference_image_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmp2gu3tkhj\\data\\references\\alya_clean_reference_480x640.png"
+    "reference_image_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmpfbobeeth\\data\\references\\alya_clean_reference_480x640.png",
+    "staged_reference_image_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmpfbobeeth\\data\\references\\alya_clean_reference_480x640.png"
   }
 }
