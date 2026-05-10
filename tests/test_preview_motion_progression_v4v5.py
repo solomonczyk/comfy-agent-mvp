@@ -360,14 +360,15 @@ def test_artifact_index_updated() -> None:
     path = CONTROL_DIR / "artifact_index.json"
     with open(path, "r", encoding="utf-8") as f:
         idx = json.load(f)
-    assert idx.get("current_state") == "controlled_preview_motion_render_authorization_required"
-    assert idx.get("next_allowed_action") == "controlled_preview_motion_render_authorization_required"
+    # After controlled preview motion render execution, state progresses to operator review
+    assert idx.get("current_state") == "preview_operator_review_required"
+    assert idx.get("next_allowed_action") == "preview_operator_review_required"
     assert idx.get("preview_motion_progression_package_created") is True
     assert idx.get("legacy_static_hold_blocked") is True
     assert idx.get("motion_progression_layer_created") is True
     assert idx.get("segment_keyframes_created") is True
     assert idx.get("duplicate_reduction_policy_created") is True
-    assert idx.get("preview_render_executed") is False
+    assert idx.get("preview_render_executed") is True
     assert idx.get("new_image_generation_performed") is False
     assert idx.get("comfyui_submit_executed") is False
     assert idx.get("production_accepted") is False

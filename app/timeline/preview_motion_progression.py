@@ -16,6 +16,7 @@ and keyframes for the renderer to consume.
 
 from __future__ import annotations
 
+import hashlib
 import json
 import math
 from dataclasses import asdict, dataclass
@@ -85,8 +86,9 @@ class SegmentMotionPlan:
 
 def _hash_seed(source: str, segment_index: int) -> int:
     """Create a deterministic integer seed from a string source."""
-    h = hash((source, segment_index, "RC-COMBINE-V2-MOTION-SEED-SALT"))
-    return abs(h) % (2**31)
+    s = f"{source}::{segment_index}::RC-COMBINE-V2-MOTION-SEED-SALT"
+    h = hashlib.sha256(s.encode("utf-8")).hexdigest()
+    return int(h[:16], 16) % (2**31)
 
 
 def _lerp(a: float, b: float, t: float) -> float:
