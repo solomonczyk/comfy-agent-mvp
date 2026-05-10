@@ -47,6 +47,14 @@
   "cli_validation_pass": true,
   "current_state": "preview_correction_plan_required",
   "next_allowed_action": "preview_correction_plan_required",
-  "blockers": [],
-  "next_task_recommendation": "RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001"
+  "blockers": [
+    {
+      "blocker_type": "invalid_or_static_preview",
+      "next_allowed_action": "preview_correction_plan_required"
+    }
+  ],
+  "next_task_recommendation": "RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001",
+  "commit_hash": "cc34bca",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true
 }
