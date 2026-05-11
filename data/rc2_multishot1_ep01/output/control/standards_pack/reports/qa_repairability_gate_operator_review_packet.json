@@ -1,0 +1,166 @@
+{
+  "packet_id": "qa_repairability_gate_operator_review_packet_v1",
+  "packet_type": "operator_review",
+  "description": "Operator review packet for QA Repairability Gate policy acceptance",
+  "version": "1.0",
+  "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-REVIEW-001",
+  "previous_task": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-FREEZE-FIX-002",
+  "timestamp": "2026-05-11T18:55:00+02:00",
+  "review_purpose": "Confirm QA Repairability Gate policy as project control rule before any rerender authorization",
+  "canonical_artifacts": {
+    "defect_repairability_matrix": {
+      "path": "standards_pack/internal/defect_repairability_matrix.json",
+      "description": "Maps each defect to downstream repairability classification and allowed fix paths",
+      "git_tracked": true
+    },
+    "repair_tool_registry": {
+      "path": "standards_pack/references/repair_tool_registry.json",
+      "description": "Registry of available repair mechanisms and their capabilities",
+      "git_tracked": true
+    },
+    "qa_repairability_policy": {
+      "path": "standards_pack/policies/qa_repairability_policy.json",
+      "description": "QA must check downstream repairability before allowing pipeline progression",
+      "git_tracked": true
+    },
+    "downstream_repairability_gate_policy": {
+      "path": "standards_pack/policies/downstream_repairability_gate_policy.json",
+      "description": "Stage routing policy based on defect repairability assessment",
+      "git_tracked": true
+    }
+  },
+  "repairability_rules_summary": {
+    "core_principle": "QA must verify defects are repairable in next downstream stage before allowing pipeline progression",
+    "hard_blocking_conditions": [
+      {
+        "condition": "Unknown defect repairability",
+        "rule": "If defect is not in repairability matrix, block pipeline",
+        "action": "requires_manual_classification_and_repairability_assessment"
+      },
+      {
+        "condition": "Not repairable downstream",
+        "rule": "If defect cannot be repaired in next stage, block downstream",
+        "action": "requires_corrective_plan_or_regeneration"
+      },
+      {
+        "condition": "Technical pass without visual acceptance",
+        "rule": "Technical validity alone is insufficient",
+        "action": "requires_visual_or_editorial_acceptance_verification"
+      },
+      {
+        "condition": "Fake operator decision detected",
+        "rule": "If defects include fake_operator_decision, block immediately",
+        "action": "requires_real_human_operator_review"
+      },
+      {
+        "condition": "Generation required but gate closed",
+        "rule": "If fix requires generation/retry and gate is not open, block",
+        "action": "requires_controlled_generation_authorization"
+      }
+    ],
+    "enforced_flags": {
+      "production_accepted": {
+        "value": false,
+        "rule": "Never auto-accept production; requires explicit human approval"
+      },
+      "assembly_allowed": {
+        "value": false,
+        "rule": "Assembly blocked until all repairability checks pass"
+      },
+      "downstream_allowed": {
+        "value": false,
+        "rule": "Downstream blocked until repairability verified"
+      },
+      "voice_generation_allowed": {
+        "value": false,
+        "rule": "Voice generation never allowed by repairability gate"
+      }
+    }
+  },
+  "downstream_blockers_detailed": {
+    "assembly_blocked_by": [
+      "unknown_repairability_defects_present",
+      "unrepairable_defects_present",
+      "technical_pass_without_visual_acceptance",
+      "fake_operator_decision_detected",
+      "production_accepted_is_false"
+    ],
+    "downstream_blocked_by": [
+      "unknown_repairability_defects_present",
+      "unrepairable_defects_present",
+      "technical_pass_without_visual_acceptance",
+      "fake_operator_decision_detected",
+      "requires_generation_without_gate_open",
+      "production_accepted_is_false",
+      "assembly_not_allowed"
+    ],
+    "production_acceptance_blocked_by": [
+      "any_defects_present",
+      "qa_decision_not_pass",
+      "repairability_assessment_not_all_repairable",
+      "operator_visual_review_not_accepted"
+    ],
+    "voice_generation_blocked_by": [
+      "always_blocked_by_design",
+      "repairability_gate_does_not_authorize_voice"
+    ]
+  },
+  "repair_tools_summary": [
+    {
+      "tool_id": "standard_comfyui_inpaint",
+      "can_fix": ["small_local_artifact", "minor_background_defect"],
+      "cannot_fix": ["global_identity_drift", "bad_full_body_anatomy", "empty_timeline", "fake_operator_decision"],
+      "validated": false
+    },
+    {
+      "tool_id": "timeline_segment_repair",
+      "can_fix": ["empty_timeline", "duplicate_static_frames_if_assets_available", "subtitle_overlap", "bad_transition_fade"],
+      "requires_preview_rerender_gate": true
+    },
+    {
+      "tool_id": "identity_adapter_sdxl_faceid",
+      "can_fix": ["identity_drift"],
+      "available": false,
+      "requires_controlled_asset_resolution": true
+    },
+    {
+      "tool_id": "controlled_regeneration",
+      "can_fix": ["heavy_blur", "bad_face_eyes_mouth_artifacts", "anatomy_defects", "hand_defects", "style_mismatch", "low_detail", "wrong_object_props", "bad_composition"],
+      "requires_generation_gate": true
+    }
+  ],
+  "operator_review_questions": [
+    "Do you accept the QA Repairability Gate as a mandatory control rule for this project?",
+    "Do you understand that defects not repairable downstream will block pipeline progression?",
+    "Do you confirm that fake_operator_decision defects must trigger real human review?",
+    "Do you acknowledge that technical pass without visual acceptance is insufficient?"
+  ],
+  "operator_decision": {
+    "reviewed_by": null,
+    "review_timestamp": null,
+    "policy_accepted": null,
+    "accepted_as_project_control_rule": null,
+    "operator_notes": null,
+    "agent_filled": false,
+    "requires_human_decision": true
+  },
+  "agent_certification": {
+    "agent_created_packet": true,
+    "agent_did_not_accept_on_operator_behalf": true,
+    "agent_certifies_no_fake_approval": true,
+    "packet_for_human_operator_only": true
+  },
+  "next_allowed_action": "human_operator_qa_repairability_gate_decision_required",
+  "forbidden_at_this_stage": [
+    "generation",
+    "retry",
+    "comfyui_submit",
+    "preview_rerender",
+    "voice_generation",
+    "audio_generation",
+    "assembly",
+    "downstream",
+    "production_acceptance",
+    "agent_filled_operator_decision"
+  ]
+}
