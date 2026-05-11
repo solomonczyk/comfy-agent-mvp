@@ -15,9 +15,9 @@
     "data/rc2_multishot1_ep01/output/control/standards_pack/reports/qa_repairability_gate_operator_decision.json",
     "data/rc2_multishot1_ep01/output/control/episode_ledger.json",
     "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-001_proof.json",
-    "episode_ledger.json"
+    "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-FIX-001_proof.json"
   ],
-  "commit_hash": "4de3e92",
+  "commit_hash": "d77902a",
   "push_status": "pushed_origin_main",
   "git_status_clean": true,
   "timestamp": "2026-05-11T19:24:00+02:00"

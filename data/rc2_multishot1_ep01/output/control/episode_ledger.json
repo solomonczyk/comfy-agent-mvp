@@ -2717,5 +2717,37 @@
     "visual_acceptance_executed": false,
     "assembly_executed": false,
     "downstream_executed": false
+  },
+  {
+    "event_type": "qa_repairability_gate_scope_cleanup_completed",
+    "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-FIX-002-SCOPE-CLEANUP",
+    "previous_task": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-FIX-001",
+    "safety_fix_preserved": true,
+    "unsafe_next_allowed_action_removed": true,
+    "new_next_allowed_action": "qa_repairability_gate_approved_next_stage_planning_required",
+    "out_of_scope_changes_removed": true,
+    "reverted_files": [
+      "data/artifact_proofs/prompt_pack.json",
+      "data/mk_real3r_proof/control_status.json",
+      "data/mk_real3r_proof/ep01_shot01_observed_settings.json",
+      "data/mk_real3r_proof/ep01_shot01_submitted_workflow.json",
+      "data/rc2_multishot1_ep01/output/control/artifact_index.json",
+      "data/rc2_multishot1_ep01/output/control/script_supervisor/script_supervisor_blocker_packet.json",
+      "data/rc2_multishot1_ep01/output/control/script_supervisor/script_supervisor_readiness_report.json",
+      "episode_ledger.json"
+    ],
+    "preserved_files": [
+      "data/rc2_multishot1_ep01/output/control/standards_pack/reports/qa_repairability_gate_operator_decision.json",
+      "data/rc2_multishot1_ep01/output/control/episode_ledger.json",
+      "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-001_proof.json",
+      "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-FIX-001_proof.json"
+    ],
+    "production_accepted": false,
+    "production_acceptance_gate_opened": false,
+    "generation_performed": false,
+    "preview_render_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "timestamp": "2026-05-11T20:00:00+02:00"
   }
 ]
