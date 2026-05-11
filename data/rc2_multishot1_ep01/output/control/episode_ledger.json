@@ -2602,5 +2602,27 @@
     "py_compile_pass": true,
     "cli_validation_pass": true,
     "timestamp": "2026-05-11T18:30:00+02:00"
+  },
+  {
+    "event_type": "qa_repairability_gate_operator_review_required",
+    "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-REVIEW-001",
+    "previous_task": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-FREEZE-FIX-002",
+    "operator_review_packet": "standards_pack/reports/qa_repairability_gate_operator_review_packet.json",
+    "operator_decision_recorded": false,
+    "agent_did_not_accept_on_operator_behalf": true,
+    "requires_human_decision": true,
+    "forbidden_actions": {
+      "generation_performed": false,
+      "retry_attempted": false,
+      "comfyui_submit_executed": false,
+      "preview_render_executed": false,
+      "voice_generation_executed": false,
+      "audio_generation_executed": false,
+      "assembly_executed": false,
+      "downstream_executed": false,
+      "production_accepted": false
+    },
+    "next_allowed_action": "human_operator_qa_repairability_gate_decision_required",
+    "timestamp": "2026-05-11T18:55:00+02:00"
   }
 ]
