@@ -76,5 +76,16 @@
   "preview_pipeline_state_unchanged": true,
   "brain_runtime_call_executed": false,
   "brain_hidden_api_calls_forbidden": true,
-  "voice_generation_ready": false
+  "voice_generation_ready": false,
+  "qa_repairability_gate_next_action_corrected": true,
+  "qa_repairability_gate_correction_event": {
+    "event": "unsafe_next_allowed_action_corrected",
+    "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-FIX-001",
+    "old_next_allowed_action": "qa_repairability_gate_approved_awaiting_production_acceptance",
+    "new_next_allowed_action": "qa_repairability_gate_approved_next_stage_planning_required",
+    "reason": "Production acceptance is a separate dangerous gate. Must not be next action after QA policy rule acceptance.",
+    "production_accepted": false,
+    "production_acceptance_gate_opened": false,
+    "timestamp": "2026-05-11T19:24:00+02:00"
+  }
 }

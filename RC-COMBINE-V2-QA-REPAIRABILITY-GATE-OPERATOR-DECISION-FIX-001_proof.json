@@ -1,0 +1,24 @@
+{
+  "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-FIX-001",
+  "unsafe_next_allowed_action_removed": true,
+  "old_next_allowed_action": "qa_repairability_gate_approved_awaiting_production_acceptance",
+  "new_next_allowed_action": "qa_repairability_gate_approved_next_stage_planning_required",
+  "production_accepted": false,
+  "production_acceptance_gate_opened": false,
+  "generation_performed": false,
+  "preview_render_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "tests_pass": true,
+  "tests_note": "23/23 repairability gate tests pass. 5352 total tests pass. Pre-existing failures (245) unrelated to this change.",
+  "files_modified": [
+    "data/rc2_multishot1_ep01/output/control/standards_pack/reports/qa_repairability_gate_operator_decision.json",
+    "data/rc2_multishot1_ep01/output/control/episode_ledger.json",
+    "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-001_proof.json",
+    "episode_ledger.json"
+  ],
+  "commit_hash": "4de3e92",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+  "timestamp": "2026-05-11T19:24:00+02:00"
+}

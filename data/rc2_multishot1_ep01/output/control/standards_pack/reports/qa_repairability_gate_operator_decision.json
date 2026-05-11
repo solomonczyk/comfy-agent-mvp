@@ -47,7 +47,7 @@
     "decision_made_by_human_operator": true,
     "no_fake_approval": true
   },
-  "next_allowed_action": "qa_repairability_gate_approved_awaiting_production_acceptance",
+  "next_allowed_action": "qa_repairability_gate_approved_next_stage_planning_required",
   "blocking_rules_now_active": [
     "block_if_not_repairable_downstream",
     "block_if_unknown_repairability",

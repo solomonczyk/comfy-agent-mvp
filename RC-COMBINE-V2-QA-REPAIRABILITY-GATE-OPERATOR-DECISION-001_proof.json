@@ -19,7 +19,7 @@
   "commit_hash": "b1fb57c",
   "push_status": "pushed_origin_main",
   "git_status_clean": true,
-  "next_allowed_action": "qa_repairability_gate_approved_awaiting_production_acceptance",
+  "next_allowed_action": "qa_repairability_gate_approved_next_stage_planning_required",
   "artifacts_created": [
     "data/rc2_multishot1_ep01/output/control/standards_pack/reports/qa_repairability_gate_operator_decision.json"
   ],
