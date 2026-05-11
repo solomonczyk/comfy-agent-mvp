@@ -35,6 +35,13 @@
   "v8_generation_timeout_reconciliation": "combine_v2_v8_generation_timeout_reconciliation.json",
   "agent_role_contract_index": "combine_v2_agent_role_contract_index.json",
   "agent_role_contracts_created": true,
+  "qa_repairability_gate_created": true,
+  "qa_repairability_gate_freeze_verified": true,
+  "defect_repairability_matrix": "standards_pack/internal/defect_repairability_matrix.json",
+  "repair_tool_registry": "standards_pack/references/repair_tool_registry.json",
+  "qa_repairability_policy": "standards_pack/policies/qa_repairability_policy.json",
+  "downstream_repairability_gate_policy": "standards_pack/policies/downstream_repairability_gate_policy.json",
+  "qa_repairability_gate_freeze_report": "standards_pack/reports/qa_repairability_gate_freeze_report.json",
   "stage_results": [
     {
       "stage": "v7_identity_fidelity_generation",

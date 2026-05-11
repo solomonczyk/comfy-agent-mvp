@@ -214,18 +214,18 @@ class TestQARepairabilityGate:
         standards_dir = tmp_path / "standards_pack"
         policies_dir = standards_dir / "policies"
         policies_dir.mkdir(parents=True)
-        
+
         policy = {
             "policy_id": "qa_repairability_policy_v1",
             "version": "1.0",
             "rules": []
         }
-        
+
         with open(policies_dir / "qa_repairability_policy.json", "w") as f:
             json.dump(policy, f)
-        
+
         gate = load_qa_repairability_gate(standards_dir)
-        
+
         # Test with fake_operator_decision which blocks
         result = gate.evaluate(
             defects=["fake_operator_decision"],
@@ -234,6 +234,219 @@ class TestQARepairabilityGate:
         )
         assert result["qa_decision"] == "blocked"
         assert result["production_accepted"] is False
+
+    def test_unknown_defect_blocks_pipeline(self, tmp_path):
+        """Test that unknown defect repairability blocks pipeline."""
+        standards_dir = tmp_path / "standards_pack"
+        policies_dir = standards_dir / "policies"
+        policies_dir.mkdir(parents=True)
+
+        policy = {
+            "policy_id": "qa_repairability_policy_v1",
+            "version": "1.0",
+            "rules": []
+        }
+
+        with open(policies_dir / "qa_repairability_policy.json", "w") as f:
+            json.dump(policy, f)
+
+        gate = load_qa_repairability_gate(standards_dir)
+
+        result = gate.evaluate(
+            defects=["unknown_defect_not_in_matrix"],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True
+        )
+        assert result["qa_decision"] == "blocked"
+        assert result["production_accepted"] is False
+        assert result["assembly_allowed"] is False
+        assert result["downstream_allowed"] is False
+        assert "unknown_repairability_defects" in result["repairability_assessment"]
+
+    def test_technical_pass_without_visual_acceptance_blocks(self, tmp_path):
+        """Test that technical pass without visual/editorial acceptance blocks."""
+        standards_dir = tmp_path / "standards_pack"
+        policies_dir = standards_dir / "policies"
+        policies_dir.mkdir(parents=True)
+
+        policy = {
+            "policy_id": "qa_repairability_policy_v1",
+            "version": "1.0",
+            "rules": []
+        }
+
+        with open(policies_dir / "qa_repairability_policy.json", "w") as f:
+            json.dump(policy, f)
+
+        gate = load_qa_repairability_gate(standards_dir)
+
+        result = gate.evaluate(
+            defects=[],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=False
+        )
+        assert result["qa_decision"] == "blocked"
+        assert result["production_accepted"] is False
+        assert result["assembly_allowed"] is False
+        assert result["downstream_allowed"] is False
+
+    def test_not_repairable_downstream_blocks(self, tmp_path):
+        """Test that not_repairable_downstream defects block pipeline."""
+        standards_dir = tmp_path / "standards_pack"
+        policies_dir = standards_dir / "policies"
+        policies_dir.mkdir(parents=True)
+
+        policy = {
+            "policy_id": "qa_repairability_policy_v1",
+            "version": "1.0",
+            "rules": []
+        }
+
+        with open(policies_dir / "qa_repairability_policy.json", "w") as f:
+            json.dump(policy, f)
+
+        gate = load_qa_repairability_gate(standards_dir)
+
+        # anatomy_defects is marked as not_repairable_downstream
+        result = gate.evaluate(
+            defects=["anatomy_defects"],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True
+        )
+        assert result["qa_decision"] == "blocked"
+        assert result["production_accepted"] is False
+        assert result["assembly_allowed"] is False
+        assert result["downstream_allowed"] is False
+        assert "anatomy_defects" in result["repairability_assessment"]["unrepairable_defects"]
+
+    def test_requires_generation_without_gate_blocks(self, tmp_path):
+        """Test that requiring generation without gate open blocks."""
+        standards_dir = tmp_path / "standards_pack"
+        policies_dir = standards_dir / "policies"
+        policies_dir.mkdir(parents=True)
+
+        policy = {
+            "policy_id": "qa_repairability_policy_v1",
+            "version": "1.0",
+            "rules": []
+        }
+
+        with open(policies_dir / "qa_repairability_policy.json", "w") as f:
+            json.dump(policy, f)
+
+        gate = load_qa_repairability_gate(standards_dir)
+
+        # heavy_blur requires_controlled_regeneration
+        result = gate.evaluate(
+            defects=["heavy_blur"],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True,
+            generation_gate_open=False
+        )
+        assert result["qa_decision"] == "blocked"
+        assert result["production_accepted"] is False
+        assert "generation" in result["repairability_assessment"]["required_fix_stage"].lower()
+
+    def test_voice_generation_always_false(self, tmp_path):
+        """Test that voice_generation_allowed is always false."""
+        standards_dir = tmp_path / "standards_pack"
+        policies_dir = standards_dir / "policies"
+        policies_dir.mkdir(parents=True)
+
+        policy = {
+            "policy_id": "qa_repairability_policy_v1",
+            "version": "1.0",
+            "rules": []
+        }
+
+        with open(policies_dir / "qa_repairability_policy.json", "w") as f:
+            json.dump(policy, f)
+
+        gate = load_qa_repairability_gate(standards_dir)
+
+        # Test with no defects - should pass but voice still false
+        result = gate.evaluate(
+            defects=[],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True
+        )
+        assert result["voice_generation_allowed"] is False
+
+        # Test with blocking defects
+        result = gate.evaluate(
+            defects=["fake_operator_decision"],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True
+        )
+        assert result["voice_generation_allowed"] is False
+
+    def test_production_accepted_always_false(self, tmp_path):
+        """Test that production_accepted is always false regardless of inputs."""
+        standards_dir = tmp_path / "standards_pack"
+        policies_dir = standards_dir / "policies"
+        policies_dir.mkdir(parents=True)
+
+        policy = {
+            "policy_id": "qa_repairability_policy_v1",
+            "version": "1.0",
+            "rules": []
+        }
+
+        with open(policies_dir / "qa_repairability_policy.json", "w") as f:
+            json.dump(policy, f)
+
+        gate = load_qa_repairability_gate(standards_dir)
+
+        # Test with pass condition
+        result = gate.evaluate(
+            defects=[],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True
+        )
+        assert result["production_accepted"] is False
+
+        # Test with blocking defects
+        result = gate.evaluate(
+            defects=["fake_operator_decision"],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True
+        )
+        assert result["production_accepted"] is False
+
+    def test_assembly_downstream_always_false(self, tmp_path):
+        """Test that assembly_allowed and downstream_allowed are always false."""
+        standards_dir = tmp_path / "standards_pack"
+        policies_dir = standards_dir / "policies"
+        policies_dir.mkdir(parents=True)
+
+        policy = {
+            "policy_id": "qa_repairability_policy_v1",
+            "version": "1.0",
+            "rules": []
+        }
+
+        with open(policies_dir / "qa_repairability_policy.json", "w") as f:
+            json.dump(policy, f)
+
+        gate = load_qa_repairability_gate(standards_dir)
+
+        # Test with pass condition
+        result = gate.evaluate(
+            defects=[],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True
+        )
+        assert result["assembly_allowed"] is False
+        assert result["downstream_allowed"] is False
+
+        # Test with blocking defects
+        result = gate.evaluate(
+            defects=["fake_operator_decision"],
+            technical_checks_passed=True,
+            visual_or_editorial_acceptance=True
+        )
+        assert result["assembly_allowed"] is False
+        assert result["downstream_allowed"] is False
 
 
 class TestRepairabilityHelpers:
