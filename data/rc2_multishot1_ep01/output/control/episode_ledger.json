@@ -2624,5 +2624,32 @@
     },
     "next_allowed_action": "human_operator_qa_repairability_gate_decision_required",
     "timestamp": "2026-05-11T18:55:00+02:00"
+  },
+  {
+    "event_type": "qa_repairability_gate_operator_decision_recorded",
+    "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-001",
+    "previous_task": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-REVIEW-001",
+    "operator_decision_artifact": "standards_pack/reports/qa_repairability_gate_operator_decision.json",
+    "operator_decision": "APPROVE",
+    "policy_accepted": true,
+    "accepted_as_project_control_rule": true,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "decision_made_by": "human_operator",
+    "architect_recommendation": "APPROVE",
+    "agent_did_not_make_decision": true,
+    "forbidden_actions": {
+      "generation_performed": false,
+      "retry_attempted": false,
+      "comfyui_submit_executed": false,
+      "preview_render_executed": false,
+      "voice_generation_executed": false,
+      "audio_generation_executed": false,
+      "assembly_executed": false,
+      "downstream_executed": false
+    },
+    "next_allowed_action": "qa_repairability_gate_approved_awaiting_production_acceptance",
+    "timestamp": "2026-05-11T19:15:00+02:00"
   }
 ]

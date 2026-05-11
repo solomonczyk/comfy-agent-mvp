@@ -1,0 +1,58 @@
+{
+  "decision_id": "qa_repairability_gate_operator_decision_v1",
+  "decision_type": "human_operator_approval",
+  "description": "Human operator decision on QA Repairability Gate policy acceptance",
+  "version": "1.0",
+  "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-001",
+  "previous_task": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-REVIEW-001",
+  "timestamp": "2026-05-11T19:15:00+02:00",
+  "operator_review_packet": "standards_pack/reports/qa_repairability_gate_operator_review_packet.json",
+  "architect_recommendation": {
+    "recommendation": "APPROVE",
+    "rationale": "The gate is required because QA must block defects that downstream cannot repair with validated available tools/nodes. Unknown repairability must block pipeline. Technical pass is not visual pass.",
+    "recommended_by": "architect"
+  },
+  "operator_decision": {
+    "reviewed_by": "human_operator",
+    "review_timestamp": "2026-05-11T19:15:00+02:00",
+    "policy_accepted": true,
+    "accepted_as_project_control_rule": true,
+    "operator_notes": "Approved per architect recommendation. QA Repairability Gate is now mandatory project control rule.",
+    "agent_filled": false,
+    "requires_human_decision": false
+  },
+  "gate_state_after_decision": {
+    "qa_repairability_gate_approved": true,
+    "policy_accepted": true,
+    "accepted_as_project_control_rule": true,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "voice_generation_allowed": false
+  },
+  "forbidden_actions_status": {
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "audio_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  },
+  "agent_certification": {
+    "agent_recorded_decision": true,
+    "agent_did_not_make_decision": true,
+    "decision_made_by_human_operator": true,
+    "no_fake_approval": true
+  },
+  "next_allowed_action": "qa_repairability_gate_approved_awaiting_production_acceptance",
+  "blocking_rules_now_active": [
+    "block_if_not_repairable_downstream",
+    "block_if_unknown_repairability",
+    "block_if_fake_operator_decision",
+    "block_if_technical_only_pass",
+    "block_if_generation_required_without_gate"
+  ]
+}

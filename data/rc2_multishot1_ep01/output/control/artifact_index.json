@@ -44,6 +44,10 @@
   "qa_repairability_gate_freeze_report": "standards_pack/reports/qa_repairability_gate_freeze_report.json",
   "qa_repairability_gate_operator_review_packet": "standards_pack/reports/qa_repairability_gate_operator_review_packet.json",
   "qa_repairability_gate_operator_review_required": true,
+  "qa_repairability_gate_operator_decision": "standards_pack/reports/qa_repairability_gate_operator_decision.json",
+  "qa_repairability_gate_approved": true,
+  "policy_accepted": true,
+  "accepted_as_project_control_rule": true,
   "stage_results": [
     {
       "stage": "v7_identity_fidelity_generation",
