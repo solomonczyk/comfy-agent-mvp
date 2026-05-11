@@ -1,0 +1,23 @@
+{
+  "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-FREEZE-FIX-002",
+  "four_missing_artifacts_now_tracked": true,
+  "json_tool_passed_for_all_4": true,
+  "artifact_index_paths_match_real_files": true,
+  "freeze_report_paths_match_real_files": true,
+  "tests_pass": true,
+  "production_accepted": false,
+  "generation_performed": false,
+  "preview_render_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "commit_hash": "de6fef1",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+  "artifacts_tracked": [
+    "data/rc2_multishot1_ep01/output/control/standards_pack/internal/defect_repairability_matrix.json",
+    "data/rc2_multishot1_ep01/output/control/standards_pack/references/repair_tool_registry.json",
+    "data/rc2_multishot1_ep01/output/control/standards_pack/policies/qa_repairability_policy.json",
+    "data/rc2_multishot1_ep01/output/control/standards_pack/policies/downstream_repairability_gate_policy.json"
+  ],
+  "timestamp": "2026-05-11T18:52:00+02:00"
+}
