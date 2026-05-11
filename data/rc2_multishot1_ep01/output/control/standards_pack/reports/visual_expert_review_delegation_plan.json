@@ -1,0 +1,37 @@
+{
+  "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001",
+  "timestamp": "2026-05-11T18:17:00+02:00",
+  "operator_role": "project_owner_not_domain_expert",
+  "operator_role_description": "Human operator is project owner, not visual/design domain expert",
+  "expert_review_required": true,
+  "delegation_reason": "Visual/design judgment must be delegated to expert agent/review layer before human final confirmation",
+  "future_visual_judgment_delegated": true,
+  "delegation_scope": [
+    "visual quality assessment",
+    "design composition evaluation",
+    "photorealism judgment",
+    "anatomy defect identification",
+    "style consistency review",
+    "identity fidelity verification"
+  ],
+  "forbidden_actions": [
+    "fake_operator_decision",
+    "direct_visual_acceptance_without_expert_review",
+    "bypass_expert_review_layer",
+    "treat_technical_pass_as_visual_pass"
+  ],
+  "expert_review_layer_requirements": {
+    "must_precede_human_final_confirmation": true,
+    "must_use_validated_assessment_criteria": true,
+    "must_apply_qa_repairability_gate": true,
+    "must_enforce_technical_pass_not_visual_pass": true,
+    "must_block_unknown_repairability": true
+  },
+  "human_operator_final_confirmation_role": "project_approval_not_domain_judgment",
+  "human_operator_final_confirmation_scope": [
+    "approve expert review findings",
+    "accept recommended corrective actions",
+    "authorize next stage execution",
+    "reject or escalate unresolved issues"
+  ]
+}

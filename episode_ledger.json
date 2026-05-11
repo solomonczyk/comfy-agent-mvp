@@ -60,6 +60,16 @@
       "timestamp": "2026-05-10T11:24:38.704840+00:00",
       "details": "RC-COMBINE-V2-GENERATED-VISUAL-PURGE-001: All generated visual outputs purged. Canonical references invalidated.",
       "task_id": "RC-COMBINE-V2-GENERATED-VISUAL-PURGE-001"
+    },
+    {
+      "event": "qa_repairability_next_stage_planning_completed",
+      "timestamp": "2026-05-11T18:17:00+02:00",
+      "details": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001: Next stage planning completed. QA Repairability Gate active as mandatory control policy. Repairability assessment not_applicable (no visual outputs exist). Recommended next stage: fresh_visual_strategy_required. Visual expert review delegation plan created for future visual judgment.",
+      "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001",
+      "qa_repairability_gate_active": true,
+      "repairability_assessment": "not_applicable",
+      "operator_role": "project_owner_not_domain_expert",
+      "visual_expert_review_required": true
     }
   ],
   "current_state": "visual_outputs_purged_rebuild_required",

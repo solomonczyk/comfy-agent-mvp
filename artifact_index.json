@@ -10,8 +10,16 @@
     "combine_v2_v10_workflow_guardrails.json",
     "combine_v2_v10_generation_authorization_required.json",
     "artifact_index.json",
-    "episode_ledger.json"
+    "episode_ledger.json",
+    "data/rc2_multishot1_ep01/output/control/standards_pack/reports/qa_repairability_next_stage_planning_report.json",
+    "data/rc2_multishot1_ep01/output/control/standards_pack/reports/visual_expert_review_delegation_plan.json"
   ],
   "created_timestamp": "2026-05-08T08:08:44+02:00",
-  "total_artifacts": 10
+  "total_artifacts": 12,
+  "qa_repairability_next_stage_planning_completed": true,
+  "qa_repairability_next_stage_planning_report": "data/rc2_multishot1_ep01/output/control/standards_pack/reports/qa_repairability_next_stage_planning_report.json",
+  "visual_expert_review_delegation_plan": "data/rc2_multishot1_ep01/output/control/standards_pack/reports/visual_expert_review_delegation_plan.json",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false
 }
