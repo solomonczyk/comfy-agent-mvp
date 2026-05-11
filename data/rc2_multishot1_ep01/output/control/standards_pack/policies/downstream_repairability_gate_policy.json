@@ -1,0 +1,123 @@
+{
+  "policy_id": "downstream_repairability_gate_policy_v1",
+  "description": "Stage routing policy based on defect repairability assessment",
+  "version": "1.0",
+  "created_for": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001",
+  "stage_routing_policy": {
+    "if_repairable_with_timeline_repair": "preview_correction_plan_required",
+    "if_repairable_with_custom_nodes_but_nodes_missing": "controlled_node_asset_resolution_required",
+    "if_repairable_with_custom_nodes_and_gate_required": "custom_node_repair_authorization_required",
+    "if_requires_generation": "controlled_retry_or_generation_authorization_required",
+    "if_requires_operator_review": "operator_visual_review_required",
+    "if_not_repairable": "blocked_unrepairable_quality_failure",
+    "if_all_clear": "next_authorization_gate"
+  },
+  "routing_rules": [
+    {
+      "rule_id": "route_timeline_repair",
+      "description": "Route to preview correction plan if repairable with timeline repair",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "preview_correction_plan_required"
+      },
+      "next_allowed_action": "preview_correction_plan_required",
+      "next_state": "preview_correction_plan_required"
+    },
+    {
+      "rule_id": "route_node_asset_resolution",
+      "description": "Route to controlled node asset resolution if custom nodes missing",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "controlled_node_asset_resolution_required"
+      },
+      "next_allowed_action": "controlled_node_asset_resolution_required",
+      "next_state": "controlled_node_asset_resolution_required"
+    },
+    {
+      "rule_id": "route_custom_node_repair",
+      "description": "Route to custom node repair authorization if gate required",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "custom_node_repair_authorization_required"
+      },
+      "next_allowed_action": "custom_node_repair_authorization_required",
+      "next_state": "custom_node_repair_authorization_required"
+    },
+    {
+      "rule_id": "route_controlled_retry",
+      "description": "Route to controlled retry or generation if fix requires generation",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "controlled_retry_or_generation_authorization_required"
+      },
+      "next_allowed_action": "controlled_retry_or_generation_authorization_required",
+      "next_state": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "rule_id": "route_operator_review",
+      "description": "Route to operator visual review if required",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "operator_visual_review_required"
+      },
+      "next_allowed_action": "operator_visual_review_required",
+      "next_state": "operator_visual_review_required"
+    },
+    {
+      "rule_id": "route_voice_generation",
+      "description": "Route to voice generation if audio/voice mismatch",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "voice_generation_authorization_required"
+      },
+      "next_allowed_action": "voice_generation_authorization_required",
+      "next_state": "voice_generation_authorization_required"
+    },
+    {
+      "rule_id": "route_asset_resolution",
+      "description": "Route to controlled asset resolution if missing asset",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "controlled_asset_resolution_required"
+      },
+      "next_allowed_action": "controlled_asset_resolution_required",
+      "next_state": "controlled_asset_resolution_required"
+    },
+    {
+      "rule_id": "route_manifest_reconciliation",
+      "description": "Route to manifest reconciliation if filesystem contradiction",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "manifest_reconciliation_required"
+      },
+      "next_allowed_action": "manifest_reconciliation_required",
+      "next_state": "manifest_reconciliation_required"
+    },
+    {
+      "rule_id": "route_visual_qa_reexecution",
+      "description": "Route to visual QA reexecution if technical-only pass treated as visual pass",
+      "condition": {
+        "repairability_assessment.required_fix_stage": "visual_qa_reexecution_required"
+      },
+      "next_allowed_action": "visual_qa_reexecution_required",
+      "next_state": "visual_qa_reexecution_required"
+    },
+    {
+      "rule_id": "block_unrepairable",
+      "description": "Block pipeline if defects are not repairable downstream",
+      "condition": {
+        "repairability_assessment.all_defects_repairable_before_next_stage": false
+      },
+      "next_allowed_action": "blocked_unrepairable_quality_failure",
+      "next_state": "blocked_unrepairable_quality_failure",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    },
+    {
+      "rule_id": "route_next_gate",
+      "description": "Route to next authorization gate if all clear",
+      "condition": {
+        "repairability_assessment.all_defects_repairable_before_next_stage": true,
+        "repairability_assessment.required_fix_stage": ""
+      },
+      "next_allowed_action": "controlled_preview_rerender_authorization_required",
+      "next_state": "qa_repairability_gate_ready"
+    }
+  ]
+}

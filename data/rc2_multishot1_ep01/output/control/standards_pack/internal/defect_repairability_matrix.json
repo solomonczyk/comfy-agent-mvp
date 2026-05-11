@@ -1,0 +1,311 @@
+{
+  "matrix_id": "defect_repairability_matrix_v1",
+  "description": "Maps each defect to its downstream repairability classification and allowed fix paths",
+  "version": "1.0",
+  "created_for": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001",
+  "defects": [
+    {
+      "defect_id": "duplicate_static_frames",
+      "severity": "blocker",
+      "downstream_repairability": "repairable_with_timeline_repair",
+      "allowed_fix_paths": [
+        "timeline_segment_repair",
+        "controlled_preview_rerender_authorization_required"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "empty_timeline_no_assets_placed",
+      "severity": "blocker",
+      "downstream_repairability": "repairable_with_timeline_repair",
+      "allowed_fix_paths": [
+        "timeline_segment_repair",
+        "controlled_generation_authorization_required"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "heavy_blur",
+      "severity": "blocker",
+      "downstream_repairability": "requires_controlled_regeneration",
+      "allowed_fix_paths": [
+        "controlled_retry_or_generation_authorization_required"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "bad_face_eyes_mouth_artifacts",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_regeneration_with_identity_constraints",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "anatomy_defects",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_regeneration_with_anatomy_constraints",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "hand_defects",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_regeneration",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "identity_drift",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_regeneration_with_identity_constraints",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "style_mismatch",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_regeneration_with_style_constraints",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "low_detail",
+      "severity": "medium",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_regeneration_with_detail_enhancement",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "wrong_object_props",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_regeneration",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "bad_composition",
+      "severity": "medium",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_regeneration_with_composition_constraints",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_retry_or_generation_authorization_required"
+    },
+    {
+      "defect_id": "subtitle_overlap",
+      "severity": "medium",
+      "downstream_repairability": "repairable_with_timeline_repair",
+      "allowed_fix_paths": [
+        "timeline_segment_repair",
+        "subtitle_position_adjustment"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "bad_transition_fade",
+      "severity": "medium",
+      "downstream_repairability": "repairable_with_timeline_repair",
+      "allowed_fix_paths": [
+        "timeline_segment_repair",
+        "transition_adjustment"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "preview_correction_plan_required"
+    },
+    {
+      "defect_id": "audio_voice_mismatch",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "voice_regeneration",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "voice_generation_authorization_required"
+    },
+    {
+      "defect_id": "fake_operator_decision",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "operator_visual_review_required"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "operator_visual_review_required"
+    },
+    {
+      "defect_id": "missing_asset",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "controlled_asset_resolution",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "controlled_asset_resolution_required"
+    },
+    {
+      "defect_id": "manifest_filesystem_contradiction",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "manifest_reconciliation",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "manifest_reconciliation_required"
+    },
+    {
+      "defect_id": "technical_only_pass_treated_as_visual_pass",
+      "severity": "blocker",
+      "downstream_repairability": "not_repairable_downstream",
+      "allowed_fix_paths": [
+        "visual_qa_reexecution",
+        "operator_review"
+      ],
+      "forbidden_next_stages": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ],
+      "qa_decision": "blocked",
+      "required_fix_stage": "visual_qa_reexecution_required"
+    }
+  ]
+}

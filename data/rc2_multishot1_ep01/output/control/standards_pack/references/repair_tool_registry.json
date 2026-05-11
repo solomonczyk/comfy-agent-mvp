@@ -1,0 +1,75 @@
+{
+  "registry_id": "repair_tool_registry_v1",
+  "description": "Registry of available repair mechanisms and their capabilities",
+  "version": "1.0",
+  "created_for": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001",
+  "core_rule": {
+    "tool_not_installed_or_not_validated": "must_not_be_claimed_as_available_fix_path",
+    "custom_node_missing": "not_repairable_until_controlled_asset_or_node_resolution",
+    "repair_requires_generation": "must_route_to_controlled_generation_or_retry_gate"
+  },
+  "repair_tools": [
+    {
+      "tool_id": "standard_comfyui_inpaint",
+      "tool_type": "standard_node_workflow",
+      "available": true,
+      "validated": false,
+      "can_fix": [
+        "small_local_artifact",
+        "minor_background_defect"
+      ],
+      "cannot_fix": [
+        "global_identity_drift",
+        "bad_full_body_anatomy",
+        "empty_timeline",
+        "fake_operator_decision"
+      ],
+      "requires_gate": true
+    },
+    {
+      "tool_id": "timeline_segment_repair",
+      "tool_type": "editorial_repair",
+      "available": true,
+      "validated": true,
+      "can_fix": [
+        "empty_timeline",
+        "duplicate_static_frames_if_assets_available",
+        "subtitle_overlap",
+        "bad_transition_fade"
+      ],
+      "requires_preview_rerender_gate": true
+    },
+    {
+      "tool_id": "identity_adapter_sdxl_faceid",
+      "tool_type": "custom_node",
+      "available": false,
+      "validated": false,
+      "can_fix": [
+        "identity_drift"
+      ],
+      "cannot_fix": [
+        "bad_full_body_anatomy",
+        "empty_timeline",
+        "fake_operator_decision"
+      ],
+      "requires_controlled_asset_resolution": true
+    },
+    {
+      "tool_id": "controlled_regeneration",
+      "tool_type": "generation_workflow",
+      "available": true,
+      "validated": true,
+      "can_fix": [
+        "heavy_blur",
+        "bad_face_eyes_mouth_artifacts",
+        "anatomy_defects",
+        "hand_defects",
+        "style_mismatch",
+        "low_detail",
+        "wrong_object_props",
+        "bad_composition"
+      ],
+      "requires_generation_gate": true
+    }
+  ]
+}

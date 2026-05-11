@@ -1,0 +1,146 @@
+{
+  "policy_id": "qa_repairability_policy_v1",
+  "description": "QA must check downstream repairability before allowing pipeline progression",
+  "version": "1.0",
+  "created_for": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001",
+  "core_rule": {
+    "qa_must_check_downstream_repairability": true,
+    "technical_pass_is_not_enough": true,
+    "downstream_stage_may_receive_only_repairable_or_accepted_outputs": true,
+    "unrepairable_defects_block_pipeline": true,
+    "unknown_repairability_blocks_pipeline": true
+  },
+  "qa_decision_schema": {
+    "qa_decision": "pass|blocked|needs_operator_review|requires_corrective_plan",
+    "technical_checks_passed": true,
+    "visual_or_editorial_acceptance": false,
+    "defects": [],
+    "repairability_assessment": {
+      "all_defects_repairable_before_next_stage": false,
+      "unrepairable_defects": [],
+      "unknown_repairability_defects": [],
+      "required_fix_stage": "",
+      "allowed_next_stage": "",
+      "blocked_next_stages": []
+    },
+    "production_accepted": false
+  },
+  "hard_blocking_rules": [
+    {
+      "rule_id": "block_if_not_repairable_downstream",
+      "description": "QA must block if defect cannot be repaired in next downstream stage",
+      "condition": {
+        "repairability_assessment.all_defects_repairable_before_next_stage": false
+      },
+      "action": "blocked",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    },
+    {
+      "rule_id": "block_if_repair_tool_not_available",
+      "description": "QA must block if repair tool/node is not installed or not validated",
+      "condition": {
+        "repair_tool_not_available_or_not_validated": true
+      },
+      "action": "blocked",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    },
+    {
+      "rule_id": "block_if_generation_required_without_gate",
+      "description": "QA must block if fix requires generation/retry but gate is not open",
+      "condition": {
+        "repair_requires_generation": true,
+        "generation_gate_open": false
+      },
+      "action": "blocked",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    },
+    {
+      "rule_id": "block_if_requires_operator_review",
+      "description": "QA must block if defect requires operator visual review",
+      "condition": {
+        "requires_operator_visual_review": true
+      },
+      "action": "needs_operator_review",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    },
+    {
+      "rule_id": "block_if_technical_only_pass",
+      "description": "QA must block if output is technically valid but visually/editorially doubtful",
+      "condition": {
+        "technical_checks_passed": true,
+        "visual_or_editorial_acceptance": false
+      },
+      "action": "blocked",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    },
+    {
+      "rule_id": "block_if_fake_operator_decision",
+      "description": "QA must block if fake operator decision is detected",
+      "condition": {
+        "fake_operator_decision_detected": true
+      },
+      "action": "blocked",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    },
+    {
+      "rule_id": "block_if_downstream_attempts_invalid_material",
+      "description": "QA must block if downstream attempts to receive invalid material",
+      "condition": {
+        "downstream_receiving_invalid_material": true
+      },
+      "action": "blocked",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    },
+    {
+      "rule_id": "block_if_unknown_repairability",
+      "description": "QA must block if defect repairability is unknown",
+      "condition": {
+        "repairability_assessment.unknown_repairability_defects": {
+          "!=": []
+        }
+      },
+      "action": "blocked",
+      "blocks": [
+        "voice_generation",
+        "assembly",
+        "downstream",
+        "production_acceptance"
+      ]
+    }
+  ]
+}
