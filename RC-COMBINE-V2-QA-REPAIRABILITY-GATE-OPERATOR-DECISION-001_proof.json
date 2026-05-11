@@ -1,0 +1,33 @@
+{
+  "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-OPERATOR-DECISION-001",
+  "operator_decision": "APPROVE",
+  "policy_accepted": true,
+  "accepted_as_project_control_rule": true,
+  "production_accepted": false,
+  "operator_decision_recorded": true,
+  "agent_did_not_make_decision": true,
+  "decision_made_by_human_operator": true,
+  "generation_performed": false,
+  "retry_attempted": false,
+  "comfyui_submit_executed": false,
+  "preview_render_executed": false,
+  "voice_generation_executed": false,
+  "audio_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "tests_pass": true,
+  "commit_hash": "b1fb57c",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+  "next_allowed_action": "qa_repairability_gate_approved_awaiting_production_acceptance",
+  "artifacts_created": [
+    "data/rc2_multishot1_ep01/output/control/standards_pack/reports/qa_repairability_gate_operator_decision.json"
+  ],
+  "artifacts_updated": [
+    "data/rc2_multishot1_ep01/output/control/artifact_index.json",
+    "data/rc2_multishot1_ep01/output/control/episode_ledger.json"
+  ],
+  "architect_recommendation": "APPROVE",
+  "operator_notes": "Approved per architect recommendation. QA Repairability Gate is now mandatory project control rule.",
+  "timestamp": "2026-05-11T19:15:00+02:00"
+}
