@@ -14,7 +14,7 @@
     "attach_audio": "expected next action is 'create_brief'",
     "render_episode": "expected next action is 'create_brief'"
   },
-  "ledger_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmp0a5dhj_f\\output\\control\\ep01_shot01_ledger.json",
+  "ledger_path": "C:\\Users\\taras\\AppData\\Local\\Temp\\tmpfbobeeth\\output\\control\\ep01_shot01_ledger.json",
   "ledger_exists": false,
   "recent_events": [],
   "recipe_validation": {
