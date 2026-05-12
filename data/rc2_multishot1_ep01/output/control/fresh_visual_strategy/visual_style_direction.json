@@ -1,0 +1,41 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "visual_style_direction": {
+    "target_style": "Photorealistic portrait with cinematic lighting",
+    "style_reference": "High-quality elderly portrait with natural skin texture, realistic eyes, and proper mouth/teeth anatomy",
+    "mood": "Contemplative, dignified, warm but not overly sentimental",
+    "lighting_approach": "Soft directional light with subtle fill, natural skin tones, avoiding harsh shadows or blown highlights",
+    "color_palette": {
+      "dominant_tones": "Warm neutrals (browns, tans, soft creams)",
+      "accent_colors": "Subtle blues in background for depth",
+      "skin_tone_accuracy": "Critical - must match reference subject's natural complexion"
+    },
+    "composition_requirements": {
+      "framing": "Portrait orientation, head and shoulders visible, adequate headroom",
+      "head_room": "15-20% of frame above head",
+      "eye_line": "Slightly above center line, natural gaze direction",
+      "background": "Simple, non-distracting, shallow depth of field",
+      "avoid": "Over-tight crops, top of head cropped, head not fully in frame"
+    },
+    "character_identity_requirements": {
+      "identity_fidelity": "Must match reference subject's facial structure and features",
+      "age_representation": "Elderly subject with natural aging signs (wrinkles, skin texture)",
+      "expression": "Neutral to slightly contemplative, natural mouth position",
+      "avoid": "Identity drift, unnatural age smoothing, exaggerated expressions"
+    },
+    "technical_style_parameters": {
+      "resolution": "Minimum 1024x1024, preferably higher",
+      "detail_level": "High - skin texture, hair strands, fabric weave must be visible",
+      "sharpness": "Eyes and mouth must be sharp, no blur in critical facial features",
+      "noise": "Minimal, natural film grain acceptable but not digital artifacts"
+    }
+  },
+  "style_enforcement": {
+    "negative_references_loaded": true,
+    "positive_references_required": [
+      "v6_targeted_refinement_elderly_portrait"
+    ],
+    "style_deviation_tolerance": "Low - significant style changes require operator approval",
+    "style_validation_required": true
+  }
+}

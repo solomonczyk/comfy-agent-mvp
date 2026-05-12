@@ -1,0 +1,66 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "generation_readiness_blocker_policy": {
+    "policy_purpose": "Define what blocks generation from proceeding",
+    "generation_blocked_until": "fresh_visual_strategy_operator_review_required",
+    "blocking_conditions": {
+      "strategy_not_reviewed": {
+        "condition": "Fresh visual strategy has not been reviewed by operator",
+        "action": "BLOCK generation until operator review complete",
+        "status": "active"
+      },
+      "negative_references_not_loaded": {
+        "condition": "Negative references from previous failures not loaded",
+        "action": "BLOCK generation until negative references loaded",
+        "status": "pending_check"
+      },
+      "repairability_policy_not_loaded": {
+        "condition": "Repairability-aware visual policy not loaded",
+        "action": "BLOCK generation until policy loaded",
+        "status": "pending_check"
+      },
+      "workflow_not_selected": {
+        "condition": "Generation workflow not selected and validated",
+        "action": "BLOCK generation until workflow selected",
+        "status": "pending_check"
+      },
+      "model_assets_not_verified": {
+        "condition": "Model assets not verified as available",
+        "action": "BLOCK generation until models verified",
+        "status": "pending_check"
+      },
+      "generation_gate_not_opened": {
+        "condition": "Generation gate not explicitly opened by authorized entity",
+        "action": "BLOCK generation until gate opened",
+        "status": "pending_check"
+      }
+    },
+    "non_blocking_conditions": {
+      "strategy_reviewed": "Fresh visual strategy reviewed by operator",
+      "negative_references_loaded": "All negative references loaded and accessible",
+      "repairability_policy_loaded": "Repairability policy loaded and enforced",
+      "workflow_selected": "Generation workflow selected and validated",
+      "model_assets_verified": "Model assets verified and available",
+      "generation_gate_opened": "Generation gate explicitly opened"
+    },
+    "blocker_types": {
+      "strategy_blocker": "Fresh visual strategy not reviewed or approved",
+      "reference_blocker": "Required references not available",
+      "policy_blocker": "Required policies not loaded",
+      "workflow_blocker": "Generation workflow not validated",
+      "asset_blocker": "Model assets not available",
+      "gate_blocker": "Generation gate not opened"
+    },
+    "blocker_resolution": {
+      "strategy_blocker_resolution": "Operator review and approval of fresh visual strategy",
+      "reference_blocker_resolution": "Acquire or validate required references",
+      "policy_blocker_resolution": "Load and validate required policies",
+      "workflow_blocker_resolution": "Select and validate generation workflow",
+      "asset_blocker_resolution": "Verify model asset availability",
+      "gate_blocker_resolution": "Explicit gate opening by authorized entity"
+    },
+    "current_blocker": "strategy_not_reviewed",
+    "current_blocker_status": "active",
+    "generation_allowed": false
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "version": "1.0",
+  "timestamp": "2026-05-12T19:38:10.990236",
+  "strategy_type": "fresh_visual_strategy_after_purge",
+  "previous_task": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001",
+  "previous_commit": "011118f",
+  "visuals_purged": true,
+  "purge_reason": "Operator directive purged all visual outputs due to unrepairable defects and quality failures",
+  "strategy_purpose": "Define new visual generation strategy with repairability-aware policies before any generation is attempted",
+  "strategy_scope": [
+    "visual_style_direction",
+    "visual_quality_targets",
+    "negative_reference_policy",
+    "reference_acquisition_plan",
+    "repairability_aware_visual_policy",
+    "generation_readiness_blocker_policy",
+    "future_generation_gate_requirements"
+  ],
+  "generation_authorized_by_this_layer": false,
+  "generation_blocked_until": "operator_review_of_fresh_visual_strategy",
+  "qa_repairability_gate_active": true,
+  "unknown_repairability_blocks": true,
+  "artifacts": [
+    "fresh_visual_strategy_brief.json",
+    "visual_style_direction.json",
+    "visual_quality_targets.json",
+    "negative_reference_policy.json",
+    "reference_acquisition_plan.json",
+    "repairability_aware_visual_policy.json",
+    "generation_readiness_blocker_policy.json",
+    "future_generation_gate_requirements.json",
+    "visual_strategy_operator_review_packet.json",
+    "fresh_visual_strategy_readiness_report.json"
+  ],
+  "forbidden_actions_enforced": {
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "preview_rerender_executed": false,
+    "preview_render_executed": false,
+    "visual_qa_acceptance_executed": false,
+    "operator_visual_acceptance_executed": false,
+    "voice_generation_executed": false,
+    "audio_generation_executed": false,
+    "assembly_executed": false,
+    "final_render_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  }
+}

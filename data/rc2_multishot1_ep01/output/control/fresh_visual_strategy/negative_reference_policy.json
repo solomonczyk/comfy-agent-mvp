@@ -1,0 +1,72 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "negative_reference_policy": {
+    "policy_purpose": "Explicitly document all visual defects and failure modes from previous generations to prevent recurrence",
+    "negative_reference_sources": [
+      "V7 operator visual rejection",
+      "V8 quality guardrails",
+      "V12 operator visual rejection (QA Canon)",
+      "V13 operator visual rejection (framing)",
+      "V14 runtime failure (OOM)"
+    ],
+    "documented_negative_references": {
+      "v12_bad_teeth": {
+        "defect_type": "bad_teeth",
+        "description": "Unnatural teeth appearance, poor dental anatomy",
+        "reference_asset": "qa/references/negative/v12_bad_teeth_reference.json",
+        "repairability": "not_repairable_with_current_tools",
+        "prevention_strategy": "Explicit prompt engineering for natural teeth, reference positive examples"
+      },
+      "v12_unnatural_mouth": {
+        "defect_type": "unnatural_mouth",
+        "description": "Unnatural mouth shape or expression",
+        "repairability": "not_repairable_with_current_tools",
+        "prevention_strategy": "Natural expression prompts, reference natural mouth examples"
+      },
+      "v12_lip_teeth_boundary": {
+        "defect_type": "lip_teeth_boundary_failed",
+        "description": "Incorrect boundary between lips and teeth",
+        "repairability": "not_repairable_with_current_tools",
+        "prevention_strategy": "Explicit lip-teeth boundary modeling, reference correct anatomy"
+      },
+      "v13_framing_defects": {
+        "defect_type": "framing_failure",
+        "description": "Head not fully in frame, top of head cropped, over-tight face crop",
+        "repairability": "not_repairable_with_current_tools",
+        "prevention_strategy": "Explicit framing parameters, adequate headroom, composition guidelines"
+      },
+      "identity_drift": {
+        "defect_type": "identity_drift",
+        "description": "Generated face does not match reference subject",
+        "repairability": "not_repairable_with_current_tools",
+        "prevention_strategy": "Strong identity conditioning, reference subject features, IP-Adapter if available"
+      },
+      "static_duplicate_frame": {
+        "defect_type": "static_duplicate_frame",
+        "description": "Generated frame is static or duplicate of previous",
+        "repairability": "not_repairable_with_current_tools",
+        "prevention_strategy": "Seed variation, prompt variation, noise injection"
+      },
+      "low_detail_mushy": {
+        "defect_type": "low_detail_mushy",
+        "description": "Image lacks detail, appears mushy or oversmoothed",
+        "repairability": "partially_repairable_with_upscaling",
+        "prevention_strategy": "Higher resolution generation, detail enhancement prompts"
+      },
+      "wrong_style": {
+        "defect_type": "wrong_style",
+        "description": "Visual style does not match brief or reference",
+        "repairability": "not_repairable_with_current_tools",
+        "prevention_strategy": "Style conditioning, reference style examples, style LoRA if available"
+      }
+    },
+    "negative_reference_enforcement": {
+      "must_be_loaded_before_generation": true,
+      "must_be_referenced_in_prompts": true,
+      "generation_gate_must_check": true,
+      "qa_must_validate_absence": true
+    },
+    "negative_reference_registry": "qa/references/negative/",
+    "negative_reference_count": 8
+  }
+}

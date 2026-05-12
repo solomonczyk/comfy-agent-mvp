@@ -13941,6 +13941,270 @@ def combine_run_brain_runtime_smoke_test(args: argparse.Namespace) -> int:
     return 2
 
 
+def combine_build_fresh_visual_strategy(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001 — Build fresh visual strategy after visual purge.
+
+    This command creates a fresh visual strategy package after visual outputs
+    have been purged. Does NOT execute generation, rerender, or downstream.
+
+    Exit codes:
+    - 0: success
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from app.visual_strategy import FreshVisualStrategyBuilder
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+
+    try:
+        # Load previous task info
+        freeze_verification_path = control_dir / "qa_repairability_next_stage_planning_freeze_verification.json"
+        if not freeze_verification_path.exists():
+            result = {"status": "error", "message": "Freeze verification artifact not found"}
+            if json_output:
+                print(json.dumps(result, indent=2))
+            else:
+                print(result["message"])
+            return 1
+
+        with open(freeze_verification_path, 'r') as f:
+            freeze_verification = json.load(f)
+
+        previous_task_id = freeze_verification.get("task_id_verified")
+        previous_commit = freeze_verification.get("verified_commit")
+
+        if freeze_verification.get("verification_result") != "pass":
+            result = {"status": "error", "message": "Freeze verification failed", "freeze_verification": freeze_verification}
+            if json_output:
+                print(json.dumps(result, indent=2))
+            else:
+                print(f"Error: {result['message']}")
+            return 1
+
+        # Build fresh visual strategy
+        builder = FreshVisualStrategyBuilder(project_root)
+        build_result = builder.build_strategy(previous_task_id, previous_commit)
+
+        output = {
+            "status": "success",
+            "task_id": build_result["task_id"],
+            "strategy_created": build_result["strategy_created"],
+            "artifacts_created": build_result["artifacts_created"],
+            "strategy_dir": build_result["strategy_dir"],
+            "generation_performed": False,
+            "comfyui_submit_executed": False,
+            "qa_repairability_gate_active": True
+        }
+
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print(f"Fresh Visual Strategy: {output['status'].upper()}")
+            print(f"  Task ID: {output['task_id']}")
+            print(f"  Artifacts Created: {output['artifacts_created']}")
+            print(f"  Strategy Dir: {output['strategy_dir']}")
+            print(f"  Generation Performed: {output['generation_performed']}")
+            print(f"  QA Repairability Gate Active: {output['qa_repairability_gate_active']}")
+
+        return 0
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
+def combine_validate_fresh_visual_strategy(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001 — Validate fresh visual strategy artifacts.
+
+    This command validates all required fresh visual strategy artifacts.
+    Does NOT execute generation, rerender, or downstream.
+
+    Exit codes:
+    - 0: validation pass
+    - 1: validation fail or error
+    """
+    import json
+    from pathlib import Path
+    from app.visual_strategy import StrategyValidator
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    strategy_dir = control_dir / "fresh_visual_strategy"
+
+    try:
+        validator = StrategyValidator(strategy_dir)
+        result = validator.validate_all()
+
+        output = {
+            "status": "pass" if result.valid else "fail",
+            "valid": result.valid,
+            "errors": result.errors,
+            "warnings": result.warnings,
+            "artifact_path": result.artifact_path
+        }
+
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print(f"Fresh Visual Strategy Validation: {output['status'].upper()}")
+            print(f"  Valid: {output['valid']}")
+            print(f"  Errors: {len(output['errors'])}")
+            print(f"  Warnings: {len(output['warnings'])}")
+            if output['errors']:
+                print("  Errors:")
+                for error in output['errors']:
+                    print(f"    - {error}")
+            if output['warnings']:
+                print("  Warnings:")
+                for warning in output['warnings']:
+                    print(f"    - {warning}")
+
+        return 0 if result.valid else 1
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
+def combine_inspect_fresh_visual_strategy(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001 — Inspect fresh visual strategy artifacts.
+
+    This command reads and displays fresh visual strategy artifacts.
+    Does NOT execute generation, rerender, or downstream.
+
+    Exit codes:
+    - 0: success
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    strategy_dir = control_dir / "fresh_visual_strategy"
+
+    try:
+        # Read manifest
+        manifest_path = strategy_dir / "fresh_visual_strategy_manifest.json"
+        if not manifest_path.exists():
+            result = {"status": "error", "message": "Fresh visual strategy manifest not found"}
+            if json_output:
+                print(json.dumps(result, indent=2))
+            else:
+                print(result["message"])
+            return 1
+
+        with open(manifest_path, 'r') as f:
+            manifest = json.load(f)
+
+        # Read brief
+        brief_path = strategy_dir / "fresh_visual_strategy_brief.json"
+        with open(brief_path, 'r') as f:
+            brief = json.load(f)
+
+        output = {
+            "status": "success",
+            "manifest": manifest,
+            "brief_summary": {
+                "strategy_brief": brief.get("strategy_brief"),
+                "strategy_objective": brief.get("strategy_objective"),
+                "key_principles": brief.get("key_principles"),
+                "what_must_never_repeat": brief.get("what_must_never_repeat")
+            }
+        }
+
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print(f"Fresh Visual Strategy Inspection: {output['status'].upper()}")
+            print(f"  Task ID: {manifest['task_id']}")
+            print(f"  Strategy Type: {manifest['strategy_type']}")
+            print(f"  Previous Task: {manifest['previous_task']}")
+            print(f"  Generation Authorized: {manifest['generation_authorized_by_this_layer']}")
+            print(f"  QA Repairability Gate Active: {manifest['qa_repairability_gate_active']}")
+            print(f"  Strategy Brief: {brief['strategy_brief']}")
+            print(f"  Key Principles: {', '.join(brief['key_principles'][:2])}...")
+
+        return 0
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
+def combine_fresh_visual_strategy_readiness(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001 — Assess fresh visual strategy readiness.
+
+    This command assesses readiness of the fresh visual strategy for operator review.
+    Does NOT execute generation, rerender, or downstream.
+
+    Exit codes:
+    - 0: ready
+    - 1: not ready or error
+    """
+    import json
+    from pathlib import Path
+    from app.visual_strategy import StrategyReadinessAssessor
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    strategy_dir = control_dir / "fresh_visual_strategy"
+
+    try:
+        assessor = StrategyReadinessAssessor(strategy_dir, control_dir)
+        readiness = assessor.assess_readiness()
+
+        output = {
+            "status": "ready" if readiness.overall_readiness == "ready_for_operator_review" else "not_ready",
+            "overall_readiness": readiness.overall_readiness,
+            "ready_for_generation": readiness.ready_for_generation,
+            "generation_blocked_until": readiness.generation_blocked_until,
+            "readiness_checklist": readiness.readiness_checklist,
+            "blockers": readiness.blockers,
+            "warnings": readiness.warnings,
+            "recommendation": readiness.recommendation
+        }
+
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print(f"Fresh Visual Strategy Readiness: {output['status'].upper()}")
+            print(f"  Overall Readiness: {output['overall_readiness']}")
+            print(f"  Ready for Generation: {output['ready_for_generation']}")
+            print(f"  Generation Blocked Until: {output['generation_blocked_until']}")
+            print(f"  Blockers: {len(output['blockers'])}")
+            print(f"  Warnings: {len(output['warnings'])}")
+            print(f"  Recommendation: {output['recommendation']}")
+            if output['blockers']:
+                print("  Blockers:")
+                for blocker in output['blockers']:
+                    print(f"    - {blocker}")
+
+        return 0 if readiness.overall_readiness == "ready_for_operator_review" else 1
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Run ComfyUI agent pipeline from a brief")
     subparsers = parser.add_subparsers(dest="command", required=True)
@@ -14290,6 +14554,70 @@ def main() -> int:
         help="Project root directory",
     )
     combine_script_supervisor_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001 — combine-build-fresh-visual-strategy subcommand
+    combine_build_fresh_visual_strategy_parser = subparsers.add_parser(
+        "combine-build-fresh-visual-strategy",
+        help="Build fresh visual strategy after visual purge"
+    )
+    combine_build_fresh_visual_strategy_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_build_fresh_visual_strategy_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001 — combine-validate-fresh-visual-strategy subcommand
+    combine_validate_fresh_visual_strategy_parser = subparsers.add_parser(
+        "combine-validate-fresh-visual-strategy",
+        help="Validate fresh visual strategy artifacts"
+    )
+    combine_validate_fresh_visual_strategy_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_validate_fresh_visual_strategy_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001 — combine-inspect-fresh-visual-strategy subcommand
+    combine_inspect_fresh_visual_strategy_parser = subparsers.add_parser(
+        "combine-inspect-fresh-visual-strategy",
+        help="Inspect fresh visual strategy artifacts"
+    )
+    combine_inspect_fresh_visual_strategy_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_inspect_fresh_visual_strategy_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001 — combine-fresh-visual-strategy-readiness subcommand
+    combine_fresh_visual_strategy_readiness_parser = subparsers.add_parser(
+        "combine-fresh-visual-strategy-readiness",
+        help="Assess fresh visual strategy readiness for operator review"
+    )
+    combine_fresh_visual_strategy_readiness_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_fresh_visual_strategy_readiness_parser.add_argument(
         "--json",
         action="store_true",
         help="Output in JSON format",
@@ -18637,6 +18965,14 @@ def main() -> int:
         return combine_run_brain_runtime_smoke_test(args)
     elif args.command == "combine-run-script-supervisor-audit":
         return combine_run_script_supervisor_audit(args)
+    elif args.command == "combine-build-fresh-visual-strategy":
+        return combine_build_fresh_visual_strategy(args)
+    elif args.command == "combine-validate-fresh-visual-strategy":
+        return combine_validate_fresh_visual_strategy(args)
+    elif args.command == "combine-inspect-fresh-visual-strategy":
+        return combine_inspect_fresh_visual_strategy(args)
+    elif args.command == "combine-fresh-visual-strategy-readiness":
+        return combine_fresh_visual_strategy_readiness(args)
     elif args.command == "combine-build-preview-correction-plan":
         return combine_build_preview_correction_plan(args)
     elif args.command == "combine-build-controlled-preview-rerender-authorization":

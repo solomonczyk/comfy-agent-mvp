@@ -1,0 +1,75 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "visual_quality_targets": {
+    "face_quality": {
+      "eyes": {
+        "sharpness": "Must be sharp and in focus",
+        "symmetry": "Natural asymmetry acceptable, no distortion",
+        "pupils": "Visible, properly sized, not blown out or missing",
+        "avoid": "Blurry eyes, distorted eyes, missing pupils, unnatural eye shape"
+      },
+      "mouth": {
+        "teeth": "Natural teeth anatomy, no bad teeth, proper alignment",
+        "lips": "Natural lip shape, proper lip-teeth boundary",
+        "expression": "Neutral or natural expression, not forced",
+        "avoid": "Bad teeth, unnatural mouth, lip-teeth boundary failed, unnatural expression"
+      },
+      "skin": {
+        "texture": "Natural skin texture with appropriate aging signs",
+        "tone": "Consistent with reference subject",
+        "lighting": "Even lighting without harsh shadows or blown highlights",
+        "avoid": "Over-smoothed skin, plastic look, inconsistent tone"
+      },
+      "overall_face": {
+        "proportions": "Natural facial proportions",
+        "identity": "Must match reference subject",
+        "avoid": "Identity drift, distorted facial features"
+      }
+    },
+    "hands_quality": {
+      "fingers": "Correct number of fingers, proper proportions",
+      "joints": "Natural finger joints, no extra or missing joints",
+      "positioning": "Natural hand position if visible",
+      "avoid": "Broken hands, extra fingers, missing fingers, distorted joints"
+    },
+    "composition_quality": {
+      "framing": "Proper headroom, subject fully in frame",
+      "rule_of_thirds": "Eye line on upper third line preferred",
+      "background": "Non-distracting, appropriate depth of field",
+      "avoid": "Over-tight crops, top of head cropped, head not fully in frame, distracting background"
+    },
+    "detail_quality": {
+      "minimum_resolution": "1024x1024",
+      "sharpness": "Critical areas (face, hands) must be sharp",
+      "texture": "Fabric, hair, skin textures must be visible",
+      "avoid": "Low detail, mushy image, loss of texture in critical areas"
+    },
+    "style_quality": {
+      "consistency": "Must match brief and style direction",
+      "lighting": "Appropriate for mood and subject",
+      "color": "Natural color palette, no color casts",
+      "avoid": "Wrong style, inconsistent with brief, unnatural lighting, color casts"
+    },
+    "quality_barriers": {
+      "blocker_defects": [
+        "blurry_face",
+        "distorted_eyes",
+        "bad_mouth_teeth",
+        "broken_hands",
+        "identity_drift",
+        "framing_failure"
+      ],
+      "warning_defects": [
+        "slight_softness",
+        "minor_style_deviation",
+        "subtle_lighting_issue"
+      ],
+      "repairability_required": "All defects must have known repairability assessment"
+    }
+  },
+  "quality_validation": {
+    "technical_metrics": "Blur, brightness, contrast must be within acceptable ranges",
+    "visual_expert_review": "Required for all quality assessments",
+    "operator_review": "Required after visual expert assessment"
+  }
+}

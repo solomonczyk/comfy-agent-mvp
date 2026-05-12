@@ -1,0 +1,35 @@
+{
+  "verified_commit": "011118f",
+  "task_id_verified": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001",
+  "commit_found": true,
+  "artifacts_found": true,
+  "artifact_index_consistent": true,
+  "episode_ledger_consistent": true,
+  "state_consistent": true,
+  "qa_repairability_gate_active": true,
+  "visuals_purged": true,
+  "current_state": "visual_outputs_purged_rebuild_required",
+  "next_allowed_action": "fresh_visual_strategy_required",
+  "generation_allowed": false,
+  "rerender_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "verification_result": "pass",
+  "state_remediation_performed": true,
+  "remediation_details": {
+    "original_inconsistency": "artifact_index.json had stale state 'preview_correction_plan_required'",
+    "remediation_action": "Updated artifact_index.json to match previous task state",
+    "remediated_state": "visual_outputs_purged_rebuild_required",
+    "remediated_next_allowed_action": "fresh_visual_strategy_required"
+  },
+  "previous_task_report_path": "standards_pack/reports/qa_repairability_next_stage_planning_report.json",
+  "previous_task_report_state": {
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "current_next_allowed_action": "fresh_visual_strategy_required"
+  },
+  "artifact_index_state": {
+    "current_state": "visual_outputs_purged_rebuild_required",
+    "next_allowed_action": "fresh_visual_strategy_required"
+  },
+  "ready_for_fresh_visual_strategy": true
+}

@@ -1,0 +1,90 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "repairability_aware_visual_policy": {
+    "policy_purpose": "Enforce repairability-aware quality assessment for all visual outputs",
+    "qa_repairability_gate_required": true,
+    "unknown_repairability_blocks": true,
+    "downstream_requires_validated_repairability": true,
+    "technical_pass_is_not_visual_pass": true,
+    "visual_operator_review_required": true,
+    "production_accepted_must_remain_false": true,
+    "defect_classification": {
+      "repairable_with_validated_tools": {
+        "description": "Defects that can be fixed using known, validated tools/nodes",
+        "examples": [
+          "slight_softness (sharpening tools)",
+          "minor_color_cast (color correction)",
+          "slight_exposure_issue (exposure adjustment)"
+        ],
+        "action": "Allow with repair plan, track repair execution"
+      },
+      "not_repairable_with_current_tools": {
+        "description": "Defects that cannot be fixed with current available tools",
+        "examples": [
+          "blurry_face",
+          "distorted_eyes",
+          "bad_mouth_teeth",
+          "broken_hands",
+          "identity_drift",
+          "inconsistent_costume",
+          "inconsistent_location",
+          "framing_failure"
+        ],
+        "action": "BLOCK - must regenerate with corrected approach"
+      },
+      "unknown_repairability": {
+        "description": "Defects whose repairability is not yet known",
+        "examples": [
+          "Novel defect type not in taxonomy",
+          "Complex composite defects",
+          "Defects requiring new tools"
+        ],
+        "action": "BLOCK - must assess repairability before proceeding"
+      },
+      "operator_review_required": {
+        "description": "Defects requiring human visual expert judgment",
+        "examples": [
+          "Style appropriateness",
+          "Expression subtlety",
+          "Artistic quality assessment"
+        ],
+        "action": "Route to visual expert review, then operator decision"
+      },
+      "generation_recipe_must_change": {
+        "description": "Defects indicating fundamental generation approach failure",
+        "examples": [
+          "Systematic identity drift",
+          "Recurring structural defects",
+          "Style mismatch despite conditioning"
+        ],
+        "action": "BLOCK - must revise generation recipe (prompt, workflow, models)"
+      }
+    },
+    "repairability_assessment_workflow": {
+      "step_1": "QA identifies defects using universal canon and defect taxonomy",
+      "step_2": "QA checks defect_repairability_matrix for known repairability",
+      "step_3": "If repairability known, route accordingly (repair or block)",
+      "step_4": "If repairability unknown, BLOCK until assessment complete",
+      "step_5": "Visual expert review for ambiguous cases",
+      "step_6": "Operator final decision on acceptance or rejection"
+    },
+    "repair_tool_registry": {
+      "registry_path": "standards_pack/references/repair_tool_registry.json",
+      "must_be_loaded": true,
+      "must_be_validated": true
+    },
+    "defect_repairability_matrix": {
+      "matrix_path": "standards_pack/internal/defect_repairability_matrix.json",
+      "must_be_loaded": true,
+      "must_be_validated": true
+    },
+    "enforcement_points": [
+      "Visual QA technical assessment",
+      "Visual expert review gate",
+      "Operator visual decision gate",
+      "Downstream assembly gate"
+    ],
+    "policy_version": "1.0",
+    "policy_status": "active"
+  }
+}

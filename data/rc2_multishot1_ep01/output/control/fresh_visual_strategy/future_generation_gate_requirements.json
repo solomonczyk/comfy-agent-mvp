@@ -1,0 +1,87 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "future_generation_gate_requirements": {
+    "generation_authorized_by_this_layer": false,
+    "future_generation_requires_explicit_gate": true,
+    "gate_purpose": "Ensure all prerequisites are met before any ComfyUI generation submit",
+    "prerequisite_checks": {
+      "max_generations_must_be_declared": {
+        "required": true,
+        "description": "Maximum number of generation attempts must be declared before any generation",
+        "default_max": 1,
+        "enforcement": "Gate must track generation count and block after max reached"
+      },
+      "workflow_must_be_selected_before_submit": {
+        "required": true,
+        "description": "Generation workflow must be selected and validated before ComfyUI submit",
+        "validation": "Workflow file must exist, be valid JSON, match expected schema",
+        "enforcement": "Gate must validate workflow before allowing submit"
+      },
+      "model_assets_must_be_verified": {
+        "required": true,
+        "description": "All required model assets must be verified as available",
+        "validation": "Check model paths, file existence, file integrity",
+        "enforcement": "Gate must verify model availability before allowing submit"
+      },
+      "repairability_policy_must_be_loaded": {
+        "required": true,
+        "description": "Repairability-aware visual policy must be loaded and enforced",
+        "validation": "Policy file must exist, be valid JSON, be loaded in memory",
+        "enforcement": "Gate must verify policy loaded before allowing submit"
+      },
+      "negative_references_must_be_loaded": {
+        "required": true,
+        "description": "Negative references from previous failures must be loaded",
+        "validation": "Reference files must exist, be accessible",
+        "enforcement": "Gate must verify negative references loaded before allowing submit"
+      },
+      "positive_references_must_be_loaded": {
+        "required": true,
+        "description": "Positive quality references must be loaded",
+        "validation": "Reference files must exist, be accessible",
+        "enforcement": "Gate must verify positive references loaded before allowing submit"
+      }
+    },
+    "post_generation_requirements": {
+      "operator_review_required_after_generation": {
+        "required": true,
+        "description": "Every generation output must be reviewed by operator before proceeding",
+        "enforcement": "Pipeline must stop at operator review gate after generation"
+      },
+      "visual_qa_cannot_set_production_accepted": {
+        "required": true,
+        "description": "Visual QA technical pass does not set production_accepted=true",
+        "enforcement": "production_accepted remains false until explicit operator decision"
+      },
+      "assembly_downstream_forbidden_until_operator_acceptance": {
+        "required": true,
+        "description": "Assembly and downstream stages forbidden until operator acceptance",
+        "enforcement": "Assembly and downstream gates must block until operator acceptance"
+      }
+    },
+    "generation_count_tracking": {
+      "must_track": true,
+      "must_enforce_max": true,
+      "must_log_each_attempt": true,
+      "must_prevent_blind_retry": true
+    },
+    "gate_authorization": {
+      "who_may_open_gate": "human_operator",
+      "agent_may_open_gate": false,
+      "authorization_required": true,
+      "authorization_must_be_explicit": true,
+      "authorization_must_be_logged": true
+    },
+    "gate_status": {
+      "current_status": "closed",
+      "closed_reason": "Fresh visual strategy requires operator review before generation gate can be opened",
+      "opened_after": "fresh_visual_strategy_operator_review_required"
+    },
+    "forbidden_without_gate": [
+      "comfyui_submit",
+      "workflow_execution",
+      "model_loading",
+      "generation_attempt"
+    ]
+  }
+}

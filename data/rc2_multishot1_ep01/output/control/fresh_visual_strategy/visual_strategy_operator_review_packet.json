@@ -1,0 +1,76 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "packet_type": "operator_review_packet",
+  "packet_purpose": "Provide operator with complete fresh visual strategy for review and approval",
+  "timestamp": "2026-05-12T19:38:10.990236",
+  "strategy_summary": {
+    "context": "All visual outputs were purged due to unrepairable defects across 8 generation attempts",
+    "proposed_approach": "Strategy-first generation with explicit quality targets, repairability awareness, and generation gate authorization",
+    "key_changes": [
+      "No blind retry - explicit strategy and authorization required",
+      "Repairability must be known - unknown repairability blocks",
+      "Technical pass is not visual pass - expert review required",
+      "Negative references from all failures must be enforced",
+      "Generation gate validates workflow, models, and policy before submit"
+    ]
+  },
+  "strategy_artifacts": {
+    "manifest": "fresh_visual_strategy_manifest.json",
+    "brief": "fresh_visual_strategy_brief.json",
+    "visual_style_direction": "visual_style_direction.json",
+    "visual_quality_targets": "visual_quality_targets.json",
+    "negative_reference_policy": "negative_reference_policy.json",
+    "reference_acquisition_plan": "reference_acquisition_plan.json",
+    "repairability_aware_visual_policy": "repairability_aware_visual_policy.json",
+    "generation_readiness_blocker_policy": "generation_readiness_blocker_policy.json",
+    "future_generation_gate_requirements": "future_generation_gate_requirements.json"
+  },
+  "what_operator_must_review": {
+    "visual_style_direction": "Review and approve target style, mood, composition, and identity requirements",
+    "visual_quality_targets": "Review and approve quality bars and defect classification",
+    "negative_reference_policy": "Review documented defects from previous failures",
+    "repairability_policy": "Review repairability assessment approach and blocking rules",
+    "generation_gate_requirements": "Review generation gate prerequisites and authorization flow"
+  },
+  "operator_decision_required": {
+    "decision_type": "approve_or_reject_fresh_visual_strategy",
+    "options": [
+      {
+        "option": "approve",
+        "description": "Approve fresh visual strategy and proceed to generation planning",
+        "next_action": "generation_planning_with_gate_authorization"
+      },
+      {
+        "option": "reject",
+        "description": "Reject fresh visual strategy and request revisions",
+        "next_action": "revise_fresh_visual_strategy"
+      },
+      {
+        "option": "modify",
+        "description": "Approve with modifications - specify required changes",
+        "next_action": "implement_modifications_then_proceed"
+      }
+    ]
+  },
+  "operator_review_guidance": {
+    "focus_areas": [
+      "Does the visual style direction match your intent?",
+      "Are the quality targets appropriate for the project?",
+      "Do the negative references accurately capture what must be avoided?",
+      "Is the repairability policy too strict or too permissive?",
+      "Are the generation gate requirements clear and enforceable?"
+    ],
+    "review_checklist": [
+      "Style direction approved",
+      "Quality targets approved",
+      "Negative references reviewed",
+      "Repairability policy understood",
+      "Generation gate requirements accepted"
+    ]
+  },
+  "current_state": "fresh_visual_strategy_operator_review_required",
+  "next_allowed_action": "fresh_visual_strategy_operator_review_required",
+  "generation_allowed": false,
+  "qa_repairability_gate_active": true,
+  "production_accepted": false
+}

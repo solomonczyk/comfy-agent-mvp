@@ -1,0 +1,67 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "reference_acquisition_plan": {
+    "plan_purpose": "Define required positive and negative references for fresh visual generation",
+    "positive_references": {
+      "required": [
+        {
+          "reference_name": "v6_targeted_refinement_elderly_portrait",
+          "reference_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
+          "purpose": "Best quality reference from previous generation cycle",
+          "usage": "Style reference, identity reference, quality target",
+          "status": "available"
+        },
+        {
+          "reference_name": "v6_fantasy_candidate",
+          "reference_path": "data/rc2_multishot1_ep01/output/assets/combine_v2_clean_sdxl_v6_candidate_shot02_00001_.png",
+          "purpose": "Concept candidate reference",
+          "usage": "Concept reference, composition reference",
+          "status": "available"
+        }
+      ],
+      "optional": [
+        {
+          "reference_name": "external_elderly_portrait_reference",
+          "purpose": "Additional style reference for elderly portrait quality",
+          "usage": "Style reference, quality target",
+          "status": "to_be_acquired",
+          "acquisition_method": "Operator provided or external reference library"
+        }
+      ]
+    },
+    "negative_references": {
+      "required": [
+        {
+          "reference_name": "v12_bad_teeth_reference",
+          "reference_path": "qa/references/negative/v12_bad_teeth_reference.json",
+          "purpose": "Document bad teeth defect to prevent recurrence",
+          "usage": "Negative conditioning, prompt avoidance",
+          "status": "available"
+        }
+      ],
+      "auto_generated_from_failures": [
+        "v7_visual_defect_taxonomy",
+        "v8_defect_taxonomy",
+        "v12_qa_canon_report",
+        "v13_operator_rejection"
+      ]
+    },
+    "reference_validation": {
+      "positive_references_must_be_readable": true,
+      "negative_references_must_be_loaded": true,
+      "reference_integrity_check": true,
+      "reference_sha256_verification": true
+    },
+    "reference_usage_policy": {
+      "positive_reference_weighting": "Strong conditioning on best quality references",
+      "negative_reference_weighting": "Explicit negative prompts for documented defects",
+      "reference_blending": "Allowed for style synthesis but must preserve identity",
+      "reference_manipulation": "No unauthorized reference modification"
+    },
+    "acquisition_status": {
+      "positive_references_available": 2,
+      "negative_references_available": 1,
+      "ready_for_generation": true
+    }
+  }
+}

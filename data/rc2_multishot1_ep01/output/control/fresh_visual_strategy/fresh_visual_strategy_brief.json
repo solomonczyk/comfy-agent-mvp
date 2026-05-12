@@ -1,0 +1,52 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-001",
+  "strategy_brief": "Fresh Visual Strategy after Visual Purge",
+  "context": {
+    "previous_visual_outputs": "All visual outputs were purged by operator directive",
+    "purge_reason": "Unrepairable defects including bad teeth, unnatural mouth, lip-teeth boundary failures, framing defects, and identity drift across multiple generation attempts",
+    "generation_attempts_before_purge": 8,
+    "generations_purged": [
+      "v7",
+      "v8",
+      "v10",
+      "v11",
+      "v12",
+      "v13",
+      "v14"
+    ],
+    "qa_repairability_gate_status": "active and approved as mandatory control policy"
+  },
+  "strategy_objective": "Define a new visual generation approach that explicitly avoids all previous failure modes, enforces repairability-aware quality gates, and requires explicit operator authorization before any generation attempt",
+  "key_principles": [
+    "No blind retry - every generation must have explicit strategy and authorization",
+    "Repairability must be known before generation - unknown repairability blocks",
+    "Technical pass is not visual pass - visual quality requires expert review",
+    "Production acceptance remains false until explicit operator decision",
+    "Negative references from all previous failures must be loaded and enforced",
+    "Generation gate must verify workflow, models, and policy before ComfyUI submit"
+  ],
+  "what_changed": {
+    "old_approach": "Iterative retry with incremental corrections, accepting outputs that passed technical validation",
+    "new_approach": "Strategy-first approach with explicit quality targets, repairability assessment, and generation gate that must authorize each attempt"
+  },
+  "what_must_never_repeat": [
+    "Bad teeth / unnatural mouth / lip-teeth boundary failures",
+    "Framing defects (head not fully in frame, top of head cropped, over-tight face crop)",
+    "Identity drift from reference",
+    "Inconsistent costume or location",
+    "Static/duplicate frame failures",
+    "Low detail / mushy image quality",
+    "Wrong style deviations from brief",
+    "Prompt mismatch with visual output",
+    "Timeline/scene mismatch"
+  ],
+  "success_criteria": [
+    "All visual defects from previous generations are explicitly documented as negative references",
+    "Repairability assessment is known for each defect type",
+    "Generation workflow is selected and validated before submit",
+    "Model assets are verified and available",
+    "Operator reviews strategy before any generation is authorized",
+    "QA enforces repairability gate on all outputs"
+  ],
+  "next_step": "Operator review of fresh visual strategy before generation planning"
+}
