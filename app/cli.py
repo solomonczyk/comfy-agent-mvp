@@ -44324,20 +44324,26 @@ def combine_execute_fresh_visual_generation(args: argparse.Namespace) -> int:
     # ------------------------------------------------------------------
     # Step 5: Load workflow and execute ComfyUI generation
     # ------------------------------------------------------------------
-    # Load workflow from canonical location
-    workflow_path = project_root / "output" / "canonical_workflow.json"
-    if not workflow_path.exists():
-        # Try alternative paths
-        alt_paths = [
-            project_root / "output" / "control" / "canonical_workflow.json",
-            project_root / "output" / "control" / "fresh_visual_strategy" / "workflow.json",
-        ]
-        for alt in alt_paths:
-            if alt.exists():
-                workflow_path = alt
-                break
-
-    if not workflow_path.exists():
+    # Load workflow from controlled_visual_generation_gate workflow_selection_report
+    gate_dir = control_dir / "controlled_visual_generation_gate"
+    wf_report_path = gate_dir / "workflow_selection_report.json"
+    workflow_path = None
+    
+    if wf_report_path.exists():
+        try:
+            with open(wf_report_path, "r", encoding="utf-8") as f:
+                wf_report = json.load(f)
+            workflow_file = wf_report.get("workflow_file")
+            if workflow_file and Path(workflow_file).exists():
+                workflow_path = Path(workflow_file)
+        except Exception:
+            pass
+    
+    # Fallback to canonical location if not found
+    if not workflow_path:
+        workflow_path = project_root / "output" / "control" / "shot02_v7_identity_fidelity_submitted_workflow.json"
+    
+    if not workflow_path or not workflow_path.exists():
         error_result = {
             "task_id": task_id,
             "timestamp": timestamp,
