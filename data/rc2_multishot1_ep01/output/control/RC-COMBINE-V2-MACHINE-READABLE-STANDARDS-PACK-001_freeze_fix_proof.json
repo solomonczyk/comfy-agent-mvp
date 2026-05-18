@@ -138,7 +138,7 @@
   "production_accepted": false,
   "current_state": "standards_pack_operator_review_required",
   "next_allowed_action": "standards_pack_operator_review_required",
-  "commit_hash": "",
+  "commit_hash": "7c22c95",
   "push_status": "pushed_origin_main",
   "git_status_clean": true,
   "verification_commands_run": [
