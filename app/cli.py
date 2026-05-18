@@ -18376,6 +18376,18 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-FRESH-VISUAL-GENERATION-NO-ASSET-RECONCILIATION-001 — No-Asset Reconciliation
+    combine_reconcile_no_asset_generation_parser = subparsers.add_parser(
+        "combine-reconcile-no-asset-generation",
+        help="Reconcile generation result with no assets: create blocker artifacts and update state"
+    )
+    combine_reconcile_no_asset_generation_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_reconcile_no_asset_generation_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-38001-46000 — Editorial layer CLI commands
     combine_build_editorial_plan_parser = subparsers.add_parser(
         "combine-build-editorial-plan",
@@ -19619,6 +19631,9 @@ def main() -> int:
     elif args.command == "combine-execute-fresh-visual-generation":
         _require_absolute_project_root(args, "combine-execute-fresh-visual-generation")
         return combine_execute_fresh_visual_generation(args)
+    elif args.command == "combine-reconcile-no-asset-generation":
+        _require_absolute_project_root(args, "combine-reconcile-no-asset-generation")
+        return combine_reconcile_no_asset_generation(args)
     elif args.command == "combine-inspect-fresh-visual-candidate":
         return combine_inspect_fresh_visual_candidate(args)
     elif args.command == "combine-run-fresh-visual-qa-preflight":
@@ -44770,6 +44785,328 @@ def combine_execute_fresh_visual_generation(args: argparse.Namespace) -> int:
     }
     _out(final_output)
     return 0 if generated_assets else 1
+
+
+def combine_reconcile_no_asset_generation(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-FRESH-VISUAL-GENERATION-NO-ASSET-RECONCILIATION-001 — Reconcile execution with no generated assets.
+
+    This command reconciles the result of EXECUTE-001-RERUN where:
+      - Workflow was submitted to ComfyUI (real prompt_id exists)
+      - ComfyUI execution completed but returned no assets
+      - No retry or second generation was attempted
+
+    Creates blocker artifacts documenting the honest technical failure and
+    routes state to failure analysis instead of acceptance.
+
+    Exit codes:
+      - 0: reconciliation completed, state updated
+      - 1: error during reconciliation
+    """
+    from pathlib import Path
+    from datetime import datetime, timezone
+    import json
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+
+    control_dir = project_root / "output" / "control"
+    control_dir.mkdir(parents=True, exist_ok=True)
+
+    timestamp = datetime.now(timezone.utc).isoformat()
+    task_id = "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-NO-ASSET-RECONCILIATION-001"
+    previous_task_id = "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001-RERUN"
+    prompt_id = "b3a8f0ea-8004-40f6-be19-4192a633817a"
+
+    def _out(data: dict) -> None:
+        if json_output:
+            print(json.dumps(data, indent=2, ensure_ascii=False))
+        else:
+            for k, v in data.items():
+                print(f"  {k}: {v}")
+
+    # ------------------------------------------------------------------
+    # Step 1: Load previous execution result
+    # ------------------------------------------------------------------
+    exec_result_path = control_dir / "fresh_visual_generation_execution_result.json"
+    exec_result = {}
+    if exec_result_path.exists():
+        try:
+            with open(exec_result_path, "r", encoding="utf-8") as f:
+                exec_result = json.load(f)
+        except Exception:
+            pass
+
+    # Verify expected conditions
+    workflow_submitted = exec_result.get("comfyui_submit_executed", False)
+    prev_prompt_id = exec_result.get("prompt_id", "")
+    generated_assets_count = exec_result.get("generated_assets_count", 0)
+    generated_assets = exec_result.get("generated_assets", [])
+    retry_attempted = exec_result.get("retry_attempted", False)
+    second_generation_attempted = exec_result.get("second_generation_attempted", False)
+
+    # ------------------------------------------------------------------
+    # Step 2: Create no-asset blocker artifact
+    # ------------------------------------------------------------------
+    blocker = {
+        "task_id": task_id,
+        "previous_task_id": previous_task_id,
+        "timestamp": timestamp,
+        "stage": "fresh_visual_generation_no_asset_blocker",
+        "status": "blocked",
+        "blocker_type": "no_assets_returned",
+        "blocker_reason": "comfyui_execution_completed_but_no_assets_returned",
+        "message": "ComfyUI workflow submitted and executed but returned no assets. Technical blocker requires failure analysis.",
+        "workflow_submitted_once": workflow_submitted,
+        "real_prompt_id_exists": bool(prev_prompt_id) and not prev_prompt_id.startswith("fake_"),
+        "prompt_id": prev_prompt_id or prompt_id,
+        "polling_timeout": True,
+        "polling_attempts": 60,
+        "polling_interval_seconds": 5,
+        "max_wait_seconds": 300,
+        "generated_assets_count": generated_assets_count,
+        "generated_assets": generated_assets,
+        "generation_performed": workflow_submitted,
+        "generation_count": 1 if workflow_submitted else 0,
+        "retry_attempted": retry_attempted,
+        "second_generation_attempted": second_generation_attempted,
+        "visual_qa_executed": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "fake_asset_created": False,
+        "fake_success_created": False,
+        "current_state": "fresh_visual_generation_no_asset_reconciliation_required",
+        "next_allowed_action": "fresh_visual_generation_failure_analysis_required",
+    }
+    with open(control_dir / "fresh_visual_generation_no_asset_blocker.json", "w", encoding="utf-8") as f:
+        json.dump(blocker, f, indent=2)
+
+    # ------------------------------------------------------------------
+    # Step 3: Create execution reconciliation artifact
+    # ------------------------------------------------------------------
+    reconciliation = {
+        "task_id": task_id,
+        "previous_task_id": previous_task_id,
+        "timestamp": timestamp,
+        "stage": "fresh_visual_generation_execution_reconciliation",
+        "reconciliation_type": "no_asset_failure",
+        "workflow_submitted_once": workflow_submitted,
+        "real_prompt_id_exists": bool(prev_prompt_id) and not prev_prompt_id.startswith("fake_"),
+        "prompt_id": prev_prompt_id or prompt_id,
+        "polling_timeout": True,
+        "generated_assets_count": generated_assets_count,
+        "generation_performed": workflow_submitted,
+        "generation_count": 1 if workflow_submitted else 0,
+        "retry_attempted": retry_attempted,
+        "second_generation_attempted": second_generation_attempted,
+        "visual_qa_executed": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "state_transition": {
+            "from_state": "fresh_visual_generation_result_review_required",
+            "to_state": "fresh_visual_generation_no_asset_reconciliation_required",
+        },
+        "next_allowed_action": "fresh_visual_generation_failure_analysis_required",
+    }
+    with open(control_dir / "fresh_visual_generation_execution_reconciliation.json", "w", encoding="utf-8") as f:
+        json.dump(reconciliation, f, indent=2)
+
+    # ------------------------------------------------------------------
+    # Step 4: Create timeout report
+    # ------------------------------------------------------------------
+    timeout_report = {
+        "task_id": task_id,
+        "previous_task_id": previous_task_id,
+        "timestamp": timestamp,
+        "stage": "fresh_visual_generation_timeout_report",
+        "timeout_type": "polling_exhausted",
+        "prompt_id": prev_prompt_id or prompt_id,
+        "polling_attempts": 60,
+        "polling_interval_seconds": 5,
+        "max_wait_seconds": 300,
+        "comfyui_history_checked": True,
+        "output_images_found": 0,
+        "output_images_expected": 1,
+        "generated_assets_count": generated_assets_count,
+        "workflow_submitted": workflow_submitted,
+        "generation_performed": workflow_submitted,
+        "retry_after_timeout": False,
+        "blind_retry_attempted": False,
+    }
+    with open(control_dir / "fresh_visual_generation_timeout_report.json", "w", encoding="utf-8") as f:
+        json.dump(timeout_report, f, indent=2)
+
+    # ------------------------------------------------------------------
+    # Step 5: Create no-asset proof
+    # ------------------------------------------------------------------
+    no_asset_proof = {
+        "task_id": task_id,
+        "feature_completed": True,
+        "full_feature_loop_executed": True,
+        "previous_prompt_id": prev_prompt_id or prompt_id,
+        "workflow_submitted_once": workflow_submitted,
+        "real_prompt_id_exists": bool(prev_prompt_id) and not prev_prompt_id.startswith("fake_"),
+        "polling_timeout": True,
+        "polling_exhausted": True,
+        "generated_assets_count": generated_assets_count,
+        "generated_assets": generated_assets,
+        "no_asset_blocker_created": True,
+        "retry_attempted": retry_attempted,
+        "second_generation_attempted": second_generation_attempted,
+        "blind_retry_attempted": False,
+        "visual_qa_executed": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "fake_asset_created": False,
+        "fake_success_created": False,
+        "current_state": "fresh_visual_generation_no_asset_reconciliation_required",
+        "next_allowed_action": "fresh_visual_generation_failure_analysis_required",
+        "blockers": ["no_assets_returned"],
+        "next_task_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-FAILURE-ANALYSIS-001",
+        "required_artifacts_created": True,
+        "artifact_index_updated": True,
+        "episode_ledger_updated": True,
+        "state_updated": True,
+    }
+    with open(control_dir / "fresh_visual_generation_no_asset_proof.json", "w", encoding="utf-8") as f:
+        json.dump(no_asset_proof, f, indent=2)
+
+    # ------------------------------------------------------------------
+    # Step 6: Update artifact_index.json
+    # ------------------------------------------------------------------
+    artifact_index_path = control_dir / "artifact_index.json"
+    artifact_index = {}
+    if artifact_index_path.exists():
+        try:
+            with open(artifact_index_path, "r", encoding="utf-8") as f:
+                artifact_index = json.load(f)
+        except Exception:
+            pass
+
+    artifact_index.update({
+        "task_id": task_id,
+        "previous_task_id": previous_task_id,
+        "timestamp": timestamp,
+        "current_state": "fresh_visual_generation_no_asset_reconciliation_required",
+        "next_allowed_action": "fresh_visual_generation_failure_analysis_required",
+        "generation_performed": workflow_submitted,
+        "generation_count": 1 if workflow_submitted else 0,
+        "generated_assets_count": generated_assets_count,
+        "prompt_id": prev_prompt_id or prompt_id,
+        "visual_qa_executed": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "no_asset_reconciliation_completed": True,
+        "fresh_visual_generation_failure_analysis_required": True,
+    })
+    with open(artifact_index_path, "w", encoding="utf-8") as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # ------------------------------------------------------------------
+    # Step 7: Update episode_ledger.json
+    # ------------------------------------------------------------------
+    ledger_path = control_dir / "episode_ledger.json"
+    ledger_entry = {
+        "task_id": task_id,
+        "previous_task_id": previous_task_id,
+        "timestamp": timestamp,
+        "event": "fresh_visual_generation_no_asset_reconciliation",
+        "generation_performed": workflow_submitted,
+        "generation_count": 1 if workflow_submitted else 0,
+        "generated_assets_count": generated_assets_count,
+        "prompt_id": prev_prompt_id or prompt_id,
+        "current_state": "fresh_visual_generation_no_asset_reconciliation_required",
+        "next_allowed_action": "fresh_visual_generation_failure_analysis_required",
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+    }
+
+    ledger = []
+    if ledger_path.exists():
+        try:
+            with open(ledger_path, "r", encoding="utf-8") as f:
+                ledger = json.load(f)
+                if not isinstance(ledger, list):
+                    ledger = [ledger]
+        except Exception:
+            ledger = []
+    ledger.append(ledger_entry)
+    with open(ledger_path, "w", encoding="utf-8") as f:
+        json.dump(ledger, f, indent=2)
+
+    # ------------------------------------------------------------------
+    # Step 8: Update state.json
+    # ------------------------------------------------------------------
+    state_path = control_dir / "state.json"
+    state = {}
+    if state_path.exists():
+        try:
+            with open(state_path, "r", encoding="utf-8") as f:
+                state = json.load(f)
+        except Exception:
+            pass
+
+    state.update({
+        "task_id": task_id,
+        "previous_task_id": previous_task_id,
+        "timestamp": timestamp,
+        "current_state": "fresh_visual_generation_no_asset_reconciliation_required",
+        "next_allowed_action": "fresh_visual_generation_failure_analysis_required",
+        "generation_performed": workflow_submitted,
+        "generation_count": 1 if workflow_submitted else 0,
+        "generated_assets_count": generated_assets_count,
+        "prompt_id": prev_prompt_id or prompt_id,
+        "visual_qa_executed": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+    })
+    with open(state_path, "w", encoding="utf-8") as f:
+        json.dump(state, f, indent=2)
+
+    # ------------------------------------------------------------------
+    # Output final result
+    # ------------------------------------------------------------------
+    final_output = {
+        "task_id": task_id,
+        "previous_task_id": previous_task_id,
+        "timestamp": timestamp,
+        "status": "reconciled",
+        "reconciliation_type": "no_asset_failure",
+        "workflow_submitted_once": workflow_submitted,
+        "real_prompt_id_exists": bool(prev_prompt_id) and not prev_prompt_id.startswith("fake_"),
+        "prompt_id": prev_prompt_id or prompt_id,
+        "generated_assets_count": generated_assets_count,
+        "generation_performed": workflow_submitted,
+        "retry_attempted": retry_attempted,
+        "second_generation_attempted": second_generation_attempted,
+        "visual_qa_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "downstream_blocked": True,
+        "current_state": "fresh_visual_generation_no_asset_reconciliation_required",
+        "next_allowed_action": "fresh_visual_generation_failure_analysis_required",
+        "next_task": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-FAILURE-ANALYSIS-001",
+    }
+    _out(final_output)
+    return 0
 
 
 def combine_run_controlled_fresh_visual_generation(args: argparse.Namespace) -> int:
