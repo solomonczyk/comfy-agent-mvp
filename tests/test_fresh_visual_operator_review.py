@@ -179,34 +179,179 @@ def test_artifact_index_updated():
 
 
 def test_episode_ledger_updated():
-    """Test that episode_ledger.json was updated with operator review event."""
+    """Test that episode_ledger.json is updated."""
     ledger_path = CONTROL_DIR / "episode_ledger.json"
-    assert ledger_path.exists()
-    
-    with open(ledger_path, 'r') as f:
+    with open(ledger_path, 'r', encoding='utf-8') as f:
         ledger = json.load(f)
-    
-    # Find the operator review event
-    operator_review_events = [
-        event for event in ledger 
-        if event.get("event_type") == "fresh_visual_operator_review_packet_created"
+
+    # Check for human verdict task event
+    verdict_events = [
+        event for event in ledger
+        if event.get("event_type") == "fresh_visual_human_verdict_task_executed"
     ]
     
-    assert len(operator_review_events) > 0, "Episode ledger must have operator review event"
-    
-    event = operator_review_events[-1]
-    assert event["task_id"] == "RC-COMBINE-V2-FRESH-VISUAL-OPERATOR-REVIEW-001"
+    assert len(verdict_events) > 0, "Episode ledger must have human verdict task event"
+
+    event = verdict_events[-1]
+    assert event["task_id"] == "RC-COMBINE-V2-FRESH-VISUAL-HUMAN-VERDICT-001"
     assert event["generation_performed"] is False
-    assert event["operator_visual_verdict_recorded"] is False
+    assert event["agent_generated_verdict"] is False
     assert event["fake_operator_decision_created"] is False
     assert event["agent_accepted_visual"] is False
     assert event["production_accepted"] is False
 
 
-def test_missing_human_verdict_does_not_create_operator_visual_verdict():
-    """Test that missing human verdict does not create operator_visual_verdict.json."""
+def test_human_rejection_creates_operator_visual_verdict():
+    """Test that human rejection creates operator_visual_verdict.json with correct fields."""
     verdict_path = OPERATOR_REVIEW_DIR / "operator_visual_verdict.json"
-    assert not verdict_path.exists(), "operator_visual_verdict.json should not exist without human verdict"
+    assert verdict_path.exists(), "operator_visual_verdict.json must exist after human rejection"
+    
+    with open(verdict_path, 'r', encoding='utf-8') as f:
+        verdict = json.load(f)
+    
+    assert verdict["verdict_source"] == "human_operator", "Verdict source must be human_operator"
+    assert verdict["agent_generated_verdict"] is False, "Agent generated verdict must be false"
+    assert verdict["operator_visual_review_executed"] is True, "Operator visual review must be executed"
+    assert verdict["operator_verdict"] == "rejected_needs_corrective_plan", "Operator verdict must be rejected_needs_corrective_plan"
+    assert verdict["accepted_as_concept_reference"] is True, "Accepted as concept reference must be true"
+    assert verdict["accepted_as_quality_reference"] is False, "Accepted as quality reference must be false"
+    assert verdict["accepted_as_final_visual"] is False, "Accepted as final visual must be false"
+    assert verdict["production_accepted"] is False, "Production accepted must be false"
+
+
+def test_human_rejection_creates_operator_visual_rejection():
+    """Test that human rejection creates operator_visual_rejection.json with defects."""
+    rejection_path = OPERATOR_REVIEW_DIR / "operator_visual_rejection.json"
+    assert rejection_path.exists(), "operator_visual_rejection.json must exist after human rejection"
+
+    with open(rejection_path, 'r', encoding='utf-8') as f:
+        rejection = json.load(f)
+
+    assert rejection["verdict_source"] == "human_operator", "Verdict source must be human_operator"
+    assert rejection["operator_verdict"] == "rejected_needs_corrective_plan"
+    assert "defects" in rejection, "Rejection must include defects"
+    assert len(rejection["defects"]) > 0, "Must have at least one defect"
+
+    required_defects = [
+        "doll_like_face",
+        "over_smoothed_skin",
+        "glassy_unrealistic_eyes",
+        "weak_mouth_teeth_detail",
+        "low_skin_texture_detail",
+        "not_suitable_as_quality_reference"
+    ]
+    for defect in required_defects:
+        assert defect in rejection["defects"], f"Defect {defect} must be in rejection"
+
+    assert rejection["accepted_as_concept_reference"] is True
+    assert rejection["accepted_as_quality_reference"] is False
+    assert rejection["production_accepted"] is False
+
+
+def test_human_rejection_creates_corrective_visual_plan():
+    """Test that human rejection creates corrective_visual_plan.json with specific requirements."""
+    corrective_plan_path = OPERATOR_REVIEW_DIR / "corrective_visual_plan.json"
+    assert corrective_plan_path.exists(), "corrective_visual_plan.json must exist after human rejection"
+
+    with open(corrective_plan_path, 'r', encoding='utf-8') as f:
+        plan = json.load(f)
+
+    assert "corrective_requirements" in plan, "Plan must have corrective_requirements"
+    assert len(plan["corrective_requirements"]) > 0, "Must have at least one corrective requirement"
+
+    # Verify specific requirements are present
+    requirement_descriptions = [req["requirement"] for req in plan["corrective_requirements"]]
+    required_requirements = [
+        "Keep fairytale / winter fantasy mood",
+        "Improve skin texture realism",
+        "Improve mouth/teeth anatomy",
+        "Reduce doll/plastic face effect",
+        "Keep beautiful blue eyes but make them more natural",
+        "Increase facial micro-detail",
+        "Preserve concept direction, but raise production quality"
+    ]
+    for req in required_requirements:
+        assert req in requirement_descriptions, f"Requirement '{req}' must be in corrective plan"
+
+    # Verify forbidden actions
+    assert "forbidden_actions" in plan
+    forbidden_actions = [action["action"] for action in plan["forbidden_actions"]]
+    assert "blind_retry" in forbidden_actions, "blind_retry must be forbidden"
+
+    # Verify next generation requirements
+    assert plan["next_generation_requirements"]["requires_separate_authorization_gate"] is True
+    assert plan["next_generation_requirements"]["blind_retry_forbidden"] is True
+
+    # Verify state
+    assert plan["current_state"] == "fresh_visual_rejected"
+    assert plan["next_allowed_action"] == "corrective_visual_plan_review_required"
+    assert plan["retry_authorized"] is False
+    assert plan["generation_authorized"] is False
+
+
+def test_human_rejection_state_routes_to_corrective_plan_review():
+    """Test that state routes to corrective_visual_plan_review_required after human rejection."""
+    state_path = CONTROL_DIR / "state.json"
+    with open(state_path, 'r') as f:
+        state = json.load(f)
+    
+    assert state["current_state"] == "fresh_visual_rejected", "Current state must be fresh_visual_rejected"
+    assert state["next_allowed_action"] == "corrective_visual_plan_review_required", "Next action must be corrective_visual_plan_review_required"
+    assert state["retry_authorized"] is False, "Retry must not be authorized"
+    assert state["generation_authorized"] is False, "Generation must not be authorized"
+    assert state["assembly_allowed"] is False, "Assembly must not be allowed"
+    assert state["production_accepted"] is False, "Production accepted must remain false"
+
+
+def test_human_rejection_updates_artifact_index():
+    """Test that artifact_index.json is updated with human rejection artifacts."""
+    artifact_index_path = CONTROL_DIR / "artifact_index.json"
+    with open(artifact_index_path, 'r') as f:
+        index = json.load(f)
+    
+    assert index.get("fresh_visual_human_verdict_provided") is True, "Human verdict provided must be true"
+    assert index.get("fresh_visual_operator_verdict_artifact_created") is True, "Operator verdict artifact created must be true"
+    assert index.get("fresh_visual_operator_rejection_artifact_created") is True, "Operator rejection artifact created must be true"
+    assert index.get("fresh_visual_corrective_plan_artifact_created") is True, "Corrective plan artifact created must be true"
+    
+    assert index["current_state"] == "fresh_visual_rejected"
+    assert index["next_allowed_action"] == "corrective_visual_plan_review_required"
+    assert index["fresh_visual_operator_verdict"] == "rejected_needs_corrective_plan"
+    assert index["fresh_visual_accepted_as_concept_reference"] is True
+    assert index["fresh_visual_accepted_as_quality_reference"] is False
+    assert index["fresh_visual_accepted_as_final_visual"] is False
+    assert index["fresh_visual_retry_authorized"] is False
+    assert index["fresh_visual_generation_authorized"] is False
+
+
+def test_human_rejection_updates_episode_ledger():
+    """Test that episode_ledger.json is updated with human rejection event."""
+    ledger_path = CONTROL_DIR / "episode_ledger.json"
+    with open(ledger_path, 'r', encoding='utf-8') as f:
+        ledger = json.load(f)
+
+    rejection_events = [
+        event for event in ledger
+        if event.get("event_type") == "fresh_visual_human_verdict_rejection"
+    ]
+
+    assert len(rejection_events) > 0, "Episode ledger must have human rejection event"
+
+    event = rejection_events[-1]
+    assert event["task_id"] == "RC-COMBINE-V2-FRESH-VISUAL-HUMAN-VERDICT-REJECTION-001"
+    assert event["verdict_source"] == "human_operator"
+    assert event["agent_generated_verdict"] is False
+    assert event["operator_verdict"] == "rejected_needs_corrective_plan"
+    assert event["accepted_as_concept_reference"] is True
+    assert event["accepted_as_quality_reference"] is False
+    assert event["production_accepted"] is False
+    assert event["generation_performed"] is False
+    assert event["retry_attempted"] is False
+    assert event["comfyui_submit_executed"] is False
+    assert event["assembly_executed"] is False
+    assert event["downstream_executed"] is False
+    assert event["current_state"] == "fresh_visual_rejected"
+    assert event["next_allowed_action"] == "corrective_visual_plan_review_required"
 
 
 def test_agent_generated_verdict_is_always_false():
@@ -242,19 +387,19 @@ def test_generation_retry_comfyui_submit_remain_false():
 def test_artifact_index_and_episode_ledger_updated():
     """Test that artifact_index and episode_ledger are updated."""
     artifact_index_path = CONTROL_DIR / "artifact_index.json"
-    with open(artifact_index_path, 'r') as f:
+    with open(artifact_index_path, 'r', encoding='utf-8') as f:
         index = json.load(f)
-    
+
     assert index.get("fresh_visual_human_verdict_task_executed") is True
-    assert index.get("fresh_visual_human_verdict_provided") is False
-    assert index.get("fresh_visual_operator_verdict_artifact_created") is False
+    assert index.get("fresh_visual_human_verdict_provided") is True
+    assert index.get("fresh_visual_operator_verdict_artifact_created") is True
     
     ledger_path = CONTROL_DIR / "episode_ledger.json"
-    with open(ledger_path, 'r') as f:
+    with open(ledger_path, 'r', encoding='utf-8') as f:
         ledger = json.load(f)
-    
+
     verdict_events = [
-        event for event in ledger 
+        event for event in ledger
         if event.get("event_type") == "fresh_visual_human_verdict_task_executed"
     ]
     assert len(verdict_events) > 0, "Episode ledger must have human verdict task event"

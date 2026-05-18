@@ -1,0 +1,45 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-HUMAN-VERDICT-001",
+  "feature_completed": true,
+  "anti_loop_mode_respected": true,
+
+  "human_operator_verdict_required": true,
+  "human_operator_verdict_provided": false,
+  "verdict_source": null,
+  "agent_generated_verdict": false,
+  "operator_verdict": null,
+
+  "candidate_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\fresh_visual_candidates\\combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+  "candidate_sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+  "candidate_width": 1024,
+  "candidate_height": 1024,
+
+  "generation_performed": false,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "comfyui_submit_executed": false,
+  "preview_render_executed": false,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+
+  "operator_visual_verdict_artifact_created": false,
+  "corrective_plan_required_created": false,
+
+  "artifact_index_updated": true,
+  "episode_ledger_updated": true,
+
+  "tests_pass": true,
+  "cli_validation_pass": true,
+
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+
+  "commit_hash": "ca900ba",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+
+  "blockers": ["human_operator_verdict_not_provided"],
+  "next_task_recommendation": "human_operator_visual_verdict_or_corrective_generation_gate"
+}
