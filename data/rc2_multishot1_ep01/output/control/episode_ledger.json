@@ -1,5 +1,57 @@
 [
   {
+    "event_type": "fresh_visual_generation_gate_prepared",
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+    "stage": "fresh_visual_generation_gate_preparation",
+    "previous_task": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001",
+    "previous_commit": "784427a",
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "workflow_submitted": false,
+    "prompt_id_created": false,
+    "visual_candidate_created": false,
+    "visual_qa_acceptance_executed": false,
+    "operator_acceptance_faked": false,
+    "assembly_executed": false,
+    "preview_render_executed": false,
+    "final_render_executed": false,
+    "voice_audio_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "gate_package_created": true,
+    "operator_authorization_required": true,
+    "operator_authorization_status": "pending",
+    "max_future_generations": 1,
+    "blind_retry_allowed": false,
+    "stop_after_generation": true,
+    "quality_reference_id": "quality_ref_eye_closeup_001",
+    "quality_reference_usage": "quality_calibration_only",
+    "current_state": "fresh_visual_generation_gate_prepared",
+    "next_allowed_action": "operator_generation_authorization_required",
+    "artifacts_created": [
+      "fresh_visual_generation_gate/fresh_visual_generation_gate_package.json",
+      "fresh_visual_generation_gate/fresh_visual_generation_pre_authorization_checks.json",
+      "fresh_visual_generation_gate/fresh_visual_generation_operator_authorization_packet.json",
+      "fresh_visual_generation_gate/fresh_visual_generation_execution_contract.json",
+      "fresh_visual_generation_gate/fresh_visual_generation_stop_policy.json",
+      "fresh_visual_generation_gate/fresh_visual_generation_gate_report.json"
+    ],
+    "blockers": [
+      {
+        "type": "operator_generation_authorization_pending",
+        "blocking_generation_execution": true,
+        "blocking_task_acceptance": false
+      }
+    ],
+    "scope_compliance": {
+      "allowed_scope_respected": true,
+      "forbidden_actions_not_executed": true,
+      "dirty_carryover_preserved": true
+    },
+    "timestamp": "2026-05-18T12:53:00+02:00"
+  },
+  {
     "event_type": "v10_real_generation_completed",
     "task_id": "RC-COMBINE-V2-13001-15000",
     "stage": "v10_real_generation",

@@ -1,0 +1,66 @@
+{
+  "packet_id": "fresh_visual_generation_operator_authorization_packet_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+  "timestamp": "2026-05-18T12:53:00.000000+02:00",
+  "packet_type": "operator_generation_authorization_request",
+  "operator_action_required": "approve_or_reject_one_fresh_visual_generation",
+  "authorization_decision_status": "pending",
+  "generation_context": {
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+    "quality_reference_id": "quality_ref_eye_closeup_001",
+    "quality_reference_usage": "quality_calibration_only",
+    "target_asset_type": "fresh_visual_candidate",
+    "max_generations_requested": 1,
+    "blind_retry_requested": false,
+    "stop_after_generation": true
+  },
+  "review_materials": {
+    "generation_plan": "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_plan/fresh_visual_generation_plan.json",
+    "quality_reference_registry": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registry.json",
+    "quality_reference_asset": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+    "visual_recipe_constraints": "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_plan/visual_recipe_constraints.json",
+    "pre_authorization_checks": "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_gate/fresh_visual_generation_pre_authorization_checks.json"
+  },
+  "if_approved": {
+    "generation_authorized": true,
+    "max_generations": 1,
+    "blind_retry_allowed": false,
+    "stop_after_generation": true,
+    "next_allowed_action": "fresh_visual_generation_execute_once",
+    "authorized_task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-ONCE-001",
+    "execution_constraints": {
+      "must_use_quality_reference_as_calibration_only": true,
+      "must_generate_exactly_one_candidate": true,
+      "must_return_real_prompt_id": true,
+      "must_return_asset_manifest": true,
+      "must_stop_before_visual_qa": true,
+      "must_not_assemble": true,
+      "must_not_downstream": true,
+      "production_accepted_must_remain_false": true
+    }
+  },
+  "if_rejected": {
+    "generation_authorized": false,
+    "max_generations": 0,
+    "next_allowed_action": "fresh_visual_generation_plan_revision_required",
+    "rejection_reasons": [
+      "operator_rejects_generation_attempt",
+      "operator_requests_plan_revision",
+      "operator_requests_different_quality_reference",
+      "operator_requests different parameters"
+    ],
+    "follow_up_required": "operator_specified_revision_or_new_approach"
+  },
+  "authorization_invariants": {
+    "agent_cannot_self_approve": true,
+    "agent_cannot_fake_operator_decision": true,
+    "real_operator_decision_required": true,
+    "decision_must_be_explicit": true,
+    "implicit_approval_not_allowed": true
+  },
+  "decision_deadline": {
+    "type": "operator_discretion",
+    "no_automatic_approval": true,
+    "no_timeout_approval": true
+  }
+}

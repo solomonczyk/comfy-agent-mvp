@@ -1,0 +1,37 @@
+{
+  "gate_id": "fresh_visual_generation_gate_package_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+  "timestamp": "2026-05-18T12:53:00.000000+02:00",
+  "previous_task": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001",
+  "previous_commit": "784427a",
+  "gate_type": "controlled_fresh_visual_generation_gate",
+  "gate_status": "prepared_waiting_for_operator_authorization",
+  "generation_authorized": false,
+  "operator_authorization_required": true,
+  "max_generations": 1,
+  "blind_retry_allowed": false,
+  "quality_reference_id": "quality_ref_eye_closeup_001",
+  "quality_reference_usage": "quality_calibration_only",
+  "stop_after_generation": true,
+  "visual_qa_allowed_after_generation": false,
+  "assembly_allowed_after_generation": false,
+  "downstream_allowed_after_generation": false,
+  "production_acceptance_allowed_after_generation": false,
+  "source_generation_plan": "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_plan/fresh_visual_generation_plan.json",
+  "source_quality_reference_registry": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registry.json",
+  "gate_creation_constraints": {
+    "must_not_authorize_generation": true,
+    "must_not_submit_comfyui": true,
+    "must_not_create_prompt_id": true,
+    "must_not_generate_visual_candidate": true,
+    "must_require_operator_authorization": true,
+    "must_limit_to_one_future_generation": true,
+    "must_stop_after_generation": true,
+    "must_block_downstream": true
+  },
+  "state_transition": {
+    "previous_state": "fresh_visual_generation_plan_updated",
+    "current_state": "fresh_visual_generation_gate_prepared",
+    "next_allowed_action": "operator_generation_authorization_required"
+  }
+}

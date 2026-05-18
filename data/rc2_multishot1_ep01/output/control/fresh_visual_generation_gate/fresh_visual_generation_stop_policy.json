@@ -1,0 +1,120 @@
+{
+  "policy_id": "fresh_visual_generation_stop_policy_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+  "timestamp": "2026-05-18T12:53:00.000000+02:00",
+  "policy_type": "post_generation_stop_policy",
+  "stop_policy_active": true,
+  "stop_after_generation": true,
+  "policy_scope": "future_execution_enforcement",
+  "stop_conditions": {
+    "immediate_stop_after_single_generation": {
+      "condition": true,
+      "description": "Stop immediately after exactly one generation completes",
+      "enforcement": "hard_stop"
+    },
+    "block_visual_qa_automation": {
+      "condition": true,
+      "description": "Do NOT automatically run visual QA after generation",
+      "enforcement": "hard_block"
+    },
+    "block_assembly_automation": {
+      "condition": true,
+      "description": "Do NOT automatically run assembly after generation",
+      "enforcement": "hard_block"
+    },
+    "block_downstream_automation": {
+      "condition": true,
+      "description": "Do NOT automatically run downstream processes (preview render, final render, voice audio)",
+      "enforcement": "hard_block"
+    },
+    "block_production_acceptance": {
+      "condition": true,
+      "description": "Do NOT automatically accept for production",
+      "enforcement": "hard_block"
+    }
+  },
+  "allowed_post_generation_actions": {
+    "create_generation_proof": {
+      "allowed": true,
+      "description": "Create proof with real prompt_id and generated assets",
+      "required": true
+    },
+    "update_artifacts": {
+      "allowed": true,
+      "description": "Update artifact_index.json and episode_ledger.json",
+      "required": true
+    },
+    "await_separate_visual_qa_task": {
+      "allowed": true,
+      "description": "Wait for separate visual QA review task",
+      "required": true
+    }
+  },
+  "forbidden_post_generation_actions": {
+    "automatic_visual_qa": {
+      "forbidden": true,
+      "reason": "visual_qa_allowed_after_generation is false"
+    },
+    "automatic_assembly": {
+      "forbidden": true,
+      "reason": "assembly_allowed_after_generation is false"
+    },
+    "automatic_downstream": {
+      "forbidden": true,
+      "reason": "downstream_allowed_after_generation is false"
+    },
+    "production_acceptance": {
+      "forbidden": true,
+      "reason": "production_acceptance_allowed_after_generation is false"
+    },
+    "blind_retry": {
+      "forbidden": true,
+      "reason": "blind_retry_allowed is false"
+    },
+    "multiple_generations": {
+      "forbidden": true,
+      "reason": "max_generations is 1"
+    }
+  },
+  "state_enforcement": {
+    "visual_qa_acceptance_executed": {
+      "must_remain": false,
+      "enforcement": "hard_block"
+    },
+    "assembly_executed": {
+      "must_remain": false,
+      "enforcement": "hard_block"
+    },
+    "preview_render_executed": {
+      "must_remain": false,
+      "enforcement": "hard_block"
+    },
+    "final_render_executed": {
+      "must_remain": false,
+      "enforcement": "hard_block"
+    },
+    "voice_audio_executed": {
+      "must_remain": false,
+      "enforcement": "hard_block"
+    },
+    "downstream_executed": {
+      "must_remain": false,
+      "enforcement": "hard_block"
+    },
+    "production_accepted": {
+      "must_remain": false,
+      "enforcement": "hard_block"
+    }
+  },
+  "next_task_requirements": {
+    "required_next_task": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+    "requires_operator_authorization": true,
+    "requires_separate_task": true
+  },
+  "policy_invariants": {
+    "stop_policy_cannot_be_bypassed": true,
+    "automation_blocks_cannot_be_overridden": true,
+    "production_acceptance_cannot_be_automated": true,
+    "requires_explicit_next_task": true
+  }
+}

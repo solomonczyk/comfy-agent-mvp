@@ -1,0 +1,149 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+  "feature_completed": true,
+  "full_feature_loop_executed": true,
+  "previous_task": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001",
+  "previous_commit": "784427a",
+  "allowed_scope_respected": true,
+  "forbidden_actions_not_executed": true,
+  "generation_gate_package_created": true,
+  "gate_status": "prepared_waiting_for_operator_authorization",
+  "operator_authorization_packet_created": true,
+  "operator_authorization_status": "pending",
+  "quality_reference_id": "quality_ref_eye_closeup_001",
+  "quality_reference_usage": "quality_calibration_only",
+  "generation_authorized": false,
+  "generation_performed": false,
+  "comfyui_submit_authorized": false,
+  "comfyui_submit_executed": false,
+  "retry_authorized": false,
+  "retry_attempted": false,
+  "workflow_submitted": false,
+  "prompt_id_created": false,
+  "new_visual_candidate_created": false,
+  "max_generations_future": 1,
+  "blind_retry_allowed": false,
+  "stop_after_future_generation": true,
+  "visual_qa_acceptance_executed": false,
+  "operator_acceptance_faked": false,
+  "assembly_executed": false,
+  "preview_render_executed": false,
+  "final_render_executed": false,
+  "voice_audio_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "required_artifacts_created": true,
+  "artifact_index_updated": true,
+  "episode_ledger_updated": true,
+  "state_updated": true,
+  "tests_pass": true,
+  "py_compile_pass": true,
+  "cli_validation_pass": true,
+  "current_state": "fresh_visual_generation_gate_prepared",
+  "next_allowed_action": "operator_generation_authorization_required",
+  "global_git_clean": false,
+  "task_scope_git_clean": true,
+  "global_dirty_carryover_preserved": true,
+  "carryover_modified_by_this_task": false,
+  "carryover_staged_by_this_task": false,
+  "carryover_committed_by_this_task": false,
+  "commit_hash": "<pending_commit>",
+  "push_status": "pending_push_origin_main",
+  "blockers": [
+    {
+      "type": "operator_generation_authorization_pending",
+      "blocking_generation_execution": true,
+      "blocking_task_acceptance": false
+    },
+    {
+      "type": "global_dirty_carryover",
+      "blocking_full_repo_clean_claim": true,
+      "blocking_task_acceptance": false
+    }
+  ],
+  "next_task_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+  "artifact_verification": {
+    "fresh_visual_generation_gate_package": {
+      "exists": true,
+      "valid_json": true,
+      "gate_type": "controlled_fresh_visual_generation_gate",
+      "generation_authorized": false,
+      "operator_authorization_required": true
+    },
+    "fresh_visual_generation_pre_authorization_checks": {
+      "exists": true,
+      "valid_json": true,
+      "overall_status": "ready_for_operator_authorization_review",
+      "ready_for_operator": true
+    },
+    "fresh_visual_generation_operator_authorization_packet": {
+      "exists": true,
+      "valid_json": true,
+      "authorization_decision_status": "pending",
+      "operator_action_required": "approve_or_reject_one_fresh_visual_generation"
+    },
+    "fresh_visual_generation_execution_contract": {
+      "exists": true,
+      "valid_json": true,
+      "execution_allowed_in_this_task": false,
+      "future_task_id_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-ONCE-001"
+    },
+    "fresh_visual_generation_stop_policy": {
+      "exists": true,
+      "valid_json": true,
+      "stop_after_generation": true,
+      "blocks_automation": true
+    },
+    "fresh_visual_generation_gate_report": {
+      "exists": true,
+      "valid_json": true,
+      "completion_status": "gate_prepared_waiting_for_operator_authorization"
+    }
+  },
+  "state_transitions": {
+    "previous_state": "fresh_visual_generation_plan_updated",
+    "current_state": "fresh_visual_generation_gate_prepared",
+    "next_allowed_action": "operator_generation_authorization_required",
+    "transition_valid": true
+  },
+  "compliance_audit": {
+    "generation_plan_exists": true,
+    "quality_reference_exists": true,
+    "quality_reference_scope_valid": true,
+    "generation_plan_does_not_authorize_execution": true,
+    "operator_authorization_not_faked": true,
+    "no_comfyui_submit": true,
+    "no_generation_performed": true,
+    "no_prompt_id_created": true,
+    "production_acceptance_remains_false": true,
+    "dirty_carryover_preserved": true
+  },
+  "test_results": {
+    "test_generation_gate_package_is_prepared_not_authorized": "PASS",
+    "test_generation_gate_requires_operator_authorization": "PASS",
+    "test_generation_gate_allows_max_one_future_generation": "PASS",
+    "test_generation_gate_blocks_blind_retry": "PASS",
+    "test_generation_gate_uses_quality_reference_as_calibration_only": "PASS",
+    "test_generation_gate_does_not_submit_comfyui": "PASS",
+    "test_generation_gate_does_not_create_prompt_id": "PASS",
+    "test_generation_gate_blocks_visual_qa_assembly_downstream": "PASS",
+    "test_generation_gate_keeps_production_accepted_false": "PASS",
+    "test_generation_gate_updates_artifact_index_and_ledger": "PASS",
+    "test_generation_gate_preserves_dirty_carryover_scope": "PASS",
+    "test_all_required_gate_artifacts_exist": "PASS",
+    "test_execution_contract_is_preparation_only": "PASS",
+    "test_stop_policy_enforces_post_generation_limits": "PASS"
+  },
+  "verification_commands_executed": [
+    "python -m json.tool data/rc2_multishot1_ep01/output/control/fresh_visual_generation_gate/fresh_visual_generation_gate_package.json",
+    "python -m json.tool data/rc2_multishot1_ep01/output/control/fresh_visual_generation_gate/fresh_visual_generation_pre_authorization_checks.json",
+    "python -m json.tool data/rc2_multishot1_ep01/output/control/fresh_visual_generation_gate/fresh_visual_generation_operator_authorization_packet.json",
+    "python -m json.tool data/rc2_multishot1_ep01/output/control/fresh_visual_generation_gate/fresh_visual_generation_execution_contract.json",
+    "python -m json.tool data/rc2_multishot1_ep01/output/control/fresh_visual_generation_gate/fresh_visual_generation_stop_policy.json",
+    "python -m json.tool data/rc2_multishot1_ep01/output/control/fresh_visual_generation_gate/fresh_visual_generation_gate_report.json",
+    "pytest tests/test_fresh_visual_generation_gate.py -q",
+    "python -m app.cli combine-status --project-root \"F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\" --json"
+  ],
+  "expected_reviewer_verdict": "ACCEPTED WITH BLOCKERS",
+  "expected_next_allowed_action": "operator_generation_authorization_required"
+}

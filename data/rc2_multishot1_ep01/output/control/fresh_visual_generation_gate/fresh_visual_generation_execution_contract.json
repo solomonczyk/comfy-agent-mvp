@@ -1,0 +1,79 @@
+{
+  "contract_id": "fresh_visual_generation_execution_contract_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+  "timestamp": "2026-05-18T12:53:00.000000+02:00",
+  "contract_type": "future_execution_layer_contract",
+  "execution_layer_required": true,
+  "execution_allowed_in_this_task": false,
+  "future_task_id_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-ONCE-001",
+  "pre_execution_requirements": {
+    "must_verify_operator_authorization_before_execution": true,
+    "must_confirm_generation_gate_authorized": true,
+    "must_confirm_quality_reference_policy_compliance": true,
+    "must_confirm_visual_recipe_constraints_applied": true
+  },
+  "execution_constraints": {
+    "must_generate_exactly_one_candidate": true,
+    "must_return_real_prompt_id": true,
+    "must_return_asset_manifest": true,
+    "must_use_quality_reference_as_calibration_only": true,
+    "must_not_exceed_one_generation": true,
+    "must_not_blind_retry": true
+  },
+  "post_execution_requirements": {
+    "must_stop_before_visual_qa": true,
+    "must_not_run_visual_qa_automatically": true,
+    "must_not_assemble": true,
+    "must_not_downstream": true,
+    "must_not_accept_production": true,
+    "must_create_generation_proof_with_real_assets": true,
+    "must_update_artifact_index": true,
+    "must_update_episode_ledger": true
+  },
+  "proof_requirements": {
+    "must_contain_real_prompt_id": true,
+    "must_contain_generated_asset_paths": true,
+    "must_contain_asset_sha256_hashes": true,
+    "must_contain_asset_dimensions": true,
+    "must_keep_visual_qa_false": true,
+    "must_keep_assembly_false": true,
+    "must_keep_downstream_false": true,
+    "must_keep_production_accepted_false": true
+  },
+  "state_transitions": {
+    "pre_execution_state": "fresh_visual_generation_gate_authorized",
+    "execution_state": "fresh_visual_generation_executing",
+    "post_execution_state": "fresh_visual_generation_completed",
+    "next_allowed_after_execution": "visual_qa_review_required"
+  },
+  "forbidden_actions": {
+    "in_this_task": [
+      "execution",
+      "comfyui_submit",
+      "generation",
+      "prompt_id_creation",
+      "visual_candidate_creation"
+    ],
+    "in_future_execution_task": [
+      "multiple_generations",
+      "blind_retry",
+      "auto_visual_qa",
+      "auto_assembly",
+      "auto_downstream",
+      "production_acceptance"
+    ]
+  },
+  "quality_reference_constraints": {
+    "reference_id": "quality_ref_eye_closeup_001",
+    "usage": "quality_calibration_only",
+    "must_not_become_full_character": true,
+    "must_not_become_full_face": true,
+    "must_not_become_production_asset": true
+  },
+  "contract_validation": {
+    "contract_is_preparation_only": true,
+    "execution_requires_separate_task": true,
+    "operator_authorization_mandatory": true,
+    "production_accepted_must_remain_false": true
+  }
+}
