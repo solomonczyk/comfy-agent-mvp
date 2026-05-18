@@ -1730,5 +1730,11 @@
   "props_contract_created": true,
   "props_review_authorization_created": true,
   "props_review_report_created": true,
-  "props_verdict_created": true
+  "props_verdict_created": true,
+  "costume_review_executed": true,
+  "costume_verdict": "ACCEPTED",
+  "costume_contract_created": true,
+  "costume_review_authorization_created": true,
+  "costume_review_report_created": true,
+  "costume_verdict_created": true
 }

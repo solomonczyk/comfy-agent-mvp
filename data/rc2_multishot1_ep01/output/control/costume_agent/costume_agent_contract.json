@@ -1,0 +1,47 @@
+{
+  "agent_id": "costume_agent",
+  "agent_role": "Costume",
+  "responsibility_zone": "Review visual candidates for costume quality including visible costume/clothing, outfit consistency with character, costume style coherence, genre/era/style consistency, clothing artifacts, and costume continuity risk.",
+  "can_execute_generation": false,
+  "can_retry": false,
+  "can_accept_visual": false,
+  "can_set_production_accepted": false,
+  "can_run_assembly": false,
+  "can_run_downstream": false,
+  "can_edit_image": false,
+  "can_submit_comfyui": false,
+  "can_modify_costume": false,
+  "can_modify_actor_body": false,
+  "can_perform_visual_qa_final_acceptance": false,
+  "can_perform_operator_acceptance": false,
+  "can_run_preview_render": false,
+  "can_run_final_render": false,
+  "can_generate_voice": false,
+  "can_generate_audio": false,
+  "required_inputs": [
+    "visual_candidate_path",
+    "previous_props_verdict",
+    "costume_review_authorization"
+  ],
+  "required_outputs": [
+    "costume_review_report",
+    "costume_verdict",
+    "costume_review_authorization"
+  ],
+  "stop_condition": "stop_after_review_and_wait_for_next_gate",
+  "review_criteria": [
+    "visible_costume_clothing",
+    "outfit_consistency_with_character",
+    "costume_style_coherence",
+    "genre_era_style_consistency",
+    "clothing_artifacts",
+    "costume_continuity_risk"
+  ],
+  "blocking_conditions": [
+    "candidate_missing",
+    "candidate_sha256_mismatch",
+    "previous_agent_not_completed"
+  ],
+  "version": "1.0",
+  "timestamp": "2026-05-18T20:58:09.636717"
+}
