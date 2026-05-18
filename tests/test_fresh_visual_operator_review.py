@@ -295,10 +295,12 @@ def test_human_rejection_state_routes_to_corrective_plan_review():
     with open(state_path, 'r') as f:
         state = json.load(f)
     
-    assert state["current_state"] == "fresh_visual_rejected", "Current state must be fresh_visual_rejected"
-    assert state["next_allowed_action"] == "corrective_visual_plan_review_required", "Next action must be corrective_visual_plan_review_required"
+    # After corrective authorization, state has moved forward
+    # This test now verifies the authorization state
+    assert state["current_state"] == "corrective_generation_authorized", "Current state must be corrective_generation_authorized"
+    assert state["next_allowed_action"] == "execute_one_corrective_generation", "Next action must be execute_one_corrective_generation"
     assert state["retry_authorized"] is False, "Retry must not be authorized"
-    assert state["generation_authorized"] is False, "Generation must not be authorized"
+    assert state["generation_authorized"] is True, "Generation must be authorized after approval"
     assert state["assembly_allowed"] is False, "Assembly must not be allowed"
     assert state["production_accepted"] is False, "Production accepted must remain false"
 
@@ -308,20 +310,21 @@ def test_human_rejection_updates_artifact_index():
     artifact_index_path = CONTROL_DIR / "artifact_index.json"
     with open(artifact_index_path, 'r') as f:
         index = json.load(f)
-    
+
     assert index.get("fresh_visual_human_verdict_provided") is True, "Human verdict provided must be true"
     assert index.get("fresh_visual_operator_verdict_artifact_created") is True, "Operator verdict artifact created must be true"
     assert index.get("fresh_visual_operator_rejection_artifact_created") is True, "Operator rejection artifact created must be true"
     assert index.get("fresh_visual_corrective_plan_artifact_created") is True, "Corrective plan artifact created must be true"
-    
-    assert index["current_state"] == "fresh_visual_rejected"
-    assert index["next_allowed_action"] == "corrective_visual_plan_review_required"
+
+    # After corrective authorization, state has moved forward
+    assert index["current_state"] == "corrective_generation_authorized"
+    assert index["next_allowed_action"] == "execute_one_corrective_generation"
     assert index["fresh_visual_operator_verdict"] == "rejected_needs_corrective_plan"
     assert index["fresh_visual_accepted_as_concept_reference"] is True
     assert index["fresh_visual_accepted_as_quality_reference"] is False
     assert index["fresh_visual_accepted_as_final_visual"] is False
     assert index["fresh_visual_retry_authorized"] is False
-    assert index["fresh_visual_generation_authorized"] is False
+    assert index["fresh_visual_generation_authorized"] is True  # Now authorized after approval
 
 
 def test_human_rejection_updates_episode_ledger():
@@ -408,6 +411,192 @@ def test_artifact_index_and_episode_ledger_updated():
     assert event["human_operator_verdict_provided"] is False
     assert event["agent_generated_verdict"] is False
     assert event["operator_visual_verdict_artifact_created"] is False
+
+
+def test_corrective_plan_operator_approval_recorded():
+    """Test that operator-approved corrective plan artifact is created with correct constraints."""
+    approved_plan_path = OPERATOR_REVIEW_DIR / "corrective_visual_plan_operator_approved.json"
+    assert approved_plan_path.exists(), "Operator-approved corrective plan must exist"
+
+    with open(approved_plan_path, 'r', encoding='utf-8') as f:
+        approved_plan = json.load(f)
+
+    assert approved_plan["verdict_source"] == "human_operator"
+    assert approved_plan["operator_plan_approved"] is True
+    assert "approved_constraints" in approved_plan
+    assert len(approved_plan["approved_constraints"]) > 0
+
+    required_constraints = [
+        "preserve fairytale winter style",
+        "make the face less doll-like",
+        "skin must have micro-detail and avoid plastic smoothing",
+        "eyes should remain beautiful but look less glassy",
+        "fix mouth and teeth quality",
+        "target output is a quality candidate, not final production"
+    ]
+    for constraint in required_constraints:
+        assert constraint in approved_plan["approved_constraints"], f"Constraint '{constraint}' must be in approved plan"
+
+    assert approved_plan["quality_target"] == "quality_candidate_only"
+    assert approved_plan["final_production_target"] is False
+    assert approved_plan["blind_retry_allowed"] is False
+
+
+def test_corrective_generation_authorization_gate_created():
+    """Test that corrective generation authorization gate is created with correct limits."""
+    auth_path = OPERATOR_REVIEW_DIR / "corrective_generation_authorization.json"
+    assert auth_path.exists(), "Corrective generation authorization must exist"
+
+    with open(auth_path, 'r', encoding='utf-8') as f:
+        auth = json.load(f)
+
+    assert auth["generation_authorized"] is True
+    assert auth["max_generations"] == 1
+    assert auth["retry_authorized"] is False
+    assert auth["blind_retry_allowed"] is False
+    assert auth["max_retry_generations"] == 0
+    assert auth["target"] == "fresh_visual_candidate_corrective_pass_01"
+    assert auth["purpose"] == "quality_candidate_generation"
+    assert auth["quality_target_only"] is True
+    assert auth["final_production_allowed"] is False
+    assert auth["visual_qa_allowed"] is False
+    assert auth["operator_visual_acceptance_allowed"] is False
+    assert auth["assembly_allowed"] is False
+    assert auth["downstream_allowed"] is False
+    assert auth["production_acceptance_allowed"] is False
+    assert auth["stop_after_generation"] is True
+
+    assert "required_constraints" in auth
+    assert len(auth["required_constraints"]) > 0
+
+
+def test_corrective_generation_contract_created():
+    """Test that corrective generation contract is created with correct terms."""
+    contract_path = OPERATOR_REVIEW_DIR / "corrective_generation_contract.json"
+    assert contract_path.exists(), "Corrective generation contract must exist"
+
+    with open(contract_path, 'r', encoding='utf-8') as f:
+        contract = json.load(f)
+
+    assert "contract_terms" in contract
+    terms = contract["contract_terms"]
+    assert terms["exactly_one_generation_allowed"] is True
+    assert terms["max_generations"] == 1
+    assert terms["no_second_attempt_allowed"] is True
+    assert terms["no_retry_allowed"] is True
+    assert terms["retry_authorized"] is False
+    assert terms["blind_retry_allowed"] is False
+    assert terms["assembly_allowed"] is False
+    assert terms["downstream_allowed"] is False
+    assert terms["production_acceptance_allowed"] is False
+    assert terms["generation_must_stop_after_saving_output"] is True
+    assert terms["stop_after_generation"] is True
+
+    assert contract["quality_target"] == "quality_candidate_only"
+    assert contract["final_production_target"] is False
+
+
+def test_corrective_authorization_state_transition():
+    """Test that state transitions from fresh_visual_rejected to corrective_generation_authorized."""
+    state_path = CONTROL_DIR / "state.json"
+    with open(state_path, 'r') as f:
+        state = json.load(f)
+
+    assert state["current_state"] == "corrective_generation_authorized", "Current state must be corrective_generation_authorized"
+    assert state["next_allowed_action"] == "execute_one_corrective_generation", "Next action must be execute_one_corrective_generation"
+    assert state["generation_authorized"] is True, "Generation must be authorized"
+    assert state["corrective_generation_authorized"] is True, "Corrective generation must be authorized"
+    assert state["corrective_max_generations"] == 1, "Corrective max generations must be 1"
+    assert state["retry_authorized"] is False, "Retry must not be authorized"
+    assert state["assembly_allowed"] is False, "Assembly must not be allowed"
+    assert state["downstream_executed"] is False, "Downstream must not be executed"
+    assert state["production_accepted"] is False, "Production accepted must remain false"
+
+
+def test_corrective_authorization_no_generation_executed():
+    """Test that no generation was executed during authorization task."""
+    state_path = CONTROL_DIR / "state.json"
+    with open(state_path, 'r') as f:
+        state = json.load(f)
+
+    # Verify that generation count did not increase
+    assert state["generation_count"] == 1, "Generation count must remain 1 (from previous task)"
+    
+    # Verify no new generation flags were set
+    assert state["comfyui_submit_executed"] is True  # From previous task, not this one
+    assert state["new_image_generation_performed"] is True  # From previous task
+    assert state["retry_attempted"] is False
+    assert state["assembly_executed"] is False
+    assert state["downstream_executed"] is False
+
+
+def test_corrective_authorization_artifact_index_updated():
+    """Test that artifact_index.json is updated with authorization artifacts."""
+    artifact_index_path = CONTROL_DIR / "artifact_index.json"
+    with open(artifact_index_path, 'r') as f:
+        index = json.load(f)
+
+    assert index["current_state"] == "corrective_generation_authorized"
+    assert index["next_allowed_action"] == "execute_one_corrective_generation"
+    assert index.get("corrective_generation_authorized") is True
+    assert index.get("corrective_max_generations") == 1
+    assert index.get("corrective_plan_operator_approved") is True
+    
+    # Verify new artifact paths
+    assert "corrective_visual_plan_operator_approved" in index
+    assert "corrective_generation_authorization" in index
+    assert "corrective_generation_contract" in index
+    
+    # Verify forbidden actions remain false
+    assert index["production_accepted"] is False
+    assert index["assembly_allowed"] is False
+    assert index["downstream_allowed"] is False
+
+
+def test_corrective_authorization_episode_ledger_updated():
+    """Test that episode_ledger.json is updated with authorization event."""
+    ledger_path = CONTROL_DIR / "episode_ledger.json"
+    with open(ledger_path, 'r', encoding='utf-8') as f:
+        ledger = json.load(f)
+
+    auth_events = [
+        event for event in ledger
+        if event.get("event_type") == "corrective_generation_authorized"
+    ]
+
+    assert len(auth_events) > 0, "Episode ledger must have corrective generation authorization event"
+
+    event = auth_events[0]
+    assert event["task_id"] == "RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-AUTHORIZATION-001"
+    assert event["generation_performed"] is False
+    assert event["retry_attempted"] is False
+    assert event["comfyui_submit_executed"] is False
+    assert event["assembly_executed"] is False
+    assert event["downstream_executed"] is False
+    assert event["production_accepted"] is False
+    assert event["operator_plan_approved"] is True
+    assert event["generation_authorized"] is True
+    assert event["max_generations"] == 1
+    assert event["retry_authorized"] is False
+    assert event["blind_retry_allowed"] is False
+    assert event["current_state"] == "corrective_generation_authorized"
+    assert event["next_allowed_action"] == "execute_one_corrective_generation"
+
+
+def test_corrective_authorization_forbidden_actions_respected():
+    """Test that forbidden actions remain false after authorization."""
+    state_path = CONTROL_DIR / "state.json"
+    with open(state_path, 'r') as f:
+        state = json.load(f)
+
+    # All forbidden actions must remain false
+    assert state["retry_attempted"] is False
+    assert state["assembly_executed"] is False
+    assert state["downstream_executed"] is False
+    assert state["production_accepted"] is False
+    assert state["voice_generation_executed"] is False
+    assert state["audio_generation_executed"] is False
+    assert state["preview_render_executed"] is False
 
 
 if __name__ == "__main__":

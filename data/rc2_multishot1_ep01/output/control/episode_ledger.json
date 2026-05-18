@@ -1,5 +1,43 @@
 [
   {
+    "event_type": "corrective_generation_authorized",
+    "task_id": "RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-AUTHORIZATION-001",
+    "stage": "corrective_visual_plan_review_required",
+    "previous_task": "RC-COMBINE-V2-FRESH-VISUAL-HUMAN-VERDICT-REJECTION-001",
+    "previous_commit": "637d74d",
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "operator_plan_approved": true,
+    "approved_constraints": [
+      "preserve fairytale winter style",
+      "make the face less doll-like",
+      "skin must have micro-detail and avoid plastic smoothing",
+      "eyes should remain beautiful but look less glassy",
+      "fix mouth and teeth quality",
+      "target output is a quality candidate, not final production"
+    ],
+    "generation_authorized": true,
+    "max_generations": 1,
+    "retry_authorized": false,
+    "blind_retry_allowed": false,
+    "quality_target": "quality_candidate_only",
+    "final_production_target": false,
+    "corrective_generation_contract_created": true,
+    "corrective_generation_authorization_created": true,
+    "current_state": "corrective_generation_authorized",
+    "next_allowed_action": "execute_one_corrective_generation",
+    "artifacts_created": [
+      "fresh_visual_operator_review/corrective_visual_plan_operator_approved.json",
+      "fresh_visual_operator_review/corrective_generation_authorization.json",
+      "fresh_visual_operator_review/corrective_generation_contract.json"
+    ],
+    "timestamp": "2026-05-18T16:59:00+02:00"
+  },
+  {
     "event_type": "fresh_visual_generation_gate_prepared",
     "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
     "stage": "fresh_visual_generation_gate_preparation",

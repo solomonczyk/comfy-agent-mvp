@@ -1,0 +1,20 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-AUTHORIZATION-001",
+  "document_type": "corrective_visual_plan_operator_approved",
+  "timestamp": "2026-05-18T16:59:00+02:00",
+  "verdict_source": "human_operator",
+  "operator_plan_approved": true,
+  "approved_constraints": [
+    "preserve fairytale winter style",
+    "make the face less doll-like",
+    "skin must have micro-detail and avoid plastic smoothing",
+    "eyes should remain beautiful but look less glassy",
+    "fix mouth and teeth quality",
+    "target output is a quality candidate, not final production"
+  ],
+  "quality_target": "quality_candidate_only",
+  "final_production_target": false,
+  "blind_retry_allowed": false,
+  "current_state": "corrective_generation_authorized",
+  "next_allowed_action": "execute_one_corrective_generation"
+}

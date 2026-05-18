@@ -1,0 +1,44 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-AUTHORIZATION-001",
+  "document_type": "corrective_generation_contract",
+  "timestamp": "2026-05-18T16:59:00+02:00",
+  "contract_terms": {
+    "exactly_one_generation_allowed": true,
+    "max_generations": 1,
+    "no_second_attempt_allowed": true,
+    "no_retry_allowed": true,
+    "retry_authorized": false,
+    "blind_retry_allowed": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "production_acceptance_allowed": false,
+    "generation_must_stop_after_saving_output": true,
+    "stop_after_generation": true,
+    "next_step_after_generation": "operator_visual_review_required",
+    "generation_result_review_required": true,
+    "visual_qa_allowed": false,
+    "operator_visual_acceptance_allowed": false
+  },
+  "target_output": "fresh_visual_candidate_corrective_pass_01",
+  "quality_target": "quality_candidate_only",
+  "final_production_target": false,
+  "required_constraints": [
+    "preserve fairytale winter style",
+    "reduce doll-like face appearance",
+    "restore realistic skin micro-detail",
+    "reduce glassy eye effect while preserving beauty",
+    "improve mouth and teeth anatomy/detail",
+    "result should be a quality candidate only"
+  ],
+  "forbidden_actions": [
+    "second_generation_attempt",
+    "retry_without_explicit_authorization",
+    "blind_retry",
+    "assembly_before_operator_review",
+    "downstream_before_operator_review",
+    "production_acceptance_before_operator_review"
+  ],
+  "current_state": "corrective_generation_authorized",
+  "next_allowed_action": "execute_one_corrective_generation",
+  "authorization_source": "human_operator_approval"
+}

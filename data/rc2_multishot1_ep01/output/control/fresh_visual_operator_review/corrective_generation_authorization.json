@@ -1,0 +1,30 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-AUTHORIZATION-001",
+  "document_type": "corrective_generation_authorization",
+  "timestamp": "2026-05-18T16:59:00+02:00",
+  "generation_authorized": true,
+  "retry_authorized": false,
+  "blind_retry_allowed": false,
+  "max_generations": 1,
+  "max_retry_generations": 0,
+  "target": "fresh_visual_candidate_corrective_pass_01",
+  "purpose": "quality_candidate_generation",
+  "quality_target_only": true,
+  "final_production_allowed": false,
+  "visual_qa_allowed": false,
+  "operator_visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "stop_after_generation": true,
+  "required_constraints": [
+    "preserve fairytale winter style",
+    "reduce doll-like face appearance",
+    "restore realistic skin micro-detail",
+    "reduce glassy eye effect while preserving beauty",
+    "improve mouth and teeth anatomy/detail",
+    "result should be a quality candidate only"
+  ],
+  "current_state": "corrective_generation_authorized",
+  "next_allowed_action": "execute_one_corrective_generation"
+}
