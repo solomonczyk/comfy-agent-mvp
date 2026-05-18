@@ -1,0 +1,49 @@
+{
+  "agent_id": "colorist_agent",
+  "agent_role": "Colorist",
+  "responsibility_zone": "Review visual candidates for color/lighting quality including color consistency, contrast, exposure, brightness, skin tone if visible, mood matching, cinematic palette, and visual tone.",
+  "can_execute_generation": false,
+  "can_retry": false,
+  "can_accept_visual": false,
+  "can_set_production_accepted": false,
+  "can_run_assembly": false,
+  "can_run_downstream": false,
+  "can_edit_image": false,
+  "can_submit_comfyui": false,
+  "can_perform_color_grading_output": false,
+  "can_perform_visual_qa_final_acceptance": false,
+  "can_perform_operator_acceptance": false,
+  "can_run_preview_render": false,
+  "can_run_final_render": false,
+  "can_generate_voice": false,
+  "can_generate_audio": false,
+  "required_inputs": [
+    "visual_candidate_path",
+    "previous_actor_character_verdict",
+    "colorist_review_authorization"
+  ],
+  "required_outputs": [
+    "colorist_review_report",
+    "colorist_verdict",
+    "colorist_review_authorization"
+  ],
+  "stop_condition": "stop_after_review_and_wait_for_next_gate",
+  "review_criteria": [
+    "color_consistency",
+    "contrast",
+    "exposure",
+    "brightness",
+    "saturation_color_palette",
+    "skin_tone_risk_if_visible",
+    "mood_consistency",
+    "cinematic_look_consistency",
+    "visual_tone"
+  ],
+  "blocking_conditions": [
+    "candidate_missing",
+    "candidate_sha256_mismatch",
+    "previous_agent_not_completed"
+  ],
+  "version": "1.0",
+  "timestamp": "2026-05-18T20:11:59.614763"
+}

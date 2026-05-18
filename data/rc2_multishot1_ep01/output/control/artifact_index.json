@@ -1706,5 +1706,11 @@
   "actor_character_contract_created": true,
   "actor_character_review_authorization_created": true,
   "actor_character_review_report_created": true,
-  "actor_character_verdict_created": true
+  "actor_character_verdict_created": true,
+  "colorist_review_executed": true,
+  "colorist_verdict": "ACCEPTED",
+  "colorist_contract_created": true,
+  "colorist_review_authorization_created": true,
+  "colorist_review_report_created": true,
+  "colorist_verdict_created": true
 }
