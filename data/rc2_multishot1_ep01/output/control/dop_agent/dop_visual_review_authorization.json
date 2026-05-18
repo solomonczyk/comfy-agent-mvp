@@ -1,0 +1,28 @@
+{
+  "task_id": "RC-COMBINE-V2-DOP-VISUAL-REVIEW-VERTICAL-SLICE-001",
+  "authorization_type": "dop_visual_review_authorization",
+  "source_state": "next_visual_gate_authorization_required",
+  "authorized_action": "visual_review_only",
+  "candidate_image_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+  "candidate_prompt_id": "757e09a9-4683-4653-8603-b2cb19014c41",
+  "generation_authorized": false,
+  "retry_authorized": false,
+  "second_generation_authorized": false,
+  "downstream_authorized": false,
+  "production_acceptance_authorized": false,
+  "review_scope": {
+    "composition": true,
+    "framing": true,
+    "lighting": true,
+    "cinematic_quality": true,
+    "subject_readability": true
+  },
+  "constraints": {
+    "no_modification_of_candidate": true,
+    "no_new_generation": true,
+    "no_retry": true,
+    "no_downstream": true
+  },
+  "timestamp": "2026-05-18T17:48:19.218304Z",
+  "version": "1.0"
+}

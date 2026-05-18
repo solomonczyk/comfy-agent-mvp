@@ -1,6 +1,6 @@
 {
-  "current_state": "next_visual_gate_authorization_required",
-  "next_allowed_action": "next_visual_gate_authorization_required",
+  "current_state": "actor_character_control_review_required",
+  "next_allowed_action": "actor_character_control_review_required",
   "fresh_visual_human_verdict_task_executed": true,
   "fresh_visual_human_verdict_provided": true,
   "fresh_visual_operator_verdict_artifact_created": true,
@@ -1694,5 +1694,11 @@
   "camera_operator_operator_visual_review_completed": true,
   "camera_operator_operator_verdict_recorded": true,
   "camera_operator_candidate_technical_readability_report_created": true,
-  "camera_operator_operator_visual_verdict": "ACCEPTED_FOR_NEXT_GATE"
+  "camera_operator_operator_visual_verdict": "ACCEPTED_FOR_NEXT_GATE",
+  "dop_vertical_completed": true,
+  "dop_agent_contract_created": true,
+  "dop_visual_review_authorization_created": true,
+  "dop_visual_review_report_created": true,
+  "dop_visual_verdict_created": true,
+  "dop_verdict": "ACCEPTED_FOR_NEXT_GATE"
 }

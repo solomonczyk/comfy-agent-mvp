@@ -1,0 +1,57 @@
+{
+  "task_id": "RC-COMBINE-V2-DOP-VISUAL-REVIEW-VERTICAL-SLICE-001",
+  "agent_id": "director_of_photography_agent",
+  "agent_role": "Director of Photography",
+  "responsibility_zone": "Cinematography and visual quality review",
+  "version": "1.0",
+  "timestamp": "2026-05-18T17:48:19.217247Z",
+  "role_definition": {
+    "primary_focus": "Visual composition, framing, lighting, and cinematic quality",
+    "review_scope": [
+      "composition_balance",
+      "framing_composition",
+      "camera_angle",
+      "lighting_direction",
+      "subject_readability",
+      "shot_mood",
+      "visual_focus",
+      "cinematic_suitability"
+    ],
+    "decision_authority": "Recommendatory only - cannot accept to production"
+  },
+  "allowed_inputs": {
+    "candidate_image_path": "Path to existing visual candidate",
+    "candidate_prompt_id": "Generation prompt identifier",
+    "previous_agent_verdict": "Camera operator visual verdict"
+  },
+  "required_artifacts": [
+    "dop_agent_contract.json",
+    "dop_visual_review_authorization.json",
+    "dop_visual_review_report.json",
+    "dop_visual_verdict.json"
+  ],
+  "forbidden_actions": {
+    "new_generation": false,
+    "retry_generation": false,
+    "second_candidate": false,
+    "comfyui_submit": false,
+    "image_editing": false,
+    "visual_qa_final_acceptance": false,
+    "operator_acceptance_by_agent": false,
+    "assembly": false,
+    "preview_render": false,
+    "voice_generation": false,
+    "audio_generation": false,
+    "downstream_processing": false,
+    "production_acceptance": false
+  },
+  "decision_outputs": {
+    "verdict_types": [
+      "ACCEPTED_FOR_NEXT_GATE",
+      "REJECTED_NEEDS_CORRECTIVE_PLAN",
+      "MANUAL_REVIEW_REQUIRED"
+    ],
+    "verdict_authority": "Recommendation to next gate or corrective planning",
+    "production_acceptance_forbidden": true
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "RC-COMBINE-V2-DOP-VISUAL-REVIEW-VERTICAL-SLICE-001",
+  "agent_id": "director_of_photography_agent",
+  "candidate_image_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+  "candidate_prompt_id": "757e09a9-4683-4653-8603-b2cb19014c41",
+  "review_timestamp": "2026-05-18T17:48:19.243676Z",
+  "image_dimensions": {
+    "width": 1024,
+    "height": 1024,
+    "aspect_ratio": "1024:1024"
+  },
+  "review_scores": {
+    "composition": 0.85,
+    "framing": 0.9,
+    "lighting": 0.75,
+    "readability": 0.8,
+    "cinematic_suitability": 0.85,
+    "overall": 0.835
+  },
+  "detailed_review": {
+    "composition_assessment": "Well-balanced full-frame composition with proper subject placement.",
+    "framing_assessment": "Excellent full-frame framing without unwanted crops.",
+    "lighting_assessment": "Lighting is acceptable with minor improvements possible.",
+    "readability_assessment": "Subject is clearly readable with good contrast.",
+    "cinematic_assessment": "Frame is highly suitable for cinematic production."
+  },
+  "verdict": "ACCEPTED_FOR_NEXT_GATE",
+  "next_state": "actor_character_control_review_required",
+  "recommendations": [
+    "Adjust lighting direction for better subject illumination."
+  ],
+  "constraints_observed": {
+    "no_new_generation": true,
+    "no_retry": true,
+    "no_downstream": true,
+    "no_production_acceptance": true
+  },
+  "version": "1.0"
+}
