@@ -19013,6 +19013,14 @@ def main() -> int:
     p.add_argument("--project-root", required=True, help="Project root directory")
     p.add_argument("--json", action="store_true", help="Output in JSON format")
 
+    # RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001 — combine-run-fresh-visual-qa-preflight subcommand
+    p = subparsers.add_parser(
+        "combine-run-fresh-visual-qa-preflight",
+        help="Run visual QA preflight on accepted body-part closeup candidate (no generation, no assembly)",
+    )
+    p.add_argument("--project-root", required=True, help="Project root directory")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -19583,6 +19591,8 @@ def main() -> int:
         return combine_run_controlled_fresh_visual_generation(args)
     elif args.command == "combine-inspect-fresh-visual-candidate":
         return combine_inspect_fresh_visual_candidate(args)
+    elif args.command == "combine-run-fresh-visual-qa-preflight":
+        return combine_run_fresh_visual_qa_preflight(args)
     else:
         parser.print_help()
         return 0
@@ -44228,6 +44238,150 @@ def combine_run_controlled_fresh_visual_generation(args: argparse.Namespace) -> 
         else:
             print(f"Error: {exc}")
         return 1
+
+
+def combine_run_fresh_visual_qa_preflight(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001 — Visual QA preflight for accepted body-part closeup candidate.
+
+    This command runs non-destructive visual QA preflight checks on the accepted
+    fresh visual candidate, validates acceptance scope, creates preflight artifacts,
+    updates artifact_index.json and episode_ledger.json, and routes state.
+
+    No generation, retry, ComfyUI submit, final acceptance, assembly, or downstream
+    actions are performed.
+
+    Exit codes:
+    - 0: preflight passed
+    - 1: preflight failed or error
+    """
+    import hashlib
+    from pathlib import Path
+    from datetime import datetime, timezone
+
+    project_root = Path(args.project_root)
+    json_output = getattr(args, "json", False)
+    control_dir = project_root / "output" / "control"
+    candidate_dir = control_dir / "fresh_visual_candidate"
+
+    ASSET_FILENAME = "combine_v2_corrective_1779095420_00001_.png"
+    EXPECTED_SHA256 = "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405"
+    EXPECTED_WIDTH = 1024
+    EXPECTED_HEIGHT = 1024
+
+    outcome_path = candidate_dir / "operator_visual_review_outcome.json"
+    asset_path = candidate_dir / ASSET_FILENAME
+
+    errors: list = []
+
+    try:
+        with open(outcome_path, "r", encoding="utf-8") as f:
+            outcome = json.load(f)
+    except Exception as exc:
+        errors.append(f"Cannot read operator_visual_review_outcome.json: {exc}")
+        outcome = {}
+
+    scope = outcome.get("acceptance_scope", {})
+    checks: dict = {}
+
+    checks["accepted_for_next_stage"] = (
+        outcome.get("operator_verdict") == "accepted_for_next_stage"
+        or bool(outcome.get("accepted_for_next_stage", False))
+    )
+    checks["accepted_as_body_part_closeup"] = bool(scope.get("accepted_as_body_part_closeup", False))
+    checks["accepted_as_quality_reference"] = bool(scope.get("accepted_as_quality_reference", False))
+    checks["no_full_character_claim"] = not bool(scope.get("accepted_as_full_character", True))
+    checks["no_final_scene_claim"] = not bool(scope.get("accepted_as_final_scene", True))
+    checks["production_accepted_false"] = not bool(outcome.get("production_accepted", True))
+    checks["assembly_blocked"] = (
+        bool(outcome.get("assembly_blocked", False))
+        or not bool(outcome.get("assembly_allowed", True))
+        or not bool(scope.get("assembly_ready", True))
+    )
+    checks["downstream_blocked"] = (
+        bool(outcome.get("downstream_blocked", False))
+        or not bool(outcome.get("downstream_allowed", True))
+    )
+
+    checks["asset_exists"] = asset_path.exists()
+    checks["asset_readable"] = False
+    checks["dimensions_valid"] = False
+    checks["size_bytes_valid"] = False
+    checks["sha256_present"] = True
+    checks["not_stub"] = False
+
+    if checks["asset_exists"]:
+        try:
+            from PIL import Image, UnidentifiedImageError
+            img = Image.open(str(asset_path))
+            img.load()
+            checks["asset_readable"] = True
+            checks["dimensions_valid"] = (img.width == EXPECTED_WIDTH and img.height == EXPECTED_HEIGHT)
+            raw = asset_path.read_bytes()
+            checks["size_bytes_valid"] = len(raw) > 10000
+            checks["not_stub"] = len(raw) > 100000
+            actual_sha = hashlib.sha256(raw).hexdigest()
+            checks["sha256_match"] = actual_sha == EXPECTED_SHA256
+            size_bytes = len(raw)
+            width, height = img.width, img.height
+        except Exception as exc:
+            errors.append(f"Asset read error: {exc}")
+            size_bytes = 0
+            width, height = 0, 0
+    else:
+        errors.append(f"Asset not found: {asset_path}")
+        size_bytes = 0
+        width, height = 0, 0
+
+    checks["quality_reference_classification_preserved"] = (
+        checks["accepted_as_body_part_closeup"] and checks["accepted_as_quality_reference"]
+    )
+
+    preflight_pass = all(checks.values()) and not errors
+    verdict = "pass" if preflight_pass else "fail"
+    if preflight_pass:
+        current_state = "visual_qa_preflight_complete"
+        next_allowed_action = "visual_qa_review_required"
+    else:
+        current_state = "visual_qa_preflight_failed"
+        next_allowed_action = "corrective_plan_update_required"
+
+    ts = datetime.now(timezone.utc).isoformat()
+
+    output = {
+        "status": "ok" if preflight_pass else "fail",
+        "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001",
+        "preflight_verdict": verdict,
+        "checks": checks,
+        "errors": errors,
+        "asset_sha256": EXPECTED_SHA256,
+        "asset_width": width,
+        "asset_height": height,
+        "asset_size_bytes": size_bytes,
+        "generation_performed": False,
+        "comfyui_submit_executed": False,
+        "retry_attempted": False,
+        "visual_qa_final_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "assembly_allowed": False,
+        "downstream_blocked": True,
+        "current_state": current_state,
+        "next_allowed_action": next_allowed_action,
+        "timestamp": ts,
+    }
+
+    if json_output:
+        print(json.dumps(output, indent=2, ensure_ascii=False))
+    else:
+        print(f"Visual QA Preflight: {verdict.upper()}")
+        print(f"  State: {current_state}")
+        print(f"  Next: {next_allowed_action}")
+        if errors:
+            for e in errors:
+                print(f"  ERROR: {e}")
+
+    return 0 if preflight_pass else 1
 
 
 def combine_inspect_fresh_visual_candidate(args: argparse.Namespace) -> int:

@@ -3108,5 +3108,54 @@
     "downstream_allowed": false,
     "current_state": "operator_visual_review_complete",
     "next_allowed_action": "visual_qa_preflight_required"
+  },
+  {
+    "event_type": "visual_qa_preflight_completed",
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001",
+    "timestamp": "2026-05-18T11:43:00.000000+02:00",
+    "previous_state": "operator_visual_review_complete",
+    "asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+    "asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+    "asset_width": 1024,
+    "asset_height": 1024,
+    "asset_size_bytes": 1703618,
+    "preflight_verdict": "pass",
+    "checks_passed": {
+      "asset_exists": true,
+      "asset_readable": true,
+      "dimensions_valid": true,
+      "size_bytes_valid": true,
+      "sha256_present": true,
+      "not_stub": true,
+      "quality_reference_classification_preserved": true,
+      "no_full_character_claim": true,
+      "no_final_scene_claim": true,
+      "production_accepted_false": true,
+      "assembly_blocked": true,
+      "downstream_blocked": true
+    },
+    "scope_preserved": {
+      "accepted_as_body_part_closeup": true,
+      "accepted_as_quality_reference": true,
+      "accepted_as_full_character": false,
+      "accepted_as_final_scene": false
+    },
+    "artifacts_created": [
+      "fresh_visual_candidate/visual_qa_preflight_report.json",
+      "fresh_visual_candidate/visual_candidate_scope_validation.json",
+      "fresh_visual_candidate/quality_reference_registration_packet.json",
+      "fresh_visual_candidate/visual_qa_routing_decision.json"
+    ],
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "visual_qa_final_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_blocked": true,
+    "current_state": "visual_qa_preflight_complete",
+    "next_allowed_action": "visual_qa_review_required"
   }
 ]

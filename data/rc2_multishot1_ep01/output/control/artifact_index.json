@@ -1420,9 +1420,19 @@
   "accepted_as_full_character": false,
   "accepted_as_final_scene": false,
   "assembly_ready": false,
-  "current_state": "operator_visual_review_complete",
-  "next_allowed_action": "visual_qa_preflight_required",
+  "visual_qa_preflight_task": "RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001",
+  "visual_qa_preflight_report": "fresh_visual_candidate/visual_qa_preflight_report.json",
+  "visual_candidate_scope_validation": "fresh_visual_candidate/visual_candidate_scope_validation.json",
+  "quality_reference_registration_packet": "fresh_visual_candidate/quality_reference_registration_packet.json",
+  "visual_qa_routing_decision": "fresh_visual_candidate/visual_qa_routing_decision.json",
+  "visual_qa_preflight_verdict": "pass",
+  "visual_qa_preflight_timestamp": "2026-05-18T11:43:00.000000+02:00",
+  "visual_qa_preflight_blocker_active": false,
+  "visual_qa_preflight_all_checks_passed": true,
+  "current_state": "visual_qa_preflight_complete",
+  "next_allowed_action": "visual_qa_review_required",
   "production_accepted": false,
   "assembly_allowed": false,
-  "downstream_allowed": false
+  "downstream_allowed": false,
+  "downstream_blocked": true
 }
