@@ -1,0 +1,61 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001",
+  "feature_completed": false,
+  "full_feature_loop_executed": false,
+
+  "previous_authorization_commit": "997763d",
+  "previous_authorization_validated": true,
+  "pre_generation_git_clean_verified": false,
+  "pre_generation_py_compile_pass": true,
+
+  "generation_authorized": true,
+  "generation_performed": false,
+  "generation_count": 0,
+  "max_generations": 1,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "blind_retry_attempted": false,
+
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "prompt_id": null,
+
+  "generated_assets": [],
+
+  "fake_prompt_id_created": false,
+  "fake_asset_created": false,
+  "stub_asset_detected": false,
+
+  "visual_qa_executed": false,
+  "visual_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "preview_render_executed": false,
+  "voice_generation_executed": false,
+  "audio_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+
+  "required_artifacts_created": false,
+  "artifact_index_updated": false,
+  "episode_ledger_updated": false,
+  "state_updated": false,
+
+  "tests_pass": false,
+  "py_compile_pass": true,
+  "cli_validation_pass": false,
+
+  "current_state": "fresh_visual_generation_blocked_dirty_git",
+  "next_allowed_action": "freeze_preflight_commit_verification",
+
+  "commit_hash": "997763d",
+  "push_status": "not_pushed_dirty_working_tree",
+  "git_status_clean": false,
+
+  "blockers": [
+    "git_working_tree_dirty_before_generation",
+    "uncommitted_files_present",
+    "dangerous_actions_blocked_by_dirty_git_policy"
+  ],
+  "next_task_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PREFLIGHT-CLEANUP-001"
+}
