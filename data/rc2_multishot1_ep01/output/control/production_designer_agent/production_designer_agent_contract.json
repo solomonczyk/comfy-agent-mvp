@@ -1,0 +1,47 @@
+{
+  "agent_id": "production_designer_agent",
+  "agent_role": "Production Designer",
+  "responsibility_zone": "Review visual candidates for production design quality including visual world, location/environment, set design, decor and background coherence, genre/era consistency, atmosphere, and scene support/readiness.",
+  "can_execute_generation": false,
+  "can_retry": false,
+  "can_accept_visual": false,
+  "can_set_production_accepted": false,
+  "can_run_assembly": false,
+  "can_run_downstream": false,
+  "can_edit_image": false,
+  "can_submit_comfyui": false,
+  "can_modify_set_background": false,
+  "can_perform_visual_qa_final_acceptance": false,
+  "can_perform_operator_acceptance": false,
+  "can_run_preview_render": false,
+  "can_run_final_render": false,
+  "can_generate_voice": false,
+  "can_generate_audio": false,
+  "required_inputs": [
+    "visual_candidate_path",
+    "previous_colorist_verdict",
+    "production_design_review_authorization"
+  ],
+  "required_outputs": [
+    "production_design_review_report",
+    "production_design_verdict",
+    "production_design_review_authorization"
+  ],
+  "stop_condition": "stop_after_review_and_wait_for_next_gate",
+  "review_criteria": [
+    "visual_world",
+    "location_environment",
+    "set_design",
+    "decor_background_coherence",
+    "genre_era_style_consistency",
+    "atmosphere",
+    "scene_support"
+  ],
+  "blocking_conditions": [
+    "candidate_missing",
+    "candidate_sha256_mismatch",
+    "previous_agent_not_completed"
+  ],
+  "version": "1.0",
+  "timestamp": "2026-05-18T20:19:59.850687"
+}

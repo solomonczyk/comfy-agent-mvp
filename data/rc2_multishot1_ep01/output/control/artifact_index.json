@@ -1712,5 +1712,11 @@
   "colorist_contract_created": true,
   "colorist_review_authorization_created": true,
   "colorist_review_report_created": true,
-  "colorist_verdict_created": true
+  "colorist_verdict_created": true,
+  "production_design_review_executed": true,
+  "production_design_verdict": "ACCEPTED",
+  "production_design_contract_created": true,
+  "production_design_review_authorization_created": true,
+  "production_design_review_report_created": true,
+  "production_design_verdict_created": true
 }
