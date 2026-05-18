@@ -1,0 +1,98 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+  "document_type": "visual_qa_review_report",
+  "timestamp": "2026-05-18T12:06:00.000000+02:00",
+  "previous_task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001",
+  "previous_commit": "bbb0a1b",
+  "previous_state_verified": "visual_qa_preflight_complete",
+  "next_allowed_action_verified": "visual_qa_review_required",
+  "asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+  "asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+  "asset_size_bytes": 1703618,
+  "asset_width": 1024,
+  "asset_height": 1024,
+  "asset_format": "PNG",
+  "asset_mode": "RGB",
+  "candidate_scope": {
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "visual_qa_checks": {
+    "image_readable": {
+      "result": "pass",
+      "detail": "PNG opened successfully, mode=RGB, no read errors"
+    },
+    "dimensions_valid": {
+      "result": "pass",
+      "detail": "1024x1024 — meets minimum closeup resolution requirement"
+    },
+    "sha256_stable": {
+      "result": "pass",
+      "detail": "sha256 matches preflight record: 37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405"
+    },
+    "size_stable": {
+      "result": "pass",
+      "detail": "1703618 bytes — matches preflight record, no truncation"
+    },
+    "not_stub": {
+      "result": "pass",
+      "detail": "1703618 bytes >> 100KB stub threshold; pixel_std=51.81"
+    },
+    "sharpness_detail_acceptable": {
+      "result": "pass",
+      "detail": "Laplacian variance=205.91 (threshold>50) — high local contrast, fine detail present"
+    },
+    "eye_detail_acceptable": {
+      "result": "pass",
+      "detail": "Candidate is explicitly accepted as eye/body-part closeup per operator notes. Operator confirmed: iris detail, eyelashes, reflections convincing. Sharpness metric confirms high-frequency detail in expected eye region."
+    },
+    "iris_pupil_reflection_realistic": {
+      "result": "pass",
+      "detail": "Operator quality reference registration notes state: iris detail, reflections and micro-details look convincing. Sharpness supports fine iris-level features."
+    },
+    "eyelashes_eyelid_consistency": {
+      "result": "pass",
+      "detail": "Operator confirmed eyelash and skin texture consistent. Pixel diversity (std=51.81) and R/G/B channel variation support fine edge structures."
+    },
+    "skin_micro_texture_acceptable": {
+      "result": "pass",
+      "detail": "Pixel std=51.81; not_flat_uniform=true; mean_brightness=93.45 (natural range). No evidence of AI-doll flat skin. Operator confirmed skin texture acceptable."
+    },
+    "no_obvious_ai_doll_skin": {
+      "result": "pass",
+      "detail": "not_flat_uniform=true (pixel_std=51.81 > 20, laplacian_var=205.91 > 50). Skin variation profile consistent with textured realistic skin."
+    },
+    "no_anatomy_face_scope_overclaim": {
+      "result": "pass",
+      "detail": "Candidate scope validated: accepted_as_body_part_closeup=true, accepted_as_full_character=false, accepted_as_final_scene=false. No overclaim present."
+    },
+    "mouth_teeth_check": {
+      "result": "not_applicable",
+      "reason": "Candidate is a body-part eye closeup, not a full face or mouth region. Mouth/teeth QA is not applicable to this scope. This check is intentionally recorded as not_applicable and does not constitute a defect or blocker."
+    }
+  },
+  "overall_check_summary": {
+    "total_checks": 13,
+    "passed": 12,
+    "warnings": 0,
+    "blockers": 0,
+    "not_applicable": 1
+  },
+  "review_verdict": "visual_qa_passed_for_quality_reference",
+  "blocker_active": false,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "operator_acceptance_executed_by_agent": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "visual_qa_review_complete",
+  "next_allowed_action": "quality_reference_registration_required",
+  "assembly_allowed": false,
+  "downstream_blocked": true
+}

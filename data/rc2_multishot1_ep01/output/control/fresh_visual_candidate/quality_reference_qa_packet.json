@@ -1,0 +1,62 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+  "document_type": "quality_reference_qa_packet",
+  "timestamp": "2026-05-18T12:06:00.000000+02:00",
+  "asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+  "asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+  "asset_size_bytes": 1703618,
+  "asset_width": 1024,
+  "asset_height": 1024,
+  "prompt_id": "62cf0c52-7f45-4b75-8fa1-3fcfc9d70fbc",
+  "classification": "body_part_closeup_quality_reference",
+  "visual_qa_review_complete": true,
+  "visual_qa_decision": "visual_qa_passed_for_quality_reference",
+  "qa_checks_summary": {
+    "total": 13,
+    "passed": 12,
+    "warnings": 0,
+    "blockers": 0,
+    "not_applicable": 1
+  },
+  "quality_reference_traits_confirmed": {
+    "high_sharpness": true,
+    "natural_brightness": true,
+    "pixel_diversity_non_stub": true,
+    "non_flat_skin": true,
+    "eye_detail_confirmed_by_operator": true,
+    "iris_pupil_reflection_confirmed_by_operator": true,
+    "eyelash_eyelid_confirmed_by_operator": true,
+    "skin_micro_texture_confirmed_by_operator": true
+  },
+  "scope_boundaries": {
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "usage_constraints": {
+    "may_be_used_as_quality_reference": true,
+    "may_be_used_as_body_part_closeup_reference": true,
+    "may_not_be_used_as_full_character": true,
+    "may_not_be_used_as_final_scene": true,
+    "may_not_be_assembly_submitted": true,
+    "may_not_trigger_downstream": true
+  },
+  "next_required_action": "quality_reference_registration_required",
+  "registration_scope": "quality_reference_only",
+  "production_registration_allowed": false,
+  "assembly_registration_allowed": false,
+  "downstream_registration_allowed": false,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_blocked": true,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "current_state": "visual_qa_review_complete",
+  "next_allowed_action": "quality_reference_registration_required"
+}

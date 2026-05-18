@@ -1,0 +1,58 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+  "document_type": "visual_qa_decision",
+  "timestamp": "2026-05-18T12:06:00.000000+02:00",
+  "asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+  "asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+  "qa_decision": "visual_qa_passed_for_quality_reference",
+  "qa_decision_rationale": [
+    "All 12 applicable visual QA checks passed.",
+    "1 check (mouth/teeth) recorded as not_applicable with valid reason: candidate is eye/body-part closeup.",
+    "No blocker defects found.",
+    "No warning defects found.",
+    "Sharpness (laplacian_var=205.91) well above threshold (50).",
+    "Brightness (mean=93.45) within acceptable range.",
+    "Pixel diversity (std=51.81) confirms non-stub, non-flat-skin candidate.",
+    "SHA256 and size match preflight record — asset is stable.",
+    "Scope validated: body_part_closeup=true, quality_reference=true, full_character=false, final_scene=false.",
+    "Operator quality reference notes corroborate automated metrics."
+  ],
+  "allowed_outcomes_checked": [
+    "visual_qa_passed_for_quality_reference",
+    "visual_qa_passed_with_warnings",
+    "visual_qa_failed",
+    "manual_review_required"
+  ],
+  "selected_outcome": "visual_qa_passed_for_quality_reference",
+  "state_routing": {
+    "current_state": "visual_qa_review_complete",
+    "next_allowed_action": "quality_reference_registration_required",
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_blocked": true
+  },
+  "scope_preserved": {
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "forbidden_actions_confirmed_not_executed": {
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "second_candidate_created": false,
+    "prompt_rewritten": false,
+    "operator_acceptance_executed_by_agent": false,
+    "assembly_executed": false,
+    "preview_render_executed": false,
+    "final_render_executed": false,
+    "voice_audio_executed": false,
+    "downstream_executed": false,
+    "production_accepted_set_true": false,
+    "scope_expanded_to_full_character": false,
+    "hidden_downloads_api_calls": false
+  }
+}

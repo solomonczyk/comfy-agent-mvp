@@ -1,0 +1,48 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+  "document_type": "visual_defect_assessment",
+  "timestamp": "2026-05-18T12:06:00.000000+02:00",
+  "asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+  "asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+  "candidate_scope": "body_part_eye_closeup_quality_reference",
+  "defects": [],
+  "warnings": [],
+  "not_applicable_checks": [
+    {
+      "check": "mouth_teeth_check",
+      "reason": "Candidate is a body-part eye closeup. Mouth/teeth region is not present in this crop. Not applicable by scope definition.",
+      "blocker": false
+    }
+  ],
+  "blocker_defects": [],
+  "blocker_count": 0,
+  "warning_count": 0,
+  "defect_count": 0,
+  "assessment_verdict": "no_blockers_no_warnings",
+  "image_metrics": {
+    "sharpness_laplacian_var": 205.91,
+    "sharpness_threshold": 50.0,
+    "sharpness_pass": true,
+    "mean_brightness": 93.45,
+    "brightness_min": 20.0,
+    "brightness_max": 235.0,
+    "brightness_pass": true,
+    "pixel_std": 51.81,
+    "pixel_diversity_threshold": 10.0,
+    "pixel_diversity_pass": true,
+    "not_flat_uniform": true,
+    "R_mean": 119.71,
+    "R_std": 51.55,
+    "G_mean": 87.29,
+    "G_std": 47.37,
+    "B_mean": 73.34,
+    "B_std": 44.93
+  },
+  "scope_boundary_respected": true,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_blocked": true,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false
+}

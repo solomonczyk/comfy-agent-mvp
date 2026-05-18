@@ -3157,5 +3157,48 @@
     "downstream_blocked": true,
     "current_state": "visual_qa_preflight_complete",
     "next_allowed_action": "visual_qa_review_required"
+  },
+  {
+    "event_type": "visual_qa_review_completed",
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+    "stage": "visual_qa_review",
+    "previous_task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001",
+    "previous_commit": "bbb0a1b",
+    "previous_state_verified": "visual_qa_preflight_complete",
+    "next_allowed_action_verified": "visual_qa_review_required",
+    "visual_qa_decision": "visual_qa_passed_for_quality_reference",
+    "total_checks": 13,
+    "passed": 12,
+    "warnings": 0,
+    "blockers": 0,
+    "not_applicable": 1,
+    "mouth_teeth_check": "not_applicable",
+    "mouth_teeth_not_applicable_reason": "candidate_is_body_part_eye_closeup_not_full_face",
+    "scope_preserved": {
+      "accepted_as_body_part_closeup": true,
+      "accepted_as_quality_reference": true,
+      "accepted_as_full_character": false,
+      "accepted_as_final_scene": false,
+      "assembly_ready": false,
+      "production_accepted": false
+    },
+    "artifacts_created": [
+      "fresh_visual_candidate/visual_qa_review_report.json",
+      "fresh_visual_candidate/visual_defect_assessment.json",
+      "fresh_visual_candidate/visual_qa_decision.json",
+      "fresh_visual_candidate/quality_reference_qa_packet.json"
+    ],
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "operator_acceptance_executed_by_agent": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_blocked": true,
+    "current_state": "visual_qa_review_complete",
+    "next_allowed_action": "quality_reference_registration_required",
+    "timestamp": "2026-05-18T12:06:00.000000+02:00"
   }
 ]
