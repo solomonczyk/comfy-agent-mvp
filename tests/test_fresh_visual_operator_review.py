@@ -295,12 +295,11 @@ def test_human_rejection_state_routes_to_corrective_plan_review():
     with open(state_path, 'r') as f:
         state = json.load(f)
     
-    # After corrective authorization, state has moved forward
-    # This test now verifies the authorization state
-    assert state["current_state"] == "corrective_generation_authorized", "Current state must be corrective_generation_authorized"
-    assert state["next_allowed_action"] == "execute_one_corrective_generation", "Next action must be execute_one_corrective_generation"
+    # After scope repair, state requires new operator authorization
+    assert state["current_state"] == "corrective_generation_scope_repaired_authorization_required", "Current state must be corrective_generation_scope_repaired_authorization_required"
+    assert state["next_allowed_action"] == "operator_authorize_one_full_frame_corrective_generation", "Next action must be operator_authorize_one_full_frame_corrective_generation"
     assert state["retry_authorized"] is False, "Retry must not be authorized"
-    assert state["generation_authorized"] is True, "Generation must be authorized after approval"
+    assert state["generation_authorized"] is False, "Generation must not be authorized after scope repair"
     assert state["assembly_allowed"] is False, "Assembly must not be allowed"
     assert state["production_accepted"] is False, "Production accepted must remain false"
 
@@ -316,15 +315,15 @@ def test_human_rejection_updates_artifact_index():
     assert index.get("fresh_visual_operator_rejection_artifact_created") is True, "Operator rejection artifact created must be true"
     assert index.get("fresh_visual_corrective_plan_artifact_created") is True, "Corrective plan artifact created must be true"
 
-    # After corrective authorization, state has moved forward
-    assert index["current_state"] == "corrective_generation_authorized"
-    assert index["next_allowed_action"] == "execute_one_corrective_generation"
+    # After scope repair, state requires new operator authorization
+    assert index["current_state"] == "corrective_generation_scope_repaired_authorization_required"
+    assert index["next_allowed_action"] == "operator_authorize_one_full_frame_corrective_generation"
     assert index["fresh_visual_operator_verdict"] == "rejected_needs_corrective_plan"
     assert index["fresh_visual_accepted_as_concept_reference"] is True
     assert index["fresh_visual_accepted_as_quality_reference"] is False
     assert index["fresh_visual_accepted_as_final_visual"] is False
     assert index["fresh_visual_retry_authorized"] is False
-    assert index["fresh_visual_generation_authorized"] is True  # Now authorized after approval
+    assert index["fresh_visual_generation_authorized"] is False  # Not authorized after scope repair
 
 
 def test_human_rejection_updates_episode_ledger():
@@ -502,10 +501,10 @@ def test_corrective_authorization_state_transition():
     with open(state_path, 'r') as f:
         state = json.load(f)
 
-    assert state["current_state"] == "corrective_generation_authorized", "Current state must be corrective_generation_authorized"
-    assert state["next_allowed_action"] == "execute_one_corrective_generation", "Next action must be execute_one_corrective_generation"
-    assert state["generation_authorized"] is True, "Generation must be authorized"
-    assert state["corrective_generation_authorized"] is True, "Corrective generation must be authorized"
+    assert state["current_state"] == "corrective_generation_scope_repaired_authorization_required", "Current state must be corrective_generation_scope_repaired_authorization_required"
+    assert state["next_allowed_action"] == "operator_authorize_one_full_frame_corrective_generation", "Next action must be operator_authorize_one_full_frame_corrective_generation"
+    assert state["generation_authorized"] is False, "Generation must not be authorized after scope repair"
+    assert state["corrective_generation_authorized"] is False, "Corrective generation must not be authorized after scope repair"
     assert state["corrective_max_generations"] == 1, "Corrective max generations must be 1"
     assert state["retry_authorized"] is False, "Retry must not be authorized"
     assert state["assembly_allowed"] is False, "Assembly must not be allowed"
@@ -536,9 +535,9 @@ def test_corrective_authorization_artifact_index_updated():
     with open(artifact_index_path, 'r') as f:
         index = json.load(f)
 
-    assert index["current_state"] == "corrective_generation_authorized"
-    assert index["next_allowed_action"] == "execute_one_corrective_generation"
-    assert index.get("corrective_generation_authorized") is True
+    assert index["current_state"] == "corrective_generation_scope_repaired_authorization_required"
+    assert index["next_allowed_action"] == "operator_authorize_one_full_frame_corrective_generation"
+    assert index.get("corrective_generation_authorized") is False
     assert index.get("corrective_max_generations") == 1
     assert index.get("corrective_plan_operator_approved") is True
     
