@@ -1,0 +1,56 @@
+{
+  "agent_id": "script_supervisor_continuity_guard",
+  "role": "script_supervisor_continuity_guard",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-CONTINUITY-VERTICAL-SLICE-001",
+  "responsibility_zone": "agent_verdict_continuity_review",
+  "allowed_inputs": [
+    "candidate_path",
+    "candidate_sha256",
+    "prior_agent_proofs",
+    "state_json",
+    "artifact_index_json",
+    "episode_ledger_json"
+  ],
+  "required_artifacts": [
+    "camera_operator_proof",
+    "dop_proof",
+    "actor_character_control_proof",
+    "colorist_proof",
+    "production_designer_proof",
+    "set_decorator_proof",
+    "props_proof",
+    "costume_proof"
+  ],
+  "forbidden_actions": [
+    "new_generation",
+    "retry",
+    "comfyui_submit",
+    "image_editing",
+    "preview_render",
+    "final_render",
+    "visual_qa_final_acceptance",
+    "operator_acceptance_by_agent",
+    "assembly",
+    "downstream",
+    "production_accepted_true"
+  ],
+  "blocker_conditions": [
+    "missing_prior_agent_proof",
+    "candidate_sha_mismatch",
+    "invalid_state_transition",
+    "production_accepted_true",
+    "fake_operator_acceptance",
+    "forbidden_action_detected"
+  ],
+  "decision_outputs": [
+    "ACCEPTED",
+    "BLOCKED",
+    "UNCERTAIN"
+  ],
+  "may_set_production_accepted": false,
+  "may_authorize_generation": false,
+  "may_authorize_retry": false,
+  "may_authorize_render": false,
+  "may_authorize_downstream": false,
+  "traceable": true
+}

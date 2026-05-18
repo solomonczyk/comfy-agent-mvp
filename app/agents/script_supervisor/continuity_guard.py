@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import json
 import os
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -263,4 +264,268 @@ class ContinuityGuard:
             "findings": findings,
             "standards_pack_version": self.standards.get_standards_version(),
             "traceable": True,
+        }
+
+    def audit_agent_verdict_chain(self, candidate_path: str, candidate_sha256: str) -> Dict[str, Any]:
+        """Audit the chain of prior agent verdicts for continuity."""
+        self.standards.load_standards()
+        findings: List[Dict[str, Any]] = []
+        
+        # Expected agent chain in order
+        expected_agents = [
+            "camera_operator_agent",
+            "dop_agent",
+            "actor_character_control_agent",
+            "colorist_agent",
+            "production_designer_agent",
+            "set_decorator_agent",
+            "props_agent",
+            "costume_agent",
+        ]
+        
+        agent_proofs: Dict[str, Any] = {}
+        missing_proofs: List[str] = []
+        sha_mismatches: List[str] = []
+        verdict_chain: List[Dict[str, Any]] = []
+        
+        for agent in expected_agents:
+            agent_dir = self.control_dir / agent
+            proof_files = list(agent_dir.glob("*_proof.json"))
+            
+            if not proof_files:
+                missing_proofs.append(agent)
+                findings.append(
+                    self.standards.get_traceable_finding(
+                        decision="blocked",
+                        severity="blocker",
+                        detail=f"Missing proof file for agent: {agent}",
+                    )
+                )
+                continue
+            
+            # Read the most recent proof
+            proof_file = sorted(proof_files, key=lambda p: p.stat().st_mtime, reverse=True)[0]
+            try:
+                with open(proof_file, "r", encoding="utf-8") as f:
+                    proof = json.load(f)
+                agent_proofs[agent] = proof
+                
+                # Check verdict
+                verdict_key = None
+                if agent == "camera_operator_agent":
+                    verdict_key = "operator_verdict"
+                elif agent == "dop_agent":
+                    verdict_key = "dop_verdict"
+                elif agent == "actor_character_control_agent":
+                    verdict_key = "actor_character_verdict"
+                elif agent == "colorist_agent":
+                    verdict_key = "colorist_verdict"
+                elif agent == "production_designer_agent":
+                    verdict_key = "production_design_verdict"
+                elif agent == "set_decorator_agent":
+                    verdict_key = "set_decorator_verdict"
+                elif agent == "props_agent":
+                    verdict_key = "props_verdict"
+                elif agent == "costume_agent":
+                    verdict_key = "costume_verdict"
+                
+                verdict = proof.get(verdict_key, "UNKNOWN")
+                verdict_chain.append({
+                    "agent": agent,
+                    "verdict": verdict,
+                    "proof_file": str(proof_file.name),
+                    "commit": proof.get("commit_hash", ""),
+                })
+                
+                # Check SHA256 consistency if present
+                proof_candidate_sha = proof.get("candidate_sha256")
+                if proof_candidate_sha and proof_candidate_sha != candidate_sha256:
+                    sha_mismatches.append(agent)
+                    findings.append(
+                        self.standards.get_traceable_finding(
+                            decision="blocked",
+                            severity="blocker",
+                            detail=f"SHA256 mismatch for {agent}: expected {candidate_sha256}, got {proof_candidate_sha}",
+                        )
+                    )
+                
+                # Check for forbidden actions
+                if proof.get("new_generation_performed", False):
+                    findings.append(
+                        self.standards.get_traceable_finding(
+                            decision="blocked",
+                            severity="blocker",
+                            detail=f"{agent} performed new generation - forbidden",
+                        )
+                    )
+                if proof.get("retry_attempted", False):
+                    findings.append(
+                        self.standards.get_traceable_finding(
+                            decision="blocked",
+                            severity="blocker",
+                            detail=f"{agent} attempted retry - forbidden",
+                        )
+                    )
+                if proof.get("comfyui_submit_executed", False):
+                    findings.append(
+                        self.standards.get_traceable_finding(
+                            decision="blocked",
+                            severity="blocker",
+                            detail=f"{agent} executed ComfyUI submit - forbidden",
+                        )
+                    )
+                if proof.get("production_accepted", False):
+                    findings.append(
+                        self.standards.get_traceable_finding(
+                            decision="blocked",
+                            severity="blocker",
+                            detail=f"{agent} set production_accepted=true - forbidden",
+                        )
+                    )
+                    
+            except (json.JSONDecodeError, IOError) as e:
+                findings.append(
+                    self.standards.get_traceable_finding(
+                        decision="blocked",
+                        severity="blocker",
+                        detail=f"Failed to read proof for {agent}: {e}",
+                    )
+                )
+        
+        if missing_proofs:
+            findings.append(
+                self.standards.get_traceable_finding(
+                    decision="blocked",
+                    severity="blocker",
+                    detail=f"Missing proofs for agents: {', '.join(missing_proofs)}",
+                )
+            )
+        
+        if not sha_mismatches and not missing_proofs:
+            findings.append(
+                self.standards.get_traceable_finding(
+                    decision="pass",
+                    severity="info",
+                    detail="All agent verdicts present and SHA256 consistent",
+                )
+            )
+        
+        # Check that all verdicts are ACCEPTED or ACCEPTED_FOR_NEXT_GATE
+        non_accepted = [v for v in verdict_chain if v["verdict"] not in ("ACCEPTED", "ACCEPTED_FOR_NEXT_GATE")]
+        if non_accepted:
+            non_accepted_desc = ", ".join([f"{v['agent']}: {v['verdict']}" for v in non_accepted])
+            findings.append(
+                self.standards.get_traceable_finding(
+                    decision="blocked",
+                    severity="blocker",
+                    detail=f"Non-accepted verdicts found: {non_accepted_desc}",
+                )
+            )
+        
+        return {
+            "report_id": "script_supervisor_agent_verdict_chain_report",
+            "version": "1.0.0",
+            "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-CONTINUITY-VERTICAL-SLICE-001",
+            "role": "script_supervisor",
+            "candidate_path": candidate_path,
+            "candidate_sha256": candidate_sha256,
+            "expected_agents": expected_agents,
+            "agent_proofs_found": list(agent_proofs.keys()),
+            "missing_proofs": missing_proofs,
+            "sha_mismatches": sha_mismatches,
+            "verdict_chain": verdict_chain,
+            "findings": findings,
+            "standards_pack_version": self.standards.get_standards_version(),
+            "traceable": True,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+        }
+
+    def audit_state_transition_chain(self) -> Dict[str, Any]:
+        """Audit the state transition chain for validity."""
+        self.standards.load_standards()
+        findings: List[Dict[str, Any]] = []
+        
+        # Read state
+        state_path = self.control_dir / "state.json"
+        state: Dict[str, Any] = {}
+        if state_path.is_file():
+            try:
+                with open(state_path, "r", encoding="utf-8") as f:
+                    state = json.load(f)
+            except (json.JSONDecodeError, IOError):
+                findings.append(
+                    self.standards.get_traceable_finding(
+                        decision="blocked",
+                        severity="blocker",
+                        detail="Failed to read state.json",
+                    )
+                )
+        
+        current_state = state.get("current_state", "")
+        expected_state = "script_supervisor_continuity_review_required"
+        
+        if current_state != expected_state:
+            findings.append(
+                self.standards.get_traceable_finding(
+                    decision="blocked",
+                    severity="blocker",
+                    detail=f"State mismatch: expected {expected_state}, got {current_state}",
+                )
+            )
+        else:
+            findings.append(
+                self.standards.get_traceable_finding(
+                    decision="pass",
+                    severity="info",
+                    detail=f"State is correct: {current_state}",
+                )
+            )
+        
+        # Check that production_accepted is false
+        production_accepted = state.get("production_accepted", False)
+        if production_accepted:
+            findings.append(
+                self.standards.get_traceable_finding(
+                    decision="blocked",
+                    severity="blocker",
+                    detail="production_accepted is true - forbidden",
+                )
+            )
+        else:
+            findings.append(
+                self.standards.get_traceable_finding(
+                    decision="pass",
+                    severity="info",
+                    detail="production_accepted is false - correct",
+                )
+            )
+        
+        # Check that no generation occurred after Camera Operator
+        new_image_generation_performed = state.get("new_image_generation_performed", False)
+        comfyui_submit_executed = state.get("comfyui_submit_executed", False)
+        
+        if new_image_generation_performed or comfyui_submit_executed:
+            findings.append(
+                self.standards.get_traceable_finding(
+                    decision="warning",
+                    severity="warning",
+                    detail="Generation flags are true - verify this is the original Camera Operator generation",
+                )
+            )
+        
+        return {
+            "report_id": "script_supervisor_state_transition_chain_report",
+            "version": "1.0.0",
+            "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-CONTINUITY-VERTICAL-SLICE-001",
+            "role": "script_supervisor",
+            "current_state": current_state,
+            "expected_state": expected_state,
+            "state_valid": current_state == expected_state,
+            "production_accepted": production_accepted,
+            "new_image_generation_performed": new_image_generation_performed,
+            "comfyui_submit_executed": comfyui_submit_executed,
+            "findings": findings,
+            "standards_pack_version": self.standards.get_standards_version(),
+            "traceable": True,
+            "timestamp": datetime.now(timezone.utc).isoformat(),
         }

@@ -12,6 +12,7 @@ from .contact_sheet_audit import ContactSheetAuditor
 from .continuity_guard import ContinuityGuard
 from .blocker_builder import BlockerBuilder
 from .script_supervisor_agent import ScriptSupervisorStandardsAgent
+from .continuity_review_agent import ContinuityReviewAgent
 
 __all__ = [
     "ScriptSupervisorStandardsAdapter",
@@ -21,4 +22,5 @@ __all__ = [
     "ContinuityGuard",
     "BlockerBuilder",
     "ScriptSupervisorStandardsAgent",
+    "ContinuityReviewAgent",
 ]

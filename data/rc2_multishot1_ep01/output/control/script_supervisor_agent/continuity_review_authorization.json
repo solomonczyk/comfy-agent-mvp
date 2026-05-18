@@ -1,0 +1,24 @@
+{
+  "authorization_id": "continuity_review_authorization",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-CONTINUITY-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "source_state": "script_supervisor_continuity_review_required",
+  "reviewed_candidate_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+  "reviewed_candidate_sha256": "53f46d3dd50da408bfcf65e764fa9ca14630d568d96b1731a5bc0ad16ea4f68b",
+  "reviewed_prior_agent_chain": [
+    "camera_operator_agent",
+    "dop_agent",
+    "actor_character_control_agent",
+    "colorist_agent",
+    "production_designer_agent",
+    "set_decorator_agent",
+    "props_agent",
+    "costume_agent"
+  ],
+  "no_generation_authorized": true,
+  "no_retry_authorized": true,
+  "no_render_authorized": true,
+  "no_downstream_authorized": true,
+  "timestamp": "2026-05-18T19:03:41.253356+00:00",
+  "traceable": true
+}

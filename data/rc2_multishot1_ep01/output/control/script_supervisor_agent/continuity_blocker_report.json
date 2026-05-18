@@ -1,0 +1,17 @@
+{
+  "blocker_report_id": "continuity_blocker_report",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-CONTINUITY-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "timestamp": "2026-05-18T19:03:29.967708+00:00",
+  "blocker_type": "continuity_blocker",
+  "blocked": true,
+  "blocker_reasons": [
+    "State mismatch: expected script_supervisor_continuity_review_required, got state_audit_guard_review_required"
+  ],
+  "blocker_count": 1,
+  "required_resolution": "manual_review_and_correction",
+  "verdict": "BLOCKED",
+  "next_state": "continuity_blocker_resolution_required",
+  "next_allowed_action": "continuity_blocker_resolution_required",
+  "traceable": true
+}

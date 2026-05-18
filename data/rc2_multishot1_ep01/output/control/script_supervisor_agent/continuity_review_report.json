@@ -1,0 +1,30 @@
+{
+  "report_id": "continuity_review_report",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-CONTINUITY-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "timestamp": "2026-05-18T19:03:41.251323+00:00",
+  "candidate_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+  "candidate_sha256": "53f46d3dd50da408bfcf65e764fa9ca14630d568d96b1731a5bc0ad16ea4f68b",
+  "previous_costume_commit": "a3bc5f1",
+  "costume_proof_tracked": true,
+  "agent_verdict_chain_summary": {
+    "total_agents": 8,
+    "all_accepted": true,
+    "sha_consistent": true
+  },
+  "state_transition_summary": {
+    "state_valid": true,
+    "production_accepted_false": true
+  },
+  "downstream_guard_summary": {
+    "production_accepted_false": true,
+    "voice_generation_blocked": true,
+    "assembly_blocked": true,
+    "downstream_blocked": true
+  },
+  "forbidden_actions_absent": true,
+  "total_findings": 8,
+  "blocker_findings": 0,
+  "verdict": "ACCEPTED",
+  "traceable": true
+}

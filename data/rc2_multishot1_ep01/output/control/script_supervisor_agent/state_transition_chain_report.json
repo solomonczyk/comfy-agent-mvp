@@ -1,0 +1,103 @@
+{
+  "report_id": "script_supervisor_state_transition_chain_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-CONTINUITY-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "current_state": "script_supervisor_continuity_review_required",
+  "expected_state": "script_supervisor_continuity_review_required",
+  "state_valid": true,
+  "production_accepted": false,
+  "new_image_generation_performed": true,
+  "comfyui_submit_executed": true,
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "State is correct: script_supervisor_continuity_review_required"
+    },
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "production_accepted is false - correct"
+    },
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "warnings_allow_pass_with_note",
+      "role": "script_supervisor",
+      "severity": "warning",
+      "decision": "warning",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        }
+      ],
+      "detail": "Generation flags are true - verify this is the original Camera Operator generation"
+    }
+  ],
+  "standards_pack_version": "1.0.0",
+  "traceable": true,
+  "timestamp": "2026-05-18T19:03:41.160661+00:00"
+}

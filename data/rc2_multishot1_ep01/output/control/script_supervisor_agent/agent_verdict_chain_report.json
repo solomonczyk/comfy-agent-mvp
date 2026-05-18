@@ -1,0 +1,119 @@
+{
+  "report_id": "script_supervisor_agent_verdict_chain_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-SCRIPT-SUPERVISOR-CONTINUITY-VERTICAL-SLICE-001",
+  "role": "script_supervisor",
+  "candidate_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+  "candidate_sha256": "53f46d3dd50da408bfcf65e764fa9ca14630d568d96b1731a5bc0ad16ea4f68b",
+  "expected_agents": [
+    "camera_operator_agent",
+    "dop_agent",
+    "actor_character_control_agent",
+    "colorist_agent",
+    "production_designer_agent",
+    "set_decorator_agent",
+    "props_agent",
+    "costume_agent"
+  ],
+  "agent_proofs_found": [
+    "camera_operator_agent",
+    "dop_agent",
+    "actor_character_control_agent",
+    "colorist_agent",
+    "production_designer_agent",
+    "set_decorator_agent",
+    "props_agent",
+    "costume_agent"
+  ],
+  "missing_proofs": [],
+  "sha_mismatches": [],
+  "verdict_chain": [
+    {
+      "agent": "camera_operator_agent",
+      "verdict": "ACCEPTED_FOR_NEXT_GATE",
+      "proof_file": "RC-COMBINE-V2-CAMERA-OPERATOR-FULL-FRAME-CORRECTIVE-OPERATOR-REVIEW-001-FREEZE_proof.json",
+      "commit": "4cff3fa"
+    },
+    {
+      "agent": "dop_agent",
+      "verdict": "ACCEPTED_FOR_NEXT_GATE",
+      "proof_file": "RC-COMBINE-V2-DOP-VISUAL-REVIEW-VERTICAL-SLICE-001-FREEZE_proof.json",
+      "commit": "f59f2a7"
+    },
+    {
+      "agent": "actor_character_control_agent",
+      "verdict": "ACCEPTED",
+      "proof_file": "RC-COMBINE-V2-ACTOR-CHARACTER-CONTROL-VERTICAL-SLICE-001_proof.json",
+      "commit": ""
+    },
+    {
+      "agent": "colorist_agent",
+      "verdict": "ACCEPTED",
+      "proof_file": "RC-COMBINE-V2-COLORIST-VERTICAL-SLICE-001_proof.json",
+      "commit": ""
+    },
+    {
+      "agent": "production_designer_agent",
+      "verdict": "ACCEPTED",
+      "proof_file": "RC-COMBINE-V2-PRODUCTION-DESIGNER-VERTICAL-SLICE-001_proof.json",
+      "commit": ""
+    },
+    {
+      "agent": "set_decorator_agent",
+      "verdict": "ACCEPTED",
+      "proof_file": "RC-COMBINE-V2-SET-DECORATOR-VERTICAL-SLICE-001_proof.json",
+      "commit": "bc49f41"
+    },
+    {
+      "agent": "props_agent",
+      "verdict": "ACCEPTED",
+      "proof_file": "RC-COMBINE-V2-PROPS-VERTICAL-SLICE-001_proof.json",
+      "commit": "54f20eb"
+    },
+    {
+      "agent": "costume_agent",
+      "verdict": "ACCEPTED",
+      "proof_file": "RC-COMBINE-V2-COSTUME-VERTICAL-SLICE-001_proof.json",
+      "commit": "a3bc5f1"
+    }
+  ],
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "qa_decision_policy",
+      "rule_id": "technical_pass_not_visual_pass",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true,
+      "rule_references": [
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "technical_pass_not_visual_pass"
+        },
+        {
+          "policy_id": "qa_decision_policy",
+          "rule_id": "warnings_allow_pass_with_note"
+        },
+        {
+          "policy_id": "qc_acceptance_matrix",
+          "rule_id": "qc_passes_when_all_gates_clear"
+        },
+        {
+          "policy_id": "tester_validation_matrix",
+          "rule_id": "tester_passes_when_all_clear"
+        },
+        {
+          "policy_id": "preview_acceptance_policy",
+          "rule_id": "preview_pass_does_not_mean_production_pass"
+        }
+      ],
+      "detail": "All agent verdicts present and SHA256 consistent"
+    }
+  ],
+  "standards_pack_version": "1.0.0",
+  "traceable": true,
+  "timestamp": "2026-05-18T19:03:41.105313+00:00"
+}
