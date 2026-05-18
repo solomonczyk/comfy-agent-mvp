@@ -64,7 +64,7 @@
   "carryover_staged_by_this_task": false,
   "carryover_committed_by_this_task": false,
 
-  "commit_hash": "<new_commit_hash>",
+  "commit_hash": "f4eb756",
   "push_status": "pushed_origin_main",
 
   "blockers": [

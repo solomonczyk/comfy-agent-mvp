@@ -1,0 +1,85 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PREFLIGHT-CLEANUP-001",
+  "inventory_timestamp": "2026-05-18T13:31:00.000000+02:00",
+  "git_status_sb_output": "M  data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001_proof.json\n M data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001_proof.json\n M data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_manifest.json\n?? RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json\n?? RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json\n?? RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json\n?? RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json\n?? RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json",
+  "modified_files": [
+    {
+      "path": "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001_proof.json",
+      "classification": "canonical_control_file",
+      "change_description": "commit_hash filled from PENDING_COMMIT to a08c6a9, push_status filled to pushed_origin_main",
+      "safe_to_stage": true
+    },
+    {
+      "path": "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001_proof.json",
+      "classification": "canonical_control_file",
+      "change_description": "commit_hash placeholder replaced with real hash f4eb756",
+      "safe_to_stage": true
+    },
+    {
+      "path": "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_manifest.json",
+      "classification": "canonical_control_file",
+      "change_description": "timestamp updated from 2026-05-12T19:38:10.990236 to 2026-05-18T07:55:49.738819 (reload timestamp, non-destructive)",
+      "safe_to_stage": true
+    }
+  ],
+  "untracked_files": [
+    {
+      "path": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json",
+      "location": "repo_root",
+      "classification": "root_level_proof_json",
+      "task_id": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001",
+      "canonical_destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json",
+      "safe_to_relocate": true
+    },
+    {
+      "path": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json",
+      "location": "repo_root",
+      "classification": "root_level_proof_json",
+      "task_id": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001",
+      "canonical_destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json",
+      "safe_to_relocate": true
+    },
+    {
+      "path": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json",
+      "location": "repo_root",
+      "classification": "root_level_proof_json",
+      "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE",
+      "canonical_destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json",
+      "safe_to_relocate": true
+    },
+    {
+      "path": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json",
+      "location": "repo_root",
+      "classification": "root_level_proof_json",
+      "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+      "canonical_destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json",
+      "safe_to_relocate": true
+    },
+    {
+      "path": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json",
+      "location": "repo_root",
+      "classification": "root_level_proof_json",
+      "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001",
+      "canonical_destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json",
+      "safe_to_relocate": true
+    }
+  ],
+  "root_level_proof_json_files": [
+    "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json",
+    "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json",
+    "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json",
+    "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json",
+    "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json"
+  ],
+  "canonical_control_files": [
+    "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001_proof.json",
+    "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001_proof.json",
+    "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_manifest.json"
+  ],
+  "unsafe_or_unknown_files": [],
+  "blocker_detected": false,
+  "all_files_explained": true,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "destructive_git_used": false
+}

@@ -1,0 +1,49 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PREFLIGHT-CLEANUP-001",
+  "result_timestamp": "2026-05-18T13:31:00.000000+02:00",
+
+  "dirty_files_classified": true,
+  "root_proof_jsons_relocated_or_committed": true,
+  "canonical_artifacts_committed": true,
+  "unsafe_files_remaining": false,
+  "destructive_git_used": false,
+
+  "modified_files_staged": [
+    "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001_proof.json",
+    "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001_proof.json",
+    "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_manifest.json"
+  ],
+
+  "root_proof_jsons_moved_to": "data/rc2_multishot1_ep01/output/control/proof_archive/",
+  "root_proof_jsons_moved": [
+    "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json",
+    "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json",
+    "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json",
+    "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json",
+    "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json"
+  ],
+
+  "new_artifacts_created": [
+    "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_dirty_tree_inventory.json",
+    "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_preflight_cleanup_plan.json",
+    "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_preflight_cleanup_result.json",
+    "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_git_freeze_repair_report.json",
+    "data/rc2_multishot1_ep01/output/control/fresh_visual_generation_preflight_cleanup_proof.json",
+    "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json",
+    "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json",
+    "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json",
+    "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json",
+    "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json"
+  ],
+
+  "state_updated": true,
+  "current_state": "fresh_visual_generation_authorized",
+  "next_allowed_action": "fresh_visual_generation_execute_required",
+  "generation_authorized": true,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "production_accepted": false,
+
+  "forbidden_actions_not_executed": true,
+  "allowed_scope_respected": true
+}

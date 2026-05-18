@@ -1552,5 +1552,22 @@
     "scope_guard": "fresh_visual_strategy/fresh_visual_strategy_scope_guard.json",
     "update_report": "fresh_visual_strategy/fresh_visual_strategy_update_report.json",
     "integration_timestamp": "2026-05-18T12:35:00.000000+02:00"
-  }
+  },
+  "preflight_cleanup_task": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PREFLIGHT-CLEANUP-001",
+  "preflight_cleanup_dirty_tree_inventory": "fresh_visual_generation_dirty_tree_inventory.json",
+  "preflight_cleanup_plan": "fresh_visual_generation_preflight_cleanup_plan.json",
+  "preflight_cleanup_result": "fresh_visual_generation_preflight_cleanup_result.json",
+  "preflight_cleanup_freeze_repair_report": "fresh_visual_generation_git_freeze_repair_report.json",
+  "preflight_cleanup_proof": "fresh_visual_generation_preflight_cleanup_proof.json",
+  "proof_archive_dir": "proof_archive/",
+  "proof_archive_files": [
+    "proof_archive/RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json",
+    "proof_archive/RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json",
+    "proof_archive/RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json",
+    "proof_archive/RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json",
+    "proof_archive/RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json"
+  ],
+  "preflight_cleanup_state": "fresh_visual_generation_authorized",
+  "preflight_cleanup_next_action": "fresh_visual_generation_execute_required",
+  "preflight_cleanup_timestamp": "2026-05-18T13:31:00.000000+02:00"
 }

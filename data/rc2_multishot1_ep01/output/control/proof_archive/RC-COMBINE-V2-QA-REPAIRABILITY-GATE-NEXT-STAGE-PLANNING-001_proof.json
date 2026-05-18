@@ -1,0 +1,36 @@
+{
+  "task_id": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001",
+  "next_stage_planning_completed": true,
+  "qa_repairability_gate_active": true,
+  "active_blockers_assessed": true,
+  "unknown_repairability_blocks_pipeline": true,
+  "technical_pass_not_visual_pass_enforced": true,
+  "operator_role": "project_owner_not_domain_expert",
+  "visual_expert_review_required": true,
+  "recommended_next_stage": "fresh_visual_strategy_required",
+  "generation_performed": false,
+  "retry_attempted": false,
+  "comfyui_submit_executed": false,
+  "preview_render_executed": false,
+  "visual_acceptance_executed": false,
+  "voice_generation_executed": false,
+  "audio_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "tests_pass": true,
+  "commit_hash": "011118f",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+  "files_created": [
+    "data/rc2_multishot1_ep01/output/control/standards_pack/reports/qa_repairability_next_stage_planning_report.json",
+    "data/rc2_multishot1_ep01/output/control/standards_pack/reports/visual_expert_review_delegation_plan.json"
+  ],
+  "files_updated": [
+    "artifact_index.json",
+    "episode_ledger.json"
+  ],
+  "repairability_assessment": "not_applicable",
+  "repairability_assessment_reason": "All visual outputs were purged by operator directive. No canonical visual assets remain. No active visual defects exist to assess.",
+  "timestamp": "2026-05-11T18:17:00+02:00"
+}

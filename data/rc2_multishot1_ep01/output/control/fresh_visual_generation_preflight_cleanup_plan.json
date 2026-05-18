@@ -1,0 +1,95 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PREFLIGHT-CLEANUP-001",
+  "plan_timestamp": "2026-05-18T13:31:00.000000+02:00",
+  "plan_version": "1.0",
+  "inventory_reference": "fresh_visual_generation_dirty_tree_inventory.json",
+
+  "step_1_stage_canonical_modified_files": {
+    "description": "Stage the 3 modified tracked canonical control files. Changes are legitimate: commit hash fills and a timestamp update.",
+    "files": [
+      "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001_proof.json",
+      "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001_proof.json",
+      "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_manifest.json"
+    ],
+    "destructive": false,
+    "approved": true
+  },
+
+  "step_2_create_proof_archive_dir": {
+    "description": "Create data/rc2_multishot1_ep01/output/control/proof_archive/ as canonical destination for root-level proof JSONs.",
+    "path": "data/rc2_multishot1_ep01/output/control/proof_archive/",
+    "destructive": false,
+    "approved": true
+  },
+
+  "step_3_relocate_root_proof_jsons": {
+    "description": "Move 5 untracked root-level proof JSON files into proof_archive/. No file is deleted; all are preserved under canonical path.",
+    "moves": [
+      {
+        "source": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json",
+        "destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json"
+      },
+      {
+        "source": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json",
+        "destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json"
+      },
+      {
+        "source": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json",
+        "destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json"
+      },
+      {
+        "source": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json",
+        "destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json"
+      },
+      {
+        "source": "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json",
+        "destination": "data/rc2_multishot1_ep01/output/control/proof_archive/RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json"
+      }
+    ],
+    "method": "Copy-Item + Remove-Item (non-destructive: copy first, verify, then remove source)",
+    "destructive": false,
+    "approved": true
+  },
+
+  "step_4_update_artifact_index": {
+    "description": "Append proof_archive entries and preflight cleanup task record to artifact_index.json.",
+    "destructive": false,
+    "approved": true
+  },
+
+  "step_5_update_episode_ledger": {
+    "description": "Append preflight_cleanup_completed event to episode_ledger.json.",
+    "destructive": false,
+    "approved": true
+  },
+
+  "step_6_update_state": {
+    "description": "Update state.json to current_state=fresh_visual_generation_authorized, next_allowed_action=fresh_visual_generation_execute_required.",
+    "destructive": false,
+    "approved": true
+  },
+
+  "step_7_create_result_and_proof_artifacts": {
+    "description": "Create fresh_visual_generation_preflight_cleanup_result.json, fresh_visual_generation_git_freeze_repair_report.json, fresh_visual_generation_preflight_cleanup_proof.json.",
+    "destructive": false,
+    "approved": true
+  },
+
+  "step_8_commit_and_push": {
+    "description": "git add all relevant files, commit, push to origin main.",
+    "commit_message": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PREFLIGHT-CLEANUP-001: repair generation preflight freeze",
+    "destructive": false,
+    "approved": true
+  },
+
+  "rules_enforced": {
+    "no_file_silently_deleted": true,
+    "no_destructive_git": true,
+    "no_generation": true,
+    "no_comfyui_submit": true,
+    "unsafe_files_block_execution": true,
+    "unsafe_files_found": false
+  },
+
+  "blocker": null
+}
