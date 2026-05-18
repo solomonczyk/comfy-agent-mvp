@@ -3200,5 +3200,56 @@
     "current_state": "visual_qa_review_complete",
     "next_allowed_action": "quality_reference_registration_required",
     "timestamp": "2026-05-18T12:06:00.000000+02:00"
+  },
+  {
+    "event_type": "quality_reference_registered",
+    "task_id": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+    "timestamp": "2026-05-18T12:29:00.000000+02:00",
+    "previous_task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+    "previous_commit": "7f03507",
+    "previous_state": "visual_qa_review_complete",
+    "reference_id": "quality_ref_eye_closeup_001",
+    "reference_type": "body_part_closeup_quality_reference",
+    "body_part": "eye",
+    "source_asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+    "source_asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+    "scope_boundary": {
+      "accepted_as_body_part_closeup": true,
+      "accepted_as_quality_reference": true,
+      "accepted_as_full_character": false,
+      "accepted_as_full_face": false,
+      "accepted_as_final_scene": false,
+      "assembly_ready": false,
+      "production_accepted": false
+    },
+    "artifacts_created": [
+      "quality_references/git_carryover_scope_report.json",
+      "quality_references/quality_reference_registry.json",
+      "quality_references/reference_usage_policy.json",
+      "quality_references/body_part_reference_scope_guard.json",
+      "quality_references/quality_reference_registration_report.json"
+    ],
+    "forbidden_actions_blocked": {
+      "generation_performed": false,
+      "comfyui_submit_executed": false,
+      "retry_attempted": false,
+      "new_visual_candidate_created": false,
+      "visual_qa_final_acceptance_as_production": false,
+      "assembly_executed": false,
+      "preview_render_executed": false,
+      "final_render_executed": false,
+      "voice_audio_executed": false,
+      "downstream_executed": false
+    },
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_blocked": true,
+    "current_state": "quality_reference_registered",
+    "next_allowed_action": "fresh_visual_strategy_update_required"
   }
 ]

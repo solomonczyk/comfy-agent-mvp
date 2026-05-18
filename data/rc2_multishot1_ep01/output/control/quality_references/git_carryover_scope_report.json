@@ -1,0 +1,13 @@
+{
+  "task_id": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+  "baseline_commit": "7f03507",
+  "pre_task_git_status": "## main...origin/main\n M data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_manifest.json\n?? RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json\n?? RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json\n?? RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json\n?? RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json\n?? RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json",
+  "pre_existing_dirty_carryover": [
+    "M fresh_visual_strategy_manifest.json",
+    "?? prior proof files"
+  ],
+  "carryover_modified_by_this_task": false,
+  "carryover_staged_by_this_task": false,
+  "carryover_committed_by_this_task": false,
+  "task_scope_git_policy": "commit only files created/updated by this task"
+}

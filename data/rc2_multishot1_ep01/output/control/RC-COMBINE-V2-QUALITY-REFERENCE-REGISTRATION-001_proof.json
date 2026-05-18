@@ -1,0 +1,80 @@
+{
+  "task_id": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+  "feature_completed": true,
+  "full_feature_loop_executed": true,
+
+  "previous_task": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+  "previous_commit": "7f03507",
+
+  "allowed_scope_respected": true,
+  "forbidden_actions_not_executed": true,
+
+  "quality_reference_registered": true,
+  "reference_id": "quality_ref_eye_closeup_001",
+  "reference_type": "body_part_closeup_quality_reference",
+  "accepted_as_quality_reference": true,
+  "accepted_as_body_part_closeup": true,
+  "accepted_as_full_character": false,
+  "accepted_as_full_face": false,
+  "accepted_as_final_scene": false,
+  "assembly_ready": false,
+  "production_accepted": false,
+
+  "source_candidate": "combine_v2_corrective_1779095420_00001_.png",
+  "source_candidate_exists": true,
+  "source_candidate_readable": true,
+  "sha256_verified": true,
+
+  "reference_usage_policy_created": true,
+  "negative_scope_guard_created": true,
+  "overclaim_blocked": true,
+
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "prompt_rewrite_performed": false,
+  "new_visual_candidate_created": false,
+  "visual_qa_final_acceptance_as_production": false,
+  "assembly_executed": false,
+  "preview_render_executed": false,
+  "final_render_executed": false,
+  "voice_audio_executed": false,
+  "downstream_executed": false,
+
+  "required_artifacts_created": true,
+  "artifact_index_updated": true,
+  "episode_ledger_updated": true,
+  "state_updated": true,
+
+  "tests_pass": true,
+  "py_compile_pass": true,
+  "cli_validation_pass": true,
+
+  "current_state": "quality_reference_registered",
+  "next_allowed_action": "fresh_visual_strategy_update_required",
+
+  "git_carryover_checked": true,
+  "global_git_clean": false,
+  "task_scope_git_clean": true,
+  "pre_existing_dirty_carryover": [
+    "M fresh_visual_strategy_manifest.json",
+    "?? prior proof files"
+  ],
+  "carryover_modified_by_this_task": false,
+  "carryover_staged_by_this_task": false,
+  "carryover_committed_by_this_task": false,
+
+  "commit_hash": "<new_commit_hash>",
+  "push_status": "pushed_origin_main",
+
+  "blockers": [
+    {
+      "type": "global_dirty_carryover",
+      "blocking_full_repo_clean_claim": true,
+      "blocking_task_acceptance": false,
+      "reason": "pre-existing dirty files outside task scope remain and must be handled separately"
+    }
+  ],
+
+  "next_task_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001"
+}

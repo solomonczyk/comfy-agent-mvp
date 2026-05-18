@@ -1,0 +1,53 @@
+{
+  "reference_id": "quality_ref_eye_closeup_001",
+  "source_task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+  "source_commit": "7f03507",
+  "registration_task_id": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+  "timestamp": "2026-05-18T12:29:00.000000+02:00",
+  "asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+  "asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+  "asset_size_bytes": 1703618,
+  "asset_dimensions": {
+    "width": 1024,
+    "height": 1024
+  },
+  "reference_type": "body_part_closeup_quality_reference",
+  "body_part": "eye",
+  "positive_quality_signals": [
+    "realistic_texture",
+    "high_detail",
+    "good_sharpness",
+    "natural_lighting_or_material_response"
+  ],
+  "allowed_usage": [
+    "future_quality_reference",
+    "visual_standard_calibration",
+    "eye_closeup_quality_comparison",
+    "body_part_detail_reference"
+  ],
+  "forbidden_usage": [
+    "full_character_identity_reference",
+    "full_face_reference",
+    "final_scene_asset",
+    "assembly_ready_asset",
+    "production_asset",
+    "operator_final_acceptance"
+  ],
+  "operator_scope": {
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_full_face": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "operator_review_required_for_any_scope_expansion": true,
+  "verification_status": {
+    "exists": true,
+    "readable": true,
+    "sha256_matches_qa_packet": true,
+    "not_stub": true,
+    "reference_scope": "eye_body_part_closeup_only"
+  }
+}

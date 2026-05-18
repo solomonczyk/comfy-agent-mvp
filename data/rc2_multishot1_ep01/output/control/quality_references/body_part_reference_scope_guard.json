@@ -1,0 +1,51 @@
+{
+  "guard_id": "body_part_reference_scope_guard_001",
+  "reference_id": "quality_ref_eye_closeup_001",
+  "task_id": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+  "timestamp": "2026-05-18T12:29:00.000000+02:00",
+  "guard_type": "negative_scope_enforcement",
+  "enforcement": "hard_block",
+  "blocked_overclaims": [
+    "accepted_as_full_character",
+    "accepted_as_full_face",
+    "accepted_as_final_scene",
+    "assembly_ready",
+    "production_accepted"
+  ],
+  "block_conditions": {
+    "on_scope_expansion_attempt": {
+      "action": "block_and_report",
+      "log_level": "error",
+      "notification": "scope_reconciliation_required"
+    },
+    "on_assembly_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "assembly_blocked_quality_reference_not_production_asset"
+    },
+    "on_downstream_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "downstream_blocked_quality_reference_not_final_asset"
+    },
+    "on_generation_gate_open": {
+      "action": "block",
+      "log_level": "warning",
+      "notification": "quality_reference_does_not_authorize_new_generation"
+    }
+  },
+  "next_allowed_action_if_overclaim_detected": "scope_reconciliation_required",
+  "reconciliation_requires": [
+    "operator_explicit_scope_expansion_request",
+    "new_generation_with_full_character_intent",
+    "separate_visual_qa_for_expanded_scope",
+    "separate_operator_acceptance_for_expanded_scope"
+  ],
+  "guard_invariants": {
+    "reference_remains_body_part_only": true,
+    "reference_never_becomes_production_accepted_without_new_cycle": true,
+    "reference_never_opens_generation_gate": true,
+    "reference_never_opens_assembly_gate": true,
+    "reference_never_triggers_downstream": true
+  }
+}

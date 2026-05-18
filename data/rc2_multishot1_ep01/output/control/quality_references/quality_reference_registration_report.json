@@ -1,0 +1,86 @@
+{
+  "report_id": "quality_reference_registration_report_001",
+  "task_id": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+  "timestamp": "2026-05-18T12:29:00.000000+02:00",
+  "previous_task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001",
+  "previous_commit": "7f03507",
+  "registration_status": "completed",
+  "source_candidate": {
+    "asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+    "asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+    "exists": true,
+    "readable": true,
+    "sha256_verified": true,
+    "not_stub": true
+  },
+  "reference_registered": {
+    "reference_id": "quality_ref_eye_closeup_001",
+    "reference_type": "body_part_closeup_quality_reference",
+    "body_part": "eye",
+    "registry_path": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registry.json"
+  },
+  "artifacts_created": [
+    {
+      "artifact_type": "git_carryover_scope_report",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/git_carryover_scope_report.json"
+    },
+    {
+      "artifact_type": "quality_reference_registry",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registry.json"
+    },
+    {
+      "artifact_type": "reference_usage_policy",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/reference_usage_policy.json"
+    },
+    {
+      "artifact_type": "body_part_reference_scope_guard",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/body_part_reference_scope_guard.json"
+    },
+    {
+      "artifact_type": "quality_reference_registration_report",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registration_report.json"
+    }
+  ],
+  "scope_boundary_enforced": {
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_full_face": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "forbidden_actions_blocked": {
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "new_visual_candidate_created": false,
+    "visual_qa_final_acceptance_as_production": false,
+    "assembly_executed": false,
+    "preview_render_executed": false,
+    "final_render_executed": false,
+    "voice_audio_executed": false,
+    "downstream_executed": false,
+    "scope_expanded_to_full_character": false
+  },
+  "state_transition": {
+    "previous_state": "visual_qa_review_complete",
+    "current_state": "quality_reference_registered",
+    "next_allowed_action": "fresh_visual_strategy_update_required"
+  },
+  "verification_summary": {
+    "input_artifacts_read": 4,
+    "candidate_image_verified": true,
+    "sha256_match_confirmed": true,
+    "registry_entry_created": true,
+    "usage_policy_created": true,
+    "scope_guard_created": true,
+    "overclaim_blocked": true
+  },
+  "next_steps": [
+    "Integrate quality reference into fresh visual strategy",
+    "Use reference as quality target for future eye closeup generation",
+    "Do NOT use reference for full character generation without new cycle",
+    "Do NOT use reference for assembly or downstream without new cycle"
+  ]
+}

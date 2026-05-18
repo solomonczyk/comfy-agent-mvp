@@ -1,0 +1,63 @@
+{
+  "policy_id": "reference_usage_policy_001",
+  "reference_id": "quality_ref_eye_closeup_001",
+  "task_id": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+  "timestamp": "2026-05-18T12:29:00.000000+02:00",
+  "enforcement_level": "hard_block",
+  "policies": {
+    "body_part_reference_may_not_be_used_as_full_character": true,
+    "quality_reference_may_not_open_generation_gate": true,
+    "quality_reference_may_not_open_assembly_gate": true,
+    "quality_reference_may_not_set_production_accepted": true,
+    "scope_expansion_requires_operator_review": true,
+    "future_generation_may_use_reference_only_as_quality_target": true
+  },
+  "usage_rules": {
+    "allowed": [
+      {
+        "use_case": "quality_comparison",
+        "description": "Compare future generated eye closeups against this reference for quality metrics"
+      },
+      {
+        "use_case": "visual_standard_calibration",
+        "description": "Use as calibration target for photorealism settings in future workflows"
+      },
+      {
+        "use_case": "texture_reference",
+        "description": "Reference for skin texture, iris detail, and micro-detail quality"
+      }
+    ],
+    "forbidden": [
+      {
+        "use_case": "full_character_generation",
+        "description": "May NOT be used as identity reference for full character generation",
+        "block_reason": "reference_is_body_part_only_not_full_face"
+      },
+      {
+        "use_case": "assembly_input",
+        "description": "May NOT be submitted to assembly as final asset",
+        "block_reason": "quality_reference_is_not_production_asset"
+      },
+      {
+        "use_case": "downstream_production",
+        "description": "May NOT be used for preview render, final render, or voice audio",
+        "block_reason": "downstream_blocked_for_quality_references"
+      },
+      {
+        "use_case": "operator_final_acceptance",
+        "description": "May NOT be treated as operator final acceptance candidate",
+        "block_reason": "operator_review_scope_was_limited_to_quality_reference_only"
+      }
+    ]
+  },
+  "scope_expansion_protocol": {
+    "expansion_allowed": false,
+    "expansion_requires": [
+      "explicit_operator_review",
+      "new_generation_attempt",
+      "new_visual_qa_cycle",
+      "separate_production_acceptance_gate"
+    ],
+    "automatic_scope_expansion_blocked": true
+  }
+}
