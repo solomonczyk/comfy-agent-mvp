@@ -1,0 +1,138 @@
+{
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+  "feature_completed": true,
+  "full_feature_loop_executed": true,
+
+  "allowed_scope_respected": true,
+  "required_implementation_completed": true,
+  "forbidden_actions_not_executed": true,
+
+  "standards_pack_created": true,
+  "standards_pack_validation_passed": true,
+  "schemas_created": true,
+  "schemas_validate": true,
+  "internal_standards_created": true,
+  "role_standards_created": true,
+  "qa_qc_tester_roles_separated": true,
+  "decision_policies_created": true,
+  "reference_registries_created": true,
+
+  "external_standards_registered": true,
+  "external_download_performed": false,
+  "future_controlled_acquisition_required": true,
+  "fake_external_acquisition_prevented": true,
+
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "preview_render_executed": false,
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "voice_generation_executed": false,
+  "audio_generation_executed": false,
+  "assembly_executed": false,
+  "final_render_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "hidden_external_llm_api_call": false,
+  "hidden_network_or_api_calls_performed": false,
+  "hidden_downloads_or_installs_performed": false,
+  "fake_operator_decision_created": false,
+  "fake_success_created": false,
+
+  "required_artifacts_created": true,
+  "artifact_index_updated": true,
+  "episode_ledger_updated": true,
+  "state_updated": true,
+
+  "tests_pass": true,
+  "py_compile_pass": true,
+  "cli_validation_pass": true,
+
+  "current_state": "standards_pack_operator_review_required",
+  "next_allowed_action": "standards_pack_operator_review_required",
+
+  "commit_hash": "",
+  "push_status": "pending",
+  "git_status_clean": false,
+
+  "blockers": [],
+  "next_task_recommendation": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+
+  "verification_summary": {
+    "standards_pack_structure": {
+      "manifest_exists": true,
+      "external_registry_exists": true,
+      "schemas_exists": true,
+      "internal_exists": true,
+      "roles_exists": true,
+      "policies_exists": true,
+      "references_exists": true,
+      "reports_exists": true
+    },
+    "external_standards": {
+      "owasp_asvs_registered": true,
+      "mitre_cwe_registered": true,
+      "mitre_capec_registered": true,
+      "nist_oscal_registered": true,
+      "cyclonedx_registered": true,
+      "spdx_registered": true,
+      "openssf_scorecard_registered": true,
+      "all_download_performed_false": true,
+      "all_local_copy_available_false": true
+    },
+    "role_standards": {
+      "qa_agent_standard_exists": true,
+      "qc_agent_standard_exists": true,
+      "tester_standard_exists": true,
+      "visual_qa_agent_standard_exists": true,
+      "script_supervisor_standard_exists": true,
+      "state_audit_guard_standard_exists": true,
+      "operator_review_standard_exists": true,
+      "operator_review_is_human_only": true,
+      "qa_cannot_set_production_accepted": true,
+      "qc_cannot_set_production_accepted": true,
+      "tester_cannot_set_production_accepted": true
+    },
+    "policies": {
+      "fake_success_policy_exists": true,
+      "no_blind_retry_policy_exists": true,
+      "forbidden_actions_policy_exists": true,
+      "production_acceptance_policy_exists": true,
+      "blocker_policy_exists": true,
+      "qa_decision_policy_exists": true,
+      "qc_acceptance_matrix_exists": true,
+      "tester_validation_matrix_exists": true,
+      "visual_rejection_policy_exists": true,
+      "preview_acceptance_policy_exists": true
+    },
+    "hard_rules": {
+      "technical_pass_is_not_visual_pass": true,
+      "agent_decision_is_not_operator_decision": true,
+      "production_accepted_requires_final_operator_gate": true,
+      "blind_retry_forbidden": true,
+      "fake_success_forbidden": true
+    }
+  },
+
+  "test_results": {
+    "test_standards_pack_structure": "20 passed",
+    "test_standards_pack_schemas": "13 passed",
+    "test_standards_pack_roles": "28 passed",
+    "test_standards_pack_policies": "20 passed",
+    "test_standards_pack_external_registry": "16 passed",
+    "test_standards_pack_state_and_ledger": "14 passed",
+    "test_standards_pack_cli": "10 passed",
+    "total_tests": "121 passed"
+  },
+
+  "cli_commands_validated": [
+    "combine-standards-list",
+    "combine-standards-validate",
+    "combine-standards-inspect",
+    "combine-standards-readiness-report"
+  ],
+
+  "timestamp": "2026-05-18T15:35:00.000000+02:00",
+  "proof_version": "1.0.0"
+}

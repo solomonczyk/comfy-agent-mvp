@@ -1,6 +1,6 @@
 {
-  "current_state": "fresh_visual_generation_authorized",
-  "next_allowed_action": "fresh_visual_generation_execute_required",
+  "current_state": "fresh_visual_generation_no_asset_reconciliation_required",
+  "next_allowed_action": "fresh_visual_generation_failure_analysis_required",
   "fresh_visual_generation_authorization_created": true,
   "fresh_visual_generation_operator_decision": "fresh_visual_generation_operator_decision.json",
   "fresh_visual_generation_authorization_record": "fresh_visual_generation_authorization_record.json",
@@ -52,7 +52,7 @@
   "visual_acceptance_executed": false,
   "assembly_executed": false,
   "downstream_executed": false,
-  "operator_visual_verdict": "REJECTED",
+  "operator_visual_verdict": "accepted_for_next_stage",
   "v6_targeted_refinement_operator_visual_review": "combine_v2_v6_targeted_refinement_operator_visual_review.json",
   "v6_quality_reference_traits": "combine_v2_v6_quality_reference_traits.json",
   "v6_concept_fidelity_drift_taxonomy": "combine_v2_v6_concept_fidelity_drift_taxonomy.json",
@@ -914,14 +914,14 @@
       }
     }
   ],
-  "timestamp": "2026-05-18T08:00:44.927278+00:00",
+  "timestamp": "2026-05-18T13:04:39.047782+00:00",
   "v7_identity_fidelity_generation_authorization": "combine_v2_v7_identity_fidelity_generation_authorization.json",
   "v7_identity_fidelity_submitted_workflow": "shot02_v7_identity_fidelity_submitted_workflow.json",
   "v7_identity_fidelity_outputs_manifest": "combine_v2_v7_identity_fidelity_outputs_manifest.json",
   "v7_identity_fidelity_result": "combine_v2_v7_identity_fidelity_result.json",
   "v7_identity_fidelity_operator_review_packet": "combine_v2_v7_identity_fidelity_operator_review_packet.json",
   "generation_allowed": false,
-  "generation_performed": false,
+  "generation_performed": true,
   "comfyui_execution": true,
   "generation_count": 1,
   "second_generation_attempted": false,
@@ -1008,7 +1008,7 @@
   "legacy_512_workflow_blocked": true,
   "minimum_short_side_1024_enforced": true,
   "branch_selected": "success",
-  "generated_assets_count": 1,
+  "generated_assets_count": 0,
   "result_review_executed": true,
   "real_visual_qa_started": false,
   "operator_generation_authorized": true,
@@ -1120,7 +1120,7 @@
   "artifacts": [
     "human_preview_review_gate_proof.json"
   ],
-  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-NO-ASSET-RECONCILIATION-001",
   "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
   "total_artifacts": 47,
   "brief_intake_layer_completed": true,
@@ -1174,7 +1174,7 @@
   "local_checkpoint_candidate_verified": true,
   "next_layer_allowed": true,
   "next_layer": "RC-COMBINE-V2-99001-102000 Controlled Generation Authorization and Single Execution Gate",
-  "prompt_id": "7aa1994f-8ccb-4aa9-9f92-b77f7727e89b",
+  "prompt_id": "b3a8f0ea-8004-40f6-be19-4192a633817a",
   "technical_verdict": "PASS",
   "operator_visual_review_executed": true,
   "operator_visual_decision_gate_executed": true,
@@ -1495,7 +1495,6 @@
   "operator_visual_review_blocker_active": false,
   "operator_visual_review_blocker_type": "missing_operator_visual_verdict",
   "operator_visual_review_blocker_resolved": true,
-  "operator_visual_verdict": "accepted_for_next_stage",
   "operator_visual_verdict_recorded_timestamp": "2026-05-18T11:35:00.000000+02:00",
   "fake_operator_decision_created": false,
   "visual_candidate_operator_accepted": true,
@@ -1569,5 +1568,80 @@
   ],
   "preflight_cleanup_state": "fresh_visual_generation_authorized",
   "preflight_cleanup_next_action": "fresh_visual_generation_execute_required",
-  "preflight_cleanup_timestamp": "2026-05-18T13:31:00.000000+02:00"
+  "preflight_cleanup_timestamp": "2026-05-18T13:31:00.000000+02:00",
+  "fresh_visual_generation_execution_completed": true,
+  "fresh_visual_generation_result_review_required": true,
+  "previous_task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001-RERUN",
+  "no_asset_reconciliation_completed": true,
+  "fresh_visual_generation_failure_analysis_required": true,
+  "standards_pack": {
+    "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001",
+    "standards_pack_dir": "standards_pack/",
+    "standards_pack_manifest": "standards_pack/standards_pack_manifest.json",
+    "external_registry": {
+      "external_standards_sources": "standards_pack/external_registry/external_standards_sources.json",
+      "external_standards_acquisition_plan": "standards_pack/external_registry/external_standards_acquisition_plan.json",
+      "external_standards_acquisition_status": "standards_pack/external_registry/external_standards_acquisition_status.json"
+    },
+    "schemas": "standards_pack/schemas/",
+    "internal": {
+      "universal_quality_standard": "standards_pack/internal/universal_quality_standard.json",
+      "defect_taxonomy": "standards_pack/internal/defect_taxonomy.json",
+      "severity_model": "standards_pack/internal/severity_model.json",
+      "blocker_taxonomy": "standards_pack/internal/blocker_taxonomy.json",
+      "visual_quality_canon": "standards_pack/internal/visual_quality_canon.json",
+      "motion_quality_canon": "standards_pack/internal/motion_quality_canon.json",
+      "face_quality_canon": "standards_pack/internal/face_quality_canon.json",
+      "anatomy_quality_canon": "standards_pack/internal/anatomy_quality_canon.json",
+      "identity_quality_canon": "standards_pack/internal/identity_quality_canon.json",
+      "timeline_quality_canon": "standards_pack/internal/timeline_quality_canon.json",
+      "preview_quality_canon": "standards_pack/internal/preview_quality_canon.json",
+      "audio_quality_canon": "standards_pack/internal/audio_quality_canon.json",
+      "voice_quality_canon": "standards_pack/internal/voice_quality_canon.json",
+      "assembly_quality_canon": "standards_pack/internal/assembly_quality_canon.json",
+      "state_audit_quality_canon": "standards_pack/internal/state_audit_quality_canon.json",
+      "defect_repairability_matrix": "standards_pack/internal/defect_repairability_matrix.json"
+    },
+    "roles": {
+      "qa_agent_standard": "standards_pack/roles/qa_agent_standard.json",
+      "qc_agent_standard": "standards_pack/roles/qc_agent_standard.json",
+      "tester_standard": "standards_pack/roles/tester_standard.json",
+      "visual_qa_agent_standard": "standards_pack/roles/visual_qa_agent_standard.json",
+      "script_supervisor_standard": "standards_pack/roles/script_supervisor_standard.json",
+      "state_audit_guard_standard": "standards_pack/roles/state_audit_guard_standard.json",
+      "operator_review_standard": "standards_pack/roles/operator_review_standard.json"
+    },
+    "policies": {
+      "qa_decision_policy": "standards_pack/policies/qa_decision_policy.json",
+      "qc_acceptance_matrix": "standards_pack/policies/qc_acceptance_matrix.json",
+      "tester_validation_matrix": "standards_pack/policies/tester_validation_matrix.json",
+      "visual_rejection_policy": "standards_pack/policies/visual_rejection_policy.json",
+      "preview_acceptance_policy": "standards_pack/policies/preview_acceptance_policy.json",
+      "production_acceptance_policy": "standards_pack/policies/production_acceptance_policy.json",
+      "blocker_policy": "standards_pack/policies/blocker_policy.json",
+      "fake_success_policy": "standards_pack/policies/fake_success_policy.json",
+      "no_blind_retry_policy": "standards_pack/policies/no_blind_retry_policy.json",
+      "forbidden_actions_policy": "standards_pack/policies/forbidden_actions_policy.json",
+      "qa_repairability_policy": "standards_pack/policies/qa_repairability_policy.json",
+      "downstream_repairability_gate_policy": "standards_pack/policies/downstream_repairability_gate_policy.json"
+    },
+    "references": {
+      "positive_reference_registry": "standards_pack/references/positive_reference_registry.json",
+      "negative_reference_registry": "standards_pack/references/negative_reference_registry.json",
+      "reference_usage_policy": "standards_pack/references/reference_usage_policy.json",
+      "repair_tool_registry": "standards_pack/references/repair_tool_registry.json"
+    },
+    "reports": {
+      "standards_pack_validation_report": "standards_pack/reports/standards_pack_validation_report.json",
+      "standards_pack_readiness_report": "standards_pack/reports/standards_pack_readiness_report.json",
+      "standards_pack_operator_review_packet": "standards_pack/reports/standards_pack_operator_review_packet.json",
+      "qa_repairability_gate_freeze_report": "standards_pack/reports/qa_repairability_gate_freeze_report.json",
+      "qa_repairability_gate_operator_decision": "standards_pack/reports/qa_repairability_gate_operator_decision.json",
+      "qa_repairability_gate_operator_review_packet": "standards_pack/reports/qa_repairability_gate_operator_review_packet.json"
+    },
+    "standards_pack_validation_passed": true,
+    "standards_pack_readiness_confirmed": true,
+    "standards_pack_creation_timestamp": "2026-05-18T15:35:00.000000+02:00",
+    "next_recommended_layer": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001"
+  }
 }
