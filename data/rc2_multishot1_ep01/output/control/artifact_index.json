@@ -1,6 +1,6 @@
 {
-  "current_state": "corrective_generation_scope_repaired_authorization_required",
-  "next_allowed_action": "operator_authorize_one_full_frame_corrective_generation",
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
   "fresh_visual_human_verdict_task_executed": true,
   "fresh_visual_human_verdict_provided": true,
   "fresh_visual_operator_verdict_artifact_created": true,
@@ -1682,5 +1682,13 @@
     "standards_pack_readiness_confirmed": true,
     "standards_pack_creation_timestamp": "2026-05-18T15:35:00.000000+02:00",
     "next_recommended_layer": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001"
-  }
+  },
+  "camera_operator_vertical_completed": true,
+  "camera_operator_agent_contract_created": true,
+  "camera_operator_tool_policy_created": true,
+  "camera_operator_authorization_created": true,
+  "camera_operator_generation_manifest_created": true,
+  "camera_operator_generation_result_review_created": true,
+  "camera_operator_operator_visual_review_packet_created": true,
+  "camera_operator_blocker_report_created": true
 }

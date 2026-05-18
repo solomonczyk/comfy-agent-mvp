@@ -3679,7 +3679,7 @@
     "accepted_as_concept_reference": true,
     "accepted_as_quality_reference": false,
     "accepted_as_final_visual": false,
-    "human_operator_feedback": "Как общая изначальная картинка, для какой-то сказки, до исправления и улучшения подойдет, а если брать за эталон/референс качества — конечно же нет.",
+    "human_operator_feedback": "\u041a\u0430\u043a \u043e\u0431\u0449\u0430\u044f \u0438\u0437\u043d\u0430\u0447\u0430\u043b\u044c\u043d\u0430\u044f \u043a\u0430\u0440\u0442\u0438\u043d\u043a\u0430, \u0434\u043b\u044f \u043a\u0430\u043a\u043e\u0439-\u0442\u043e \u0441\u043a\u0430\u0437\u043a\u0438, \u0434\u043e \u0438\u0441\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f \u0438 \u0443\u043b\u0443\u0447\u0448\u0435\u043d\u0438\u044f \u043f\u043e\u0434\u043e\u0439\u0434\u0435\u0442, \u0430 \u0435\u0441\u043b\u0438 \u0431\u0440\u0430\u0442\u044c \u0437\u0430 \u044d\u0442\u0430\u043b\u043e\u043d/\u0440\u0435\u0444\u0435\u0440\u0435\u043d\u0441 \u043a\u0430\u0447\u0435\u0441\u0442\u0432\u0430 \u2014 \u043a\u043e\u043d\u0435\u0447\u043d\u043e \u0436\u0435 \u043d\u0435\u0442.",
     "defects": [
       "doll_like_face",
       "over_smoothed_skin",
@@ -3697,5 +3697,39 @@
     "next_allowed_action": "corrective_visual_plan_review_required",
     "notes": "Human operator reviewed fresh visual candidate and rejected as quality reference while accepting as concept reference. Corrective visual plan created with specific requirements. No generation, retry, or ComfyUI submit executed.",
     "timestamp": "2026-05-18T16:48:00+02:00"
+  },
+  {
+    "event_type": "camera_operator_generation",
+    "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001",
+    "stage": "camera_operator_generation",
+    "generation_performed": false,
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_attempted": false,
+    "retry_attempted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "operator_visual_review_required": true,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "timestamp": "2026-05-18T18:38:20.327764"
+  },
+  {
+    "event_type": "camera_operator_generation",
+    "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001",
+    "stage": "camera_operator_generation",
+    "generation_performed": true,
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_attempted": false,
+    "retry_attempted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "operator_visual_review_required": true,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "timestamp": "2026-05-18T18:38:35.503743"
   }
 ]

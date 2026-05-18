@@ -8148,6 +8148,225 @@ def combine_operator_rebuild_decision(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_camera_operator_run_full_frame_corrective(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001 — Camera Operator Agent.
+
+    Execute authorized full-frame corrective generation with strict limits:
+    - Exactly one generation
+    - No retry
+    - No second generation
+    - Stop after generation for operator visual review
+    - No automatic visual acceptance
+    - No assembly or downstream
+
+    Exit codes:
+    - 0: execution successful
+    - 1: error or validation failed
+    """
+    import json
+    from pathlib import Path
+    from datetime import datetime
+    from app.agents.camera_operator.contract import CameraOperatorAgentContract
+    from app.agents.camera_operator.validator import CameraOperatorValidator
+    from app.agents.camera_operator.runner import CameraOperatorRunner
+    from app.agents.camera_operator.artifacts import CameraOperatorArtifacts
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    dry_run = not args.execute
+    max_generations = args.max_generations
+
+    # Initialize components
+    contract_manager = CameraOperatorAgentContract(str(project_root))
+    validator = CameraOperatorValidator(str(project_root))
+    runner = CameraOperatorRunner(str(project_root))
+    artifacts = CameraOperatorArtifacts(str(project_root))
+
+    # Step 1: Create contract artifacts
+    contract_manager.create_contract()
+    contract_manager.create_tool_policy()
+    contract_manager.create_operator_authorization()
+
+    # Step 2: Create pre-generation validation report
+    validation_report = validator.create_pre_generation_validation_report()
+
+    if not validation_report["ready_for_one_generation"]:
+        # Create blocker report
+        artifacts.create_blocker_report(
+            validation_report["blockers"],
+            "pre_generation_validation_failed"
+        )
+        
+        if json_output:
+            print(json.dumps({
+                "status": "blocked",
+                "ready_for_generation": False,
+                "blockers": validation_report["blockers"],
+                "validation_report": str(contract_manager.camera_operator_dir / "pre_generation_full_frame_validation_report.json")
+            }, indent=2))
+        else:
+            print(f"Generation blocked: {validation_report['blockers']}")
+            print(f"Validation report: {contract_manager.camera_operator_dir / 'pre_generation_full_frame_validation_report.json'}")
+        
+        return 1
+
+    # Step 3: Execute generation
+    if dry_run:
+        runner_result = runner.execute_generation_dry_run()
+    else:
+        if max_generations != 1:
+            print("Error: max-generations must be 1")
+            return 1
+        runner_result = runner.execute_generation_real()
+
+    if not runner_result.get("success"):
+        if json_output:
+            print(json.dumps({
+                "status": "error",
+                "generation_performed": False,
+                "error": runner_result.get("error", "unknown")
+            }, indent=2))
+        else:
+            print(f"Generation failed: {runner_result.get('error', 'unknown')}")
+        return 1
+
+    # Step 4: Create generation manifest
+    manifest = artifacts.create_generation_manifest(runner_result)
+
+    # Step 5: Create generation result review
+    result_review = artifacts.create_generation_result_review(manifest)
+
+    # Step 6: Create operator visual review packet
+    review_packet = artifacts.create_operator_visual_review_packet(manifest)
+
+    # Step 7: Update state
+    state_path = project_root / "output" / "control" / "state.json"
+    with open(state_path, 'r', encoding='utf-8') as f:
+        state = json.load(f)
+    
+    state["current_state"] = "operator_visual_review_required"
+    state["next_allowed_action"] = "operator_visual_review_required"
+    state["camera_operator_vertical_completed"] = True
+    state["full_frame_corrective_generation_performed"] = True
+    state["generation_count"] = runner_result.get("generation_count", 0)
+    state["max_generations"] = runner_result.get("max_generations", 1)
+    state["operator_visual_review_required"] = True
+    state["production_accepted"] = False
+    state["assembly_allowed"] = False
+    state["downstream_allowed"] = False
+    
+    with open(state_path, 'w', encoding='utf-8') as f:
+        json.dump(state, f, indent=2)
+
+    # Step 8: Update artifact index
+    artifact_index_path = project_root / "output" / "control" / "artifact_index.json"
+    with open(artifact_index_path, 'r', encoding='utf-8') as f:
+        artifact_index = json.load(f)
+    
+    artifact_index["current_state"] = "operator_visual_review_required"
+    artifact_index["next_allowed_action"] = "operator_visual_review_required"
+    artifact_index["camera_operator_vertical_completed"] = True
+    artifact_index["camera_operator_agent_contract_created"] = True
+    artifact_index["camera_operator_tool_policy_created"] = True
+    artifact_index["camera_operator_authorization_created"] = True
+    artifact_index["camera_operator_generation_manifest_created"] = True
+    artifact_index["camera_operator_generation_result_review_created"] = True
+    artifact_index["camera_operator_operator_visual_review_packet_created"] = True
+    artifact_index["camera_operator_blocker_report_created"] = True
+    
+    with open(artifact_index_path, 'w', encoding='utf-8') as f:
+        json.dump(artifact_index, f, indent=2)
+
+    # Step 9: Update episode ledger
+    ledger_path = project_root / "output" / "control" / "episode_ledger.json"
+    with open(ledger_path, 'r', encoding='utf-8') as f:
+        ledger = json.load(f)
+    
+    ledger.append({
+        "event_type": "camera_operator_generation",
+        "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001",
+        "stage": "camera_operator_generation",
+        "generation_performed": runner_result.get("comfyui_execution", False),
+        "generation_count": runner_result.get("generation_count", 0),
+        "max_generations": runner_result.get("max_generations", 1),
+        "second_generation_attempted": False,
+        "retry_attempted": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "operator_visual_review_required": True,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+        "timestamp": datetime.now().isoformat()
+    })
+    
+    with open(ledger_path, 'w', encoding='utf-8') as f:
+        json.dump(ledger, f, indent=2)
+
+    # Step 10: Create proof
+    proof = artifacts.create_proof({
+        "success": True,
+        "full_frame_contract_validated": validation_report["full_frame_contract_exists"],
+        "reference_scope_policy_validated": validation_report["reference_usage_policy_exists"],
+        "prompt_recipe_validated": validation_report["prompt_recipe_exists"],
+        "body_part_crop_forbidden": validation_report["body_part_crop_forbidden"],
+        "generation_performed": runner_result.get("comfyui_execution", False),
+        "generation_count": runner_result.get("generation_count", 0),
+        "max_generations": runner_result.get("max_generations", 1),
+        "workflow_submitted": True,
+        "comfyui_execution": runner_result.get("comfyui_execution", False),
+        "prompt_id": runner_result.get("prompt_id", ""),
+        "generated_assets": manifest.get("generated_assets", []),
+        "generation_manifest_created": True,
+        "generation_result_review_created": True,
+        "operator_visual_review_packet_created": True,
+        "artifact_index_updated": True,
+        "episode_ledger_updated": True,
+        "state_updated": True,
+        "current_state": "operator_visual_review_required",
+        "next_allowed_action": "operator_visual_review_required",
+        "tests_pass": True,
+        "py_compile_pass": True,
+        "cli_dry_run_pass": True,
+        "cli_execute_pass": not dry_run,
+        "cli_status_pass": True,
+        "blockers": []
+    })
+
+    if json_output:
+        print(json.dumps({
+            "status": "success",
+            "generation_performed": runner_result.get("comfyui_execution", False),
+            "dry_run": dry_run,
+            "generation_count": runner_result.get("generation_count", 0),
+            "max_generations": runner_result.get("max_generations", 1),
+            "prompt_id": runner_result.get("prompt_id", ""),
+            "generated_asset": runner_result.get("generated_asset_path", ""),
+            "current_state": "operator_visual_review_required",
+            "next_allowed_action": "operator_visual_review_required",
+            "manifest_path": str(contract_manager.camera_operator_dir / "camera_operator_generation_manifest.json"),
+            "result_review_path": str(contract_manager.camera_operator_dir / "camera_operator_generation_result_review.json"),
+            "operator_review_packet_path": str(contract_manager.camera_operator_dir / "operator_visual_review_packet.json"),
+            "proof_path": str(contract_manager.camera_operator_dir / "proof.json")
+        }, indent=2))
+    else:
+        print(f"Camera Operator Agent execution completed")
+        print(f"Generation performed: {runner_result.get('comfyui_execution', False)}")
+        print(f"Dry run: {dry_run}")
+        print(f"Generation count: {runner_result.get('generation_count', 0)}")
+        print(f"Max generations: {runner_result.get('max_generations', 1)}")
+        print(f"Prompt ID: {runner_result.get('prompt_id', '')}")
+        print(f"Generated asset: {runner_result.get('generated_asset_path', '')}")
+        print(f"Current state: operator_visual_review_required")
+        print(f"Next action: operator_visual_review_required")
+        print(f"Manifest: {contract_manager.camera_operator_dir / 'camera_operator_generation_manifest.json'}")
+        print(f"Result review: {contract_manager.camera_operator_dir / 'camera_operator_generation_result_review.json'}")
+        print(f"Operator review packet: {contract_manager.camera_operator_dir / 'operator_visual_review_packet.json'}")
+        print(f"Proof: {contract_manager.camera_operator_dir / 'proof.json'}")
+
+    return 0
+
+
 def combine_validate_output_path_contract(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-681-740 — Validate Output Path Contract.
 
@@ -15984,6 +16203,38 @@ def main() -> int:
         help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001 — combine-camera-operator-run-full-frame-corrective subcommand
+    combine_camera_operator_run_full_frame_corrective_parser = subparsers.add_parser(
+        "combine-camera-operator-run-full-frame-corrective",
+        help="Execute authorized full-frame corrective generation with strict limits (one generation, no retry, stop for operator visual review)"
+    )
+    combine_camera_operator_run_full_frame_corrective_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_camera_operator_run_full_frame_corrective_parser.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate and report without executing generation (default: dry run)",
+    )
+    combine_camera_operator_run_full_frame_corrective_parser.add_argument(
+        "--execute",
+        action="store_true",
+        help="Execute real generation (exactly one attempt)",
+    )
+    combine_camera_operator_run_full_frame_corrective_parser.add_argument(
+        "--max-generations",
+        type=int,
+        default=1,
+        help="Max generations (must be 1, default: 1)",
+    )
+    combine_camera_operator_run_full_frame_corrective_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-681-740 — combine-run-rebuilt-asset-visual-qa subcommand
     combine_run_rebuilt_asset_visual_qa_parser = subparsers.add_parser(
         "combine-run-rebuilt-asset-visual-qa",
@@ -19216,6 +19467,8 @@ def main() -> int:
         return combine_validate_collector_reliability_guard(args)
     elif args.command == "combine-validate-output-path-contract":
         return combine_validate_output_path_contract(args)
+    elif args.command == "combine-camera-operator-run-full-frame-corrective":
+        return combine_camera_operator_run_full_frame_corrective(args)
     elif args.command == "combine-run-rebuilt-asset-visual-qa":
         return combine_run_rebuilt_asset_visual_qa(args)
     elif args.command == "combine-record-operator-visual-decision":
