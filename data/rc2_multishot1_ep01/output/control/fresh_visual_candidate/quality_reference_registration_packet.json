@@ -1,0 +1,38 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001",
+  "document_type": "quality_reference_registration_packet",
+  "timestamp": "2026-05-18T11:43:00.000000+02:00",
+  "asset_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+  "asset_sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+  "asset_size_bytes": 1703618,
+  "asset_width": 1024,
+  "asset_height": 1024,
+  "prompt_id": "62cf0c52-7f45-4b75-8fa1-3fcfc9d70fbc",
+  "classification": "body_part_closeup_quality_reference",
+  "classification_details": {
+    "is_body_part_closeup": true,
+    "is_quality_reference": true,
+    "is_full_character": false,
+    "is_final_scene": false,
+    "is_assembly_ready": false,
+    "is_production_accepted": false
+  },
+  "operator_notes": [
+    "Corrective candidate is visually strong.",
+    "The rendered body part / eye close-up is highly realistic.",
+    "Skin texture, eyelashes, iris detail, reflections and micro-details look convincing.",
+    "This should be accepted as a quality reference / body-part visual candidate.",
+    "The output should not be treated as full character, full face, full scene, assembly-ready, or production accepted."
+  ],
+  "registration_scope": "quality_reference_only",
+  "registration_allowed": true,
+  "production_registration_allowed": false,
+  "assembly_registration_allowed": false,
+  "downstream_registration_allowed": false,
+  "production_accepted": false,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "assembly_executed": false,
+  "downstream_executed": false
+}

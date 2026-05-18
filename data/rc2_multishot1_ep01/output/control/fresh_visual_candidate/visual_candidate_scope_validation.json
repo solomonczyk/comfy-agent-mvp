@@ -1,0 +1,34 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-QA-PREFLIGHT-001",
+  "document_type": "visual_candidate_scope_validation",
+  "timestamp": "2026-05-18T11:43:00.000000+02:00",
+  "source_document": "operator_visual_review_outcome.json",
+  "operator_verdict": "accepted_for_next_stage",
+  "fake_operator_decision_created": false,
+  "acceptance_scope_verified": {
+    "accepted_for_next_stage": true,
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "scope_validation_checks": {
+    "accepted_for_next_stage_confirmed": true,
+    "body_part_closeup_confirmed": true,
+    "quality_reference_confirmed": true,
+    "full_character_rejected": true,
+    "final_scene_rejected": true,
+    "production_accepted_false_confirmed": true,
+    "assembly_blocked_confirmed": true,
+    "downstream_blocked_confirmed": true
+  },
+  "scope_validation_verdict": "pass",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false
+}
