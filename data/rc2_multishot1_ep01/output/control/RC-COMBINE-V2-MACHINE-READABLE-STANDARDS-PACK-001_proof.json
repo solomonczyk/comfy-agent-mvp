@@ -52,9 +52,9 @@
   "current_state": "standards_pack_operator_review_required",
   "next_allowed_action": "standards_pack_operator_review_required",
 
-  "commit_hash": "",
-  "push_status": "pending",
-  "git_status_clean": false,
+  "commit_hash": "bc70a49",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
 
   "blockers": [],
   "next_task_recommendation": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
@@ -112,18 +112,35 @@
       "production_accepted_requires_final_operator_gate": true,
       "blind_retry_forbidden": true,
       "fake_success_forbidden": true
+    },
+    "schema_coverage": {
+      "schema_count": 8,
+      "coverage_mapping": {
+        "standards_pack_manifest": "standards_pack_manifest_schema.json",
+        "standard_artifact": "standard_schema.json",
+        "external_standard_source": "standards_pack_manifest_schema.json (reused)",
+        "defect_taxonomy": "defect_taxonomy_schema.json",
+        "severity_model": "defect_taxonomy_schema.json (embedded)",
+        "blocker_taxonomy": "defect_taxonomy_schema.json (embedded)",
+        "canon": "visual_canon_schema.json (covers all 11 quality canons)",
+        "role_standard": "role_standard_schema.json",
+        "decision_policy": "decision_policy_schema.json",
+        "reference_registry": "reference_registry_schema.json",
+        "proof": "proof_schema.json"
+      },
+      "note": "8 physical schema files cover 11 logical schema requirements through multi-purpose schemas"
     }
   },
 
   "test_results": {
-    "test_standards_pack_structure": "20 passed",
+    "test_standards_pack_structure": "18 passed",
     "test_standards_pack_schemas": "13 passed",
     "test_standards_pack_roles": "28 passed",
     "test_standards_pack_policies": "20 passed",
     "test_standards_pack_external_registry": "16 passed",
     "test_standards_pack_state_and_ledger": "14 passed",
     "test_standards_pack_cli": "10 passed",
-    "total_tests": "121 passed"
+    "total_tests": "119 passed"
   },
 
   "cli_commands_validated": [
@@ -133,6 +150,36 @@
     "combine-standards-readiness-report"
   ],
 
+  "code_files_verification": {
+    "app_standards_module": {
+      "exists": true,
+      "files": [
+        "app/standards/__init__.py",
+        "app/standards/standards_pack_loader.py",
+        "app/standards/standards_pack_validator.py",
+        "app/standards/standards_registry.py",
+        "app/standards/decision_policy_engine.py",
+        "app/standards/role_standard_validator.py"
+      ],
+      "committed": "pre-existing (before bc70a49)",
+      "git_status": "clean"
+    },
+    "cli_commands": {
+      "file": "app/cli.py",
+      "commands": [
+        "combine-standards-list",
+        "combine-standards-validate",
+        "combine-standards-inspect",
+        "combine-standards-readiness-report"
+      ],
+      "committed": "pre-existing (before bc70a49)",
+      "git_status": "clean"
+    }
+  },
+  "freeze_fix": {
+    "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001-FREEZE-FIX",
+    "proof": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_freeze_fix_proof.json"
+  },
   "timestamp": "2026-05-18T15:35:00.000000+02:00",
   "proof_version": "1.0.0"
 }

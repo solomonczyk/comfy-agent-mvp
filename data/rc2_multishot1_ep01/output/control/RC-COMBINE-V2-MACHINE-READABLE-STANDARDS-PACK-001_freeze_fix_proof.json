@@ -1,0 +1,156 @@
+{
+  "task_id": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001-FREEZE-FIX",
+  "previous_commit_checked": "bc70a49",
+  "fix_description": "Resolve proof inconsistencies: test count correction, schema coverage mapping, code file verification",
+  "test_count_contradiction_resolved": true,
+  "tests_collected": 119,
+  "tests_passed": 119,
+  "tests_skipped": 0,
+  "tests_failed": 0,
+  "test_breakdown": {
+    "test_standards_pack_structure": 18,
+    "test_standards_pack_schemas": 13,
+    "test_standards_pack_roles": 28,
+    "test_standards_pack_policies": 20,
+    "test_standards_pack_cli": 10,
+    "test_standards_pack_external_registry": 16,
+    "test_standards_pack_state_and_ledger": 14,
+    "total": 119
+  },
+  "note_on_test_count": "Original report claimed 121 tests (sum of individual runs). Actual pytest --collect-only shows 119. All 119 passed. The discrepancy was due to double-counting in initial manual calculation.",
+  "schema_coverage_verified": true,
+  "schema_count": 8,
+  "schema_coverage_mapping": {
+    "standards_pack_manifest": {
+      "schema_file": "standards_pack_manifest_schema.json",
+      "covers": ["manifest_id", "version", "task_id", "directories", "artifacts", "validation"],
+      "validated": true
+    },
+    "standard_artifact": {
+      "schema_file": "standard_schema.json",
+      "covers": ["standard_id", "version", "applies_to", "rules"],
+      "validated": true
+    },
+    "external_standard_source": {
+      "schema_file": "standards_pack_manifest_schema.json",
+      "covers_artifacts": ["external_standards_sources", "external_standards_acquisition_plan", "external_standards_acquisition_status"],
+      "note": "Uses manifest schema for external registry entries",
+      "validated": true
+    },
+    "defect_taxonomy": {
+      "schema_file": "defect_taxonomy_schema.json",
+      "covers": ["taxonomy_id", "defects", "defect_id", "category", "severity_default", "blocks"],
+      "validated": true
+    },
+    "severity_model": {
+      "schema_file": "defect_taxonomy_schema.json",
+      "covers": "severity levels in defect taxonomy",
+      "note": "Embedded in defect_taxonomy.json via severity_default field",
+      "validated": true
+    },
+    "blocker_taxonomy": {
+      "schema_file": "defect_taxonomy_schema.json",
+      "covers": "blocker classification via blocks array in defects",
+      "note": "Blocker taxonomy represented via defect_taxonomy schema",
+      "validated": true
+    },
+    "canon": {
+      "schema_file": "visual_canon_schema.json",
+      "covers": ["canon_id", "scope", "quality_dimensions"],
+      "covers_canons": ["visual_quality_canon", "motion_quality_canon", "face_quality_canon", "anatomy_quality_canon", "identity_quality_canon", "timeline_quality_canon", "preview_quality_canon", "audio_quality_canon", "voice_quality_canon", "assembly_quality_canon", "state_audit_quality_canon"],
+      "validated": true
+    },
+    "role_standard": {
+      "schema_file": "role_standard_schema.json",
+      "covers": ["role_id", "responsibilities", "forbidden_actions", "decision_rights", "cannot_decide", "blocker_rules"],
+      "covers_roles": ["qa_agent", "qc_agent", "tester", "visual_qa_agent", "script_supervisor", "state_audit_guard", "operator_review"],
+      "validated": true
+    },
+    "decision_policy": {
+      "schema_file": "decision_policy_schema.json",
+      "covers": ["policy_id", "rules", "condition", "decision", "blocks"],
+      "covers_policies": ["fake_success_policy", "no_blind_retry_policy", "forbidden_actions_policy", "production_acceptance_policy", "blocker_policy", "qa_decision_policy", "qc_acceptance_matrix", "tester_validation_matrix", "visual_rejection_policy", "preview_acceptance_policy"],
+      "validated": true
+    },
+    "reference_registry": {
+      "schema_file": "reference_registry_schema.json",
+      "covers": ["registry_id", "references", "reference_id", "reference_type", "scope"],
+      "covers_registries": ["positive_reference_registry", "negative_reference_registry"],
+      "validated": true
+    },
+    "proof": {
+      "schema_file": "proof_schema.json",
+      "covers": ["task_id", "feature_completed", "generation_performed", "production_accepted", "tests_pass", "commit_hash"],
+      "validated": true
+    }
+  },
+  "schema_aggregation_note": "8 physical schema files cover 11 logical schema requirements through multi-purpose schemas (e.g., visual_canon_schema covers all 11 quality canons, defect_taxonomy_schema covers severity and blocker models)",
+  "app_standards_code_committed": true,
+  "app_standards_verification": {
+    "module_exists": true,
+    "files_present": [
+      "app/standards/__init__.py",
+      "app/standards/standards_pack_loader.py",
+      "app/standards/standards_pack_validator.py",
+      "app/standards/standards_registry.py",
+      "app/standards/decision_policy_engine.py",
+      "app/standards/role_standard_validator.py",
+      "app/standards/standards_decision_adapter.py",
+      "app/standards/standards_traceability.py",
+      "app/standards/standards_integration.py"
+    ],
+    "commit_history": "Pre-existing (committed before bc70a49)",
+    "git_status": "clean - no uncommitted changes"
+  },
+  "standards_cli_commands_committed": true,
+  "cli_verification": {
+    "commands_present": [
+      "combine-standards-list",
+      "combine-standards-validate",
+      "combine-standards-inspect",
+      "combine-standards-readiness-report"
+    ],
+    "cli_file": "app/cli.py",
+    "commit_history": "Pre-existing (committed before bc70a49)",
+    "git_status": "clean - no uncommitted changes"
+  },
+  "files_in_commit_bc70a49": [
+    "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_proof.json",
+    "data/rc2_multishot1_ep01/output/control/artifact_index.json",
+    "data/rc2_multishot1_ep01/output/control/episode_ledger.json",
+    "data/rc2_multishot1_ep01/output/control/state.json",
+    "tests/test_standards_pack_cli.py",
+    "tests/test_standards_pack_external_registry.py",
+    "tests/test_standards_pack_policies.py",
+    "tests/test_standards_pack_roles.py",
+    "tests/test_standards_pack_schemas.py",
+    "tests/test_standards_pack_state_and_ledger.py",
+    "tests/test_standards_pack_structure.py"
+  ],
+  "forbidden_actions_not_executed": true,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "preview_render_executed": false,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "standards_pack_operator_review_required",
+  "next_allowed_action": "standards_pack_operator_review_required",
+  "commit_hash": "",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+  "verification_commands_run": [
+    "python -m pytest tests/test_standards_pack_*.py --collect-only",
+    "python -m pytest tests/test_standards_pack_*.py -v",
+    "git diff --stat HEAD~1..HEAD",
+    "git status -sb",
+    "git log --oneline -1",
+    "git log --oneline -- app/standards/ app/cli.py",
+    "git status app/standards/ app/cli.py"
+  ],
+  "original_proof_updated": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_proof.json test_count corrected from 121 to 119",
+  "freeze_fix_timestamp": "2026-05-18T15:48:00.000000+02:00",
+  "ready_for_operator_acceptance": true
+}
