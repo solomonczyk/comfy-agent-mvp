@@ -1,0 +1,18 @@
+{
+  "task_id": "RC-COMBINE-V2-SET-DECORATOR-VERTICAL-SLICE-001",
+  "corrective_plan_required": true,
+  "defects_to_address": [
+    {
+      "component": "set_dressing",
+      "issue": "Test issue"
+    }
+  ],
+  "corrective_actions": [
+    "Address set_dressing: Test issue"
+  ],
+  "target_state": "visual_corrective_plan_required",
+  "target_action": "visual_corrective_plan_required",
+  "production_accepted": false,
+  "timestamp": "2026-05-18T20:25:55.554559",
+  "version": "1.0"
+}

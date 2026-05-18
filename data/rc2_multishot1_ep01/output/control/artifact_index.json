@@ -1718,5 +1718,11 @@
   "production_design_contract_created": true,
   "production_design_review_authorization_created": true,
   "production_design_review_report_created": true,
-  "production_design_verdict_created": true
+  "production_design_verdict_created": true,
+  "set_decoration_review_executed": true,
+  "set_decoration_verdict": "ACCEPTED",
+  "set_decorator_contract_created": true,
+  "set_decoration_review_authorization_created": true,
+  "set_decoration_review_report_created": true,
+  "set_decoration_verdict_created": true
 }
