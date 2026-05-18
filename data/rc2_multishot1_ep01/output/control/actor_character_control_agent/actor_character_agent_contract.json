@@ -1,0 +1,41 @@
+{
+  "agent_id": "actor_character_control_agent",
+  "agent_role": "Actor / Character Control",
+  "responsibility_zone": "Review visual candidates for actor/character quality including face, eyes, mouth/teeth, skin realism, expression, anatomy/body consistency if visible, and identity/style consistency.",
+  "can_execute_generation": false,
+  "can_retry": false,
+  "can_accept_visual": false,
+  "can_set_production_accepted": false,
+  "can_run_assembly": false,
+  "can_run_downstream": false,
+  "can_edit_image": false,
+  "can_submit_comfyui": false,
+  "can_perform_visual_qa_final_acceptance": false,
+  "can_perform_operator_acceptance": false,
+  "can_run_preview_render": false,
+  "can_run_final_render": false,
+  "can_generate_voice": false,
+  "can_generate_audio": false,
+  "required_inputs": [
+    "visual_candidate_path",
+    "previous_dop_verdict",
+    "actor_character_control_review_authorization"
+  ],
+  "required_outputs": [
+    "actor_character_review_report",
+    "actor_character_verdict",
+    "actor_character_review_authorization"
+  ],
+  "stop_condition": "stop_after_review_and_wait_for_next_gate",
+  "review_criteria": [
+    "face_quality",
+    "eye_artifacts",
+    "mouth_teeth_artifacts",
+    "skin_realism",
+    "expression_mood_consistency",
+    "anatomy_body_consistency_if_visible",
+    "identity_style_consistency"
+  ],
+  "version": "1.0",
+  "timestamp": "2026-05-18T20:06:37.885364"
+}

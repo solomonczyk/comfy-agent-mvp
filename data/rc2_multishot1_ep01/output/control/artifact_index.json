@@ -1700,5 +1700,11 @@
   "dop_visual_review_authorization_created": true,
   "dop_visual_review_report_created": true,
   "dop_visual_verdict_created": true,
-  "dop_verdict": "ACCEPTED_FOR_NEXT_GATE"
+  "dop_verdict": "ACCEPTED_FOR_NEXT_GATE",
+  "actor_character_control_review_executed": true,
+  "actor_character_verdict": "ACCEPTED",
+  "actor_character_contract_created": true,
+  "actor_character_review_authorization_created": true,
+  "actor_character_review_report_created": true,
+  "actor_character_verdict_created": true
 }

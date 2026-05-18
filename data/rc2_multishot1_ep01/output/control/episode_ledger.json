@@ -3776,5 +3776,22 @@
     "current_state": "actor_character_control_review_required",
     "next_allowed_action": "actor_character_control_review_required",
     "timestamp": "2026-05-18T19:46:00.000000+02:00"
+  },
+  {
+    "event_type": "actor_character_control_review",
+    "task_id": "RC-COMBINE-V2-ACTOR-CHARACTER-CONTROL-VERTICAL-SLICE-001",
+    "stage": "actor_character_control_review",
+    "previous_task": "RC-COMBINE-V2-DOP-VISUAL-REVIEW-VERTICAL-SLICE-001-FREEZE",
+    "previous_commit": "f59f2a7",
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "actor_character_verdict": "ACCEPTED",
+    "current_state": "colorist_review_required",
+    "next_allowed_action": "colorist_review_required",
+    "timestamp": "2026-05-18T20:05:59.656959"
   }
 ]
