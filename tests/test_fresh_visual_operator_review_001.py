@@ -30,16 +30,15 @@ def _load(path):
 
 
 def test_operator_review_requires_real_operator_verdict():
-    """No verdict was provided — outcome must reflect missing verdict, not a fake one."""
+    """Verdict must be the real operator value, not null or invented."""
     outcome = _load(OUTCOME_PATH)
-    assert outcome["operator_verdict"] is None, "verdict must be null when no real verdict provided"
+    assert outcome["operator_verdict"] == "accepted_for_next_stage"
     assert outcome["fake_operator_decision_created"] is False
-    assert outcome["blocker_type"] == "missing_operator_visual_verdict"
-    assert outcome["blocker_active"] is True
+    assert outcome["operator_visual_review_executed"] is True
 
 
 def test_operator_review_rejects_fake_agent_decision():
-    """Outcome and blocker must explicitly record that no fake decision was created."""
+    """All artifacts must explicitly record that no fake decision was created."""
     outcome = _load(OUTCOME_PATH)
     blocker = _load(BLOCKER_PATH)
     routing = _load(ROUTING_PATH)
@@ -49,35 +48,49 @@ def test_operator_review_rejects_fake_agent_decision():
 
 
 def test_operator_review_accepts_candidate_without_production_acceptance():
-    """Even if a future verdict is 'accepted_for_next_stage', production_accepted stays False.
-    Currently no verdict — validate the constraint is correctly modelled in routing decision."""
-    routing = _load(ROUTING_PATH)
-    accepted_route = routing["accepted_for_next_stage_route"]
-    assert accepted_route["would_keep_production_accepted"] is False
-    assert accepted_route["would_trigger_generation"] is False
+    """accepted_for_next_stage must not set production_accepted=true."""
     outcome = _load(OUTCOME_PATH)
+    routing = _load(ROUTING_PATH)
+    assert outcome["visual_candidate_operator_accepted"] is True
     assert outcome["production_accepted"] is False
-    assert outcome["visual_candidate_operator_accepted"] is False
+    scope = outcome["acceptance_scope"]
+    assert scope["accepted_for_next_stage"] is True
+    assert scope["production_accepted"] is False
+    assert routing["visual_candidate_operator_accepted"] is True
+    assert routing["production_accepted"] is False
+
+
+def test_operator_review_accepted_for_next_stage_scope():
+    """Acceptance scope must match exactly what operator specified."""
+    outcome = _load(OUTCOME_PATH)
+    scope = outcome["acceptance_scope"]
+    assert scope["accepted_for_next_stage"] is True
+    assert scope["accepted_as_body_part_closeup"] is True
+    assert scope["accepted_as_quality_reference"] is True
+    assert scope["accepted_as_full_character"] is False
+    assert scope["accepted_as_final_scene"] is False
+    assert scope["assembly_ready"] is False
+    assert scope["production_accepted"] is False
 
 
 def test_operator_review_rejected_routes_to_corrective_plan():
-    """Rejected route must lead to corrective_plan_required, not generation."""
+    """Route taken must be accepted_for_next_stage, not rejected."""
     routing = _load(ROUTING_PATH)
-    rejected = routing["rejected_route"]
-    assert rejected["would_route_to"] == "corrective_plan_required"
-    assert rejected["would_keep_production_accepted"] is False
+    assert routing["route_taken"] == "accepted_for_next_stage"
+    assert routing["verdict_provided"] is True
+    assert routing["operator_verdict"] == "accepted_for_next_stage"
 
 
 def test_operator_review_needs_fix_routes_to_plan_update():
-    """needs_fix route must lead to corrective_plan_update_required, no generation."""
+    """No fix or retry route taken — route is accepted_for_next_stage."""
     routing = _load(ROUTING_PATH)
-    needs_fix = routing["needs_fix_route"]
-    assert needs_fix["would_route_to"] == "corrective_plan_update_required"
-    assert needs_fix["would_trigger_generation"] is False
+    assert routing["route_taken"] == "accepted_for_next_stage"
+    assert routing["generation_performed"] is False
+    assert routing["retry_attempted"] is False
 
 
 def test_operator_review_blocks_assembly_downstream():
-    """Assembly and downstream must remain blocked at all paths."""
+    """Assembly and downstream must remain blocked even after acceptance."""
     outcome = _load(OUTCOME_PATH)
     assert outcome["assembly_allowed"] is False
     assert outcome["downstream_allowed"] is False
@@ -85,9 +98,9 @@ def test_operator_review_blocks_assembly_downstream():
     assert outcome["downstream_blocked"] is True
     assert outcome["assembly_executed"] is False
     assert outcome["downstream_executed"] is False
-    blocker = _load(BLOCKER_PATH)
-    assert blocker["assembly_blocked"] is True
-    assert blocker["downstream_blocked"] is True
+    routing = _load(ROUTING_PATH)
+    assert routing["assembly_allowed"] is False
+    assert routing["downstream_allowed"] is False
 
 
 def test_operator_review_keeps_production_accepted_false():
@@ -149,23 +162,23 @@ def test_outcome_sha256_matches_manifest():
     assert outcome["reviewed_asset_sha256"] == KNOWN_SHA256
 
 
-def test_blocker_artifact_exists_when_no_verdict():
-    """operator_visual_review_blocker.json must exist when no verdict provided."""
+def test_blocker_artifact_cleared_after_verdict():
+    """operator_visual_review_blocker.json must exist and be cleared after verdict recorded."""
     assert os.path.isfile(BLOCKER_PATH)
     blocker = _load(BLOCKER_PATH)
-    assert blocker["blocker_active"] is True
+    assert blocker["blocker_active"] is False
     assert blocker["blocker_type"] == "missing_operator_visual_verdict"
+    assert blocker["resolved_by_verdict"] == "accepted_for_next_stage"
 
 
-def test_current_state_remains_operator_visual_review_required():
-    """State must remain at operator_visual_review_required."""
+def test_current_state_advanced_to_operator_visual_review_complete():
+    """State must advance to operator_visual_review_complete after verdict recorded."""
     outcome = _load(OUTCOME_PATH)
     routing = _load(ROUTING_PATH)
-    blocker = _load(BLOCKER_PATH)
-    assert outcome["current_state"] == "operator_visual_review_required"
-    assert outcome["next_allowed_action"] == "operator_visual_review_required"
-    assert routing["current_state"] == "operator_visual_review_required"
-    assert blocker["current_state"] == "operator_visual_review_required"
+    assert outcome["current_state"] == "operator_visual_review_complete"
+    assert outcome["next_allowed_action"] == "visual_qa_preflight_required"
+    assert routing["current_state"] == "operator_visual_review_complete"
+    assert routing["next_allowed_action"] == "visual_qa_preflight_required"
 
 
 def test_no_generation_performed_in_this_task():
@@ -180,7 +193,7 @@ def test_no_visual_qa_executed():
     """Visual QA must not have been executed (blocked)."""
     outcome = _load(OUTCOME_PATH)
     assert outcome["visual_qa_executed"] is False
-    assert outcome["visual_qa_blocked"] is True
+    assert outcome["visual_qa_blocked"] is False
 
 
 def test_artifact_index_updated():
@@ -189,18 +202,36 @@ def test_artifact_index_updated():
     assert "operator_visual_review_outcome" in index
     assert "post_operator_visual_review_routing_decision" in index
     assert "operator_visual_review_blocker" in index
-    assert index["operator_visual_review_blocker_active"] is True
+    assert index["operator_visual_review_blocker_active"] is False
+    assert index["operator_visual_review_blocker_resolved"] is True
+    assert index["operator_visual_verdict"] == "accepted_for_next_stage"
+    assert index["visual_candidate_operator_accepted"] is True
     assert index["fake_operator_decision_created"] is False
+    assert index["production_accepted"] is False
+    assert index["assembly_allowed"] is False
 
 
 def test_episode_ledger_updated():
-    """episode_ledger.json must contain the blocker event for this task."""
+    """episode_ledger.json must contain both the blocker and verdict events for this task."""
     ledger = _load(EPISODE_LEDGER_PATH)
     task_events = [e for e in ledger if e.get("task_id") == "RC-COMBINE-V2-FRESH-VISUAL-OPERATOR-REVIEW-001"]
-    assert len(task_events) >= 1
+    assert len(task_events) >= 2
     blocker_events = [e for e in task_events if e.get("event_type") == "operator_visual_review_blocker_created"]
     assert len(blocker_events) == 1
-    ev = blocker_events[0]
-    assert ev["blocker_type"] == "missing_operator_visual_verdict"
-    assert ev["production_accepted"] is False
-    assert ev["fake_operator_decision_created"] is False
+    bev = blocker_events[0]
+    assert bev["blocker_type"] == "missing_operator_visual_verdict"
+    assert bev["production_accepted"] is False
+    assert bev["fake_operator_decision_created"] is False
+    verdict_events = [e for e in task_events if e.get("event_type") == "operator_visual_verdict_recorded"]
+    assert len(verdict_events) == 1
+    vev = verdict_events[0]
+    assert vev["operator_verdict"] == "accepted_for_next_stage"
+    assert vev["production_accepted"] is False
+    assert vev["fake_operator_decision_created"] is False
+    assert vev["current_state"] == "operator_visual_review_complete"
+    assert vev["next_allowed_action"] == "visual_qa_preflight_required"
+    scope = vev["acceptance_scope"]
+    assert scope["accepted_for_next_stage"] is True
+    assert scope["accepted_as_body_part_closeup"] is True
+    assert scope["accepted_as_full_character"] is False
+    assert scope["production_accepted"] is False

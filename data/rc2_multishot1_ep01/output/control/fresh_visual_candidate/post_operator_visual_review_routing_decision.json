@@ -2,34 +2,25 @@
   "task_id": "RC-COMBINE-V2-FRESH-VISUAL-OPERATOR-REVIEW-001",
   "document_type": "post_operator_visual_review_routing_decision",
   "timestamp": "2026-05-18T11:24:00.000000+02:00",
+  "verdict_recorded_timestamp": "2026-05-18T11:35:00.000000+02:00",
   "routing_executed": true,
-  "operator_verdict": null,
-  "verdict_provided": false,
-  "route_taken": "blocker_missing_verdict",
-  "route_description": "No human operator verdict provided. Pipeline remains blocked at operator_visual_review_required. No generation, no retry, no assembly, no downstream.",
-  "current_state": "operator_visual_review_required",
-  "next_allowed_action": "operator_visual_review_required",
-  "accepted_for_next_stage_route": {
-    "would_set_visual_candidate_operator_accepted": true,
-    "would_keep_production_accepted": false,
-    "would_unlock_next_stage": "visual_qa_preflight_required",
-    "would_trigger_generation": false
+  "operator_verdict": "accepted_for_next_stage",
+  "verdict_provided": true,
+  "route_taken": "accepted_for_next_stage",
+  "route_description": "Operator accepted candidate as body-part closeup quality reference for next stage. production_accepted=false. assembly_allowed=false. downstream_allowed=false. No generation triggered.",
+  "acceptance_scope": {
+    "accepted_for_next_stage": true,
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
   },
-  "rejected_route": {
-    "would_record_rejection_reasons": true,
-    "would_create_visual_rejection_artifact": true,
-    "would_route_to": "corrective_plan_required",
-    "would_keep_production_accepted": false
-  },
-  "needs_fix_route": {
-    "would_record_fix_requirements": true,
-    "would_route_to": "corrective_plan_update_required",
-    "would_trigger_generation": false
-  },
-  "needs_manual_review_route": {
-    "would_keep_state_at": "operator_visual_review_required",
-    "would_create_manual_review_packet": true
-  },
+  "visual_candidate_operator_accepted": true,
+  "current_state": "operator_visual_review_complete",
+  "next_allowed_action": "visual_qa_preflight_required",
+  "blocker_cleared": true,
   "production_accepted": false,
   "assembly_allowed": false,
   "downstream_allowed": false,

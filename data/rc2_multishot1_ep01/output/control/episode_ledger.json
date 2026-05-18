@@ -3072,5 +3072,41 @@
       "fresh_visual_candidate/operator_visual_review_blocker.json"
     ],
     "notes": "No human operator verdict provided. Agent recorded blocker only. State remains at operator_visual_review_required."
+  },
+  {
+    "event_type": "operator_visual_verdict_recorded",
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-OPERATOR-REVIEW-001",
+    "timestamp": "2026-05-18T11:35:00.000000+02:00",
+    "operator_verdict": "accepted_for_next_stage",
+    "operator_notes": [
+      "Corrective candidate is visually strong.",
+      "The rendered body part / eye close-up is highly realistic.",
+      "Skin texture, eyelashes, iris detail, reflections and micro-details look convincing.",
+      "This should be accepted as a quality reference / body-part visual candidate.",
+      "The output should not be treated as full character, full face, full scene, assembly-ready, or production accepted."
+    ],
+    "acceptance_scope": {
+      "accepted_for_next_stage": true,
+      "accepted_as_body_part_closeup": true,
+      "accepted_as_quality_reference": true,
+      "accepted_as_full_character": false,
+      "accepted_as_final_scene": false,
+      "assembly_ready": false,
+      "production_accepted": false
+    },
+    "visual_candidate_operator_accepted": true,
+    "fake_operator_decision_created": false,
+    "blocker_cleared": true,
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "visual_qa_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "current_state": "operator_visual_review_complete",
+    "next_allowed_action": "visual_qa_preflight_required"
   }
 ]
