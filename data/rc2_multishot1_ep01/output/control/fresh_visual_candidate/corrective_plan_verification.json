@@ -1,0 +1,93 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001",
+  "document_type": "corrective_plan_verification",
+  "timestamp": "2026-05-18T10:30:00.000000+02:00",
+  "verified_commit": "5b4696c",
+  "git_status": "clean",
+  "operator_visual_rejection_verified": true,
+  "rejection_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/operator_visual_rejection.json",
+  "rejection_verdict": "REJECTED",
+  "rejection_defects_verified": {
+    "VD-001": {
+      "present": true,
+      "category": "facial_artifacts",
+      "description": "Mouth and teeth artifacts"
+    },
+    "VD-002": {
+      "present": true,
+      "category": "skin_rendering",
+      "description": "Over-smoothed AI-doll skin"
+    },
+    "VD-003": {
+      "present": true,
+      "category": "eye_rendering",
+      "description": "Unnatural eye rendering"
+    },
+    "VD-004": {
+      "present": true,
+      "category": "facial_detail",
+      "description": "Insufficient natural facial detail"
+    }
+  },
+  "rejection_flags_verified": {
+    "retry_generation_authorized": false,
+    "second_generation_authorized": false,
+    "assembly_authorized": false,
+    "downstream_authorized": false,
+    "production_accepted": false
+  },
+  "corrective_plan_path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/corrective_plan.json",
+  "corrective_plan_covers_all_defects": true,
+  "corrective_actions_verified": {
+    "VD-001": {
+      "actions_present": true,
+      "key_actions": [
+        "ADetailer / DetailerFixer targeting mouth/teeth region",
+        "CFG reduced to 5.5-6.0"
+      ],
+      "is_blind_retry": false
+    },
+    "VD-002": {
+      "actions_present": true,
+      "key_actions": [
+        "Skin texture LoRA at weight 0.4-0.6"
+      ],
+      "is_blind_retry": false
+    },
+    "VD-003": {
+      "actions_present": true,
+      "key_actions": [
+        "ADetailer targeting eye region with eye-detail model",
+        "eye_detail LoRA at weight 0.3-0.5"
+      ],
+      "is_blind_retry": false
+    },
+    "VD-004": {
+      "actions_present": true,
+      "key_actions": [
+        "steps increased to 30-35",
+        "highres fix with face detailing pass"
+      ],
+      "is_blind_retry": false
+    }
+  },
+  "workflow_changes_present": true,
+  "workflow_changes_count": 6,
+  "recipe_changes_from_original": [
+    "ADetailer/DetailerFixer node added",
+    "CFG lowered 6.5 -> 5.5",
+    "skin_texture LoRA added weight 0.4-0.6",
+    "eye_detail LoRA added weight 0.3-0.5",
+    "steps increased 25 -> 30-35",
+    "positive/negative prompt expansions for skin, teeth, eye detail"
+  ],
+  "blind_retry_verdict": false,
+  "blind_retry_justification": "Plan changes 6 distinct workflow parameters and adds new nodes; this is not a repetition of prior params",
+  "corrective_plan_status_field": "draft_pending_operator_approval",
+  "corrective_plan_approved_by_this_task": false,
+  "verification_result": "PASS",
+  "generation_remains_blocked": true,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false
+}

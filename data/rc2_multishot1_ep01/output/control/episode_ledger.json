@@ -2944,5 +2944,33 @@
     "current_state": "fresh_visual_candidate_rejected_corrective_plan_required",
     "next_allowed_action": "fresh_visual_candidate_rejected_corrective_plan_required",
     "timestamp": "2026-05-18T08:23:00.084212+00:00"
+  },
+  {
+    "event_type": "corrective_gate_verification_and_opening",
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001",
+    "stage": "corrective_generation_gate_opened",
+    "commit_verified": "5b4696c",
+    "operator_visual_rejection_verified": true,
+    "rejection_verdict": "REJECTED",
+    "defects_verified": ["VD-001", "VD-002", "VD-003", "VD-004"],
+    "corrective_plan_verified": true,
+    "blind_retry_verdict": false,
+    "operator_corrective_plan_approval_recorded": true,
+    "approval_scope": "corrective_plan_only_and_gate_opening_only",
+    "corrective_generation_gate_opened": true,
+    "max_generations": 1,
+    "blind_retry_allowed": false,
+    "second_generation_allowed": false,
+    "visual_qa_allowed_before_separate_gate": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "visual_acceptance_executed": false,
+    "production_accepted": false,
+    "current_state": "corrective_generation_gate_opened",
+    "next_allowed_action": "corrective_generation_execute_one",
+    "timestamp": "2026-05-18T10:30:00.000000+02:00"
   }
 ]

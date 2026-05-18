@@ -1,0 +1,44 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001",
+  "document_type": "operator_corrective_plan_approval",
+  "timestamp": "2026-05-18T10:30:00.000000+02:00",
+  "operator_name": "Андрей",
+  "operator_source": "human_operator",
+  "approval_basis": "Operator issued task RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001 which explicitly includes 'record explicit operator approval of the corrective plan' and 'open one-generation corrective gate' as required deliverables.",
+  "approved_document": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/corrective_plan.json",
+  "approval_scope": "corrective_plan_only_and_gate_opening_only",
+  "approval_meaning": {
+    "corrective_plan_approved": true,
+    "gate_opening_approved": true,
+    "visual_acceptance_approved": false,
+    "production_accepted": false,
+    "visual_output_accepted": false,
+    "assembly_approved": false,
+    "downstream_approved": false,
+    "generation_execute_approved": false
+  },
+  "approved_corrective_actions": [
+    "Add ADetailer / DetailerFixer for mouth/teeth inpainting pass",
+    "Reduce CFG from 6.5 to 5.5",
+    "Add skin texture LoRA weight 0.4-0.6",
+    "Add ADetailer eye region with eye_detail LoRA weight 0.3-0.5",
+    "Increase steps from 25 to 30-35",
+    "Add highres fix with face detailing pass",
+    "Expand positive/negative prompts for skin, eye, teeth detail"
+  ],
+  "approval_explicitly_does_not_mean": [
+    "visual acceptance of any generated output",
+    "production acceptance",
+    "authorization to run more than one generation",
+    "authorization for assembly or downstream"
+  ],
+  "max_generations_authorized": 1,
+  "corrective_plan_status_after_approval": "operator_approved",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "visual_acceptance_executed": false,
+  "generation_may_proceed_after_gate": true,
+  "generation_limit": "exactly_one",
+  "gate_document": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/corrective_generation_gate.json"
+}

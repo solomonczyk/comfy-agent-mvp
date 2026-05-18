@@ -1388,5 +1388,22 @@
   "retry_generation_authorized": false,
   "second_generation_authorized": false,
   "assembly_authorized": false,
-  "downstream_authorized": false
+  "downstream_authorized": false,
+  "corrective_gate_verify_task": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001",
+  "corrective_plan_verification": "fresh_visual_candidate/corrective_plan_verification.json",
+  "corrective_plan_verified": true,
+  "operator_corrective_plan_approval": "fresh_visual_candidate/operator_corrective_plan_approval.json",
+  "operator_corrective_plan_approval_recorded": true,
+  "corrective_generation_gate": "fresh_visual_candidate/corrective_generation_gate.json",
+  "corrective_generation_gate_opened": true,
+  "corrective_generation_gate_max_generations": 1,
+  "blind_retry_allowed": false,
+  "current_state": "corrective_generation_gate_opened",
+  "next_allowed_action": "corrective_generation_execute_one",
+  "production_accepted": false,
+  "visual_acceptance_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "operator_visual_verdict": "REJECTED",
+  "corrective_gate_verify_timestamp": "2026-05-18T10:30:00.000000+02:00"
 }
