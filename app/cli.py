@@ -44148,14 +44148,16 @@ def combine_execute_fresh_visual_generation(args: argparse.Namespace) -> int:
     # Step 1: Verify clean git state
     # ------------------------------------------------------------------
     try:
+        # Use --porcelain to get machine-readable output
         result = subprocess.run(
-            ["git", "status", "-sb"],
+            ["git", "status", "--porcelain"],
             cwd=project_root,
             capture_output=True,
             text=True,
             check=False,
         )
-        git_clean = result.stdout.strip() == "## main...origin/main" or result.returncode == 0 and not result.stdout.strip().replace("## main...origin/main", "")
+        # Git is clean if there's no output (no modified, staged, or untracked files)
+        git_clean = result.returncode == 0 and not result.stdout.strip()
     except Exception:
         git_clean = False
 
