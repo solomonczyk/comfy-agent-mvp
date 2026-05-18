@@ -1,0 +1,56 @@
+{
+  "plan_id": "fresh_visual_generation_plan_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001",
+  "timestamp": "2026-05-18T12:42:00.000000+02:00",
+  "previous_task": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001",
+  "previous_commit": "a08c6a9",
+  "plan_type": "future_generation_plan_only",
+  "generation_authorized": false,
+  "comfyui_submit_authorized": false,
+  "retry_authorized": false,
+  "quality_reference_id": "quality_ref_eye_closeup_001",
+  "quality_reference_usage": "quality_calibration_only",
+  "quality_reference_type": "body_part_closeup_quality_reference",
+  "quality_reference_body_part": "eye",
+  "target_future_asset_scope": "fresh_visual_candidate",
+  "requires_separate_generation_gate": true,
+  "requires_operator_authorization_before_generation": true,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_blocked": true,
+  "source_reference_binding": "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_reference_binding.json",
+  "source_quality_reference_registry": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registry.json",
+  "quality_reference_positive_signals": [
+    "realistic_texture",
+    "high_detail",
+    "good_sharpness",
+    "natural_lighting_or_material_response"
+  ],
+  "quality_targets_derived_from_reference": {
+    "eye_detail_quality": "match_or_exceed_quality_ref_eye_closeup_001",
+    "skin_texture_realism": "high_photorealism_non_doll_non_flat",
+    "sharpness_level": "high_sharpness_matching_reference",
+    "micro_detail_level": "iris_pupil_eyelash_eyelid_level_detail"
+  },
+  "defect_prevention_plan": {
+    "mouth_teeth_artifacts": "face_detail_pass_or_region_specific_control",
+    "ai_doll_skin": "skin_texture_realism_constraint",
+    "unnatural_eyes": "eye_region_quality_target_from_reference",
+    "insufficient_facial_detail": "high_detail_face_quality_target"
+  },
+  "plan_constraints": {
+    "generation_gate_must_be_separate": true,
+    "operator_authorization_required_before_generation": true,
+    "max_generations_per_gate": 1,
+    "blind_retry_allowed": false,
+    "visual_qa_allowed_after_generation": false,
+    "assembly_allowed_after_generation": false,
+    "production_acceptance_allowed_after_generation": false,
+    "plan_is_planning_only_not_execution": true
+  },
+  "state_transition": {
+    "previous_state": "fresh_visual_strategy_reference_integrated",
+    "current_state": "fresh_visual_generation_plan_updated",
+    "next_allowed_action": "fresh_visual_generation_gate_required"
+  }
+}

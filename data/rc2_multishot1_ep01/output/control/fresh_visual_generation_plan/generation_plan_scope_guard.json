@@ -1,0 +1,95 @@
+{
+  "guard_id": "generation_plan_scope_guard_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001",
+  "timestamp": "2026-05-18T12:42:00.000000+02:00",
+  "reference_id": "quality_ref_eye_closeup_001",
+  "guard_type": "generation_plan_scope_enforcement",
+  "enforcement": "hard_block",
+  "scope_boundary": {
+    "plan_type": "future_generation_plan_only",
+    "generation_authorized": false,
+    "comfyui_submit_authorized": false,
+    "retry_authorized": false,
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_full_face": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false,
+    "downstream_blocked": true
+  },
+  "blocked_overclaims": [
+    "generation_authorized",
+    "comfyui_submit_authorized",
+    "retry_authorized",
+    "accepted_as_full_character",
+    "accepted_as_full_face",
+    "accepted_as_final_scene",
+    "assembly_ready",
+    "production_accepted",
+    "generation_gate_opened",
+    "dirty_carryover_staged_or_committed"
+  ],
+  "block_conditions": {
+    "on_generation_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "generation_not_authorized_plan_layer_only"
+    },
+    "on_comfyui_submit_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "comfyui_submit_not_authorized_plan_layer_only"
+    },
+    "on_full_character_usage_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "scope_violation_body_part_reference_cannot_be_full_character"
+    },
+    "on_full_face_usage_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "scope_violation_eye_closeup_cannot_be_full_face"
+    },
+    "on_final_scene_usage_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "scope_violation_quality_reference_cannot_be_final_scene"
+    },
+    "on_production_accepted_set_true": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "production_accepted_may_not_be_set_true_by_generation_plan"
+    },
+    "on_generation_gate_open_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "generation_gate_must_be_separate_task_with_operator_authorization"
+    },
+    "on_dirty_carryover_stage_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "dirty_carryover_must_not_be_staged_or_committed_by_this_task"
+    }
+  },
+  "guard_invariants": {
+    "plan_remains_planning_only": true,
+    "generation_never_triggered_from_plan": true,
+    "reference_remains_quality_calibration_only": true,
+    "reference_never_becomes_full_character": true,
+    "reference_never_becomes_full_face": true,
+    "reference_never_opens_generation_gate": true,
+    "reference_never_opens_assembly_gate": true,
+    "reference_never_triggers_downstream": true,
+    "production_accepted_remains_false": true,
+    "dirty_carryover_not_modified_by_this_task": true
+  },
+  "next_allowed_action_if_violation_detected": "scope_reconciliation_required",
+  "reconciliation_requires": [
+    "operator_explicit_authorization",
+    "separate_generation_gate_task",
+    "separate_visual_qa_cycle",
+    "separate_operator_acceptance"
+  ]
+}

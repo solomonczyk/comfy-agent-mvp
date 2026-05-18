@@ -1,0 +1,85 @@
+{
+  "map_id": "quality_reference_application_map_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001",
+  "timestamp": "2026-05-18T12:42:00.000000+02:00",
+  "reference_id": "quality_ref_eye_closeup_001",
+  "reference_type": "body_part_closeup_quality_reference",
+  "reference_body_part": "eye",
+  "may_inform": [
+    "eye_detail_quality",
+    "body_part_texture_realism",
+    "sharpness_target",
+    "micro_detail_target",
+    "natural_material_response"
+  ],
+  "must_not_define": [
+    "character_identity",
+    "full_face_identity",
+    "full_body_appearance",
+    "final_scene_composition",
+    "production_asset_acceptance"
+  ],
+  "scope_expansion_requires_operator_review": true,
+  "application_rules": {
+    "eye_detail_quality": {
+      "application_type": "quality_target",
+      "description": "Use reference iris/pupil/reflection/eyelash quality as minimum target for future eye regions",
+      "scope": "planning_only",
+      "execution_authorized": false
+    },
+    "body_part_texture_realism": {
+      "application_type": "quality_target",
+      "description": "Use reference skin micro-texture as photorealism benchmark for future candidate skin",
+      "scope": "planning_only",
+      "execution_authorized": false
+    },
+    "sharpness_target": {
+      "application_type": "quality_target",
+      "description": "Reference sharpness level sets the minimum acceptable sharpness for future candidates",
+      "scope": "planning_only",
+      "execution_authorized": false
+    },
+    "micro_detail_target": {
+      "application_type": "quality_target",
+      "description": "Reference micro-detail density (pores, fine textures) is target floor for future candidates",
+      "scope": "planning_only",
+      "execution_authorized": false
+    },
+    "natural_material_response": {
+      "application_type": "quality_target",
+      "description": "Reference natural light/material response informs future workflow lighting/material settings",
+      "scope": "planning_only",
+      "execution_authorized": false
+    }
+  },
+  "forbidden_applications": {
+    "character_identity": {
+      "blocked": true,
+      "reason": "reference_is_body_part_closeup_not_full_character"
+    },
+    "full_face_identity": {
+      "blocked": true,
+      "reason": "reference_is_eye_closeup_only_not_full_face"
+    },
+    "full_body_appearance": {
+      "blocked": true,
+      "reason": "reference_is_body_part_closeup_not_full_body"
+    },
+    "final_scene_composition": {
+      "blocked": true,
+      "reason": "reference_is_not_final_scene_asset"
+    },
+    "production_asset_acceptance": {
+      "blocked": true,
+      "reason": "quality_reference_does_not_constitute_production_acceptance"
+    }
+  },
+  "guard_invariants": {
+    "reference_remains_quality_calibration_only": true,
+    "reference_never_becomes_full_character": true,
+    "reference_never_becomes_full_face": true,
+    "reference_never_opens_generation_gate": true,
+    "reference_never_opens_assembly_gate": true,
+    "reference_never_triggers_downstream": true
+  }
+}

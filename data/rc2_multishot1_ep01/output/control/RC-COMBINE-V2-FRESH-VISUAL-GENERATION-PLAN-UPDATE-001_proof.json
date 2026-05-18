@@ -1,0 +1,78 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001",
+  "feature_completed": true,
+  "full_feature_loop_executed": true,
+
+  "previous_task": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001",
+  "previous_commit": "a08c6a9",
+
+  "allowed_scope_respected": true,
+  "forbidden_actions_not_executed": true,
+
+  "quality_reference_read": true,
+  "quality_reference_id": "quality_ref_eye_closeup_001",
+  "quality_reference_usage": "quality_calibration_only",
+
+  "fresh_visual_generation_plan_created": true,
+  "quality_reference_application_map_created": true,
+  "visual_recipe_constraints_created": true,
+  "future_generation_gate_requirements_created": true,
+  "generation_plan_scope_guard_created": true,
+
+  "accepted_as_body_part_closeup": true,
+  "accepted_as_quality_reference": true,
+  "accepted_as_full_character": false,
+  "accepted_as_full_face": false,
+  "accepted_as_final_scene": false,
+
+  "generation_authorized": false,
+  "generation_performed": false,
+  "comfyui_submit_authorized": false,
+  "comfyui_submit_executed": false,
+  "retry_authorized": false,
+  "retry_attempted": false,
+  "new_visual_candidate_created": false,
+  "prompt_id_created": false,
+  "preview_render_executed": false,
+  "final_render_executed": false,
+  "visual_qa_acceptance_executed": false,
+  "operator_acceptance_faked": false,
+  "assembly_executed": false,
+  "voice_audio_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+
+  "required_artifacts_created": true,
+  "artifact_index_updated": true,
+  "episode_ledger_updated": true,
+  "state_updated": true,
+
+  "tests_pass": true,
+  "tests_count": 11,
+  "tests_passed": 11,
+  "py_compile_pass": true,
+  "cli_validation_pass": true,
+
+  "current_state": "fresh_visual_generation_plan_updated",
+  "next_allowed_action": "fresh_visual_generation_gate_required",
+
+  "global_git_clean": false,
+  "task_scope_git_clean": true,
+  "global_dirty_carryover_preserved": true,
+  "carryover_modified_by_this_task": false,
+  "carryover_staged_by_this_task": false,
+  "carryover_committed_by_this_task": false,
+
+  "commit_hash": "17c38fe",
+  "push_status": "pushed_origin_main",
+
+  "blockers": [
+    {
+      "type": "global_dirty_carryover",
+      "blocking_full_repo_clean_claim": true,
+      "blocking_task_acceptance": false
+    }
+  ],
+
+  "next_task_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001"
+}

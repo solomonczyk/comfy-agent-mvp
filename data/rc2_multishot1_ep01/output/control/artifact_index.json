@@ -1,6 +1,14 @@
 {
-  "current_state": "fresh_visual_strategy_reference_integrated",
-  "next_allowed_action": "fresh_visual_generation_plan_update_required",
+  "current_state": "fresh_visual_generation_plan_updated",
+  "next_allowed_action": "fresh_visual_generation_gate_required",
+  "fresh_visual_generation_plan_created": true,
+  "fresh_visual_generation_plan_dir": "fresh_visual_generation_plan/",
+  "fresh_visual_generation_plan": "fresh_visual_generation_plan/fresh_visual_generation_plan.json",
+  "quality_reference_application_map": "fresh_visual_generation_plan/quality_reference_application_map.json",
+  "visual_recipe_constraints": "fresh_visual_generation_plan/visual_recipe_constraints.json",
+  "fresh_visual_generation_gate_requirements": "fresh_visual_generation_plan/future_generation_gate_requirements.json",
+  "generation_plan_scope_guard": "fresh_visual_generation_plan/generation_plan_scope_guard.json",
+  "generation_plan_update_report": "fresh_visual_generation_plan/generation_plan_update_report.json",
   "generation_runtime_blocked": false,
   "blocker": {
     "blocker_type": "fresh_visual_strategy_operator_review_required",

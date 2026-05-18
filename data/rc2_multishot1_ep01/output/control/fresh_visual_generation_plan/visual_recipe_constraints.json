@@ -1,0 +1,78 @@
+{
+  "constraints_id": "visual_recipe_constraints_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001",
+  "timestamp": "2026-05-18T12:42:00.000000+02:00",
+  "constraint_level": "planning_only",
+  "runtime_execution_authorized": false,
+  "comfyui_submit_authorized": false,
+  "workflow_package_created": false,
+  "quality_reference_id": "quality_ref_eye_closeup_001",
+  "quality_reference_usage": "quality_calibration_only",
+  "defect_prevention_targets": {
+    "mouth_teeth_artifacts": {
+      "required_mitigation": "face_detail_pass_or_region_specific_control",
+      "mitigation_description": "Apply dedicated face detail pass or region-specific ControlNet to prevent tooth/mouth artifacts",
+      "status": "planning_only",
+      "execution_authorized": false
+    },
+    "ai_doll_skin": {
+      "required_mitigation": "skin_texture_realism_constraint",
+      "mitigation_description": "Enforce skin texture realism via photorealistic skin LoRA or negative prompting of artificial/plastic/doll textures",
+      "status": "planning_only",
+      "execution_authorized": false
+    },
+    "unnatural_eyes": {
+      "required_mitigation": "eye_region_quality_target_from_reference",
+      "mitigation_description": "Use quality_ref_eye_closeup_001 as calibration target for eye region quality in future generation",
+      "reference_id": "quality_ref_eye_closeup_001",
+      "reference_signals": [
+        "realistic_texture",
+        "high_detail",
+        "good_sharpness",
+        "natural_lighting_or_material_response"
+      ],
+      "status": "planning_only",
+      "execution_authorized": false
+    },
+    "insufficient_facial_detail": {
+      "required_mitigation": "high_detail_face_quality_target",
+      "mitigation_description": "Enforce high face detail quality target using high-resolution face pass or suitable sampler settings",
+      "status": "planning_only",
+      "execution_authorized": false
+    }
+  },
+  "positive_quality_targets": {
+    "eye_detail": {
+      "target": "iris_pupil_reflection_eyelash_eyelid_fully_resolved",
+      "reference_id": "quality_ref_eye_closeup_001",
+      "status": "planning_only"
+    },
+    "skin_texture": {
+      "target": "photorealistic_micro_texture_non_flat_non_doll",
+      "status": "planning_only"
+    },
+    "sharpness": {
+      "target": "high_sharpness_matching_reference",
+      "status": "planning_only"
+    },
+    "overall_photorealism": {
+      "target": "cinematic_photorealistic_human_character",
+      "status": "planning_only"
+    }
+  },
+  "workflow_parameter_guidance": {
+    "sampler": "planning_only_not_locked",
+    "cfg_scale": "planning_only_not_locked",
+    "steps": "planning_only_not_locked",
+    "resolution": "1024x1024_minimum",
+    "face_detail_pass": "required_at_execution_time",
+    "lora_skin_realism": "recommended_at_execution_time"
+  },
+  "constraint_guard": {
+    "no_executable_workflow_submit_package": true,
+    "no_prompt_id_created": true,
+    "no_comfyui_execution": true,
+    "no_generation_triggered": true,
+    "all_constraints_planning_layer_only": true
+  }
+}
