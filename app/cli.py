@@ -18926,6 +18926,73 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001
+    p = subparsers.add_parser(
+        "combine-build-fresh-visual-strategy-review-packet",
+        help="Build operator review packet for fresh visual strategy",
+    )
+    p.add_argument("--project-root", required=True, help="Project root directory")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
+    p = subparsers.add_parser(
+        "combine-process-fresh-visual-strategy-operator-decision",
+        help="Process operator decision on fresh visual strategy",
+    )
+    p.add_argument("--project-root", required=True, help="Project root directory")
+    p.add_argument(
+        "--operator-verdict",
+        required=True,
+        choices=[
+            "accepted_for_controlled_generation_gate_planning",
+            "rejected_revision_required",
+            "modification_required",
+        ],
+        help="Operator verdict",
+    )
+    p.add_argument(
+        "--operator-source",
+        default="human_operator",
+        choices=["human_operator"],
+        help="Decision source",
+    )
+    p.add_argument("--operator-name", default="Андрей", help="Operator name")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
+    p = subparsers.add_parser(
+        "combine-build-controlled-visual-generation-gate",
+        help="Build controlled visual generation gate plan and authorization artifacts",
+    )
+    p.add_argument("--project-root", required=True, help="Project root directory")
+    p.add_argument("--max-generations", type=int, default=1, help="Max allowed generations")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
+    p = subparsers.add_parser(
+        "combine-validate-controlled-visual-generation-gate",
+        help="Validate controlled visual generation gate (preflight checks)",
+    )
+    p.add_argument("--project-root", required=True, help="Project root directory")
+    p.add_argument("--comfyui-host", default="127.0.0.1", help="ComfyUI host")
+    p.add_argument("--comfyui-port", type=int, default=8188, help="ComfyUI port")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
+    p = subparsers.add_parser(
+        "combine-run-controlled-fresh-visual-generation",
+        help="Run exactly one controlled fresh visual generation (no retry, no second gen)",
+    )
+    p.add_argument("--project-root", required=True, help="Project root directory")
+    p.add_argument("--execute", action="store_true", help="Actually execute generation")
+    p.add_argument("--max-generations", type=int, default=1, help="Max allowed generations")
+    p.add_argument("--comfyui-host", default="127.0.0.1", help="ComfyUI host")
+    p.add_argument("--comfyui-port", type=int, default=8188, help="ComfyUI port")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
+    p = subparsers.add_parser(
+        "combine-inspect-fresh-visual-candidate",
+        help="Inspect generated fresh visual candidate artifacts",
+    )
+    p.add_argument("--project-root", required=True, help="Project root directory")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -19480,6 +19547,18 @@ def main() -> int:
     elif args.command == "combine-preview-correction-readiness":
         _require_absolute_project_root(args, "combine-preview-correction-readiness")
         return combine_preview_correction_readiness(args)
+    elif args.command == "combine-build-fresh-visual-strategy-review-packet":
+        return combine_build_fresh_visual_strategy_review_packet(args)
+    elif args.command == "combine-process-fresh-visual-strategy-operator-decision":
+        return combine_process_fresh_visual_strategy_operator_decision(args)
+    elif args.command == "combine-build-controlled-visual-generation-gate":
+        return combine_build_controlled_visual_generation_gate(args)
+    elif args.command == "combine-validate-controlled-visual-generation-gate":
+        return combine_validate_controlled_visual_generation_gate(args)
+    elif args.command == "combine-run-controlled-fresh-visual-generation":
+        return combine_run_controlled_fresh_visual_generation(args)
+    elif args.command == "combine-inspect-fresh-visual-candidate":
+        return combine_inspect_fresh_visual_candidate(args)
     else:
         parser.print_help()
         return 0
@@ -43703,6 +43782,472 @@ def combine_preview_correction_readiness(args: argparse.Namespace) -> int:
         print(f"  Current State: {readiness.get('current_state', 'unknown')}")
         print(f"  Next Allowed Action: {readiness.get('next_allowed_action', 'unknown')}")
 
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001 — CLI handlers
+# ---------------------------------------------------------------------------
+
+def combine_build_fresh_visual_strategy_review_packet(args: argparse.Namespace) -> int:
+    """Build operator review packet for fresh visual strategy."""
+    from pathlib import Path
+    from app.visual_strategy.operator_review import StrategyOperatorReviewBuilder
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+
+    try:
+        builder = StrategyOperatorReviewBuilder(project_root)
+        packet = builder.build_review_packet()
+        schema = builder.build_decision_schema()
+        result = {
+            "status": "ok",
+            "operator_review_packet_created": True,
+            "operator_decision_schema_created": True,
+            "review_dir": str(builder.review_dir),
+            "current_state": "fresh_visual_strategy_operator_review_required",
+            "next_allowed_action": "fresh_visual_strategy_operator_review_required",
+            "generation_allowed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print("Fresh Visual Strategy Operator Review Packet built.")
+            print(f"  Review dir: {builder.review_dir}")
+        return 0
+    except Exception as exc:
+        msg = {"status": "error", "message": str(exc)}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"Error: {exc}")
+        return 1
+
+
+def combine_process_fresh_visual_strategy_operator_decision(args: argparse.Namespace) -> int:
+    """Process and record human operator decision on fresh visual strategy."""
+    from pathlib import Path
+    from app.visual_strategy.operator_review import StrategyOperatorReviewBuilder
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    operator_verdict = args.operator_verdict
+    operator_source = args.operator_source
+    operator_name = getattr(args, "operator_name", "Андрей")
+
+    try:
+        builder = StrategyOperatorReviewBuilder(project_root)
+        # Ensure packet exists
+        if not (builder.review_dir / "operator_review_packet.json").exists():
+            builder.build_review_packet()
+            builder.build_decision_schema()
+
+        result = builder.process_operator_decision(
+            operator_verdict=operator_verdict,
+            operator_source=operator_source,
+            operator_name=operator_name,
+        )
+        proof = result["proof"]
+        routing = result["routing_decision"]
+
+        output = {
+            "status": "ok",
+            "operator_strategy_review_executed": True,
+            "decision_valid": result["validation_report"]["decision_valid"],
+            "operator_verdict": operator_verdict,
+            "operator_source": operator_source,
+            "next_state": routing["next_state"],
+            "next_allowed_action": routing["next_allowed_action"],
+            "generation_authorized_by_strategy_review": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print(f"Operator decision processed: {operator_verdict}")
+            print(f"  Valid: {output['decision_valid']}")
+            print(f"  Next state: {routing['next_state']}")
+        return 0 if result["validation_report"]["decision_valid"] else 1
+    except Exception as exc:
+        msg = {"status": "error", "message": str(exc)}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"Error: {exc}")
+        return 1
+
+
+def combine_build_controlled_visual_generation_gate(args: argparse.Namespace) -> int:
+    """Build controlled visual generation gate plan and authorization artifacts."""
+    from pathlib import Path
+    from app.visual_generation.gate_plan import GatePlanBuilder
+    from app.visual_generation.gate_authorization import GateAuthorization
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    max_generations = getattr(args, "max_generations", 1)
+
+    try:
+        gate_dir = project_root / "output" / "control" / "controlled_visual_generation_gate"
+        gate_dir.mkdir(parents=True, exist_ok=True)
+
+        planner = GatePlanBuilder(project_root)
+        plan = planner.build(max_generations=max_generations)
+
+        auth = GateAuthorization(project_root)
+        auth_doc = auth.create(max_generations=max_generations)
+
+        # workflow selection report
+        control_dir = project_root / "output" / "control"
+        workflow_file = str(control_dir / "shot02_v7_identity_fidelity_submitted_workflow.json")
+        workflow_report = {
+            "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+            "document_type": "workflow_selection_report",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "workflow_selected": True,
+            "workflow_file": workflow_file,
+            "workflow_type": "sdxl_fresh_visual_generation",
+            "workflow_validation_passed": Path(workflow_file).exists(),
+        }
+        with open(gate_dir / "workflow_selection_report.json", "w", encoding="utf-8") as f:
+            json.dump(workflow_report, f, indent=2, ensure_ascii=False)
+
+        # model asset verification
+        inventory_path = control_dir / "local_model_inventory.json"
+        inventory: dict = {}
+        if inventory_path.exists():
+            with open(inventory_path, "r", encoding="utf-8") as f:
+                inventory = json.load(f)
+
+        checkpoints = inventory.get("sdxl_checkpoints", [])
+        models_available = len(checkpoints) > 0
+        primary_model = checkpoints[0]["filename"] if checkpoints else None
+        model_report = {
+            "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+            "document_type": "model_asset_verification_report",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "all_models_available": models_available,
+            "primary_checkpoint": primary_model,
+            "sdxl_checkpoints_count": len(checkpoints),
+            "checkpoints": [c["filename"] for c in checkpoints],
+        }
+        with open(gate_dir / "model_asset_verification_report.json", "w", encoding="utf-8") as f:
+            json.dump(model_report, f, indent=2, ensure_ascii=False)
+
+        # repairability policy binding
+        strategy_dir = control_dir / "fresh_visual_strategy"
+        rep_policy_src = strategy_dir / "repairability_aware_visual_policy.json"
+        rep_binding = {
+            "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+            "document_type": "repairability_policy_binding",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "policy_source": str(rep_policy_src),
+            "policy_loaded": rep_policy_src.exists(),
+            "qa_repairability_gate_active": True,
+            "unknown_repairability_blocks": True,
+        }
+        with open(gate_dir / "repairability_policy_binding.json", "w", encoding="utf-8") as f:
+            json.dump(rep_binding, f, indent=2, ensure_ascii=False)
+
+        # negative reference binding
+        neg_policy_src = strategy_dir / "negative_reference_policy.json"
+        neg_binding = {
+            "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+            "document_type": "negative_reference_binding",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
+            "policy_source": str(neg_policy_src),
+            "policy_loaded": neg_policy_src.exists(),
+            "negative_references_enforced": True,
+        }
+        if neg_policy_src.exists():
+            with open(neg_policy_src, "r", encoding="utf-8") as f:
+                neg_data = json.load(f)
+            neg_binding["negative_reference_count"] = neg_data.get(
+                "negative_reference_policy", {}
+            ).get("negative_reference_count", 0)
+        with open(gate_dir / "negative_reference_binding.json", "w", encoding="utf-8") as f:
+            json.dump(neg_binding, f, indent=2, ensure_ascii=False)
+
+        output = {
+            "status": "ok",
+            "generation_gate_plan_created": True,
+            "generation_gate_authorization_created": True,
+            "workflow_selection_report_created": True,
+            "model_asset_verification_report_created": True,
+            "repairability_policy_binding_created": True,
+            "negative_reference_binding_created": True,
+            "max_generations": max_generations,
+            "retry_authorized": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print("Controlled visual generation gate built.")
+            print(f"  Gate dir: {gate_dir}")
+        return 0
+    except Exception as exc:
+        msg = {"status": "error", "message": str(exc)}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"Error: {exc}")
+        return 1
+
+
+def combine_validate_controlled_visual_generation_gate(args: argparse.Namespace) -> int:
+    """Validate controlled visual generation gate — run preflight checks."""
+    from pathlib import Path
+    from app.visual_generation.preflight import PreflightValidator
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    comfyui_host = getattr(args, "comfyui_host", "127.0.0.1")
+    comfyui_port = getattr(args, "comfyui_port", 8188)
+
+    try:
+        validator = PreflightValidator(project_root)
+        passed, report = validator.validate(
+            comfyui_host=comfyui_host,
+            comfyui_port=comfyui_port,
+        )
+        output = {
+            "status": "ok" if passed else "blocked",
+            "preflight_passed": passed,
+            "blockers": report.get("blockers", []),
+            "checks": report.get("checks", {}),
+            "comfyui_reachable": report.get("checks", {}).get("comfyui_reachable", False),
+        }
+        if json_output:
+            print(json.dumps(output, indent=2))
+        else:
+            print(f"Preflight {'PASSED' if passed else 'BLOCKED'}")
+            for b in report.get("blockers", []):
+                print(f"  BLOCKER: {b}")
+        return 0 if passed else 2
+    except Exception as exc:
+        msg = {"status": "error", "message": str(exc)}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"Error: {exc}")
+        return 1
+
+
+def combine_run_controlled_fresh_visual_generation(args: argparse.Namespace) -> int:
+    """Run exactly one controlled fresh visual generation if preflight passes."""
+    from pathlib import Path
+    from app.visual_generation.preflight import PreflightValidator
+    from app.visual_generation.gate_authorization import GateAuthorization
+    from app.visual_generation.executor import GenerationExecutor
+    from app.visual_generation.manifest import ManifestCollector
+    from app.visual_generation.candidate_review import CandidateReviewBuilder
+    from app.visual_generation.state_router import GenerationStateRouter
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    execute = getattr(args, "execute", False)
+    max_generations = getattr(args, "max_generations", 1)
+    comfyui_host = getattr(args, "comfyui_host", "127.0.0.1")
+    comfyui_port = getattr(args, "comfyui_port", 8188)
+
+    router = GenerationStateRouter(project_root)
+
+    try:
+        # Gate authorization check
+        gate_auth = GateAuthorization(project_root)
+        if not gate_auth.is_authorized():
+            output = {
+                "status": "blocked",
+                "reason": "generation_gate_not_authorized",
+                "generation_performed": False,
+                "production_accepted": False,
+            }
+            if json_output:
+                print(json.dumps(output, indent=2))
+            else:
+                print("BLOCKED: generation gate not authorized")
+            return 2
+
+        # Preflight
+        validator = PreflightValidator(project_root)
+        passed, preflight_report = validator.validate(
+            comfyui_host=comfyui_host,
+            comfyui_port=comfyui_port,
+            max_generations=max_generations,
+        )
+
+        if not passed:
+            state = router.route_blocker(preflight_report)
+            output = {
+                "status": "blocked",
+                "preflight_passed": False,
+                "blockers": preflight_report.get("blockers", []),
+                "current_state": state["current_state"],
+                "next_allowed_action": state["next_allowed_action"],
+                "generation_performed": False,
+                "production_accepted": False,
+                "blocker_artifact": "data/rc2_multishot1_ep01/output/control/controlled_visual_generation_gate/generation_preflight_blocker.json",
+            }
+            if json_output:
+                print(json.dumps(output, indent=2))
+            else:
+                print("BLOCKED: preflight failed")
+                for b in preflight_report.get("blockers", []):
+                    print(f"  {b}")
+            return 2
+
+        if not execute:
+            output = {
+                "status": "preflight_passed_execute_not_requested",
+                "preflight_passed": True,
+                "generation_performed": False,
+                "note": "Pass --execute to run generation",
+            }
+            if json_output:
+                print(json.dumps(output, indent=2))
+            else:
+                print("Preflight PASSED. Pass --execute to run generation.")
+            return 0
+
+        # Load workflow payload
+        control_dir = project_root / "output" / "control"
+        gate_dir = control_dir / "controlled_visual_generation_gate"
+        wf_report_path = gate_dir / "workflow_selection_report.json"
+        with open(wf_report_path, "r", encoding="utf-8") as f:
+            wf_report = json.load(f)
+        workflow_file = wf_report.get("workflow_file")
+        if not workflow_file or not Path(workflow_file).exists():
+            output = {
+                "status": "error",
+                "message": f"Workflow file not found: {workflow_file}",
+                "generation_performed": False,
+            }
+            if json_output:
+                print(json.dumps(output, indent=2))
+            return 1
+
+        with open(workflow_file, "r", encoding="utf-8") as f:
+            workflow_doc = json.load(f)
+
+        # The workflow file is a metadata wrapper — extract the inner ComfyUI payload
+        workflow_payload = workflow_doc.get("workflow_payload", workflow_doc)
+
+        # Execute exactly once
+        executor = GenerationExecutor(project_root)
+        exec_result = executor.execute(
+            workflow_payload=workflow_payload,
+            comfyui_host=comfyui_host,
+            comfyui_port=comfyui_port,
+        )
+
+        if exec_result.get("failure"):
+            state = router.route_execution_failure(exec_result)
+            output = {
+                "status": "generation_failed",
+                "generation_attempted": True,
+                "generation_performed": False,
+                "failure_reason": exec_result.get("failure_reason"),
+                "current_state": state["current_state"],
+                "retry_attempted": False,
+                "production_accepted": False,
+            }
+            if json_output:
+                print(json.dumps(output, indent=2))
+            else:
+                print(f"Generation FAILED: {exec_result.get('failure_reason')}")
+            return 3
+
+        # Collect manifest
+        collector = ManifestCollector(project_root)
+        manifest = collector.collect(
+            prompt_id=exec_result["prompt_id"],
+            output_images=exec_result.get("output_images", []),
+        )
+
+        # Build candidate reviews
+        reviewer = CandidateReviewBuilder(project_root)
+        reviews = reviewer.build_all(manifest)
+
+        # Route to final state
+        state = router.route_success(manifest, reviews["proof"])
+
+        output = {
+            "status": "ok",
+            "generation_performed": True,
+            "generation_count": 1,
+            "prompt_id": exec_result["prompt_id"],
+            "generated_assets": manifest.get("generated_assets", []),
+            "technical_verdict": reviews["technical_review"].get("technical_verdict"),
+            "current_state": state["current_state"],
+            "next_allowed_action": state["next_allowed_action"],
+            "retry_attempted": False,
+            "second_generation_attempted": False,
+            "visual_qa_acceptance_executed": False,
+            "operator_visual_acceptance_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+        }
+        if json_output:
+            print(json.dumps(output, indent=2, ensure_ascii=False))
+        else:
+            print(f"Generation COMPLETE. prompt_id={exec_result['prompt_id']}")
+            print(f"  State: {state['current_state']}")
+        return 0
+    except Exception as exc:
+        msg = {"status": "error", "message": str(exc)}
+        if json_output:
+            print(json.dumps(msg))
+        else:
+            print(f"Error: {exc}")
+        return 1
+
+
+def combine_inspect_fresh_visual_candidate(args: argparse.Namespace) -> int:
+    """Inspect generated fresh visual candidate artifacts."""
+    from pathlib import Path
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    control_dir = project_root / "output" / "control"
+    candidate_dir = control_dir / "fresh_visual_candidate"
+
+    manifest_path = candidate_dir / "generated_candidate_manifest.json"
+    proof_path = candidate_dir / "generated_candidate_proof.json"
+    tech_path = candidate_dir / "generated_candidate_technical_review.json"
+
+    result: dict = {
+        "candidate_dir": str(candidate_dir),
+        "manifest_exists": manifest_path.exists(),
+        "proof_exists": proof_path.exists(),
+        "technical_review_exists": tech_path.exists(),
+    }
+
+    if manifest_path.exists():
+        with open(manifest_path, "r", encoding="utf-8") as f:
+            result["manifest"] = json.load(f)
+
+    if proof_path.exists():
+        with open(proof_path, "r", encoding="utf-8") as f:
+            result["proof"] = json.load(f)
+
+    if tech_path.exists():
+        with open(tech_path, "r", encoding="utf-8") as f:
+            result["technical_review"] = json.load(f)
+
+    if json_output:
+        print(json.dumps(result, indent=2, ensure_ascii=False))
+    else:
+        print("Fresh Visual Candidate Inspection")
+        print(f"  Manifest: {'found' if result['manifest_exists'] else 'missing'}")
+        print(f"  Proof: {'found' if result['proof_exists'] else 'missing'}")
+        if result.get("manifest"):
+            gen = result["manifest"].get("generation_performed", False)
+            pid = result["manifest"].get("prompt_id", "N/A")
+            print(f"  generation_performed={gen}, prompt_id={pid}")
     return 0
 
 
