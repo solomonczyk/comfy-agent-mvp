@@ -1,0 +1,47 @@
+{
+  "agent_id": "props_agent",
+  "agent_role": "Props",
+  "responsibility_zone": "Review visual candidates for props quality including visible props, object placement, object continuity risk, object shape/color consistency, character-object interaction if visible, props consistency with scene/genre/production design, and missing/extra/contradictory props.",
+  "can_execute_generation": false,
+  "can_retry": false,
+  "can_accept_visual": false,
+  "can_set_production_accepted": false,
+  "can_run_assembly": false,
+  "can_run_downstream": false,
+  "can_edit_image": false,
+  "can_submit_comfyui": false,
+  "can_modify_objects": false,
+  "can_perform_visual_qa_final_acceptance": false,
+  "can_perform_operator_acceptance": false,
+  "can_run_preview_render": false,
+  "can_run_final_render": false,
+  "can_generate_voice": false,
+  "can_generate_audio": false,
+  "required_inputs": [
+    "visual_candidate_path",
+    "previous_set_decorator_verdict",
+    "props_review_authorization"
+  ],
+  "required_outputs": [
+    "props_review_report",
+    "props_verdict",
+    "props_review_authorization"
+  ],
+  "stop_condition": "stop_after_review_and_wait_for_next_gate",
+  "review_criteria": [
+    "visible_props",
+    "object_placement",
+    "object_continuity_risk",
+    "object_shape_color_consistency",
+    "character_object_interaction",
+    "scene_genre_production_design_consistency",
+    "missing_extra_contradictory_props"
+  ],
+  "blocking_conditions": [
+    "candidate_missing",
+    "candidate_sha256_mismatch",
+    "previous_agent_not_completed"
+  ],
+  "version": "1.0",
+  "timestamp": "2026-05-18T20:38:33.535121"
+}

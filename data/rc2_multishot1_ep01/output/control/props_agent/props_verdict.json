@@ -1,0 +1,12 @@
+{
+  "task_id": "RC-COMBINE-V2-PROPS-VERTICAL-SLICE-001",
+  "props_verdict": "UNCERTAIN",
+  "candidate_path": "test.png",
+  "candidate_sha256": "abc123",
+  "defects_found": [],
+  "production_accepted": false,
+  "next_state": "manual_visual_review_required",
+  "next_allowed_action": "manual_visual_review_required",
+  "timestamp": "2026-05-18T20:38:33.574462",
+  "version": "1.0"
+}

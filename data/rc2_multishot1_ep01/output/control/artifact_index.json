@@ -1724,5 +1724,11 @@
   "set_decorator_contract_created": true,
   "set_decoration_review_authorization_created": true,
   "set_decoration_review_report_created": true,
-  "set_decoration_verdict_created": true
+  "set_decoration_verdict_created": true,
+  "props_review_executed": true,
+  "props_verdict": "ACCEPTED",
+  "props_contract_created": true,
+  "props_review_authorization_created": true,
+  "props_review_report_created": true,
+  "props_verdict_created": true
 }

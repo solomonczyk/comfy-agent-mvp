@@ -1,0 +1,70 @@
+{
+  "task_id": "RC-COMBINE-V2-PROPS-VERTICAL-SLICE-001",
+  "review_report": {
+    "task_id": "RC-COMBINE-V2-PROPS-VERTICAL-SLICE-001",
+    "candidate_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+    "candidate_sha256": "53f46d3dd50da408bfcf65e764fa9ca14630d568d96b1731a5bc0ad16ea4f68b",
+    "review_timestamp": "2026-05-18T20:37:51.692040",
+    "visible_props": {
+      "status": "reviewed",
+      "props_visible": false,
+      "props_applicable": false,
+      "rationale": "not_applicable_but_passed",
+      "notes": "No visible props detected in this close-up portrait shot. Props review not applicable to this frame type. Candidate passes by default.",
+      "passed": true
+    },
+    "object_placement": {
+      "status": "reviewed",
+      "objects_visible": false,
+      "object_placement_applicable": false,
+      "rationale": "not_applicable_but_passed",
+      "notes": "No objects visible to assess placement. Object placement review not applicable to this frame type. Candidate passes by default.",
+      "passed": true
+    },
+    "object_continuity_risk": {
+      "status": "reviewed",
+      "objects_visible": false,
+      "continuity_risk_applicable": false,
+      "rationale": "not_applicable_but_passed",
+      "notes": "No objects visible to assess continuity risk. Object continuity review not applicable to this frame type. Candidate passes by default.",
+      "passed": true
+    },
+    "object_shape_color_consistency": {
+      "status": "reviewed",
+      "objects_visible": false,
+      "shape_color_consistency_applicable": false,
+      "rationale": "not_applicable_but_passed",
+      "notes": "No objects visible to assess shape/color consistency. Object shape/color consistency review not applicable to this frame type. Candidate passes by default.",
+      "passed": true
+    },
+    "character_object_interaction": {
+      "status": "reviewed",
+      "character_visible": true,
+      "objects_visible": false,
+      "interaction_applicable": false,
+      "rationale": "not_applicable_but_passed",
+      "notes": "Character visible but no objects visible to assess interaction. Character-object interaction review not applicable to this frame type. Candidate passes by default.",
+      "passed": true
+    },
+    "scene_genre_production_design_consistency": {
+      "status": "reviewed",
+      "props_visible": false,
+      "consistency_applicable": false,
+      "rationale": "not_applicable_but_passed",
+      "notes": "No props visible to assess consistency with scene/genre/production design. Props consistency review not applicable to this frame type. Candidate passes by default.",
+      "passed": true
+    },
+    "missing_extra_contradictory_props": {
+      "status": "reviewed",
+      "props_visible": false,
+      "missing_extra_contradictory_applicable": false,
+      "rationale": "not_applicable_but_passed",
+      "notes": "No props visible to assess missing/extra/contradictory props. Missing/extra/contradictory props review not applicable to this frame type. Candidate passes by default.",
+      "passed": true
+    },
+    "overall_verdict": "ACCEPTED",
+    "defects_found": []
+  },
+  "timestamp": "2026-05-18T20:37:51.731474",
+  "version": "1.0"
+}
