@@ -37,8 +37,8 @@
   "current_state": "fresh_visual_generation_authorized",
   "next_allowed_action": "fresh_visual_generation_execute_required",
 
-  "commit_hash": "PENDING_COMMIT",
-  "push_status": "PENDING_PUSH",
+  "commit_hash": "cbf0400",
+  "push_status": "pushed_origin_main",
   "git_status_clean": true,
 
   "blockers": [],
