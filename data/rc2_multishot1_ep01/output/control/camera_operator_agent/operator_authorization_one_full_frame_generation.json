@@ -1,0 +1,21 @@
+{
+  "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001",
+  "operator_authorized": true,
+  "authorized_action": "execute_one_full_frame_corrective_generation",
+  "authorization_source": "current_operator_directive",
+  "max_generations": 1,
+  "generation_gate_open": true,
+  "target_output_type": "full_frame_production_visual_candidate",
+  "body_part_crop_forbidden": true,
+  "quality_references_are_not_composition_targets": true,
+  "stop_after_generation": true,
+  "operator_visual_review_required_after_generation": true,
+  "retry_authorized": false,
+  "blind_retry_allowed": false,
+  "second_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:38:35.402273"
+}

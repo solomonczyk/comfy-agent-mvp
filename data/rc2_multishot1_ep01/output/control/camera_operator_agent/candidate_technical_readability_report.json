@@ -1,0 +1,54 @@
+{
+  "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-FULL-FRAME-CORRECTIVE-OPERATOR-REVIEW-001",
+  "report_type": "candidate_technical_readability_report",
+  "report_timestamp": "2026-05-18T19:25:00.000000+02:00",
+  "candidate_prompt_id": "757e09a9-4683-4653-8603-b2cb19014c41",
+  "candidate_asset_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+  "file_verification": {
+    "file_exists": true,
+    "file_readable": true,
+    "file_size_bytes": 5334,
+    "file_extension": "png",
+    "mime_type": "image/png"
+  },
+  "image_dimensions": {
+    "width_pixels": 1024,
+    "height_pixels": 1024,
+    "aspect_ratio": "1:1",
+    "full_frame": true,
+    "body_part_crop_detected": false
+  },
+  "hash_verification": {
+    "sha256_computed": "53f46d3dd50da408bfcf65e764fa9ca14630d568d96b1731a5bc0ad16ea4f68b",
+    "sha256_matches_manifest": true,
+    "sha256_matches_proof": true
+  },
+  "technical_quality": {
+    "image_format_valid": true,
+    "dimensions_valid": true,
+    "file_size_reasonable": true,
+    "corruption_detected": false,
+    "readable_by_standard_image_viewers": true
+  },
+  "manifest_consistency": {
+    "manifest_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\camera_operator_agent\\camera_operator_generation_manifest.json",
+    "manifest_sha256_match": true,
+    "manifest_dimensions_match": true,
+    "manifest_size_match": true
+  },
+  "generation_context": {
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_attempted": false,
+    "retry_attempted": false,
+    "blind_retry_attempted": false,
+    "comfyui_execution": true,
+    "workflow_submitted": true
+  },
+  "conclusion": {
+    "candidate_technically_valid": true,
+    "candidate_ready_for_visual_review": true,
+    "no_technical_blockers": true
+  },
+  "version": "1.0"
+}

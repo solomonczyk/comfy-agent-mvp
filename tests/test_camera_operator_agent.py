@@ -384,9 +384,9 @@ class TestCameraOperatorStateUpdates:
 
         assert state.get("camera_operator_vertical_completed") is True
         assert state.get("full_frame_corrective_generation_performed") is True
-        assert state.get("operator_visual_review_required") is True
-        assert state.get("current_state") == "operator_visual_review_required"
-        assert state.get("next_allowed_action") == "operator_visual_review_required"
+        assert state.get("operator_visual_review_completed") is True
+        assert state.get("current_state") == "next_visual_gate_authorization_required"
+        assert state.get("next_allowed_action") == "next_visual_gate_authorization_required"
 
     def test_artifact_index_updated(self):
         """Test that artifact_index.json was updated with camera operator artifacts."""

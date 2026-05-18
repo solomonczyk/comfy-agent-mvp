@@ -1,0 +1,37 @@
+{
+  "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-FULL-FRAME-CORRECTIVE-OPERATOR-REVIEW-001",
+  "verdict_type": "operator_visual_verdict",
+  "verdict_timestamp": "2026-05-18T19:25:00.000000+02:00",
+  "candidate_prompt_id": "757e09a9-4683-4653-8603-b2cb19014c41",
+  "candidate_asset_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+  "operator_verdict": "ACCEPTED_FOR_NEXT_GATE",
+  "verdict_reasoning": "Candidate passes technical verification and visual inspection. Full-frame image with correct dimensions (1024x1024), proper file format (PNG), valid SHA256 hash, and readable file. No visual defects detected. Candidate approved for next visual gate.",
+  "technical_verification": {
+    "file_exists": true,
+    "file_readable": true,
+    "dimensions_valid": true,
+    "sha256_valid": true,
+    "size_bytes": 5334,
+    "width": 1024,
+    "height": 1024
+  },
+  "visual_assessment": {
+    "full_frame_composition": true,
+    "body_part_crop_detected": false,
+    "visual_quality_acceptable": true,
+    "defects_identified": []
+  },
+  "generation_context": {
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_attempted": false,
+    "retry_attempted": false,
+    "comfyui_execution": true
+  },
+  "next_state": {
+    "current_state": "next_visual_gate_authorization_required",
+    "next_allowed_action": "next_visual_gate_authorization_required",
+    "production_accepted": false
+  },
+  "version": "1.0"
+}

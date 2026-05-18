@@ -1,0 +1,14 @@
+{
+  "technical_result_review_executed": true,
+  "asset_exists": true,
+  "asset_readable": true,
+  "sha256_recorded": true,
+  "dimensions_recorded": true,
+  "non_stub_asset": true,
+  "manifest_matches_filesystem": true,
+  "visual_acceptance_executed": false,
+  "operator_visual_review_required": true,
+  "production_accepted": false,
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:38:35.474977"
+}

@@ -1,0 +1,26 @@
+{
+  "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001",
+  "agent_id": "camera_operator_agent",
+  "generation_performed": true,
+  "generation_count": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "prompt_id": "757e09a9-4683-4653-8603-b2cb19014c41",
+  "generated_assets": [
+    {
+      "path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+      "exists": true,
+      "readable": true,
+      "sha256": "53f46d3dd50da408bfcf65e764fa9ca14630d568d96b1731a5bc0ad16ea4f68b",
+      "size_bytes": 5334,
+      "width": 1024,
+      "height": 1024
+    }
+  ],
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "blind_retry_attempted": false,
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:38:35.473978"
+}

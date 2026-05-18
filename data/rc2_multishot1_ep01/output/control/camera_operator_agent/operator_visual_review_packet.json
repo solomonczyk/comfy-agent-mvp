@@ -1,0 +1,23 @@
+{
+  "review_type": "operator_visual_review",
+  "review_required": true,
+  "review_executed": true,
+  "generated_asset": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+  "candidate_prompt_id": "757e09a9-4683-4653-8603-b2cb19014c41",
+  "operator_must_decide": [
+    "ACCEPTED_FOR_NEXT_GATE",
+    "REJECTED_NEEDS_CORRECTIVE_PLAN",
+    "NEEDS_MANUAL_REVIEW"
+  ],
+  "agent_recommendation_allowed": false,
+  "agent_acceptance_allowed": false,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-FULL-FRAME-CORRECTIVE-OPERATOR-REVIEW-001",
+  "operator_verdict": "ACCEPTED_FOR_NEXT_GATE",
+  "review_timestamp": "2026-05-18T19:25:00.000000+02:00",
+  "technical_verification_passed": true,
+  "candidate_technically_valid": true,
+  "version": "1.0"
+}

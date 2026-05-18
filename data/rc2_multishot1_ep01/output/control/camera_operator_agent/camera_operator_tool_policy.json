@@ -1,0 +1,27 @@
+{
+  "agent_id": "camera_operator_agent",
+  "allowed_tools": [
+    "filesystem.read_contracts",
+    "filesystem.write_artifacts",
+    "comfyui.submit_once_when_authorized",
+    "image.read_metadata",
+    "image.sha256",
+    "json.validate",
+    "state.update_after_execution"
+  ],
+  "forbidden_tools": [
+    "comfyui.submit_without_authorization",
+    "comfyui.submit_second_generation",
+    "generation.retry",
+    "visual_qa.accept",
+    "operator.accept",
+    "preview.render",
+    "assembly.run",
+    "voice.generate",
+    "downstream.run",
+    "production.accept"
+  ],
+  "max_comfyui_submits": 1,
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:38:35.401306"
+}

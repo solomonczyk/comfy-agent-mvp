@@ -1,0 +1,26 @@
+{
+  "agent_id": "camera_operator_agent",
+  "agent_role": "Camera Operator / Generation Operator",
+  "responsibility_zone": "Execute authorized visual generation according to approved shot/camera/generation contract.",
+  "can_execute_generation": true,
+  "generation_requires_operator_authorization": true,
+  "can_retry": false,
+  "can_accept_visual": false,
+  "can_set_production_accepted": false,
+  "can_run_assembly": false,
+  "can_run_downstream": false,
+  "required_inputs": [
+    "full_frame_corrective_generation_contract",
+    "reference_usage_scope_policy",
+    "full_frame_corrective_prompt_recipe",
+    "operator_authorization"
+  ],
+  "required_outputs": [
+    "generation_manifest",
+    "generation_result_review",
+    "operator_visual_review_packet"
+  ],
+  "stop_condition": "stop_after_one_generation_and_wait_for_operator_visual_review",
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:38:35.401306"
+}

@@ -1,0 +1,16 @@
+{
+  "full_frame_contract_exists": true,
+  "reference_usage_policy_exists": true,
+  "prompt_recipe_exists": true,
+  "operator_authorization_exists": true,
+  "body_part_crop_forbidden": true,
+  "eye_closeup_forbidden_as_target": true,
+  "quality_reference_scope_is_quality_only": true,
+  "composition_target_is_full_frame": true,
+  "max_generations": 1,
+  "ready_for_one_generation": true,
+  "blockers": [],
+  "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001",
+  "validation_timestamp": "2026-05-18T18:38:35.412954",
+  "version": "1.0"
+}

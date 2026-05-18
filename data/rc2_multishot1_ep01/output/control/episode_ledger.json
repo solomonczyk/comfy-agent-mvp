@@ -3731,5 +3731,24 @@
     "current_state": "operator_visual_review_required",
     "next_allowed_action": "operator_visual_review_required",
     "timestamp": "2026-05-18T18:38:35.503743"
+  },
+  {
+    "event_type": "camera_operator_operator_visual_review",
+    "task_id": "RC-COMBINE-V2-CAMERA-OPERATOR-FULL-FRAME-CORRECTIVE-OPERATOR-REVIEW-001",
+    "stage": "camera_operator_operator_visual_review",
+    "candidate_prompt_id": "757e09a9-4683-4653-8603-b2cb19014c41",
+    "candidate_asset_path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\camera_operator_full_frame_corrective\\camera_operator_full_frame_20260518_183835_757e09a9_.png",
+    "operator_verdict": "ACCEPTED_FOR_NEXT_GATE",
+    "technical_verification_passed": true,
+    "new_generation_performed": false,
+    "retry_attempted": false,
+    "second_generation_attempted": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "next_visual_gate_authorization_required",
+    "next_allowed_action": "next_visual_gate_authorization_required",
+    "timestamp": "2026-05-18T19:25:00.000000+02:00"
   }
 ]
