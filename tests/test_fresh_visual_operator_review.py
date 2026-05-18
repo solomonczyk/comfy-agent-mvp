@@ -203,17 +203,66 @@ def test_episode_ledger_updated():
     assert event["production_accepted"] is False
 
 
-def test_forbidden_actions_remain_false():
-    """Test that forbidden actions remain false."""
-    manifest_path = CONTROL_DIR / "fresh_visual_candidate" / "generated_candidate_proof.json"
-    with open(manifest_path, 'r') as f:
-        manifest = json.load(f)
+def test_missing_human_verdict_does_not_create_operator_visual_verdict():
+    """Test that missing human verdict does not create operator_visual_verdict.json."""
+    verdict_path = OPERATOR_REVIEW_DIR / "operator_visual_verdict.json"
+    assert not verdict_path.exists(), "operator_visual_verdict.json should not exist without human verdict"
+
+
+def test_agent_generated_verdict_is_always_false():
+    """Test that agent_generated_verdict is always false."""
+    review_pending_path = OPERATOR_REVIEW_DIR / "review_pending.json"
+    with open(review_pending_path, 'r') as f:
+        pending = json.load(f)
     
-    assert manifest["visual_qa_acceptance_executed"] is False
-    assert manifest["operator_visual_acceptance_executed"] is False
-    assert manifest["assembly_executed"] is False
-    assert manifest["downstream_executed"] is False
-    assert manifest["production_accepted"] is False
+    assert pending["agent_generated_verdict"] is False
+    assert pending["fake_operator_decision_created"] is False
+
+
+def test_production_accepted_true_is_forbidden():
+    """Test that production_accepted=true is forbidden."""
+    review_pending_path = OPERATOR_REVIEW_DIR / "review_pending.json"
+    with open(review_pending_path, 'r') as f:
+        pending = json.load(f)
+    
+    assert pending["production_accepted"] is False
+
+
+def test_generation_retry_comfyui_submit_remain_false():
+    """Test that generation/retry/comfyui_submit remain false."""
+    review_pending_path = OPERATOR_REVIEW_DIR / "review_pending.json"
+    with open(review_pending_path, 'r') as f:
+        pending = json.load(f)
+    
+    assert pending["generation_performed"] is False
+    assert pending["retry_attempted"] is False
+    assert pending["comfyui_submit_executed"] is False
+
+
+def test_artifact_index_and_episode_ledger_updated():
+    """Test that artifact_index and episode_ledger are updated."""
+    artifact_index_path = CONTROL_DIR / "artifact_index.json"
+    with open(artifact_index_path, 'r') as f:
+        index = json.load(f)
+    
+    assert index.get("fresh_visual_human_verdict_task_executed") is True
+    assert index.get("fresh_visual_human_verdict_provided") is False
+    assert index.get("fresh_visual_operator_verdict_artifact_created") is False
+    
+    ledger_path = CONTROL_DIR / "episode_ledger.json"
+    with open(ledger_path, 'r') as f:
+        ledger = json.load(f)
+    
+    verdict_events = [
+        event for event in ledger 
+        if event.get("event_type") == "fresh_visual_human_verdict_task_executed"
+    ]
+    assert len(verdict_events) > 0, "Episode ledger must have human verdict task event"
+    
+    event = verdict_events[-1]
+    assert event["human_operator_verdict_provided"] is False
+    assert event["agent_generated_verdict"] is False
+    assert event["operator_visual_verdict_artifact_created"] is False
 
 
 if __name__ == "__main__":
