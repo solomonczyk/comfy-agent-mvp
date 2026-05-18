@@ -1,0 +1,61 @@
+{
+  "task_id": "RC-COMBINE-V2-EXECUTE-ONE-CORRECTIVE-GENERATION-001",
+  "review_type": "corrective_generation_result_review",
+  "timestamp": "2026-05-18T17:43:00Z",
+  "generation_contract_compliance": {
+    "contract_used": "combine_v2_v10_prompt_package.json",
+    "guardrails_used": "combine_v2_v10_workflow_guardrails.json",
+    "positive_prompt_match": true,
+    "negative_prompt_match": true,
+    "sampler_compliant": true,
+    "steps_compliant": true,
+    "cfg_compliant": true,
+    "seed_randomized": true
+  },
+  "generation_execution": {
+    "prompt_id": "2a40c014-2eae-418a-94b1-74ae03c0a662",
+    "comfyui_execution": true,
+    "workflow_submitted": true,
+    "execution_status": "completed",
+    "images_generated": 1,
+    "execution_errors": []
+  },
+  "output_validation": {
+    "asset_path": "data/outputs/corrective_v10/corrective_v10_00001_.png",
+    "file_exists": true,
+    "file_readable": true,
+    "size_bytes": 1659332,
+    "size_above_stub_threshold": true,
+    "sha256": "e7f284d99b37e518f82d53897fd2d19e98c102fc5d2cf3f7c6edcfdfd1cc31ae",
+    "sha256_recorded": true,
+    "width": 1024,
+    "height": 1024,
+    "dimensions_recorded": true,
+    "canonical_path": true
+  },
+  "generation_limits": {
+    "max_generations": 1,
+    "generations_executed": 1,
+    "second_generation_attempted": false,
+    "retry_attempted": false,
+    "blind_retry_attempted": false,
+    "limits_enforced": true
+  },
+  "forbidden_actions": {
+    "visual_qa_executed": false,
+    "visual_qa_acceptance_executed": false,
+    "operator_visual_acceptance_executed": false,
+    "assembly_executed": false,
+    "preview_render_executed": false,
+    "voice_generation_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  },
+  "review_verdict": {
+    "generation_successful": true,
+    "output_valid": true,
+    "contract_compliant": true,
+    "limits_respected": true,
+    "ready_for_operator_visual_review": true
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "task_id": "RC-COMBINE-V2-EXECUTE-ONE-CORRECTIVE-GENERATION-001",
+  "packet_type": "operator_visual_review_packet",
+  "timestamp": "2026-05-18T17:43:00Z",
+  "generation_context": {
+    "generation_type": "corrective",
+    "contract_version": "v10",
+    "prompt_package": "combine_v2_v10_prompt_package.json",
+    "workflow_guardrails": "combine_v2_v10_workflow_guardrails.json",
+    "previous_rejection": "V9 marked visual_rejected",
+    "positive_reference": "V8",
+    "negative_reference": "V9"
+  },
+  "generated_asset": {
+    "path": "data/outputs/corrective_v10/corrective_v10_00001_.png",
+    "filename": "corrective_v10_00001_.png",
+    "sha256": "e7f284d99b37e518f82d53897fd2d19e98c102fc5d2cf3f7c6edcfdfd1cc31ae",
+    "size_bytes": 1659332,
+    "width": 1024,
+    "height": 1024
+  },
+  "generation_parameters": {
+    "positive_prompt": "photorealistic close-up portrait, sharp focus, detailed skin texture, realistic human anatomy, natural lighting, high resolution, 8k, ultra-detailed, film grain, subtle imperfections",
+    "negative_prompt": "blur, haze, fog, soft focus, doll, anime, plastic, low quality, bad anatomy, malformed hands, disfigured, oversmooth, airbrushed, cartoon, painting, drawing, illustration, text, watermark, signature",
+    "sampler": "DPM++ 2M Karras",
+    "steps": 28,
+    "cfg": 7.5,
+    "seed": 378128954,
+    "checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors"
+  },
+  "quality_targets": {
+    "target_qualities": [
+      "no_blur_haze",
+      "micro_detail_present",
+      "anatomy_correct",
+      "no_plastic_look",
+      "realistic_skin_texture",
+      "human_present"
+    ],
+    "v9_defects_addressed": [
+      "blur/haze",
+      "weak micro-detail",
+      "bad arm/hand anatomy",
+      "doll/anime/plastic look",
+      "low realism",
+      "soft face texture",
+      "lack of real-human presence"
+    ]
+  },
+  "review_instructions": {
+    "review_type": "operator_visual_review",
+    "review_required": true,
+    "visual_qa_executed": false,
+    "agent_visual_acceptance": false,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_allowed": false
+  },
+  "next_actions": [
+    {
+      "action": "operator_visual_review",
+      "description": "Review the generated corrective visual candidate",
+      "required": true
+    },
+    {
+      "action": "approve_or_reject",
+      "description": "Approve for production or reject with defect taxonomy",
+      "required": true
+    }
+  ],
+  "review_packet_complete": true
+}

@@ -1,0 +1,39 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-AUTHORIZATION-001",
+  "feature_completed": true,
+  "anti_loop_mode_respected": true,
+
+  "operator_plan_approved_recorded": true,
+  "approved_constraints_recorded": true,
+
+  "generation_authorized": true,
+  "max_generations": 1,
+  "retry_authorized": false,
+  "blind_retry_allowed": false,
+
+  "generation_performed": false,
+  "retry_attempted": false,
+  "comfyui_submit_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+
+  "authorization_artifact_created": true,
+  "generation_contract_created": true,
+  "artifact_index_updated": true,
+  "episode_ledger_updated": true,
+  "state_updated": true,
+
+  "tests_pass": true,
+  "cli_validation_pass": true,
+
+  "current_state": "corrective_generation_authorized",
+  "next_allowed_action": "execute_one_corrective_generation",
+
+  "commit_hash": "e983f3e",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+
+  "blockers": [],
+  "next_task_recommendation": "RC-COMBINE-V2-EXECUTE-ONE-CORRECTIVE-GENERATION-001"
+}

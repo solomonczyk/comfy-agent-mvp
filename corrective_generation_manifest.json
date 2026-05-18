@@ -1,0 +1,48 @@
+{
+  "task_id": "RC-COMBINE-V2-EXECUTE-ONE-CORRECTIVE-GENERATION-001",
+  "manifest_type": "corrective_generation_manifest",
+  "timestamp": "2026-05-18T17:43:00Z",
+  "generation_contract": "combine_v2_v10_prompt_package.json",
+  "workflow_guardrails": "combine_v2_v10_workflow_guardrails.json",
+  "generation_authorized": true,
+  "max_generations": 1,
+  "retry_authorized": false,
+  "blind_retry_allowed": false,
+  "executed_generations": [
+    {
+      "generation_index": 1,
+      "prompt_id": "2a40c014-2eae-418a-94b1-74ae03c0a662",
+      "timestamp": "2026-05-18T17:43:00Z",
+      "seed": 378128954,
+      "checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+      "sampler": "DPM++ 2M Karras",
+      "scheduler": "karras",
+      "steps": 28,
+      "cfg": 7.5,
+      "denoise": 1.0,
+      "width": 1024,
+      "height": 1024,
+      "positive_prompt": "photorealistic close-up portrait, sharp focus, detailed skin texture, realistic human anatomy, natural lighting, high resolution, 8k, ultra-detailed, film grain, subtle imperfections",
+      "negative_prompt": "blur, haze, fog, soft focus, doll, anime, plastic, low quality, bad anatomy, malformed hands, disfigured, oversmooth, airbrushed, cartoon, painting, drawing, illustration, text, watermark, signature",
+      "output_assets": [
+        {
+          "filename": "corrective_v10_00001_.png",
+          "path": "data/outputs/corrective_v10/corrective_v10_00001_.png",
+          "sha256": "e7f284d99b37e518f82d53897fd2d19e98c102fc5d2cf3f7c6edcfdfd1cc31ae",
+          "size_bytes": 1659332,
+          "width": 1024,
+          "height": 1024,
+          "exists": true,
+          "readable": true
+        }
+      ],
+      "status": "completed",
+      "retry_attempted": false,
+      "blind_retry_attempted": false
+    }
+  ],
+  "total_generations_executed": 1,
+  "total_assets_generated": 1,
+  "second_generation_attempted": false,
+  "generation_limit_enforced": true
+}
