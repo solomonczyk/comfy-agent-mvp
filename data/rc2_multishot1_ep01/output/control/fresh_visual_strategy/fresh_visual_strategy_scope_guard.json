@@ -1,0 +1,81 @@
+{
+  "guard_id": "fresh_visual_strategy_scope_guard_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001",
+  "timestamp": "2026-05-18T12:35:00.000000+02:00",
+  "reference_id": "quality_ref_eye_closeup_001",
+  "reference_type": "body_part_closeup_quality_reference",
+  "guard_type": "strategy_scope_enforcement",
+  "enforcement": "hard_block",
+  "scope_boundary": {
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_full_face": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "blocked_overclaims": [
+    "accepted_as_full_character",
+    "accepted_as_full_face",
+    "accepted_as_final_scene",
+    "assembly_ready",
+    "production_accepted",
+    "operator_final_acceptance",
+    "generation_gate_open",
+    "retry_gate_open"
+  ],
+  "block_conditions": {
+    "on_full_character_usage_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "scope_violation_body_part_reference_cannot_be_full_character"
+    },
+    "on_full_face_usage_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "scope_violation_eye_closeup_cannot_be_full_face"
+    },
+    "on_final_scene_usage_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "scope_violation_quality_reference_cannot_be_final_scene"
+    },
+    "on_assembly_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "assembly_blocked_quality_reference_not_production_asset"
+    },
+    "on_downstream_attempt": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "downstream_blocked_quality_reference_not_final_asset"
+    },
+    "on_generation_gate_open_attempt": {
+      "action": "block",
+      "log_level": "warning",
+      "notification": "quality_reference_does_not_authorize_generation_requires_operator"
+    },
+    "on_production_accepted_set_true": {
+      "action": "hard_block",
+      "log_level": "error",
+      "notification": "production_accepted_may_not_be_set_true_by_strategy_integration"
+    }
+  },
+  "guard_invariants": {
+    "reference_remains_body_part_only": true,
+    "reference_never_becomes_production_accepted": true,
+    "reference_never_opens_generation_gate": true,
+    "reference_never_opens_retry_gate": true,
+    "reference_never_opens_assembly_gate": true,
+    "reference_never_triggers_downstream": true,
+    "strategy_integration_is_planning_only": true
+  },
+  "next_allowed_action_if_violation_detected": "scope_reconciliation_required",
+  "reconciliation_requires": [
+    "operator_explicit_scope_expansion_request",
+    "new_generation_with_expanded_intent",
+    "separate_visual_qa_for_expanded_scope",
+    "separate_operator_acceptance_for_expanded_scope"
+  ]
+}

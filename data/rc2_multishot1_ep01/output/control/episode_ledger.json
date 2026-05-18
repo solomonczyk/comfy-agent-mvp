@@ -3251,5 +3251,56 @@
     "downstream_blocked": true,
     "current_state": "quality_reference_registered",
     "next_allowed_action": "fresh_visual_strategy_update_required"
+  },
+  {
+    "event_type": "fresh_visual_strategy_reference_integrated",
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001",
+    "timestamp": "2026-05-18T12:35:00.000000+02:00",
+    "previous_task_id": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+    "previous_commit": "f4eb756",
+    "previous_state": "quality_reference_registered",
+    "reference_id": "quality_ref_eye_closeup_001",
+    "reference_type": "body_part_closeup_quality_reference",
+    "binding_type": "quality_calibration_only",
+    "scope_boundary": {
+      "accepted_as_body_part_closeup": true,
+      "accepted_as_quality_reference": true,
+      "accepted_as_full_character": false,
+      "accepted_as_full_face": false,
+      "accepted_as_final_scene": false,
+      "assembly_ready": false,
+      "production_accepted": false
+    },
+    "artifacts_created": [
+      "fresh_visual_strategy/fresh_visual_strategy_reference_binding.json",
+      "fresh_visual_strategy/fresh_visual_strategy_quality_reference_policy.json",
+      "fresh_visual_strategy/fresh_visual_strategy_scope_guard.json",
+      "fresh_visual_strategy/fresh_visual_strategy_update_report.json"
+    ],
+    "forbidden_actions_blocked": {
+      "generation_performed": false,
+      "comfyui_submit_executed": false,
+      "retry_attempted": false,
+      "prompt_rewrite_performed": false,
+      "new_visual_candidate_created": false,
+      "visual_qa_acceptance_executed": false,
+      "operator_acceptance_faked": false,
+      "assembly_executed": false,
+      "preview_render_executed": false,
+      "final_render_executed": false,
+      "voice_audio_executed": false,
+      "downstream_executed": false,
+      "production_accepted_set_true": false
+    },
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "assembly_allowed": false,
+    "downstream_blocked": true,
+    "current_state": "fresh_visual_strategy_reference_integrated",
+    "next_allowed_action": "fresh_visual_generation_plan_update_required"
   }
 ]

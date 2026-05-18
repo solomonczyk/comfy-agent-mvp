@@ -1,0 +1,60 @@
+{
+  "binding_id": "fresh_visual_strategy_reference_binding_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001",
+  "timestamp": "2026-05-18T12:35:00.000000+02:00",
+  "previous_task": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+  "previous_commit": "f4eb756",
+  "reference_id": "quality_ref_eye_closeup_001",
+  "reference_type": "body_part_closeup_quality_reference",
+  "body_part": "eye",
+  "binding_type": "quality_calibration_only",
+  "binding_semantics": {
+    "may_inform_future_visual_quality_targets": true,
+    "may_inform_eye_detail_quality": true,
+    "may_inform_texture_realism_target": true,
+    "may_inform_sharpness_and_detail_target": true,
+    "may_define_character_identity": false,
+    "may_define_full_face": false,
+    "may_define_final_scene": false,
+    "may_open_generation_gate": false,
+    "may_open_retry_gate": false,
+    "may_open_assembly_gate": false,
+    "may_set_production_accepted": false
+  },
+  "allowed_usage": [
+    "future_quality_reference",
+    "visual_standard_calibration",
+    "eye_closeup_quality_comparison",
+    "body_part_detail_reference"
+  ],
+  "forbidden_usage": [
+    "full_character_identity_reference",
+    "full_face_reference",
+    "final_scene_asset",
+    "assembly_ready_asset",
+    "production_asset",
+    "operator_final_acceptance"
+  ],
+  "source_registry": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registry.json",
+  "integration_scope": {
+    "strategy_planning_only": true,
+    "generation_authorization": false,
+    "assembly_authorization": false,
+    "downstream_authorization": false,
+    "production_acceptance": false
+  },
+  "scope_boundary": {
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_full_face": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "state_transition": {
+    "previous_state": "quality_reference_registered",
+    "current_state": "fresh_visual_strategy_reference_integrated",
+    "next_allowed_action": "fresh_visual_generation_plan_update_required"
+  }
+}

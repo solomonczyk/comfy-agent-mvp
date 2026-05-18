@@ -1,0 +1,104 @@
+{
+  "report_id": "fresh_visual_strategy_update_report_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001",
+  "timestamp": "2026-05-18T12:35:00.000000+02:00",
+  "previous_task": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
+  "previous_commit": "f4eb756",
+  "update_status": "completed",
+  "integration_summary": "Quality reference integrated into fresh visual strategy as quality calibration reference only",
+  "reference_integrated": {
+    "reference_id": "quality_ref_eye_closeup_001",
+    "reference_type": "body_part_closeup_quality_reference",
+    "body_part": "eye",
+    "binding_type": "quality_calibration_only"
+  },
+  "input_artifacts_read": [
+    {
+      "artifact": "quality_reference_registry",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registry.json",
+      "verified": true
+    },
+    {
+      "artifact": "reference_usage_policy",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/reference_usage_policy.json",
+      "verified": true
+    },
+    {
+      "artifact": "body_part_reference_scope_guard",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/body_part_reference_scope_guard.json",
+      "verified": true
+    },
+    {
+      "artifact": "quality_reference_registration_report",
+      "path": "data/rc2_multishot1_ep01/output/control/quality_references/quality_reference_registration_report.json",
+      "verified": true
+    }
+  ],
+  "artifacts_created": [
+    {
+      "artifact_type": "fresh_visual_strategy_reference_binding",
+      "path": "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_reference_binding.json"
+    },
+    {
+      "artifact_type": "fresh_visual_strategy_quality_reference_policy",
+      "path": "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_quality_reference_policy.json"
+    },
+    {
+      "artifact_type": "fresh_visual_strategy_scope_guard",
+      "path": "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_scope_guard.json"
+    },
+    {
+      "artifact_type": "fresh_visual_strategy_update_report",
+      "path": "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_update_report.json"
+    }
+  ],
+  "scope_boundary_enforced": {
+    "accepted_as_body_part_closeup": true,
+    "accepted_as_quality_reference": true,
+    "accepted_as_full_character": false,
+    "accepted_as_full_face": false,
+    "accepted_as_final_scene": false,
+    "assembly_ready": false,
+    "production_accepted": false
+  },
+  "forbidden_actions_blocked": {
+    "generation_performed": false,
+    "comfyui_submit_executed": false,
+    "retry_attempted": false,
+    "prompt_rewrite_for_generation": false,
+    "new_visual_candidate_created": false,
+    "visual_qa_acceptance_executed": false,
+    "operator_acceptance_faked": false,
+    "assembly_executed": false,
+    "preview_render_executed": false,
+    "final_render_executed": false,
+    "voice_audio_executed": false,
+    "downstream_executed": false,
+    "production_accepted_set_true": false,
+    "treat_reference_as_full_character": false,
+    "treat_reference_as_full_face": false,
+    "treat_reference_as_final_scene": false
+  },
+  "state_transition": {
+    "previous_state": "quality_reference_registered",
+    "current_state": "fresh_visual_strategy_reference_integrated",
+    "next_allowed_action": "fresh_visual_generation_plan_update_required"
+  },
+  "next_steps": [
+    "Update fresh visual generation plan to use quality reference as target",
+    "Use reference for eye detail quality benchmarks in future planning",
+    "Do NOT use reference for full character generation without new cycle",
+    "Do NOT use reference for assembly or downstream without new cycle",
+    "Await operator authorization for any generation attempts"
+  ],
+  "verification_summary": {
+    "input_artifacts_read": 4,
+    "reference_verified": true,
+    "reference_type_confirmed": "body_part_closeup_quality_reference",
+    "binding_created": true,
+    "policy_created": true,
+    "scope_guard_created": true,
+    "overclaim_blocked": true,
+    "state_updated": true
+  }
+}

@@ -1,6 +1,6 @@
 {
-  "current_state": "corrective_generation_result_review_required",
-  "next_allowed_action": "operator_visual_review_required",
+  "current_state": "fresh_visual_strategy_reference_integrated",
+  "next_allowed_action": "fresh_visual_generation_plan_update_required",
   "generation_runtime_blocked": false,
   "blocker": {
     "blocker_type": "fresh_visual_strategy_operator_review_required",
@@ -16,6 +16,11 @@
   "current_best_quality_reference": "v6_targeted_refinement_elderly_portrait",
   "current_best_quality_reference_asset": "data/rc2_multishot1_ep01/output/assets/combine_v2_v6_targeted_refinement_shot02_00001_.png",
   "production_accepted": false,
+  "downstream_blocked": true,
+  "quality_reference_integrated": true,
+  "quality_reference_id": "quality_ref_eye_closeup_001",
+  "quality_reference_type": "body_part_closeup_quality_reference",
+  "quality_reference_binding_type": "quality_calibration_only",
   "visual_acceptance_executed": false,
   "assembly_executed": false,
   "downstream_executed": false,
@@ -61,6 +66,13 @@
   "future_generation_gate_requirements": "fresh_visual_strategy/future_generation_gate_requirements.json",
   "visual_strategy_operator_review_packet": "fresh_visual_strategy/visual_strategy_operator_review_packet.json",
   "fresh_visual_strategy_readiness_report": "fresh_visual_strategy/fresh_visual_strategy_readiness_report.json",
+  "fresh_visual_strategy_reference_binding": "fresh_visual_strategy/fresh_visual_strategy_reference_binding.json",
+  "fresh_visual_strategy_quality_reference_policy": "fresh_visual_strategy/fresh_visual_strategy_quality_reference_policy.json",
+  "fresh_visual_strategy_scope_guard": "fresh_visual_strategy/fresh_visual_strategy_scope_guard.json",
+  "fresh_visual_strategy_update_report": "fresh_visual_strategy/fresh_visual_strategy_update_report.json",
+  "quality_reference_registry": "quality_references/quality_reference_registry.json",
+  "reference_usage_policy": "quality_references/reference_usage_policy.json",
+  "body_part_reference_scope_guard": "quality_references/body_part_reference_scope_guard.json",
   "qa_repairability_next_stage_planning_freeze_verification": "qa_repairability_next_stage_planning_freeze_verification.json",
   "stage_results": [
     {
@@ -1442,19 +1454,9 @@
   "visual_qa_review_warnings": 0,
   "visual_qa_review_not_applicable": 1,
   "mouth_teeth_check_not_applicable_reason": "body_part_eye_closeup_scope",
-  "current_state": "quality_reference_registered",
-  "next_allowed_action": "fresh_visual_strategy_update_required",
-  "production_accepted": false,
-  "assembly_allowed": false,
-  "downstream_allowed": false,
-  "downstream_blocked": true,
-
   "quality_reference_registration_task": "RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001",
   "quality_reference_registered": true,
-  "quality_reference_id": "quality_ref_eye_closeup_001",
-  "quality_reference_type": "body_part_closeup_quality_reference",
   "quality_reference_body_part": "eye",
-  "quality_reference_registry": "quality_references/quality_reference_registry.json",
   "quality_reference_usage_policy": "quality_references/reference_usage_policy.json",
   "quality_reference_scope_guard": "quality_references/body_part_reference_scope_guard.json",
   "quality_reference_registration_report": "quality_references/quality_reference_registration_report.json",
@@ -1470,5 +1472,13 @@
     "assembly_ready": false,
     "production_accepted": false
   },
-  "quality_reference_registration_timestamp": "2026-05-18T12:29:00.000000+02:00"
+  "quality_reference_registration_timestamp": "2026-05-18T12:29:00.000000+02:00",
+  "fresh_visual_strategy_integration": {
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001",
+    "reference_binding": "fresh_visual_strategy/fresh_visual_strategy_reference_binding.json",
+    "quality_reference_policy": "fresh_visual_strategy/fresh_visual_strategy_quality_reference_policy.json",
+    "scope_guard": "fresh_visual_strategy/fresh_visual_strategy_scope_guard.json",
+    "update_report": "fresh_visual_strategy/fresh_visual_strategy_update_report.json",
+    "integration_timestamp": "2026-05-18T12:35:00.000000+02:00"
+  }
 }

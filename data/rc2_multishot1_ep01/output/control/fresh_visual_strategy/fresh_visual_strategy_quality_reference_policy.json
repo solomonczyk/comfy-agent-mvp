@@ -1,0 +1,85 @@
+{
+  "policy_id": "fresh_visual_strategy_quality_reference_policy_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001",
+  "timestamp": "2026-05-18T12:35:00.000000+02:00",
+  "reference_id": "quality_ref_eye_closeup_001",
+  "reference_type": "body_part_closeup_quality_reference",
+  "enforcement_level": "hard_block",
+  "policy_scope": "fresh_visual_strategy_planning",
+  "quality_reference_integration": {
+    "reference_may_inform_strategy": true,
+    "reference_may_set_quality_targets": true,
+    "reference_may_be_used_for_eye_detail_benchmark": true,
+    "reference_may_be_used_for_texture_quality_benchmark": true
+  },
+  "usage_rules": {
+    "allowed": [
+      {
+        "use_case": "eye_detail_quality_target",
+        "description": "Use as target benchmark for eye detail quality in future generation planning",
+        "scope": "strategy_only"
+      },
+      {
+        "use_case": "texture_realism_calibration",
+        "description": "Use as reference for skin/eye texture realism standards",
+        "scope": "strategy_only"
+      },
+      {
+        "use_case": "sharpness_target_definition",
+        "description": "Use as benchmark for sharpness and micro-detail quality",
+        "scope": "strategy_only"
+      },
+      {
+        "use_case": "future_generation_quality_planning",
+        "description": "Inform quality targets in future generation plans",
+        "scope": "strategy_only"
+      }
+    ],
+    "forbidden": [
+      {
+        "use_case": "character_identity_definition",
+        "description": "May NOT be used to define full character identity",
+        "block_reason": "reference_is_body_part_only_not_full_character"
+      },
+      {
+        "use_case": "full_face_reference",
+        "description": "May NOT be used as full face reference for generation",
+        "block_reason": "reference_is_eye_closeup_only_not_full_face"
+      },
+      {
+        "use_case": "generation_gate_open",
+        "description": "Quality reference does NOT authorize generation",
+        "block_reason": "generation_requires_separate_operator_authorization"
+      },
+      {
+        "use_case": "assembly_ready_asset",
+        "description": "May NOT be treated as assembly-ready production asset",
+        "block_reason": "quality_reference_is_not_production_asset"
+      },
+      {
+        "use_case": "final_scene_asset",
+        "description": "May NOT be used as final scene asset",
+        "block_reason": "reference_is_quality_benchmark_not_final_output"
+      },
+      {
+        "use_case": "operator_final_acceptance_substitute",
+        "description": "May NOT substitute for operator final acceptance",
+        "block_reason": "operator_acceptance_requires_separate_visual_review"
+      }
+    ]
+  },
+  "state_constraints": {
+    "production_accepted_may_not_be_set_true": true,
+    "assembly_allowed_may_not_be_set_true": true,
+    "downstream_blocked_must_remain_true": true,
+    "generation_gate_may_not_open_automatically": true
+  },
+  "integration_invariants": {
+    "reference_remains_quality_calibration_only": true,
+    "reference_never_becomes_full_character": true,
+    "reference_never_becomes_full_face": true,
+    "reference_never_opens_generation_without_operator": true,
+    "reference_never_triggers_assembly": true,
+    "reference_never_triggers_downstream": true
+  }
+}
