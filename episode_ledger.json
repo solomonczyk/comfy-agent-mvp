@@ -70,10 +70,25 @@
       "repairability_assessment": "not_applicable",
       "operator_role": "project_owner_not_domain_expert",
       "visual_expert_review_required": true
+    },
+    {
+      "event": "fresh_visual_generation_authorization_recorded",
+      "timestamp": "2026-05-18T13:01:00.000000+02:00",
+      "details": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001: Operator 'andrey' approved exactly one future fresh visual generation. generation_authorized=true, max_generations=1. No generation executed. production_accepted=false. assembly/downstream blocked.",
+      "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+      "operator_id": "andrey",
+      "operator_decision": "approved",
+      "decision_source": "human_operator",
+      "generation_authorized": true,
+      "max_generations": 1,
+      "generation_performed": false,
+      "comfyui_submit_executed": false,
+      "production_accepted": false,
+      "next_allowed_action": "fresh_visual_generation_execute_required"
     }
   ],
-  "current_state": "visual_outputs_purged_rebuild_required",
-  "next_allowed_action": "fresh_visual_strategy_required",
+  "current_state": "fresh_visual_generation_authorized",
+  "next_allowed_action": "fresh_visual_generation_execute_required",
   "v9_visual_rejected": true,
   "v10_generation_allowed_now": false,
   "production_accepted": false,

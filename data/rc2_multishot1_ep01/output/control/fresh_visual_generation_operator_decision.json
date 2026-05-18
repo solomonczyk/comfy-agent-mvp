@@ -1,0 +1,26 @@
+{
+  "artifact_id": "fresh_visual_generation_operator_decision_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+  "timestamp": "2026-05-18T13:23:52.955569+02:00",
+  "artifact_type": "operator_generation_authorization_decision",
+  "operator_id": "andrey",
+  "operator_decision": "approved",
+  "decision_source": "human_operator",
+  "decision_scope": "exactly_one_future_fresh_visual_generation",
+  "max_generations": 1,
+  "generation_execution_in_this_task": false,
+  "visual_qa_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "decision_timestamp": "2026-05-18T13:23:52.955569+02:00",
+  "previous_gate_task": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+  "previous_gate_status": "prepared_waiting_for_operator_authorization",
+  "authorization_invariants": {
+    "agent_cannot_self_approve": true,
+    "agent_cannot_fake_operator_decision": true,
+    "real_operator_decision_required": true,
+    "decision_must_be_explicit": true,
+    "implicit_approval_not_allowed": true
+  }
+}

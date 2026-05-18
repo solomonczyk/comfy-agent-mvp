@@ -1,0 +1,22 @@
+{
+  "artifact_id": "fresh_visual_generation_authorization_result_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+  "timestamp": "2026-05-18T13:23:52.955569+02:00",
+  "artifact_type": "authorization_result",
+  "result": "authorized",
+  "operator_decision": "approved",
+  "operator_id": "andrey",
+  "decision_source": "human_operator",
+  "generation_authorized": true,
+  "max_generations": 1,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "prompt_id_created": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "fresh_visual_generation_authorized",
+  "next_allowed_action": "fresh_visual_generation_execute_required",
+  "next_task_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001"
+}

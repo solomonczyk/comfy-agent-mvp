@@ -1,0 +1,39 @@
+{
+  "artifact_id": "fresh_visual_generation_authorization_record_001",
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+  "timestamp": "2026-05-18T13:23:52.955569+02:00",
+  "artifact_type": "operator_generation_authorization_record",
+  "authorization_status": "authorized",
+  "operator_id": "andrey",
+  "operator_decision": "approved",
+  "decision_source": "human_operator",
+  "decision_scope": "exactly_one_future_fresh_visual_generation",
+  "generation_authorized": true,
+  "max_generations": 1,
+  "blind_retry_allowed": false,
+  "stop_after_generation": true,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "prompt_id_created": false,
+  "visual_qa_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "next_allowed_action": "fresh_visual_generation_execute_required",
+  "authorized_task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001",
+  "state_transition": {
+    "previous_state": "fresh_visual_generation_gate_prepared",
+    "current_state": "fresh_visual_generation_authorized",
+    "next_allowed_action": "fresh_visual_generation_execute_required"
+  },
+  "execution_constraints": {
+    "must_use_quality_reference_as_calibration_only": true,
+    "must_generate_exactly_one_candidate": true,
+    "must_return_real_prompt_id": true,
+    "must_return_asset_manifest": true,
+    "must_stop_before_visual_qa": true,
+    "must_not_assemble": true,
+    "must_not_downstream": true,
+    "production_accepted_must_remain_false": true
+  }
+}

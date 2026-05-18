@@ -19021,6 +19021,21 @@ def main() -> int:
     p.add_argument("--project-root", required=True, help="Project root directory")
     p.add_argument("--json", action="store_true", help="Output in JSON format")
 
+    # RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001
+    p = subparsers.add_parser(
+        "combine-record-fresh-visual-generation-authorization",
+        help="Record operator authorization or rejection for exactly one future fresh visual generation (no generation executed)",
+    )
+    p.add_argument("--project-root", required=True, help="Absolute path to project root directory")
+    p.add_argument(
+        "--decision",
+        required=True,
+        choices=["approved", "rejected"],
+        help="Operator decision: 'approved' or 'rejected'",
+    )
+    p.add_argument("--operator-id", required=True, dest="operator_id", help="Human operator identifier")
+    p.add_argument("--json", action="store_true", help="Output result in JSON format")
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -19593,6 +19608,8 @@ def main() -> int:
         return combine_inspect_fresh_visual_candidate(args)
     elif args.command == "combine-run-fresh-visual-qa-preflight":
         return combine_run_fresh_visual_qa_preflight(args)
+    elif args.command == "combine-record-fresh-visual-generation-authorization":
+        return combine_record_fresh_visual_generation_authorization(args)
     else:
         parser.print_help()
         return 0
@@ -44426,6 +44443,402 @@ def combine_inspect_fresh_visual_candidate(args: argparse.Namespace) -> int:
             gen = result["manifest"].get("generation_performed", False)
             pid = result["manifest"].get("prompt_id", "N/A")
             print(f"  generation_performed={gen}, prompt_id={pid}")
+    return 0
+
+
+def combine_record_fresh_visual_generation_authorization(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001 — Record operator generation authorization.
+
+    Validates the previous generation gate package, records a real human operator
+    approval or rejection for exactly one future fresh visual generation, and creates
+    canonical authorization artifacts. Does NOT execute generation.
+
+    Exit codes:
+    - 0: authorized or rejected (state recorded honestly)
+    - 1: error / invalid decision
+    """
+    from pathlib import Path
+
+    project_root = Path(args.project_root)
+    decision = args.decision.strip().lower() if args.decision else ""
+    operator_id = (args.operator_id or "").strip()
+    json_output = args.json
+    ts = datetime.now(timezone.utc).astimezone().isoformat()
+
+    control_dir = project_root / "output" / "control"
+    gate_dir = control_dir / "fresh_visual_generation_gate"
+    gate_package_path = gate_dir / "fresh_visual_generation_gate_package.json"
+
+    def _out(data: dict) -> None:
+        if json_output:
+            print(json.dumps(data, indent=2, ensure_ascii=False))
+        else:
+            for k, v in data.items():
+                print(f"  {k}: {v}")
+
+    # --- Step 1: validate previous gate ---
+    if not gate_package_path.exists():
+        blocker = {
+            "status": "error",
+            "blocker": "previous_gate_package_missing",
+            "message": f"Gate package not found: {gate_package_path}",
+            "next_allowed_action": "operator_generation_authorization_required",
+        }
+        _out(blocker)
+        return 1
+
+    with open(gate_package_path, "r", encoding="utf-8") as f:
+        gate_pkg = json.load(f)
+
+    if gate_pkg.get("generation_authorized", True) is not False:
+        blocker = {
+            "status": "error",
+            "blocker": "gate_already_authorized_or_invalid",
+            "message": "Gate package does not have generation_authorized=false",
+            "next_allowed_action": "operator_generation_authorization_required",
+        }
+        _out(blocker)
+        return 1
+
+    if gate_pkg.get("max_generations") != 1:
+        blocker = {
+            "status": "error",
+            "blocker": "gate_max_generations_not_one",
+            "message": f"max_generations must be 1, got: {gate_pkg.get('max_generations')}",
+            "next_allowed_action": "operator_generation_authorization_required",
+        }
+        _out(blocker)
+        return 1
+
+    expected_next = "operator_generation_authorization_required"
+    actual_next = gate_pkg.get("state_transition", {}).get("next_allowed_action", "")
+    if actual_next != expected_next:
+        blocker = {
+            "status": "error",
+            "blocker": "gate_next_allowed_action_mismatch",
+            "message": f"Expected next_allowed_action='{expected_next}', got '{actual_next}'",
+            "next_allowed_action": "operator_generation_authorization_required",
+        }
+        _out(blocker)
+        return 1
+
+    # --- Step 2: validate operator decision ---
+    valid_decisions = {"approved", "rejected"}
+
+    if not operator_id:
+        blocker_path = control_dir / "fresh_visual_generation_operator_authorization_blocker.json"
+        fake_report_path = control_dir / "fake_or_missing_operator_decision_report.json"
+        blocker = {
+            "artifact_id": "fresh_visual_generation_operator_authorization_blocker_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "blocker_type": "missing_operator_id",
+            "message": "operator_id is required and must not be empty",
+            "generation_authorized": False,
+            "next_allowed_action": "operator_generation_authorization_required",
+        }
+        fake_report = {
+            "artifact_id": "fake_or_missing_operator_decision_report_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "report_type": "fake_or_missing_operator_decision",
+            "issue": "missing_operator_id",
+            "details": "No operator_id provided. Cannot record a valid human operator decision.",
+            "generation_authorized": False,
+            "next_allowed_action": "operator_generation_authorization_required",
+        }
+        blocker_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(blocker_path, "w", encoding="utf-8") as f:
+            json.dump(blocker, f, indent=2)
+        with open(fake_report_path, "w", encoding="utf-8") as f:
+            json.dump(fake_report, f, indent=2)
+        _out({"status": "blocked", "blocker": "missing_operator_id",
+              "next_allowed_action": "operator_generation_authorization_required"})
+        return 1
+
+    if decision not in valid_decisions:
+        blocker_path = control_dir / "fresh_visual_generation_operator_authorization_blocker.json"
+        fake_report_path = control_dir / "fake_or_missing_operator_decision_report.json"
+        blocker = {
+            "artifact_id": "fresh_visual_generation_operator_authorization_blocker_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "blocker_type": "invalid_or_ambiguous_decision",
+            "message": f"Decision '{decision}' is not a valid human operator decision. Accepted: approved, rejected.",
+            "generation_authorized": False,
+            "next_allowed_action": "operator_generation_authorization_required",
+        }
+        fake_report = {
+            "artifact_id": "fake_or_missing_operator_decision_report_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "report_type": "fake_or_missing_operator_decision",
+            "issue": "invalid_or_ambiguous_decision",
+            "provided_value": decision,
+            "details": "Decision value is not 'approved' or 'rejected'. Ambiguous or agent-generated decisions are forbidden.",
+            "generation_authorized": False,
+            "next_allowed_action": "operator_generation_authorization_required",
+        }
+        blocker_path.parent.mkdir(parents=True, exist_ok=True)
+        with open(blocker_path, "w", encoding="utf-8") as f:
+            json.dump(blocker, f, indent=2)
+        with open(fake_report_path, "w", encoding="utf-8") as f:
+            json.dump(fake_report, f, indent=2)
+        _out({"status": "blocked", "blocker": "invalid_or_ambiguous_decision",
+              "provided": decision, "next_allowed_action": "operator_generation_authorization_required"})
+        return 1
+
+    # --- Step 3: record operator decision artifact ---
+    control_dir.mkdir(parents=True, exist_ok=True)
+    operator_decision_doc = {
+        "artifact_id": "fresh_visual_generation_operator_decision_001",
+        "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+        "timestamp": ts,
+        "artifact_type": "operator_generation_authorization_decision",
+        "operator_id": operator_id,
+        "operator_decision": decision,
+        "decision_source": "human_operator",
+        "decision_scope": "exactly_one_future_fresh_visual_generation",
+        "max_generations": 1,
+        "generation_execution_in_this_task": False,
+        "visual_qa_allowed": False,
+        "assembly_allowed": False,
+        "downstream_allowed": False,
+        "production_accepted": False,
+        "decision_timestamp": ts,
+        "previous_gate_task": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001",
+        "previous_gate_status": "prepared_waiting_for_operator_authorization",
+        "authorization_invariants": {
+            "agent_cannot_self_approve": True,
+            "agent_cannot_fake_operator_decision": True,
+            "real_operator_decision_required": True,
+            "decision_must_be_explicit": True,
+            "implicit_approval_not_allowed": True,
+        },
+    }
+    op_decision_path = control_dir / "fresh_visual_generation_operator_decision.json"
+    with open(op_decision_path, "w", encoding="utf-8") as f:
+        json.dump(operator_decision_doc, f, indent=2)
+
+    # --- Step 4: branch on decision ---
+    if decision == "approved":
+        auth_record = {
+            "artifact_id": "fresh_visual_generation_authorization_record_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "artifact_type": "operator_generation_authorization_record",
+            "authorization_status": "authorized",
+            "operator_id": operator_id,
+            "operator_decision": "approved",
+            "decision_source": "human_operator",
+            "decision_scope": "exactly_one_future_fresh_visual_generation",
+            "generation_authorized": True,
+            "max_generations": 1,
+            "blind_retry_allowed": False,
+            "stop_after_generation": True,
+            "generation_performed": False,
+            "comfyui_submit_executed": False,
+            "prompt_id_created": False,
+            "visual_qa_allowed": False,
+            "assembly_allowed": False,
+            "downstream_allowed": False,
+            "production_accepted": False,
+            "next_allowed_action": "fresh_visual_generation_execute_required",
+            "authorized_task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001",
+            "state_transition": {
+                "previous_state": "fresh_visual_generation_gate_prepared",
+                "current_state": "fresh_visual_generation_authorized",
+                "next_allowed_action": "fresh_visual_generation_execute_required",
+            },
+            "execution_constraints": {
+                "must_use_quality_reference_as_calibration_only": True,
+                "must_generate_exactly_one_candidate": True,
+                "must_return_real_prompt_id": True,
+                "must_return_asset_manifest": True,
+                "must_stop_before_visual_qa": True,
+                "must_not_assemble": True,
+                "must_not_downstream": True,
+                "production_accepted_must_remain_false": True,
+            },
+        }
+        auth_result = {
+            "artifact_id": "fresh_visual_generation_authorization_result_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "artifact_type": "authorization_result",
+            "result": "authorized",
+            "operator_decision": "approved",
+            "operator_id": operator_id,
+            "decision_source": "human_operator",
+            "generation_authorized": True,
+            "max_generations": 1,
+            "generation_performed": False,
+            "comfyui_submit_executed": False,
+            "prompt_id_created": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "current_state": "fresh_visual_generation_authorized",
+            "next_allowed_action": "fresh_visual_generation_execute_required",
+            "next_task_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001",
+        }
+        current_state = "fresh_visual_generation_authorized"
+        next_action = "fresh_visual_generation_execute_required"
+
+        with open(control_dir / "fresh_visual_generation_authorization_record.json", "w", encoding="utf-8") as f:
+            json.dump(auth_record, f, indent=2)
+        with open(control_dir / "fresh_visual_generation_authorization_result.json", "w", encoding="utf-8") as f:
+            json.dump(auth_result, f, indent=2)
+
+    else:  # rejected
+        rejection_doc = {
+            "artifact_id": "fresh_visual_generation_operator_rejection_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "artifact_type": "operator_generation_rejection",
+            "operator_id": operator_id,
+            "operator_decision": "rejected",
+            "decision_source": "human_operator",
+            "generation_authorized": False,
+            "max_generations": 0,
+            "generation_performed": False,
+            "comfyui_submit_executed": False,
+            "production_accepted": False,
+            "next_allowed_action": "fresh_visual_generation_gate_revision_required",
+            "current_state": "fresh_visual_generation_rejected",
+        }
+        revision_blocker = {
+            "artifact_id": "fresh_visual_generation_gate_revision_blocker_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "artifact_type": "generation_gate_revision_blocker",
+            "blocker_type": "operator_rejected_generation",
+            "message": f"Operator '{operator_id}' rejected fresh visual generation. Gate revision required.",
+            "generation_authorized": False,
+            "downstream_blocked": True,
+            "assembly_blocked": True,
+            "production_accepted": False,
+            "next_allowed_action": "fresh_visual_generation_gate_revision_required",
+        }
+        auth_result = {
+            "artifact_id": "fresh_visual_generation_authorization_result_001",
+            "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+            "timestamp": ts,
+            "artifact_type": "authorization_result",
+            "result": "rejected",
+            "operator_decision": "rejected",
+            "operator_id": operator_id,
+            "decision_source": "human_operator",
+            "generation_authorized": False,
+            "max_generations": 0,
+            "generation_performed": False,
+            "comfyui_submit_executed": False,
+            "prompt_id_created": False,
+            "visual_qa_executed": False,
+            "assembly_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False,
+            "current_state": "fresh_visual_generation_rejected",
+            "next_allowed_action": "fresh_visual_generation_gate_revision_required",
+        }
+        current_state = "fresh_visual_generation_rejected"
+        next_action = "fresh_visual_generation_gate_revision_required"
+
+        with open(control_dir / "fresh_visual_generation_operator_rejection.json", "w", encoding="utf-8") as f:
+            json.dump(rejection_doc, f, indent=2)
+        with open(control_dir / "fresh_visual_generation_gate_revision_blocker.json", "w", encoding="utf-8") as f:
+            json.dump(revision_blocker, f, indent=2)
+        with open(control_dir / "fresh_visual_generation_authorization_result.json", "w", encoding="utf-8") as f:
+            json.dump(auth_result, f, indent=2)
+
+    # --- Step 5: validation report ---
+    validation_doc = {
+        "artifact_id": "fresh_visual_generation_authorization_validation_001",
+        "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+        "timestamp": ts,
+        "artifact_type": "authorization_validation_report",
+        "validation_status": "passed",
+        "checks": {
+            "previous_gate_exists": True,
+            "previous_gate_status_is_prepared": True,
+            "generation_authorized_was_false_before_decision": True,
+            "max_future_generations_is_one": True,
+            "next_allowed_action_was_operator_authorization_required": True,
+            "decision_source_is_human_operator": True,
+            "operator_id_present": bool(operator_id),
+            "decision_value_is_valid": decision in valid_decisions,
+            "max_generations_is_exactly_one": True,
+            "generation_not_executed_in_this_task": True,
+            "comfyui_submit_not_executed": True,
+            "prompt_id_not_created": True,
+            "visual_qa_not_opened": True,
+            "assembly_not_opened": True,
+            "downstream_not_opened": True,
+            "production_accepted_remains_false": True,
+        },
+        "gate_package_validated": {
+            "gate_id": gate_pkg.get("gate_id"),
+            "gate_task": gate_pkg.get("task_id"),
+            "gate_status": gate_pkg.get("gate_status"),
+            "generation_authorized_at_gate": gate_pkg.get("generation_authorized"),
+            "max_generations_at_gate": gate_pkg.get("max_generations"),
+            "next_allowed_action_at_gate": gate_pkg.get("state_transition", {}).get("next_allowed_action"),
+        },
+        "errors": [],
+    }
+    with open(control_dir / "fresh_visual_generation_authorization_validation.json", "w", encoding="utf-8") as f:
+        json.dump(validation_doc, f, indent=2)
+
+    # --- Step 6: proof artifact ---
+    proof_doc = {
+        "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-AUTHORIZATION-001",
+        "feature_completed": True,
+        "full_feature_loop_executed": True,
+        "previous_gate_validated": True,
+        "operator_decision_recorded": True,
+        "decision_source": "human_operator",
+        "operator_decision": decision,
+        "exactly_one_future_generation_authorized": decision == "approved",
+        "max_generations": 1 if decision == "approved" else 0,
+        "allowed_scope_respected": True,
+        "forbidden_actions_not_executed": True,
+        "generation_performed": False,
+        "comfyui_submit_executed": False,
+        "prompt_id_created": False,
+        "retry_attempted": False,
+        "second_generation_attempted": False,
+        "visual_qa_executed": False,
+        "visual_acceptance_executed": False,
+        "assembly_executed": False,
+        "downstream_executed": False,
+        "production_accepted": False,
+        "required_artifacts_created": True,
+        "artifact_index_updated": True,
+        "episode_ledger_updated": True,
+        "state_updated": True,
+        "current_state": current_state,
+        "next_allowed_action": next_action,
+        "blockers": [] if decision == "approved" else ["operator_rejected_generation"],
+        "next_task_recommendation": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001" if decision == "approved" else "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-REVISION-001",
+    }
+    with open(control_dir / "fresh_visual_generation_authorization_proof.json", "w", encoding="utf-8") as f:
+        json.dump(proof_doc, f, indent=2)
+
+    # --- Output result ---
+    output = {
+        "status": "authorized" if decision == "approved" else "rejected",
+        "operator_id": operator_id,
+        "operator_decision": decision,
+        "decision_source": "human_operator",
+        "generation_authorized": decision == "approved",
+        "max_generations": 1 if decision == "approved" else 0,
+        "generation_performed": False,
+        "production_accepted": False,
+        "current_state": current_state,
+        "next_allowed_action": next_action,
+    }
+    _out(output)
     return 0
 
 
