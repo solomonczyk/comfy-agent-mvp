@@ -8,7 +8,7 @@
   "corrective_plan_document": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/corrective_plan.json",
   "rejection_document": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/operator_visual_rejection.json",
   "max_generations": 1,
-  "generation_count_used": 0,
+  "generation_count_used": 1,
   "blind_retry_allowed": false,
   "second_generation_allowed": false,
   "visual_qa_allowed_before_separate_gate": false,
@@ -42,7 +42,11 @@
   },
   "gate_expiry_policy": "single_use_one_generation_only",
   "after_generation_required_action": "operator_visual_review_of_corrective_candidate",
-  "generation_performed": false,
-  "comfyui_submit_executed": false,
-  "retry_attempted": false
+  "generation_performed": true,
+  "comfyui_submit_executed": true,
+  "retry_attempted": false,
+  "current_state_after_generation": "corrective_generation_result_review_required",
+  "next_allowed_action_after_generation": "operator_visual_review_required",
+  "timestamp_updated": "2026-05-18T11:10:20.918648",
+  "prompt_id": "62cf0c52-7f45-4b75-8fa1-3fcfc9d70fbc"
 }

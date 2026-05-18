@@ -18283,6 +18283,26 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001
+    combine_execute_corrective_generation_parser = subparsers.add_parser(
+        "combine-execute-corrective-generation",
+        help="Execute exactly one corrective fresh visual generation"
+    )
+    combine_execute_corrective_generation_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_execute_corrective_generation_parser.add_argument(
+        "--execute", action="store_true",
+        help="Execute real ComfyUI submit (default: dry run)",
+    )
+    combine_execute_corrective_generation_parser.add_argument(
+        "--max-generations", type=int, default=1,
+        help="Max generations (must be 1, default: 1)",
+    )
+    combine_execute_corrective_generation_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     combine_review_v13_result_parser = subparsers.add_parser(
         "combine-review-v13-result",
         help="Review V13 generation result"
@@ -19395,6 +19415,10 @@ def main() -> int:
     elif args.command == "combine-execute-v13-generation":
         _require_absolute_project_root(args, "combine-execute-v13-generation")
         return combine_execute_v13_generation(args)
+    elif args.command == "combine-execute-corrective-generation":
+        _require_absolute_project_root(args, "combine-execute-corrective-generation")
+        from app.cli_commands.corrective_generation import execute_corrective_generation
+        return execute_corrective_generation(args)
     elif args.command == "combine-review-v13-result":
         _require_absolute_project_root(args, "combine-review-v13-result")
         return combine_review_v13_result(args)
