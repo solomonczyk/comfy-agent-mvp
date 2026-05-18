@@ -3515,5 +3515,37 @@
       "standards_pack/policies/production_acceptance_policy.json"
     ],
     "next_recommended_task": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001"
+  },
+  {
+    "event_type": "fresh_visual_operator_review_packet_created",
+    "task_id": "RC-COMBINE-V2-FRESH-VISUAL-OPERATOR-REVIEW-001",
+    "stage": "operator_visual_review_required",
+    "previous_task": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+    "generation_performed": false,
+    "generation_count": 1,
+    "second_generation_attempted": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "visual_qa_executed": false,
+    "visual_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "operator_visual_verdict_recorded": false,
+    "operator_verdict": null,
+    "fake_operator_decision_created": false,
+    "agent_accepted_visual": false,
+    "operator_review_packet_created": true,
+    "visual_review_checklist_created": true,
+    "review_pending_created": true,
+    "candidate_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\fresh_visual_candidates\\combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+    "candidate_sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+    "candidate_width": 1024,
+    "candidate_height": 1024,
+    "candidate_size_bytes": 1368893,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "notes": "Fresh visual operator review packet and checklist created. No human verdict provided. State remains at operator_visual_review_required pending human decision.",
+    "timestamp": "2026-05-18T14:34:00+02:00"
   }
 ]

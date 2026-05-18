@@ -1,0 +1,69 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-OPERATOR-REVIEW-001",
+  "document_type": "visual_review_checklist",
+  "timestamp": "2026-05-18T14:34:00+02:00",
+  "checklist_items": [
+    {
+      "category": "face_quality",
+      "item": "Face quality and overall realism",
+      "status": "pending_operator_review",
+      "notes": "Operator must assess overall face quality and photorealism"
+    },
+    {
+      "category": "eyes",
+      "item": "Eye quality, focus, and expression",
+      "status": "pending_operator_review",
+      "notes": "Check eye detail, pupil quality, gaze direction, and natural expression"
+    },
+    {
+      "category": "mouth_teeth",
+      "item": "Mouth and teeth quality",
+      "status": "pending_operator_review",
+      "notes": "Check lip definition, teeth visibility, natural mouth shape"
+    },
+    {
+      "category": "skin_realism",
+      "item": "Skin texture and realism",
+      "status": "pending_operator_review",
+      "notes": "Assess skin texture, pores, lighting interaction, natural appearance"
+    },
+    {
+      "category": "facial_detail",
+      "item": "Facial detail and features",
+      "status": "pending_operator_review",
+      "notes": "Check nose, eyebrows, cheeks, and overall facial feature accuracy"
+    },
+    {
+      "category": "identity_style",
+      "item": "Identity and style match",
+      "status": "pending_operator_review",
+      "notes": "Verify character identity matches brief and style requirements"
+    },
+    {
+      "category": "anatomy",
+      "item": "Anatomy and body proportions (if visible)",
+      "status": "pending_operator_review",
+      "notes": "Check hands, shoulders, neck, and overall body anatomy if visible"
+    },
+    {
+      "category": "clothing_props",
+      "item": "Clothing and props (if visible)",
+      "status": "pending_operator_review",
+      "notes": "Verify clothing details, textures, and any props in frame"
+    },
+    {
+      "category": "background",
+      "item": "Background quality and artifacts",
+      "status": "pending_operator_review",
+      "notes": "Check for background artifacts, blurring, or unnatural elements"
+    },
+    {
+      "category": "production_usability",
+      "item": "Overall production usability",
+      "status": "pending_operator_review",
+      "notes": "Assess whether image is usable for downstream production pipeline"
+    }
+  ],
+  "checklist_status": "pending_operator_completion",
+  "operator_review_required": true
+}
