@@ -42,7 +42,7 @@ class StrategyReadinessAssessor:
             "all_artifacts_valid": all(v["valid"] for v in artifact_readiness.values()),
             "policies_loaded": policy_readiness.get("qa_repairability_gate_active", False),
             "references_available": reference_readiness.get("positive_references_available", 0) > 0,
-            "forbidden_actions_respected": all(forbidden_verification.values()),
+            "forbidden_actions_respected": all(v is False for v in forbidden_verification.values()),
             "state_consistent": state_verification.get("state_consistent", False),
             "qa_repairability_gate_active": policy_readiness.get("qa_repairability_gate_active", False),
             "generation_authorized": False,
@@ -146,13 +146,16 @@ class StrategyReadinessAssessor:
             with open(policy_path, 'r') as f:
                 policy = json.load(f)
             
+            # Access nested structure
+            policy_data = policy.get("repairability_aware_visual_policy", policy)
+            
             return {
-                "qa_repairability_gate_active": policy.get("qa_repairability_gate_required", False),
-                "unknown_repairability_blocks": policy.get("unknown_repairability_blocks", False),
-                "downstream_requires_validated_repairability": policy.get("downstream_requires_validated_repairability", False),
-                "technical_pass_not_visual_pass_enforced": policy.get("technical_pass_is_not_visual_pass", False),
-                "visual_operator_review_required": policy.get("visual_operator_review_required", False),
-                "production_accepted_must_remain_false": policy.get("production_accepted_must_remain_false", False)
+                "qa_repairability_gate_active": policy_data.get("qa_repairability_gate_required", False),
+                "unknown_repairability_blocks": policy_data.get("unknown_repairability_blocks", False),
+                "downstream_requires_validated_repairability": policy_data.get("downstream_requires_validated_repairability", False),
+                "technical_pass_not_visual_pass_enforced": policy_data.get("technical_pass_is_not_visual_pass", False),
+                "visual_operator_review_required": policy_data.get("visual_operator_review_required", False),
+                "production_accepted_must_remain_false": policy_data.get("production_accepted_must_remain_false", False)
             }
         except Exception:
             return {
@@ -180,7 +183,9 @@ class StrategyReadinessAssessor:
             with open(reference_plan_path, 'r') as f:
                 plan = json.load(f)
             
-            acquisition_status = plan.get("acquisition_status", {})
+            # Access nested structure
+            plan_data = plan.get("reference_acquisition_plan", plan)
+            acquisition_status = plan_data.get("acquisition_status", {})
             
             return {
                 "positive_references_available": acquisition_status.get("positive_references_available", 0),
@@ -198,33 +203,41 @@ class StrategyReadinessAssessor:
     
     def _verify_forbidden_actions(self) -> Dict[str, bool]:
         """Verify that all forbidden actions are false."""
-        readiness_report_path = self.strategy_dir / "fresh_visual_strategy_readiness_report.json"
+        # Read from manifest's forbidden_actions_enforced instead of stale report
+        manifest_path = self.strategy_dir / "fresh_visual_strategy_manifest.json"
         
-        if not readiness_report_path.exists():
-            # Default to all false if report doesn't exist yet
-            return {
-                "generation_performed": False,
-                "comfyui_submit_executed": False,
-                "retry_attempted": False,
-                "preview_rerender_executed": False,
-                "preview_render_executed": False,
-                "visual_qa_acceptance_executed": False,
-                "operator_visual_acceptance_executed": False,
-                "voice_generation_executed": False,
-                "audio_generation_executed": False,
-                "assembly_executed": False,
-                "final_render_executed": False,
-                "downstream_executed": False,
-                "production_accepted": False
-            }
+        default_actions = {
+            "generation_performed": False,
+            "comfyui_submit_executed": False,
+            "retry_attempted": False,
+            "preview_rerender_executed": False,
+            "preview_render_executed": False,
+            "visual_qa_acceptance_executed": False,
+            "operator_visual_acceptance_executed": False,
+            "voice_generation_executed": False,
+            "audio_generation_executed": False,
+            "assembly_executed": False,
+            "final_render_executed": False,
+            "downstream_executed": False,
+            "production_accepted": False
+        }
+        
+        if not manifest_path.exists():
+            return default_actions
         
         try:
-            with open(readiness_report_path, 'r') as f:
-                report = json.load(f)
+            with open(manifest_path, 'r') as f:
+                manifest = json.load(f)
             
-            return report.get("forbidden_actions_verification", {})
+            # Read forbidden_actions_enforced from manifest
+            forbidden = manifest.get("forbidden_actions_enforced", {})
+            
+            # Merge with defaults to ensure all required keys exist
+            result = default_actions.copy()
+            result.update(forbidden)
+            return result
         except Exception:
-            return {}
+            return default_actions
     
     def _verify_state(self) -> Dict[str, str]:
         """Verify state consistency."""
@@ -244,11 +257,22 @@ class StrategyReadinessAssessor:
             current_state = index.get("current_state", "unknown")
             next_allowed = index.get("next_allowed_action", "unknown")
             
-            # Expected state for fresh visual strategy
-            expected_state = "visual_outputs_purged_rebuild_required"
-            expected_next = "fresh_visual_strategy_required"
+            # Expected state for fresh visual strategy after creation
+            # The state should reflect that fresh visual strategy has been created
+            # and operator review is now required
+            expected_states = [
+                "fresh_visual_strategy_operator_review_required",
+                "visual_outputs_purged_rebuild_required"
+            ]
+            expected_next_actions = [
+                "fresh_visual_strategy_operator_review_required",
+                "fresh_visual_strategy_required"
+            ]
             
-            state_consistent = (current_state == expected_state and next_allowed == expected_next)
+            state_consistent = (
+                current_state in expected_states and 
+                next_allowed in expected_next_actions
+            )
             
             return {
                 "current_state": current_state,
