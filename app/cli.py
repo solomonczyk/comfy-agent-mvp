@@ -19425,6 +19425,69 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-TOOL-POLICY-GATEWAY-001 — combine-tool-policy-validate
+    combine_tool_policy_validate_parser = subparsers.add_parser(
+        "combine-tool-policy-validate",
+        help="Validate tool policy configuration",
+    )
+    combine_tool_policy_validate_parser.add_argument(
+        "--policy-root", required=True, help="Tool policy root directory",
+    )
+    combine_tool_policy_validate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-TOOL-POLICY-GATEWAY-001 — combine-tool-policy-inspect
+    combine_tool_policy_inspect_parser = subparsers.add_parser(
+        "combine-tool-policy-inspect",
+        help="Inspect tool policy configuration",
+    )
+    combine_tool_policy_inspect_parser.add_argument(
+        "--policy-root", required=True, help="Tool policy root directory",
+    )
+    combine_tool_policy_inspect_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-TOOL-POLICY-GATEWAY-001 — combine-tool-policy-evaluate-request
+    combine_tool_policy_evaluate_request_parser = subparsers.add_parser(
+        "combine-tool-policy-evaluate-request",
+        help="Evaluate a tool request against policy",
+    )
+    combine_tool_policy_evaluate_request_parser.add_argument(
+        "--policy-root", required=True, help="Tool policy root directory",
+    )
+    combine_tool_policy_evaluate_request_parser.add_argument(
+        "--agent-id", required=True, help="Requester agent ID",
+    )
+    combine_tool_policy_evaluate_request_parser.add_argument(
+        "--tool", required=True, help="Requested tool",
+    )
+    combine_tool_policy_evaluate_request_parser.add_argument(
+        "--action", required=True, help="Requested action",
+    )
+    combine_tool_policy_evaluate_request_parser.add_argument(
+        "--target-stage", help="Target stage",
+    )
+    combine_tool_policy_evaluate_request_parser.add_argument(
+        "--gate-reference", help="Gate packet reference",
+    )
+    combine_tool_policy_evaluate_request_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-TOOL-POLICY-GATEWAY-001 — combine-tool-policy-readiness-report
+    combine_tool_policy_readiness_report_parser = subparsers.add_parser(
+        "combine-tool-policy-readiness-report",
+        help="Generate tool policy readiness report",
+    )
+    combine_tool_policy_readiness_report_parser.add_argument(
+        "--policy-root", required=True, help="Tool policy root directory",
+    )
+    combine_tool_policy_readiness_report_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001 — combine-validate-preview-correction-plan subcommand
     combine_validate_preview_correction_plan_parser = subparsers.add_parser(
         "combine-validate-preview-correction-plan",
@@ -20176,6 +20239,26 @@ def main() -> int:
     elif args.command == "combine-workflow-readiness-report":
         _require_absolute_project_root(args, "combine-workflow-readiness-report")
         return combine_workflow_readiness_report(args)
+    elif args.command == "combine-tool-policy-validate":
+        from app.tool_policy.cli import combine_tool_policy_validate
+        return combine_tool_policy_validate(args.policy_root, args.json)
+    elif args.command == "combine-tool-policy-inspect":
+        from app.tool_policy.cli import combine_tool_policy_inspect
+        return combine_tool_policy_inspect(args.policy_root, args.json)
+    elif args.command == "combine-tool-policy-evaluate-request":
+        from app.tool_policy.cli import combine_tool_policy_evaluate_request
+        return combine_tool_policy_evaluate_request(
+            args.policy_root,
+            args.agent_id,
+            args.tool,
+            args.action,
+            args.target_stage,
+            args.gate_reference,
+            args.json,
+        )
+    elif args.command == "combine-tool-policy-readiness-report":
+        from app.tool_policy.cli import combine_tool_policy_readiness_report
+        return combine_tool_policy_readiness_report(args.policy_root, args.json)
     elif args.command == "combine-validate-preview-correction-plan":
         _require_absolute_project_root(args, "combine-validate-preview-correction-plan")
         return combine_validate_preview_correction_plan(args)

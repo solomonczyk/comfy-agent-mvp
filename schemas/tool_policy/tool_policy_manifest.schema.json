@@ -1,0 +1,61 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tool Policy Manifest",
+  "description": "Manifest for tool policy gateway layer configuration",
+  "type": "object",
+  "required": [
+    "task_id",
+    "project_agnostic",
+    "tool_policy_gateway_created",
+    "version",
+    "created_at"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Task ID for this implementation"
+    },
+    "project_agnostic": {
+      "type": "boolean",
+      "description": "Whether this is a project-agnostic implementation"
+    },
+    "tool_policy_gateway_created": {
+      "type": "boolean",
+      "description": "Whether the tool policy gateway has been created"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of the tool policy gateway"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the manifest was created"
+    },
+    "components": {
+      "type": "object",
+      "properties": {
+        "models": {
+          "type": "boolean",
+          "description": "Models implemented"
+        },
+        "decision_engine": {
+          "type": "boolean",
+          "description": "Decision engine implemented"
+        },
+        "dangerous_tool_registry": {
+          "type": "boolean",
+          "description": "Dangerous tool registry implemented"
+        },
+        "agent_tool_access_matrix": {
+          "type": "boolean",
+          "description": "Agent tool access matrix implemented"
+        },
+        "cli_commands": {
+          "type": "boolean",
+          "description": "CLI commands implemented"
+        }
+      }
+    }
+  }
+}

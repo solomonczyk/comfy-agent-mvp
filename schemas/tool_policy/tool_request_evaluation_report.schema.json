@@ -1,0 +1,82 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Tool Request Evaluation Report",
+  "description": "Report for tool request evaluation results",
+  "type": "object",
+  "required": [
+    "request",
+    "decision"
+  ],
+  "properties": {
+    "request": {
+      "type": "object",
+      "required": [
+        "agent_id",
+        "tool",
+        "action"
+      ],
+      "properties": {
+        "agent_id": {
+          "type": "string"
+        },
+        "tool": {
+          "type": "string"
+        },
+        "action": {
+          "type": "string"
+        },
+        "target_stage": {
+          "type": "string"
+        },
+        "gate_reference": {
+          "type": "string"
+        }
+      }
+    },
+    "decision": {
+      "type": "object",
+      "required": [
+        "status",
+        "allowed",
+        "reason"
+      ],
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "allowed_safe_read",
+            "allowed_safe_validation",
+            "blocked_role_forbidden",
+            "blocked_dangerous_action",
+            "blocked_missing_gate",
+            "blocked_gate_not_authorized",
+            "blocked_production_acceptance_forbidden",
+            "blocked_force_push_forbidden",
+            "blocked_hardcoded_reference"
+          ]
+        },
+        "allowed": {
+          "type": "boolean"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "policy_role": {
+          "type": "string"
+        },
+        "missing_gates": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "dangerous_categories": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

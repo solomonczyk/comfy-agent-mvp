@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Agent Tool Access Matrix",
+  "description": "Matrix defining which agents can access which tools",
+  "type": "object",
+  "required": [
+    "policies",
+    "total_agents"
+  ],
+  "properties": {
+    "policies": {
+      "type": "object",
+      "description": "Map of agent IDs to their policies",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "agent_id",
+          "role",
+          "allowed_tools",
+          "forbidden_tools",
+          "runtime_execution_allowed"
+        ],
+        "properties": {
+          "agent_id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "allowed_tools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "forbidden_tools": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dangerous_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "required_gate_types": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "runtime_execution_allowed": {
+            "type": "boolean"
+          },
+          "can_mutate_production_acceptance": {
+            "type": "boolean"
+          },
+          "can_force_push": {
+            "type": "boolean"
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "total_agents": {
+      "type": "integer"
+    }
+  }
+}

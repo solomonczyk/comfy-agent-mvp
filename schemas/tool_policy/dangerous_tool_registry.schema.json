@@ -1,0 +1,25 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Dangerous Tool Registry",
+  "description": "Registry of dangerous tools and their categories",
+  "type": "object",
+  "required": [
+    "dangerous_tools",
+    "total_count"
+  ],
+  "properties": {
+    "dangerous_tools": {
+      "type": "object",
+      "description": "Map of dangerous tools to their categories",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "total_count": {
+      "type": "integer"
+    }
+  }
+}
