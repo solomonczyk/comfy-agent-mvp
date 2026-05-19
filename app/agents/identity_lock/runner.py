@@ -118,6 +118,12 @@ class IdentityLockRunner:
         # Framing detector (basic check)
         framing_detector_passed = self._framing_detector(generated_asset_path)
 
+        # Environment visibility detector (NEW)
+        environment_visibility_passed = self._environment_visibility_detector(generated_asset_path)
+
+        # Generic portrait detector (NEW - blocks beauty close-ups)
+        generic_portrait_blocked = self._generic_portrait_detector(generated_asset_path)
+
         # Single-subject gate
         single_subject_result = self.single_subject_gate.validate_single_subject(
             generated_asset_path
@@ -141,6 +147,8 @@ class IdentityLockRunner:
             generated_asset_path,
             blank_detector_passed,
             framing_detector_passed,
+            environment_visibility_passed,
+            generic_portrait_blocked,
             single_subject_gate_passed,
             identity_gate_result,
         )
@@ -161,6 +169,8 @@ class IdentityLockRunner:
                 "medium_or_upper_body": framing_detector_passed,
                 "full_face_visible": framing_detector_passed,
                 "not_square_closeup": True,
+                "environment_visible": environment_visibility_passed,
+                "not_generic_portrait": generic_portrait_blocked,
             },
             single_subject_checklist={
                 "exactly_one_person": single_subject_gate_passed,
@@ -186,6 +196,8 @@ class IdentityLockRunner:
             "prompt_id": prompt_id,
             "blank_detector_passed": blank_detector_passed,
             "framing_detector_passed": framing_detector_passed,
+            "environment_visibility_passed": environment_visibility_passed,
+            "generic_portrait_blocked": generic_portrait_blocked,
             "single_subject_gate_passed": single_subject_gate_passed,
             "identity_gate_result": identity_gate_result,
         }
@@ -268,5 +280,86 @@ class IdentityLockRunner:
             width, height = img.size
             # Check if not square 1024 close-up
             return not (width == 1024 and height == 1024) and width >= 1344
+        except Exception:
+            return False
+
+    def _environment_visibility_detector(self, asset_path: str) -> bool:
+        """Detect if environment/background is visible (not blank/solid color)."""
+        try:
+            from PIL import Image  # type: ignore
+            import numpy as np  # type: ignore
+
+            img = Image.open(asset_path)
+            img_array = np.array(img)
+
+            # Sample edges to check for background variety
+            # Take samples from top, bottom, left, right edges
+            h, w = img_array.shape[:2]
+            edge_samples = []
+
+            # Sample 10% from each edge
+            edge_width = max(1, w // 10)
+            edge_height = max(1, h // 10)
+
+            # Top edge
+            edge_samples.extend(img_array[:edge_height, :].reshape(-1, 3))
+            # Bottom edge
+            edge_samples.extend(img_array[-edge_height:, :].reshape(-1, 3))
+            # Left edge
+            edge_samples.extend(img_array[:, :edge_width].reshape(-1, 3))
+            # Right edge
+            edge_samples.extend(img_array[:, -edge_width:].reshape(-1, 3))
+
+            edge_samples = np.array(edge_samples)
+
+            # Check color variance in edges
+            if len(edge_samples) > 0:
+                edge_variance = np.var(edge_samples, axis=0).mean()
+                # If variance is too low, likely solid/blank background
+                return edge_variance > 50  # Threshold for visible environment
+
+            return False
+        except Exception:
+            return False
+
+    def _generic_portrait_detector(self, asset_path: str) -> bool:
+        """Detect if image is a generic beauty portrait (close-up face, plain background)."""
+        try:
+            from PIL import Image  # type: ignore
+            import numpy as np  # type: ignore
+
+            img = Image.open(asset_path)
+            width, height = img.size
+
+            # Check for square or near-square format (typical of portraits)
+            aspect_ratio = width / height
+            is_square = 0.8 <= aspect_ratio <= 1.2
+
+            # Check for close-up framing (face occupies most of frame)
+            # This is a heuristic - in a real implementation you'd use face detection
+            is_closeup = width < 1200 or height < 1200
+
+            # Check for plain background using edge variance
+            img_array = np.array(img)
+            h, w = img_array.shape[:2]
+            edge_samples = []
+
+            edge_width = max(1, w // 10)
+            edge_height = max(1, h // 10)
+
+            edge_samples.extend(img_array[:edge_height, :].reshape(-1, 3))
+            edge_samples.extend(img_array[-edge_height:, :].reshape(-1, 3))
+            edge_samples.extend(img_array[:, :edge_width].reshape(-1, 3))
+            edge_samples.extend(img_array[:, -edge_width:].reshape(-1, 3))
+
+            edge_samples = np.array(edge_samples)
+            edge_variance = np.var(edge_samples, axis=0).mean() if len(edge_samples) > 0 else 0
+            has_plain_background = edge_variance < 30
+
+            # If multiple indicators suggest generic portrait, flag it
+            is_generic_portrait = is_square and is_closeup and has_plain_background
+
+            # Return True if NOT a generic portrait (i.e., passes the check)
+            return not is_generic_portrait
         except Exception:
             return False

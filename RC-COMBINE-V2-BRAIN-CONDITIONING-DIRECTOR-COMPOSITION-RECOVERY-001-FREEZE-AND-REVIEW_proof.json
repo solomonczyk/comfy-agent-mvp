@@ -1,0 +1,105 @@
+{
+  "task_id": "RC-COMBINE-V2-BRAIN-CONDITIONING-DIRECTOR-COMPOSITION-RECOVERY-001-FREEZE-AND-REVIEW",
+  "document_type": "composition_recovery_freeze_and_review_proof",
+  "timestamp": "2026-05-19T15:35:00.000000",
+  
+  "validation_status": {
+    "tests_pass": true,
+    "py_compile_pass": true,
+    "cli_validation_pass": true
+  },
+  
+  "git_status": {
+    "commit_hash": "a477b98781c5c7c1b17d84187a97d3a435aec07e",
+    "push_status": "pushed_origin_main",
+    "git_status_clean": true
+  },
+  
+  "artifacts_in_canonical_control_path": true,
+  "artifacts_path": "output/control/prompt_conditioning_director/",
+  
+  "generated_asset_visible_for_operator_review": true,
+  "generated_asset_path": "output/control/assets/corrected_visual_1779197672_00001_.png",
+  "generated_asset_resolution": {
+    "width": 1344,
+    "height": 768,
+    "aspect_ratio": "16:9_wide"
+  },
+  
+  "composition_recovery_summary": {
+    "operator_rejection_recorded": true,
+    "closeup_leak_diagnosed": true,
+    "reference_role_routing_enforced": true,
+    "composition_preflight_passed": true,
+    "workflow_patched_with_framing_contract": true,
+    "exactly_one_generation_executed": true,
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_attempted": false,
+    "blind_retry_attempted": false
+  },
+  
+  "framing_contract": {
+    "medium_shot_specified": true,
+    "full_face_visible_required": true,
+    "head_not_touching_edges": true,
+    "environment_visible": true,
+    "wide_resolution_used": true,
+    "closeup_refs_blocked_from_composition": true
+  },
+  
+  "forbidden_actions_verification": {
+    "no_blind_retry": true,
+    "no_second_generation": true,
+    "no_eye_face_closeup_in_composition": true,
+    "no_square_closeup_workflow": true,
+    "no_visual_qa_acceptance": true,
+    "no_operator_acceptance_by_agent": true,
+    "no_assembly": true,
+    "no_downstream": true,
+    "production_accepted_false": true
+  },
+  
+  "artifacts_created": [
+    "output/control/prompt_conditioning_director/operator_rejection_record.json",
+    "output/control/prompt_conditioning_director/closeup_reference_leak_diagnosis.json",
+    "output/control/prompt_conditioning_director/reference_role_routing_report.json",
+    "output/control/prompt_conditioning_director/composition_preflight_report.json",
+    "output/control/prompt_conditioning_director/patched_workflow_manifest.json",
+    "output/control/prompt_conditioning_director/corrected_generation_manifest.json",
+    "output/control/prompt_conditioning_director/corrected_generation_result_review.json",
+    "output/control/prompt_conditioning_director/operator_visual_review_packet.json",
+    "output/control/prompt_conditioning_director/proof.json"
+  ],
+  
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "production_accepted": false,
+  "visual_qa_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  
+  "operator_review_requirements": {
+    "must_verify_framing": [
+      "not eye close-up",
+      "not face crop", 
+      "full face visible",
+      "head not touching frame edges",
+      "upper body / medium shot or character in environment",
+      "identity/idempotence preserved from canonical accepted reference"
+    ],
+    "forbidden_in_frame": [
+      "extreme face crop",
+      "face filling frame",
+      "cropped forehead",
+      "cropped chin",
+      "macro eye shot"
+    ],
+    "resolution_check": "1344x768 wide format confirmed"
+  },
+  
+  "blockers": [],
+  "complete": true,
+  "stopped_at": "operator_visual_review_required",
+  "technical_stage": "ready_for_operator_visual_verdict"
+}

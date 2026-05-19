@@ -1,0 +1,152 @@
+{
+  "proof_id": "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001",
+  "task_id": "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001",
+  "timestamp": "2026-05-19T19:00:00+00:00",
+  "status": "completed",
+  "rejected_asset": {
+    "filename": "identity_lock__00001_.png",
+    "path": "data/rc2_multishot1_ep01/output/assets/identity_lock__00001_.png",
+    "rejection_reason": [
+      "Generic beauty portrait generated instead of character-in-environment",
+      "Environment/background not visible",
+      "Character reduced to face-only close-up",
+      "Identity lock failed - generic face substitution occurred"
+    ],
+    "rejection_recorded": true
+  },
+  "identity_idempotence_check": {
+    "implemented": true,
+    "check_type": "canonical_reference_validation",
+    "method": "face_embedding_comparison",
+    "fallback": "honest_fallback_when_tooling_unavailable",
+    "gate_component": "IdentityGate"
+  },
+  "generic_portrait_fallback_block": {
+    "implemented": true,
+    "method": "GenericPortraitDetector",
+    "checks": [
+      "square_or_near_square_format",
+      "closeup_framing",
+      "plain_background_detection"
+    ],
+    "negative_prompt_additions": [
+      "generic beauty portrait",
+      "studio portrait",
+      "plain background",
+      "blank background",
+      "solid color background",
+      "isolated on white",
+      "isolated on black",
+      "beauty shot",
+      "glamour portrait",
+      "headshot only",
+      "face only"
+    ]
+  },
+  "environment_visibility_requirement": {
+    "implemented": true,
+    "method": "EnvironmentVisibilityDetector",
+    "positive_prompt_additions": [
+      "environment visible",
+      "background visible",
+      "character in environment",
+      "scene background",
+      "not isolated on blank background",
+      "medium shot or wider",
+      "upper body or full body visible"
+    ],
+    "target_resolution": "1344x768",
+    "alternative_formats": ["1536x864", "1728x972"]
+  },
+  "blank_detector": {
+    "preserved": true,
+    "method": "variance_threshold",
+    "threshold": 100
+  },
+  "output_collector": {
+    "preserved": true,
+    "method": "GenerationExecutor_integration"
+  },
+  "generation_policy": {
+    "max_generations": 1,
+    "no_second_generation": true,
+    "no_blind_retry": true,
+    "exactly_one_generation": true
+  },
+  "artifacts_created": [
+    {
+      "file": "app/agents/identity_lock/runner.py",
+      "description": "Updated runner with environment visibility detector and generic portrait blocker"
+    },
+    {
+      "file": "app/agents/identity_lock/workflow_patch.py",
+      "description": "Updated workflow patch with environment visibility and portrait blocking prompts"
+    },
+    {
+      "file": "app/agents/identity_lock/artifacts.py",
+      "description": "Updated artifacts with new detector results in review and rejection record"
+    },
+    {
+      "file": "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001.py",
+      "description": "Recovery script for identity and composition lock"
+    },
+    {
+      "file": "tests/test_identity_lock_recovery.py",
+      "description": "Tests for identity lock and composition recovery"
+    }
+  ],
+  "manifest": {
+    "created": true,
+    "path": "data/rc2_multishot1_ep01/output/control/identity_lock/identity_generation_manifest.json"
+  },
+  "result_review": {
+    "created": true,
+    "path": "data/rc2_multishot1_ep01/output/control/identity_lock/identity_result_review.json",
+    "includes": [
+      "environment_visibility_passed",
+      "generic_portrait_blocked"
+    ]
+  },
+  "operator_review_packet": {
+    "created": true,
+    "path": "data/rc2_multishot1_ep01/output/control/identity_lock/operator_visual_review_packet.json",
+    "framing_checklist_includes": [
+      "environment_visible",
+      "not_generic_portrait"
+    ]
+  },
+  "state": {
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "production_accepted": false
+  },
+  "forbidden_actions_verified": {
+    "no_blind_retry": true,
+    "no_second_generation": true,
+    "no_reuse_rejected_asset": true,
+    "no_visual_qa_acceptance": true,
+    "no_assembly": true,
+    "no_downstream": true,
+    "production_accepted_false": true
+  },
+  "visible_outcome": {
+    "new_visual_candidate": "wide 1344x768 or approved scene format",
+    "character_visibility": "beyond face only",
+    "environment_visibility": "required",
+    "identity_locked": "to canonical reference",
+    "no_generic_face_substitution": true,
+    "no_beauty_closeup_portrait": true,
+    "no_blank_stub": true,
+    "stop_at": "operator_visual_review_required"
+  },
+  "files_modified": [
+    "app/agents/identity_lock/runner.py",
+    "app/agents/identity_lock/workflow_patch.py",
+    "app/agents/identity_lock/artifacts.py"
+  ],
+  "files_created": [
+    "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001.py",
+    "tests/test_identity_lock_recovery.py",
+    "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001_proof.json"
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "task_id": "RC-COMBINE-V2-BRAIN-PROVIDER-AUTH-TRACE-AND-RUNTIME-EXECUTE-001",
+  "document_type": "auth_trace_and_runtime_execution_report",
+  "timestamp": "2026-05-19T15:26:16.712632+00:00",
+  "auth_passed": true,
+  "auth_trace": {
+    "task_id": "RC-COMBINE-V2-BRAIN-PROVIDER-AUTH-TRACE-AND-RUNTIME-EXECUTE-001",
+    "document_type": "auth_trace_report",
+    "timestamp": "2026-05-19T15:22:27.642316+00:00",
+    "auth_trace_version": "1.0",
+    "checks": {
+      "api_key_present": true,
+      "api_key_source": ".env",
+      "key_fingerprint": "sk-aaa...a85b",
+      "expected_fingerprint": "sk-aaa...a85b",
+      "fingerprint_matches": true,
+      "formatting_issues": [],
+      "formatting_clean": true,
+      "provider_base_url": "https://api.deepseek.com",
+      "expected_base_url": "https://api.deepseek.com",
+      "base_url_correct": true,
+      "auth_header_prefix": "Bearer ",
+      "auth_header_has_bearer_prefix": true,
+      "auth_header_key_starts_with_sk": true,
+      "model_id": "deepseek-v4-flash",
+      "expected_model_id": "deepseek-v4-flash",
+      "model_id_correct": true,
+      "api_endpoint": "https://api.deepseek.com/chat/completions",
+      "request_headers": {
+        "Authorization": "Bearer [REDACTED]",
+        "Content-Type": "application/json"
+      },
+      "request_timestamp": "2026-05-19T15:22:27.647314+00:00",
+      "http_status_code": 200,
+      "response_timestamp": "2026-05-19T15:22:29.726440+00:00",
+      "api_call_successful": true,
+      "provider_runtime_available": true
+    },
+    "issues_detected": [],
+    "auth_passed": true,
+    "blocker_cause": null
+  },
+  "llm_decision": {
+    "timestamp": "2026-05-19T15:22:35.335375+00:00",
+    "success": true,
+    "decision": {
+      "decision_type": "corrective_generation_decision",
+      "analysis": {
+        "defects_identified": [
+          "Over-smooth skin texture (plastic/doll-like appearance)",
+          "Teeth/mouth region artifacts (crooked, malformed teeth)",
+          "Eye detail issues (unnatural iris, missing reflections)",
+          "Soft focus / lack of sharp detail"
+        ],
+        "root_causes": [
+          "Insufficient negative prompting for plastic skin and bad anatomy",
+          "Low CFG scale or steps leading to less detailed generations",
+          "Missing specific positive keywords for photorealistic details"
+        ]
+      },
+      "workflow_patch": {
+        "positive_prompt_additions": [
+          "detailed skin texture with natural pores and fine wrinkles",
+          "photorealistic sharp focus high detail eyes with iris reflections",
+          "natural teeth and mouth anatomy",
+          "high resolution sharp details"
+        ],
+        "negative_prompt_additions": [
+          "smooth plastic skin",
+          "bad teeth malformed teeth crooked teeth",
+          "blurry soft focus low detail",
+          "unnatural eyes missing reflections"
+        ],
+        "parameter_changes": {
+          "cfg": 8,
+          "steps": 40
+        }
+      },
+      "generation_allowed": true,
+      "operator_review_required": true
+    },
+    "raw_response_preview": "{\n  \"decision_type\": \"corrective_generation_decision\",\n  \"analysis\": {\n    \"defects_identified\": [\n      \"Over-smooth skin texture (plastic/doll-like appearance)\",\n      \"Teeth/mouth region artifacts (crooked, malformed teeth)\",\n      \"Eye detail issues (unnatural iris, missing reflections)\",\n      \"Soft focus / lack of sharp detail\"\n    ],\n    \"root_causes\": [\n      \"Insufficient negative prompting for plastic skin and bad anatomy\",\n      \"Low CFG scale or steps leading to less detailed generat"
+  },
+  "generation": {
+    "status": "completed",
+    "generation_count": 1,
+    "assets_generated": 1,
+    "current_state": "corrective_generation_result_review_required",
+    "next_allowed_action": "operator_visual_review_required",
+    "production_accepted": false,
+    "assembly_blocked": true,
+    "downstream_blocked": true
+  },
+  "complete": true,
+  "stopped_at": "operator_visual_review_required",
+  "production_accepted": false
+}

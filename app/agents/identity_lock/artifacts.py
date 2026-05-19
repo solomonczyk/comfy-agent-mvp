@@ -30,14 +30,18 @@ class IdentityLockArtifacts:
         """Generate operator rejection record."""
         record = {
             "record_id": "operator_identity_rejection_record",
-            "task_id": "RC-COMBINE-V2-IDENTITY-LOCKED-CANONICAL-REFERENCE-GENERATION-001",
+            "task_id": "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001",
             "timestamp": datetime.now(timezone.utc).isoformat(),
             "previous_task": previous_task,
             "previous_candidate_rejected": True,
             "rejection_reason": rejection_reason,
             "previous_asset_path": previous_asset_path,
+            "rejected_asset_filename": "identity_lock__00001_.png",
+            "rejection_type": "identity_and_composition_lock_failure",
             "framing_improved": True,
             "identity_lock_failed": True,
+            "environment_not_visible": "environment not visible" in " ".join(rejection_reason).lower() or "generic portrait" in " ".join(rejection_reason).lower(),
+            "generic_portrait_fallback": "generic portrait" in " ".join(rejection_reason).lower() or "beauty portrait" in " ".join(rejection_reason).lower(),
             "extra_subject_appeared": "extra foreground person appeared" in " ".join(rejection_reason),
             "idempotence_failed": True,
             "production_accepted": False,
@@ -119,6 +123,8 @@ class IdentityLockArtifacts:
         asset_path: str,
         blank_detector_passed: bool,
         framing_detector_passed: bool,
+        environment_visibility_passed: bool,
+        generic_portrait_blocked: bool,
         single_subject_gate_passed: bool,
         identity_gate_result: Dict[str, Any],
     ) -> Dict[str, Any]:
@@ -129,7 +135,7 @@ class IdentityLockArtifacts:
         try:
             from PIL import Image  # type: ignore
 
-            img = Image.open(asset_file)
+            img = Image.open(asset_path)
             width, height = img.size
         except Exception:
             width, height = 0, 0
@@ -145,6 +151,8 @@ class IdentityLockArtifacts:
                 "height": height,
                 "blank_detector_passed": blank_detector_passed,
                 "framing_detector_passed": framing_detector_passed,
+                "environment_visibility_passed": environment_visibility_passed,
+                "generic_portrait_blocked": generic_portrait_blocked,
                 "single_subject_gate_passed": single_subject_gate_passed,
             },
             "identity_validation": identity_gate_result,
