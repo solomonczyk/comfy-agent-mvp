@@ -1,0 +1,158 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/reference_pack/reference_usage_policy.schema.json",
+  "title": "Reference Usage Policy",
+  "description": "Policy governing how reference assets can be used in generation",
+  "type": "object",
+  "required": [
+    "document_type",
+    "version",
+    "task_id",
+    "project_agnostic",
+    "usage_policy",
+    "constraints",
+    "metadata"
+  ],
+  "properties": {
+    "document_type": {
+      "type": "string",
+      "const": "reference_usage_policy"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "task_id": {
+      "type": "string",
+      "const": "RC-COMBINE-V2-REFERENCE-PACK-INTAKE-CANONICALIZATION-001"
+    },
+    "project_agnostic": {
+      "type": "boolean",
+      "const": true
+    },
+    "usage_policy": {
+      "type": "object",
+      "required": ["slot_usage_rules", "asset_validation", "generation_integration"],
+      "properties": {
+        "slot_usage_rules": {
+          "type": "object",
+          "description": "Rules for how each slot type can be used",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "required_for_generation": {
+                "type": "boolean"
+              },
+              "fallback_allowed": {
+                "type": "boolean"
+              },
+              "max_concurrent_usage": {
+                "type": "integer"
+              },
+              "weight": {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            }
+          }
+        },
+        "asset_validation": {
+          "type": "object",
+          "properties": {
+            "require_file_existence": {
+              "type": "boolean",
+              "const": false,
+              "description": "False for project-agnostic future references"
+            },
+            "require_sha256": {
+              "type": "boolean"
+            },
+            "require_dimensions": {
+              "type": "boolean"
+            },
+            "min_resolution": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "integer"
+                },
+                "height": {
+                  "type": "integer"
+                }
+              }
+            },
+            "max_file_size_mb": {
+              "type": "number"
+            }
+          }
+        },
+        "generation_integration": {
+          "type": "object",
+          "properties": {
+            "ip_adapter_enabled": {
+              "type": "boolean"
+            },
+            "controlnet_enabled": {
+              "type": "boolean"
+            },
+            "reference_strength_range": {
+              "type": "object",
+              "properties": {
+                "min": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "max": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "constraints": {
+      "type": "object",
+      "required": ["forbidden_actions"],
+      "properties": {
+        "forbidden_actions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "generation_without_references",
+              "visual_acceptance_automation",
+              "automatic_downstream_routing",
+              "hardcoded_project_binding",
+              "fake_file_existence_check"
+            ]
+          }
+        },
+        "required_validations": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["created", "project_agnostic"],
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "project_agnostic": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  }
+}

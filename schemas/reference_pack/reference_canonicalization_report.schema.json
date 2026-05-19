@@ -1,0 +1,120 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/reference_pack/reference_canonicalization_report.schema.json",
+  "title": "Reference Canonicalization Report",
+  "description": "Report on canonicalization status of reference pack assets",
+  "type": "object",
+  "required": [
+    "document_type",
+    "version",
+    "task_id",
+    "project_agnostic",
+    "reference_pack_id",
+    "canonicalization_status",
+    "slot_report",
+    "validation_results",
+    "metadata"
+  ],
+  "properties": {
+    "document_type": {
+      "type": "string",
+      "const": "reference_canonicalization_report"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "task_id": {
+      "type": "string",
+      "const": "RC-COMBINE-V2-REFERENCE-PACK-INTAKE-CANONICALIZATION-001"
+    },
+    "project_agnostic": {
+      "type": "boolean",
+      "const": true
+    },
+    "reference_pack_id": {
+      "type": "string"
+    },
+    "canonicalization_status": {
+      "type": "string",
+      "enum": ["complete", "partial", "pending"]
+    },
+    "slot_report": {
+      "type": "object",
+      "description": "Per-slot canonicalization status",
+      "additionalProperties": {
+        "type": "object",
+        "properties": {
+          "slot_id": {
+            "type": "string"
+          },
+          "canonical_name_compliant": {
+            "type": "boolean"
+          },
+          "format_compliant": {
+            "type": "boolean"
+          },
+          "assets_canonicalized": {
+            "type": "integer"
+          },
+          "assets_pending": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string",
+            "enum": ["canonicalized", "pending_operator_supply", "optional"]
+          }
+        }
+      }
+    },
+    "validation_results": {
+      "type": "object",
+      "required": ["errors", "warnings"],
+      "properties": {
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "readiness_assessment": {
+      "type": "object",
+      "properties": {
+        "ready_for_generation": {
+          "type": "boolean"
+        },
+        "missing_critical_slots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "pending_operator_supply_count": {
+          "type": "integer"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["created", "project_agnostic"],
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "project_agnostic": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  }
+}

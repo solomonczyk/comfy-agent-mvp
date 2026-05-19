@@ -1,0 +1,160 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/reference_pack/reference_pack.schema.json",
+  "title": "Reference Pack",
+  "description": "Project-agnostic reference pack manifest for organizing character and technical references",
+  "type": "object",
+  "required": [
+    "document_type",
+    "version",
+    "task_id",
+    "project_agnostic",
+    "reference_pack_id",
+    "slots",
+    "metadata"
+  ],
+  "properties": {
+    "document_type": {
+      "type": "string",
+      "const": "reference_pack_manifest"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "task_id": {
+      "type": "string",
+      "const": "RC-COMBINE-V2-REFERENCE-PACK-INTAKE-CANONICALIZATION-001"
+    },
+    "project_agnostic": {
+      "type": "boolean",
+      "const": true
+    },
+    "reference_pack_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_\\-]+$"
+    },
+    "project_binding": {
+      "type": ["string", "null"],
+      "description": "Must be null for project-agnostic packs"
+    },
+    "slots": {
+      "type": "object",
+      "description": "Reference slot definitions and their asset mappings",
+      "additionalProperties": {
+        "$ref": "#/$defs/reference_slot"
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "required": ["created", "supports_future_references"],
+      "properties": {
+        "created": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updated": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "supports_future_references": {
+          "type": "boolean",
+          "const": true
+        },
+        "missing_file_status": {
+          "type": "string",
+          "const": "pending_operator_supply"
+        },
+        "total_slots": {
+          "type": "integer"
+        },
+        "populated_slots": {
+          "type": "integer"
+        },
+        "pending_slots": {
+          "type": "integer"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "reference_slot": {
+      "type": "object",
+      "required": ["slot_id", "category", "assets", "status"],
+      "properties": {
+        "slot_id": {
+          "type": "string"
+        },
+        "category": {
+          "type": "string",
+          "enum": ["character_pose", "character_expression", "character_detail", "technical_reference"]
+        },
+        "assets": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/reference_asset"
+          }
+        },
+        "status": {
+          "type": "string",
+          "enum": ["populated", "pending_operator_supply", "optional"]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "max_variants": {
+          "type": "integer"
+        },
+        "usage_roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "reference_asset": {
+      "type": "object",
+      "required": ["asset_id"],
+      "properties": {
+        "asset_id": {
+          "type": "string"
+        },
+        "file_path": {
+          "type": ["string", "null"],
+          "description": "Null for future/unpopulated assets"
+        },
+        "canonical_name": {
+          "type": ["string", "null"]
+        },
+        "file_exists": {
+          "type": "boolean"
+        },
+        "sha256": {
+          "type": ["string", "null"]
+        },
+        "width": {
+          "type": ["integer", "null"]
+        },
+        "height": {
+          "type": ["integer", "null"]
+        },
+        "format": {
+          "type": ["string", "null"],
+          "enum": ["png", "jpg", "jpeg", null]
+        },
+        "metadata": {
+          "type": "object",
+          "properties": {
+            "variant_label": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}

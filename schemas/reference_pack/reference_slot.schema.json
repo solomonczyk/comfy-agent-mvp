@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/reference_pack/reference_slot.schema.json",
+  "title": "Reference Slot",
+  "description": "Individual reference slot definition for organizing specific reference types",
+  "type": "object",
+  "required": [
+    "slot_id",
+    "category",
+    "description",
+    "required",
+    "image_required",
+    "canonical_naming",
+    "accepted_formats",
+    "max_variants",
+    "usage_roles"
+  ],
+  "properties": {
+    "slot_id": {
+      "type": "string",
+      "pattern": "^[a-z0-9_\\-]+$"
+    },
+    "category": {
+      "type": "string",
+      "enum": ["character_pose", "character_expression", "character_detail", "technical_reference"]
+    },
+    "description": {
+      "type": "string"
+    },
+    "required": {
+      "type": "boolean"
+    },
+    "image_required": {
+      "type": "boolean",
+      "description": "False for project-agnostic future references"
+    },
+    "canonical_naming": {
+      "type": "string",
+      "pattern": ".*\\{ext\\}$"
+    },
+    "accepted_formats": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["png", "jpg", "jpeg"]
+      }
+    },
+    "max_variants": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "usage_roles": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
