@@ -1,0 +1,10 @@
+{
+  "binding_id": "BINDING_ID",
+  "blueprint_id": "BLUEPRINT_ID",
+  "stage_bindings": [],
+  "readiness_policy": {
+    "default_policy": "pending_operator_supply",
+    "stage_overrides": {}
+  },
+  "metadata": {}
+}

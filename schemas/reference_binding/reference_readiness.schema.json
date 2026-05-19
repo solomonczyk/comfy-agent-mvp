@@ -1,0 +1,98 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reference Readiness Schema",
+  "description": "Schema for reference readiness matrix showing which stages are ready for execution based on reference availability. Project-agnostic.",
+  "type": "object",
+  "required": ["readiness_id", "binding_id", "blueprint_id", "stage_readiness"],
+  "properties": {
+    "readiness_id": {
+      "type": "string",
+      "description": "Unique identifier for the readiness matrix"
+    },
+    "binding_id": {
+      "type": "string",
+      "description": "ID of the reference binding this readiness is based on"
+    },
+    "blueprint_id": {
+      "type": "string",
+      "description": "ID of the pipeline blueprint"
+    },
+    "stage_readiness": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage_id", "readiness_status", "slot_status"],
+        "properties": {
+          "stage_id": {
+            "type": "string",
+            "description": "ID of the blueprint stage"
+          },
+          "readiness_status": {
+            "type": "string",
+            "enum": ["ready", "pending_operator_supply", "blocked_missing_required_reference", "blocked_invalid_reference_role"],
+            "description": "Overall readiness status of the stage"
+          },
+          "slot_status": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["slot_id", "slot_role", "status"],
+              "properties": {
+                "slot_id": {
+                  "type": "string",
+                  "description": "ID of the reference slot"
+                },
+                "slot_role": {
+                  "type": "string",
+                  "enum": ["identity_reference", "style_reference", "camera_reference", "lighting_reference", "anatomy_reference", "quality_reference", "negative_reference"],
+                  "description": "Role of the reference slot"
+                },
+                "status": {
+                  "type": "string",
+                  "enum": ["satisfied", "missing", "invalid_role"],
+                  "description": "Status of the slot"
+                },
+                "required": {
+                  "type": "boolean",
+                  "description": "Whether this slot is required"
+                },
+                "blocker": {
+                  "type": "boolean",
+                  "description": "Whether this slot's status blocks execution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "generation_gate_status": {
+      "type": "object",
+      "required": ["gate_open"],
+      "properties": {
+        "gate_open": {
+          "type": "boolean",
+          "description": "Whether the generation gate is open"
+        },
+        "blocking_slots": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Slot IDs blocking generation"
+        },
+        "blocking_stages": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Stage IDs blocking generation"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata"
+    }
+  }
+}

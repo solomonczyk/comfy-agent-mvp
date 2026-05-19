@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reference Binding Schema",
+  "description": "Schema for binding blueprint stages to reference pack slots with roles and readiness policies. Project-agnostic.",
+  "type": "object",
+  "required": ["binding_id", "blueprint_id", "stage_bindings"],
+  "properties": {
+    "binding_id": {
+      "type": "string",
+      "description": "Unique identifier for the reference binding"
+    },
+    "blueprint_id": {
+      "type": "string",
+      "description": "ID of the pipeline blueprint this binding applies to"
+    },
+    "stage_bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage_id", "reference_slot_requirements"],
+        "properties": {
+          "stage_id": {
+            "type": "string",
+            "description": "ID of the blueprint stage"
+          },
+          "reference_slot_requirements": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["slot_id", "slot_role", "required"],
+              "properties": {
+                "slot_id": {
+                  "type": "string",
+                  "description": "ID of the reference slot from reference slot taxonomy"
+                },
+                "slot_role": {
+                  "type": "string",
+                  "enum": ["identity_reference", "style_reference", "camera_reference", "lighting_reference", "anatomy_reference", "quality_reference", "negative_reference"],
+                  "description": "Role of the reference slot in the generation pipeline"
+                },
+                "required": {
+                  "type": "boolean",
+                  "description": "Whether this slot is required for stage execution"
+                },
+                "gate_required_before_generation": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether a gate is required before generation can proceed"
+                },
+                "blocker_if_missing": {
+                  "type": "boolean",
+                  "default": false,
+                  "description": "Whether missing this slot blocks stage execution"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "readiness_policy": {
+      "type": "object",
+      "required": ["default_policy"],
+      "properties": {
+        "default_policy": {
+          "type": "string",
+          "enum": ["ready", "pending_operator_supply", "blocked_missing_required_reference", "blocked_invalid_reference_role"],
+          "description": "Default readiness policy for stages"
+        },
+        "stage_overrides": {
+          "type": "object",
+          "description": "Stage-specific policy overrides",
+          "additionalProperties": {
+            "type": "string",
+            "enum": ["ready", "pending_operator_supply", "blocked_missing_required_reference", "blocked_invalid_reference_role"]
+          }
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the binding"
+    }
+  }
+}
