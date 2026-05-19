@@ -127,6 +127,47 @@ def combine_qa_repairability_validate(args: argparse.Namespace) -> int:
         return 1
 
 
+def combine_state_audit_guard_run(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001 — Run state audit guard.
+
+    This command performs state consistency and audit trail validation.
+    Does NOT execute generation, QA, or downstream operations.
+
+    Exit codes:
+    - 0: accepted (no blockers)
+    - 1: blocked or error
+    """
+    import json
+    from pathlib import Path
+    from app.agents.state_audit_guard import StateAuditGuardRunner
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+
+    try:
+        runner = StateAuditGuardRunner(project_root)
+        result = runner.run()
+
+        if json_output:
+            print(json.dumps(result, indent=2))
+        else:
+            print("State Audit Guard Run:")
+            print(f"  Verdict: {result['verdict']}")
+            print(f"  Next State: {result['next_state']}")
+            print(f"  Next Action: {result['next_action']}")
+            print(f"  Has Blocker: {result['has_blocker']}")
+            print(f"  Blocker Count: {result['blocker_count']}")
+
+        return 0 if result['verdict'] == 'ACCEPTED' else 1
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
 def combine_qa_repairability_decision(args: argparse.Namespace) -> int:
     """RC-COMBINE-V2-QA-REPAIRABILITY-GATE-001 — Get QA repairability decision.
 
@@ -15008,6 +15049,25 @@ def main() -> int:
         func=combine_qa_repairability_decision
     )
 
+    # RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001 — combine-state-audit-guard-run subcommand
+    combine_state_audit_guard_run_parser = subparsers.add_parser(
+        "combine-state-audit-guard-run",
+        help="Run state audit guard validation"
+    )
+    combine_state_audit_guard_run_parser.add_argument(
+        "--project-root",
+        required=True,
+        help="Project root directory",
+    )
+    combine_state_audit_guard_run_parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output in JSON format",
+    )
+    combine_state_audit_guard_run_parser.set_defaults(
+        func=combine_state_audit_guard_run
+    )
+
     # RC-COMBINE-V2-0 — combine-run-stage subcommand
     combine_run_stage_parser = subparsers.add_parser("combine-run-stage", help="Run a Combine V2 orchestrator stage")
     combine_run_stage_parser.add_argument(
@@ -19368,6 +19428,8 @@ def main() -> int:
         return combine_qa_repairability_validate(args)
     elif args.command == "combine-qa-repairability-decision":
         return combine_qa_repairability_decision(args)
+    elif args.command == "combine-state-audit-guard-run":
+        return combine_state_audit_guard_run(args)
     elif args.command == "combine-validate-brain-provider":
         return combine_validate_brain_provider(args)
     elif args.command == "combine-run-brain-runtime-smoke-test":
