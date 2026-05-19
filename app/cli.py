@@ -18678,6 +18678,22 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-WORKFLOW-STAGE-001
+    combine_run_corrective_visual_generation_stage_parser = subparsers.add_parser(
+        "combine-run-corrective-visual-generation-stage",
+        help="Execute corrective visual generation workflow stage from Visual Reference Curator package"
+    )
+    combine_run_corrective_visual_generation_stage_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_run_corrective_visual_generation_stage_parser.add_argument(
+        "--execute", action="store_true",
+        help="Execute real ComfyUI submit (default: dry run)",
+    )
+    combine_run_corrective_visual_generation_stage_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-WORKFLOW-REGISTRY-PIPELINE-BLUEPRINT-001 — Workflow Registry subcommands
     combine_workflow_registry_init_parser = subparsers.add_parser(
         "combine-workflow-registry-init",
@@ -20221,6 +20237,10 @@ def main() -> int:
         _require_absolute_project_root(args, "combine-execute-reference-bound-generation")
         from app.cli_commands.reference_bound_generation import execute_reference_bound_generation
         return execute_reference_bound_generation(args)
+    elif args.command == "combine-run-corrective-visual-generation-stage":
+        _require_absolute_project_root(args, "combine-run-corrective-visual-generation-stage")
+        from app.cli_commands.corrective_visual_generation_stage import execute_corrective_visual_generation_stage
+        return execute_corrective_visual_generation_stage(args)
     elif args.command == "combine-workflow-registry-init":
         from app.cli_commands.workflow_registry import init_workflow_registry
         return init_workflow_registry(args)
