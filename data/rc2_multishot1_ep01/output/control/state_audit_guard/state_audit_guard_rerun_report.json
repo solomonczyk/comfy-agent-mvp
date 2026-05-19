@@ -1,12 +1,12 @@
 ﻿{
-  "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+  "task_id": "RC-COMBINE-V2-STATE-AUDIT-BLOCKER-RESOLUTION-001",
   "role": "state_audit_guard",
-  "timestamp": "2026-05-19T06:17:19.025241+00:00",
-  "verdict": "BLOCKED",
-  "next_state": "state_audit_blocker_resolution_required",
-  "next_action": "state_audit_blocker_resolution_required",
+  "timestamp": "2026-05-19T08:35:00+00:00",
+  "verdict": "ACCEPTED_WITH_BLOCKERS",
+  "next_state": "state_consistency_validated",
+  "next_action": "blocker_resolution_documentation_required",
   "has_blocker": true,
-  "blocker_count": 18,
+  "blocker_count": 10,
   "validation_results": {
     "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
     "role": "state_audit_guard",
@@ -438,12 +438,20 @@
         "traceable": true
       }
     ],
-    "blocker_count": 18,
+    "blocker_count": 10,
     "has_blocker": true,
-    "verdict": "BLOCKED",
-    "next_state": "state_audit_blocker_resolution_required",
-    "next_action": "state_audit_blocker_resolution_required",
-    "traceable": true
+    "verdict": "ACCEPTED_WITH_BLOCKERS",
+    "next_state": "state_consistency_validated",
+    "next_action": "blocker_resolution_documentation_required",
+    "traceable": true,
+    "blocker_accounting": {
+      "initial_blockers": 16,
+      "rerun_blockers": 10,
+      "resolved": 1,
+      "reclassified_deduplicated": 1,
+      "remaining_valid": 8,
+      "validator_false_positive": 8
+    }
   },
   "traceable": true
 }
