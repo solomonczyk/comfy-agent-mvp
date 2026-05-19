@@ -9,11 +9,11 @@
       "decision": "pass",
       "severity": "info",
       "detail": "No forbidden actions detected",
-      "timestamp": "2026-05-19T06:53:07.759254+00:00",
+      "timestamp": "2026-05-19T06:53:55.064512+00:00",
       "role": "state_audit_guard",
       "traceable": true
     }
   ],
   "traceable": true,
-  "timestamp": "2026-05-19T06:53:07.759254+00:00"
+  "timestamp": "2026-05-19T06:53:55.064512+00:00"
 }

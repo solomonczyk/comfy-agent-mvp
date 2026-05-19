@@ -2,21 +2,20 @@
   "report_id": "git_proof_audit_report",
   "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
   "role": "state_audit_guard",
-  "valid": false,
-  "git_dirty": true,
+  "valid": true,
+  "git_dirty": false,
   "current_branch": "main",
-  "commit_hash": "12364d0a870c3616aeeda00619789b69fe3fbd8e",
+  "commit_hash": "52b1801f51daf3848a88adf7aa1f09ffc3b81a0d",
   "findings": [
     {
-      "decision": "blocked",
-      "severity": "blocker",
-      "detail": "Git repository is dirty - uncommitted changes detected",
-      "timestamp": "2026-05-19T06:53:07.835823+00:00",
+      "decision": "pass",
+      "severity": "info",
+      "detail": "Git repository is clean",
+      "timestamp": "2026-05-19T06:53:55.136542+00:00",
       "role": "state_audit_guard",
-      "traceable": true,
-      "blocker_type": "real_project_blocker"
+      "traceable": true
     }
   ],
   "traceable": true,
-  "timestamp": "2026-05-19T06:53:07.906444+00:00"
+  "timestamp": "2026-05-19T06:53:55.216897+00:00"
 }
