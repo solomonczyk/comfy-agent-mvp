@@ -9,6 +9,16 @@ from dataclasses import dataclass, field
 from datetime import datetime
 import json
 import os
+from dotenv import load_dotenv
+
+# Load .env from repo root (3 levels up from this file: app/agents/prompt_conditioning_director/)
+_repo_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+_env_path = os.path.join(_repo_root, '.env')
+if os.path.exists(_env_path):
+    load_dotenv(_env_path)
+    _env_loaded = True
+else:
+    _env_loaded = False
 
 
 @dataclass
@@ -60,6 +70,7 @@ class BrainConfig:
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert config to dictionary (excluding sensitive data)."""
+        global _env_loaded
         return {
             "primary_model_id": self.primary_model_id,
             "provider_configurable": self.provider_configurable,
@@ -72,7 +83,7 @@ class BrainConfig:
             "provider_name": self.provider_name,
             "provider_endpoint": self.provider_endpoint,
             "provider_region": self.provider_region,
-            "provider_api_key": "***" if self.provider_api_key else None,
+            "DEEPSEEK_V4_FLASH_API_KEY": "present" if self.provider_api_key else "absent",
             "fallback_model_id": self.fallback_model_id,
             "fallback_provider_name": self.fallback_provider_name,
             "max_tokens_per_request": self.max_tokens_per_request,
@@ -82,13 +93,16 @@ class BrainConfig:
             "model_available": self.model_available,
             "pricing_policy_validated": self.pricing_policy_validated,
             "simulation_mode": self.simulation_mode,
+            "simulation_mode_forbidden": True,
+            "env_file_loaded": _env_loaded,
             "created_at": self.created_at,
             "validated_at": self.validated_at,
         }
 
     def load_from_environment(self) -> None:
-        """Load configuration from environment variables."""
-        self.provider_api_key = os.getenv("DEEPSEEK_API_KEY")
+        """Load configuration from environment variables (with .env loaded at import)."""
+        # Use DEEPSEEK_V4_FLASH_API_KEY from .env (loaded at module import)
+        self.provider_api_key = os.getenv("DEEPSEEK_V4_FLASH_API_KEY")
         self.provider_endpoint = os.getenv("DEEPSEEK_ENDPOINT")
         self.provider_region = os.getenv("DEEPSEEK_REGION")
         self.fallback_model_id = os.getenv("FALLBACK_MODEL_ID")
@@ -153,6 +167,9 @@ class BrainConfig:
     def is_ready_for_runtime_use(self) -> bool:
         """Check if configuration is ready for runtime LLM calls."""
         if self.simulation_mode:
+            return True
+        # Real provider: only need API key and basic validation
+        if self.provider_api_key and self.provider_validated:
             return True
         return (
             self.provider_validated

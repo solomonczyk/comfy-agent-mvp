@@ -1,6 +1,12 @@
 {
-  "current_state": "brain_provider_configuration_required",
+  "current_state": "brain_provider_authentication_failed",
   "next_allowed_action": "brain_provider_configuration_required",
+  "brain_provider_authentication_failed": true,
+  "brain_provider_authentication_blocker": "brain_provider_authentication_failed_blocker.json",
+  "real_llm_call_attempted": true,
+  "real_llm_call_failed": true,
+  "api_error_code": "invalid_request_error",
+  "api_error_status": 401,
   "production_accepted": false,
   "preview_render_executed": false,
   "new_image_generation_performed": false,

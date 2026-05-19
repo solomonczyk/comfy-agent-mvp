@@ -144,16 +144,12 @@ class PromptConditioningDirectorRunner:
         # Load configuration from environment
         self.brain_config.load_from_environment()
 
-        # Validate provider
+        # Validate provider (sets provider_validated = True if API key present)
         if not self.brain_config.validate_provider():
             return False
 
-        # Validate model availability
-        if not self.brain_config.validate_model_availability():
-            return False
-
-        # Validate pricing policy
-        if not self.brain_config.validate_pricing_policy():
+        # Check if ready for runtime (handles real API key case)
+        if not self.brain_config.is_ready_for_runtime_use():
             return False
 
         # Create brain client

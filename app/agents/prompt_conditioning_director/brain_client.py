@@ -133,85 +133,42 @@ Output ONLY the JSON decision, no other text.
         return prompt
 
     def _call_llm_provider(self, prompt: str) -> str:
-        """Call LLM provider with prompt."""
-        # This is a placeholder implementation
-        # In production, this would call the actual provider API (DeepSeek, etc.)
+        """Call LLM provider with prompt using REAL API."""
+        if not self.config.provider_api_key:
+            raise RuntimeError("DEEPSEEK_V4_FLASH_API_KEY not configured. Cannot make real LLM call.")
 
-        # For now, return a simulated decision based on the task requirements
-        # This ensures the agent can be tested without actual API access
-        # The real implementation would use the configured provider
+        # DeepSeek API endpoint (OpenAI-compatible)
+        endpoint = self.config.provider_endpoint or "https://api.deepseek.com/v1/chat/completions"
 
-        if self.config.provider_name == "deepseek":
-            # Simulate DeepSeek API call
-            # In production: use self.config.provider_endpoint and self.config.provider_api_key
-            pass
-
-        # Return a structured decision that matches the schema
-        # This is a fallback for when no real API is configured
-        simulated_decision = {
-            "decision_type": "prompt_conditioning_director_decision",
-            "previous_failure_root_cause": [
-                "close-up/eyes/face quality reference leaked into composition role",
-                "quality reference was treated as framing/pose conditioning",
-                "prompt did not strongly enforce medium/full normal framing",
-                "workflow allowed face-region conditioning to dominate output",
-                "reference role separation was insufficient",
-                "previous curator was rule-based, not brain decision layer",
-            ],
-            "reference_role_assignments": [
-                {
-                    "reference_path": "quality_closeup_refs",
-                    "allowed_use": "quality_calibration",
-                    "forbidden_use": ["composition", "framing", "camera_distance"],
-                    "weight_policy": "low_weight_for_detail_only",
-                    "conditioning_region_policy": "face_region_detail_only",
-                }
-            ],
-            "composition_policy": {
-                "required_framing": "medium_or_full_character_in_environment",
-                "forbid_extreme_closeup": True,
-                "forbid_face_crop": True,
-                "face_must_be_fully_visible": True,
-                "head_should_not_touch_frame_edges": True,
-                "environment_visible": True,
-            },
-            "prompt_patch": {
-                "positive_prompt_additions": [
-                    "medium shot",
-                    "full face visible",
-                    "upper body in frame",
-                    "character in environment",
-                    "normal camera distance",
-                    "background visible",
-                ],
-                "negative_prompt_additions": [
-                    "extreme close-up",
-                    "face crop",
-                    "cropped head",
-                    "face filling frame",
-                    "tight framing",
-                ],
-                "camera_language": [
-                    "medium shot camera",
-                    "normal framing",
-                    "show full character",
-                ],
-                "reference_usage_notes": [
-                    "quality references only for detail calibration",
-                    "do not use close-up refs for composition",
-                    "enforce medium shot framing",
-                ],
-            },
-            "workflow_patch_requirements": [
-                "reduce face-region conditioning weight",
-                "add composition control from explicit framing policy",
-                "disable close-up reference influence on camera distance",
-            ],
-            "generation_allowed_after_patch": True,
-            "operator_review_required_after_generation": True,
+        headers = {
+            "Authorization": f"Bearer {self.config.provider_api_key}",
+            "Content-Type": "application/json",
         }
 
-        return json.dumps(simulated_decision, indent=2)
+        payload = {
+            "model": self.config.primary_model_id,
+            "messages": [
+                {"role": "system", "content": "You are a Prompt/Conditioning Director Agent. Output valid JSON only."},
+                {"role": "user", "content": prompt}
+            ],
+            "temperature": 0.1,
+            "max_tokens": self.config.max_tokens_per_request,
+            "response_format": {"type": "json_object"},
+        }
+
+        try:
+            response = self.client.post(endpoint, headers=headers, json=payload)
+            response.raise_for_status()
+            result = response.json()
+
+            # Extract the decision from the response
+            decision_content = result["choices"][0]["message"]["content"]
+            return decision_content
+
+        except httpx.HTTPStatusError as e:
+            raise RuntimeError(f"DeepSeek API error: {e.response.status_code} - {e.response.text}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to call DeepSeek API: {e}")
 
     def _validate_and_parse_decision(self, response: str) -> Dict[str, Any]:
         """Validate and parse LLM decision against schema."""
