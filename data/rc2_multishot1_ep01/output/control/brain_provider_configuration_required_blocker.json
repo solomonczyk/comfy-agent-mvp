@@ -1,0 +1,41 @@
+{
+  "blocker_type": "brain_provider_configuration_required",
+  "task_id": "RC-COMBINE-V2-BRAIN-PROMPT-CONDITIONING-DIRECTOR-AGENT-001",
+  "created_at": "2026-05-19T14:40:00.000000Z",
+  "reason": "DeepSeek provider API key not configured. Production execution requires real LLM provider.",
+  "required_action": "Configure DeepSeek provider with valid API key (DEEPSEEK_API_KEY environment variable)",
+  "provider_validation": {
+    "provider_name": "deepseek",
+    "provider_configurable": true,
+    "provider_api_key_present": false,
+    "provider_endpoint_present": false,
+    "provider_validated": false,
+    "model_available": false,
+    "pricing_policy_validated": false,
+    "ready_for_runtime_use": false,
+    "simulation_mode": false
+  },
+  "forbidden": {
+    "simulation_as_production": true,
+    "fake_brain_output": true,
+    "generation_without_provider": true
+  },
+  "current_state": "brain_provider_configuration_required",
+  "next_allowed_action": "brain_provider_configuration_required",
+  "generation_blocked": true,
+  "generation_not_executed": true,
+  "llm_decision_not_created": true,
+  "workflow_not_patched": true,
+  "artifacts_not_created": [
+    "llm_conditioning_director_decision.json",
+    "corrected_generation_manifest.json",
+    "generated_asset"
+  ],
+  "resolution_path": [
+    "Set DEEPSEEK_API_KEY environment variable with valid API key",
+    "Re-run Prompt/Conditioning Director Agent",
+    "Real LLM decision will be produced",
+    "Real ComfyUI generation will execute"
+  ],
+  "timestamp": "2026-05-19T14:40:00.000000Z"
+}
