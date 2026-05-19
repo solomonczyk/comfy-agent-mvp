@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/runtime_gate/gate_type_registry.schema.json",
+  "title": "Gate Type Registry",
+  "description": "Registry of supported gate types and their configurations. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "registry_id",
+    "version",
+    "gate_types"
+  ],
+  "properties": {
+    "registry_id": {
+      "type": "string",
+      "description": "Registry identifier"
+    },
+    "version": {
+      "type": "string",
+      "description": "Registry version"
+    },
+    "project_agnostic": {
+      "type": "boolean",
+      "const": true,
+      "description": "This registry is project-agnostic"
+    },
+    "gate_types": {
+      "type": "object",
+      "description": "Gate type configurations",
+      "additionalProperties": {
+        "type": "object",
+        "required": [
+          "gate_type",
+          "default_max_executions",
+          "operator_authorization_required",
+          "dangerous_action"
+        ],
+        "properties": {
+          "gate_type": {
+            "type": "string"
+          },
+          "default_max_executions": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "operator_authorization_required": {
+            "type": "boolean"
+          },
+          "dangerous_action": {
+            "type": "boolean"
+          },
+          "required_inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "forbidden_actions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "description": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

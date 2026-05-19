@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/runtime_gate/gate_safety_report.schema.json",
+  "title": "Gate Safety Report",
+  "description": "Safety report for runtime gate. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "report_id",
+    "safe",
+    "safety_checks"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Report identifier"
+    },
+    "gate_id": {
+      "type": "string",
+      "description": "Gate ID this report is for"
+    },
+    "safe": {
+      "type": "boolean",
+      "description": "Whether the gate is safe"
+    },
+    "safety_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "check_id",
+          "check_description",
+          "passed"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string"
+          },
+          "check_description": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Safety violations detected"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Safety warnings"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

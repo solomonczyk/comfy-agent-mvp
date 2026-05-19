@@ -18662,6 +18662,63 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-RUNTIME-GATE-AUTHORIZATION-CONTROL-001 — Runtime Gate subcommands
+    combine_runtime_gate_build_parser = subparsers.add_parser(
+        "combine-runtime-gate-build",
+        help="Build runtime gate artifacts"
+    )
+    combine_runtime_gate_build_parser.add_argument(
+        "--gate-root", required=True, help="Gate root directory",
+    )
+    combine_runtime_gate_build_parser.add_argument(
+        "--gate-type", help="Gate type (generation_gate, retry_gate, etc.)",
+    )
+    combine_runtime_gate_build_parser.add_argument(
+        "--target-action", help="Target action for the gate",
+    )
+    combine_runtime_gate_build_parser.add_argument(
+        "--readiness-report", help="Path to readiness report",
+    )
+    combine_runtime_gate_build_parser.add_argument(
+        "--corrective-plan-reference", help="Reference to corrective plan (for retry gates)",
+    )
+    combine_runtime_gate_build_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_runtime_gate_validate_parser = subparsers.add_parser(
+        "combine-runtime-gate-validate",
+        help="Validate runtime gate artifacts"
+    )
+    combine_runtime_gate_validate_parser.add_argument(
+        "--gate-root", required=True, help="Gate root directory",
+    )
+    combine_runtime_gate_validate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_runtime_gate_inspect_parser = subparsers.add_parser(
+        "combine-runtime-gate-inspect",
+        help="Inspect runtime gate artifacts"
+    )
+    combine_runtime_gate_inspect_parser.add_argument(
+        "--gate-root", required=True, help="Gate root directory",
+    )
+    combine_runtime_gate_inspect_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_runtime_gate_readiness_report_parser = subparsers.add_parser(
+        "combine-runtime-gate-readiness-report",
+        help="Generate readiness report for runtime gate layer"
+    )
+    combine_runtime_gate_readiness_report_parser.add_argument(
+        "--gate-root", required=True, help="Gate root directory",
+    )
+    combine_runtime_gate_readiness_report_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     combine_review_v13_result_parser = subparsers.add_parser(
         "combine-review-v13-result",
         help="Review V13 generation result"
@@ -19946,6 +20003,18 @@ def main() -> int:
     elif args.command == "combine-pipeline-blueprint-validate":
         from app.cli_commands.workflow_registry import validate_pipeline_blueprint
         return validate_pipeline_blueprint(args)
+    elif args.command == "combine-runtime-gate-build":
+        from app.cli_commands.runtime_gate import runtime_gate_build
+        return runtime_gate_build(args)
+    elif args.command == "combine-runtime-gate-validate":
+        from app.cli_commands.runtime_gate import runtime_gate_validate
+        return runtime_gate_validate(args)
+    elif args.command == "combine-runtime-gate-inspect":
+        from app.cli_commands.runtime_gate import runtime_gate_inspect
+        return runtime_gate_inspect(args)
+    elif args.command == "combine-runtime-gate-readiness-report":
+        from app.cli_commands.runtime_gate import runtime_gate_readiness_report
+        return runtime_gate_readiness_report(args)
     elif args.command == "combine-review-v13-result":
         _require_absolute_project_root(args, "combine-review-v13-result")
         return combine_review_v13_result(args)

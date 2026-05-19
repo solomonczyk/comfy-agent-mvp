@@ -1,0 +1,146 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/runtime_gate/runtime_gate_packet.schema.json",
+  "title": "Runtime Gate Packet",
+  "description": "Project-agnostic runtime gate packet for authorization control. Readiness does NOT authorize execution.",
+  "type": "object",
+  "required": [
+    "gate_id",
+    "gate_type",
+    "target_action",
+    "required_readiness_status",
+    "authorization_status",
+    "operator_authorization_required",
+    "execution_allowed",
+    "generation_authorized",
+    "production_accepted",
+    "created_at"
+  ],
+  "properties": {
+    "gate_id": {
+      "type": "string",
+      "description": "Unique identifier for the gate"
+    },
+    "gate_type": {
+      "type": "string",
+      "enum": [
+        "generation_gate",
+        "retry_gate",
+        "preview_render_gate",
+        "voice_generation_gate",
+        "assembly_gate",
+        "final_render_gate",
+        "asset_acquisition_gate",
+        "external_api_call_gate"
+      ],
+      "description": "Type of gate"
+    },
+    "target_action": {
+      "type": "string",
+      "description": "The action this gate controls"
+    },
+    "required_readiness_status": {
+      "type": "string",
+      "description": "Required readiness status to create this gate"
+    },
+    "required_inputs": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Required inputs for the gate"
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Actions forbidden by this gate"
+    },
+    "max_executions": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Maximum number of executions allowed"
+    },
+    "current_execution_count": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Current execution count"
+    },
+    "authorization_status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "pending_operator_authorization",
+        "authorized_not_executed",
+        "consumed",
+        "revoked",
+        "blocked"
+      ],
+      "description": "Current authorization status"
+    },
+    "operator_authorization_required": {
+      "type": "boolean",
+      "description": "Whether operator authorization is required"
+    },
+    "execution_allowed": {
+      "type": "boolean",
+      "const": false,
+      "description": "Execution is NEVER allowed by this layer alone"
+    },
+    "generation_authorized": {
+      "type": "boolean",
+      "const": false,
+      "description": "Generation is NEVER authorized by this layer alone"
+    },
+    "production_accepted": {
+      "type": "boolean",
+      "const": false,
+      "description": "Production acceptance is NEVER set by this layer"
+    },
+    "readiness_report_reference": {
+      "type": "string",
+      "description": "Reference to the readiness report"
+    },
+    "corrective_plan_reference": {
+      "type": "string",
+      "description": "Reference to corrective plan (required for retry gates)"
+    },
+    "force_push_used": {
+      "type": "boolean",
+      "const": false,
+      "description": "Force push is NEVER allowed"
+    },
+    "project_specific_hardcoding_detected": {
+      "type": "object",
+      "description": "Project-specific hardcoding detected",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "safety_violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Safety violations detected"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when gate was created"
+    },
+    "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when gate was last updated"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata"
+    }
+  }
+}

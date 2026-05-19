@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/runtime_gate/authorization_policy.schema.json",
+  "title": "Authorization Policy",
+  "description": "Authorization policy for runtime gate layer. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "policy_id",
+    "version",
+    "core_rule",
+    "safety_rules"
+  ],
+  "properties": {
+    "policy_id": {
+      "type": "string",
+      "description": "Policy identifier"
+    },
+    "version": {
+      "type": "string",
+      "description": "Policy version"
+    },
+    "project_agnostic": {
+      "type": "boolean",
+      "const": true,
+      "description": "This policy is project-agnostic"
+    },
+    "core_rule": {
+      "type": "string",
+      "description": "Core authorization rule",
+      "const": "readiness=ready does NOT mean execution_allowed=true. Readiness only creates pending_operator_authorization."
+    },
+    "safety_rules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "rule_id",
+          "rule_description",
+          "enforcement"
+        ],
+        "properties": {
+          "rule_id": {
+            "type": "string"
+          },
+          "rule_description": {
+            "type": "string"
+          },
+          "enforcement": {
+            "type": "string",
+            "enum": ["strict", "warning", "log"]
+          }
+        }
+      }
+    },
+    "forbidden_patterns": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Forbidden patterns in code/configuration"
+    },
+    "hardcoded_paths_blocked": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Hardcoded paths that are blocked"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

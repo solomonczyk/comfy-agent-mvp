@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/runtime_gate/runtime_gate_manifest.schema.json",
+  "title": "Runtime Gate Manifest",
+  "description": "Manifest for runtime gate layer. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "task_id",
+    "document_type",
+    "version",
+    "project_agnostic",
+    "created",
+    "gate_layer_active"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Task ID for this layer"
+    },
+    "document_type": {
+      "type": "string",
+      "const": "runtime_gate_manifest"
+    },
+    "version": {
+      "type": "string",
+      "description": "Version of the manifest"
+    },
+    "project_agnostic": {
+      "type": "boolean",
+      "const": true,
+      "description": "This layer is project-agnostic"
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when manifest was created"
+    },
+    "gate_layer_active": {
+      "type": "boolean",
+      "const": true,
+      "description": "Gate layer is active"
+    },
+    "supported_gate_types": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Supported gate types"
+    },
+    "authorization_policy": {
+      "type": "string",
+      "description": "Reference to authorization policy"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata"
+    }
+  }
+}
