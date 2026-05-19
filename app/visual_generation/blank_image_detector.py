@@ -92,13 +92,16 @@ class BlankImageDetector:
 
         # Check existence
         if not path.exists():
+            result.exists = False
             result.rejection_reason = "file_not_found"
             return result
 
-        # Check size (stub detection)
+        result.exists = True
+        result.readable = False
+        result.is_valid = False
         result.size_bytes = path.stat().st_size
         if result.size_bytes < self.MIN_SIZE_BYTES:
-            result.is_stub = True
+            result.is_stub = bool(True)
             result.rejection_reason = f"stub_file: size={result.size_bytes}B < {self.MIN_SIZE_BYTES}B"
             return result
 
@@ -144,13 +147,11 @@ class BlankImageDetector:
                     result.entropy_estimate = float(-np.sum(prob * np.log2(prob)))
 
                 # Blank detection
-                result.is_blank = (
+                result.is_blank = bool(
                     result.mean_brightness < self.BLANK_MEAN_THRESHOLD or
                     result.std_brightness < self.BLANK_STD_THRESHOLD
                 )
-
-                # Uniform gray detection
-                result.is_uniform_gray = (
+                result.is_uniform_gray = bool(
                     result.std_brightness < self.UNIFORM_GRAY_STD_THRESHOLD and
                     self.UNIFORM_GRAY_MEAN_MIN < result.mean_brightness < self.UNIFORM_GRAY_MEAN_MAX
                 )
@@ -162,13 +163,12 @@ class BlankImageDetector:
                 if result.is_blank:
                     result.rejection_reason = "blank_image: near-black or blank"
                 elif result.is_uniform_gray:
-                    result.rejection_reason = "uniform_gray: low variance gray image"
-                elif result.unique_colors < self.MIN_UNIQUE_COLORS:
-                    result.rejection_reason = f"low_color_diversity: {result.unique_colors} colors < {self.MIN_UNIQUE_COLORS}"
-                elif result.pixel_variance < self.MIN_PIXEL_VARIANCE:
-                    result.rejection_reason = f"low_pixel_variance: {result.pixel_variance:.2f} < {self.MIN_PIXEL_VARIANCE}"
+                    result.rejection_reason = "uniform_gray: near-uniform gray"
+                elif result.is_stub:
+                    result.rejection_reason = "stub_file: too small"
                 else:
-                    result.is_valid = True
+                    result.rejection_reason = None
+                    result.is_valid = bool(True)
 
         except UnidentifiedImageError:
             result.rejection_reason = "unidentified_image_format"

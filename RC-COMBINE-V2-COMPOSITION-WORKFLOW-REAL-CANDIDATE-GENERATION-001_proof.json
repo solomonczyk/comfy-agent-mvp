@@ -1,0 +1,183 @@
+{
+  "task_id": "RC-COMBINE-V2-COMPOSITION-WORKFLOW-REAL-CANDIDATE-GENERATION-001",
+  "document_type": "cinematic_candidate_generation_report",
+  "timestamp": "2026-05-19T16:04:31.608904+00:00",
+  "generation": {
+    "status": "validated_existing",
+    "prompt_id": "existing-asset-validation",
+    "assets": [
+      {
+        "path": "output\\control\\fresh_visual_candidate\\combine_v2_cinematic_1779206502_00001_.png",
+        "sha256": "6503fb59add6d7fb2b8d17a3b40915376f28c427d43ed03e3f17664078d4c29c",
+        "size_bytes": 1312959,
+        "width": 1344,
+        "height": 768
+      }
+    ],
+    "workflow_path": null
+  },
+  "validation": {
+    "blank_validation": {
+      "task_id": "RC-COMBINE-V2-RUNTIME-OUTPUT-COLLECTION-AND-REAL-GENERATION-RECOVERY-001",
+      "document_type": "blank_image_validation_report",
+      "timestamp": "2026-05-19T16:04:31.201024+00:00",
+      "image_path": "output\\control\\fresh_visual_candidate\\combine_v2_cinematic_1779206502_00001_.png",
+      "exists": true,
+      "readable": true,
+      "size_bytes": 1312959,
+      "dimensions": {
+        "width": 1344,
+        "height": 768
+      },
+      "sha256": "6503fb59add6d7fb2b8d17a3b40915376f28c427d43ed03e3f17664078d4c29c",
+      "pixel_analysis": {
+        "mean_brightness": 73.69,
+        "std_brightness": 33.5,
+        "pixel_variance": 1121.93,
+        "unique_colors": 22475,
+        "entropy_estimate": 6.49
+      },
+      "classification": {
+        "is_blank": false,
+        "is_uniform_gray": false,
+        "is_stub": false,
+        "is_valid": true
+      },
+      "rejection_reason": null,
+      "operator_rejection_recorded": false,
+      "invalid_blank_output_classified": false
+    },
+    "framing_validation": {
+      "task_id": "RC-COMBINE-V2-COMPOSITION-WORKFLOW-REAL-CANDIDATE-GENERATION-001",
+      "document_type": "framing_validation_report",
+      "timestamp": "2026-05-19T16:04:31.587552+00:00",
+      "image_path": "output\\control\\fresh_visual_candidate\\combine_v2_cinematic_1779206502_00001_.png",
+      "exists": true,
+      "readable": true,
+      "dimensions": {
+        "width": 1344,
+        "height": 768
+      },
+      "aspect_ratio": 1.75,
+      "is_square": false,
+      "is_wide": true,
+      "is_portrait": false,
+      "resolution_valid": true,
+      "min_width_met": true,
+      "min_height_met": true,
+      "face_analysis": {
+        "face_detected": true,
+        "face_crop_detected": false,
+        "face_area_ratio": 0.17,
+        "face_center_y_ratio": 0.476
+      },
+      "shot_type": {
+        "is_closeup": false,
+        "is_medium_shot": true,
+        "is_wide_shot": false
+      },
+      "composition_valid": true,
+      "rejection_reason": null,
+      "previously_rejected_assets_forbidden": true,
+      "square_1024_output_forbidden": false,
+      "closeup_reference_as_composition_forbidden": false,
+      "min_expected_resolution_met": true
+    },
+    "hard_gates": {
+      "previously_rejected_assets_forbidden": true,
+      "square_1024_output_forbidden": true,
+      "min_expected_resolution": "1344x768",
+      "min_expected_resolution_met": true,
+      "closeup_reference_as_composition_forbidden": true,
+      "blank_detector_required": true,
+      "blank_detection_passed": true,
+      "face_crop_detector_or_basic_framing_check_required": true,
+      "framing_check_passed": true,
+      "generation_count": 1,
+      "production_accepted": false
+    },
+    "all_gates_passed": true,
+    "is_new_asset": true
+  },
+  "operator_review_packet_created": true,
+  "state_updates": {
+    "state": {
+      "current_state": "operator_visual_review_required",
+      "next_allowed_action": "operator_visual_review_required",
+      "production_accepted": false,
+      "visual_qa_executed": false,
+      "assembly_executed": false,
+      "downstream_executed": false,
+      "task_id": "RC-COMBINE-V2-COMPOSITION-WORKFLOW-REAL-CANDIDATE-GENERATION-001",
+      "generation_count": 1,
+      "max_generations": 1,
+      "second_generation_attempted": false,
+      "blind_retry_attempted": false,
+      "last_updated": "2026-05-19T16:04:31.597010+00:00"
+    },
+    "artifact_index": {
+      "current_state": "operator_visual_review_required",
+      "next_allowed_action": "operator_visual_review_required",
+      "production_accepted": false,
+      "assembly_allowed": false,
+      "downstream_allowed": false,
+      "composition_validation": {
+        "task_id": "RC-COMBINE-V2-COMPOSITION-WORKFLOW-REAL-CANDIDATE-GENERATION-001",
+        "timestamp": "2026-05-19T16:04:31.598117+00:00",
+        "asset_validated": true,
+        "all_gates_passed": true,
+        "prompt_id": "existing-asset-validation",
+        "hard_gates": {
+          "previously_rejected_assets_forbidden": true,
+          "square_1024_output_forbidden": true,
+          "min_expected_resolution": "1344x768",
+          "min_expected_resolution_met": true,
+          "closeup_reference_as_composition_forbidden": true,
+          "blank_detector_required": true,
+          "blank_detection_passed": true,
+          "face_crop_detector_or_basic_framing_check_required": true,
+          "framing_check_passed": true,
+          "generation_count": 1,
+          "production_accepted": false
+        }
+      }
+    },
+    "ledger_entry": {
+      "event": "cinematic_candidate_generation_completed",
+      "timestamp": "2026-05-19T16:04:31.598691+00:00",
+      "task_id": "RC-COMBINE-V2-COMPOSITION-WORKFLOW-REAL-CANDIDATE-GENERATION-001",
+      "prompt_id": "existing-asset-validation",
+      "asset_validated": true,
+      "all_gates_passed": true,
+      "is_new_asset": true,
+      "previous_asset_forbidden": true,
+      "current_state": "operator_visual_review_required",
+      "next_allowed_action": "operator_visual_review_required",
+      "production_accepted": false
+    }
+  },
+  "hard_gates": {
+    "previously_rejected_assets_forbidden": true,
+    "square_1024_output_forbidden": true,
+    "min_expected_resolution": "1344x768",
+    "min_expected_resolution_met": true,
+    "closeup_reference_as_composition_forbidden": true,
+    "blank_detector_required": true,
+    "blank_detection_passed": true,
+    "face_crop_detector_or_basic_framing_check_required": true,
+    "framing_check_passed": true,
+    "generation_count": 1,
+    "production_accepted": false
+  },
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "production_accepted": false,
+  "generation_count": 1,
+  "max_generations": 1,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false
+}
