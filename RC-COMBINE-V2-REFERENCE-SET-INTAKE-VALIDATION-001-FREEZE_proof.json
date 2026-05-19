@@ -1,0 +1,21 @@
+{
+  "task_id": "RC-COMBINE-V2-REFERENCE-SET-INTAKE-VALIDATION-001-FREEZE",
+  "previous_commit": "db779c3",
+  "commit_hash": "db779c3",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+  "proof_json_committed": false,
+  "force_push_used": false,
+  "forbidden_actions_not_executed": true,
+  "visual_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "generation_authorized": false,
+  "generation_performed": false,
+  "retry_attempted": false,
+  "comfyui_submit_executed": false,
+  "preview_render_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "next_allowed_action": "operator_reference_review_required"
+}
