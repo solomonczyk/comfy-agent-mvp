@@ -45,10 +45,20 @@
     "retry_attempted": false,
     "blind_retry_attempted": false,
     "workflow_submitted": true,
-    "comfyui_submit_executed": false,
-    "execute_mode": "dry-run",
-    "prompt_id": "dry-run-1779193210",
-    "generated_assets": []
+    "comfyui_submit_executed": true,
+    "execute_mode": "real",
+    "prompt_id": "60815e94-bad2-4293-9bd5-c4f02382bbff",
+    "generated_assets": [
+      {
+        "path": "f:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\reference_bound_1779193743_00001_.png",
+        "exists": true,
+        "readable": true,
+        "sha256": "58eaee5817166889066d936c5162fa54ea3a71df48359aa5fa6821e32628df51",
+        "size_bytes": 1502838,
+        "width": 1024,
+        "height": 1024
+      }
+    ]
   },
   "artifacts_created": {
     "reference_bound_generation_authorization.json": true,
@@ -103,8 +113,8 @@
   },
   "git_operations": {
     "commit_created": true,
-    "commit_message": "RC-COMBINE-V2-REFERENCE-BOUND-VISUAL-GENERATION-001: execute one reference-bound visual generation",
-    "commit_hash": "e2fec40",
+    "commit_message": "RC-COMBINE-V2-REFERENCE-BOUND-VISUAL-GENERATION-001: real execution with ComfyUI submit",
+    "commit_hash": "ea7f531",
     "push_completed": true,
     "git_cleaned": true
   },
@@ -115,7 +125,10 @@
   },
   "blockers": [],
   "notes": [
-    "Dry-run mode executed successfully without real ComfyUI submission",
+    "Real ComfyUI execution completed successfully",
+    "Real prompt_id: 60815e94-bad2-4293-9bd5-c4f02382bbff",
+    "Real generated asset: reference_bound_1779193743_00001_.png",
+    "Asset verified with sha256, dimensions (1024x1024), size_bytes (1502838)",
     "All forbidden actions properly blocked by contract and state",
     "State correctly transitions to operator_visual_review_required",
     "production_accepted remains false as required",
