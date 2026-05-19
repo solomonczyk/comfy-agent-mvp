@@ -1766,5 +1766,12 @@
   "last_updated": "2026-05-19T12:52:14.618969+00:00",
   "last_verdict": "CORRECTIVE_PACKAGE_READY",
   "last_state": "corrective_reference_bound_generation_authorization_required",
-  "last_action": "corrective_reference_bound_generation_authorization_required"
+  "last_action": "corrective_reference_bound_generation_authorization_required",
+  "corrective_visual_generation_performed": true,
+  "corrective_visual_generation_authorization": "output\\control\\corrective_visual_generation_stage\\corrective_visual_generation_authorization.json",
+  "corrective_visual_generation_contract": "output\\control\\corrective_visual_generation_stage\\corrective_visual_generation_contract.json",
+  "corrective_visual_generation_preflight": "output\\control\\corrective_visual_generation_stage\\corrective_visual_generation_preflight.json",
+  "corrective_visual_generation_manifest": "output\\control\\corrective_visual_generation_stage\\corrective_visual_generation_manifest.json",
+  "corrective_visual_generation_result_review": "output\\control\\corrective_visual_generation_stage\\corrective_visual_generation_result_review.json",
+  "corrective_visual_generation_operator_review_packet": "output\\control\\corrective_visual_generation_stage\\operator_visual_review_packet.json"
 }

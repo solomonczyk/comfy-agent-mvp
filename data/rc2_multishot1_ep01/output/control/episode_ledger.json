@@ -1,20 +1,62 @@
-{
-  "episodes": [
-    {
-      "episode_id": "visual_reference_curator_1779195134",
-      "agent": "visual_reference_curator",
-      "task_id": "RC-COMBINE-V2-VISUAL-REFERENCE-CURATOR-AGENT-001",
-      "verdict": "CORRECTIVE_PACKAGE_READY",
-      "next_state": "corrective_reference_bound_generation_authorization_required",
-      "next_action": "corrective_reference_bound_generation_authorization_required",
-      "timestamp": "2026-05-19T12:52:14.623912+00:00",
-      "generation_performed": false,
-      "retry_attempted": false,
-      "comfyui_submit_executed": false,
-      "visual_acceptance_executed": false,
-      "assembly_executed": false,
-      "downstream_executed": false,
-      "production_accepted": false
-    }
-  ]
-}
+[
+  {
+    "event_type": "corrective_visual_generation_stage_executed",
+    "task_id": "RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-WORKFLOW-STAGE-001",
+    "timestamp": "2026-05-19T15:07:31.821459",
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_attempted": false,
+    "retry_attempted": false,
+    "blind_retry_attempted": false,
+    "workflow_submitted": true,
+    "comfyui_submit_executed": false,
+    "prompt_id": "dry-run-1779196051",
+    "generated_assets": [],
+    "curator_package_used": true,
+    "negative_reference_used": true,
+    "quality_refs_used_as_quality_only": true,
+    "composition_constraints_enforced": true,
+    "visual_qa_acceptance_executed": false,
+    "operator_visual_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required"
+  },
+  {
+    "event_type": "corrective_visual_generation_stage_executed",
+    "task_id": "RC-COMBINE-V2-CORRECTIVE-VISUAL-GENERATION-WORKFLOW-STAGE-001",
+    "timestamp": "2026-05-19T15:08:34.966067",
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_attempted": false,
+    "retry_attempted": false,
+    "blind_retry_attempted": false,
+    "workflow_submitted": true,
+    "comfyui_submit_executed": true,
+    "prompt_id": "a65d041e-9fad-4f1f-954f-34a5c1cb95ce",
+    "generated_assets": [
+      {
+        "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\corrective_visual_1779196114_00001_.png",
+        "exists": true,
+        "readable": true,
+        "sha256": "6348855f3711388ad92827fd080bb9d9b3d59fcb988603a0a8f7c10080eb7f0f",
+        "size_bytes": 1833155,
+        "width": 1024,
+        "height": 1024
+      }
+    ],
+    "curator_package_used": true,
+    "negative_reference_used": true,
+    "quality_refs_used_as_quality_only": true,
+    "composition_constraints_enforced": true,
+    "visual_qa_acceptance_executed": false,
+    "operator_visual_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required"
+  }
+]
