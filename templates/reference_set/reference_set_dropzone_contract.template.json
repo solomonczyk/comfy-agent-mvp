@@ -1,0 +1,17 @@
+{
+  "contract_version": "1.0.0",
+  "blueprint_stage_id": "",
+  "dropzone_root_path": "data/reference_set/{blueprint_stage_id}",
+  "required_reference_slots": [],
+  "validation_policy": {
+    "validate_existence": true,
+    "validate_readability": true,
+    "validate_sha256": true,
+    "validate_size": true,
+    "validate_dimensions": true,
+    "fail_on_missing_required": true
+  },
+  "intake_manifest_path": "output/project_agnostic/reference_set/reference_file_intake_manifest.json",
+  "created_at": "",
+  "operator_instructions": "Place reference images in the dropzone directory. Files should be named according to their slot role (e.g., identity_reference.jpg, style_reference.png)."
+}

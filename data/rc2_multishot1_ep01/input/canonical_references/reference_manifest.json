@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "canonical_references": {
+    "01_identity": [],
+    "02_face_details": [],
+    "03_costume_materials": [],
+    "04_style_light": [],
+    "05_environment": [],
+    "06_quality_negative": []
+  }
+}

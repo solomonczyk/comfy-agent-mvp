@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.combine.ai/reference_set/dropzone_contract.schema.json",
+  "title": "Reference Set Dropzone Contract",
+  "description": "Project-agnostic contract defining where operators can place reference images and how the system validates them against blueprint slots",
+  "type": "object",
+  "required": [
+    "contract_version",
+    "blueprint_stage_id",
+    "dropzone_root_path",
+    "required_reference_slots",
+    "validation_policy",
+    "intake_manifest_path",
+    "created_at"
+  ],
+  "properties": {
+    "contract_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Version of the dropzone contract schema"
+    },
+    "blueprint_stage_id": {
+      "type": "string",
+      "description": "Identifier of the blueprint stage this dropzone serves"
+    },
+    "dropzone_root_path": {
+      "type": "string",
+      "description": "Root directory path where operators should place reference images"
+    },
+    "required_reference_slots": {
+      "type": "array",
+      "description": "List of reference slots required by the blueprint",
+      "items": {
+        "$ref": "#/definitions/reference_slot"
+      }
+    },
+    "validation_policy": {
+      "$ref": "#/definitions/validation_policy"
+    },
+    "intake_manifest_path": {
+      "type": "string",
+      "description": "Path where the intake manifest will be written"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when the contract was created"
+    },
+    "operator_instructions": {
+      "type": "string",
+      "description": "Human-readable instructions for operators on how to use the dropzone"
+    }
+  },
+  "definitions": {
+    "reference_slot": {
+      "type": "object",
+      "required": ["slot_id", "slot_role", "required"],
+      "properties": {
+        "slot_id": {
+          "type": "string",
+          "description": "Unique identifier for this reference slot"
+        },
+        "slot_role": {
+          "type": "string",
+          "enum": [
+            "identity_reference",
+            "style_reference",
+            "camera_reference",
+            "lighting_reference",
+            "anatomy_reference",
+            "quality_reference",
+            "negative_reference"
+          ],
+          "description": "Role this reference plays in the generation"
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this slot must be filled before generation"
+        },
+        "allowed_formats": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["jpg", "jpeg", "png", "webp"]
+          },
+          "default": ["jpg", "jpeg", "png", "webp"],
+          "description": "Allowed image file formats"
+        },
+        "min_dimensions": {
+          "type": "object",
+          "properties": {
+            "width": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "height": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "description": "Minimum required dimensions for images in this slot"
+        },
+        "max_file_size_mb": {
+          "type": "number",
+          "minimum": 0,
+          "description": "Maximum file size in megabytes"
+        }
+      }
+    },
+    "validation_policy": {
+      "type": "object",
+      "required": ["validate_existence", "validate_readability", "validate_sha256", "validate_size", "validate_dimensions"],
+      "properties": {
+        "validate_existence": {
+          "type": "boolean",
+          "description": "Whether to validate that files exist"
+        },
+        "validate_readability": {
+          "type": "boolean",
+          "description": "Whether to validate that files are readable"
+        },
+        "validate_sha256": {
+          "type": "boolean",
+          "description": "Whether to compute and validate SHA256 checksums"
+        },
+        "validate_size": {
+          "type": "boolean",
+          "description": "Whether to validate file sizes"
+        },
+        "validate_dimensions": {
+          "type": "boolean",
+          "description": "Whether to validate image dimensions"
+        },
+        "fail_on_missing_required": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to fail if required slots are not filled"
+        }
+      }
+    }
+  }
+}

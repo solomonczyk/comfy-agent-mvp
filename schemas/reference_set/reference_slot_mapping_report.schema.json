@@ -1,0 +1,89 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.combine.ai/reference_set/slot_mapping_report.schema.json",
+  "title": "Reference Slot Mapping Report",
+  "description": "Report showing how discovered reference files map to required blueprint slots",
+  "type": "object",
+  "required": [
+    "report_version",
+    "blueprint_stage_id",
+    "mapping_timestamp",
+    "slot_mappings",
+    "unmapped_files",
+    "unfilled_slots"
+  ],
+  "properties": {
+    "report_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "blueprint_stage_id": {
+      "type": "string"
+    },
+    "mapping_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "slot_mappings": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/slot_mapping"
+      }
+    },
+    "unmapped_files": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Files that could not be mapped to any slot"
+    },
+    "unfilled_slots": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Slot IDs that remain unfilled"
+    }
+  },
+  "definitions": {
+    "slot_mapping": {
+      "type": "object",
+      "required": ["slot_id", "slot_role", "required", "assigned_files", "fill_status"],
+      "properties": {
+        "slot_id": {
+          "type": "string"
+        },
+        "slot_role": {
+          "type": "string",
+          "enum": [
+            "identity_reference",
+            "style_reference",
+            "camera_reference",
+            "lighting_reference",
+            "anatomy_reference",
+            "quality_reference",
+            "negative_reference"
+          ]
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "assigned_files": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "File paths assigned to this slot"
+        },
+        "fill_status": {
+          "type": "string",
+          "enum": ["filled", "partial", "empty"]
+        },
+        "mapping_confidence": {
+          "type": "string",
+          "enum": ["exact_match", "role_inference", "manual", "none"]
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.combine.ai/reference_set/validation_report.schema.json",
+  "title": "Reference File Validation Report",
+  "description": "Detailed validation report for each reference file in the dropzone",
+  "type": "object",
+  "required": [
+    "report_version",
+    "blueprint_stage_id",
+    "validation_timestamp",
+    "validation_policy",
+    "file_validations",
+    "overall_status"
+  ],
+  "properties": {
+    "report_version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "blueprint_stage_id": {
+      "type": "string"
+    },
+    "validation_timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "validation_policy": {
+      "$ref": "#/definitions/validation_policy"
+    },
+    "file_validations": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/file_validation"
+      }
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": ["all_valid", "some_invalid", "all_invalid", "no_files"]
+    },
+    "validation_summary": {
+      "type": "object",
+      "properties": {
+        "total_files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "valid_files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "invalid_files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "missing_files": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    }
+  },
+  "definitions": {
+    "validation_policy": {
+      "type": "object",
+      "required": ["validate_existence", "validate_readability", "validate_sha256", "validate_size", "validate_dimensions"],
+      "properties": {
+        "validate_existence": {
+          "type": "boolean"
+        },
+        "validate_readability": {
+          "type": "boolean"
+        },
+        "validate_sha256": {
+          "type": "boolean"
+        },
+        "validate_size": {
+          "type": "boolean"
+        },
+        "validate_dimensions": {
+          "type": "boolean"
+        },
+        "fail_on_missing_required": {
+          "type": "boolean"
+        }
+      }
+    },
+    "file_validation": {
+      "type": "object",
+      "required": ["file_path", "checks", "overall_valid"],
+      "properties": {
+        "file_path": {
+          "type": "string"
+        },
+        "checks": {
+          "$ref": "#/definitions/validation_checks"
+        },
+        "overall_valid": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "validation_checks": {
+      "type": "object",
+      "properties": {
+        "existence": {
+          "$ref": "#/definitions/check_result"
+        },
+        "readability": {
+          "$ref": "#/definitions/check_result"
+        },
+        "sha256": {
+          "$ref": "#/definitions/check_result"
+        },
+        "size": {
+          "$ref": "#/definitions/check_result"
+        },
+        "dimensions": {
+          "$ref": "#/definitions/check_result"
+        }
+      }
+    },
+    "check_result": {
+      "type": "object",
+      "required": ["passed", "message"],
+      "properties": {
+        "passed": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "value": {
+          "description": "The actual value checked (e.g., file size, dimensions, checksum)"
+        }
+      }
+    }
+  }
+}

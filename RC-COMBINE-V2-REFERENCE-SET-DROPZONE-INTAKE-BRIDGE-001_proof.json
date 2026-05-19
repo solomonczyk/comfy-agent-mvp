@@ -1,0 +1,22 @@
+{
+  "task_id": "RC-COMBINE-V2-REFERENCE-SET-DROPZONE-INTAKE-BRIDGE-001",
+  "feature_completed": true,
+  "project_agnostic": true,
+  "dropzone_contract_created": true,
+  "reference_files_required_now": false,
+  "missing_reference_files_status": "pending_operator_supply",
+  "fake_file_existence_created": false,
+  "generation_performed": false,
+  "retry_attempted": false,
+  "comfyui_submit_executed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "force_push_used": false,
+  "tests_pass": true,
+  "cli_validation_pass": true,
+  "commit_hash": "",
+  "push_status": "pending_commit",
+  "git_status_clean": false
+}
