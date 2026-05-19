@@ -1,0 +1,128 @@
+{
+  "document_type": "reference_slot_taxonomy",
+  "version": "1.0",
+  "task_id": "RC-COMBINE-V2-REFERENCE-PACK-INTAKE-CANONICALIZATION-001",
+  "project_agnostic": true,
+  "slots": [
+    {
+      "slot_id": "character_front_full_body",
+      "category": "character_pose",
+      "description": "Front full body character pose reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_front_full_body.{ext}",
+      "max_variants": 3,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "character_3_4_full_body",
+      "category": "character_pose",
+      "description": "3/4 full body character pose reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_3_4_full_body.{ext}",
+      "max_variants": 3,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "character_medium_front",
+      "category": "character_pose",
+      "description": "Medium front character pose reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_medium_front.{ext}",
+      "max_variants": 3,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "character_headshot_front",
+      "category": "character_pose",
+      "description": "Headshot front character pose reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_headshot_front.{ext}",
+      "max_variants": 5,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "character_profile_left",
+      "category": "character_pose",
+      "description": "Left profile character pose reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_profile_left.{ext}",
+      "max_variants": 3,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "character_profile_right",
+      "category": "character_pose",
+      "description": "Right profile character pose reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_profile_right.{ext}",
+      "max_variants": 3,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "expression_variants",
+      "category": "character_expression",
+      "description": "Character expression variant references",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_expression_{variant}.{ext}",
+      "max_variants": 10,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "hands_detail",
+      "category": "character_detail",
+      "description": "Hands detail reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_hands_{variant}.{ext}",
+      "max_variants": 8,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "costume_detail",
+      "category": "character_detail",
+      "description": "Costume detail reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_{character_id}_costume_{detail}.{ext}",
+      "max_variants": 10,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "lighting_reference",
+      "category": "technical_reference",
+      "description": "Lighting reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_lighting_{mood}.{ext}",
+      "max_variants": 5,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "quality_reference",
+      "category": "technical_reference",
+      "description": "Quality reference",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_quality_{style}.{ext}",
+      "max_variants": 5,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    },
+    {
+      "slot_id": "negative_reference",
+      "category": "technical_reference",
+      "description": "Negative reference for rejection guidance",
+      "required": false,
+      "image_required": false,
+      "canonical_naming": "{project_id}_negative_{category}.{ext}",
+      "max_variants": 10,
+      "accepted_formats": ["png", "jpg", "jpeg"]
+    }
+  ]
+}

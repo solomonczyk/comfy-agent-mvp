@@ -18662,17 +18662,6 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
-    combine_reference_pack_validate_parser = subparsers.add_parser(
-        "combine-reference-pack-validate",
-        help="Validate a reference pack file"
-    )
-    combine_reference_pack_validate_parser.add_argument(
-        "--reference-pack", required=True, help="Path to reference pack JSON file",
-    )
-    combine_reference_pack_validate_parser.add_argument(
-        "--json", action="store_true", help="Output in JSON format",
-    )
-
     combine_review_v13_result_parser = subparsers.add_parser(
         "combine-review-v13-result",
         help="Review V13 generation result"
@@ -19454,6 +19443,36 @@ def main() -> int:
     p.add_argument("--operator-id", required=True, dest="operator_id", help="Human operator identifier")
     p.add_argument("--json", action="store_true", help="Output result in JSON format")
 
+    # RC-COMBINE-V2-REFERENCE-PACK-INTAKE-CANONICALIZATION-001 — Reference pack commands
+    p = subparsers.add_parser(
+        "combine-reference-pack-init",
+        help="Initialize a project-agnostic reference pack"
+    )
+    p.add_argument("--reference-root", required=True, help="Reference pack root directory")
+    p.add_argument("--pack-id", default="default_reference_pack", help="Reference pack identifier")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
+    p = subparsers.add_parser(
+        "combine-reference-pack-validate",
+        help="Validate a reference pack"
+    )
+    p.add_argument("--reference-root", required=True, help="Reference pack root directory")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
+    p = subparsers.add_parser(
+        "combine-reference-pack-inspect",
+        help="Inspect a reference pack"
+    )
+    p.add_argument("--reference-root", required=True, help="Reference pack root directory")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
+    p = subparsers.add_parser(
+        "combine-reference-pack-readiness-report",
+        help="Generate readiness report for reference pack"
+    )
+    p.add_argument("--reference-root", required=True, help="Reference pack root directory")
+    p.add_argument("--json", action="store_true", help="Output in JSON format")
+
     args = parser.parse_args()
     
     # RC2-PRODCARDS3G-BLOCKER1R: Hard prevention layer - require absolute project-root for RC2 commands
@@ -19876,9 +19895,6 @@ def main() -> int:
     elif args.command == "combine-pipeline-blueprint-validate":
         from app.cli_commands.workflow_registry import validate_pipeline_blueprint
         return validate_pipeline_blueprint(args)
-    elif args.command == "combine-reference-pack-validate":
-        from app.cli_commands.workflow_registry import validate_reference_pack
-        return validate_reference_pack(args)
     elif args.command == "combine-review-v13-result":
         _require_absolute_project_root(args, "combine-review-v13-result")
         return combine_review_v13_result(args)
@@ -20059,6 +20075,18 @@ def main() -> int:
         return combine_run_fresh_visual_qa_preflight(args)
     elif args.command == "combine-record-fresh-visual-generation-authorization":
         return combine_record_fresh_visual_generation_authorization(args)
+    elif args.command == "combine-reference-pack-init":
+        from app.cli_commands.reference_pack import init_reference_pack
+        return init_reference_pack(args)
+    elif args.command == "combine-reference-pack-validate":
+        from app.cli_commands.reference_pack import validate_reference_pack
+        return validate_reference_pack(args)
+    elif args.command == "combine-reference-pack-inspect":
+        from app.cli_commands.reference_pack import inspect_reference_pack
+        return inspect_reference_pack(args)
+    elif args.command == "combine-reference-pack-readiness-report":
+        from app.cli_commands.reference_pack import readiness_report
+        return readiness_report(args)
     else:
         parser.print_help()
         return 0
