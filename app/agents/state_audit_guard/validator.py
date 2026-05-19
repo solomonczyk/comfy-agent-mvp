@@ -790,8 +790,8 @@ class StateAuditGuardValidator:
         
         # Determine next state and action based on verdict
         if verdict == "ACCEPTED":
-            next_state = "production_gate_review_required"
-            next_action = "production_gate_review_required"
+            next_state = "state_audit_guard_review_passed"
+            next_action = "operator_visual_review_required"
         else:
             next_state = "state_audit_blocker_resolution_required"
             next_action = "state_audit_blocker_resolution_required"
