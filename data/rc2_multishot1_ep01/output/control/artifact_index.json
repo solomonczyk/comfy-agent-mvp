@@ -1,6 +1,6 @@
 {
-  "current_state": "operator_reference_decision_captured",
-  "next_allowed_action": "reference_set_intake_validation",
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
   "fresh_visual_human_verdict_task_executed": true,
   "fresh_visual_human_verdict_provided": true,
   "fresh_visual_operator_verdict_artifact_created": true,
@@ -1748,5 +1748,12 @@
   "canonical_reference_inventory": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\operator_reference_review\\canonical_reference_inventory.json",
   "operator_reference_review_reconciliation": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\operator_reference_review\\operator_reference_review_reconciliation.json",
   "operator_reference_decision": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\operator_reference_review\\operator_reference_decision.json",
-  "canonical_reference_set_accepted": true
+  "canonical_reference_set_accepted": true,
+  "reference_bound_generation_executed": true,
+  "reference_bound_generation_authorization": "output\\control\\reference_bound_generation\\reference_bound_generation_authorization.json",
+  "reference_bound_generation_contract": "output\\control\\reference_bound_generation\\reference_bound_generation_contract.json",
+  "reference_bound_generation_preflight": "output\\control\\reference_bound_generation\\reference_bound_generation_preflight.json",
+  "reference_bound_generation_manifest": "output\\control\\reference_bound_generation\\reference_bound_generation_manifest.json",
+  "reference_bound_generation_result_review": "output\\control\\reference_bound_generation\\reference_bound_generation_result_review.json",
+  "reference_bound_generation_proof": "output\\control\\reference_bound_generation\\reference_bound_generation_proof.json"
 }

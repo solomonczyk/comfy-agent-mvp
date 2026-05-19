@@ -18614,6 +18614,22 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-REFERENCE-BOUND-VISUAL-GENERATION-001
+    combine_execute_reference_bound_generation_parser = subparsers.add_parser(
+        "combine-execute-reference-bound-generation",
+        help="Execute exactly one reference-bound visual generation from accepted canonical references"
+    )
+    combine_execute_reference_bound_generation_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_execute_reference_bound_generation_parser.add_argument(
+        "--execute", action="store_true",
+        help="Execute real ComfyUI submit (default: dry run)",
+    )
+    combine_execute_reference_bound_generation_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-WORKFLOW-REGISTRY-PIPELINE-BLUEPRINT-001 — Workflow Registry subcommands
     combine_workflow_registry_init_parser = subparsers.add_parser(
         "combine-workflow-registry-init",
@@ -20132,6 +20148,10 @@ def main() -> int:
         _require_absolute_project_root(args, "combine-execute-corrective-generation")
         from app.cli_commands.corrective_generation import execute_corrective_generation
         return execute_corrective_generation(args)
+    elif args.command == "combine-execute-reference-bound-generation":
+        _require_absolute_project_root(args, "combine-execute-reference-bound-generation")
+        from app.cli_commands.reference_bound_generation import execute_reference_bound_generation
+        return execute_reference_bound_generation(args)
     elif args.command == "combine-workflow-registry-init":
         from app.cli_commands.workflow_registry import init_workflow_registry
         return init_workflow_registry(args)
