@@ -1,0 +1,136 @@
+{
+  "task_id": "RC-COMBINE-V2-RUNTIME-OUTPUT-COLLECTION-AND-REAL-GENERATION-RECOVERY-001",
+  "document_type": "runtime_output_collection_recovery_report",
+  "timestamp": "2026-05-19T15:49:31.941839+00:00",
+  "diagnosis": {
+    "diagnosis_status": "complete",
+    "asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\output\\control\\fresh_visual_candidate\\combine_v2_corrective_1779204155_00001_.png",
+    "exists": true,
+    "size_bytes": 1710998,
+    "validation": {
+      "task_id": "RC-COMBINE-V2-RUNTIME-OUTPUT-COLLECTION-AND-REAL-GENERATION-RECOVERY-001",
+      "document_type": "blank_image_validation_report",
+      "timestamp": "2026-05-19T15:49:31.924511+00:00",
+      "image_path": "F:\\ComfyUI\\comfy-agent-mvp\\output\\control\\fresh_visual_candidate\\combine_v2_corrective_1779204155_00001_.png",
+      "exists": true,
+      "readable": true,
+      "size_bytes": 1710998,
+      "dimensions": {
+        "width": 1024,
+        "height": 1024
+      },
+      "sha256": "7a7d6bbaac4f3d9ae1bcccc69997c4d49746973c83472552fa23032f28a48303",
+      "pixel_analysis": {
+        "mean_brightness": 116.16,
+        "std_brightness": 54.86,
+        "pixel_variance": 3010.14,
+        "unique_colors": 68523,
+        "entropy_estimate": 7.63
+      },
+      "classification": {
+        "is_blank": false,
+        "is_uniform_gray": false,
+        "is_stub": false,
+        "is_valid": true
+      },
+      "rejection_reason": null,
+      "operator_rejection_recorded": false,
+      "invalid_blank_output_classified": false
+    },
+    "is_blank_output": false,
+    "is_valid_output": true
+  },
+  "native_output_search": {
+    "search_status": "complete",
+    "prompt_id": "351ef221-b176-4d56-acac-35227604cc23",
+    "images_found": 0,
+    "found_paths": []
+  },
+  "asset_validation": {
+    "task_id": "RC-COMBINE-V2-RUNTIME-OUTPUT-COLLECTION-AND-REAL-GENERATION-RECOVERY-001",
+    "document_type": "blank_image_validation_report",
+    "timestamp": "2026-05-19T15:49:31.924511+00:00",
+    "image_path": "F:\\ComfyUI\\comfy-agent-mvp\\output\\control\\fresh_visual_candidate\\combine_v2_corrective_1779204155_00001_.png",
+    "exists": true,
+    "readable": true,
+    "size_bytes": 1710998,
+    "dimensions": {
+      "width": 1024,
+      "height": 1024
+    },
+    "sha256": "7a7d6bbaac4f3d9ae1bcccc69997c4d49746973c83472552fa23032f28a48303",
+    "pixel_analysis": {
+      "mean_brightness": 116.16,
+      "std_brightness": 54.86,
+      "pixel_variance": 3010.14,
+      "unique_colors": 68523,
+      "entropy_estimate": 7.63
+    },
+    "classification": {
+      "is_blank": false,
+      "is_uniform_gray": false,
+      "is_stub": false,
+      "is_valid": true
+    },
+    "rejection_reason": null,
+    "operator_rejection_recorded": false,
+    "invalid_blank_output_classified": false
+  },
+  "is_blank_output": false,
+  "operator_rejection_recorded": false,
+  "invalid_blank_output_classified": false,
+  "operator_review_packet_created": true,
+  "state_updates": {
+    "state": {
+      "current_state": "operator_visual_review_required",
+      "next_allowed_action": "operator_visual_review_required",
+      "production_accepted": false,
+      "visual_qa_executed": false,
+      "assembly_executed": false,
+      "downstream_executed": false,
+      "task_id": "RC-COMBINE-V2-RUNTIME-OUTPUT-COLLECTION-AND-REAL-GENERATION-RECOVERY-001",
+      "generation_count": 1,
+      "max_generations": 1,
+      "second_generation_attempted": false,
+      "blind_retry_attempted": false,
+      "last_updated": "2026-05-19T15:49:31.939629+00:00"
+    },
+    "artifact_index": {
+      "current_state": "operator_visual_review_required",
+      "next_allowed_action": "operator_visual_review_required",
+      "production_accepted": false,
+      "assembly_allowed": false,
+      "downstream_allowed": false,
+      "output_collection_validation": {
+        "task_id": "RC-COMBINE-V2-RUNTIME-OUTPUT-COLLECTION-AND-REAL-GENERATION-RECOVERY-001",
+        "timestamp": "2026-05-19T15:49:31.940181+00:00",
+        "asset_validated": true,
+        "is_blank": false,
+        "prompt_id": "351ef221-b176-4d56-acac-35227604cc23"
+      }
+    },
+    "ledger_entry": {
+      "event": "output_collection_validation_completed",
+      "timestamp": "2026-05-19T15:49:31.940717+00:00",
+      "task_id": "RC-COMBINE-V2-RUNTIME-OUTPUT-COLLECTION-AND-REAL-GENERATION-RECOVERY-001",
+      "prompt_id": "351ef221-b176-4d56-acac-35227604cc23",
+      "asset_validated": true,
+      "is_valid": true,
+      "is_blank": false,
+      "current_state": "operator_visual_review_required",
+      "next_allowed_action": "operator_visual_review_required",
+      "production_accepted": false
+    }
+  },
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "production_accepted": false,
+  "generation_count": 1,
+  "max_generations": 1,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false
+}
