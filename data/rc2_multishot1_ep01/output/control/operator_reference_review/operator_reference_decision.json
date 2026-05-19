@@ -1,0 +1,38 @@
+{
+  "task_id": "RC-COMBINE-V2-OPERATOR-REFERENCE-DECISION-CAPTURE-001",
+  "created_timestamp": "2026-05-19T12:04:13.200149Z",
+  "operator": "Андрей",
+  "decision_source": "human_operator_manual_review",
+  "decision_text": "Я вручную просмотрел все изображения в input/canonical_references и принимаю их как canonical reference set.",
+  "reference_scope": "all_images_in_input_canonical_references",
+  "accepted": true,
+  "reconciliation": {
+    "previous_validated_count": 0,
+    "full_folder_count": 24,
+    "packet_is_partial": false,
+    "mismatch_details": "No old packet found - using full folder inventory",
+    "old_packet_found": false,
+    "sha256_matches": true,
+    "missing_from_old_packet": [],
+    "extra_in_folder": []
+  },
+  "inventory_summary": {
+    "total_references": 24,
+    "readable_images": 24,
+    "unreadable_images": 0
+  },
+  "forbidden_actions": {
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "visual_qa_acceptance_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false
+  },
+  "state_transition": {
+    "from_state": "manual_operator_reference_review",
+    "to_state": "operator_reference_decision_captured",
+    "next_allowed_action": "reference_set_intake_validation"
+  }
+}

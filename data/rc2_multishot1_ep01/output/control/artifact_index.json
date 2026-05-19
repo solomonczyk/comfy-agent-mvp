@@ -1,6 +1,6 @@
 {
-  "current_state": "production_gate_review_required",
-  "next_allowed_action": "production_gate_review_required",
+  "current_state": "operator_reference_decision_captured",
+  "next_allowed_action": "reference_set_intake_validation",
   "fresh_visual_human_verdict_task_executed": true,
   "fresh_visual_human_verdict_provided": true,
   "fresh_visual_operator_verdict_artifact_created": true,
@@ -1743,5 +1743,10 @@
   "costume_proof_tracked": true,
   "state_audit_guard_review_executed": true,
   "state_audit_guard_review_timestamp": "2026-05-19T06:53:55.221103+00:00",
-  "state_audit_guard_verdict": "ACCEPTED"
+  "state_audit_guard_verdict": "ACCEPTED",
+  "operator_reference_decision_captured": true,
+  "canonical_reference_inventory": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\operator_reference_review\\canonical_reference_inventory.json",
+  "operator_reference_review_reconciliation": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\operator_reference_review\\operator_reference_review_reconciliation.json",
+  "operator_reference_decision": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\operator_reference_review\\operator_reference_decision.json",
+  "canonical_reference_set_accepted": true
 }

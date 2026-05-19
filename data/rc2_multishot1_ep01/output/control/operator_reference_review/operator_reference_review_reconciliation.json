@@ -1,0 +1,10 @@
+{
+  "previous_validated_count": 0,
+  "full_folder_count": 24,
+  "packet_is_partial": false,
+  "mismatch_details": "No old packet found - using full folder inventory",
+  "old_packet_found": false,
+  "sha256_matches": true,
+  "missing_from_old_packet": [],
+  "extra_in_folder": []
+}

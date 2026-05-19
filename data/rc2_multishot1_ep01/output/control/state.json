@@ -1,6 +1,6 @@
 {
-  "current_state": "state_audit_guard_review_passed",
-  "next_allowed_action": "operator_visual_review_required",
+  "current_state": "operator_reference_decision_captured",
+  "next_allowed_action": "reference_set_intake_validation",
   "production_accepted": false,
   "preview_render_executed": false,
   "new_image_generation_performed": true,
@@ -18,7 +18,7 @@
   "task_id": "RC-COMBINE-V2-COSTUME-VERTICAL-SLICE-001",
   "previous_task": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
   "previous_blocker": "operator_visual_review_required",
-  "timestamp": "2026-05-19T06:53:55.233504+00:00",
+  "timestamp": "2026-05-19T12:04:13.202747Z",
   "generation_count": 1,
   "max_generations": 1,
   "visual_qa_executed": false,
@@ -55,5 +55,9 @@
   "camera_operator_vertical_completed": true,
   "full_frame_corrective_generation_performed": true,
   "operator_visual_review_completed": true,
-  "operator_visual_review_verdict": "ACCEPTED_FOR_NEXT_GATE"
+  "operator_visual_review_verdict": "ACCEPTED_FOR_NEXT_GATE",
+  "operator_reference_decision_captured": true,
+  "operator_decision_source": "human_operator_manual_review",
+  "operator_decision_text": "Я вручную просмотрел все изображения в input/canonical_references и принимаю их как canonical reference set.",
+  "canonical_reference_set_accepted": true
 }
