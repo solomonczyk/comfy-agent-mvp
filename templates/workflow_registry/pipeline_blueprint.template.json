@@ -1,0 +1,9 @@
+{
+  "blueprint_id": "BLUEPRINT_ID",
+  "stages": [],
+  "stage_order": [],
+  "required_artifacts": [],
+  "state_transitions": [],
+  "operator_review_points": [],
+  "dangerous_action_gates": []
+}

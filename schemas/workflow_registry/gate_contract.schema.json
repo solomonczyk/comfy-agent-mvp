@@ -1,0 +1,42 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Gate Contract Schema",
+  "description": "Contract defining a gate's conditions and constraints. Project-agnostic.",
+  "type": "object",
+  "required": ["gate_id", "gate_type", "required_state"],
+  "properties": {
+    "gate_id": {
+      "type": "string",
+      "description": "Unique identifier for the gate"
+    },
+    "gate_type": {
+      "type": "string",
+      "description": "Type of gate"
+    },
+    "required_state": {
+      "type": "string",
+      "description": "Required state to pass the gate"
+    },
+    "allowed_actions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "Actions allowed when gate is open"
+    },
+    "forbidden_actions": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "Actions forbidden when gate is open"
+    },
+    "operator_approval_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether operator approval is required"
+    },
+    "max_attempts": {
+      "type": ["integer", "null"],
+      "description": "Maximum number of attempts allowed"
+    }
+  }
+}

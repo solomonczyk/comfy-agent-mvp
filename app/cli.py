@@ -18614,6 +18614,65 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-WORKFLOW-REGISTRY-PIPELINE-BLUEPRINT-001 — Workflow Registry subcommands
+    combine_workflow_registry_init_parser = subparsers.add_parser(
+        "combine-workflow-registry-init",
+        help="Initialize a new project-agnostic workflow registry"
+    )
+    combine_workflow_registry_init_parser.add_argument(
+        "--registry-root", required=True, help="Registry root directory",
+    )
+    combine_workflow_registry_init_parser.add_argument(
+        "--registry-id", help="Registry ID (default: default_registry)",
+    )
+    combine_workflow_registry_init_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_workflow_registry_validate_parser = subparsers.add_parser(
+        "combine-workflow-registry-validate",
+        help="Validate a workflow registry"
+    )
+    combine_workflow_registry_validate_parser.add_argument(
+        "--registry-root", required=True, help="Registry root directory",
+    )
+    combine_workflow_registry_validate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_workflow_registry_inspect_parser = subparsers.add_parser(
+        "combine-workflow-registry-inspect",
+        help="Inspect a workflow registry and print its contents"
+    )
+    combine_workflow_registry_inspect_parser.add_argument(
+        "--registry-root", required=True, help="Registry root directory",
+    )
+    combine_workflow_registry_inspect_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_pipeline_blueprint_validate_parser = subparsers.add_parser(
+        "combine-pipeline-blueprint-validate",
+        help="Validate a pipeline blueprint file"
+    )
+    combine_pipeline_blueprint_validate_parser.add_argument(
+        "--blueprint", required=True, help="Path to pipeline blueprint JSON file",
+    )
+    combine_pipeline_blueprint_validate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    combine_reference_pack_validate_parser = subparsers.add_parser(
+        "combine-reference-pack-validate",
+        help="Validate a reference pack file"
+    )
+    combine_reference_pack_validate_parser.add_argument(
+        "--reference-pack", required=True, help="Path to reference pack JSON file",
+    )
+    combine_reference_pack_validate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     combine_review_v13_result_parser = subparsers.add_parser(
         "combine-review-v13-result",
         help="Review V13 generation result"
@@ -19805,6 +19864,21 @@ def main() -> int:
         _require_absolute_project_root(args, "combine-execute-corrective-generation")
         from app.cli_commands.corrective_generation import execute_corrective_generation
         return execute_corrective_generation(args)
+    elif args.command == "combine-workflow-registry-init":
+        from app.cli_commands.workflow_registry import init_workflow_registry
+        return init_workflow_registry(args)
+    elif args.command == "combine-workflow-registry-validate":
+        from app.cli_commands.workflow_registry import validate_workflow_registry
+        return validate_workflow_registry(args)
+    elif args.command == "combine-workflow-registry-inspect":
+        from app.cli_commands.workflow_registry import inspect_workflow_registry
+        return inspect_workflow_registry(args)
+    elif args.command == "combine-pipeline-blueprint-validate":
+        from app.cli_commands.workflow_registry import validate_pipeline_blueprint
+        return validate_pipeline_blueprint(args)
+    elif args.command == "combine-reference-pack-validate":
+        from app.cli_commands.workflow_registry import validate_reference_pack
+        return validate_reference_pack(args)
     elif args.command == "combine-review-v13-result":
         _require_absolute_project_root(args, "combine-review-v13-result")
         return combine_review_v13_result(args)

@@ -1,0 +1,85 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Reference Pack Schema",
+  "description": "Collection of reference assets for a project/episode. Project-agnostic, supports slot descriptions without actual images.",
+  "type": "object",
+  "required": ["reference_pack_id"],
+  "properties": {
+    "reference_pack_id": {
+      "type": "string",
+      "description": "Unique identifier for the reference pack"
+    },
+    "project_binding_required": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the pack must be bound to a specific project"
+    },
+    "reference_types": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["style", "character", "location", "camera", "lighting", "quality", "negative", "motion", "voice", "editorial"]
+      },
+      "default": [],
+      "description": "Types of references in the pack"
+    },
+    "items": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["reference_id", "reference_type", "description"],
+        "properties": {
+          "reference_id": {"type": "string"},
+          "reference_type": {
+            "type": "string",
+            "enum": ["style", "character", "location", "camera", "lighting", "quality", "negative", "motion", "voice", "editorial"]
+          },
+          "description": {"type": "string"},
+          "path": {
+            "type": ["string", "null"],
+            "description": "Optional path to actual reference asset. Can be null in project-agnostic context."
+          },
+          "metadata": {
+            "type": "object",
+            "default": {},
+            "description": "Additional metadata"
+          },
+          "required": {
+            "type": "boolean",
+            "default": true
+          }
+        }
+      },
+      "default": [],
+      "description": "Reference items"
+    },
+    "usage_policy": {
+      "type": "object",
+      "default": {},
+      "description": "Usage policy for the reference pack",
+      "properties": {
+        "allow_slot_description": {
+          "type": "boolean",
+          "default": true
+        },
+        "allow_optional_paths": {
+          "type": "boolean",
+          "default": true
+        },
+        "require_actual_images": {
+          "type": "boolean",
+          "default": false
+        },
+        "allow_metadata_only": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "operator_review_required": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether operator review is required"
+    }
+  }
+}

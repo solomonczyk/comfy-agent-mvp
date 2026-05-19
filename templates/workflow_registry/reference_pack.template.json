@@ -1,0 +1,24 @@
+{
+  "reference_pack_id": "REFERENCE_PACK_ID",
+  "project_binding_required": false,
+  "reference_types": [
+    "style",
+    "character",
+    "location",
+    "camera",
+    "lighting",
+    "quality",
+    "negative",
+    "motion",
+    "voice",
+    "editorial"
+  ],
+  "items": [],
+  "usage_policy": {
+    "allow_slot_description": true,
+    "allow_optional_paths": true,
+    "require_actual_images": false,
+    "allow_metadata_only": true
+  },
+  "operator_review_required": true
+}

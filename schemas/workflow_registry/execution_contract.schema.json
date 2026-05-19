@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Execution Contract Schema",
+  "description": "Contract defining execution constraints for a workflow. Project-agnostic.",
+  "type": "object",
+  "required": ["execution_id", "workflow_id", "blueprint_id"],
+  "properties": {
+    "execution_id": {
+      "type": "string",
+      "description": "Unique identifier for the execution"
+    },
+    "workflow_id": {
+      "type": "string",
+      "description": "ID of the workflow to execute"
+    },
+    "blueprint_id": {
+      "type": "string",
+      "description": "ID of the pipeline blueprint to use"
+    },
+    "max_generations": {
+      "type": "integer",
+      "default": 1,
+      "description": "Maximum number of generations allowed"
+    },
+    "stop_after_generation": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether to stop after generation"
+    },
+    "blind_retry_allowed": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether blind retry is allowed"
+    },
+    "visual_qa_blocked": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether visual QA is blocked"
+    },
+    "assembly_blocked": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether assembly is blocked"
+    },
+    "downstream_blocked": {
+      "type": "boolean",
+      "default": true,
+      "description": "Whether downstream execution is blocked"
+    },
+    "production_accepted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether production acceptance is granted"
+    }
+  }
+}

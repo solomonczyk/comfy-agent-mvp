@@ -1,0 +1,87 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Pipeline Blueprint Schema",
+  "description": "Blueprint defining pipeline stages, transitions, and review points. Project-agnostic.",
+  "type": "object",
+  "required": ["blueprint_id"],
+  "properties": {
+    "blueprint_id": {
+      "type": "string",
+      "description": "Unique identifier for the blueprint"
+    },
+    "stages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stage_id", "stage_name", "stage_type"],
+        "properties": {
+          "stage_id": {"type": "string"},
+          "stage_name": {"type": "string"},
+          "stage_type": {"type": "string"},
+          "required_artifacts": {
+            "type": "array",
+            "items": {"type": "string"},
+            "default": []
+          },
+          "optional_artifacts": {
+            "type": "array",
+            "items": {"type": "string"},
+            "default": []
+          },
+          "gate_required": {
+            "type": "boolean",
+            "default": false
+          },
+          "operator_review_point": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "default": [],
+      "description": "Pipeline stages"
+    },
+    "stage_order": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "Ordered list of stage IDs"
+    },
+    "required_artifacts": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "Artifacts required by the pipeline"
+    },
+    "state_transitions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from_state", "to_state", "trigger_action"],
+        "properties": {
+          "from_state": {"type": "string"},
+          "to_state": {"type": "string"},
+          "trigger_action": {"type": "string"},
+          "gate_required": {
+            "type": "boolean",
+            "default": false
+          }
+        }
+      },
+      "default": [],
+      "description": "State transition definitions"
+    },
+    "operator_review_points": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "Stage IDs where operator review is required"
+    },
+    "dangerous_action_gates": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "Stage IDs with dangerous action gates"
+    }
+  }
+}

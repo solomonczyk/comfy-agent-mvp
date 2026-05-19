@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Operator Review Packet Schema",
+  "description": "Packet for operator review at decision points. Project-agnostic.",
+  "type": "object",
+  "required": ["packet_id", "review_point"],
+  "properties": {
+    "packet_id": {
+      "type": "string",
+      "description": "Unique identifier for the review packet"
+    },
+    "review_point": {
+      "type": "string",
+      "description": "Review point identifier"
+    },
+    "candidate_assets": {
+      "type": "array",
+      "items": {"type": "object"},
+      "default": [],
+      "description": "Candidate assets for review"
+    },
+    "context": {
+      "type": "object",
+      "default": {},
+      "description": "Context information for the review"
+    },
+    "decision_options": {
+      "type": "array",
+      "items": {"type": "string"},
+      "default": [],
+      "description": "Available decision options"
+    },
+    "constraints": {
+      "type": "object",
+      "default": {},
+      "description": "Constraints on the review decision"
+    },
+    "production_accepted": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether production acceptance is granted"
+    }
+  }
+}

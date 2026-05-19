@@ -1,0 +1,14 @@
+{
+  "registry_id": "PROJECT_REGISTRY_ID",
+  "version": "1.0.0",
+  "workflow_contracts": {},
+  "pipeline_blueprints": {},
+  "reference_packs": {},
+  "gate_contracts": {},
+  "execution_contracts": {},
+  "metadata": {
+    "created": "ISO_TIMESTAMP",
+    "description": "Project-agnostic workflow registry",
+    "project_binding_required": false
+  }
+}
