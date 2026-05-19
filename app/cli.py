@@ -11834,6 +11834,54 @@ def combine_run_qa_canon_engine(args: argparse.Namespace) -> int:
     return 0
 
 
+def combine_run_visual_reference_curator(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-VISUAL-REFERENCE-CURATOR-AGENT-001 — Run Visual Reference Curator Agent.
+
+    This command classifies canonical references by role, registers rejected assets
+    as negative references, diagnoses reference misuse, and creates corrective
+    generation packages. It does NOT perform any generation, retry, ComfyUI submit,
+    assembly, or downstream actions.
+    """
+    from pathlib import Path
+
+    from app.agents.visual_reference_curator import VisualReferenceCuratorRunner
+
+    project_root = Path(args.project_root)
+    latest_generated_asset = args.latest_generated_asset
+    operator_visual_verdict = args.operator_visual_verdict
+    rejection_reason = args.rejection_reason
+    json_output = args.json
+
+    runner = VisualReferenceCuratorRunner(project_root)
+
+    # Run the visual reference curator
+    result = runner.run(
+        latest_generated_asset=latest_generated_asset,
+        operator_visual_verdict=operator_visual_verdict,
+        rejection_reason=rejection_reason,
+    )
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Visual Reference Curator Agent Result")
+        print(f"  Verdict: {result['verdict']}")
+        print(f"  Next State: {result['next_state']}")
+        print(f"  Next Action: {result['next_action']}")
+        print(f"  Generation Performed: {result['generation_performed']}")
+        print(f"  Retry Attempted: {result['retry_attempted']}")
+        print(f"  ComfyUI Submit Executed: {result['comfyui_submit_executed']}")
+        print(f"  Visual Acceptance Executed: {result['visual_acceptance_executed']}")
+        print(f"  Assembly Executed: {result['assembly_executed']}")
+        print(f"  Downstream Executed: {result['downstream_executed']}")
+        print(f"  Production Accepted: {result['production_accepted']}")
+        print(f"  References Classified: {result['classification_results']['total_references']}")
+        print(f"  Quality Only Refs: {len(result['classification_results']['quality_only_refs'])}")
+        print(f"  Negative Reference Registered: {result['negative_reference']['asset_path']}")
+
+    return 0
+
+
 def main() -> int:
     """RC-COMBINE-V2-22001-26000 — Run QA Canon Engine on a candidate asset.
 
@@ -18808,6 +18856,27 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-VISUAL-REFERENCE-CURATOR-AGENT-001 — Visual Reference Curator Agent
+    combine_run_visual_reference_curator_parser = subparsers.add_parser(
+        "combine-run-visual-reference-curator",
+        help="Run Visual Reference Curator Agent to classify references and prepare corrective package"
+    )
+    combine_run_visual_reference_curator_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_run_visual_reference_curator_parser.add_argument(
+        "--latest-generated-asset", required=True, help="Latest generated asset filename",
+    )
+    combine_run_visual_reference_curator_parser.add_argument(
+        "--operator-visual-verdict", required=True, help="Operator visual verdict (e.g., REJECTED)",
+    )
+    combine_run_visual_reference_curator_parser.add_argument(
+        "--rejection-reason", required=True, help="Reason for rejection",
+    )
+    combine_run_visual_reference_curator_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-FRESH-VISUAL-GENERATION-NO-ASSET-RECONCILIATION-001 — No-Asset Reconciliation
     combine_reconcile_no_asset_generation_parser = subparsers.add_parser(
         "combine-reconcile-no-asset-generation",
@@ -20188,6 +20257,9 @@ def main() -> int:
     elif args.command == "combine-run-qa-canon-engine":
         _require_absolute_project_root(args, "combine-run-qa-canon-engine")
         return combine_run_qa_canon_engine(args)
+    elif args.command == "combine-run-visual-reference-curator":
+        _require_absolute_project_root(args, "combine-run-visual-reference-curator")
+        return combine_run_visual_reference_curator(args)
     elif args.command == "combine-visual-qa-package":
         _require_absolute_project_root(args, "combine-visual-qa-package")
         return combine_generated_asset_visual_qa_package(args)

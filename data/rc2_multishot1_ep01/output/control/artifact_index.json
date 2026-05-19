@@ -1157,7 +1157,14 @@
   "agent_operator_review_required": true,
   "next_layer_ready": "RC-COMBINE-V2-54001-62000 Brief Intake Contract Layer",
   "artifacts": [
-    "human_preview_review_gate_proof.json"
+    "human_preview_review_gate_proof.json",
+    "visual_reference_curator_agent_contract.json",
+    "canonical_reference_role_map.json",
+    "reference_usage_policy.json",
+    "negative_reference_evidence.json",
+    "reference_misuse_diagnosis.json",
+    "corrective_reference_bound_generation_package.json",
+    "corrective_generation_authorization_packet.json"
   ],
   "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-NO-ASSET-RECONCILIATION-001",
   "created_timestamp": "2026-05-08T15:32:55.580164+00:00",
@@ -1755,5 +1762,9 @@
   "reference_bound_generation_preflight": "output\\control\\reference_bound_generation\\reference_bound_generation_preflight.json",
   "reference_bound_generation_manifest": "output\\control\\reference_bound_generation\\reference_bound_generation_manifest.json",
   "reference_bound_generation_result_review": "output\\control\\reference_bound_generation\\reference_bound_generation_result_review.json",
-  "reference_bound_generation_proof": "output\\control\\reference_bound_generation\\reference_bound_generation_proof.json"
+  "reference_bound_generation_proof": "output\\control\\reference_bound_generation\\reference_bound_generation_proof.json",
+  "last_updated": "2026-05-19T12:52:14.618969+00:00",
+  "last_verdict": "CORRECTIVE_PACKAGE_READY",
+  "last_state": "corrective_reference_bound_generation_authorization_required",
+  "last_action": "corrective_reference_bound_generation_authorization_required"
 }
