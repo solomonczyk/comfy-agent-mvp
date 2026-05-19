@@ -1,0 +1,18 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001",
+  "document_type": "corrective_generation_manifest",
+  "timestamp": "2026-05-18T11:10:20.918648",
+  "generation_count": 1,
+  "max_generations": 1,
+  "workflow_path": "data\\rc2_multishot1_ep01\\output\\control\\fresh_visual_candidate\\submitted_workflow.json",
+  "workflow_hash": null,
+  "prompt_id": "62cf0c52-7f45-4b75-8fa1-3fcfc9d70fbc",
+  "execute_mode": true,
+  "generated_assets": [
+    "data\\rc2_multishot1_ep01\\output\\control\\fresh_visual_candidate\\combine_v2_corrective_1779095420_00001_.png"
+  ],
+  "stop_after_generation": true,
+  "visual_qa_blocked": true,
+  "assembly_blocked": true,
+  "downstream_blocked": true
+}

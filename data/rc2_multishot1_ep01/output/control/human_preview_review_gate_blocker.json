@@ -1,0 +1,17 @@
+{
+  "task_id": "RC-COMBINE-V2-HUMAN-PREVIEW-REVIEW-GATE-001",
+  "gate_blocked": true,
+  "blocker_type": "missing_operator_decision",
+  "reason": "Operator preview decision has not been provided. The gate cannot proceed without a valid operator verdict. Agent must not fabricate or infer a verdict.",
+  "resolution": "Create preview_operator_decision_input.json with a valid operator verdict (accepted_for_voice_stage, rejected_needs_preview_fix, needs_manual_review).",
+  "agent_may_not_choose_verdict": true,
+  "agent_may_not_accept_preview": true,
+  "fake_visual_acceptance_prevented": true,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "timestamp": "2026-05-09T10:58:36.407871+00:00"
+}

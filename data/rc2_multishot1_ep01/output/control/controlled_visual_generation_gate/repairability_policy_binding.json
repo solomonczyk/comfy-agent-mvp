@@ -1,0 +1,9 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "repairability_policy_binding",
+  "timestamp": "2026-05-18T08:00:44.095921+00:00",
+  "policy_source": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\fresh_visual_strategy\\repairability_aware_visual_policy.json",
+  "policy_loaded": true,
+  "qa_repairability_gate_active": true,
+  "unknown_repairability_blocks": true
+}

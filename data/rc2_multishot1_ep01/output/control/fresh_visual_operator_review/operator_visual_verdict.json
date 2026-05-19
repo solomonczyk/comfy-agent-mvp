@@ -1,0 +1,18 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-HUMAN-VERDICT-REJECTION-001",
+  "document_type": "operator_visual_verdict",
+  "timestamp": "2026-05-18T16:48:00+02:00",
+  "verdict_source": "human_operator",
+  "agent_generated_verdict": false,
+  "operator_visual_review_executed": true,
+  "operator_verdict": "rejected_needs_corrective_plan",
+  "accepted_as_concept_reference": true,
+  "accepted_as_quality_reference": false,
+  "accepted_as_final_visual": false,
+  "production_accepted": false,
+  "human_operator_feedback": "Как общая изначальная картинка, для какой-то сказки, до исправления и улучшения подойдет, а если брать за эталон/референс качества — конечно же нет.",
+  "candidate_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\fresh_visual_candidates\\combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+  "candidate_sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+  "current_state": "fresh_visual_rejected",
+  "next_allowed_action": "corrective_visual_plan_review_required"
+}

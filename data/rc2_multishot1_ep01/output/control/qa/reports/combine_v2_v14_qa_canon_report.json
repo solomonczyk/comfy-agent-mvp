@@ -1,0 +1,87 @@
+{
+  "candidate_version": "v14",
+  "scene_type": "unknown",
+  "canons_used": [
+    "universal_quality_v1"
+  ],
+  "region_check_result": {
+    "image_path": "data\\rc2_multishot1_ep01\\data\\rc2_multishot1_ep01\\output\\assets\\combine_v2_v14_candidate_1778242939_00001_.png",
+    "readable": false,
+    "dimensions": {
+      "pass": false,
+      "error": "file_not_found"
+    },
+    "file_size": {
+      "exists": false,
+      "pass": false,
+      "error": "file_not_found"
+    },
+    "stub_asset": true,
+    "read_error": "file_not_found",
+    "region_checks_pass": false
+  },
+  "opencv_result": {
+    "opencv_available": true,
+    "checks_executed": false,
+    "fallback_reason": "image_file_not_found"
+  },
+  "operator_feedback_used": true,
+  "detected_defects": [
+    "stub_asset",
+    "unreadable_asset",
+    "head_not_fully_in_frame",
+    "top_of_head_cropped",
+    "portrait_framing_failed",
+    "over_tight_face_crop"
+  ],
+  "critical_failures": [
+    "stub_asset",
+    "unreadable_asset"
+  ],
+  "decision": "candidate_ok_for_pipeline_review",
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "recommended_next_action": "pipeline_review_required",
+  "timestamp": "2026-05-08T14:23:37.541441",
+  "framing_checklist": {
+    "full_head_visible": true,
+    "top_of_head_not_cropped": true,
+    "forehead_not_cropped": true,
+    "face_scale_acceptable": true,
+    "margin_above_head": true
+  },
+  "mouth_teeth_preserved_from_v13": true,
+  "v13_quality_preserved": true,
+  "v13_framing_defects_checked": true,
+  "checked_defects": [
+    "stub_asset",
+    "unreadable_asset",
+    "severe_blur",
+    "major_anatomy_failure",
+    "major_object_deformation",
+    "critical_uncanny_artifact",
+    "artifact_corruption",
+    "low_micro_detail",
+    "blur",
+    "composition_failed",
+    "head_not_fully_in_frame",
+    "top_of_head_cropped",
+    "over_tight_face_crop",
+    "portrait_framing_failed",
+    "bad_teeth",
+    "unnatural_mouth",
+    "lip_teeth_boundary_failed",
+    "facial_anatomy_failed",
+    "synthetic_doll_like_face",
+    "plastic_skin",
+    "borderline_skin_texture",
+    "minor_blur",
+    "style_uncertainty"
+  ],
+  "qa_canon_engine_used": true,
+  "universal_canon_used": true,
+  "human_face_canon_used": true,
+  "operator_feedback_memory_used": true,
+  "negative_reference_used": true
+}

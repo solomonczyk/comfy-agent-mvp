@@ -1,0 +1,13 @@
+{
+  "authorization_type": "controlled_preview_rerender",
+  "authorized_by": "human_operator",
+  "authorized": true,
+  "max_preview_renders": 1,
+  "target_state_before": "controlled_preview_rerender_authorization_required",
+  "allowed_action": "controlled_preview_rerender",
+  "stop_after_preview_render": true,
+  "voice_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false
+}

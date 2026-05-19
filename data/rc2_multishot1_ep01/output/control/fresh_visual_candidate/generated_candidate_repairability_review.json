@@ -1,0 +1,26 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "generated_candidate_repairability_review",
+  "timestamp": "2026-05-18T08:00:44.923406+00:00",
+  "qa_repairability_gate_active": true,
+  "unknown_repairability_blocks": true,
+  "negative_references_enforced": [
+    "v12_bad_teeth",
+    "v12_unnatural_mouth",
+    "v12_lip_teeth_boundary",
+    "v13_framing_defects",
+    "identity_drift",
+    "static_duplicate_frame",
+    "low_detail_mushy",
+    "wrong_style"
+  ],
+  "negative_reference_count": 8,
+  "defects_identified": [],
+  "defects_with_unknown_repairability": [],
+  "repairability_blocking_defects": [],
+  "repairability_verdict": "PASS_OPERATOR_REVIEW_REQUIRED",
+  "note": "Technical repairability pre-check complete. Visual defect assessment requires human operator review.",
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "production_accepted": false
+}

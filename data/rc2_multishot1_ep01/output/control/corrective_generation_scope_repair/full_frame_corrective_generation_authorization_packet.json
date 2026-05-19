@@ -1,0 +1,34 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-GENERATION-SCOPE-REPAIR-001",
+  "packet_name": "full_frame_corrective_generation_authorization_packet",
+  "authorization_status": "pending_operator_authorization",
+  "generation_authorized_now": false,
+  "future_allowed_action_if_approved": "execute_one_full_frame_corrective_generation",
+  "max_future_generations": 1,
+  "retry_authorized": false,
+  "blind_retry_allowed": false,
+  "stop_after_generation": true,
+  "visual_qa_acceptance_allowed": false,
+  "operator_visual_review_required_after_generation": true,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "required_contracts": [
+    "full_frame_corrective_generation_contract.json",
+    "reference_usage_scope_policy.json",
+    "full_frame_corrective_prompt_recipe.json"
+  ],
+  "target_output_type": "full_frame_production_visual_candidate",
+  "forbidden_framing": [
+    "eye_close_up",
+    "mouth_close_up",
+    "skin_macro_close_up",
+    "nose_close_up",
+    "single_body_part_crop",
+    "isolated_face_fragment",
+    "medical_or_beauty_macro_crop",
+    "reference_body_part_recreation"
+  ],
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:17:00+02:00"
+}

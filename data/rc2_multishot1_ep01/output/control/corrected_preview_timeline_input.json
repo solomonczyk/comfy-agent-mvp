@@ -1,0 +1,46 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+  "timeline_empty": false,
+  "video_tracks_empty": true,
+  "asset_refs_present": true,
+  "edl_operations_applied": true,
+  "expected_visual_segments": 2,
+  "ready_for_preview_render": true,
+  "scenes_count": 1,
+  "video_main_clips": 0,
+  "video_overlay_clips": 0,
+  "asset_refs_count": 1,
+  "edl_operations": [
+    {
+      "operation": "insert_clip",
+      "scene_id": "",
+      "source": "",
+      "target": "",
+      "applied": true
+    },
+    {
+      "operation": "add_voiceover_placeholder",
+      "scene_id": "",
+      "source": "",
+      "target": "",
+      "applied": true
+    },
+    {
+      "operation": "apply_transition",
+      "scene_id": "",
+      "source": "",
+      "target": "",
+      "applied": true
+    },
+    {
+      "operation": "add_subtitle",
+      "scene_id": "",
+      "source": "",
+      "target": "",
+      "applied": true
+    }
+  ],
+  "repair_contract_consumed": true,
+  "repair_contract_type": "preview_repair_contract",
+  "timestamp": "2026-05-10T06:54:22.683737+00:00"
+}

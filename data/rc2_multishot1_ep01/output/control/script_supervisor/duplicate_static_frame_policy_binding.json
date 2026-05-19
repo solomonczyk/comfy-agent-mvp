@@ -1,0 +1,30 @@
+{
+  "report_id": "duplicate_static_frame_policy_binding",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "role": "script_supervisor",
+  "policy_id": "continuity_guard_policy",
+  "rule_id": "CG-RULE-003",
+  "description": "Binding for duplicate/static frame detection policy",
+  "threshold": {
+    "duplicate_static_ratio_warning": 0.3,
+    "duplicate_static_ratio_blocker": 0.5,
+    "max_consecutive_static_frames": 3
+  },
+  "detection_methods": [
+    "frame_hash_comparison",
+    "motion_vector_analysis",
+    "pixel_difference_threshold"
+  ],
+  "actions": {
+    "warning": "require_preview_correction_plan",
+    "blocker": "block_preview_acceptance_and_require_rerender"
+  },
+  "current_status": {
+    "duplicate_static_ratio": 0.0,
+    "max_consecutive_static_frames": 0,
+    "detection_performed": false
+  },
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

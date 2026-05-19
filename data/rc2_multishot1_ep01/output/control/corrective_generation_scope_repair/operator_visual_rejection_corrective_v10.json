@@ -1,0 +1,14 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-GENERATION-SCOPE-REPAIR-001",
+  "reviewed_asset": "f:/ComfyUI/comfy-agent-mvp/data/outputs/corrective_v10/corrective_v10_00001_.png",
+  "prompt_id": "2a40c014-f7b1-4b0a-9e8c-1c5d4e6f7a8b",
+  "operator_verdict": "REJECTED",
+  "rejection_type": "composition_scope_failure",
+  "failure_class": "body_part_crop_instead_of_full_frame_candidate",
+  "human_reason": "Generated result is only an eye/face close-up. We are not approving body parts one by one. The candidate must be a full production frame.",
+  "technical_generation_completed": true,
+  "technical_pass_not_visual_pass": true,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false
+}

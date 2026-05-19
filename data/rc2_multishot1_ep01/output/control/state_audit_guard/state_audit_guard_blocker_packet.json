@@ -1,0 +1,107 @@
+{
+  "packet_id": "state_audit_guard_blocker_packet",
+  "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+  "role": "state_audit_guard",
+  "timestamp": "2026-05-19T06:17:27.326883+00:00",
+  "blocker_detected": true,
+  "blocker_count": 18,
+  "blockers": [
+    {
+      "type": "validation_blocker",
+      "reason": "Forbidden action flag comfyui_submit_executed is true without explicit gate",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims git clean but repository is dirty: checkpoint_resolver_freeze_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims tests_pass but test file not found: controlled_preview_rerender_execute_002_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims git clean but repository is dirty: controlled_preview_rerender_execute_002_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims tests_pass but test file not found: fresh_visual_generation_preflight_cleanup_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims git clean but repository is dirty: fresh_visual_generation_preflight_cleanup_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims git clean but repository is dirty: human_preview_review_gate_fix_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims git clean but repository is dirty: RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_freeze_fix_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims git clean but repository is dirty: RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims tests_pass but test file not found: state_audit_blocker_resolution_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Proof claims git clean but repository is dirty: state_audit_blocker_resolution_proof.json",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "comfyui submit executed without gate (comfyui_submit_executed=true)",
+      "severity": "blocker"
+    },
+    {
+      "type": "validation_blocker",
+      "reason": "Git repository is dirty - uncommitted changes detected",
+      "severity": "blocker"
+    }
+  ],
+  "required_next_action": "state_audit_blocker_resolution_required",
+  "verdict": "BLOCKED",
+  "next_state": "state_audit_blocker_resolution_required",
+  "next_allowed_action": "state_audit_blocker_resolution_required",
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "traceable": true
+}

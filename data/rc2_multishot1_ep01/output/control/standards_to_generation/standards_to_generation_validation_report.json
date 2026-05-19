@@ -1,0 +1,45 @@
+{
+  "report_id": "standards_to_generation_validation_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "validation_checks": {
+    "standards_pack_loaded": true,
+    "standards_pack_valid": true,
+    "qa_binding_created": true,
+    "qc_binding_created": true,
+    "tester_binding_created": true,
+    "visual_qa_binding_created": true,
+    "script_supervisor_binding_created": true,
+    "state_audit_guard_binding_created": true,
+    "operator_review_binding_created": true,
+    "qa_qc_tester_roles_remain_separated": true,
+    "technical_pass_not_visual_pass_enforced": true,
+    "operator_review_human_only_enforced": true,
+    "production_acceptance_blocked_without_gate": true
+  },
+  "script_supervisor_checks": {
+    "contract_created": true,
+    "standards_binding_created": true,
+    "responsibility_matrix_created": true,
+    "forbidden_actions_matrix_created": true,
+    "continuity_guard_policy_created": true,
+    "fake_decision_guard_created": true,
+    "voice_assembly_blocker_created": true,
+    "readiness_report_created": true
+  },
+  "generation_checks": {
+    "corrective_plan_validated": true,
+    "generation_gate_created": true,
+    "preflight_passed": true,
+    "generation_executed": true,
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_blocked": true,
+    "blind_retry_blocked": true,
+    "generated_asset_manifest_created": true,
+    "real_asset_found": true
+  },
+  "overall_valid": true,
+  "traceable": true
+}

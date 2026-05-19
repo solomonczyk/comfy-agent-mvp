@@ -1,0 +1,11 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001-RERUN",
+  "timestamp": "2026-05-18T12:09:19.555150+00:00",
+  "stage": "fresh_visual_generation_asset_manifest",
+  "prompt_id": "b3a8f0ea-8004-40f6-be19-4192a633817a",
+  "generated_assets": [],
+  "assets_count": 0,
+  "assets_valid": true,
+  "fake_assets_detected": false,
+  "stub_assets_detected": false
+}

@@ -1,0 +1,51 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-HUMAN-VERDICT-REJECTION-001",
+  "document_type": "operator_visual_rejection",
+  "timestamp": "2026-05-18T16:48:00+02:00",
+  "verdict_source": "human_operator",
+  "operator_verdict": "rejected_needs_corrective_plan",
+  "human_operator_feedback": "Как общая изначальная картинка, для какой-то сказки, до исправления и улучшения подойдет, а если брать за эталон/референс качества — конечно же нет.",
+  "candidate_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\fresh_visual_candidates\\combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+  "candidate_sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+  "defects": [
+    "doll_like_face",
+    "over_smoothed_skin",
+    "glassy_unrealistic_eyes",
+    "weak_mouth_teeth_detail",
+    "low_skin_texture_detail",
+    "not_suitable_as_quality_reference"
+  ],
+  "defect_details": {
+    "doll_like_face": {
+      "severity": "high",
+      "description": "Face appears plastic/doll-like, lacks natural human facial structure and depth"
+    },
+    "over_smoothed_skin": {
+      "severity": "high",
+      "description": "Skin is overly smoothed, lacking natural pores and micro-texture"
+    },
+    "glassy_unrealistic_eyes": {
+      "severity": "medium",
+      "description": "Eyes have a glassy, artificial appearance despite being blue and beautiful"
+    },
+    "weak_mouth_teeth_detail": {
+      "severity": "medium",
+      "description": "Mouth and teeth anatomy lacks sufficient detail and realism"
+    },
+    "low_skin_texture_detail": {
+      "severity": "high",
+      "description": "Overall skin texture detail is insufficient for quality reference"
+    },
+    "not_suitable_as_quality_reference": {
+      "severity": "high",
+      "description": "Overall quality is insufficient to serve as a production quality reference"
+    }
+  },
+  "accepted_as_concept_reference": true,
+  "accepted_as_quality_reference": false,
+  "accepted_as_final_visual": false,
+  "production_accepted": false,
+  "requires_corrective_plan": true,
+  "current_state": "fresh_visual_rejected",
+  "next_allowed_action": "corrective_visual_plan_review_required"
+}

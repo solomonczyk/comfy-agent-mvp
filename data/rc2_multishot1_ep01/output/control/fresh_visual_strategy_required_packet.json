@@ -1,0 +1,18 @@
+{
+  "task_id": "RC-COMBINE-V2-GENERATED-VISUAL-PURGE-001",
+  "timestamp": "2026-05-10T11:24:38.704840+00:00",
+  "operator_directive": "fresh visual strategy required",
+  "reason": "All previous generated visuals purged. No canonical visual assets remain.",
+  "current_state": "visual_outputs_purged_rebuild_required",
+  "next_allowed_action": "fresh_visual_strategy_required",
+  "production_accepted": false,
+  "voice_generation_ready": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "required_before_next_generation": [
+    "Operator-approved generation strategy",
+    "Reference image validation",
+    "Workflow recipe review",
+    "ComfyUI resource check"
+  ]
+}

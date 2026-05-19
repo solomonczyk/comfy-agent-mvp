@@ -1,0 +1,66 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "corrective_plan",
+  "timestamp": "2026-05-18T08:13:00.000000+00:00",
+  "based_on_rejection": "operator_visual_rejection.json",
+  "candidate_id": "combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+  "corrective_plan_status": "draft_pending_operator_approval",
+  "defects_to_address": [
+    {
+      "defect_id": "VD-001",
+      "description": "Mouth and teeth artifacts",
+      "root_cause_hypothesis": "KSampler denoise=1.0 + cfg=6.5 causes over-confident sampling in mouth region; no ControlNet guidance for facial structure",
+      "corrective_actions": [
+        "Add DetailerFixer / ADetailer node targeting mouth/teeth region",
+        "Reduce CFG to 5.5–6.0 to soften over-sharpening artifacts",
+        "Add face-specific negative prompt entries for 'bad teeth, crooked teeth, distorted mouth'"
+      ]
+    },
+    {
+      "defect_id": "VD-002",
+      "description": "Over-smoothed AI-doll skin",
+      "root_cause_hypothesis": "SDXL checkpoint realvisxlV50 with high denoising produces plastic skin; missing skin detail LoRA",
+      "corrective_actions": [
+        "Add skin texture LoRA (e.g. add_detail or skin_texture) at weight 0.4–0.6",
+        "Add to positive prompt: 'natural skin pores, subtle skin texture, realistic skin grain'",
+        "Add to negative prompt: 'smooth plastic skin, airbrushed, over-processed skin'"
+      ]
+    },
+    {
+      "defect_id": "VD-003",
+      "description": "Unnatural eye rendering",
+      "root_cause_hypothesis": "No eye-specific detail enforcement; SDXL tends to stylise eyes at 1024px without guidance",
+      "corrective_actions": [
+        "Add ADetailer node targeting eye region with eye-detail model",
+        "Add to positive prompt: 'detailed iris, natural eye reflections, realistic eye whites, detailed pupil'",
+        "Consider eye_detail LoRA at weight 0.3–0.5"
+      ]
+    },
+    {
+      "defect_id": "VD-004",
+      "description": "Insufficient natural facial detail",
+      "root_cause_hypothesis": "steps=25 may be insufficient for full facial detail recovery at denoise=1.0 from empty latent",
+      "corrective_actions": [
+        "Increase steps to 30–35",
+        "Add face detail LoRA or use highres fix with face detailing pass",
+        "Consider two-pass generation: base SDXL + upscale + ADetailer face pass"
+      ]
+    }
+  ],
+  "workflow_changes_required": [
+    "Add ADetailer or DetailerFixer for face/mouth/eye inpainting pass",
+    "Add skin texture LoRA",
+    "Tune CFG from 6.5 to 5.5",
+    "Increase steps from 25 to 30-35",
+    "Expand positive prompt with skin/eye detail tokens",
+    "Expand negative prompt with plastic-skin/bad-teeth tokens"
+  ],
+  "generation_forbidden_until": "corrective_plan_operator_approved",
+  "retry_generation_authorized": false,
+  "second_generation_authorized": false,
+  "comfyui_submit_authorized": false,
+  "assembly_authorized": false,
+  "downstream_authorized": false,
+  "production_accepted": false,
+  "required_next_state": "fresh_visual_candidate_rejected_corrective_plan_required"
+}

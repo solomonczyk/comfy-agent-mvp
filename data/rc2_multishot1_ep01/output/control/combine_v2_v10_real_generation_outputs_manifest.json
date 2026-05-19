@@ -1,0 +1,35 @@
+{
+  "stage": "v10_real_generation",
+  "manifest_type": "v10_real_generation_outputs_manifest",
+  "task_id": "RC-COMBINE-V2-13001-15000",
+  "generation_count": 1,
+  "max_generations": 1,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "workflow_submitted": true,
+  "generated_assets": [
+    {
+      "path": "output/assets/combine_v2_v10_photoreal_recovery_shot02_00002_.png",
+      "exists": true,
+      "readable": true,
+      "width": 1024,
+      "height": 1024,
+      "size_bytes": 1465871,
+      "sha256": "3abfb34114acd72293a226ea28715b29739e1c8911d504eddb72e6a1be9fbec3"
+    }
+  ],
+  "asset_paths": [
+    "output/assets/combine_v2_v10_photoreal_recovery_shot02_00002_.png"
+  ],
+  "collection_status": "success",
+  "asset_readable": true,
+  "sha256_present": true,
+  "dimensions_present": true,
+  "stub_asset_detected": false,
+  "canonical_outputs_registered": true,
+  "visual_qa_executed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T06:52:13.357129"
+}

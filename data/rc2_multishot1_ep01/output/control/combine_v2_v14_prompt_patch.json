@@ -1,0 +1,35 @@
+{
+  "task_id": "RC-COMBINE-V2-30001-34000",
+  "candidate_version": "v14",
+  "patch_type": "prompt_patch",
+  "target": "negative_prompt",
+  "positive_prompt_additions": [
+    "portrait shot with full head visible",
+    "slightly pulled back composition",
+    "margin above head",
+    "visible hair and hairline"
+  ],
+  "negative_prompt_strengthened": [
+    "extreme close-up",
+    "cropped head",
+    "cropped forehead",
+    "cut off hair",
+    "face filling entire frame",
+    "macro face crop",
+    "head cut off by frame edge",
+    "top of head missing",
+    "hairline cropped"
+  ],
+  "preserve_from_v13": [
+    "face quality",
+    "skin detail",
+    "sharp eyes",
+    "natural mouth",
+    "photoreal quality",
+    "natural lighting"
+  ],
+  "guidance": "Composition must show full head with margin above. Pull camera back from V13's extreme close-up. No cropped forehead or hairline. Preserve all V13 face quality improvements.",
+  "generation_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T12:07:27.625870+00:00"
+}

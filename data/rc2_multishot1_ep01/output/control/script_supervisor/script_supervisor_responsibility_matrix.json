@@ -1,0 +1,59 @@
+{
+  "report_id": "script_supervisor_responsibility_matrix",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "role": "script_supervisor",
+  "responsibilities": [
+    {
+      "responsibility_id": "SS-001",
+      "name": "timeline_continuity_audit",
+      "description": "Audit timeline artifacts for consistency and completeness",
+      "priority": "high",
+      "blocks": ["assembly", "downstream"]
+    },
+    {
+      "responsibility_id": "SS-002",
+      "name": "preview_continuity_audit",
+      "description": "Audit preview artifacts for motion and development",
+      "priority": "high",
+      "blocks": ["preview_render", "assembly"]
+    },
+    {
+      "responsibility_id": "SS-003",
+      "name": "duplicate_static_frame_detection",
+      "description": "Detect duplicate or static frames that indicate failed preview",
+      "priority": "critical",
+      "blocks": ["preview_acceptance", "assembly"]
+    },
+    {
+      "responsibility_id": "SS-004",
+      "name": "contact_sheet_usefulness_validation",
+      "description": "Validate contact sheets provide useful frame coverage",
+      "priority": "medium",
+      "blocks": ["assembly"]
+    },
+    {
+      "responsibility_id": "SS-005",
+      "name": "operator_decision_authenticity_guard",
+      "description": "Guard against fake or agent-generated operator decisions",
+      "priority": "critical",
+      "blocks": ["assembly", "downstream", "production_accepted"]
+    },
+    {
+      "responsibility_id": "SS-006",
+      "name": "downstream_blocked_state_validation",
+      "description": "Ensure downstream remains blocked until operator review",
+      "priority": "critical",
+      "blocks": ["assembly", "voice_generation", "final_render"]
+    },
+    {
+      "responsibility_id": "SS-007",
+      "name": "visual_output_cannot_be_accepted_by_agent",
+      "description": "Ensure visual acceptance is human/operator-only",
+      "priority": "critical",
+      "blocks": ["visual_qa_acceptance", "production_accepted"]
+    }
+  ],
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

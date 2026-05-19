@@ -1,0 +1,21 @@
+{
+  "report_id": "forbidden_actions_audit_report",
+  "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+  "role": "state_audit_guard",
+  "valid": false,
+  "violations": [
+    "comfyui submit executed without gate (comfyui_submit_executed=true)"
+  ],
+  "findings": [
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "comfyui submit executed without gate (comfyui_submit_executed=true)",
+      "timestamp": "2026-05-19T06:17:27.184062+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    }
+  ],
+  "traceable": true,
+  "timestamp": "2026-05-19T06:17:27.184062+00:00"
+}

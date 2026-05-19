@@ -1,0 +1,20 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+  "review_type": "controlled_preview_rerender_result_review",
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "preview_artifacts_valid": true,
+  "static_detection_executed": true,
+  "duplicate_ratio": 1.0,
+  "duplicate_threshold": 0.85,
+  "preview_static_blocker": true,
+  "preview_valid_for_operator_review": false,
+  "operator_review_required": false,
+  "voice_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false,
+  "errors": [],
+  "warnings": [],
+  "timestamp": "2026-05-10T06:55:25.569055+00:00"
+}

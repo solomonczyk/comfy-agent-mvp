@@ -1,0 +1,166 @@
+{
+  "report_id": "state_audit_guard_final_report",
+  "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+  "role": "state_audit_guard",
+  "timestamp": "2026-05-19T06:17:27.326883+00:00",
+  "verdict": "BLOCKED",
+  "next_state": "state_audit_blocker_resolution_required",
+  "next_action": "state_audit_blocker_resolution_required",
+  "state_consistency_valid": false,
+  "artifact_index_consistency_valid": true,
+  "episode_ledger_consistency_valid": true,
+  "proof_consistency_valid": false,
+  "forbidden_actions_valid": false,
+  "operator_decision_valid": true,
+  "git_proof_valid": false,
+  "total_findings": 21,
+  "blocker_count": 18,
+  "blocker_findings": [
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Forbidden action flag comfyui_submit_executed is true without explicit gate",
+      "timestamp": "2026-05-19T06:17:26.694581+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims git clean but repository is dirty: checkpoint_resolver_freeze_proof.json",
+      "timestamp": "2026-05-19T06:17:26.767090+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims tests_pass but test file not found: controlled_preview_rerender_execute_002_proof.json",
+      "timestamp": "2026-05-19T06:17:26.767642+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims git clean but repository is dirty: controlled_preview_rerender_execute_002_proof.json",
+      "timestamp": "2026-05-19T06:17:26.828087+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims tests_pass but test file not found: fresh_visual_generation_preflight_cleanup_proof.json",
+      "timestamp": "2026-05-19T06:17:26.829188+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims git clean but repository is dirty: fresh_visual_generation_preflight_cleanup_proof.json",
+      "timestamp": "2026-05-19T06:17:26.899884+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims git clean but repository is dirty: human_preview_review_gate_fix_proof.json",
+      "timestamp": "2026-05-19T06:17:26.967546+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-FRESH-VISUAL-GENERATION-GATE-001_proof.json",
+      "timestamp": "2026-05-19T06:17:26.968888+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-FRESH-VISUAL-GENERATION-PLAN-UPDATE-001_proof.json",
+      "timestamp": "2026-05-19T06:17:26.968938+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001_proof.json",
+      "timestamp": "2026-05-19T06:17:26.968938+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims git clean but repository is dirty: RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_freeze_fix_proof.json",
+      "timestamp": "2026-05-19T06:17:27.036683+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_proof.json",
+      "timestamp": "2026-05-19T06:17:27.036683+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims git clean but repository is dirty: RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001_proof.json",
+      "timestamp": "2026-05-19T06:17:27.112596+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims tests_pass but test file not found: RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001_proof.json",
+      "timestamp": "2026-05-19T06:17:27.113138+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims tests_pass but test file not found: state_audit_blocker_resolution_proof.json",
+      "timestamp": "2026-05-19T06:17:27.114712+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Proof claims git clean but repository is dirty: state_audit_blocker_resolution_proof.json",
+      "timestamp": "2026-05-19T06:17:27.183542+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "comfyui submit executed without gate (comfyui_submit_executed=true)",
+      "timestamp": "2026-05-19T06:17:27.184062+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    },
+    {
+      "decision": "blocked",
+      "severity": "blocker",
+      "detail": "Git repository is dirty - uncommitted changes detected",
+      "timestamp": "2026-05-19T06:17:27.245398+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    }
+  ],
+  "production_accepted": false,
+  "traceable": true
+}

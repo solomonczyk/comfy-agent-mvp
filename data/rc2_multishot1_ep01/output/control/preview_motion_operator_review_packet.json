@@ -1,0 +1,43 @@
+{
+  "artifact_type": "preview_motion_operator_review_packet",
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-MOTION-RENDER-V4V5-001",
+  "version": "v4v5",
+  "operator_preview_review_required": true,
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "duplicate_ratio": 0.00417,
+  "duplicate_threshold": 0.85,
+  "duplicate_threshold_passed": true,
+  "static_hold_detected": false,
+  "contact_sheet_useful": true,
+  "review_items": [
+    "motion quality per segment",
+    "duplicate frame ratio",
+    "static hold presence",
+    "contact sheet usefulness",
+    "segment transition smoothness",
+    "overall preview acceptability"
+  ],
+  "allowed_operator_verdicts": [
+    "accepted",
+    "rejected",
+    "needs_fix"
+  ],
+  "agent_may_accept_preview": false,
+  "production_accepted": false,
+  "render_report_summary": {
+    "renderer": "ffmpeg",
+    "frame_count": 720,
+    "fps": 24,
+    "resolution": {
+      "width": 672,
+      "height": 384
+    }
+  },
+  "result_review_summary": {
+    "preview_artifacts_valid": true,
+    "duplicate_ratio": 0.00417,
+    "errors": []
+  },
+  "timestamp": "2026-05-10T11:06:18.230726+00:00"
+}

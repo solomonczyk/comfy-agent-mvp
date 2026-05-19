@@ -1,0 +1,19 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-NO-ASSET-RECONCILIATION-001",
+  "previous_task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001-RERUN",
+  "timestamp": "2026-05-18T13:04:39.047782+00:00",
+  "stage": "fresh_visual_generation_timeout_report",
+  "timeout_type": "polling_exhausted",
+  "prompt_id": "b3a8f0ea-8004-40f6-be19-4192a633817a",
+  "polling_attempts": 60,
+  "polling_interval_seconds": 5,
+  "max_wait_seconds": 300,
+  "comfyui_history_checked": true,
+  "output_images_found": 0,
+  "output_images_expected": 1,
+  "generated_assets_count": 0,
+  "workflow_submitted": true,
+  "generation_performed": true,
+  "retry_after_timeout": false,
+  "blind_retry_attempted": false
+}

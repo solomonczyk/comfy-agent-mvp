@@ -1,0 +1,25 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "generated_candidate_technical_review",
+  "timestamp": "2026-05-18T08:00:44.921248+00:00",
+  "technical_verdict": "PASS",
+  "all_assets_technical_pass": true,
+  "asset_metrics": [
+    {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\fresh_visual_candidates\\combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+      "exists": true,
+      "readable": true,
+      "sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+      "size_bytes": 1368893,
+      "width": 1024,
+      "height": 1024,
+      "technical_pass": true,
+      "blur_metric": 53.08,
+      "brightness_metric": 131.75,
+      "contrast_metric": 62.12
+    }
+  ],
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "production_accepted": false
+}

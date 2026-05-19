@@ -1,0 +1,9 @@
+{
+  "current_state": "v14_generation_runtime_blocked",
+  "next_allowed_action": "v14_generation_runtime_blocked",
+  "production_accepted": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "error": "ComfyUI execution error: [enforce fail at alloc_cpu.cpp:117] data. DefaultCPUAllocator: not enough memory: you tried to allocate 12582912 bytes.\n",
+  "timestamp": "2026-05-08T12:10:39.277064+00:00"
+}

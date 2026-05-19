@@ -1,0 +1,11 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001-RERUN",
+  "timestamp": "2026-05-18T12:09:19.555150+00:00",
+  "stage": "fresh_visual_generation_execution_request",
+  "execute": true,
+  "max_generations": 1,
+  "comfyui_host": "127.0.0.1",
+  "comfyui_port": 8188,
+  "generation_performed": false,
+  "production_accepted": false
+}

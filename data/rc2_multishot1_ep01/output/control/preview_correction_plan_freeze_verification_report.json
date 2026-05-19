@@ -1,0 +1,73 @@
+{
+  "task_id": "RC-COMBINE-V2-PREVIEW-CORRECTION-PLAN-FREEZE-VERIFY-001",
+  "verification_type": "freeze_proof_review",
+  "preview_correction_plan_found": true,
+  "required_artifacts_present": true,
+  "json_valid": true,
+  "artifact_index_consistent": false,
+  "episode_ledger_consistent": true,
+  "state_consistent": false,
+  "fake_operator_decision_absent_or_invalidated": true,
+  "duplicate_static_frame_blocker_addressed": true,
+  "rerender_not_executed": true,
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "tests_pass": false,
+  "py_compile_pass": true,
+  "cli_validation_pass": true,
+  "git_commit_present": true,
+  "push_status": "pushed_origin_main",
+  "git_status_clean": false,
+  "verdict": "NEEDS_FIX",
+  "blockers": [
+    "STATE_INCONSISTENCY: state.json (preview_operator_review_required) disagrees with artifact_index.json (preview_correction_plan_required) and CLI status (preview_correction_plan_required)",
+    "GIT_STATUS_NOT_CLEAN: app/cli.py is modified and app/timeline/preview_correction/ is untracked",
+    "PYTEST_COLLECTION_ERRORS: 3 test collection errors (test_inspect_diag.py, test_combine_corrective_retry_one_submit.py, test_combine_corrective_retry_result_review.py)"
+  ],
+  "next_allowed_action": "preview_correction_plan_freeze_fix_required",
+  "verification_details": {
+    "artifacts_verified": {
+      "static_preview_root_cause_report.json": "EXISTS - valid JSON - identifies timeline_empty_no_assets_placed as root cause with 93.1% duplicate frames",
+      "preview_correction_plan.json": "EXISTS - valid JSON - addresses duplicate frames, sets next_gate_required to controlled_preview_rerender_authorization_required",
+      "preview_repair_contract.json": "EXISTS - valid JSON - blocks all downstream stages (voice, audio, assembly, downstream, production)",
+      "static_preview_prevention_policy.json": "EXISTS - valid JSON - requires real operator acceptance, blocks voice stage",
+      "controlled_preview_rerender_gate_package.json": "EXISTS - valid JSON - render_authorized_now=false, requires operator authorization"
+    },
+    "state_sources": {
+      "artifact_index.json": "current_state=preview_correction_plan_required, next_allowed_action=preview_correction_plan_required",
+      "state.json": "current_state=preview_operator_review_required, next_allowed_action=preview_operator_review_required",
+      "CLI_status": "current_state=preview_correction_plan_required, next_allowed_action=preview_correction_plan_required"
+    },
+    "fake_operator_decision_status": {
+      "script_supervisor_blocker_report.json": "fake_operator_decision_valid=false, fake_success_prevented=true",
+      "post_preview_operator_decision_proof.json": "real_human_operator_decision_present=false, fake_operator_decision_rejected=true"
+    },
+    "forbidden_actions_audit": {
+      "preview_media": "preview/frames/ directory is empty - no new preview media",
+      "generation_performed": false,
+      "comfyui_submit_executed": false,
+      "retry_attempted": false,
+      "voice_generation_executed": false,
+      "audio_generation_executed": false,
+      "assembly_executed": false,
+      "downstream_executed": false,
+      "production_accepted": false
+    },
+    "git_status": {
+      "branch": "main...origin/main",
+      "modified_files": ["app/cli.py"],
+      "untracked_directories": ["app/timeline/preview_correction/"],
+      "latest_commit": "24806fd RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001"
+    },
+    "test_results": {
+      "py_compile": "PASS",
+      "pytest": "FAIL - 3 errors during collection (test_inspect_diag.py AttributeError, 2 ImportError errors)",
+      "cli_validation": "PASS - combine-status returns ok"
+    }
+  },
+  "timestamp": "2026-05-10T16:41:00+00:00"
+}

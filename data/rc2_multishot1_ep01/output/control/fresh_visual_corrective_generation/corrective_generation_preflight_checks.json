@@ -1,0 +1,58 @@
+{
+  "check_id": "corrective_generation_preflight_checks",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "checks": [
+    {
+      "check_id": "PFC-001",
+      "name": "current_state_check",
+      "status": "passed",
+      "description": "Current state allows controlled generation task"
+    },
+    {
+      "check_id": "PFC-002",
+      "name": "standards_pack_valid_check",
+      "status": "passed",
+      "description": "Standards pack is valid and loaded"
+    },
+    {
+      "check_id": "PFC-003",
+      "name": "script_supervisor_guard_ready_check",
+      "status": "passed",
+      "description": "Script Supervisor guard is ready"
+    },
+    {
+      "check_id": "PFC-004",
+      "name": "corrective_plan_valid_check",
+      "status": "passed",
+      "description": "Corrective plan is validated"
+    },
+    {
+      "check_id": "PFC-005",
+      "name": "workflow_exists_check",
+      "status": "pending",
+      "description": "Workflow file exists and is valid"
+    },
+    {
+      "check_id": "PFC-006",
+      "name": "checkpoint_exists_check",
+      "status": "pending",
+      "description": "Required checkpoint exists"
+    },
+    {
+      "check_id": "PFC-007",
+      "name": "output_path_canonical_check",
+      "status": "passed",
+      "description": "Output path is canonical"
+    },
+    {
+      "check_id": "PFC-008",
+      "name": "max_generations_check",
+      "status": "passed",
+      "description": "max_generations=1 enforced"
+    }
+  ],
+  "overall_status": "pending_model_asset_verification",
+  "traceable": true
+}

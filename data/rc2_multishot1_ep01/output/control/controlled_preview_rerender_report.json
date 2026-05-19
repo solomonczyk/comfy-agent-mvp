@@ -1,0 +1,43 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+  "report_type": "controlled_preview_rerender_report",
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "render_suffix": "v2",
+  "renderer": "ffmpeg",
+  "corrected_timeline_input_consumed": true,
+  "timeline_empty_after_repair": false,
+  "asset_refs_present": true,
+  "video_tracks_present": false,
+  "edl_operations_applied": true,
+  "expected_visual_segments": 2,
+  "fps": 24,
+  "resolution": {
+    "width": 672,
+    "height": 384
+  },
+  "duration_sec": 30.0,
+  "frame_count": 720,
+  "outputs": {
+    "preview_lowres": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_lowres_rerender_v2.mp4",
+      "size_bytes": 739135,
+      "sha256": "8af724a8429b3fb098c050284d10d0b5b052952afdcab5b42ca88631da9b2a27"
+    },
+    "preview_gif": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_rerender_v2.gif",
+      "size_bytes": 5376587,
+      "sha256": "90ae431337b36e7da8ca6b912edf4a014c7039dbb3de07bea43e633fdcff0af8"
+    },
+    "contact_sheet": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\contact_sheet_rerender_v2.jpg",
+      "size_bytes": 603492,
+      "sha256": "6ffac0a6c8f91dbdf0a4b713ef4e01debc9cd9ce3f3b0ada859eec8a1066884c"
+    }
+  },
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-10T06:55:25.569055+00:00"
+}

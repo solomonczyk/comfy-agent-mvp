@@ -1,0 +1,41 @@
+{
+  "report_id": "qc_standards_binding_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+  "role": "qc",
+  "standards_pack_version": "1.0.0",
+  "valid": true,
+  "policies_available": [
+    {
+      "policy_id": "forbidden_actions_policy",
+      "available": true
+    },
+    {
+      "policy_id": "no_blind_retry_policy",
+      "available": true
+    },
+    {
+      "policy_id": "fake_success_policy",
+      "available": true
+    },
+    {
+      "policy_id": "production_acceptance_policy",
+      "available": true
+    }
+  ],
+  "checks_qa_not_operator_acceptance": true,
+  "traceable": true,
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "qc_agent_standard",
+      "policy_id": "forbidden_actions_policy",
+      "rule_id": "any_forbidden_action_blocks_production",
+      "role": "qc",
+      "severity": "blocker",
+      "decision": "pass",
+      "source_artifact": "policies/forbidden_actions_policy.json",
+      "traceable": true
+    }
+  ]
+}

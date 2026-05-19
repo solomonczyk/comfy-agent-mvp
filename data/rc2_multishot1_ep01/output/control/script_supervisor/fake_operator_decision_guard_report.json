@@ -1,0 +1,32 @@
+{
+  "report_id": "fake_operator_decision_guard_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "role": "script_supervisor",
+  "description": "Report on fake operator decision guard status",
+  "audit_performed": true,
+  "artifacts_checked": [
+    "post_preview_routing_decision.json",
+    "post_preview_operator_decision_reconciliation.json",
+    "preview_operator_decision_input.json"
+  ],
+  "findings": {
+    "fake_operator_decision_detected": false,
+    "human_operator_decision_found": true,
+    "agent_generated_decision_detected": false,
+    "decision_valid": true
+  },
+  "guard_status": {
+    "guard_active": true,
+    "guard_triggered": false,
+    "blocker_created": false
+  },
+  "human_operator_verification": {
+    "operator_id": "andrey",
+    "decision_source": "human_operator",
+    "timestamp": "2026-05-18T08:13:00+00:00",
+    "verdict": "REJECTED"
+  },
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

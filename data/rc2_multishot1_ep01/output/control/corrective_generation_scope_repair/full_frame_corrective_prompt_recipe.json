@@ -1,0 +1,60 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-GENERATION-SCOPE-REPAIR-001",
+  "recipe_name": "full_frame_corrective_prompt_recipe",
+  "positive_prompt_requirements": {
+    "must_include": [
+      "full-frame cinematic scene",
+      "main character visible in context",
+      "complete production frame",
+      "scene context and environment visible",
+      "medium shot or three-quarter shot framing",
+      "character integrated into environment",
+      "readable composition with background"
+    ],
+    "must_not_include": [
+      "close-up portrait",
+      "extreme close-up",
+      "macro detail",
+      "eye close-up",
+      "skin texture as primary subject",
+      "isolated face",
+      "beauty macro",
+      "medical close-up"
+    ],
+    "example_positive_prompt": "cinematic full-frame scene, main character in fairytale winter environment, medium shot, character visible from waist up with scene context, natural lighting, high resolution, 8k, detailed environment, complete readable composition, film grain, subtle imperfections, production quality"
+  },
+  "negative_prompt_requirements": {
+    "must_include": [
+      "extreme close-up",
+      "eye close-up",
+      "mouth close-up",
+      "skin macro",
+      "cropped face",
+      "isolated body part",
+      "only one eye",
+      "only lips",
+      "beauty macro photo",
+      "medical close-up",
+      "partial face crop",
+      "no scene context",
+      "missing background",
+      "disembodied face",
+      "floating head"
+    ],
+    "example_negative_prompt": "extreme close-up, eye close-up, mouth close-up, skin macro, cropped face, isolated body part, only one eye, only lips, beauty macro photo, medical close-up, partial face crop, no scene context, missing background, disembodied face, floating head, blur, haze, fog, soft focus, doll, anime, plastic, low quality, bad anatomy, malformed hands, disfigured, oversmooth, airbrushed, cartoon, painting, drawing, illustration, text, watermark, signature"
+  },
+  "prompt_weighting_policy": {
+    "composition_priority": "highest",
+    "identity_and_scene_priority": "high",
+    "skin_eye_mouth_quality_priority": "secondary",
+    "body_part_detail_must_not_override_framing": true
+  },
+  "reference_handling": {
+    "quality_reference_phrases_must_be_weighted_lower": true,
+    "quality_reference_phrases_must_not_appear_first": true,
+    "composition_phrases_must_appear_first": true,
+    "scene_context_phrases_must_precede_detail_phrases": true
+  },
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:17:00+02:00"
+}

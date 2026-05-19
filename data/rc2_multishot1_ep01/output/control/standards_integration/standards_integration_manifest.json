@@ -1,0 +1,26 @@
+{
+  "manifest_id": "standards_integration_manifest",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+  "standards_pack_version": "unknown",
+  "created_at": "2026-05-10T15:00:00+02:00",
+  "roles_integrated": [
+    "qa",
+    "qc",
+    "tester",
+    "visual_qa",
+    "script_supervisor",
+    "state_audit",
+    "operator_review"
+  ],
+  "artifacts_expected": [
+    "qa_standards_binding_report.json",
+    "qc_standards_binding_report.json",
+    "tester_standards_binding_report.json",
+    "visual_qa_standards_binding_report.json",
+    "script_supervisor_standards_binding_report.json",
+    "state_audit_standards_binding_report.json",
+    "operator_review_standards_packet.json"
+  ],
+  "traceable": true
+}

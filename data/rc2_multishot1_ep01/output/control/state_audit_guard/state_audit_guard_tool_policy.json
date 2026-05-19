@@ -1,0 +1,27 @@
+{
+  "policy_id": "state_audit_guard_tool_policy",
+  "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+  "role": "state_audit_guard",
+  "allowed_tools": [
+    "json_diff",
+    "git_checker",
+    "timeline_validator",
+    "hash_verifier"
+  ],
+  "forbidden_tools": [
+    "comfyui_submit",
+    "image_generation",
+    "render_engine",
+    "voice_synthesis",
+    "audio_synthesis",
+    "assembly_pipeline",
+    "downstream_pipeline"
+  ],
+  "no_generation_authorized": true,
+  "no_retry_authorized": true,
+  "no_render_authorized": true,
+  "no_downstream_authorized": true,
+  "traceable": true,
+  "version": "1.0.0",
+  "timestamp": "2026-05-19T06:17:27.325251+00:00"
+}

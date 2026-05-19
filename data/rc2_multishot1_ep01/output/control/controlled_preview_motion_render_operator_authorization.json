@@ -1,0 +1,22 @@
+{
+  "artifact_type": "controlled_preview_motion_render_operator_authorization",
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-MOTION-RENDER-V4V5-001",
+  "version": "v4v5",
+  "authorized": true,
+  "authorized_by": "operator",
+  "authorization_type": "controlled_preview_motion_render",
+  "max_preview_renders": 1,
+  "preview_render_authorized": true,
+  "comfyui_submit_allowed": false,
+  "generation_allowed": false,
+  "voice_generation_allowed": false,
+  "audio_generation_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "final_render_allowed": false,
+  "stop_after_preview_result_review": true,
+  "legacy_static_hold_fallback_allowed": false,
+  "motion_keyframes_required": true,
+  "timestamp": "2026-05-10T11:05:17.666266+00:00"
+}

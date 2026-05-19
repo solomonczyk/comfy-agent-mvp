@@ -1,0 +1,26 @@
+{
+  "candidate_version": "v13",
+  "asset_path": "output/assets/combine_v2_v13_candidate_1778239698_00001_.png",
+  "label": "negative",
+  "failed_regions": [
+    "head",
+    "forehead",
+    "hair",
+    "top_of_head"
+  ],
+  "defects": [
+    "head_not_fully_in_frame",
+    "top_of_head_cropped",
+    "over_tight_face_crop",
+    "portrait_framing_failed"
+  ],
+  "positive_quality_to_preserve": {
+    "face_quality": true,
+    "skin_detail": true,
+    "eye_quality": true,
+    "mouth_teeth": true,
+    "overall_realism": true
+  },
+  "operator_comment": "V13: face/teeth/mouth quality is excellent but framing is too tight \u2014 top of head cropped, extreme close-up. V14 must preserve face quality while pulling back for full head framing.",
+  "timestamp": "2026-05-08T12:07:27.624871+00:00"
+}

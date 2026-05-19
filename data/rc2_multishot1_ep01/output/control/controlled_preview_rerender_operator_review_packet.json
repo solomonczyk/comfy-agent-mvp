@@ -1,0 +1,44 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+  "packet_type": "controlled_preview_rerender_operator_review_packet",
+  "operator_preview_review_required": true,
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "preview_static_blocker": true,
+  "duplicate_ratio": 1.0,
+  "review_items": [
+    "corrected timeline progression",
+    "asset placement after repair",
+    "duplicate frame ratio",
+    "contact sheet usefulness",
+    "preview visual acceptability",
+    "overall preview quality"
+  ],
+  "allowed_operator_verdicts": [
+    "accepted",
+    "rejected",
+    "needs_fix",
+    "requires_correction"
+  ],
+  "agent_may_accept_preview": false,
+  "production_accepted": false,
+  "render_report_summary": {
+    "renderer": "ffmpeg",
+    "fps": 24,
+    "resolution": {
+      "width": 672,
+      "height": 384
+    },
+    "duration_sec": 30.0
+  },
+  "result_review_summary": {
+    "preview_artifacts_valid": true,
+    "preview_valid_for_operator_review": false,
+    "errors": []
+  },
+  "static_detection_summary": {
+    "duplicate_ratio": 1.0,
+    "preview_static_blocker": true
+  },
+  "timestamp": "2026-05-10T06:55:25.570055+00:00"
+}

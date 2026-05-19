@@ -1,0 +1,11 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "operator_review_routing_decision",
+  "timestamp": "2026-05-18T08:00:44.088920+00:00",
+  "operator_verdict": "accepted_for_controlled_generation_gate_planning",
+  "decision_valid": true,
+  "next_state": "controlled_visual_generation_gate_planning_required",
+  "next_allowed_action": "controlled_visual_generation_gate_planning_required",
+  "generation_authorized": false,
+  "production_accepted": false
+}

@@ -1,0 +1,15 @@
+{
+  "artifact_type": "controlled_preview_motion_render_startup_verification",
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-MOTION-RENDER-V4V5-001",
+  "startup_commit_verified": true,
+  "startup_commit_hash": "8565f5c",
+  "startup_combine_status_verified": true,
+  "combine_status": {
+    "current_state": "controlled_preview_motion_render_authorization_required",
+    "next_allowed_action": "controlled_preview_motion_render_authorization_required"
+  },
+  "git_status_clean": true,
+  "motion_progression_layer_created": true,
+  "legacy_static_hold_blocked": true,
+  "timestamp": "2026-05-10T11:05:17.665636+00:00"
+}

@@ -1,0 +1,25 @@
+{
+  "manifest_id": "generated_asset_manifest",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "assets": [
+    {
+      "path": "data/rc2_multishot1_ep01/output/control/fresh_visual_candidate/combine_v2_corrective_1779095420_00001_.png",
+      "exists": true,
+      "readable": true,
+      "sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+      "size_bytes": 1703618,
+      "width": 1024,
+      "height": 1024,
+      "prompt_id": "1779095420",
+      "workflow_submitted": true,
+      "comfyui_execution": true,
+      "stub_asset": false
+    }
+  ],
+  "generated_assets_count": 1,
+  "generation_count": 1,
+  "max_generations": 1,
+  "traceable": true
+}

@@ -1,0 +1,48 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001",
+  "document_type": "corrective_generation_operator_review_packet",
+  "timestamp": "2026-05-18T11:10:20.918648",
+  "candidate_assets": [
+    {
+      "path": "data\\rc2_multishot1_ep01\\output\\control\\fresh_visual_candidate\\combine_v2_corrective_1779095420_00001_.png",
+      "exists": true,
+      "readable": true,
+      "sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+      "size_bytes": 1703618,
+      "width": 1024,
+      "height": 1024
+    }
+  ],
+  "generation_context": {
+    "corrective_plan_applied": true,
+    "defects_addressed": [
+      "VD-002",
+      "VD-001",
+      "VD-004",
+      "VD-003"
+    ],
+    "changes_made": [
+      "ADetailer/DetailerFixer for mouth/teeth region",
+      "CFG reduced from 6.5 to 5.5",
+      "Skin texture LoRA weight 0.4-0.6",
+      "Eye detail LoRA weight 0.3-0.5",
+      "Steps increased 25 -> 30-35",
+      "Highres fix with face detailing pass",
+      "Positive prompt: natural skin pores, detailed iris, natural eye reflections",
+      "Negative prompt: smooth plastic skin, bad teeth, crooked teeth, distorted mouth"
+    ]
+  },
+  "operator_decision_options": [
+    "accept_corrective_candidate",
+    "reject_corrective_candidate",
+    "request_further_corrections"
+  ],
+  "review_constraints": {
+    "max_generations_reached": true,
+    "no_additional_generation_without_new_gate": true,
+    "visual_acceptance_requires_operator": true
+  },
+  "production_accepted": false,
+  "next_allowed_action": "operator_visual_review_required",
+  "current_state": "corrective_generation_result_review_required"
+}

@@ -1,0 +1,49 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-GENERATION-SCOPE-REPAIR-001",
+  "report_name": "output_scope_validation_report",
+  "validator_module": "app.visual.output_scope_validator",
+  "validates_contract": true,
+  "checks_target_output_type": true,
+  "checks_forbidden_framing_terms": true,
+  "checks_reference_scope": true,
+  "blocks_body_part_crop_as_production_candidate": true,
+  "requires_operator_review": true,
+  "image_semantic_detection_available": false,
+  "fallback_validation": [
+    "prompt_scope_check",
+    "contract_target_check",
+    "reference_scope_check",
+    "operator_rejection_record"
+  ],
+  "manual_visual_review_required": true,
+  "validation_results": {
+    "previous_generation_prompt_scope_check": {
+      "passed": false,
+      "reason": "Prompt contained 'close-up portrait' which is forbidden framing",
+      "forbidden_terms_found": ["close-up portrait"]
+    },
+    "previous_generation_contract_target_check": {
+      "passed": false,
+      "reason": "Contract did not specify full_frame_production_visual_candidate target"
+    },
+    "previous_generation_reference_scope_check": {
+      "passed": false,
+      "reason": "Quality reference leaked into composition target"
+    },
+    "repaired_prompt_scope_check": {
+      "passed": true,
+      "reason": "Repaired prompt recipe requires full-frame cinematic scene and forbids close-up framing"
+    },
+    "repaired_contract_target_check": {
+      "passed": true,
+      "reason": "Full-frame corrective generation contract now specifies full_frame_production_visual_candidate"
+    },
+    "repaired_reference_scope_check": {
+      "passed": true,
+      "reason": "Reference usage scope policy now separates quality references from composition targets"
+    }
+  },
+  "recommendation": "Validator is operational. Future generations must pass all three checks (prompt scope, contract target, reference scope) before ComfyUI submission. Body-part-only outputs are blocked from production candidate status.",
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:17:00+02:00"
+}

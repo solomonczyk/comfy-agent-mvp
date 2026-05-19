@@ -1,0 +1,23 @@
+{
+  "candidate_version": "v13",
+  "operator_decision": "rejected",
+  "production_accepted": false,
+  "rejection_reason": "Head is not fully in frame.",
+  "defects": [
+    "head_not_fully_in_frame",
+    "top_of_head_cropped",
+    "over_tight_face_crop",
+    "portrait_framing_failed"
+  ],
+  "positive_to_preserve": [
+    "face_quality",
+    "skin_detail",
+    "eye_quality",
+    "mouth_teeth_improvement",
+    "overall_realism"
+  ],
+  "v13_prompt_id": "521826b2-acc7-49b9-bb92-2ea28459783a",
+  "v13_asset_path": "output/assets/combine_v2_v13_candidate_1778239698_00001_.png",
+  "v13_sha256": "40174c8d355f888496287befa8fbbad07ac0f2bf8b352990a558a5e409fbb0b8",
+  "timestamp": "2026-05-08T12:07:27.622872+00:00"
+}

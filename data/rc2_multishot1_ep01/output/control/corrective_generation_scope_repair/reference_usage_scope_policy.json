@@ -1,0 +1,39 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-GENERATION-SCOPE-REPAIR-001",
+  "policy_name": "reference_usage_scope_policy",
+  "quality_references": {
+    "purpose": "quality_calibration_only",
+    "may_influence": [
+      "skin_micro_detail",
+      "eye_naturalness",
+      "eyelash_quality",
+      "texture_quality",
+      "lighting_quality",
+      "sharpness"
+    ],
+    "must_not_influence": [
+      "target_composition",
+      "camera_distance",
+      "crop",
+      "shot_type",
+      "scene_framing"
+    ]
+  },
+  "composition_references": {
+    "purpose": "shot_framing_and_scene_layout",
+    "required_for_target_framing": true
+  },
+  "body_part_reference_rule": {
+    "body_part_reference_allowed": true,
+    "body_part_reference_scope": "quality_only",
+    "body_part_reference_as_output_target": false,
+    "body_part_reference_as_composition_target": false
+  },
+  "enforcement": {
+    "prompt_submission_validator_must_check": true,
+    "contract_must_separate_quality_from_composition": true,
+    "operator_visual_review_must_verify_full_frame": true
+  },
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:17:00+02:00"
+}

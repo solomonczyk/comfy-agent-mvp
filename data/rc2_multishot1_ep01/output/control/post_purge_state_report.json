@@ -1,0 +1,20 @@
+{
+  "task_id": "RC-COMBINE-V2-GENERATED-VISUAL-PURGE-001",
+  "timestamp": "2026-05-10T11:24:38.704840+00:00",
+  "current_state": "visual_outputs_purged_rebuild_required",
+  "next_allowed_action": "fresh_visual_strategy_required",
+  "production_accepted": false,
+  "voice_generation_ready": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "visual_files_remaining_in_canonical_paths": 0,
+  "active_canonical_visual_results": 0,
+  "usable_visual_references": 0,
+  "new_image_generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "preview_render_executed": false,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false
+}

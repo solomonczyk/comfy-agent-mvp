@@ -1,0 +1,50 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "packet_type": "fresh_visual_strategy_operator_review_packet",
+  "timestamp": "2026-05-18T08:00:44.086920+00:00",
+  "strategy_readiness": {
+    "overall_readiness": "ready_for_operator_review",
+    "all_artifacts_valid": true,
+    "qa_repairability_gate_active": true
+  },
+  "strategy_summary": {
+    "context": "All visual outputs were purged due to unrepairable defects across 8 generation attempts",
+    "proposed_approach": "Strategy-first generation with explicit quality targets, repairability awareness, and generation gate authorization",
+    "key_changes": [
+      "No blind retry - explicit strategy and authorization required",
+      "Repairability must be known - unknown repairability blocks",
+      "Technical pass is not visual pass - expert review required",
+      "Negative references from all failures must be enforced",
+      "Generation gate validates workflow, models, and policy before submit"
+    ]
+  },
+  "operator_decision_options": [
+    {
+      "verdict": "accepted_for_controlled_generation_gate_planning",
+      "description": "Accept strategy and proceed to controlled generation gate planning",
+      "next_state": "controlled_visual_generation_gate_planning_required",
+      "generation_authorized": false
+    },
+    {
+      "verdict": "rejected_revision_required",
+      "description": "Reject — requires strategy revision",
+      "next_state": "fresh_visual_strategy_revision_required",
+      "generation_authorized": false
+    }
+  ],
+  "what_this_acceptance_authorizes": [
+    "controlled_visual_generation_gate_planning_required"
+  ],
+  "what_this_acceptance_does_not_authorize": [
+    "generation",
+    "retry",
+    "visual_acceptance",
+    "assembly",
+    "downstream",
+    "production_accepted"
+  ],
+  "current_state": "fresh_visual_strategy_operator_review_required",
+  "next_allowed_action": "fresh_visual_strategy_operator_review_required",
+  "production_accepted": false,
+  "generation_allowed": false
+}

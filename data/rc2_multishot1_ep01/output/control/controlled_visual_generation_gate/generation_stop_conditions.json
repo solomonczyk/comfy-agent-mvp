@@ -1,0 +1,17 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "generation_stop_conditions",
+  "timestamp": "2026-05-18T08:00:44.093920+00:00",
+  "stop_after_first_generation": true,
+  "max_generations": 1,
+  "retry_authorized": false,
+  "second_generation_authorized": false,
+  "visual_qa_acceptance_authorized": false,
+  "operator_visual_acceptance_authorized": false,
+  "assembly_authorized": false,
+  "downstream_authorized": false,
+  "production_accepted": false,
+  "stop_on_preflight_failure": true,
+  "stop_on_generation_failure": true,
+  "stop_on_reconciliation_failure": true
+}

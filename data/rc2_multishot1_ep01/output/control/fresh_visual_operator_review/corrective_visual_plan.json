@@ -1,0 +1,93 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-HUMAN-VERDICT-REJECTION-001",
+  "document_type": "corrective_visual_plan",
+  "timestamp": "2026-05-18T16:48:00+02:00",
+  "verdict_source": "human_operator",
+  "operator_verdict": "rejected_needs_corrective_plan",
+  "human_operator_feedback": "Как общая изначальная картинка, для какой-то сказки, до исправления и улучшения подойдет, а если брать за эталон/референс качества — конечно же нет.",
+  "candidate_image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\fresh_visual_candidates\\combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+  "candidate_sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+  "accepted_as_concept_reference": true,
+  "accepted_as_quality_reference": false,
+  "accepted_as_final_visual": false,
+  "production_accepted": false,
+  "corrective_requirements": [
+    {
+      "category": "mood_preservation",
+      "requirement": "Keep fairytale / winter fantasy mood",
+      "priority": "high",
+      "description": "Preserve the overall fairytale aesthetic and winter fantasy atmosphere that was successful in the candidate"
+    },
+    {
+      "category": "skin_realism",
+      "requirement": "Improve skin texture realism",
+      "priority": "high",
+      "description": "Add natural skin pores, micro-texture, and reduce over-smoothing to achieve realistic skin appearance"
+    },
+    {
+      "category": "mouth_anatomy",
+      "requirement": "Improve mouth/teeth anatomy",
+      "priority": "high",
+      "description": "Enhance mouth and teeth detail with proper anatomy, lip definition, and dental structure"
+    },
+    {
+      "category": "face_naturalism",
+      "requirement": "Reduce doll/plastic face effect",
+      "priority": "high",
+      "description": "Eliminate plastic/doll-like appearance by adding natural facial structure, depth, and organic variations"
+    },
+    {
+      "category": "eye_naturalism",
+      "requirement": "Keep beautiful blue eyes but make them more natural",
+      "priority": "medium",
+      "description": "Preserve the blue eye color but reduce glassy/artificial appearance with natural eye structure and reflections"
+    },
+    {
+      "category": "facial_detail",
+      "requirement": "Increase facial micro-detail",
+      "priority": "high",
+      "description": "Add fine facial details including subtle skin variations, pores, and natural imperfections"
+    },
+    {
+      "category": "concept_preservation",
+      "requirement": "Preserve concept direction, but raise production quality",
+      "priority": "high",
+      "description": "Maintain the successful concept and character direction while significantly improving production quality standards"
+    }
+  ],
+  "forbidden_actions": [
+    {
+      "action": "blind_retry",
+      "reason": "No blind retry allowed - must follow specific corrective plan"
+    },
+    {
+      "action": "generation_without_authorization",
+      "reason": "Next generation requires separate authorization gate"
+    },
+    {
+      "action": "reuse_current_candidate_as_final",
+      "reason": "Current candidate rejected as quality reference and final visual"
+    }
+  ],
+  "next_generation_requirements": {
+    "requires_separate_authorization_gate": true,
+    "authorization_gate_type": "corrective_visual_plan_review_required",
+    "must_address_all_defects": true,
+    "must_preserve_concept_strengths": true,
+    "max_generations_authorized": 1,
+    "blind_retry_forbidden": true
+  },
+  "quality_targets": {
+    "skin_texture": "natural_with_pores",
+    "face_structure": "organic_not_plastic",
+    "eye_appearance": "natural_blue_eyes",
+    "mouth_teeth": "detailed_anatomy",
+    "overall_quality": "production_reference_grade"
+  },
+  "current_state": "fresh_visual_rejected",
+  "next_allowed_action": "corrective_visual_plan_review_required",
+  "retry_authorized": false,
+  "generation_authorized": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false
+}

@@ -1,0 +1,30 @@
+{
+  "artifact_type": "preview_motion_render_execution_report",
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-MOTION-RENDER-V4V5-001",
+  "version": "v4v5",
+  "preview_render_executed": true,
+  "preview_render_count": 1,
+  "second_preview_render_attempted": false,
+  "motion_keyframes_consumed": true,
+  "legacy_static_hold_used": false,
+  "legacy_static_hold_blocked": true,
+  "renderer": "ffmpeg",
+  "has_ffmpeg": true,
+  "frame_count": 720,
+  "fps": 24,
+  "resolution": {
+    "width": 672,
+    "height": 384
+  },
+  "duration_sec": 30.0,
+  "outputs": {
+    "preview_motion_v4v5_lowres": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_motion_v4v5_lowres.mp4",
+    "preview_motion_v4v5_gif": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_motion_v4v5.gif",
+    "preview_motion_v4v5_contact_sheet": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\previews\\preview_motion_v4v5_contact_sheet.jpg"
+  },
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-10T11:06:18.227691+00:00"
+}

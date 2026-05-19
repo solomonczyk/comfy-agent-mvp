@@ -1,0 +1,47 @@
+{
+  "report_id": "visual_qa_standards_binding_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+  "role": "visual_qa",
+  "standards_pack_version": "1.0.0",
+  "valid": true,
+  "canons_available": [
+    {
+      "canon_id": "visual_quality_canon",
+      "available": true
+    },
+    {
+      "canon_id": "motion_quality_canon",
+      "available": true
+    },
+    {
+      "canon_id": "face_quality_canon",
+      "available": true
+    },
+    {
+      "canon_id": "anatomy_quality_canon",
+      "available": true
+    },
+    {
+      "canon_id": "identity_quality_canon",
+      "available": true
+    }
+  ],
+  "visual_qa_can_recommend": true,
+  "visual_qa_can_accept_production": false,
+  "operator_review_required_for_visual_acceptance": true,
+  "traceable": true,
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "visual_qa_agent_standard",
+      "policy_id": "visual_rejection_policy",
+      "rule_id": "visual_qa_cannot_approve",
+      "role": "visual_qa",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/visual_qa_agent_standard.json",
+      "traceable": true
+    }
+  ]
+}

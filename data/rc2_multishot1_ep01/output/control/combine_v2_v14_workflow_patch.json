@@ -1,0 +1,10 @@
+{
+  "task_id": "RC-COMBINE-V2-30001-34000",
+  "candidate_version": "v14",
+  "patch_type": "workflow_patch",
+  "changes_required": false,
+  "note": "V13 workflow settings are preserved. No workflow changes needed for V14. All corrections are prompt-side (composition/framing)",
+  "generation_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T12:07:27.626870+00:00"
+}

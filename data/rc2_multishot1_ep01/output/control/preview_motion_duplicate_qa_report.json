@@ -1,0 +1,20 @@
+{
+  "artifact_type": "preview_motion_duplicate_qa_report",
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-MOTION-RENDER-V4V5-001",
+  "version": "v4v5",
+  "duplicate_ratio": 0.00417,
+  "duplicate_threshold": 0.85,
+  "passes_qa": true,
+  "static_hold_detected": false,
+  "static_detection_executed": true,
+  "unique_frame_count": 239,
+  "total_frame_count": 240,
+  "motion_plan_qa": {
+    "overall_estimated_duplicate_ratio": 0.0,
+    "passes_qa": true,
+    "static_hold_segments": 0,
+    "overall_average_motion_score": 0.1004,
+    "contact_sheet_useful_overall": true
+  },
+  "timestamp": "2026-05-10T11:06:18.228686+00:00"
+}

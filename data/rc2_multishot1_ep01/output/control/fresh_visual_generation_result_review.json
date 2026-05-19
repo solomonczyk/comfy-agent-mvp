@@ -1,0 +1,27 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001-RERUN",
+  "timestamp": "2026-05-18T12:09:19.555150+00:00",
+  "stage": "fresh_visual_generation_result_review",
+  "technical_review": {
+    "assets_exist": true,
+    "assets_readable": true,
+    "sha256_present": true,
+    "dimensions_present": true,
+    "not_stub": true
+  },
+  "prompt_id_present": true,
+  "prompt_id": "b3a8f0ea-8004-40f6-be19-4192a633817a",
+  "fake_prompt_id_detected": false,
+  "generation_performed": false,
+  "generation_count": 0,
+  "max_generations": 1,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "visual_qa_executed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "fresh_visual_generation_result_review_required",
+  "next_allowed_action": "fresh_visual_generation_result_review_required"
+}

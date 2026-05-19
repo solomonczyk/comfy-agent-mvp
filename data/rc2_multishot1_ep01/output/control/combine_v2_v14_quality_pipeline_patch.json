@@ -1,0 +1,25 @@
+{
+  "task_id": "RC-COMBINE-V2-30001-34000",
+  "candidate_version": "v14",
+  "patch_type": "quality_pipeline_patch",
+  "framing_enhancements": [
+    "enforce full head visibility in frame",
+    "verify no cropped forehead or hairline",
+    "check margin above head is sufficient",
+    "verify face does not fill entire frame"
+  ],
+  "qa_checklist_additions": [
+    "verify full head is within frame boundaries",
+    "verify no cropped top of head",
+    "verify no cropped forehead",
+    "verify face scale is not extreme close-up",
+    "verify hairline is fully visible",
+    "verify V13 mouth/teeth quality is preserved",
+    "verify V13 skin detail is preserved",
+    "verify V13 eye quality is preserved"
+  ],
+  "preserve_quality_from_v13": true,
+  "generation_allowed": false,
+  "production_accepted": false,
+  "timestamp": "2026-05-08T12:07:27.626870+00:00"
+}

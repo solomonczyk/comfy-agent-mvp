@@ -1,0 +1,18 @@
+{
+  "report_id": "generation_execution_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "generation_count": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "second_generation_attempted": false,
+  "blind_retry_attempted": false,
+  "prompt_id": "1779095420",
+  "workflow_source": "fresh_visual_candidate/submitted_workflow.json",
+  "checkpoint_used": "realvisxlV50_v50Bakedvae.safetensors",
+  "generation_authorized": true,
+  "stop_after_generation": true,
+  "traceable": true
+}

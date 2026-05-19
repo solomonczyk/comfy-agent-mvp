@@ -1,0 +1,34 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "generation_preflight_blocker",
+  "timestamp": "2026-05-18T07:17:01.025750+00:00",
+  "preflight_passed": false,
+  "blockers": [
+    "workflow selected failed",
+    "workflow file exists failed",
+    "workflow validation passed failed",
+    "required_models not available",
+    "repairability_policy_binding missing"
+  ],
+  "checks": {
+    "fresh_visual_strategy_ready": true,
+    "operator_strategy_acceptance_valid": true,
+    "qa_repairability_gate_active": true,
+    "unknown_repairability_blocks": true,
+    "workflow_selected": false,
+    "workflow_file_exists": false,
+    "workflow_validation_passed": false,
+    "required_models_available": false,
+    "required_adapters_available": true,
+    "resolution_policy_passed": false,
+    "output_path_canonical": true,
+    "negative_references_loaded": true,
+    "generation_count_before_run": 0,
+    "max_generations": 1,
+    "comfyui_reachable": true
+  },
+  "current_state": "controlled_visual_generation_blocked",
+  "next_allowed_action": "controlled_visual_generation_blocker_review_required",
+  "generation_performed": false,
+  "production_accepted": false
+}

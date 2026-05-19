@@ -1,0 +1,24 @@
+{
+  "policy_id": "corrective_generation_stop_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "description": "Policy to stop immediately after one generation and await operator visual review",
+  "stop_conditions": [
+    "generation_count >= 1",
+    "comfyui_execution = true",
+    "generated_asset_created = true"
+  ],
+  "forbidden_after_stop": [
+    "second_generation",
+    "blind_retry",
+    "visual_qa_acceptance",
+    "operator_visual_acceptance",
+    "assembly",
+    "downstream",
+    "production_accepted"
+  ],
+  "next_state_after_stop": "operator_visual_review_required",
+  "next_allowed_action_after_stop": "operator_visual_review_required",
+  "traceable": true
+}

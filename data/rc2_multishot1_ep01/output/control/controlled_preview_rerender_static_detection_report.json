@@ -1,0 +1,16 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+  "report_type": "controlled_preview_rerender_static_detection_report",
+  "static_detection_executed": true,
+  "total_frame_count": 720,
+  "sampled_frame_count": 61,
+  "unique_frame_count": 0,
+  "duplicate_frame_count": 60,
+  "duplicate_ratio": 1.0,
+  "duplicate_threshold": 0.85,
+  "preview_static_blocker": true,
+  "sample_interval": 12,
+  "max_duplicate_ratio_per_policy": 0.85,
+  "static_preview_prevention_policy_consumed": true,
+  "timestamp": "2026-05-10T06:55:25.570055+00:00"
+}

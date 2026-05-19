@@ -1,0 +1,41 @@
+{
+  "manifest_id": "standards_to_generation_manifest",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "previous_layer": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001-FREEZE-FIX",
+  "previous_commit": "7c22c95",
+  "components_integrated": [
+    "standards_integration",
+    "script_supervisor_vertical_slice",
+    "corrective_plan_validation",
+    "generation_gate",
+    "controlled_generation_execution"
+  ],
+  "artifacts_created": [
+    "preflight_state_report.json",
+    "standards_integration_validation_report.json",
+    "script_supervisor_agent_contract.json",
+    "script_supervisor_standards_binding.json",
+    "script_supervisor_responsibility_matrix.json",
+    "script_supervisor_forbidden_actions_matrix.json",
+    "continuity_guard_policy.json",
+    "duplicate_static_frame_policy_binding.json",
+    "fake_operator_decision_guard_report.json",
+    "voice_assembly_blocker_policy.json",
+    "script_supervisor_readiness_report.json",
+    "corrective_plan_validation_report.json",
+    "corrective_generation_gate_package.json",
+    "corrective_generation_operator_authorization.json",
+    "corrective_generation_preflight_checks.json",
+    "corrective_generation_execution_contract.json",
+    "corrective_generation_stop_policy.json",
+    "corrective_generation_workflow_patch_plan.json",
+    "generation_preflight_report.json",
+    "generation_execution_report.json",
+    "generated_asset_manifest.json",
+    "generation_result_review.json",
+    "operator_visual_review_packet.json"
+  ],
+  "traceable": true
+}

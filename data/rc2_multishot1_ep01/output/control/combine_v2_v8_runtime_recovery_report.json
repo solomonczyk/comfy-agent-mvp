@@ -1,0 +1,18 @@
+{
+  "task_id": "RC-COMBINE-V2-6601-7600",
+  "current_state": "v8_quality_locked_generation_authorization_required",
+  "production_accepted": false,
+  "comfyui_endpoint_checked": "http://127.0.0.1:8188",
+  "server_available": false,
+  "failure_code": "server_unavailable",
+  "v8_real_generation_attempted": false,
+  "generation_count": 0,
+  "max_generations": 1,
+  "second_generation_attempted": false,
+  "retry_attempted": false,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "dry_run_used": false,
+  "timestamp": "2026-05-07T17:17:24.729883",
+  "server_check_error": "timed out"
+}

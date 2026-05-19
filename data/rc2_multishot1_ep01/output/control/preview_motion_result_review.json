@@ -1,0 +1,18 @@
+{
+  "artifact_type": "preview_motion_result_review",
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-MOTION-RENDER-V4V5-001",
+  "version": "v4v5",
+  "preview_render_executed": true,
+  "preview_artifacts_valid": true,
+  "duplicate_ratio": 0.00417,
+  "duplicate_threshold_passed": true,
+  "static_hold_detected": false,
+  "contact_sheet_useful": true,
+  "operator_review_required": true,
+  "current_state": "preview_operator_review_required",
+  "next_allowed_action": "preview_operator_review_required",
+  "production_accepted": false,
+  "errors": [],
+  "warnings": [],
+  "timestamp": "2026-05-10T11:06:18.229689+00:00"
+}

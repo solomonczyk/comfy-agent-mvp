@@ -1,0 +1,27 @@
+{
+  "task_id": "RC-COMBINE-V2-GENERATED-VISUAL-PURGE-001",
+  "timestamp": "2026-05-10T11:24:38.704840+00:00",
+  "invalidated_references": [
+    {
+      "file": "artifact_index.json",
+      "action": "visual_asset_status updated to purged_by_operator_directive"
+    },
+    {
+      "file": "episode_ledger.json",
+      "action": "state transitioned to visual_outputs_purged_rebuild_required"
+    },
+    {
+      "file": "output/control/artifact_index.json",
+      "action": "all visual asset references invalidated"
+    },
+    {
+      "file": "output/control/episode_ledger.json",
+      "action": "purge event appended, state updated"
+    }
+  ],
+  "visual_asset_status": "purged_by_operator_directive",
+  "canonical_result": false,
+  "usable_as_reference": false,
+  "usable_for_downstream": false,
+  "production_accepted": false
+}

@@ -1,0 +1,34 @@
+{
+  "report_id": "script_supervisor_standards_binding_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+  "role": "script_supervisor",
+  "standards_pack_version": "1.0.0",
+  "valid": true,
+  "canons_available": [
+    {
+      "canon_id": "timeline_quality_canon",
+      "available": true
+    },
+    {
+      "canon_id": "preview_quality_canon",
+      "available": true
+    }
+  ],
+  "preview_render_not_executed": true,
+  "visual_acceptance_not_performed": true,
+  "traceable": true,
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "script_supervisor_standard",
+      "policy_id": "preview_acceptance_policy",
+      "rule_id": "script_supervisor_preview_check",
+      "role": "script_supervisor",
+      "severity": "info",
+      "decision": "pass",
+      "source_artifact": "roles/script_supervisor_standard.json",
+      "traceable": true
+    }
+  ]
+}

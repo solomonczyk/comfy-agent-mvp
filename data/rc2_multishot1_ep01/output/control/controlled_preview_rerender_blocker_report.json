@@ -1,0 +1,19 @@
+{
+  "task_id": "RC-COMBINE-V2-CONTROLLED-PREVIEW-RERENDER-001",
+  "blocker_type": "controlled_preview_rerender_preflight_blocked",
+  "preflight_pass": false,
+  "authorized": true,
+  "errors": [
+    "Editorial timeline_model.json not found",
+    "Editorial edit_decision_list.json not found"
+  ],
+  "preview_render_executed": false,
+  "preview_render_count": 0,
+  "voice_generation_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "controlled_preview_rerender_authorization_required",
+  "next_allowed_action": "controlled_preview_rerender_authorization_required",
+  "timestamp": "2026-05-09T17:47:22.884838+00:00"
+}

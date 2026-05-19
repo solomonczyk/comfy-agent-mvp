@@ -1,0 +1,23 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "generation_execution_report",
+  "timestamp": "2026-05-18T08:00:44.803457+00:00",
+  "generation_performed": true,
+  "generation_count": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "prompt_id": "08f41712-797e-4ab6-8846-5582cbf3aea2",
+  "output_images": [
+    "combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png"
+  ],
+  "retry_attempted": false,
+  "second_generation_attempted": false,
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "failure": false,
+  "failure_reason": null
+}

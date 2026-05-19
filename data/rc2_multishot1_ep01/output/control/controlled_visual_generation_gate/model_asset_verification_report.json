@@ -1,0 +1,8 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "model_asset_verification_report",
+  "timestamp": "2026-05-18T08:00:44.095921+00:00",
+  "all_models_available": true,
+  "primary_checkpoint": "CyberRealisticXLPlay_V7.0_FP16.safetensors",
+  "sdxl_checkpoints_count": 4
+}

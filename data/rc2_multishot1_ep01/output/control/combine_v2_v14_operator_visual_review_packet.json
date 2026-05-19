@@ -1,0 +1,74 @@
+{
+  "task_id": "RC-COMBINE-V2-30001-34000",
+  "candidate_version": "v14",
+  "asset_path": "output/assets/combine_v2_v14_candidate_1778242939_00001_.png",
+  "prompt_id": "23936bc0-d91e-41c1-aa33-050b4756ec5f",
+  "sha256": "77c90218a09839f1d4305a51e85909087ebd9d8bfd6b82d2c3847ab2be44fbb9",
+  "dimensions": {
+    "width": 1024,
+    "height": 1024
+  },
+  "file_size_bytes": 1265373,
+  "v13_rejection_summary": {
+    "reason": "Head is not fully in frame.",
+    "defects": [
+      "head_not_fully_in_frame",
+      "top_of_head_cropped",
+      "over_tight_face_crop",
+      "portrait_framing_failed"
+    ]
+  },
+  "v13_positive_quality_notes": [
+    "Face quality is excellent",
+    "Skin detail is photoreal",
+    "Eye quality is sharp",
+    "Mouth/teeth improved from V12",
+    "Overall realism is high"
+  ],
+  "qa_canon_engine_summary": {
+    "decision": "candidate_ok_for_pipeline_review",
+    "detected_defects": [
+      "stub_asset",
+      "unreadable_asset",
+      "head_not_fully_in_frame",
+      "top_of_head_cropped",
+      "portrait_framing_failed",
+      "over_tight_face_crop"
+    ],
+    "critical_failures": [
+      "stub_asset",
+      "unreadable_asset"
+    ],
+    "qa_report": "qa/reports/combine_v2_v14_qa_canon_report.json"
+  },
+  "framing_checklist": {
+    "full_head_visible": null,
+    "top_of_head_not_cropped": null,
+    "forehead_not_cropped": null,
+    "margin_above_head_sufficient": null,
+    "face_not_filling_entire_frame": null
+  },
+  "mouth_teeth_defect_checklist": {
+    "bad_teeth": null,
+    "unnatural_mouth": null,
+    "lip_teeth_boundary_failed": null
+  },
+  "negative_reference": {
+    "v13_bad_framing_reference": "qa/references/negative/v13_bad_framing_reference.json",
+    "v13_asset": "output/assets/combine_v2_v13_candidate_1778239698_00001_.png"
+  },
+  "operator_visual_verdict_recorded": false,
+  "operator_decision": null,
+  "allowed_operator_decisions": [
+    "accepted",
+    "rejected",
+    "needs_manual_review"
+  ],
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "current_state": "v14_operator_visual_review_required",
+  "next_allowed_action": "v14_operator_visual_review_required",
+  "instruction": "Operator visual verdict is required. Inspect the V14 candidate asset and record your decision. Key areas: (1) Full head visible? (2) Margin above head? (3) Face quality preserved from V13? (4) Mouth/teeth acceptable?",
+  "timestamp": "2026-05-08T12:23:37.562441+00:00"
+}

@@ -1,0 +1,35 @@
+{
+  "contract_id": "corrective_generation_execution_contract",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "contract_type": "controlled_single_generation",
+  "terms": {
+    "generation_count": 1,
+    "max_generations": 1,
+    "workflow_submitted": "required",
+    "comfyui_execution": "required",
+    "second_generation": "forbidden",
+    "blind_retry": "forbidden",
+    "stop_after_generation": "required",
+    "visual_qa_acceptance": "forbidden",
+    "operator_visual_acceptance": "forbidden",
+    "assembly": "forbidden",
+    "downstream": "forbidden",
+    "production_accepted": "forbidden"
+  },
+  "success_criteria": [
+    "workflow_submitted = true",
+    "comfyui_execution = true",
+    "prompt_id != null",
+    "generated_asset_exists = true",
+    "generated_asset_readable = true"
+  ],
+  "failure_criteria": [
+    "second_generation_attempted = true",
+    "blind_retry_attempted = true",
+    "prompt_id = null",
+    "generated_asset_not_found = true"
+  ],
+  "traceable": true
+}

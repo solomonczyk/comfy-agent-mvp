@@ -136,3 +136,11 @@ data/_quarantine_*/
 
 # Model acquisition temp files (too large for git)
 data/rc2_multishot1_ep01/output/control/temp/
+
+# Binary model files (too large for git)
+*.safetensors
+*.bin
+
+# General temp directories
+data/**/output/control/temp/
+data/**/output/temp/

@@ -1,0 +1,80 @@
+{
+  "report_id": "script_supervisor_forbidden_actions_matrix",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "role": "script_supervisor",
+  "forbidden_actions": [
+    {
+      "action_id": "SS-FA-001",
+      "action": "comfyui_submit",
+      "description": "Cannot submit ComfyUI workflows",
+      "severity": "blocker",
+      "reason": "Generation is outside Script Supervisor scope"
+    },
+    {
+      "action_id": "SS-FA-002",
+      "action": "preview_render",
+      "description": "Cannot execute preview renders",
+      "severity": "blocker",
+      "reason": "Preview render requires separate authorization"
+    },
+    {
+      "action_id": "SS-FA-003",
+      "action": "visual_acceptance",
+      "description": "Cannot accept visual output",
+      "severity": "blocker",
+      "reason": "Visual acceptance is human/operator-only"
+    },
+    {
+      "action_id": "SS-FA-004",
+      "action": "operator_acceptance",
+      "description": "Cannot set operator acceptance",
+      "severity": "blocker",
+      "reason": "Operator acceptance must come from human operator"
+    },
+    {
+      "action_id": "SS-FA-005",
+      "action": "production_accepted_true",
+      "description": "Cannot set production_accepted to true",
+      "severity": "blocker",
+      "reason": "Production acceptance requires explicit operator gate"
+    },
+    {
+      "action_id": "SS-FA-006",
+      "action": "assembly",
+      "description": "Cannot proceed to assembly",
+      "severity": "blocker",
+      "reason": "Assembly requires operator visual approval"
+    },
+    {
+      "action_id": "SS-FA-007",
+      "action": "voice_generation",
+      "description": "Cannot trigger voice generation",
+      "severity": "blocker",
+      "reason": "Voice generation requires visual approval"
+    },
+    {
+      "action_id": "SS-FA-008",
+      "action": "final_render",
+      "description": "Cannot execute final render",
+      "severity": "blocker",
+      "reason": "Final render requires complete pipeline approval"
+    },
+    {
+      "action_id": "SS-FA-009",
+      "action": "model_download_install",
+      "description": "Cannot download or install models",
+      "severity": "blocker",
+      "reason": "Model operations require explicit authorization"
+    },
+    {
+      "action_id": "SS-FA-010",
+      "action": "fake_operator_decision",
+      "description": "Cannot create fake operator decisions",
+      "severity": "blocker",
+      "reason": "Fake decisions violate core policy"
+    }
+  ],
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

@@ -1,0 +1,12 @@
+{
+  "task_id": "RC-COMBINE-V2-6601-7600",
+  "failure_code": "server_unavailable",
+  "server_available": false,
+  "v8_real_generation_attempted": false,
+  "generation_count": 0,
+  "workflow_submitted": false,
+  "comfyui_execution": false,
+  "operator_action_required": "Start ComfyUI server and rerun the same macro task; do not create a new micro-layer",
+  "comfyui_endpoint": "http://127.0.0.1:8188",
+  "timestamp": "2026-05-07T17:17:24.729883"
+}

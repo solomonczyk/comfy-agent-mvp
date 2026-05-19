@@ -1,0 +1,19 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "operator_review_proof",
+  "timestamp": "2026-05-18T08:00:44.088920+00:00",
+  "operator_strategy_review_executed": true,
+  "decision_source": "human_operator",
+  "operator_name": "Андрей",
+  "operator_verdict": "accepted_for_controlled_generation_gate_planning",
+  "decision_valid": true,
+  "next_state": "controlled_visual_generation_gate_planning_required",
+  "generation_authorized_by_strategy_review": false,
+  "generation_performed": false,
+  "retry_attempted": false,
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false
+}

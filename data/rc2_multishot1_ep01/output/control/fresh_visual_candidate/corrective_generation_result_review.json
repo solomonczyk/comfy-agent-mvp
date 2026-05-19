@@ -1,0 +1,30 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001",
+  "document_type": "corrective_generation_result_review",
+  "timestamp": "2026-05-18T11:10:20.918648",
+  "generation_status": "completed",
+  "assets_generated": true,
+  "generated_assets": [
+    {
+      "path": "data\\rc2_multishot1_ep01\\output\\control\\fresh_visual_candidate\\combine_v2_corrective_1779095420_00001_.png",
+      "exists": true,
+      "readable": true,
+      "sha256": "37d32671facfb11323e779d2811e1c7a8d5c430597f3eb11eef3dcd0ed78c405",
+      "size_bytes": 1703618,
+      "width": 1024,
+      "height": 1024
+    }
+  ],
+  "technical_validation": {
+    "assets_readable": true,
+    "assets_have_dimensions": true,
+    "assets_have_sha256": true
+  },
+  "visual_qa_blocked": true,
+  "assembly_blocked": true,
+  "downstream_blocked": true,
+  "production_accepted": false,
+  "operator_review_required": true,
+  "next_allowed_action": "operator_visual_review_required",
+  "current_state": "corrective_generation_result_review_required"
+}

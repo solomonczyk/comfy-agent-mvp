@@ -1,0 +1,17 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "generation_gate_authorization",
+  "timestamp": "2026-05-18T08:00:44.093920+00:00",
+  "generation_authorized": true,
+  "authorized_by": "human_operator",
+  "authorization_scope": "one_fresh_visual_candidate_only",
+  "max_generations": 1,
+  "retry_authorized": false,
+  "second_generation_allowed": false,
+  "stop_after_generation": true,
+  "visual_qa_acceptance_allowed": false,
+  "operator_visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_accepted": false
+}

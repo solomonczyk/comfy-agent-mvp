@@ -1,0 +1,47 @@
+{
+  "report_id": "corrective_plan_validation_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "operator_rejection_found": true,
+  "corrective_plan_found": true,
+  "blind_retry_prevented": true,
+  "defects_mapped_to_standards_taxonomy": true,
+  "defect_mapping": [
+    {
+      "defect_id": "VD-001",
+      "description": "mouth/teeth artifacts",
+      "mapped_to_taxonomy": true,
+      "taxonomy_category": "facial_artifacts",
+      "correction_present": true,
+      "correction": "ADetailer + lower CFG"
+    },
+    {
+      "defect_id": "VD-002",
+      "description": "AI-doll skin",
+      "mapped_to_taxonomy": true,
+      "taxonomy_category": "skin_rendering",
+      "correction_present": true,
+      "correction": "skin texture LoRA 0.4-0.6"
+    },
+    {
+      "defect_id": "VD-003",
+      "description": "unnatural eyes",
+      "mapped_to_taxonomy": true,
+      "taxonomy_category": "eye_rendering",
+      "correction_present": true,
+      "correction": "ADetailer eye region + eye_detail LoRA"
+    },
+    {
+      "defect_id": "VD-004",
+      "description": "insufficient facial detail",
+      "mapped_to_taxonomy": true,
+      "taxonomy_category": "facial_detail",
+      "correction_present": true,
+      "correction": "steps 30-35 + highres fix + face pass"
+    }
+  ],
+  "validation_status": "passed",
+  "ready_for_generation": true,
+  "traceable": true
+}

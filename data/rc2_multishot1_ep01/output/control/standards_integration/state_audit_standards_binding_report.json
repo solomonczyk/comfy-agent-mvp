@@ -1,0 +1,50 @@
+{
+  "report_id": "state_audit_standards_binding_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-QA-QC-TESTER-STANDARDS-INTEGRATION-001",
+  "role": "state_audit",
+  "standards_pack_version": "1.0.0",
+  "valid": true,
+  "policies_available": [
+    {
+      "policy_id": "fake_success_policy",
+      "available": true
+    },
+    {
+      "policy_id": "forbidden_actions_policy",
+      "available": true
+    },
+    {
+      "policy_id": "production_acceptance_policy",
+      "available": true
+    },
+    {
+      "policy_id": "no_blind_retry_policy",
+      "available": true
+    },
+    {
+      "policy_id": "blocker_policy",
+      "available": true
+    }
+  ],
+  "state_matches_artifact_index": true,
+  "state_matches_episode_ledger": true,
+  "forbidden_actions_all_false": true,
+  "production_accepted_false": true,
+  "fake_operator_decision_absent": true,
+  "downstream_blocked": true,
+  "traceable": true,
+  "findings": [
+    {
+      "standards_pack_version": "1.0.0",
+      "standard_id": "state_audit_guard_standard",
+      "policy_id": "fake_success_policy",
+      "rule_id": "fake_success_blocks_pipeline",
+      "role": "state_audit",
+      "severity": "blocker",
+      "decision": "pass",
+      "source_artifact": "roles/state_audit_guard_standard.json",
+      "traceable": true
+    }
+  ]
+}

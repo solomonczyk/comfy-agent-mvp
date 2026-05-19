@@ -1,0 +1,32 @@
+{
+  "task_id": "RC-COMBINE-V2-PREVIEW-ARTIFACTS-OPERATOR-DELIVERY-001",
+  "operator_review_ready": true,
+  "preview_artifacts_found": true,
+  "artifacts": [
+    {
+      "name": "preview_lowres.mp4",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\preview_lowres.mp4",
+      "exists": true,
+      "size_bytes": 739135,
+      "sha256": "8af724a8429b3fb098c050284d10d0b5b052952afdcab5b42ca88631da9b2a27"
+    },
+    {
+      "name": "preview.gif",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\preview.gif",
+      "exists": true,
+      "size_bytes": 5376587,
+      "sha256": "90ae431337b36e7da8ca6b912edf4a014c7039dbb3de07bea43e633fdcff0af8"
+    },
+    {
+      "name": "contact_sheet.jpg",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\contact_sheet.jpg",
+      "exists": true,
+      "size_bytes": 603492,
+      "sha256": "6ffac0a6c8f91dbdf0a4b713ef4e01debc9cd9ce3f3b0ada859eec8a1066884c"
+    }
+  ],
+  "operator_instruction": "Open these files manually before providing human verdict.",
+  "human_verdict_required": true,
+  "production_accepted": false,
+  "timestamp": "2026-05-09T14:52:09.083857+00:00"
+}

@@ -1,0 +1,50 @@
+{
+  "agent_id": "state_audit_guard",
+  "role": "state_audit_guard",
+  "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+  "responsibility_zone": "state_consistency_and_audit_trail_validation",
+  "allowed_inputs": [
+    "state_json",
+    "artifact_index_json",
+    "episode_ledger_json",
+    "proof_artifacts",
+    "git_status",
+    "canonical_artifacts"
+  ],
+  "required_artifacts": [
+    "state.json",
+    "artifact_index.json",
+    "episode_ledger.json",
+    "proof_json_files"
+  ],
+  "forbidden_actions": [
+    "claim_visual_acceptance",
+    "set_production_accepted_true",
+    "fake_operator_decision",
+    "approve_for_downstream",
+    "trigger_voice_generation",
+    "trigger_assembly",
+    "perform_generation",
+    "modify_state_artifacts_without_audit_trail"
+  ],
+  "blocker_conditions": [
+    "state_artifact_contradiction",
+    "dirty_git",
+    "missing_proof_artifacts",
+    "fake_operator_decision",
+    "forbidden_action_executed",
+    "missing_canonical_artifact"
+  ],
+  "decision_outputs": [
+    "ACCEPTED",
+    "BLOCKED"
+  ],
+  "may_set_production_accepted": false,
+  "may_authorize_generation": false,
+  "may_authorize_retry": false,
+  "may_authorize_render": false,
+  "may_authorize_downstream": false,
+  "traceable": true,
+  "version": "1.0.0",
+  "timestamp": "2026-05-19T06:17:27.324253+00:00"
+}

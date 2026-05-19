@@ -1,0 +1,60 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-GENERATION-SCOPE-REPAIR-001",
+  "feature_completed": true,
+  "full_feature_loop_executed": true,
+
+  "operator_rejection_recorded": true,
+  "rejected_asset": "f:/ComfyUI/comfy-agent-mvp/data/outputs/corrective_v10/corrective_v10_00001_.png",
+  "rejection_type": "composition_scope_failure",
+  "failure_class": "body_part_crop_instead_of_full_frame_candidate",
+
+  "root_cause_report_created": true,
+  "primary_root_cause": "quality_reference_leaked_into_target_composition",
+
+  "full_frame_contract_created": true,
+  "reference_usage_scope_policy_created": true,
+  "corrective_prompt_recipe_repaired": true,
+  "body_part_crop_forbidden_as_production_candidate": true,
+  "quality_reference_not_allowed_as_composition_target": true,
+
+  "output_scope_validator_added_or_updated": true,
+  "output_scope_validation_report_created": true,
+
+  "previous_generation_count_consumed": true,
+  "new_generation_requires_new_operator_authorization": true,
+
+  "generation_performed": false,
+  "comfyui_submit_executed": false,
+  "retry_attempted": false,
+  "second_generation_attempted": false,
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "preview_render_executed": false,
+  "assembly_executed": false,
+  "voice_generation_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+
+  "generation_gate_open": false,
+  "authorization_packet_created": true,
+  "authorization_status": "pending_operator_authorization",
+  "max_future_generations_if_authorized": 1,
+
+  "artifact_index_updated": true,
+  "episode_ledger_updated": true,
+  "state_updated": true,
+
+  "current_state": "corrective_generation_scope_repaired_authorization_required",
+  "next_allowed_action": "operator_authorize_one_full_frame_corrective_generation",
+
+  "tests_pass": true,
+  "py_compile_pass": true,
+  "cli_validation_pass": true,
+
+  "commit_hash": "48946d7",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
+
+  "blockers": [],
+  "next_task_recommendation": "operator_authorize_one_full_frame_corrective_generation"
+}

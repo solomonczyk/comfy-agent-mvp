@@ -1,0 +1,64 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-GENERATION-SCOPE-REPAIR-001",
+  "contract_name": "full_frame_corrective_generation_contract",
+  "target_output_type": "full_frame_production_visual_candidate",
+  "composition_target": {
+    "must_show": [
+      "full scene context",
+      "main character as production subject",
+      "environment/background context",
+      "complete readable composition"
+    ],
+    "allowed_framing": [
+      "full_body",
+      "three_quarter_body",
+      "medium_shot",
+      "waist_up",
+      "cinematic_portrait_with_context"
+    ],
+    "forbidden_framing": [
+      "eye_close_up",
+      "mouth_close_up",
+      "skin_macro_close_up",
+      "nose_close_up",
+      "single_body_part_crop",
+      "isolated_face_fragment",
+      "medical_or_beauty_macro_crop",
+      "reference_body_part_recreation"
+    ]
+  },
+  "camera_distance_policy": {
+    "minimum_context_required": true,
+    "macro_closeup_forbidden": true,
+    "body_part_crop_forbidden": true
+  },
+  "production_candidate_rules": {
+    "must_be_reviewable_as_scene_frame": true,
+    "must_not_require_approving_individual_body_parts": true,
+    "quality_details_are_secondary_constraints": true
+  },
+  "generation_limits": {
+    "exactly_one_generation_allowed": true,
+    "max_generations": 1,
+    "no_second_attempt_allowed": true,
+    "no_retry_allowed": true,
+    "retry_authorized": false,
+    "blind_retry_allowed": false,
+    "generation_must_stop_after_saving_output": true,
+    "stop_after_generation": true
+  },
+  "forbidden_actions": {
+    "assembly_allowed": false,
+    "downstream_allowed": false,
+    "production_acceptance_allowed": false,
+    "visual_qa_acceptance_allowed": false,
+    "operator_visual_acceptance_allowed": false,
+    "preview_render_allowed": false,
+    "voice_generation_allowed": false,
+    "audio_generation_allowed": false
+  },
+  "quality_target": "quality_candidate_only",
+  "final_production_target": false,
+  "version": "1.0",
+  "timestamp": "2026-05-18T18:17:00+02:00"
+}

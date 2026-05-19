@@ -1,0 +1,43 @@
+{
+  "proof_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001-PROOF",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "previous_commit": "7c22c95",
+  "previous_layer": "RC-COMBINE-V2-MACHINE-READABLE-STANDARDS-PACK-001-FREEZE-FIX",
+  "generation_status": {
+    "generation_performed": true,
+    "generation_count": 1,
+    "max_generations": 1,
+    "second_generation_attempted": false,
+    "blind_retry_attempted": false,
+    "workflow_submitted": true,
+    "comfyui_execution": true,
+    "prompt_id": "1779095420",
+    "generated_assets_count": 1,
+    "stub_asset": false
+  },
+  "standards_integration": {
+    "standards_pack_valid": true,
+    "standards_integration_complete": true,
+    "script_supervisor_vertical_slice_complete": true,
+    "corrective_plan_validated": true,
+    "generation_gate_created": true,
+    "preflight_passed": true
+  },
+  "forbidden_actions_audit": {
+    "second_generation": false,
+    "blind_retry": false,
+    "visual_qa_acceptance": false,
+    "operator_visual_acceptance": false,
+    "assembly": false,
+    "downstream": false,
+    "production_accepted": false
+  },
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "stop_after_generation": true,
+  "artifacts_created": 24,
+  "all_traceable": true,
+  "task_complete": true
+}

@@ -1,0 +1,26 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "generation_preflight_report",
+  "timestamp": "2026-05-18T08:00:44.421238+00:00",
+  "preflight_passed": true,
+  "checks": {
+    "fresh_visual_strategy_ready": true,
+    "operator_strategy_acceptance_valid": true,
+    "qa_repairability_gate_active": true,
+    "unknown_repairability_blocks": true,
+    "workflow_selected": true,
+    "workflow_file_exists": true,
+    "workflow_validation_passed": true,
+    "required_models_available": true,
+    "required_adapters_available": true,
+    "resolution_policy_passed": true,
+    "output_path_canonical": true,
+    "negative_references_loaded": true,
+    "generation_count_before_run": 0,
+    "max_generations": 1,
+    "comfyui_reachable": true
+  },
+  "blockers": [],
+  "comfyui_host": "127.0.0.1",
+  "comfyui_port": 8188
+}

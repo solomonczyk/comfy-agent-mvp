@@ -1,0 +1,59 @@
+{
+  "policy_id": "continuity_guard_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "role": "script_supervisor",
+  "description": "Policy for Script Supervisor continuity guard operations",
+  "rules": [
+    {
+      "rule_id": "CG-RULE-001",
+      "name": "block_fake_operator_decisions",
+      "description": "Block any pipeline if fake operator decision detected",
+      "action": "block",
+      "severity": "blocker",
+      "conditions": ["fake_operator_decision_detected = true"]
+    },
+    {
+      "rule_id": "CG-RULE-002",
+      "name": "block_production_accepted_without_operator",
+      "description": "Block if production_accepted is true without explicit operator gate",
+      "action": "block",
+      "severity": "blocker",
+      "conditions": ["production_accepted = true", "operator_visual_acceptance = false"]
+    },
+    {
+      "rule_id": "CG-RULE-003",
+      "name": "block_duplicate_static_frames",
+      "description": "Block if preview has duplicate/static frames indicating failure",
+      "action": "block",
+      "severity": "critical",
+      "conditions": ["duplicate_static_ratio > 0.5"]
+    },
+    {
+      "rule_id": "CG-RULE-004",
+      "name": "require_operator_visual_review",
+      "description": "Require operator visual review before assembly",
+      "action": "require_review",
+      "severity": "major",
+      "conditions": ["visual_output_generated = true"]
+    },
+    {
+      "rule_id": "CG-RULE-005",
+      "name": "block_voice_assembly_without_visual_approval",
+      "description": "Block voice generation and assembly without visual approval",
+      "action": "block",
+      "severity": "blocker",
+      "conditions": ["visual_approval = false", "voice_generation_requested = true OR assembly_requested = true"]
+    },
+    {
+      "rule_id": "CG-RULE-006",
+      "name": "technical_pass_not_visual_pass",
+      "description": "Technical QA pass does not equal visual pass",
+      "action": "require_review",
+      "severity": "major",
+      "conditions": ["technical_pass = true", "visual_pass = false"]
+    }
+  ],
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

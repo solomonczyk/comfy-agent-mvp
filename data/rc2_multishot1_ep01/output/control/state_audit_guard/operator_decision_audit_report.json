@@ -1,0 +1,24 @@
+{
+  "report_id": "operator_decision_audit_report",
+  "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+  "role": "state_audit_guard",
+  "valid": true,
+  "fake_decision_detected": false,
+  "artifacts_checked": [
+    "post_preview_routing_decision.json",
+    "post_preview_operator_decision_reconciliation.json",
+    "preview_operator_decision_input.json"
+  ],
+  "findings": [
+    {
+      "decision": "pass",
+      "severity": "info",
+      "detail": "No fake operator decisions detected",
+      "timestamp": "2026-05-19T06:17:27.185119+00:00",
+      "role": "state_audit_guard",
+      "traceable": true
+    }
+  ],
+  "traceable": true,
+  "timestamp": "2026-05-19T06:17:27.185119+00:00"
+}

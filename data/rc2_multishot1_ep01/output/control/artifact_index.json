@@ -1,6 +1,6 @@
 {
-  "current_state": "script_supervisor_continuity_review_required",
-  "next_allowed_action": "script_supervisor_continuity_review_required",
+  "current_state": "state_audit_blocker_resolution_required",
+  "next_allowed_action": "state_audit_blocker_resolution_required",
   "fresh_visual_human_verdict_task_executed": true,
   "fresh_visual_human_verdict_provided": true,
   "fresh_visual_operator_verdict_artifact_created": true,
@@ -1742,6 +1742,6 @@
   "script_supervisor_verdict": "ACCEPTED",
   "costume_proof_tracked": true,
   "state_audit_guard_review_executed": true,
-  "state_audit_guard_review_timestamp": "2026-05-19T06:10:23.036293+00:00",
+  "state_audit_guard_review_timestamp": "2026-05-19T06:17:27.329466+00:00",
   "state_audit_guard_verdict": "BLOCKED"
 }

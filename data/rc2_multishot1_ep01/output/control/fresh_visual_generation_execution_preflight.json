@@ -1,0 +1,30 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001",
+  "timestamp": "2025-05-18T13:28:00Z",
+  "preflight_status": "BLOCKED",
+  "blocker_reason": "git_dirty_before_generation",
+  "git_status": {
+    "current_commit": "997763d",
+    "branch": "main...origin/main",
+    "working_tree_clean": false,
+    "modified_files": [
+      "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-FRESH-VISUAL-STRATEGY-REFERENCE-INTEGRATION-001_proof.json",
+      "data/rc2_multishot1_ep01/output/control/RC-COMBINE-V2-QUALITY-REFERENCE-REGISTRATION-001_proof.json",
+      "data/rc2_multishot1_ep01/output/control/fresh_visual_strategy/fresh_visual_strategy_manifest.json"
+    ],
+    "untracked_files": [
+      "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GATE-VERIFY-001_proof.json",
+      "RC-COMBINE-V2-FRESH-VISUAL-CORRECTIVE-GENERATE-ONE-001_proof.json",
+      "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001-FREEZE_proof.json",
+      "RC-COMBINE-V2-FRESH-VISUAL-QA-REVIEW-001_proof.json",
+      "RC-COMBINE-V2-QA-REPAIRABILITY-GATE-NEXT-STAGE-PLANNING-001_proof.json"
+    ]
+  },
+  "py_compile_status": "PASSED",
+  "authorization_validation": "NOT_ATTEMPTED",
+  "generation_execution": "BLOCKED",
+  "blocker_policy": "dangerous_actions_require_clean_git_state",
+  "required_action": "commit_and_clean_git_before_generation",
+  "next_allowed_action": "freeze_preflight_commit_verification",
+  "state": "fresh_visual_generation_blocked_dirty_git"
+}

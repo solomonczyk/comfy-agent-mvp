@@ -1,0 +1,11 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "report_type": "operator_decision_validation_report",
+  "timestamp": "2026-05-18T08:00:44.088920+00:00",
+  "decision_valid": true,
+  "errors": [],
+  "decision_source_valid": true,
+  "verdict_valid": true,
+  "generation_authorized_locked_false": true,
+  "production_accepted_locked_false": true
+}

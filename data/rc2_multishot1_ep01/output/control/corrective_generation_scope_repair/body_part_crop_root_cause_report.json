@@ -1,0 +1,67 @@
+{
+  "task_id": "RC-COMBINE-V2-CORRECTIVE-GENERATION-SCOPE-REPAIR-001",
+  "inspected_artifacts": [
+    "combine_v2_v10_prompt_package.json",
+    "combine_v2_v10_workflow_guardrails.json",
+    "corrective_generation_result.json",
+    "corrective_generation_result_review.json",
+    "fresh_visual_operator_review/corrective_generation_contract.json",
+    "quality_references/quality_reference_registry.json",
+    "quality_references/body_part_reference_scope_guard.json"
+  ],
+  "possible_root_causes_to_check": [
+    "eye_closeup_reference_used_as_target_composition",
+    "quality_reference_not_marked_as_non_compositional",
+    "prompt_overfocused_on_eye_skin_mouth_micro_detail",
+    "missing_full_frame_scene_requirement",
+    "missing_full_character_or_bust_shot_requirement",
+    "missing_camera_distance_constraint",
+    "missing_body_part_crop_negative_prompt",
+    "missing_validator_for_body_part_only_output"
+  ],
+  "prompt_analysis": {
+    "positive_prompt_used": "photorealistic close-up portrait, sharp focus, detailed skin texture, realistic human anatomy, natural lighting, high resolution, 8k, ultra-detailed, film grain, subtle imperfections",
+    "negative_prompt_used": "blur, haze, fog, soft focus, doll, anime, plastic, low quality, bad anatomy, malformed hands, disfigured, oversmooth, airbrushed, cartoon, painting, drawing, illustration, text, watermark, signature",
+    "critical_finding": "positive_prompt_explicitly_contains_close_up_portrait",
+    "detail": "The phrase 'close-up portrait' directly instructs the model to generate a close-up. Combined with 'detailed skin texture' and 'realistic human anatomy', the model is pushed toward extreme facial/eye detail rather than a full-frame scene."
+  },
+  "negative_prompt_analysis": {
+    "critical_finding": "negative_prompt_lacks_body_part_crop_blockers",
+    "missing_terms": [
+      "extreme close-up",
+      "eye close-up",
+      "mouth close-up",
+      "skin macro",
+      "cropped face",
+      "isolated body part",
+      "only one eye",
+      "only lips",
+      "beauty macro photo",
+      "medical close-up",
+      "partial face crop",
+      "no scene context"
+    ],
+    "detail": "The negative prompt blocks style issues (blur, doll, anime) but does not block composition issues (macro crops, isolated body parts)."
+  },
+  "workflow_patch_analysis": {
+    "critical_finding": "workflow_guardrails_have_no_framing_constraint",
+    "detail": "Quality checks include 'human_present' and 'micro_detail_present' but no 'full_frame_required' or 'scene_context_visible'."
+  },
+  "generation_contract_analysis": {
+    "critical_finding": "contract_did_not_specify_full_frame_target",
+    "detail": "The corrective generation contract enforced exactly-one-generation and stop-after-generation, but did not specify the output must be a full-frame production candidate. The contract quality_target was 'quality_candidate_only', which the system interpreted as allowing any quality-focused output including body-part crops."
+  },
+  "reference_usage_analysis": {
+    "quality_reference_id": "quality_ref_eye_closeup_001",
+    "quality_reference_type": "body_part_closeup_quality_reference",
+    "intended_binding": "quality_calibration_only",
+    "actual_effect": "quality_reference_leaked_into_target_composition",
+    "detail": "The eye-closeup quality reference was registered for quality calibration (skin micro-detail, eye naturalness). However, the prompt designer incorporated 'close-up portrait' into the positive prompt, effectively using the quality reference's composition as the target composition. The body_part_reference_scope_guard existed but was not enforced at prompt submission time."
+  },
+  "primary_root_cause": "quality_reference_leaked_into_target_composition",
+  "secondary_root_causes": [
+    "missing_full_frame_scene_constraint",
+    "prompt_overfocused_on_eye_skin_mouth_detail"
+  ],
+  "pipeline_failure": "Corrective constraints were interpreted as composition target instead of quality constraints."
+}

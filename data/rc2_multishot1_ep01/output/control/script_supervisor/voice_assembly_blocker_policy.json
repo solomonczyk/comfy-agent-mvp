@@ -1,0 +1,43 @@
+{
+  "policy_id": "voice_assembly_blocker_policy",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "role": "script_supervisor",
+  "description": "Policy blocking voice generation and assembly without visual approval",
+  "rules": [
+    {
+      "rule_id": "VAB-RULE-001",
+      "name": "block_voice_without_visual_approval",
+      "description": "Block voice generation if visual not approved",
+      "action": "block",
+      "severity": "blocker",
+      "conditions": ["visual_approval = false", "voice_generation_requested = true"]
+    },
+    {
+      "rule_id": "VAB-RULE-002",
+      "name": "block_assembly_without_visual_approval",
+      "description": "Block assembly if visual not approved",
+      "action": "block",
+      "severity": "blocker",
+      "conditions": ["visual_approval = false", "assembly_requested = true"]
+    },
+    {
+      "rule_id": "VAB-RULE-003",
+      "name": "block_downstream_without_visual_approval",
+      "description": "Block all downstream without visual approval",
+      "action": "block",
+      "severity": "blocker",
+      "conditions": ["visual_approval = false", "downstream_requested = true"]
+    }
+  ],
+  "current_state": {
+    "visual_approval": false,
+    "voice_generation_ready": false,
+    "assembly_allowed": false,
+    "downstream_blocked": true
+  },
+  "blocker_active": true,
+  "blocker_reason": "Visual candidate rejected - awaiting operator review of corrective generation",
+  "standards_pack_version": "1.0.0",
+  "traceable": true
+}

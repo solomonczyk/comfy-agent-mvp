@@ -1,0 +1,9 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "negative_reference_binding",
+  "timestamp": "2026-05-18T08:00:44.096919+00:00",
+  "policy_source": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\fresh_visual_strategy\\negative_reference_policy.json",
+  "policy_loaded": true,
+  "negative_references_enforced": true,
+  "negative_reference_count": 8
+}

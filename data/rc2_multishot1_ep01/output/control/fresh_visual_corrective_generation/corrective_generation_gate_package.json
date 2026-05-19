@@ -1,0 +1,30 @@
+{
+  "package_id": "corrective_generation_gate_package",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "generation_authorized": true,
+  "authorization_source": "human_operator_current_chat",
+  "max_generations": 1,
+  "blind_retry_allowed": false,
+  "second_generation_allowed": false,
+  "corrective_plan_required": true,
+  "corrective_plan_validated": true,
+  "workflow_patch_required": true,
+  "stop_after_generation": true,
+  "visual_qa_acceptance_allowed": false,
+  "operator_visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "forbidden_actions_enforced": [
+    "second_generation",
+    "blind_retry",
+    "visual_qa_acceptance",
+    "operator_visual_acceptance",
+    "assembly",
+    "downstream",
+    "production_accepted"
+  ],
+  "traceable": true
+}

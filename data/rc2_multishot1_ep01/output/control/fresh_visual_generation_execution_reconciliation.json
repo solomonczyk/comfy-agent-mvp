@@ -1,0 +1,27 @@
+{
+  "task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-NO-ASSET-RECONCILIATION-001",
+  "previous_task_id": "RC-COMBINE-V2-FRESH-VISUAL-GENERATION-EXECUTE-001-RERUN",
+  "timestamp": "2026-05-18T13:04:39.047782+00:00",
+  "stage": "fresh_visual_generation_execution_reconciliation",
+  "reconciliation_type": "no_asset_failure",
+  "workflow_submitted_once": true,
+  "real_prompt_id_exists": true,
+  "prompt_id": "b3a8f0ea-8004-40f6-be19-4192a633817a",
+  "polling_timeout": true,
+  "generated_assets_count": 0,
+  "generation_performed": true,
+  "generation_count": 1,
+  "retry_attempted": false,
+  "second_generation_attempted": false,
+  "visual_qa_executed": false,
+  "visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "downstream_blocked": true,
+  "state_transition": {
+    "from_state": "fresh_visual_generation_result_review_required",
+    "to_state": "fresh_visual_generation_no_asset_reconciliation_required"
+  },
+  "next_allowed_action": "fresh_visual_generation_failure_analysis_required"
+}

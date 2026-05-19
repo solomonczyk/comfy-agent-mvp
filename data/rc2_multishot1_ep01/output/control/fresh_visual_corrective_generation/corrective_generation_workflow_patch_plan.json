@@ -1,0 +1,56 @@
+{
+  "plan_id": "corrective_generation_workflow_patch_plan",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "based_on_corrective_plan": "fresh_visual_candidate/corrective_plan.json",
+  "patches_required": [
+    {
+      "patch_id": "WP-001",
+      "target": "KSampler",
+      "parameter": "cfg",
+      "current_value": 6.5,
+      "target_value": 5.8,
+      "reason": "Reduce CFG to soften over-sharpening artifacts"
+    },
+    {
+      "patch_id": "WP-002",
+      "target": "KSampler",
+      "parameter": "steps",
+      "current_value": 25,
+      "target_value": 32,
+      "reason": "Increase steps for better facial detail recovery"
+    },
+    {
+      "patch_id": "WP-003",
+      "target": "positive_prompt",
+      "parameter": "text",
+      "additions": ["natural skin pores", "subtle skin texture", "realistic skin grain", "detailed iris", "natural eye reflections", "realistic eye whites", "detailed pupil"],
+      "reason": "Add skin and eye detail tokens"
+    },
+    {
+      "patch_id": "WP-004",
+      "target": "negative_prompt",
+      "parameter": "text",
+      "additions": ["smooth plastic skin", "airbrushed", "over-processed skin", "bad teeth", "crooked teeth", "distorted mouth"],
+      "reason": "Add negative tokens for defects"
+    },
+    {
+      "patch_id": "WP-005",
+      "target": "workflow",
+      "parameter": "add_node",
+      "node_type": "ADetailer",
+      "target_regions": ["face", "mouth", "eyes"],
+      "reason": "Add ADetailer for face/mouth/eye inpainting"
+    },
+    {
+      "patch_id": "WP-006",
+      "target": "LoRA",
+      "parameter": "add_lora",
+      "lora_name": "skin_texture",
+      "weight": 0.5,
+      "reason": "Add skin texture LoRA"
+    }
+  ],
+  "traceable": true
+}

@@ -1,0 +1,43 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "schema_type": "operator_decision_schema",
+  "timestamp": "2026-05-18T08:00:44.087919+00:00",
+  "required_fields": {
+    "decision_source": {
+      "type": "string",
+      "allowed_values": [
+        "human_operator"
+      ],
+      "required": true
+    },
+    "operator_name": {
+      "type": "string",
+      "required": true
+    },
+    "operator_verdict": {
+      "type": "string",
+      "allowed_values": [
+        "modification_required",
+        "rejected_revision_required",
+        "accepted_for_controlled_generation_gate_planning"
+      ],
+      "required": true
+    },
+    "generation_authorized_by_strategy_review": {
+      "type": "boolean",
+      "must_be": false,
+      "required": true
+    },
+    "production_accepted": {
+      "type": "boolean",
+      "must_be": false,
+      "required": true
+    }
+  },
+  "validation_rules": [
+    "decision_source must be 'human_operator'",
+    "generation_authorized_by_strategy_review must be false — strategy review does not authorize generation",
+    "production_accepted must be false",
+    "operator_verdict must be one of the allowed values"
+  ]
+}

@@ -1,0 +1,53 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "operator_visual_rejection",
+  "timestamp": "2026-05-18T08:13:00.000000+00:00",
+  "candidate_id": "combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+  "candidate_sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+  "operator_verdict": "REJECTED",
+  "operator_name": "Андрей",
+  "operator_source": "human_operator",
+  "technical_verdict": "PASS",
+  "visual_verdict": "REJECTED",
+  "technical_vs_visual": "technically_accepted_with_visual_blockers",
+  "overall_assessment": "The candidate is significantly better than previous outputs, but still has unacceptable visual defects that prevent production acceptance.",
+  "visual_defects": [
+    {
+      "defect_id": "VD-001",
+      "category": "facial_artifacts",
+      "description": "Mouth and teeth artifacts — unnatural rendering of mouth/teeth region",
+      "severity": "blocking",
+      "repairability": "requires_workflow_correction"
+    },
+    {
+      "defect_id": "VD-002",
+      "category": "skin_rendering",
+      "description": "Over-smoothed AI-doll skin — loss of natural skin texture and grain",
+      "severity": "blocking",
+      "repairability": "requires_workflow_correction"
+    },
+    {
+      "defect_id": "VD-003",
+      "category": "eye_rendering",
+      "description": "Unnatural eye rendering — artificial appearance, insufficient iris detail",
+      "severity": "blocking",
+      "repairability": "requires_workflow_correction"
+    },
+    {
+      "defect_id": "VD-004",
+      "category": "facial_detail",
+      "description": "Insufficient natural facial detail — overall face lacks realistic micro-detail",
+      "severity": "blocking",
+      "repairability": "requires_workflow_correction"
+    }
+  ],
+  "visual_defect_count": 4,
+  "blocking_defect_count": 4,
+  "production_accepted": false,
+  "retry_generation_authorized": false,
+  "second_generation_authorized": false,
+  "assembly_authorized": false,
+  "downstream_authorized": false,
+  "required_next_action": "corrective_plan_required",
+  "required_next_state": "fresh_visual_candidate_rejected_corrective_plan_required"
+}

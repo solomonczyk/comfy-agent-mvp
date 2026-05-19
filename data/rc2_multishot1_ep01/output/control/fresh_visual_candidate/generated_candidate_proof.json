@@ -1,0 +1,33 @@
+{
+  "task_id": "RC-COMBINE-V2-FIRST-CONTROLLED-FRESH-VISUAL-CANDIDATE-001",
+  "document_type": "generated_candidate_proof",
+  "timestamp": "2026-05-18T08:00:44.923406+00:00",
+  "generation_performed": true,
+  "generation_count": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "comfyui_execution": true,
+  "prompt_id": "08f41712-797e-4ab6-8846-5582cbf3aea2",
+  "generated_assets": [
+    {
+      "source_filename": "combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\fresh_visual_candidates\\combine_v2_v7_identity_fidelity_shot02_1778157706_00002_.png",
+      "exists": true,
+      "readable": true,
+      "sha256": "14e979dd12c109257410b544346ba8def67d14dfeb7bf13c7b94c927c1e3d22d",
+      "size_bytes": 1368893,
+      "width": 1024,
+      "height": 1024
+    }
+  ],
+  "technical_candidate_review_created": true,
+  "repairability_candidate_review_created": true,
+  "operator_visual_review_packet_created": true,
+  "visual_qa_acceptance_executed": false,
+  "operator_visual_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "current_state": "fresh_visual_candidate_operator_review_required",
+  "next_allowed_action": "fresh_visual_candidate_operator_review_required"
+}

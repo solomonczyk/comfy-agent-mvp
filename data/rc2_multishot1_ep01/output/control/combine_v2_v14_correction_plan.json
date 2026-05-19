@@ -1,0 +1,59 @@
+{
+  "task_id": "RC-COMBINE-V2-30001-34000",
+  "candidate_version": "v14",
+  "stage": "v14_correction_plan_required",
+  "source_asset": "output/assets/combine_v2_v13_candidate_1778239698_00001_.png",
+  "v13_operator_rejection": "output/control/combine_v2_v13_operator_visual_rejection.json",
+  "v13_negative_framing_reference": "output/control/qa/references/negative/v13_bad_framing_reference.json",
+  "qa_evidence": {
+    "v13_operator_rejection": "output/control/combine_v2_v13_operator_visual_rejection.json",
+    "v13_negative_reference": "output/control/qa/references/negative/v13_bad_framing_reference.json",
+    "critical_failures": [
+      "head_not_fully_in_frame",
+      "top_of_head_cropped",
+      "over_tight_face_crop",
+      "portrait_framing_failed"
+    ]
+  },
+  "composition_goal": "full head visible in frame",
+  "framing": "portrait with full head and hair visible",
+  "camera": "slightly pulled back from V13",
+  "crop_policy": "no cropped forehead, no cropped top of head, no cut hairline",
+  "safe_margin": "visible margin above head",
+  "face_scale": "smaller than V13, not extreme close-up",
+  "preserve_quality_from_v13": true,
+  "preserve_mouth_teeth_improvement": true,
+  "positive_traits_to_preserve": [
+    "face_quality",
+    "skin_detail",
+    "eye_quality",
+    "mouth_teeth_improvement",
+    "overall_realism"
+  ],
+  "required_corrections": {
+    "prompt_correction_required": true,
+    "workflow_correction_required": false,
+    "quality_pipeline_correction_required": true,
+    "composition_or_framing_correction_required": true
+  },
+  "correction_instructions": [
+    "pull camera back \u2014 full head must be visible",
+    "add margin above the top of the head",
+    "no cropped forehead or hairline",
+    "no extreme close-up \u2014 head must not fill entire frame",
+    "preserve V13 face quality, skin detail, eye quality, mouth/teeth",
+    "avoid synthetic doll-like appearance",
+    "maintain photoreal quality"
+  ],
+  "prompt_patch_required": true,
+  "workflow_patch_required": false,
+  "quality_pipeline_patch_required": true,
+  "generation_allowed": false,
+  "retry_allowed": false,
+  "blind_retry_allowed": false,
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "next_allowed_action": "v14_generation_authorization_required",
+  "timestamp": "2026-05-08T12:07:27.625870+00:00"
+}

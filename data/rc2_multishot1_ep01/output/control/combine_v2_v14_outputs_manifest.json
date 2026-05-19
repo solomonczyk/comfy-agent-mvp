@@ -1,0 +1,23 @@
+{
+  "stage": "v14_generate_assets",
+  "version": "v14",
+  "generation_attempts": 1,
+  "max_generations": 1,
+  "workflow_submitted": true,
+  "generated_assets": [
+    {
+      "path": "output/assets/combine_v2_v14_candidate_1778242939_00001_.png",
+      "exists": true,
+      "readable": true,
+      "width": 1024,
+      "height": 1024,
+      "size_bytes": 1265373,
+      "sha256": "77c90218a09839f1d4305a51e85909087ebd9d8bfd6b82d2c3847ab2be44fbb9"
+    }
+  ],
+  "asset_paths": [
+    "output/assets/combine_v2_v14_candidate_1778242939_00001_.png"
+  ],
+  "collection_status": "completed",
+  "timestamp": "2026-05-08T12:23:37.234439+00:00"
+}

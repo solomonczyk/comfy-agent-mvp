@@ -1,0 +1,20 @@
+{
+  "authorization_id": "corrective_generation_operator_authorization",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "authorized_by": "human_operator",
+  "authorized_action": "fresh_visual_corrective_generation",
+  "generation_authorized": true,
+  "max_generations": 1,
+  "second_generation_allowed": false,
+  "blind_retry_allowed": false,
+  "visual_qa_acceptance_allowed": false,
+  "operator_visual_acceptance_allowed": false,
+  "assembly_allowed": false,
+  "downstream_allowed": false,
+  "production_acceptance_allowed": false,
+  "stop_after_generation": true,
+  "authorization_source": "current_chat",
+  "traceable": true
+}

@@ -1,0 +1,26 @@
+{
+  "report_id": "generation_preflight_report",
+  "version": "1.0.0",
+  "task_id": "RC-COMBINE-V2-STANDARDS-TO-FRESH-VISUAL-CONTROLLED-GENERATION-001",
+  "timestamp": "2026-05-18T16:04:00+02:00",
+  "preflight_passed": true,
+  "checks": {
+    "current_state_allows_generation": true,
+    "standards_pack_valid": true,
+    "script_supervisor_guard_ready": true,
+    "corrective_plan_validated": true,
+    "workflow_exists": true,
+    "workflow_path": "fresh_visual_candidate/submitted_workflow.json",
+    "checkpoint_exists": true,
+    "checkpoint_name": "realvisxlV50_v50Bakedvae.safetensors",
+    "output_path_canonical": true,
+    "output_path": "data/rc2_multishot1_ep01/output/assets/fresh_visual_candidates/",
+    "max_generations": 1,
+    "no_hidden_downloads": true,
+    "no_hidden_installs": true,
+    "no_hidden_api_calls": true
+  },
+  "blocker_detected": false,
+  "ready_for_generation": true,
+  "traceable": true
+}
