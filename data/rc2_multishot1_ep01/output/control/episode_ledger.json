@@ -3971,5 +3971,21 @@
     "comfyui_submit_executed": false,
     "assembly_executed": false,
     "downstream_executed": false
+  },
+  {
+    "event_type": "state_audit_guard_blocker_resolution",
+    "agent_id": "state_audit_guard",
+    "task_id": "RC-COMBINE-V2-STATE-AUDIT-BLOCKER-RESOLUTION-001",
+    "timestamp": "2026-05-19T08:20:00+00:00",
+    "verdict": "IN_PROGRESS",
+    "has_blocker": true,
+    "current_state": "script_supervisor_continuity_review_required",
+    "next_allowed_action": "script_supervisor_continuity_review_required",
+    "production_accepted": false,
+    "new_generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false
   }
 ]
