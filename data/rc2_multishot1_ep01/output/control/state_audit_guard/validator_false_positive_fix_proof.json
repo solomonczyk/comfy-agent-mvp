@@ -7,7 +7,7 @@
   "initial_false_positive_blockers": 8,
   "fixed_false_positive_blockers": 8,
   "remaining_false_positive_blockers": 0,
-  "real_project_blockers_after_fix": 1,
+  "real_project_blockers_after_fix": 0,
 
   "historical_execution_logic_fixed": true,
   "test_file_path_logic_fixed": true,
@@ -28,12 +28,12 @@
   "py_compile_pass": true,
   "cli_validation_pass": true,
 
-  "current_state": "state_audit_blocker_resolution_required",
-  "next_allowed_action": "commit_changes_to_resolve_git_dirty",
+  "current_state": "state_audit_guard_review_passed",
+  "next_allowed_action": "operator_visual_review_required",
 
-  "commit_hash": "pending",
-  "push_status": "pending",
-  "git_status_clean": false,
+  "commit_hash": "52b1801f51daf3848a88adf7aa1f09ffc3b81a0d",
+  "push_status": "pushed_origin_main",
+  "git_status_clean": true,
 
   "files_modified": [
     "app/agents/state_audit_guard/validator.py",
@@ -47,13 +47,13 @@
   ],
 
   "validation_summary": {
-    "verdict": "BLOCKED",
-    "blocker_count": 1,
-    "real_project_blockers": 1,
+    "verdict": "ACCEPTED",
+    "blocker_count": 0,
+    "real_project_blockers": 0,
     "validator_false_positives": 0,
     "historical_allowed_executions": 0
   },
 
-  "remaining_blocker": "Git repository is dirty - uncommitted changes detected",
-  "remaining_blocker_type": "real_project_blocker"
+  "remaining_blocker": null,
+  "remaining_blocker_type": null
 }

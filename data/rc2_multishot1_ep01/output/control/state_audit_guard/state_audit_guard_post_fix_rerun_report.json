@@ -1,15 +1,15 @@
 {
   "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VALIDATOR-FALSE-POSITIVE-FIX-001",
   "report_type": "state_audit_guard_post_fix_rerun_report",
-  "timestamp": "2026-05-19T06:50:55.555608+00:00",
+  "timestamp": "2026-05-19T06:53:55.233504+00:00",
   "rerun_results": {
-    "verdict": "BLOCKED",
-    "next_state": "state_audit_blocker_resolution_required",
-    "next_action": "state_audit_blocker_resolution_required",
-    "has_blocker": true,
-    "blocker_count": 1,
-    "total_blocker_findings": 1,
-    "real_project_blockers": 1,
+    "verdict": "ACCEPTED",
+    "next_state": "state_audit_guard_review_passed",
+    "next_action": "operator_visual_review_required",
+    "has_blocker": false,
+    "blocker_count": 0,
+    "total_blocker_findings": 0,
+    "real_project_blockers": 0,
     "validator_false_positives": 0,
     "historical_allowed_executions": 0,
     "duplicate_or_reclassified": 0,
@@ -17,9 +17,9 @@
     "requires_explicit_gate": 0
   },
   "blocker_summary": {
-    "remaining_blocker": "Git repository is dirty - uncommitted changes detected",
-    "blocker_type": "real_project_blocker",
-    "action_required": "Commit changes to resolve git dirty state"
+    "remaining_blocker": null,
+    "blocker_type": null,
+    "action_required": null
   },
   "false_positives_fixed": [
     "Forbidden action flag comfyui_submit_executed is true without explicit gate",
@@ -32,8 +32,8 @@
   "validation_details": {
     "state_consistency": {
       "valid": true,
-      "current_state": "production_gate_review_required",
-      "next_allowed_action": "production_gate_review_required"
+      "current_state": "state_audit_blocker_resolution_required",
+      "next_allowed_action": "state_audit_blocker_resolution_required"
     },
     "artifact_index_consistency": {
       "valid": true,
@@ -42,7 +42,7 @@
     },
     "episode_ledger_consistency": {
       "valid": true,
-      "ledger_entries": 226
+      "ledger_entries": 230
     },
     "proof_consistency": {
       "valid": true,
@@ -57,10 +57,10 @@
       "fake_decision_detected": false
     },
     "git_proof_audit": {
-      "valid": false,
-      "git_dirty": true,
+      "valid": true,
+      "git_dirty": false,
       "current_branch": "main",
-      "commit_hash": "f31982d831746dfa32234ff19fcc8e928ab54d01"
+      "commit_hash": "52b1801f51daf3848a88adf7aa1f09ffc3b81a0d"
     }
   }
 }
