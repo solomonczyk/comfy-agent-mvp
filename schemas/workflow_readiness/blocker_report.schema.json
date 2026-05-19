@@ -1,0 +1,53 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/workflow_readiness/blocker_report.schema.json",
+  "title": "Blocker Report",
+  "description": "Report on blockers preventing workflow execution. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "report_id",
+    "has_blockers",
+    "generated_at"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Unique identifier for the blocker report"
+    },
+    "has_blockers": {
+      "type": "boolean",
+      "description": "Whether blockers exist"
+    },
+    "blocker_type": {
+      "type": ["string", "null"],
+      "enum": [
+        "project_specific_hardcoding",
+        "forbidden_runtime_action",
+        "invalid_reference_binding",
+        "missing_required_reference",
+        "invalid_workflow_contract",
+        null
+      ],
+      "description": "Type of blocker if present"
+    },
+    "blocker_details": {
+      "type": "object",
+      "description": "Details about the blocker"
+    },
+    "resolution_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Actions to resolve the blocker"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the blocker report"
+    }
+  }
+}

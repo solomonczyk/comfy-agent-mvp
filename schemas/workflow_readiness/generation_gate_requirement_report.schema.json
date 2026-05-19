@@ -1,0 +1,57 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/workflow_readiness/generation_gate_requirement_report.schema.json",
+  "title": "Generation Gate Requirement Report",
+  "description": "Report on generation gate requirements. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "report_id",
+    "gate_required",
+    "gate_status",
+    "gate_reason",
+    "generated_at"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Unique identifier for the gate report"
+    },
+    "gate_required": {
+      "type": "boolean",
+      "const": true,
+      "description": "Gate is always required"
+    },
+    "gate_status": {
+      "type": "string",
+      "enum": ["closed", "open"],
+      "default": "closed",
+      "description": "Current status of the generation gate"
+    },
+    "gate_reason": {
+      "type": "string",
+      "description": "Reason for the current gate status"
+    },
+    "blocking_components": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Components blocking the gate"
+    },
+    "authorization_path": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Path to authorization for opening the gate"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the gate report"
+    }
+  }
+}

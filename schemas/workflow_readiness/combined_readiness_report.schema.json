@@ -1,0 +1,137 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/workflow_readiness/combined_readiness_report.schema.json",
+  "title": "Combined Readiness Report",
+  "description": "Combined readiness report for all workflow components. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "report_id",
+    "overall_status",
+    "generation_authorized",
+    "generation_gate_required",
+    "evaluated_at",
+    "component_readiness"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Unique identifier for the readiness report"
+    },
+    "overall_status": {
+      "type": "string",
+      "enum": [
+        "ready_for_operator_generation_authorization",
+        "pending_operator_reference_supply",
+        "blocked_missing_required_reference",
+        "blocked_invalid_reference_binding",
+        "blocked_invalid_workflow_contract",
+        "blocked_forbidden_runtime_action",
+        "blocked_project_specific_hardcoding"
+      ],
+      "description": "Overall readiness status"
+    },
+    "generation_authorized": {
+      "type": "boolean",
+      "const": false,
+      "description": "Generation is NEVER authorized by this layer"
+    },
+    "generation_gate_required": {
+      "type": "boolean",
+      "const": true,
+      "description": "Gate is always required before generation"
+    },
+    "evaluated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "component_readiness": {
+      "type": "object",
+      "description": "Readiness status for each component",
+      "additionalProperties": {
+        "$ref": "#/$defs/component_readiness"
+      }
+    },
+    "missing_references": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of missing required reference IDs"
+    },
+    "invalid_bindings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of invalid reference binding IDs"
+    },
+    "forbidden_actions_detected": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of forbidden runtime actions detected"
+    },
+    "hardcoded_paths_detected": {
+      "type": "object",
+      "description": "Hardcoded project-specific paths detected",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the report"
+    }
+  },
+  "$defs": {
+    "component_readiness": {
+      "type": "object",
+      "required": [
+        "component_type",
+        "component_id",
+        "is_valid",
+        "is_present"
+      ],
+      "properties": {
+        "component_type": {
+          "type": "string",
+          "enum": [
+            "workflow_registry",
+            "pipeline_blueprint",
+            "reference_pack",
+            "reference_binding",
+            "reference_set_report"
+          ]
+        },
+        "component_id": {
+          "type": "string"
+        },
+        "is_valid": {
+          "type": "boolean"
+        },
+        "is_present": {
+          "type": "boolean"
+        },
+        "errors": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "type": "object"
+        }
+      }
+    }
+  }
+}

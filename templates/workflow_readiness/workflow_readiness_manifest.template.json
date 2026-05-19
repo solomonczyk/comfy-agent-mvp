@@ -1,0 +1,19 @@
+{
+  "task_id": "RC-COMBINE-V2-WORKFLOW-READINESS-ORCHESTRATION-001",
+  "document_type": "workflow_readiness_manifest",
+  "version": "1.0.0",
+  "project_agnostic": true,
+  "created": "2026-01-01T00:00:00Z",
+  "evaluation_scope": {
+    "workflow_registry_path": "output/project_agnostic/workflow_registry/workflow_registry.json",
+    "pipeline_blueprint_id": "example_blueprint",
+    "reference_pack_id": "example_reference_pack",
+    "reference_binding_path": "output/project_agnostic/reference_binding/reference_binding.json",
+    "reference_set_report_path": "output/project_agnostic/reference_set/dropzone_report.json"
+  },
+  "metadata": {
+    "project_agnostic": true,
+    "generation_blocked": true,
+    "gate_required": true
+  }
+}

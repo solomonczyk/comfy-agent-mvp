@@ -19305,6 +19305,57 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-WORKFLOW-READINESS-ORCHESTRATION-001 — combine-workflow-readiness-evaluate
+    combine_workflow_readiness_evaluate_parser = subparsers.add_parser(
+        "combine-workflow-readiness-evaluate",
+        help="Evaluate workflow readiness for all components",
+    )
+    combine_workflow_readiness_evaluate_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_workflow_readiness_evaluate_parser.add_argument(
+        "--workflow-registry-path", required=True, help="Path to workflow registry JSON",
+    )
+    combine_workflow_readiness_evaluate_parser.add_argument(
+        "--pipeline-blueprint-id", required=True, help="ID of pipeline blueprint",
+    )
+    combine_workflow_readiness_evaluate_parser.add_argument(
+        "--reference-pack-id", required=True, help="ID of reference pack",
+    )
+    combine_workflow_readiness_evaluate_parser.add_argument(
+        "--reference-binding-path", required=True, help="Path to reference binding JSON",
+    )
+    combine_workflow_readiness_evaluate_parser.add_argument(
+        "--reference-set-report-path", help="Optional path to reference set report",
+    )
+    combine_workflow_readiness_evaluate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-WORKFLOW-READINESS-ORCHESTRATION-001 — combine-workflow-readiness-inspect
+    combine_workflow_readiness_inspect_parser = subparsers.add_parser(
+        "combine-workflow-readiness-inspect",
+        help="Inspect workflow readiness artifacts",
+    )
+    combine_workflow_readiness_inspect_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_workflow_readiness_inspect_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-WORKFLOW-READINESS-ORCHESTRATION-001 — combine-workflow-readiness-report
+    combine_workflow_readiness_report_parser = subparsers.add_parser(
+        "combine-workflow-readiness-report",
+        help="Generate comprehensive workflow readiness report",
+    )
+    combine_workflow_readiness_report_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_workflow_readiness_report_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-SCRIPT-SUPERVISOR-STANDARDS-DRIVEN-VERTICAL-SLICE-001 — combine-script-supervisor-readiness
     combine_script_supervisor_readiness_parser = subparsers.add_parser(
         "combine-script-supervisor-readiness",
@@ -20047,6 +20098,15 @@ def main() -> int:
     elif args.command == "combine-script-supervisor-readiness":
         _require_absolute_project_root(args, "combine-script-supervisor-readiness")
         return combine_script_supervisor_readiness(args)
+    elif args.command == "combine-workflow-readiness-evaluate":
+        _require_absolute_project_root(args, "combine-workflow-readiness-evaluate")
+        return combine_workflow_readiness_evaluate(args)
+    elif args.command == "combine-workflow-readiness-inspect":
+        _require_absolute_project_root(args, "combine-workflow-readiness-inspect")
+        return combine_workflow_readiness_inspect(args)
+    elif args.command == "combine-workflow-readiness-report":
+        _require_absolute_project_root(args, "combine-workflow-readiness-report")
+        return combine_workflow_readiness_report(args)
     elif args.command == "combine-validate-preview-correction-plan":
         _require_absolute_project_root(args, "combine-validate-preview-correction-plan")
         return combine_validate_preview_correction_plan(args)
@@ -46419,6 +46479,227 @@ def combine_record_fresh_visual_generation_authorization(args: argparse.Namespac
         "next_allowed_action": next_action,
     }
     _out(output)
+    return 0
+
+
+def combine_workflow_readiness_evaluate(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-WORKFLOW-READINESS-ORCHESTRATION-001 — Evaluate workflow readiness.
+
+    Evaluates workflow readiness for all components (workflow registry, pipeline blueprint,
+    reference pack, reference binding, reference set reports). Does NOT execute generation,
+    retry, or any downstream operations.
+
+    Exit codes:
+    - 0: evaluation completed
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+    from app.workflow_readiness import WorkflowReadinessEngine
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+    workflow_registry_path = Path(args.workflow_registry_path)
+    pipeline_blueprint_id = args.pipeline_blueprint_id
+    reference_pack_id = args.reference_pack_id
+    reference_binding_path = Path(args.reference_binding_path)
+    reference_set_report_path = Path(args.reference_set_report_path) if args.reference_set_report_path else None
+
+    output_dir = project_root / "output" / "project_agnostic" / "workflow_readiness"
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    try:
+        # Evaluate readiness
+        readiness_report = WorkflowReadinessEngine.evaluate_readiness(
+            workflow_registry_path=workflow_registry_path,
+            pipeline_blueprint_id=pipeline_blueprint_id,
+            reference_pack_id=reference_pack_id,
+            reference_binding_path=reference_binding_path,
+            reference_set_report_path=reference_set_report_path,
+        )
+
+        # Create gate report
+        gate_report = WorkflowReadinessEngine.create_generation_gate_report(readiness_report)
+
+        # Create blocker report
+        blocker_report = WorkflowReadinessEngine.create_blocker_report(readiness_report)
+
+        # Create manifest
+        manifest = WorkflowReadinessEngine.create_manifest(
+            task_id="RC-COMBINE-V2-WORKFLOW-READINESS-ORCHESTRATION-001",
+            evaluation_scope={
+                "workflow_registry_path": str(workflow_registry_path),
+                "pipeline_blueprint_id": pipeline_blueprint_id,
+                "reference_pack_id": reference_pack_id,
+                "reference_binding_path": str(reference_binding_path),
+                "reference_set_report_path": str(reference_set_report_path) if reference_set_report_path else None,
+            },
+        )
+
+        # Write artifacts
+        manifest_path = output_dir / "workflow_readiness_manifest.json"
+        readiness_path = output_dir / "combined_readiness_report.json"
+        gate_path = output_dir / "generation_gate_requirement_report.json"
+        blocker_path = output_dir / "blocker_report.json"
+
+        with open(manifest_path, "w", encoding="utf-8") as f:
+            json.dump(manifest.to_dict(), f, indent=2)
+        with open(readiness_path, "w", encoding="utf-8") as f:
+            json.dump(readiness_report.to_dict(), f, indent=2)
+        with open(gate_path, "w", encoding="utf-8") as f:
+            json.dump(gate_report.to_dict(), f, indent=2)
+        with open(blocker_path, "w", encoding="utf-8") as f:
+            json.dump(blocker_report.to_dict(), f, indent=2)
+
+        if json_output:
+            result = {
+                "status": "ok",
+                "overall_status": readiness_report.overall_status.value,
+                "generation_authorized": readiness_report.generation_authorized,
+                "generation_gate_required": readiness_report.generation_gate_required,
+                "artifacts": {
+                    "manifest": str(manifest_path),
+                    "readiness_report": str(readiness_path),
+                    "gate_report": str(gate_path),
+                    "blocker_report": str(blocker_path),
+                },
+            }
+            print(json.dumps(result, indent=2))
+        else:
+            print(f"Workflow Readiness Evaluation")
+            print(f"Overall Status: {readiness_report.overall_status.value}")
+            print(f"Generation Authorized: {readiness_report.generation_authorized}")
+            print(f"Generation Gate Required: {readiness_report.generation_gate_required}")
+            print(f"Artifacts Written:")
+            print(f"  - Manifest: {manifest_path}")
+            print(f"  - Readiness Report: {readiness_path}")
+            print(f"  - Gate Report: {gate_path}")
+            print(f"  - Blocker Report: {blocker_path}")
+
+        return 0
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
+def combine_workflow_readiness_inspect(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-WORKFLOW-READINESS-ORCHESTRATION-001 — Inspect workflow readiness.
+
+    Inspects workflow readiness artifacts. Does NOT execute generation,
+    retry, or any downstream operations.
+
+    Exit codes:
+    - 0: inspection completed
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+
+    output_dir = project_root / "output" / "project_agnostic" / "workflow_readiness"
+    readiness_path = output_dir / "combined_readiness_report.json"
+
+    if not readiness_path.exists():
+        msg = f"Error: Readiness report not found at {readiness_path}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+    try:
+        with open(readiness_path, "r", encoding="utf-8") as f:
+            readiness_report = json.load(f)
+
+        if json_output:
+            print(json.dumps(readiness_report, indent=2))
+        else:
+            print(f"Workflow Readiness Inspection")
+            print(f"Report ID: {readiness_report.get('report_id')}")
+            print(f"Overall Status: {readiness_report.get('overall_status')}")
+            print(f"Generation Authorized: {readiness_report.get('generation_authorized')}")
+            print(f"Generation Gate Required: {readiness_report.get('generation_gate_required')}")
+            print(f"Evaluated At: {readiness_report.get('evaluated_at')}")
+            print(f"\nComponent Readiness:")
+            for comp_id, comp_status in readiness_report.get('component_readiness', {}).items():
+                print(f"  - {comp_id}: valid={comp_status.get('is_valid')}, present={comp_status.get('is_present')}")
+            if readiness_report.get('missing_references'):
+                print(f"\nMissing References: {readiness_report.get('missing_references')}")
+            if readiness_report.get('invalid_bindings'):
+                print(f"Invalid Bindings: {readiness_report.get('invalid_bindings')}")
+
+        return 0
+    except Exception as e:
+        msg = f"Error: {str(e)}"
+        if json_output:
+            print(json.dumps({"status": "error", "message": msg}))
+        else:
+            print(msg)
+        return 1
+
+
+def combine_workflow_readiness_report(args: argparse.Namespace) -> int:
+    """RC-COMBINE-V2-WORKFLOW-READINESS-ORCHESTRATION-001 — Generate workflow readiness report.
+
+    Generates a comprehensive workflow readiness report. Does NOT execute generation,
+    retry, or any downstream operations.
+
+    Exit codes:
+    - 0: report generated
+    - 1: error
+    """
+    import json
+    from pathlib import Path
+
+    project_root = Path(args.project_root)
+    json_output = args.json
+
+    output_dir = project_root / "output" / "project_agnostic" / "workflow_readiness"
+
+    reports = {
+        "manifest": output_dir / "workflow_readiness_manifest.json",
+        "readiness": output_dir / "combined_readiness_report.json",
+        "gate": output_dir / "generation_gate_requirement_report.json",
+        "blocker": output_dir / "blocker_report.json",
+    }
+
+    result = {}
+    for report_name, report_path in reports.items():
+        if report_path.exists():
+            try:
+                with open(report_path, "r", encoding="utf-8") as f:
+                    result[report_name] = {"path": str(report_path), "exists": True, "data": json.load(f)}
+            except Exception as e:
+                result[report_name] = {"path": str(report_path), "exists": True, "error": str(e)}
+        else:
+            result[report_name] = {"path": str(report_path), "exists": False}
+
+    if json_output:
+        print(json.dumps(result, indent=2))
+    else:
+        print(f"Workflow Readiness Report")
+        for report_name, report_info in result.items():
+            print(f"\n{report_name.capitalize()}:")
+            print(f"  Path: {report_info['path']}")
+            print(f"  Exists: {report_info['exists']}")
+            if report_info.get('data'):
+                data = report_info['data']
+                if report_name == "readiness":
+                    print(f"  Overall Status: {data.get('overall_status')}")
+                    print(f"  Generation Authorized: {data.get('generation_authorized')}")
+                elif report_name == "gate":
+                    print(f"  Gate Status: {data.get('gate_status')}")
+                    print(f"  Gate Required: {data.get('gate_required')}")
+                elif report_name == "blocker":
+                    print(f"  Has Blockers: {data.get('has_blockers')}")
+                    print(f"  Blocker Type: {data.get('blocker_type')}")
+
     return 0
 
 

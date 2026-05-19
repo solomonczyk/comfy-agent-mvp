@@ -1,0 +1,62 @@
+{
+  "report_id": "readiness_example_blueprint_example_reference_pack",
+  "overall_status": "ready_for_operator_generation_authorization",
+  "generation_authorized": false,
+  "generation_gate_required": true,
+  "evaluated_at": "2026-01-01T00:00:00Z",
+  "component_readiness": {
+    "workflow_registry": {
+      "component_type": "workflow_registry",
+      "component_id": "example_registry",
+      "is_valid": true,
+      "is_present": true,
+      "errors": [],
+      "warnings": [],
+      "metadata": {
+        "version": "1.0.0"
+      }
+    },
+    "pipeline_blueprint": {
+      "component_type": "pipeline_blueprint",
+      "component_id": "example_blueprint",
+      "is_valid": true,
+      "is_present": true,
+      "errors": [],
+      "warnings": [],
+      "metadata": {
+        "stages": 3
+      }
+    },
+    "reference_pack": {
+      "component_type": "reference_pack",
+      "component_id": "example_reference_pack",
+      "is_valid": true,
+      "is_present": true,
+      "errors": [],
+      "warnings": [],
+      "metadata": {
+        "total_items": 5,
+        "project_binding_required": false
+      }
+    },
+    "reference_binding": {
+      "component_type": "reference_binding",
+      "component_id": "example_binding",
+      "is_valid": true,
+      "is_present": true,
+      "errors": [],
+      "warnings": [],
+      "metadata": {
+        "blueprint_id": "example_blueprint"
+      }
+    }
+  },
+  "missing_references": [],
+  "invalid_bindings": [],
+  "forbidden_actions_detected": [],
+  "hardcoded_paths_detected": {},
+  "metadata": {
+    "pipeline_blueprint_id": "example_blueprint",
+    "reference_pack_id": "example_reference_pack"
+  }
+}

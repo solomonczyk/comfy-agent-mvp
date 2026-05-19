@@ -1,0 +1,15 @@
+{
+  "report_id": "gate_readiness_example_blueprint_example_reference_pack",
+  "gate_required": true,
+  "gate_status": "closed",
+  "gate_reason": "technically_ready_awaiting_operator_authorization",
+  "blocking_components": [],
+  "authorization_path": [
+    "operator_generation_authorization"
+  ],
+  "generated_at": "2026-01-01T00:00:00Z",
+  "metadata": {
+    "readiness_report_id": "readiness_example_blueprint_example_reference_pack",
+    "overall_status": "ready_for_operator_generation_authorization"
+  }
+}

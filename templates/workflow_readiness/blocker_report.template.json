@@ -1,0 +1,12 @@
+{
+  "report_id": "blocker_readiness_example_blueprint_example_reference_pack",
+  "has_blockers": false,
+  "blocker_type": null,
+  "blocker_details": {},
+  "resolution_actions": [],
+  "generated_at": "2026-01-01T00:00:00Z",
+  "metadata": {
+    "readiness_report_id": "readiness_example_blueprint_example_reference_pack",
+    "overall_status": "ready_for_operator_generation_authorization"
+  }
+}

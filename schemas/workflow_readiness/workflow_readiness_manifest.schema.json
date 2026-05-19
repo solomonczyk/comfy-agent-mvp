@@ -1,0 +1,62 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/workflow_readiness/workflow_readiness_manifest.schema.json",
+  "title": "Workflow Readiness Manifest",
+  "description": "Manifest for workflow readiness evaluation. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "task_id",
+    "document_type",
+    "version",
+    "project_agnostic",
+    "created",
+    "evaluation_scope"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string",
+      "description": "Task ID for the readiness evaluation"
+    },
+    "document_type": {
+      "type": "string",
+      "const": "workflow_readiness_manifest"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "project_agnostic": {
+      "type": "boolean",
+      "const": true
+    },
+    "created": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "evaluation_scope": {
+      "type": "object",
+      "description": "Scope of the readiness evaluation",
+      "properties": {
+        "workflow_registry_path": {
+          "type": "string"
+        },
+        "pipeline_blueprint_id": {
+          "type": "string"
+        },
+        "reference_pack_id": {
+          "type": "string"
+        },
+        "reference_binding_path": {
+          "type": "string"
+        },
+        "reference_set_report_path": {
+          "type": ["string", "null"]
+        }
+      }
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the manifest"
+    }
+  }
+}
