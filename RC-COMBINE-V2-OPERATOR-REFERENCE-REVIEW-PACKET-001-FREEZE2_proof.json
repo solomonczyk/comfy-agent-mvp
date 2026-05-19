@@ -1,0 +1,23 @@
+{
+  "task_id": "RC-COMBINE-V2-OPERATOR-REFERENCE-REVIEW-PACKET-001-FREEZE2",
+  "previous_commit": "83aee10",
+  "tests_added": true,
+  "tests_pass": true,
+  "tests_count": 8,
+  "cli_validation_pass": true,
+  "git_status_clean": true,
+  "commit_hash": "",
+  "push_status": "pushed_origin_main",
+  "operator_decision_template_empty": true,
+  "operator_decision_filled_by_agent": false,
+  "fake_operator_decision_created": false,
+  "generation_authorized": false,
+  "generation_performed": false,
+  "retry_attempted": false,
+  "comfyui_submit_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "production_accepted": false,
+  "force_push_used": false,
+  "next_allowed_action": "manual_operator_reference_review"
+}
