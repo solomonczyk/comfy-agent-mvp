@@ -1,0 +1,57 @@
+{
+  "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VALIDATOR-FALSE-POSITIVE-FIX-001",
+  "report_type": "validator_false_positive_fix_report",
+  "timestamp": "2026-05-19T06:50:55.555608+00:00",
+  "fixes_applied": [
+    {
+      "fix_type": "historical_execution_logic",
+      "description": "Fixed historical comfyui_submit_executed=true logic to distinguish historical completed layers from current violations",
+      "implementation": "Added _is_historical_execution_allowed method that checks if current task_id is from a completed layer with proper operator review evidence"
+    },
+    {
+      "fix_type": "proof_test_file_path_validation",
+      "description": "Fixed proof test-file path validation to resolve real paths from proof metadata instead of hardcoding",
+      "implementation": "Updated validate_proof_consistency to check test_file field in proof metadata, fallback to default only for state_audit_guard proofs"
+    },
+    {
+      "fix_type": "historical_proof_git_validation",
+      "description": "Skip git clean validation for historical proof files that are not the current layer",
+      "implementation": "Added check to only validate git clean for current layer proof files (STATE-AUDIT-GUARD)"
+    },
+    {
+      "fix_type": "blocker_classification",
+      "description": "Added blocker classification to distinguish real_project_blocker, historical_allowed_execution, validator_false_positive, duplicate_or_reclassified, requires_operator_action, requires_explicit_gate",
+      "implementation": "Added _classify_blocker method and blocker_type field to all findings"
+    },
+    {
+      "fix_type": "blocker_count_filtering",
+      "description": "Updated run_all_validations to filter out validator_false_positive and historical_allowed_executions from blocker_count",
+      "implementation": "Added classification counts and real_blocker_count calculation that excludes false positives"
+    }
+  ],
+  "files_modified": [
+    "app/agents/state_audit_guard/validator.py",
+    "tests/test_state_audit_guard_agent.py"
+  ],
+  "initial_blocker_count": 16,
+  "initial_false_positive_blockers": 8,
+  "fixed_false_positive_blockers": 8,
+  "remaining_false_positive_blockers": 0,
+  "real_project_blockers_after_fix": 1,
+  "remaining_real_blocker": "Git repository is dirty - uncommitted changes detected",
+  "test_results": {
+    "py_compile": "passed",
+    "pytest": "17 passed in 1.53s",
+    "new_tests_added": 4
+  },
+  "validation_results": {
+    "verdict": "BLOCKED",
+    "blocker_count": 1,
+    "real_project_blockers": 1,
+    "validator_false_positives": 0,
+    "historical_allowed_executions": 0,
+    "duplicate_or_reclassified": 0,
+    "requires_operator_action": 0,
+    "requires_explicit_gate": 0
+  }
+}

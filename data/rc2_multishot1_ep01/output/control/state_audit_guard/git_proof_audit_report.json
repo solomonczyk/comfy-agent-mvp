@@ -5,17 +5,18 @@
   "valid": false,
   "git_dirty": true,
   "current_branch": "main",
-  "commit_hash": "6a307cb67a47cdd48653775bffb397724642f68c",
+  "commit_hash": "f31982d831746dfa32234ff19fcc8e928ab54d01",
   "findings": [
     {
       "decision": "blocked",
       "severity": "blocker",
       "detail": "Git repository is dirty - uncommitted changes detected",
-      "timestamp": "2026-05-19T06:17:27.245398+00:00",
+      "timestamp": "2026-05-19T06:50:59.280375+00:00",
       "role": "state_audit_guard",
-      "traceable": true
+      "traceable": true,
+      "blocker_type": "real_project_blocker"
     }
   ],
   "traceable": true,
-  "timestamp": "2026-05-19T06:17:27.324253+00:00"
+  "timestamp": "2026-05-19T06:50:59.356575+00:00"
 }

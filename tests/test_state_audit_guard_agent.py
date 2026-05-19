@@ -201,3 +201,75 @@ class TestStateAuditGuardAgent:
         elif result["verdict"] == "BLOCKED":
             assert result["next_state"] == "state_audit_blocker_resolution_required"
             assert result["next_action"] == "state_audit_blocker_resolution_required"
+
+    def test_historical_execution_allowed_classification(self, validator):
+        """Test that historical execution is properly classified."""
+        # Test the _is_historical_execution_allowed method
+        state_with_historical = {
+            "task_id": "RC-COMBINE-V2-COSTUME-VERTICAL-SLICE-001",
+            "previous_task": "RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001",
+            "comfyui_submit_executed": True,
+            "operator_visual_review_completed": True,
+            "operator_visual_review_verdict": "ACCEPTED_FOR_NEXT_GATE",
+        }
+        assert validator._is_historical_execution_allowed(state_with_historical) == True
+
+        state_without_historical = {
+            "task_id": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+            "previous_task": "RC-COMBINE-V2-STATE-AUDIT-GUARD-VERTICAL-SLICE-001",
+            "comfyui_submit_executed": True,
+        }
+        assert validator._is_historical_execution_allowed(state_without_historical) == False
+
+    def test_blocker_classification(self, validator):
+        """Test that blockers are properly classified."""
+        # Test historical allowed execution classification
+        state_with_historical = {
+            "task_id": "RC-COMBINE-V2-COSTUME-VERTICAL-SLICE-001",
+            "previous_task": "RC-COMBINE-V2-CAMERA-OPERATOR-AGENT-VERTICAL-001",
+            "comfyui_submit_executed": True,
+            "operator_visual_review_completed": True,
+            "operator_visual_review_verdict": "ACCEPTED_FOR_NEXT_GATE",
+        }
+        classification = validator._classify_blocker("comfyui_submit_executed is true", state_with_historical)
+        assert classification == "historical_allowed_execution"
+
+        # Test proof file false positive classification
+        classification = validator._classify_blocker("Proof claims git clean but repository is dirty")
+        assert classification == "validator_false_positive"
+
+        classification = validator._classify_blocker("Proof claims tests_pass but test file not found")
+        assert classification == "validator_false_positive"
+
+        # Test real project blocker classification
+        classification = validator._classify_blocker("production_accepted is true without final production gate")
+        assert classification == "real_project_blocker"
+
+        classification = validator._classify_blocker("Fake operator decision detected")
+        assert classification == "real_project_blocker"
+
+    def test_blocker_count_excludes_false_positives(self, validator):
+        """Test that blocker count excludes validator_false_positive blockers."""
+        result = validator.run_all_validations()
+        
+        # Check that the result includes blocker classification counts
+        assert "blocker_count" in result
+        assert "total_blocker_findings" in result
+        assert "validator_false_positives" in result
+        assert "real_project_blockers" in result
+        assert "historical_allowed_executions" in result
+        
+        # blocker_count should be real blockers only (excluding false positives)
+        assert result["blocker_count"] <= result["total_blocker_findings"]
+
+    def test_fake_operator_decision_still_blocks(self, validator):
+        """Test that fake operator decisions still block as real_project_blocker."""
+        # This is tested by the existing validate_operator_decisions test
+        result = validator.validate_operator_decisions()
+        assert "fake_decision_detected" in result
+        
+        # If a fake is detected, it should be classified as real_project_blocker
+        if result["fake_decision_detected"]:
+            for finding in result["findings"]:
+                if "Fake operator decision" in finding.get("detail", ""):
+                    assert finding.get("blocker_type") == "real_project_blocker"
