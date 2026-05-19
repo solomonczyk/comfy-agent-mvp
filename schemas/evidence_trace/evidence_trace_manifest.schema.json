@@ -1,0 +1,48 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/evidence_trace/evidence_trace_manifest.schema.json",
+  "title": "Evidence Trace Manifest",
+  "description": "Manifest for evidence trace layer. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "manifest_id",
+    "task_id",
+    "evidence_ledger_path",
+    "total_events",
+    "created_at"
+  ],
+  "properties": {
+    "manifest_id": {
+      "type": "string",
+      "description": "Unique manifest identifier"
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Task identifier this manifest belongs to"
+    },
+    "evidence_ledger_path": {
+      "type": "string",
+      "description": "Path to the evidence ledger file"
+    },
+    "total_events": {
+      "type": "integer",
+      "description": "Total number of events in the ledger"
+    },
+    "source_layers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Source layers represented in the ledger"
+    },
+    "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when manifest was created"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata"
+    }
+  }
+}

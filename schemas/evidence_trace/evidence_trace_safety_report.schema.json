@@ -1,0 +1,72 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/evidence_trace/evidence_trace_safety_report.schema.json",
+  "title": "Evidence Trace Safety Report",
+  "description": "Safety report for evidence trace layer. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "report_id",
+    "safe",
+    "safety_checks"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Report identifier"
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Task identifier this report belongs to"
+    },
+    "safe": {
+      "type": "boolean",
+      "description": "Whether the evidence trace is safe"
+    },
+    "safety_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "check_id",
+          "check_description",
+          "passed"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string"
+          },
+          "check_description": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Safety violations detected"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Safety warnings"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

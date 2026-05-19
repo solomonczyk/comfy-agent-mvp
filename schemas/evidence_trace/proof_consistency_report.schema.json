@@ -1,0 +1,73 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/evidence_trace/proof_consistency_report.schema.json",
+  "title": "Proof Consistency Report",
+  "description": "Report on consistency of evidence trace. Project-agnostic.",
+  "type": "object",
+  "required": [
+    "report_id",
+    "task_id",
+    "consistent",
+    "consistency_checks"
+  ],
+  "properties": {
+    "report_id": {
+      "type": "string",
+      "description": "Report identifier"
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Task identifier this report belongs to"
+    },
+    "consistent": {
+      "type": "boolean",
+      "description": "Whether the evidence trace is consistent"
+    },
+    "consistency_checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "check_id",
+          "check_description",
+          "passed"
+        ],
+        "properties": {
+          "check_id": {
+            "type": "string"
+          },
+          "check_description": {
+            "type": "string"
+          },
+          "passed": {
+            "type": "boolean"
+          },
+          "details": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "violations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Consistency violations detected"
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Consistency warnings"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "metadata": {
+      "type": "object"
+    }
+  }
+}

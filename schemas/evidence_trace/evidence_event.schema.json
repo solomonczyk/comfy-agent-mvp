@@ -1,0 +1,86 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://combine.ai/schemas/evidence_trace/evidence_event.schema.json",
+  "title": "Evidence Event",
+  "description": "Evidence event for project-agnostic trace layer. Records key decisions across pipeline.",
+  "type": "object",
+  "required": [
+    "event_id",
+    "task_id",
+    "source_layer",
+    "artifact_path",
+    "artifact_sha256",
+    "decision_status",
+    "blocked_actions",
+    "allowed_next_action",
+    "timestamp",
+    "created_by"
+  ],
+  "properties": {
+    "event_id": {
+      "type": "string",
+      "description": "Unique event identifier"
+    },
+    "task_id": {
+      "type": "string",
+      "description": "Task identifier this event belongs to"
+    },
+    "source_layer": {
+      "type": "string",
+      "enum": [
+        "workflow_registry",
+        "reference_pack",
+        "reference_binding",
+        "reference_set",
+        "workflow_readiness",
+        "runtime_gate",
+        "tool_policy"
+      ],
+      "description": "Source layer that generated this event"
+    },
+    "artifact_path": {
+      "type": "string",
+      "description": "Path to the artifact this event references"
+    },
+    "artifact_sha256": {
+      "type": "string",
+      "description": "SHA256 hash of the artifact"
+    },
+    "decision_status": {
+      "type": "string",
+      "enum": [
+        "ready",
+        "pending",
+        "blocked",
+        "authorized",
+        "rejected",
+        "complete"
+      ],
+      "description": "Decision status for this event"
+    },
+    "blocked_actions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Actions that are blocked by this decision"
+    },
+    "allowed_next_action": {
+      "type": "string",
+      "description": "Next allowed action after this decision"
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time",
+      "description": "Timestamp when this event was created"
+    },
+    "created_by": {
+      "type": "string",
+      "description": "Agent or system that created this event"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "Additional metadata about the event"
+    }
+  }
+}

@@ -19488,6 +19488,84 @@ def main() -> int:
         "--json", action="store_true", help="Output in JSON format",
     )
 
+    # RC-COMBINE-V2-EVIDENCE-TRACE-AUDIT-LEDGER-001 — combine-evidence-trace-record
+    combine_evidence_trace_record_parser = subparsers.add_parser(
+        "combine-evidence-trace-record",
+        help="Record evidence event to audit ledger",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--task-id", required=True, help="Task identifier",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--source-layer", required=True, help="Source layer (workflow_registry, reference_pack, reference_binding, reference_set, workflow_readiness, runtime_gate, tool_policy)",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--artifact-path", required=True, help="Path to artifact",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--decision-status", required=True, help="Decision status (ready, pending, blocked, authorized, rejected, complete)",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--blocked-actions", help="Comma-separated list of blocked actions",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--allowed-next-action", help="Next allowed action",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--created-by", help="Creator of the event",
+    )
+    combine_evidence_trace_record_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-EVIDENCE-TRACE-AUDIT-LEDGER-001 — combine-evidence-trace-validate
+    combine_evidence_trace_validate_parser = subparsers.add_parser(
+        "combine-evidence-trace-validate",
+        help="Validate evidence ledger",
+    )
+    combine_evidence_trace_validate_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_evidence_trace_validate_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-EVIDENCE-TRACE-AUDIT-LEDGER-001 — combine-evidence-trace-inspect
+    combine_evidence_trace_inspect_parser = subparsers.add_parser(
+        "combine-evidence-trace-inspect",
+        help="Inspect evidence ledger",
+    )
+    combine_evidence_trace_inspect_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_evidence_trace_inspect_parser.add_argument(
+        "--task-id", help="Filter by task ID",
+    )
+    combine_evidence_trace_inspect_parser.add_argument(
+        "--source-layer", help="Filter by source layer",
+    )
+    combine_evidence_trace_inspect_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
+    # RC-COMBINE-V2-EVIDENCE-TRACE-AUDIT-LEDGER-001 — combine-evidence-trace-consistency-report
+    combine_evidence_trace_consistency_report_parser = subparsers.add_parser(
+        "combine-evidence-trace-consistency-report",
+        help="Generate consistency report for evidence ledger",
+    )
+    combine_evidence_trace_consistency_report_parser.add_argument(
+        "--project-root", required=True, help="Project root directory",
+    )
+    combine_evidence_trace_consistency_report_parser.add_argument(
+        "--task-id", help="Filter by task ID",
+    )
+    combine_evidence_trace_consistency_report_parser.add_argument(
+        "--json", action="store_true", help="Output in JSON format",
+    )
+
     # RC-COMBINE-V2-PREVIEW-CORRECTION-STANDARDS-DRIVEN-PLAN-001 — combine-validate-preview-correction-plan subcommand
     combine_validate_preview_correction_plan_parser = subparsers.add_parser(
         "combine-validate-preview-correction-plan",
@@ -20259,6 +20337,18 @@ def main() -> int:
     elif args.command == "combine-tool-policy-readiness-report":
         from app.tool_policy.cli import combine_tool_policy_readiness_report
         return combine_tool_policy_readiness_report(args.policy_root, args.json)
+    elif args.command == "combine-evidence-trace-record":
+        from app.cli_commands.evidence_trace import combine_evidence_trace_record
+        return combine_evidence_trace_record(args)
+    elif args.command == "combine-evidence-trace-validate":
+        from app.cli_commands.evidence_trace import combine_evidence_trace_validate
+        return combine_evidence_trace_validate(args)
+    elif args.command == "combine-evidence-trace-inspect":
+        from app.cli_commands.evidence_trace import combine_evidence_trace_inspect
+        return combine_evidence_trace_inspect(args)
+    elif args.command == "combine-evidence-trace-consistency-report":
+        from app.cli_commands.evidence_trace import combine_evidence_trace_consistency_report
+        return combine_evidence_trace_consistency_report(args)
     elif args.command == "combine-validate-preview-correction-plan":
         _require_absolute_project_root(args, "combine-validate-preview-correction-plan")
         return combine_validate_preview_correction_plan(args)
