@@ -93,9 +93,12 @@ class BrainConfig:
         self.provider_region = os.getenv("DEEPSEEK_REGION")
         self.fallback_model_id = os.getenv("FALLBACK_MODEL_ID")
         self.fallback_provider_name = os.getenv("FALLBACK_PROVIDER_NAME")
-        # Enable simulation mode if BRAIN_SIMULATION_MODE is set
+        # Simulation mode is FORBIDDEN in production - only for development
+        # Production execution REQUIRES real provider configuration
         sim_mode = os.getenv("BRAIN_SIMULATION_MODE", "false").lower()
         self.simulation_mode = sim_mode == "true"
+        if self.simulation_mode:
+            print("WARNING: BRAIN_SIMULATION_MODE is enabled - FORBIDDEN in production")
 
     def validate_provider(self) -> bool:
         """Validate provider configuration."""
