@@ -1,0 +1,15 @@
+{
+  "task_id": "RC-COMBINE-V2-VERIFY-9E3EC46-AND-OPERATOR-VISUAL-REVIEW-001",
+  "review_packet": "operator_visual_review_packet.json",
+  "image_reviewed": "identity_lock__00001_.png",
+  "image_sha256": "4274763236dd5a93bffcdbb9a984e72cd8c42e7051f0f6a9cbe31dfd6619d113",
+  "operator_verdict": "NOT_PROVIDED",
+  "operator_rejection_reason": null,
+  "fake_decision_created": false,
+  "awaiting_human_operator": true,
+  "state_after_outcome": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
+  "production_accepted": false,
+  "outcome_timestamp": "2026-05-20T09:18:00+02:00",
+  "note": "Operator has not yet provided a visual review verdict. State remains blocked until human decision is received."
+}

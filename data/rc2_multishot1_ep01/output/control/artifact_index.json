@@ -1789,5 +1789,17 @@
   "corrective_visual_generation_preflight": "output\\control\\corrective_visual_generation_stage\\corrective_visual_generation_preflight.json",
   "corrective_visual_generation_manifest": "output\\control\\corrective_visual_generation_stage\\corrective_visual_generation_manifest.json",
   "corrective_visual_generation_result_review": "output\\control\\corrective_visual_generation_stage\\corrective_visual_generation_result_review.json",
-  "corrective_visual_generation_operator_review_packet": "output\\control\\corrective_visual_generation_stage\\operator_visual_review_packet.json"
+  "corrective_visual_generation_operator_review_packet": "output\\control\\corrective_visual_generation_stage\\operator_visual_review_packet.json",
+  "commit_9e3ec46_verified": true,
+  "commit_9e3ec46_verification_report": "output\\control\\visual_review\\9e3ec46_verification_report.json",
+  "generated_visual_asset_manifest": "output\\control\\visual_review\\generated_visual_asset_manifest.json",
+  "operator_visual_review_packet_v2": "output\\control\\visual_review\\operator_visual_review_packet.json",
+  "operator_visual_review_outcome": "output\\control\\visual_review\\operator_visual_review_outcome.json",
+  "identity_lock_generated_asset_path": "data\\rc2_multishot1_ep01\\output\\assets\\identity_lock__00001_.png",
+  "identity_lock_generated_asset_sha256": "4274763236dd5a93bffcdbb9a984e72cd8c42e7051f0f6a9cbe31dfd6619d113",
+  "identity_lock_generated_asset_dimensions": "1344x768",
+  "identity_lock_stage_complete": true,
+  "operator_visual_review_required": true,
+  "operator_visual_review_verdict_provided": false,
+  "last_updated": "2026-05-20T07:18:00+00:00"
 }

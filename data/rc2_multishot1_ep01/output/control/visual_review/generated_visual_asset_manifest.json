@@ -1,0 +1,30 @@
+{
+  "task_id": "RC-COMBINE-V2-VERIFY-9E3EC46-AND-OPERATOR-VISUAL-REVIEW-001",
+  "source_commit": "9e3ec46",
+  "source_task": "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001",
+  "generated_asset": {
+    "filename": "identity_lock__00001_.png",
+    "relative_path": "data/rc2_multishot1_ep01/output/assets/identity_lock__00001_.png",
+    "absolute_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\identity_lock__00001_.png",
+    "exists": true,
+    "readable": true,
+    "size_bytes": 1345100,
+    "width": 1344,
+    "height": 768,
+    "color_mode": "RGB",
+    "sha256": "4274763236dd5a93bffcdbb9a984e72cd8c42e7051f0f6a9cbe31dfd6619d113",
+    "last_modified": "2026-05-19T18:24:33",
+    "is_stub": false,
+    "is_blank": false,
+    "format": "PNG"
+  },
+  "previous_rejected_assets": [
+    {
+      "filename": "corrective_visual_1779196114_00001_.png",
+      "reason": "extreme crop / only ~1/4 face visible / wrong framing",
+      "size_bytes": 1833155,
+      "dimensions": "1024x1024"
+    }
+  ],
+  "manifest_timestamp": "2026-05-20T09:18:00+02:00"
+}

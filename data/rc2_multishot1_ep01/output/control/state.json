@@ -80,5 +80,10 @@
   "real_provider_required": true,
   "simulation_mode_forbidden": true,
   "generated_asset_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\identity_lock__00001_.png",
-  "identity_lock_stage_complete": true
+  "identity_lock_stage_complete": true,
+  "commit_9e3ec46_verified": true,
+  "operator_visual_review_packet_created": true,
+  "operator_visual_review_verdict_provided": false,
+  "visual_review_task_id": "RC-COMBINE-V2-VERIFY-9E3EC46-AND-OPERATOR-VISUAL-REVIEW-001",
+  "last_updated": "2026-05-20T07:18:00+00:00"
 }

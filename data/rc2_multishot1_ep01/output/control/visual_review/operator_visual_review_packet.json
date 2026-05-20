@@ -1,0 +1,52 @@
+{
+  "task_id": "RC-COMBINE-V2-VERIFY-9E3EC46-AND-OPERATOR-VISUAL-REVIEW-001",
+  "review_type": "operator_visual_review",
+  "review_subject": "identity_lock__00001_.png",
+  "image_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\identity_lock__00001_.png",
+  "image_relative_path": "data/rc2_multishot1_ep01/output/assets/identity_lock__00001_.png",
+  "technical_metadata": {
+    "dimensions": "1344x768",
+    "aspect_ratio": "16:9 (landscape/wide)",
+    "size_bytes": 1345100,
+    "color_mode": "RGB",
+    "format": "PNG",
+    "sha256": "4274763236dd5a93bffcdbb9a984e72cd8c42e7051f0f6a9cbe31dfd6619d113"
+  },
+  "generation_context": {
+    "source_commit": "9e3ec46",
+    "generation_task": "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001",
+    "identity_locked_to_canonical_reference": true,
+    "environment_visibility_enforced": true,
+    "generic_portrait_blocked": true,
+    "negative_prompt_includes_beauty_portrait_guard": true
+  },
+  "known_constraints": {
+    "must_show_character_in_environment": true,
+    "must_not_be_close_up_only": true,
+    "must_not_be_generic_beauty_portrait": true,
+    "must_not_be_blank_or_stub": true,
+    "must_preserve_character_identity": true,
+    "target_framing": "medium shot or wider",
+    "target_resolution": "1344x768"
+  },
+  "review_checklist": [
+    "Character is visible (not just face crop)",
+    "Environment/background is visible and contextual",
+    "Not a generic beauty/glamour portrait",
+    "Not blank, solid color, or stub image",
+    "Character identity appears consistent with canonical reference",
+    "Framing is medium shot or wider (NOT extreme close-up)",
+    "Image quality is acceptable (no major artifacts, blur, or corruption)",
+    "Aspect ratio is landscape/wide as specified (1344x768)"
+  ],
+  "allowed_verdicts": [
+    "ACCEPTED_FOR_NEXT_GATE",
+    "REJECTED_NEEDS_CORRECTIVE_PLAN",
+    "NEEDS_MANUAL_REVIEW"
+  ],
+  "instructions_for_operator": "Open the image at the path above. Review against the checklist. Provide your verdict as one of the allowed_verdicts values. If rejecting, provide a rejection_reason.",
+  "operator_verdict": null,
+  "operator_rejection_reason": null,
+  "verdict_timestamp": null,
+  "packet_created_timestamp": "2026-05-20T09:18:00+02:00"
+}
