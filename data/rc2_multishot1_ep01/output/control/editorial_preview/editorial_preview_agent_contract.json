@@ -1,0 +1,73 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "agent_name": "EditorialPreviewAgent",
+  "agent_role": "Editor / Editorial Preview Agent",
+  "timestamp": "2026-05-20T10:03:00+02:00",
+  "contract_version": "1.0",
+  "scope": {
+    "allowed": [
+      "filesystem_read_write",
+      "image_metadata",
+      "ffmpeg_imageio_preview_render",
+      "artifact_writing",
+      "preview_creation"
+    ],
+    "forbidden": [
+      "comfyui_generation",
+      "retry",
+      "assembly",
+      "voice",
+      "downstream",
+      "production_acceptance",
+      "new_image_generation"
+    ]
+  },
+  "input_requirements": {
+    "accepted_visual_candidate": "required",
+    "operator_verdict": "required",
+    "production_accepted": "must_be_false"
+  },
+  "output_requirements": {
+    "preview_lowres_mp4": "required",
+    "preview_gif": "required",
+    "contact_sheet_jpg": "required",
+    "preview_review_packet": "required"
+  },
+  "decision_layer": {
+    "motion_treatment": "choose_safe_cinematic_motion",
+    "static_prevention": "avoid_100_percent_duplicate_preview",
+    "preferred_effects": [
+      "subtle_push_in",
+      "slow_pan",
+      "gentle_fade"
+    ],
+    "fallback": "static_hold_if_motion_unavailable"
+  },
+  "gates": [
+    {
+      "gate_name": "accepted_visual_intake_gate",
+      "status": "passed",
+      "check": "accepted_visual_candidate_exists_and_readable"
+    },
+    {
+      "gate_name": "preview_render_gate",
+      "status": "pending",
+      "max_renders": 1,
+      "check": "exactly_one_preview_render_authorized"
+    },
+    {
+      "gate_name": "operator_preview_review_gate",
+      "status": "pending",
+      "check": "stop_at_operator_preview_review"
+    }
+  ],
+  "stop_conditions": [
+    "no_new_generation",
+    "no_retry",
+    "no_comfyui_submit",
+    "no_voice_generation",
+    "no_assembly",
+    "no_downstream",
+    "production_accepted_must_remain_false"
+  ]
+}

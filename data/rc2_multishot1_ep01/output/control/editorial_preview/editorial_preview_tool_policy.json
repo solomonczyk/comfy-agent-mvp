@@ -1,0 +1,55 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "policy_type": "tool_policy",
+  "timestamp": "2026-05-20T10:03:00+02:00",
+  "allowed_tools": {
+    "filesystem": {
+      "read": true,
+      "write": true,
+      "scope": ["accepted_visual_path", "preview_output_directory"]
+    },
+    "image_metadata": {
+      "extract_dimensions": true,
+      "extract_sha256": true,
+      "validate_readable": true
+    },
+    "preview_render": {
+      "ffmpeg": true,
+      "imageio": true,
+      "output_formats": ["mp4", "gif", "jpg"]
+    },
+    "artifact_writing": {
+      "json_manifest": true,
+      "qa_reports": true,
+      "review_packets": true
+    }
+  },
+  "forbidden_tools": {
+    "comfyui_generation": {
+      "allowed": false,
+      "reason": "No new image generation in preview stage"
+    },
+    "retry": {
+      "allowed": false,
+      "reason": "No retry in preview stage"
+    },
+    "assembly": {
+      "allowed": false,
+      "reason": "Assembly blocked until after preview review"
+    },
+    "voice": {
+      "allowed": false,
+      "reason": "Voice generation blocked until after preview review"
+    },
+    "downstream": {
+      "allowed": false,
+      "reason": "Downstream blocked until after preview review"
+    },
+    "production_acceptance": {
+      "allowed": false,
+      "reason": "Production acceptance requires full review cycle"
+    }
+  },
+  "tool_enforcement": "strict",
+  "violation_handling": "block_and_log"
+}

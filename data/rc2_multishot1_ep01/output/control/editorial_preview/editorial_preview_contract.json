@@ -1,0 +1,58 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "contract_type": "preview_render_contract",
+  "timestamp": "2026-05-20T10:03:00+02:00",
+  "contract_version": "1.0",
+  "parties": {
+    "requesting_agent": "EditorialPreviewAgent",
+    "executing_agent": "PreviewRenderEngine"
+  },
+  "scope": {
+    "input": {
+      "accepted_visual_candidate": "corrective_visual_recovery__00001_.png",
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\corrective_visual_recovery__00001_.png"
+    },
+    "output": {
+      "preview_directory": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\",
+      "files": [
+        "preview_lowres.mp4",
+        "preview.gif",
+        "contact_sheet.jpg"
+      ]
+    }
+  },
+  "render_specifications": {
+    "motion_treatment": "subtle_push_in_with_fade",
+    "duration_seconds": 3,
+    "frame_rate": 24,
+    "resolution": "672x384",
+    "codec": "h264",
+    "bitrate": "2M"
+  },
+  "constraints": {
+    "max_renders": 1,
+    "source_image_only": true,
+    "no_new_generation": true,
+    "no_retry": true,
+    "production_accepted_must_remain": false
+  },
+  "deliverables": [
+    "preview_lowres.mp4",
+    "preview.gif",
+    "contact_sheet.jpg",
+    "editorial_preview_render_manifest.json",
+    "editorial_preview_qa_report.json"
+  ],
+  "acceptance_criteria": {
+    "files_exist": true,
+    "files_readable": true,
+    "duration_valid": true,
+    "frame_count_valid": true,
+    "not_blank": true,
+    "static_ratio_below_threshold": true
+  },
+  "signoff": {
+    "authorized": true,
+    "authorization_timestamp": "2026-05-20T10:03:00+02:00"
+  }
+}

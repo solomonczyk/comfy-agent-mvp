@@ -1,0 +1,38 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "brain_config_type": "llm_brain",
+  "timestamp": "2026-05-20T10:03:00+02:00",
+  "model_provider": "deepseek",
+  "model_name": "deepseek-v4-flash",
+  "model_version": "v4-flash",
+  "api_configuration": {
+    "provider": "deepseek",
+    "endpoint": "https://api.deepseek.com/v1",
+    "model": "deepseek-v4-flash",
+    "requires_authentication": true,
+    "authentication_method": "api_key"
+  },
+  "brain_capabilities": {
+    "text_generation": true,
+    "decision_making": true,
+    "motion_treatment_selection": true,
+    "render_parameter_optimization": true
+  },
+  "brain_restrictions": {
+    "no_hidden_api_calls": true,
+    "no_simulation_mode": true,
+    "real_provider_required": true,
+    "api_calls_must_be_logged": true
+  },
+  "role_context": {
+    "agent_role": "Editor / Editorial Preview Agent",
+    "responsibilities": [
+      "Review accepted visual candidate",
+      "Select appropriate motion treatment",
+      "Authorize preview render",
+      "Ensure preview quality standards"
+    ],
+    "decision_scope": "preview_render_only",
+    "production_scope": "excluded"
+  }
+}

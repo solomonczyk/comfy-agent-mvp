@@ -1,0 +1,22 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "previous_task": "RC-COMBINE-V2-CORRECTIVE-VISUAL-RECOVERY-FULL-VERTICAL-001",
+  "timestamp": "2026-05-20T10:03:00+02:00",
+  "accepted_visual_candidate": "corrective_visual_recovery__00001_.png",
+  "accepted_visual_path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\corrective_visual_recovery__00001_.png",
+  "operator_verdict": "ACCEPTED_FOR_NEXT_GATE",
+  "production_accepted": false,
+  "visual_intake_status": "COMPLETED",
+  "asset_verification": {
+    "path_exists": true,
+    "file_readable": true,
+    "dimensions": "1344x768",
+    "mode": "RGB",
+    "size_bytes": 1833155,
+    "sha256": "6aa2d486295184b41cf7c36a0433f8970da7876631b08eda8ee35f420d9b7314",
+    "is_stub": false,
+    "is_blank": false
+  },
+  "next_stage": "editorial_preview_render",
+  "blockers": []
+}

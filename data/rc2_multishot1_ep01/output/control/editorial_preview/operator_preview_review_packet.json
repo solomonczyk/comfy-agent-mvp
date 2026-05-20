@@ -1,0 +1,67 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "packet_type": "operator_preview_review_packet",
+  "timestamp": "2026-05-20T10:04:28+02:00",
+  "previous_stage": "operator_visual_review_required",
+  "current_stage": "operator_preview_review_required",
+  "accepted_visual_candidate": {
+    "filename": "corrective_visual_recovery__00001_.png",
+    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\corrective_visual_recovery__00001_.png",
+    "dimensions": "1344x768",
+    "sha256": "6aa2d486295184b41cf7c36a0433f8970da7876631b08eda8ee35f420d9b7314"
+  },
+  "preview_artifacts": {
+    "preview_lowres_mp4": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\preview_lowres.mp4",
+      "relative_path": "data/rc2_multishot1_ep01/output/preview/preview_lowres.mp4",
+      "size_bytes": 32
+    },
+    "preview_gif": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\preview.gif",
+      "relative_path": "data/rc2_multishot1_ep01/output/preview/preview.gif",
+      "size_bytes": 5271834,
+      "frame_count": 36,
+      "duration_seconds": 3.0,
+      "resolution": "672x384"
+    },
+    "contact_sheet_jpg": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\contact_sheet.jpg",
+      "relative_path": "data/rc2_multishot1_ep01/output/preview/contact_sheet.jpg",
+      "size_bytes": 246830,
+      "resolution": "1344x768"
+    }
+  },
+  "render_details": {
+    "motion_treatment": "subtle_push_in_with_fade",
+    "render_count": 1,
+    "render_timestamp": "2026-05-20T10:04:28.540190"
+  },
+  "qa_report": {
+    "status": "PASSED",
+    "path": "data/rc2_multishot1_ep01/output/control/editorial_preview/editorial_preview_qa_report.json"
+  },
+  "next_actions": {
+    "operator_preview_review": "required",
+    "assembly": "blocked",
+    "voice": "blocked",
+    "downstream": "blocked",
+    "production_acceptance": "blocked"
+  },
+  "operator_instructions": {
+    "review_task": "Review the editorial preview artifacts",
+    "review_items": [
+      "preview_lowres.mp4 - motion preview",
+      "preview.gif - animated preview",
+      "contact_sheet.jpg - static reference"
+    ],
+    "decision_options": [
+      "ACCEPT_FOR_ASSEMBLY - approve preview and proceed to assembly",
+      "REJECT_NEEDS_PREVIEW_ADJUSTMENT - request preview re-render",
+      "REJECT_NEEDS_NEW_VISUAL - reject visual and return to generation"
+    ],
+    "decision_required": true
+  },
+  "production_accepted": false,
+  "assembly_allowed": false,
+  "downstream_blocked": true
+}

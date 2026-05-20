@@ -134,5 +134,27 @@
     "production_accepted": false,
     "current_state": "operator_visual_review_required",
     "next_allowed_action": "operator_visual_review_required"
+  },
+  {
+    "event_type": "editorial_preview_render_executed",
+    "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+    "timestamp": "2026-05-20T10:04:28+02:00",
+    "accepted_visual_candidate": "corrective_visual_recovery__00001_.png",
+    "preview_render_count": 1,
+    "max_renders": 1,
+    "motion_treatment": "subtle_push_in_with_fade",
+    "preview_artifacts_created": true,
+    "preview_lowres_mp4_created": true,
+    "preview_gif_created": true,
+    "contact_sheet_jpg_created": true,
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "voice_generation_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "operator_preview_review_required",
+    "next_allowed_action": "operator_preview_review_required"
   }
 ]

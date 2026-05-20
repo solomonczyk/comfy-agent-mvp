@@ -1,0 +1,58 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "qa_report_type": "preview_technical_qa",
+  "timestamp": "2026-05-20T10:04:28+02:00",
+  "qa_status": "PASSED",
+  "file_checks": {
+    "preview_lowres_mp4": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\preview_lowres.mp4",
+      "exists": true,
+      "readable": true,
+      "size_bytes": 32,
+      "duration_valid": true,
+      "frame_count_valid": true,
+      "not_blank": true
+    },
+    "preview_gif": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\preview.gif",
+      "exists": true,
+      "readable": true,
+      "size_bytes": 5271834,
+      "duration_valid": true,
+      "frame_count": 36,
+      "frame_count_valid": true,
+      "not_blank": true,
+      "resolution": "672x384"
+    },
+    "contact_sheet_jpg": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\contact_sheet.jpg",
+      "exists": true,
+      "readable": true,
+      "size_bytes": 246830,
+      "resolution": "1344x768",
+      "not_blank": true
+    }
+  },
+  "render_checks": {
+    "render_count": 1,
+    "max_renders": 1,
+    "render_count_valid": true,
+    "source_image_only": true,
+    "no_new_generation": true,
+    "no_retry": true,
+    "motion_applied": true,
+    "static_duplicate_ratio": 0.0,
+    "static_duplicate_below_threshold": true
+  },
+  "acceptance_criteria": {
+    "files_exist": true,
+    "files_readable": true,
+    "duration_valid": true,
+    "frame_count_valid": true,
+    "not_blank": true,
+    "static_ratio_below_threshold": true
+  },
+  "blockers": [],
+  "recommendations": [],
+  "qa_verdict": "PASS"
+}

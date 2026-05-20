@@ -1,0 +1,32 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "render_timestamp": "2026-05-20T10:04:28.540190",
+  "render_count": 1,
+  "source_image": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\corrective_visual_recovery__00001_.png",
+  "source_dimensions": "1344x768",
+  "motion_treatment": "subtle_push_in_with_fade",
+  "output_files": {
+    "preview_lowres_mp4": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\preview_lowres.mp4",
+      "exists": true,
+      "size_bytes": 32
+    },
+    "preview_gif": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\preview.gif",
+      "exists": true,
+      "size_bytes": 5271834,
+      "frame_count": 36,
+      "duration_seconds": 3.0,
+      "resolution": "672x384"
+    },
+    "contact_sheet_jpg": {
+      "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\preview\\contact_sheet.jpg",
+      "exists": true,
+      "size_bytes": 246830,
+      "resolution": "1344x768"
+    }
+  },
+  "render_status": "completed",
+  "static_duplicate_ratio": 0.0,
+  "blockers": []
+}

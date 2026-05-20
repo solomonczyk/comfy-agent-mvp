@@ -1,0 +1,49 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "decision_type": "preview_render_decision",
+  "timestamp": "2026-05-20T10:03:00+02:00",
+  "input_image": {
+    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\corrective_visual_recovery__00001_.png",
+    "filename": "corrective_visual_recovery__00001_.png",
+    "dimensions": "1344x768",
+    "aspect_ratio": "1.75:1"
+  },
+  "motion_treatment_decision": {
+    "selected_effect": "subtle_push_in_with_fade",
+    "reasoning": "Safe cinematic motion that adds visual interest without distortion",
+    "parameters": {
+      "push_in_amount": "5%",
+      "duration_seconds": 3,
+      "fade_in_duration": 0.5,
+      "fade_out_duration": 0.5,
+      "frame_rate": 24
+    }
+  },
+  "static_duplicate_prevention": {
+    "check_performed": true,
+    "static_ratio_threshold": 0.95,
+    "action": "apply_motion_to_avoid_static_duplicate",
+    "fallback_available": true
+  },
+  "render_specification": {
+    "output_formats": ["mp4", "gif", "jpg"],
+    "mp4_settings": {
+      "codec": "h264",
+      "bitrate": "2M",
+      "resolution": "672x384",
+      "duration": 3
+    },
+    "gif_settings": {
+      "resolution": "672x384",
+      "duration": 3,
+      "frame_rate": 12
+    },
+    "contact_sheet_settings": {
+      "resolution": "1344x768",
+      "format": "jpg"
+    }
+  },
+  "render_count_limit": 1,
+  "current_render_count": 0,
+  "authorization_status": "authorized"
+}

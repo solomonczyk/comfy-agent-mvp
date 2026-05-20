@@ -1,0 +1,41 @@
+{
+  "task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
+  "gate_type": "preview_render_gate",
+  "timestamp": "2026-05-20T10:03:00+02:00",
+  "gate_status": "authorized",
+  "authorization": {
+    "authorized": true,
+    "max_renders": 1,
+    "current_render_count": 0,
+    "render_source": "accepted_visual_candidate_only"
+  },
+  "input_validation": {
+    "accepted_visual_candidate": "corrective_visual_recovery__00001_.png",
+    "path_verified": true,
+    "file_readable": true,
+    "dimensions_valid": true,
+    "sha256_verified": true
+  },
+  "render_constraints": {
+    "source_image_only": true,
+    "no_new_generation": true,
+    "no_retry": true,
+    "single_render_limit": true,
+    "motion_effects_allowed": true,
+    "static_duplicate_prevention_required": true
+  },
+  "output_requirements": {
+    "preview_lowres_mp4": "required",
+    "preview_gif": "required",
+    "contact_sheet_jpg": "required",
+    "render_manifest": "required"
+  },
+  "post_render_gates": [
+    {
+      "gate_name": "operator_preview_review_gate",
+      "status": "pending",
+      "condition": "stop_after_preview_render"
+    }
+  ],
+  "blockers": []
+}
