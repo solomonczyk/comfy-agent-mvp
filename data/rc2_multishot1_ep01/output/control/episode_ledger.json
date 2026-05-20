@@ -110,5 +110,29 @@
     "production_accepted": false,
     "current_state": "corrective_visual_recovery_layer_required",
     "next_allowed_action": "corrective_visual_recovery_layer_required"
+  },
+  {
+    "event_type": "corrective_visual_recovery_generation_executed",
+    "timestamp": "2026-05-20T09:40:00+02:00",
+    "task_id": "RC-COMBINE-V2-CORRECTIVE-VISUAL-RECOVERY-FULL-VERTICAL-001",
+    "prompt_id": "e959a66a-4163-49c7-bd3c-e7318db2dd51",
+    "generated_asset": "corrective_visual_recovery__00001_.png",
+    "generated_asset_sha256": "6aa2d486295184b41cf7c36a0433f8970da7876631b08eda8ee35f420d9b7314",
+    "corrective_actions_applied": [
+      "prompt_reinforcement_medium_wide_framing",
+      "prompt_reinforcement_environment_visibility",
+      "generic_portrait_blocker",
+      "plain_background_blocker"
+    ],
+    "generation_count": 1,
+    "max_generations": 1,
+    "retry_attempted": false,
+    "second_generation_attempted": false,
+    "comfyui_submit_executed": true,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "operator_visual_review_required",
+    "next_allowed_action": "operator_visual_review_required"
   }
 ]
