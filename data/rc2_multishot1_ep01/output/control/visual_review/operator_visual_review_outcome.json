@@ -3,13 +3,14 @@
   "review_packet": "operator_visual_review_packet.json",
   "image_reviewed": "identity_lock__00001_.png",
   "image_sha256": "4274763236dd5a93bffcdbb9a984e72cd8c42e7051f0f6a9cbe31dfd6619d113",
-  "operator_verdict": "NOT_PROVIDED",
-  "operator_rejection_reason": null,
+  "operator_verdict": "REJECTED_NEEDS_CORRECTIVE_PLAN",
+  "operator_rejection_reason": "The image is technically valid but visually/production-wise rejected. Blocking defects: tight close-up headshot instead of medium shot or wider; no visible environment/scene context; plain gray background; generic beauty portrait look; identity consistency cannot be confirmed without reference comparison. Technical pass is NOT visual pass.",
   "fake_decision_created": false,
-  "awaiting_human_operator": true,
-  "state_after_outcome": "operator_visual_review_required",
-  "next_allowed_action": "operator_visual_review_required",
+  "awaiting_human_operator": false,
+  "state_after_outcome": "corrective_visual_recovery_layer_required",
+  "next_allowed_action": "corrective_visual_recovery_layer_required",
   "production_accepted": false,
-  "outcome_timestamp": "2026-05-20T09:18:00+02:00",
-  "note": "Operator has not yet provided a visual review verdict. State remains blocked until human decision is received."
+  "outcome_timestamp": "2026-05-20T09:24:00+02:00",
+  "rejection_record_path": "visual_review/visual_rejection_record.json",
+  "corrective_plan_path": "visual_review/corrective_visual_plan.json"
 }

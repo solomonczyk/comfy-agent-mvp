@@ -1,0 +1,55 @@
+{
+  "task_id": "RC-COMBINE-V2-VERIFY-9E3EC46-AND-OPERATOR-VISUAL-REVIEW-001",
+  "corrective_plan_id": "corrective_visual_recovery_layer_required",
+  "rejection_summary": "Image technically valid but visually rejected for production",
+  "root_cause_analysis": {
+    "primary_cause": "Environment visibility and framing constraints were specified in commit 9e3ec46 but the generated output still violated these constraints",
+    "secondary_cause": "Generic portrait detector and environment visibility blocker may not have been properly enforced at generation time",
+    "possible_workflow_issue": "Prompt conditioning may not have sufficiently emphasized scene context and wider framing"
+  },
+  "corrective_actions": [
+    {
+      "action_id": "1",
+      "action_type": "prompt_reinforcement",
+      "description": "Strengthen negative prompt to explicitly forbid close-up headshots and enforce medium/wide framing",
+      "implementation": "Add explicit negative terms: 'close-up', 'headshot', 'face only', 'tight framing'"
+    },
+    {
+      "action_id": "2",
+      "action_type": "prompt_reinforcement",
+      "description": "Strengthen positive prompt to require visible environment/scene context",
+      "implementation": "Add explicit positive terms: 'character in environment', 'scene visible', 'background shows location'"
+    },
+    {
+      "action_id": "3",
+      "action_type": "workflow_adjustment",
+      "description": "Verify environment visibility detector is active and properly blocking generations without scene context",
+      "implementation": "Add runtime guard that checks for plain/gradient backgrounds and rejects before submission"
+    },
+    {
+      "action_id": "4",
+      "action_type": "reference_enforcement",
+      "description": "Ensure canonical reference includes environment context to guide generation",
+      "implementation": "Review canonical reference and ensure it shows character in scene"
+    }
+  ],
+  "next_production_moving_layer": "corrective_visual_recovery_layer",
+  "required_authorization": "corrective_visual_recovery_authorization_required",
+  "forbidden_until_next_gate": {
+    "generation": true,
+    "retry": true,
+    "second_generation": true,
+    "assembly": true,
+    "downstream": true,
+    "production_accepted": true
+  },
+  "success_criteria": [
+    "Generated image shows character at medium shot or wider framing",
+    "Environment/scene background is visible and contextual",
+    "Not a generic beauty portrait",
+    "Character identity is consistent with canonical reference",
+    "No plain/gradient backgrounds",
+    "Aspect ratio remains 1344x768 or approved landscape format"
+  ],
+  "plan_timestamp": "2026-05-20T09:24:00+02:00"
+}

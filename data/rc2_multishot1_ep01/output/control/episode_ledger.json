@@ -82,5 +82,33 @@
     "production_accepted": false,
     "current_state": "operator_visual_review_required",
     "next_allowed_action": "operator_visual_review_required"
+  },
+  {
+    "event_type": "operator_visual_review_rejection",
+    "task_id": "RC-COMBINE-V2-VERIFY-9E3EC46-AND-OPERATOR-VISUAL-REVIEW-001",
+    "timestamp": "2026-05-20T07:24:00+00:00",
+    "image_reviewed": "identity_lock__00001_.png",
+    "operator_verdict": "REJECTED_NEEDS_CORRECTIVE_PLAN",
+    "rejection_reason": "The image is technically valid but visually/production-wise rejected. Blocking defects: tight close-up headshot instead of medium shot or wider; no visible environment/scene context; plain gray background; generic beauty portrait look; identity consistency cannot be confirmed without reference comparison. Technical pass is NOT visual pass.",
+    "blocking_defects": [
+      "framing_too_tight",
+      "no_environment_visible",
+      "plain_background",
+      "generic_beauty_portrait",
+      "identity_unconfirmed"
+    ],
+    "technical_pass": true,
+    "visual_pass": false,
+    "production_pass": false,
+    "corrective_plan_created": true,
+    "corrective_plan_path": "visual_review/corrective_visual_plan.json",
+    "generation_performed": false,
+    "retry_attempted": false,
+    "comfyui_submit_executed": false,
+    "assembly_executed": false,
+    "downstream_executed": false,
+    "production_accepted": false,
+    "current_state": "corrective_visual_recovery_layer_required",
+    "next_allowed_action": "corrective_visual_recovery_layer_required"
   }
 ]

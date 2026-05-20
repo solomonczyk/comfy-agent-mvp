@@ -1,0 +1,59 @@
+{
+  "task_id": "RC-COMBINE-V2-VERIFY-9E3EC46-AND-OPERATOR-VISUAL-REVIEW-001",
+  "rejected_asset": {
+    "filename": "identity_lock__00001_.png",
+    "path": "data/rc2_multishot1_ep01/output/assets/identity_lock__00001_.png",
+    "sha256": "4274763236dd5a93bffcdbb9a984e72cd8c42e7051f0f6a9cbe31dfd6619d113",
+    "dimensions": "1344x768",
+    "size_bytes": 1345100
+  },
+  "operator_verdict": "REJECTED_NEEDS_CORRECTIVE_PLAN",
+  "rejection_timestamp": "2026-05-20T09:24:00+02:00",
+  "rejection_reason_summary": "Technically valid but visually/production-wise rejected",
+  "blocking_defects": [
+    {
+      "defect_id": "framing_too_tight",
+      "description": "Tight close-up headshot instead of medium shot or wider",
+      "severity": "critical",
+      "constraint_violated": "target_framing must be medium shot or wider"
+    },
+    {
+      "defect_id": "no_environment_visible",
+      "description": "No visible environment/scene context",
+      "severity": "critical",
+      "constraint_violated": "environment_visibility must be true"
+    },
+    {
+      "defect_id": "plain_background",
+      "description": "Plain gray background",
+      "severity": "critical",
+      "constraint_violated": "must_not_be_plain_or_blank_background"
+    },
+    {
+      "defect_id": "generic_beauty_portrait",
+      "description": "Generic beauty portrait look",
+      "severity": "critical",
+      "constraint_violated": "must_not_be_generic_beauty_portrait"
+    },
+    {
+      "defect_id": "identity_unconfirmed",
+      "description": "Identity consistency cannot be confirmed without reference comparison",
+      "severity": "warning",
+      "constraint_violated": "must_preserve_character_identity"
+    }
+  ],
+  "technical_pass": true,
+  "visual_pass": false,
+  "production_pass": false,
+  "source_commit": "9e3ec46",
+  "generation_task": "RC-COMBINE-V2-ACTOR-IDENTITY-AND-COMPOSITION-LOCKED-VISUAL-RECOVERY-001",
+  "corrective_plan_required": true,
+  "corrective_plan_path": "visual_review/corrective_visual_plan.json",
+  "forbidden_actions_until_next_gate": [
+    "no_retry",
+    "no_second_generation",
+    "no_assembly",
+    "no_downstream",
+    "no_production_accepted_true"
+  ]
+}

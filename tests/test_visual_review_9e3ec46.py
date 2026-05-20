@@ -55,16 +55,18 @@ def test_blocks_missing_or_stub_visual_asset():
 
 
 def test_does_not_create_fake_operator_decision():
-    """Outcome must show operator verdict NOT_PROVIDED when no human decided."""
+    """Outcome must show fake_decision_created is false regardless of verdict."""
     outcome_path = os.path.join(VISUAL_REVIEW, "operator_visual_review_outcome.json")
     assert os.path.isfile(outcome_path)
     outcome = _load_json(outcome_path)
     assert outcome["fake_decision_created"] is False
-    assert outcome["awaiting_human_operator"] is True
-    # Verdict should be NOT_PROVIDED or a real human verdict
+    # Verdict must be a valid verdict (not fake)
     verdict = outcome["operator_verdict"]
     allowed = ["NOT_PROVIDED", "ACCEPTED_FOR_NEXT_GATE", "REJECTED_NEEDS_CORRECTIVE_PLAN", "NEEDS_MANUAL_REVIEW"]
     assert verdict in allowed, f"Invalid verdict: {verdict}"
+    # If verdict is provided, awaiting_human_operator should be false
+    if verdict != "NOT_PROVIDED":
+        assert outcome["awaiting_human_operator"] is False
 
 
 def test_production_accepted_remains_false():
@@ -100,10 +102,13 @@ def test_forbidden_actions_remain_false():
 
 
 def test_state_routes_to_operator_review_or_corrective_plan():
-    """State must be operator_visual_review_required."""
+    """State must route to correct state based on verdict."""
     state_path = os.path.join(CONTROL, "state.json")
     state = _load_json(state_path)
-    assert state["current_state"] == "operator_visual_review_required"
+    # After verification, state should be either operator_visual_review_required (awaiting verdict)
+    # or corrective_visual_recovery_layer_required (after rejection)
+    valid_states = ["operator_visual_review_required", "corrective_visual_recovery_layer_required"]
+    assert state["current_state"] in valid_states
     valid_next = [
         "operator_visual_review_required",
         "brain_provider_configuration_required",
@@ -138,3 +143,40 @@ def test_operator_review_packet_has_required_fields():
     assert "ACCEPTED_FOR_NEXT_GATE" in packet["allowed_verdicts"]
     assert "REJECTED_NEEDS_CORRECTIVE_PLAN" in packet["allowed_verdicts"]
     assert packet["operator_verdict"] is None  # Not yet decided
+
+
+def test_rejection_record_created_when_operator_rejects():
+    """When operator rejects, rejection_record.json must exist with blocking defects."""
+    rejection_path = os.path.join(VISUAL_REVIEW, "visual_rejection_record.json")
+    assert os.path.isfile(rejection_path)
+    rejection = _load_json(rejection_path)
+    assert rejection["operator_verdict"] == "REJECTED_NEEDS_CORRECTIVE_PLAN"
+    assert rejection["technical_pass"] is True
+    assert rejection["visual_pass"] is False
+    assert rejection["production_pass"] is False
+    assert len(rejection["blocking_defects"]) >= 3
+    defect_ids = [d["defect_id"] for d in rejection["blocking_defects"]]
+    assert "framing_too_tight" in defect_ids
+    assert "no_environment_visible" in defect_ids
+
+
+def test_corrective_plan_created_when_operator_rejects():
+    """When operator rejects, corrective_visual_plan.json must exist."""
+    plan_path = os.path.join(VISUAL_REVIEW, "corrective_visual_plan.json")
+    assert os.path.isfile(plan_path)
+    plan = _load_json(plan_path)
+    assert plan["corrective_plan_id"] == "corrective_visual_recovery_layer_required"
+    assert len(plan["corrective_actions"]) >= 3
+    assert plan["forbidden_until_next_gate"]["generation"] is True
+    assert plan["forbidden_until_next_gate"]["assembly"] is True
+    assert plan["forbidden_until_next_gate"]["production_accepted"] is True
+
+
+def test_state_routes_to_corrective_layer_after_rejection():
+    """After rejection, state must route to corrective_visual_recovery_layer_required."""
+    state_path = os.path.join(CONTROL, "state.json")
+    state = _load_json(state_path)
+    assert state["current_state"] == "corrective_visual_recovery_layer_required"
+    assert state["next_allowed_action"] == "corrective_visual_recovery_layer_required"
+    assert state["operator_verdict"] == "REJECTED_NEEDS_CORRECTIVE_PLAN"
+    assert state["production_accepted"] is False

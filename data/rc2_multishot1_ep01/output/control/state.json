@@ -83,7 +83,12 @@
   "identity_lock_stage_complete": true,
   "commit_9e3ec46_verified": true,
   "operator_visual_review_packet_created": true,
-  "operator_visual_review_verdict_provided": false,
+  "operator_visual_review_verdict_provided": true,
+  "operator_verdict": "REJECTED_NEEDS_CORRECTIVE_PLAN",
+  "visual_rejection_record_path": "data/rc2_multishot1_ep01/output/control/visual_review/visual_rejection_record.json",
+  "corrective_visual_plan_path": "data/rc2_multishot1_ep01/output/control/visual_review/corrective_visual_plan.json",
   "visual_review_task_id": "RC-COMBINE-V2-VERIFY-9E3EC46-AND-OPERATOR-VISUAL-REVIEW-001",
-  "last_updated": "2026-05-20T07:18:00+00:00"
+  "current_state": "corrective_visual_recovery_layer_required",
+  "next_allowed_action": "corrective_visual_recovery_layer_required",
+  "last_updated": "2026-05-20T07:24:00+00:00"
 }
