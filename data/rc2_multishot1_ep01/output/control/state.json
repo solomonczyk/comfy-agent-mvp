@@ -1,6 +1,6 @@
 {
-  "current_state": "canonical_references_locked",
-  "next_allowed_action": "identity_environment_locked_generation_authorization_required",
+  "current_state": "operator_visual_review_required",
+  "next_allowed_action": "operator_visual_review_required",
   "canonical_references_available": true,
   "canonical_character_asset_used": true,
   "same_scene_idempotency_enforced": true,
@@ -15,5 +15,17 @@
   "environment_lock_registry_created": true,
   "scene_idempotency_policy_created": true,
   "canonical_reference_contact_sheet_created": true,
-  "generation_preflight_idempotency_gate_created": true
+  "generation_preflight_idempotency_gate_created": true,
+  "assembly_allowed": false,
+  "downstream_blocked": true,
+  "generation_performed": true,
+  "comfyui_submit_executed": true,
+  "generation_count": 1,
+  "max_generations": 1,
+  "retry_attempted": false,
+  "second_generation_attempted": false,
+  "visual_qa_acceptance_executed": false,
+  "assembly_executed": false,
+  "downstream_executed": false,
+  "timestamp": "2026-05-20T11:35:17.048648"
 }
