@@ -1,37 +1,15 @@
 {
-  "task_id": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001",
-  "registry_type": "character_lock",
-  "timestamp": "2026-05-20T10:11:00+02:00",
-  "canonical_character_asset": {
-    "filename": "headshot_front.png",
-    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\input\\canonical_references\\01_identity\\headshot_front.png",
-    "relative_path": "data/rc2_multishot1_ep01/input/canonical_references/01_identity/headshot_front.png",
-    "sha256": "eaafb6d3ccd9e0bff262cd8fe9e6adba3e66a073a4b48c6645ee58096cd4c233",
-    "dimensions": "1254x1254",
-    "verified_readable": true,
-    "verified_exists": true,
-    "source": "operator_prepared_canonical_reference"
-  },
+  "version": "1.0",
   "character_lock_id": "char_lock_001",
   "lock_status": "active",
   "lock_enforced": true,
-  "character_attributes": {
-    "identity_source": "canonical_asset",
-    "face_identity_locked": true,
-    "age_locked": true,
-    "hairstyle_locked": true,
-    "hair_color_locked": true,
-    "body_proportions_locked": true,
-    "costume_logic_locked": true,
-    "general_appearance_locked": true
+  "canonical_character_asset": {
+    "filename": "headshot_front.png",
+    "path": "input\\canonical_references\\01_identity\\headshot_front.png",
+    "sha256": "eaafb6d3ccd9e0bff262cd8fe9e6adba3e66a073a4b48c6645ee58096cd4c233",
+    "width": 1254,
+    "height": 1254
   },
-  "random_identity_generation_blocked": true,
-  "generation_requirements": {
-    "canonical_character_asset_required": true,
-    "character_lock_id_required": "char_lock_001",
-    "deviation_policy": "forbidden"
-  },
-  "applicable_scenes": ["all"],
-  "lock_version": "1.0",
-  "created_from_task": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001"
+  "source": "operator_provided_canonical",
+  "last_updated": "2026-05-20T09:14:30.301920"
 }

@@ -1,106 +1,19 @@
 {
-  "task_id": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001",
-  "gate_type": "generation_preflight_idempotency_gate",
-  "timestamp": "2026-05-20T10:11:00+02:00",
-  "gate_status": "active",
-  "enforcement_point": "before_comfyui_submit",
-  "authorization": {
-    "gate_enabled": true,
-    "blocking_mode": true,
-    "failure_action": "block_generation_with_error"
-  },
-  "validation_checks": {
-    "canonical_character_asset_used": {
-      "required": true,
-      "description": "Must use canonical character asset from character_lock_registry",
-      "validation_method": "check_asset_exists_in_registry_and_readable",
-      "failure_message": "Generation blocked: canonical character asset not used or not readable",
-      "blocking": true
-    },
-    "character_lock_id_provided": {
-      "required": true,
-      "description": "Must provide valid character_lock_id from registry",
-      "validation_method": "check_lock_id_exists_and_active",
-      "failure_message": "Generation blocked: character_lock_id not provided or inactive",
-      "blocking": true
-    },
-    "canonical_environment_asset_used": {
-      "required": true,
-      "description": "Must use canonical environment asset from environment_lock_registry",
-      "validation_method": "check_asset_exists_in_registry_and_readable",
-      "failure_message": "Generation blocked: canonical environment asset not used or not readable",
-      "blocking": true
-    },
-    "environment_lock_id_provided": {
-      "required": true,
-      "description": "Must provide valid environment_lock_id from registry",
-      "validation_method": "check_lock_id_exists_and_active",
-      "failure_message": "Generation blocked: environment_lock_id not provided or inactive",
-      "blocking": true
-    },
-    "scene_id_provided": {
-      "required": true,
-      "description": "Must provide valid scene_id for tracking",
-      "validation_method": "check_scene_id_exists_in_registry",
-      "failure_message": "Generation blocked: scene_id not provided",
-      "blocking": true
-    },
-    "same_scene_idempotency_enforced": {
-      "required": true,
-      "description": "For repeated scenes, must preserve same environment and character",
-      "validation_method": "check_scene_id_matches_previous_generation",
-      "failure_message": "Generation blocked: scene idempotency not enforced",
-      "blocking": true
-    },
-    "random_identity_generation_blocked": {
-      "required": true,
-      "description": "Random identity generation must be blocked",
-      "validation_method": "check_no_random_identity_generation",
-      "failure_message": "Generation blocked: random identity generation detected",
-      "blocking": true
-    },
-    "random_environment_generation_blocked": {
-      "required": true,
-      "description": "Random environment generation must be blocked",
-      "validation_method": "check_no_random_environment_generation",
-      "failure_message": "Generation blocked: random environment generation detected",
-      "blocking": true
-    }
-  },
-  "allowed_scenarios": {
-    "canonical_character_asset_used": true,
-    "character_lock_id": "char_lock_001",
-    "canonical_environment_asset_used": true,
-    "environment_lock_id": "env_lock_001",
-    "scene_id": "scene_rc2_multishot1_ep01",
-    "same_scene_idempotency_enforced": true,
-    "random_identity_generation_blocked": true,
-    "random_environment_generation_blocked": true
-  },
-  "exempt_operations": [
-    "editorial_preview_render",
-    "assembly",
-    "voice_generation",
-    "downstream",
-    "state_updates",
-    "artifact_writes"
+  "version": "1.0",
+  "gate_type": "generation_preflight_idempotency_check",
+  "required_checks": [
+    "character_lock_registry_exists",
+    "environment_lock_registry_exists",
+    "canonical_character_asset_valid",
+    "canonical_environment_asset_valid",
+    "scene_idempotency_policy_satisfied"
   ],
-  "blocked_operations": [
-    "fresh_visual_generation_without_idempotency_lock",
-    "corrective_visual_generation_without_idempotency_lock",
-    "identity_locked_generation_without_idempotency_lock",
-    "reference_bound_generation_without_idempotency_lock",
-    "comfyui_submit_without_preflight_validation"
-  ],
-  "workflow_proof_required": {
-    "canonical_character_asset_used": true,
-    "character_lock_id": "char_lock_001",
-    "environment_lock_id": "env_lock_001",
-    "scene_id": "scene_rc2_multishot1_ep01",
-    "same_scene_idempotency_enforced": true,
-    "random_identity_generation_blocked": true,
-    "random_environment_generation_blocked": true
+  "block_conditions": {
+    "missing_character_lock": "Block generation if character lock registry missing",
+    "missing_environment_lock": "Block generation if environment lock registry missing",
+    "invalid_canonical_character": "Block generation if canonical character asset invalid",
+    "invalid_canonical_environment": "Block generation if canonical environment asset invalid",
+    "policy_violation": "Block generation if idempotency policy not satisfied"
   },
-  "gate_version": "1.0",
-  "created_from_task": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001"
+  "created_timestamp": "2026-05-20T09:14:30.308782"
 }

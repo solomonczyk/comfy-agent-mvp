@@ -1,11 +1,41 @@
 {
   "version": "1.0",
   "canonical_references": {
-    "01_identity": [],
-    "02_face_details": [],
-    "03_costume_materials": [],
-    "04_style_light": [],
-    "05_environment": [],
-    "06_quality_negative": []
+    "01_identity": [
+      "input\\canonical_references\\01_identity\\expression_reference.png",
+      "input\\canonical_references\\01_identity\\full_body_3q.png",
+      "input\\canonical_references\\01_identity\\full_body_front_neutral.png",
+      "input\\canonical_references\\01_identity\\headshot_front.png",
+      "input\\canonical_references\\01_identity\\medium_front.png",
+      "input\\canonical_references\\01_identity\\profile_left.png",
+      "input\\canonical_references\\01_identity\\profile_right.png",
+      "input\\canonical_references\\01_identity\\speaks.png"
+    ],
+    "02_face_details": [
+      "input\\canonical_references\\02_face_details\\closed eyes.png",
+      "input\\canonical_references\\02_face_details\\eyes_closeup.png",
+      "input\\canonical_references\\02_face_details\\hands_reference.png",
+      "input\\canonical_references\\02_face_details\\mouth_teeth_closeup.png",
+      "input\\canonical_references\\02_face_details\\smiles.png",
+      "input\\canonical_references\\02_face_details\\speaks.png"
+    ],
+    "03_costume_materials": [
+      "input\\canonical_references\\03_costume_materials\\costume_back_or_3q_back.png",
+      "input\\canonical_references\\03_costume_materials\\costume_full_front.png",
+      "input\\canonical_references\\03_costume_materials\\hero_prop_reference.png",
+      "input\\canonical_references\\03_costume_materials\\material_detail.png"
+    ],
+    "04_style_light": [
+      "input\\canonical_references\\04_style_light\\composition_reference.png",
+      "input\\canonical_references\\04_style_light\\lighting_canon_frame.png",
+      "input\\canonical_references\\04_style_light\\style_hero_frame.png"
+    ],
+    "05_environment": [
+      "input\\canonical_references\\05_environment\\character_in_environment.png"
+    ],
+    "06_quality_negative": [
+      "input\\canonical_references\\06_quality_negative\\negative_reference.png",
+      "input\\canonical_references\\06_quality_negative\\quality_gold_standard.png"
+    ]
   }
 }

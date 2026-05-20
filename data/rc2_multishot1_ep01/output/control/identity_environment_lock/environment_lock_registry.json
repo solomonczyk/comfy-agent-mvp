@@ -1,39 +1,16 @@
 {
-  "task_id": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001",
-  "registry_type": "environment_lock",
-  "timestamp": "2026-05-20T10:11:00+02:00",
-  "canonical_environment_asset": {
-    "filename": "character_in_environment.png",
-    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\input\\canonical_references\\05_environment\\character_in_environment.png",
-    "relative_path": "data/rc2_multishot1_ep01/input/canonical_references/05_environment/character_in_environment.png",
-    "sha256": "e14fac67ec16606233b57df122b9119bcd0c09e9a0a80eca68f73d63ab5ede20",
-    "dimensions": "1448x1086",
-    "verified_readable": true,
-    "verified_exists": true,
-    "source": "operator_prepared_canonical_reference"
-  },
+  "version": "1.0",
   "environment_lock_id": "env_lock_001",
   "scene_id": "scene_rc2_multishot1_ep01",
   "lock_status": "active",
   "lock_enforced": true,
-  "environment_attributes": {
-    "location_locked": true,
-    "lighting_direction_locked": true,
-    "time_of_day_locked": true,
-    "weather_mood_locked": true,
-    "props_locked": true,
-    "background_structure_locked": true,
-    "camera_logic_locked": true,
-    "spatial_layout_locked": true
+  "canonical_environment_asset": {
+    "filename": "character_in_environment.png",
+    "path": "input\\canonical_references\\05_environment\\character_in_environment.png",
+    "sha256": "308578111dea2f5aa240c9a14e3b611eee5806c6571f11ac8fc12a6fb5fbdb84",
+    "width": 1448,
+    "height": 1086
   },
-  "random_environment_generation_blocked": true,
-  "generation_requirements": {
-    "canonical_environment_asset_required": true,
-    "environment_lock_id_required": "env_lock_001",
-    "scene_id_required": "scene_rc2_multishot1_ep01",
-    "deviation_policy": "forbidden"
-  },
-  "same_scene_idempotency_enforced": true,
-  "lock_version": "1.0",
-  "created_from_task": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001"
+  "source": "operator_provided_canonical",
+  "last_updated": "2026-05-20T09:14:30.304315"
 }

@@ -1,0 +1,74 @@
+{
+  "scan_timestamp": "2026-05-20T09:14:27.967455",
+  "total_files_scanned": 24,
+  "valid_files": 24,
+  "invalid_files": 0,
+  "categories": {
+    "01_identity": {
+      "total": 8,
+      "valid": 8,
+      "invalid": 0,
+      "files": [
+        "expression_reference.png",
+        "full_body_3q.png",
+        "full_body_front_neutral.png",
+        "headshot_front.png",
+        "medium_front.png",
+        "profile_left.png",
+        "profile_right.png",
+        "speaks.png"
+      ]
+    },
+    "02_face_details": {
+      "total": 6,
+      "valid": 6,
+      "invalid": 0,
+      "files": [
+        "closed eyes.png",
+        "eyes_closeup.png",
+        "hands_reference.png",
+        "mouth_teeth_closeup.png",
+        "smiles.png",
+        "speaks.png"
+      ]
+    },
+    "03_costume_materials": {
+      "total": 4,
+      "valid": 4,
+      "invalid": 0,
+      "files": [
+        "costume_back_or_3q_back.png",
+        "costume_full_front.png",
+        "hero_prop_reference.png",
+        "material_detail.png"
+      ]
+    },
+    "04_style_light": {
+      "total": 3,
+      "valid": 3,
+      "invalid": 0,
+      "files": [
+        "composition_reference.png",
+        "lighting_canon_frame.png",
+        "style_hero_frame.png"
+      ]
+    },
+    "05_environment": {
+      "total": 1,
+      "valid": 1,
+      "invalid": 0,
+      "files": [
+        "character_in_environment.png"
+      ]
+    },
+    "06_quality_negative": {
+      "total": 2,
+      "valid": 2,
+      "invalid": 0,
+      "files": [
+        "negative_reference.png",
+        "quality_gold_standard.png"
+      ]
+    }
+  }
+}
