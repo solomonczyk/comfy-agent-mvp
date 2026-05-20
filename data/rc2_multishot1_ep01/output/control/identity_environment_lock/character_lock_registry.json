@@ -1,0 +1,36 @@
+{
+  "task_id": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001",
+  "registry_type": "character_lock",
+  "timestamp": "2026-05-20T10:11:00+02:00",
+  "canonical_character_asset": {
+    "filename": "identity_lock__00001_.png",
+    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\identity_lock__00001_.png",
+    "relative_path": "data/rc2_multishot1_ep01/output/assets/identity_lock__00001_.png",
+    "sha256": "4274763236dd5a93bffcdbb9a984e72cd8c42e7051f0f6a9cbe31dfd6619d113",
+    "dimensions": "1344x768",
+    "verified_readable": true,
+    "verified_exists": true
+  },
+  "character_lock_id": "char_lock_001",
+  "lock_status": "active",
+  "lock_enforced": true,
+  "character_attributes": {
+    "identity_source": "canonical_asset",
+    "face_identity_locked": true,
+    "age_locked": true,
+    "hairstyle_locked": true,
+    "hair_color_locked": true,
+    "body_proportions_locked": true,
+    "costume_logic_locked": true,
+    "general_appearance_locked": true
+  },
+  "random_identity_generation_blocked": true,
+  "generation_requirements": {
+    "canonical_character_asset_required": true,
+    "character_lock_id_required": "char_lock_001",
+    "deviation_policy": "forbidden"
+  },
+  "applicable_scenes": ["all"],
+  "lock_version": "1.0",
+  "created_from_task": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001"
+}

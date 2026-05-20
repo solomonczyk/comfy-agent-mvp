@@ -1,0 +1,38 @@
+{
+  "task_id": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001",
+  "registry_type": "environment_lock",
+  "timestamp": "2026-05-20T10:11:00+02:00",
+  "canonical_environment_asset": {
+    "filename": "corrective_visual_recovery__00001_.png",
+    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\corrective_visual_recovery__00001_.png",
+    "relative_path": "data/rc2_multishot1_ep01/output/assets/corrective_visual_recovery__00001_.png",
+    "sha256": "6aa2d486295184b41cf7c36a0433f8970da7876631b08eda8ee35f420d9b7314",
+    "dimensions": "1344x768",
+    "verified_readable": true,
+    "verified_exists": true
+  },
+  "environment_lock_id": "env_lock_001",
+  "scene_id": "scene_rc2_multishot1_ep01",
+  "lock_status": "active",
+  "lock_enforced": true,
+  "environment_attributes": {
+    "location_locked": true,
+    "lighting_direction_locked": true,
+    "time_of_day_locked": true,
+    "weather_mood_locked": true,
+    "props_locked": true,
+    "background_structure_locked": true,
+    "camera_logic_locked": true,
+    "spatial_layout_locked": true
+  },
+  "random_environment_generation_blocked": true,
+  "generation_requirements": {
+    "canonical_environment_asset_required": true,
+    "environment_lock_id_required": "env_lock_001",
+    "scene_id_required": "scene_rc2_multishot1_ep01",
+    "deviation_policy": "forbidden"
+  },
+  "same_scene_idempotency_enforced": true,
+  "lock_version": "1.0",
+  "created_from_task": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001"
+}

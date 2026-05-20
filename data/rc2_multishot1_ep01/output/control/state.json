@@ -95,5 +95,19 @@
   "last_updated": "2026-05-20T10:04:28+02:00",
   "editorial_preview_task_id": "RC-COMBINE-V2-EDITORIAL-PREVIEW-FROM-ACCEPTED-VISUAL-001",
   "editorial_preview_executed": true,
-  "preview_artifacts_created": true
+  "preview_artifacts_created": true,
+  "idempotency_lock_task_id": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001",
+  "idempotency_lock_executed": true,
+  "character_lock_registry_created": true,
+  "environment_lock_registry_created": true,
+  "scene_idempotency_policy_created": true,
+  "canonical_reference_contact_sheet_created": true,
+  "generation_preflight_idempotency_gate_created": true,
+  "character_lock_id": "char_lock_001",
+  "environment_lock_id": "env_lock_001",
+  "scene_id": "scene_rc2_multishot1_ep01",
+  "canonical_character_asset_used": true,
+  "same_scene_idempotency_enforced": true,
+  "random_identity_generation_blocked": true,
+  "random_environment_generation_blocked": true
 }

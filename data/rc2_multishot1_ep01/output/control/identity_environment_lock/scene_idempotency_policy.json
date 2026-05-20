@@ -1,0 +1,73 @@
+{
+  "task_id": "RC-COMBINE-V2-IDENTITY-ENVIRONMENT-IDEMPOTENCY-LOCK-001",
+  "policy_type": "scene_idempotency_policy",
+  "timestamp": "2026-05-20T10:11:00+02:00",
+  "policy_version": "1.0",
+  "policy_status": "active",
+  "scope": "all_future_visual_generations",
+  "idempotency_requirements": {
+    "canonical_character_asset_used": {
+      "required": true,
+      "description": "Must use canonical character asset from character_lock_registry",
+      "validation": "asset_exists_in_registry_and_readable"
+    },
+    "character_lock_id": {
+      "required": true,
+      "description": "Must reference valid character_lock_id from registry",
+      "validation": "lock_id_exists_and_active"
+    },
+    "canonical_environment_asset_used": {
+      "required": true,
+      "description": "Must use canonical environment asset from environment_lock_registry",
+      "validation": "asset_exists_in_registry_and_readable"
+    },
+    "environment_lock_id": {
+      "required": true,
+      "description": "Must reference valid environment_lock_id from registry",
+      "validation": "lock_id_exists_and_active"
+    },
+    "scene_id": {
+      "required": true,
+      "description": "Must reference valid scene_id for tracking",
+      "validation": "scene_id_exists_in_registry"
+    },
+    "same_scene_idempotency_enforced": {
+      "required": true,
+      "description": "For repeated scenes, must preserve same environment and character",
+      "validation": "scene_id_matches_previous_generation"
+    }
+  },
+  "blocking_conditions": {
+    "random_identity_generation_blocked": true,
+    "random_environment_generation_blocked": true,
+    "generation_without_canonical_character_blocked": true,
+    "generation_without_canonical_environment_blocked": true,
+    "generation_without_scene_id_blocked": true
+  },
+  "enforcement_mechanism": {
+    "preflight_gate": "generation_preflight_idempotency_gate",
+    "validation_point": "before_comfyui_submit",
+    "failure_action": "block_generation_with_error"
+  },
+  "workflow_proof_required": {
+    "canonical_character_asset_used": true,
+    "character_lock_id": "char_lock_001",
+    "environment_lock_id": "env_lock_001",
+    "scene_id": "scene_rc2_multishot1_ep01",
+    "same_scene_idempotency_enforced": true,
+    "random_identity_generation_blocked": true,
+    "random_environment_generation_blocked": true
+  },
+  "applicable_stages": [
+    "fresh_visual_generation",
+    "corrective_visual_generation",
+    "identity_locked_generation",
+    "reference_bound_generation"
+  ],
+  "exempt_stages": [
+    "editorial_preview_render",
+    "assembly",
+    "voice_generation",
+    "downstream"
+  ]
+}
