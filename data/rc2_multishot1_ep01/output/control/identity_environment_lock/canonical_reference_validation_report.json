@@ -1,5 +1,5 @@
 {
-  "scan_timestamp": "2026-05-20T09:14:27.967455",
+  "scan_timestamp": "2026-05-20T09:49:42.126355",
   "total_files_scanned": 24,
   "valid_files": 24,
   "invalid_files": 0,
@@ -28,7 +28,7 @@
         "eyes_closeup.png",
         "hands_reference.png",
         "mouth_teeth_closeup.png",
-        "smiles.png",
+        "smile.png",
         "speaks.png"
       ]
     },
@@ -37,7 +37,7 @@
       "valid": 4,
       "invalid": 0,
       "files": [
-        "costume_back_or_3q_back.png",
+        "costume_back_or_3q.png",
         "costume_full_front.png",
         "hero_prop_reference.png",
         "material_detail.png"

@@ -1861,5 +1861,22 @@
   "identity_locked_generation_manifest": "output\\control\\identity_locked_generation\\identity_locked_generation_manifest.json",
   "identity_locked_generation_result_review": "output\\control\\identity_locked_generation\\identity_locked_generation_result_review.json",
   "identity_locked_generation_operator_visual_review_packet": "output\\control\\identity_locked_generation\\operator_visual_review_packet.json",
-  "identity_locked_generation_proof": "output\\control\\identity_locked_generation\\identity_locked_generation_proof.json"
+  "identity_locked_generation_proof": "output\\control\\identity_locked_generation\\identity_locked_generation_proof.json",
+  "canonical_reference_runtime_binding_generation_performed": true,
+  "canonical_reference_runtime_binding_generation_count": 1,
+  "canonical_references_hard_bound": true,
+  "canonical_reference_runtime_binding_preflight": "output\\control\\canonical_reference_runtime_binding\\canonical_reference_runtime_binding_preflight.json",
+  "canonical_reference_runtime_binding_contract": "output\\control\\canonical_reference_runtime_binding\\canonical_reference_runtime_binding_contract.json",
+  "canonical_reference_runtime_binding_generation_manifest": "output\\control\\canonical_reference_runtime_binding\\canonical_reference_runtime_binding_generation_manifest.json",
+  "canonical_reference_runtime_binding_generation_result_review": "output\\control\\canonical_reference_runtime_binding\\canonical_reference_runtime_binding_generation_result_review.json",
+  "canonical_reference_runtime_binding_proof": "output\\control\\canonical_reference_runtime_binding\\canonical_reference_runtime_binding_proof.json",
+  "canonical_bound_real_generation_executed": true,
+  "canonical_bound_generation_count": 1,
+  "canonical_bound_max_generations": 1,
+  "canonical_bound_dry_run": false,
+  "canonical_bound_generation_authorization": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\control\\canonical_bound_generation\\canonical_bound_generation_authorization.json",
+  "canonical_bound_generation_manifest": "output\\control\\canonical_bound_generation\\canonical_bound_generation_manifest.json",
+  "canonical_bound_generation_result_review": "output\\control\\canonical_bound_generation\\canonical_bound_generation_result_review.json",
+  "canonical_bound_operator_visual_review_packet": "output\\control\\canonical_bound_generation\\canonical_bound_operator_visual_review_packet.json",
+  "canonical_bound_submitted_workflow": "output\\control\\canonical_bound_generation\\canonical_bound_submitted_workflow.json"
 }

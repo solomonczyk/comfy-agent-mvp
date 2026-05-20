@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "created_timestamp": "2026-05-20T09:14:28.245194",
+  "created_timestamp": "2026-05-20T09:49:42.424180",
   "project_root": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01",
   "validation_summary": {
     "total_files": 24,
@@ -163,8 +163,8 @@
           "error": null
         },
         {
-          "filename": "smiles.png",
-          "path": "input\\canonical_references\\02_face_details\\smiles.png",
+          "filename": "smile.png",
+          "path": "input\\canonical_references\\02_face_details\\smile.png",
           "sha256": "e141f829194eb97d024ae2902585d5fa7db121e8f41291e9fd816e03b2698f86",
           "size_bytes": 1985479,
           "width": 1448,
@@ -193,8 +193,8 @@
       "valid_count": 4,
       "files": [
         {
-          "filename": "costume_back_or_3q_back.png",
-          "path": "input\\canonical_references\\03_costume_materials\\costume_back_or_3q_back.png",
+          "filename": "costume_back_or_3q.png",
+          "path": "input\\canonical_references\\03_costume_materials\\costume_back_or_3q.png",
           "sha256": "ab66bfb4680d760a0bc824bc7f7721290c239ab9518e9a7c33f51017da5c7b48",
           "size_bytes": 1985755,
           "width": 1024,

@@ -16,11 +16,11 @@
       "input\\canonical_references\\02_face_details\\eyes_closeup.png",
       "input\\canonical_references\\02_face_details\\hands_reference.png",
       "input\\canonical_references\\02_face_details\\mouth_teeth_closeup.png",
-      "input\\canonical_references\\02_face_details\\smiles.png",
+      "input\\canonical_references\\02_face_details\\smile.png",
       "input\\canonical_references\\02_face_details\\speaks.png"
     ],
     "03_costume_materials": [
-      "input\\canonical_references\\03_costume_materials\\costume_back_or_3q_back.png",
+      "input\\canonical_references\\03_costume_materials\\costume_back_or_3q.png",
       "input\\canonical_references\\03_costume_materials\\costume_full_front.png",
       "input\\canonical_references\\03_costume_materials\\hero_prop_reference.png",
       "input\\canonical_references\\03_costume_materials\\material_detail.png"
