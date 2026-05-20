@@ -6,7 +6,8 @@
   "scene_idempotency_policy_created": true,
   "canonical_reference_contact_sheet_created": true,
   "generation_preflight_idempotency_gate_created": true,
-  "canonical_character_asset_used": true,
+  "canonical_character_asset": "input/canonical_references/01_identity/headshot_front.png",
+  "canonical_environment_asset": "input/canonical_references/05_environment/character_in_environment.png",
   "character_lock_id": "char_lock_001",
   "environment_lock_id": "env_lock_001",
   "scene_id": "scene_rc2_multishot1_ep01",
@@ -26,6 +27,7 @@
   "commit_hash": "c1aa40f",
   "push_status": "pushed_origin_main",
   "git_status_clean": true,
+  "canonical_asset_source": "operator_prepared_canonical_reference",
   "workflow_proof": {
     "canonical_character_asset_used": true,
     "character_lock_id": "char_lock_001",

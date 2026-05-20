@@ -9,12 +9,16 @@ from pathlib import Path
 def create_canonical_contact_sheet():
     project_root = Path(r"F:\ComfyUI\comfy-agent-mvp\data\rc2_multishot1_ep01")
     
-    # Load canonical assets
-    character_asset_path = project_root / "output" / "assets" / "identity_lock__00001_.png"
-    environment_asset_path = project_root / "output" / "assets" / "corrective_visual_recovery__00001_.png"
+    # Load REAL canonical assets from input/canonical_references
+    canonical_char_path = project_root / "input" / "canonical_references" / "01_identity" / "headshot_front.png"
+    canonical_env_path = project_root / "input" / "canonical_references" / "05_environment" / "character_in_environment.png"
     
-    char_img = Image.open(character_asset_path)
-    env_img = Image.open(environment_asset_path)
+    char_img = Image.open(canonical_char_path)
+    env_img = Image.open(canonical_env_path)
+    
+    # Resize to match dimensions for contact sheet
+    char_img = char_img.resize((1254, 1254), Image.Resampling.LANCZOS)
+    env_img = env_img.resize((1254, 1254), Image.Resampling.LANCZOS)
     
     # Create contact sheet (side by side)
     width, height = char_img.size
@@ -39,12 +43,12 @@ def create_canonical_contact_sheet():
     draw.text((25, 10), title, fill=(255, 255, 255), font=font)
     
     # Character label
-    draw.text((25, height + 60), "CHARACTER LOCK: identity_lock__00001_.png", fill=(200, 200, 200), font=font)
-    draw.text((25, height + 85), "char_lock_001", fill=(150, 150, 255), font=font)
+    draw.text((25, height + 60), "CHARACTER: input/canonical_references/01_identity/headshot_front.png", fill=(200, 200, 200), font=font)
+    draw.text((25, height + 85), "char_lock_001 (operator-prepared canonical)", fill=(150, 255, 150), font=font)
     
     # Environment label
-    draw.text((width + 75, height + 60), "ENVIRONMENT LOCK: corrective_visual_recovery__00001_.png", fill=(200, 200, 200), font=font)
-    draw.text((width + 75, height + 85), "env_lock_001 | scene_rc2_multishot1_ep01", fill=(150, 255, 150), font=font)
+    draw.text((width + 75, height + 60), "ENVIRONMENT: input/canonical_references/05_environment/character_in_environment.png", fill=(200, 200, 200), font=font)
+    draw.text((width + 75, height + 85), "env_lock_001 (operator-prepared canonical)", fill=(150, 255, 150), font=font)
     
     # Save contact sheet
     output_dir = project_root / "output" / "control" / "identity_environment_lock"

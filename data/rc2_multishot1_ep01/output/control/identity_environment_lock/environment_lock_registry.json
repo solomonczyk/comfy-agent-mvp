@@ -3,13 +3,14 @@
   "registry_type": "environment_lock",
   "timestamp": "2026-05-20T10:11:00+02:00",
   "canonical_environment_asset": {
-    "filename": "corrective_visual_recovery__00001_.png",
-    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\corrective_visual_recovery__00001_.png",
-    "relative_path": "data/rc2_multishot1_ep01/output/assets/corrective_visual_recovery__00001_.png",
-    "sha256": "6aa2d486295184b41cf7c36a0433f8970da7876631b08eda8ee35f420d9b7314",
-    "dimensions": "1344x768",
+    "filename": "character_in_environment.png",
+    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\input\\canonical_references\\05_environment\\character_in_environment.png",
+    "relative_path": "data/rc2_multishot1_ep01/input/canonical_references/05_environment/character_in_environment.png",
+    "sha256": "e14fac67ec16606233b57df122b9119bcd0c09e9a0a80eca68f73d63ab5ede20",
+    "dimensions": "1448x1086",
     "verified_readable": true,
-    "verified_exists": true
+    "verified_exists": true,
+    "source": "operator_prepared_canonical_reference"
   },
   "environment_lock_id": "env_lock_001",
   "scene_id": "scene_rc2_multishot1_ep01",

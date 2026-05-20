@@ -3,13 +3,14 @@
   "registry_type": "character_lock",
   "timestamp": "2026-05-20T10:11:00+02:00",
   "canonical_character_asset": {
-    "filename": "identity_lock__00001_.png",
-    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\output\\assets\\identity_lock__00001_.png",
-    "relative_path": "data/rc2_multishot1_ep01/output/assets/identity_lock__00001_.png",
-    "sha256": "4274763236dd5a93bffcdbb9a984e72cd8c42e7051f0f6a9cbe31dfd6619d113",
-    "dimensions": "1344x768",
+    "filename": "headshot_front.png",
+    "path": "F:\\ComfyUI\\comfy-agent-mvp\\data\\rc2_multishot1_ep01\\input\\canonical_references\\01_identity\\headshot_front.png",
+    "relative_path": "data/rc2_multishot1_ep01/input/canonical_references/01_identity/headshot_front.png",
+    "sha256": "eaafb6d3ccd9e0bff262cd8fe9e6adba3e66a073a4b48c6645ee58096cd4c233",
+    "dimensions": "1254x1254",
     "verified_readable": true,
-    "verified_exists": true
+    "verified_exists": true,
+    "source": "operator_prepared_canonical_reference"
   },
   "character_lock_id": "char_lock_001",
   "lock_status": "active",
